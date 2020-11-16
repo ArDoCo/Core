@@ -29,7 +29,7 @@ public class Instance {
 	 * @param uid  unique identifier of the instance needed for trace linking.
 	 */
 	public Instance(String name, String type, int uid) {
-		// bisher nur für 2 Teile vorgesehen, bei mehr Teilen -> mehr kombis!
+		
 		this.names = Arrays.stream(name.split(" ")).collect(Collectors.toList());
 		if (names.size() != 1) {
 			names.add(name);

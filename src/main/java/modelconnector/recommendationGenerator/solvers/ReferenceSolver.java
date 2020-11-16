@@ -61,9 +61,6 @@ public class ReferenceSolver extends RecommendationSolver {
 					textExtractionState.getNames().stream().filter(n -> SimilarityUtils.areWordsOfListsSimilar(//
 							instance.getNames(), List.of(n.getReference()), areNamesSimilarThreshold)).collect(Collectors.toList());
 
-			// SimilarityUtils.getAllSimilarNMappingToInstanceByReferences(instance,
-			// textExtractionState.getNames());
-
 			if (similarToInstanceMappings.isEmpty()) {
 
 				solveReferenceOfNamesIfSimilarNameIsEmpty(instance);

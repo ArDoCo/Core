@@ -37,8 +37,6 @@ public final class SimilarityUtils {
 	 * @param threshold threshold for granularity of similarity
 	 * @return true, if the test string is similar to the original; false if not.
 	 */
-	// TODO: Andere Fehlerfunktion: Sollte bei kleinen Wörtern weniger und bei
-	// längeren genauso viel verzeihen wie aktuell
 	public static boolean areWordsSimilar(String original, String word2test, Double threshold) {
 		if (original.toLowerCase().split(" ").length != word2test.toLowerCase().split(" ").length) {
 			return false;
@@ -150,10 +148,6 @@ public final class SimilarityUtils {
 	public static List<NounMapping> getAllSimilarNMappingsByReference(String ref, List<NounMapping> nounMappings) {
 
 		return nounMappings.stream().filter(n -> SimilarityUtils.areWordsSimilar(n.getReference(), ref)).collect(Collectors.toList());
-
-		// return nounMappings.stream().filter(n ->
-		// SimilarityUtils.areWordsOfListsSimilar(List.of(ref),
-		// List.of(n.getReference()))).collect(Collectors.toList());
 
 	}
 

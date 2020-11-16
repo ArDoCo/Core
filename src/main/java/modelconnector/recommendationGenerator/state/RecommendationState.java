@@ -142,7 +142,6 @@ public class RecommendationState {
 					if (SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType(), 0.85)) {
 						riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());
 						added = true;
-						// System.out.println(riWithExactName + " <- " + ri.getTypeMappings);
 						break;
 					} else if (riWithExactName.getType().contentEquals("") && !ri.getType().contentEquals("")) {
 						riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());

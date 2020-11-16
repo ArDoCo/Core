@@ -19,7 +19,7 @@ import modelconnector.textExtractor.state.NounMapping;
 import modelconnector.textExtractor.state.TextExtractionState;
 
 /**
- * This analyzer searches for name type patterns. If these patterns occure
+ * This analyzer searches for name type patterns. If these patterns occur
  * recommendations are created.
  *
  * @author Sophie
@@ -135,7 +135,7 @@ public class NameTypeAnalyzer extends RecommendationAnalyzer {
 
 	/**
 	 * Adds a RecommendedInstance to the recommendation state if the mapping of the
-	 * current node exists. Otherwise a recommendation is added foreach existing
+	 * current node exists. Otherwise a recommendation is added for each existing
 	 * mapping.
 	 *
 	 * @param currentNode         the current node
@@ -185,7 +185,7 @@ public class NameTypeAnalyzer extends RecommendationAnalyzer {
 	 * given node. If an unambiguous instance can be found it is returned and the
 	 * name is added to the text extraction state.
 	 *
-	 * @param textExtractioinState the ntext extraction state to work with
+	 * @param textExtractioinState the next extraction state to work with
 	 * @param similarTypes         the given similar types
 	 * @param n                    the node for name identification
 	 * @return the unique matching instance
