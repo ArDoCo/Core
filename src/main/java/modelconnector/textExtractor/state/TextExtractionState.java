@@ -295,8 +295,7 @@ public class TextExtractionState {
 		}
 
 		nnm.addOccurrence(occurrences);
-		nnm.updateProbability(probability); // Hier evtl nicht ganz richtig, wenn nicht gleicher MappingType... verstärkt
-											// in falsche Richtung!
+		nnm.updateProbability(probability); 
 	}
 
 	/***

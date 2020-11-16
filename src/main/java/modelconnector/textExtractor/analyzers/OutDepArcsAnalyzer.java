@@ -62,7 +62,6 @@ public class OutDepArcsAnalyzer extends TextExtractionAnalyzer {
 				textExtractionState.addType(n, GraphUtils.getNodeValue(n), probability);
 
 			} else if (shortDepTag.equals("rcmod")) {
-				// plural ? Best./ unbest.?
 				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
 			}
 		}
