@@ -5,13 +5,13 @@
 	<groupId>edu.kit.ipd.are</groupId>
 	<artifactId>ArDoCo-Core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
+
   <parent>
     <groupId>edu.kit.ipd</groupId>
     <artifactId>ArDoCo</artifactId>
     <version>0.1.0</version>
   </parent>
-	
+
 	<repositories>
     <repository>
       <id>github</id>
@@ -19,12 +19,16 @@
       <url>https://maven.pkg.github.com/ArDoCo/ArDoCo-parent</url>
     </repository>
 	</repositories>
-	
+
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
+
+		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
+		<sonar.organization>ardoco</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>edu.kit.ipd.indirect</groupId>
@@ -41,7 +45,7 @@
 			<type>jar</type>
 		</dependency>
 	</dependencies>
-	
+
 	  <distributionManagement>
     <repository>
 		<id>github</id>
@@ -49,5 +53,5 @@
 		<url>https://maven.pkg.github.com/ArDoCo/Core</url>
    </repository>
   </distributionManagement>
-	
+
 </project>
