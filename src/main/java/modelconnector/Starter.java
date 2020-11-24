@@ -12,7 +12,6 @@ import edu.kit.ipd.indirect.textSNLP.TextSNLP;
 import edu.kit.ipd.indirect.tokenizer.Tokenizer;
 import edu.kit.ipd.parse.graphBuilder.GraphBuilder;
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
-import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
@@ -53,25 +52,26 @@ public final class Starter {
 	 * @throws Exception if a step fails.
 	 */
 	public static void main(String[] args) throws Exception {
-		 runDocumentation();
+		runDocumentation();
 	}
-	
+
 	private static void runTest() throws Exception {
 		run(test);
 	}
-	
+
 	private static void runDocumentation() throws Exception {
 		run(documentation);
 	}
-	
+
 	private static void run(InputStream text) throws Exception {
 		long startTime = System.currentTimeMillis();
 
 		IGraph graph = generateIndirectGraphFromText(text);
-			runAdditionalIndirectAgentsOnGraph(graph);
+		runAdditionalIndirectAgentsOnGraph(graph);
 
 		ModelExtractionState extractionState = ModelHardcoder.hardCodeExtractionStateOfTeammates();
-		// ModelExtractionState extractionState = ModelHardcoder.getEmptyExtractionState();
+		// ModelExtractionState extractionState =
+		// ModelHardcoder.getEmptyExtractionState();
 
 		TextExtractionAgent textExtractionAgent = new TextExtractionAgent();
 		execute(graph, textExtractionAgent);
