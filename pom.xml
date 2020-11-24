@@ -13,11 +13,11 @@
   </parent>
 
 	<repositories>
-    <repository>
-      <id>github</id>
-      <name>GitHub ArDoCo Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/ArDoCo/ArDoCo-parent</url>
-    </repository>
+	    <repository>
+	      <id>github</id>
+	      <name>GitHub ArDoCo Apache Maven Packages</name>
+	      <url>https://maven.pkg.github.com/ArDoCo/ArDoCo-parent</url>
+	    </repository>
 	</repositories>
 
 	<properties>
@@ -41,17 +41,17 @@
 		<dependency>
 			<groupId>edu.kit.ipd</groupId>
 			<artifactId>GraphImprove</artifactId>
-			<version>0.1.1</version>
+			<version>0.1.0</version>
 			<type>jar</type>
 		</dependency>
 	</dependencies>
 
-	  <distributionManagement>
-    <repository>
-		<id>github</id>
-		<name>GitHub ArDoCo/Core Apache Maven Packages</name>
-		<url>https://maven.pkg.github.com/ArDoCo/Core</url>
-   </repository>
-  </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
+		</repository>
+	</distributionManagement>
 
 </project>
