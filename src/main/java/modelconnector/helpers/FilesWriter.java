@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import modelconnector.connectionGenerator.state.ConnectionState;
@@ -31,6 +33,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  *
  */
 public final class FilesWriter {
+    private static final Logger logger = Logger.getLogger(FilesWriter.class);
 
     private static final String SPACE_STRING = " ";
     private static final String EMPTY_STRING = "";
@@ -73,10 +76,10 @@ public final class FilesWriter {
                 myWriter.append(SPACE_STRING + GraphUtils.getNodeValue(node));
             }
 
-            System.out.println("Successfully wrote to the file.");
+            logger.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.error("An error occurred while writing sentences to file.");
+            logger.debug(e.getMessage(), e.getCause());
         }
 
     }
@@ -84,13 +87,14 @@ public final class FilesWriter {
     private static boolean createFileIfNonExistent(File file) {
         try {
             if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
+                logger.info("File created: " + file.getName());
 
             } else {
-                System.out.println("File already exists.");
+                logger.info("File already exists.");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("An error occured creating a file.");
+            logger.debug(e.getMessage(), e.getCause());
             return false;
         }
         return true;
@@ -137,10 +141,10 @@ public final class FilesWriter {
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
             myWriter.append(" Processing Time in minutes: " + min);
 
-            System.out.println("Successfully wrote to the file.");
+            logger.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.error("An error occurred.");
+            logger.debug(e.getMessage(), e.getCause());
         }
 
     }
@@ -189,10 +193,10 @@ public final class FilesWriter {
 
             }
 
-            System.out.println("Successfully wrote to the file.");
+            logger.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.error("An error occurred.");
+            logger.debug(e.getMessage(), e.getCause());
         }
     }
 
@@ -232,10 +236,10 @@ public final class FilesWriter {
                 myWriter.append(relationLinkString);
             }
 
-            System.out.println("Successfully wrote to the file.");
+            logger.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.error("An error occurred.");
+            logger.debug(e.getMessage(), e.getCause());
         }
     }
 
@@ -288,10 +292,10 @@ public final class FilesWriter {
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
             myWriter.append(" Processing Time in minutes: " + min);
 
-            System.out.println("Successfully wrote to the file.");
+            logger.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.error("An error occurred.");
+            logger.debug(e.getMessage(), e.getCause());
         }
     }
 
@@ -384,7 +388,8 @@ public final class FilesWriter {
                     }
                 } else if (typeAmount > 0 && nameAmount > typeAmount) {
                     for (int i = typeAmount - 1; i < nameAmount; i++) {
-                        recommendationString += THREE_SEPARATORS + SPACE_STRING + nameMappingStrings.get(i) + LINE_SEPARATOR;
+                        recommendationString += THREE_SEPARATORS + SPACE_STRING + nameMappingStrings.get(i)
+                                + LINE_SEPARATOR;
                     }
                 }
 
@@ -395,10 +400,10 @@ public final class FilesWriter {
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
             myWriter.append(" Processing Time in minutes: " + min);
 
-            System.out.println("Successfully wrote to the file.");
+            logger.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.error("An error occurred.");
+            logger.debug(e.getMessage(), e.getCause());
         }
 
     }
@@ -559,10 +564,10 @@ public final class FilesWriter {
                     "---------------------------------------------------------------------------------------------------------------------------------------------");
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
-            System.out.println("Successfully wrote to the file.");
+            logger.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.error("An error occurred.");
+            logger.debug(e.getMessage(), e.getCause());
         }
 
     }
