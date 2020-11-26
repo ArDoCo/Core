@@ -33,6 +33,16 @@ import modelconnector.textExtractor.state.TextExtractionState;
  *
  */
 public final class FilesWriter {
+    private static final String SEPARATOR_STRING = "---------------------------------------------------------------------------------------------------------------------------------------------";
+
+    private static final String GENERIC_ERROR = "An error occurred.";
+
+    private static final String PROCESSING_TIME = " Processing Time in minutes: ";
+
+    private static final String SUCCESS_WRITE = "Successfully wrote to the file.";
+
+    private static final String SENTENCE_NUMBER = "sentenceNumber";
+
     private static final Logger logger = Logger.getLogger(FilesWriter.class);
 
     private static final String SPACE_STRING = " ";
@@ -67,8 +77,8 @@ public final class FilesWriter {
 
             int minSentenceNumber = 0;
             for (INode node : graph.getNodes()) {
-                int sentenceNumber = Integer.valueOf(node.getAttributeValue("sentenceNumber")
-                                                         .toString());
+                int sentenceNumber = Integer.parseInt(node.getAttributeValue(SENTENCE_NUMBER)
+                                                          .toString());
                 if (sentenceNumber + 1 > minSentenceNumber) {
                     myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
                     minSentenceNumber++;
@@ -76,8 +86,8 @@ public final class FilesWriter {
                 myWriter.append(SPACE_STRING + GraphUtils.getNodeValue(node));
             }
 
-            logger.info("Successfully wrote to the file.");
-        } catch (IOException e) {
+            logger.info(SUCCESS_WRITE);
+        } catch (IOException | NumberFormatException e) {
             logger.error("An error occurred while writing sentences to file.");
             logger.debug(e.getMessage(), e.getCause());
         }
@@ -111,16 +121,16 @@ public final class FilesWriter {
 
         try (FileWriter myWriter = new FileWriter(debugGraphSentences)) {
             int minSentenceNumber = 0;
-            String value = SINGLE_SEPARATOR_WITH_SPACES;
+            StringBuilder valueBuilder = new StringBuilder(SINGLE_SEPARATOR_WITH_SPACES);
 
             for (INode node : graph.getNodes()) {
-                int sentenceNo = Integer.valueOf(node.getAttributeValue("sentenceNumber")
-                                                     .toString());
+                int sentenceNo = Integer.parseInt(node.getAttributeValue(SENTENCE_NUMBER)
+                                                      .toString());
 
                 if (sentenceNo + 1 > minSentenceNumber) {
-                    myWriter.append(LINE_SEPARATOR + value + LINE_SEPARATOR);
+                    myWriter.append(LINE_SEPARATOR + valueBuilder.toString() + LINE_SEPARATOR);
                     myWriter.append(LINE_SEPARATOR + (sentenceNo + 1) + SINGLE_SEPARATOR_WITH_SPACES);
-                    value = SINGLE_SEPARATOR_WITH_SPACES;
+                    valueBuilder = new StringBuilder(SINGLE_SEPARATOR_WITH_SPACES);
                     minSentenceNumber++;
                 }
 
@@ -131,19 +141,21 @@ public final class FilesWriter {
                 myWriter.append(nodeValue + SINGLE_SEPARATOR_WITH_SPACES);
                 if (textExtractionState.getNounMappingsByNode(node)
                                        .isEmpty()) {
-                    value += "0" + SINGLE_SEPARATOR_WITH_SPACES;
+                    valueBuilder.append("0");
+                    valueBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
                 } else {
-                    value += "1" + SINGLE_SEPARATOR_WITH_SPACES;
+                    valueBuilder.append("1");
+                    valueBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
                 }
             }
-            myWriter.append(LINE_SEPARATOR + value + LINE_SEPARATOR);
+            myWriter.append(LINE_SEPARATOR + valueBuilder.toString() + LINE_SEPARATOR);
 
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.append(" Processing Time in minutes: " + min);
+            myWriter.append(PROCESSING_TIME + min);
 
-            logger.info("Successfully wrote to the file.");
-        } catch (IOException e) {
-            logger.error("An error occurred.");
+            logger.info(SUCCESS_WRITE);
+        } catch (IOException | NumberFormatException e) {
+            logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());
         }
 
@@ -169,33 +181,38 @@ public final class FilesWriter {
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
             for (RecommendedRelation ri : recommendedRelations) {
 
-                String recommendationString = EMPTY_STRING;
+                StringBuilder recommendationStringBuilder = new StringBuilder();
 
                 List<RecommendedInstance> recommendedInstances = ri.getRelationInstances();
 
                 for (RecommendedInstance rins : recommendedInstances) {
-                    recommendationString += rins.getName() + " : " + rins.getType() + " , ";
+                    recommendationStringBuilder.append(rins.getName());
+                    recommendationStringBuilder.append(" : ");
+                    recommendationStringBuilder.append(rins.getType());
+                    recommendationStringBuilder.append(" , ");
                 }
-                recommendationString += SINGLE_SEPARATOR_WITH_SPACES;
+                recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
 
                 List<INode> positions = ri.getNodes();
                 for (INode n : positions) {
-                    recommendationString += Integer.valueOf(n.getAttributeValue("sentenceNumber")
-                                                             .toString())
-                            + 1 + ", ";
+                    recommendationStringBuilder.append(n.getAttributeValue(SENTENCE_NUMBER)
+                                                        .toString());
+                    recommendationStringBuilder.append(1);
+                    recommendationStringBuilder.append(", ");
                 }
 
-                recommendationString += SINGLE_SEPARATOR_WITH_SPACES;
+                recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
                 double probability = ri.getProbability();
-                recommendationString += probability + LINE_SEPARATOR;
+                recommendationStringBuilder.append(probability);
+                recommendationStringBuilder.append(LINE_SEPARATOR);
 
-                myWriter.append(recommendationString);
+                myWriter.append(recommendationStringBuilder.toString());
 
             }
 
-            logger.info("Successfully wrote to the file.");
+            logger.info(SUCCESS_WRITE);
         } catch (IOException e) {
-            logger.error("An error occurred.");
+            logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());
         }
     }
@@ -236,9 +253,9 @@ public final class FilesWriter {
                 myWriter.append(relationLinkString);
             }
 
-            logger.info("Successfully wrote to the file.");
+            logger.info(SUCCESS_WRITE);
         } catch (IOException e) {
-            logger.error("An error occurred.");
+            logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());
         }
     }
@@ -290,11 +307,11 @@ public final class FilesWriter {
             }
 
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.append(" Processing Time in minutes: " + min);
+            myWriter.append(PROCESSING_TIME + min);
 
-            logger.info("Successfully wrote to the file.");
+            logger.info(SUCCESS_WRITE);
         } catch (IOException e) {
-            logger.error("An error occurred.");
+            logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());
         }
     }
@@ -355,28 +372,36 @@ public final class FilesWriter {
                     typeMappingStrings.add(typeString);
                 }
 
-                String recommendationString = EMPTY_STRING + name + SINGLE_SEPARATOR_WITH_SPACES + type
-                        + SINGLE_SEPARATOR_WITH_SPACES + probability + SPACE_STRING + SINGLE_SEPARATOR;
+                StringBuilder recommendationStringBuilder = new StringBuilder();
+                recommendationStringBuilder.append(name);
+                recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
+                recommendationStringBuilder.append(type);
+                recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
+                recommendationStringBuilder.append(probability);
+                recommendationStringBuilder.append(SPACE_STRING);
+                recommendationStringBuilder.append(SINGLE_SEPARATOR);
 
                 if (nameMappingStrings.size() >= 1) {
-                    recommendationString += nameMappingStrings.get(0);
+                    recommendationStringBuilder.append(nameMappingStrings.get(0));
 
                     nameMappingStrings.remove(0);
                 } else {
-                    recommendationString += FIVE_SEPARATORS;
+                    recommendationStringBuilder.append(FIVE_SEPARATORS);
                 }
 
                 if (typeMappingStrings.size() >= 1) {
-                    recommendationString += typeMappingStrings.get(0);
+                    recommendationStringBuilder.append(typeMappingStrings.get(0));
 
                     typeMappingStrings.remove(0);
                 } else {
-                    recommendationString += LINE_SEPARATOR;
+                    recommendationStringBuilder.append(LINE_SEPARATOR);
                 }
 
                 for (int i = 0; i < nameMappingStrings.size() && i < typeMappingStrings.size(); i++) {
 
-                    recommendationString += THREE_SEPARATORS + nameMappingStrings.get(i) + typeMappingStrings.get(i);
+                    recommendationStringBuilder.append(THREE_SEPARATORS);
+                    recommendationStringBuilder.append(nameMappingStrings.get(i));
+                    recommendationStringBuilder.append(typeMappingStrings.get(i));
                 }
 
                 int nameAmount = nameMappingStrings.size();
@@ -384,25 +409,28 @@ public final class FilesWriter {
 
                 if (nameAmount > 0 && typeAmount > nameAmount) {
                     for (int i = nameAmount - 1; i < typeAmount; i++) {
-                        recommendationString += EIGHT_SEPARATORS + typeMappingStrings.get(i);
+                        recommendationStringBuilder.append(EIGHT_SEPARATORS);
+                        recommendationStringBuilder.append(typeMappingStrings.get(i));
                     }
                 } else if (typeAmount > 0 && nameAmount > typeAmount) {
                     for (int i = typeAmount - 1; i < nameAmount; i++) {
-                        recommendationString += THREE_SEPARATORS + SPACE_STRING + nameMappingStrings.get(i)
-                                + LINE_SEPARATOR;
+                        recommendationStringBuilder.append(THREE_SEPARATORS);
+                        recommendationStringBuilder.append(SPACE_STRING);
+                        recommendationStringBuilder.append(nameMappingStrings.get(i));
+                        recommendationStringBuilder.append(LINE_SEPARATOR);
                     }
                 }
 
-                myWriter.append(recommendationString);
+                myWriter.append(recommendationStringBuilder.toString());
 
             }
 
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.append(" Processing Time in minutes: " + min);
+            myWriter.append(PROCESSING_TIME + min);
 
-            logger.info("Successfully wrote to the file.");
+            logger.info(SUCCESS_WRITE);
         } catch (IOException e) {
-            logger.error("An error occurred.");
+            logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());
         }
 
@@ -438,15 +466,13 @@ public final class FilesWriter {
 
             myWriter.write("Results of ModelConnector: ");
             myWriter.append(LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("ExtractorState: ");
             myWriter.append(LINE_SEPARATOR);
             myWriter.write(extractionState.toString());
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundNames as Set: ");
@@ -454,8 +480,7 @@ public final class FilesWriter {
             List<String> nameList = ntrState.getNameList();
             Collections.sort(nameList);
             myWriter.write(nameList.toString() + LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundNameTerms as Set: ");
@@ -463,8 +488,7 @@ public final class FilesWriter {
             List<String> nameTermList = ntrState.getNameTermList();
             Collections.sort(nameTermList);
             myWriter.write(nameTermList.toString() + LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundNORTs as Set: ");
@@ -472,8 +496,7 @@ public final class FilesWriter {
             List<String> nortList = ntrState.getNortList();
             Collections.sort(nortList);
             myWriter.write(nortList.toString() + LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundTypes as Set: ");
@@ -481,8 +504,7 @@ public final class FilesWriter {
             List<String> typeList = ntrState.getTypeList();
             Collections.sort(typeList);
             myWriter.write(typeList.toString() + LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundTypeTerms as Set: ");
@@ -490,8 +512,7 @@ public final class FilesWriter {
             List<String> typeTermList = ntrState.getTypeTermList();
             Collections.sort(typeTermList);
             myWriter.write(typeTermList.toString() + LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Instances of the Recommendation State: ");
@@ -504,8 +525,7 @@ public final class FilesWriter {
             for (RecommendedInstance ri : recommendedInstances) {
                 myWriter.write(ri.toString() + LINE_SEPARATOR);
             }
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Instances of the Connection State: ");
@@ -520,8 +540,7 @@ public final class FilesWriter {
                 myWriter.write(imap.toString() + LINE_SEPARATOR);
             }
 
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Relations of the Recommendation State: ");
@@ -535,8 +554,7 @@ public final class FilesWriter {
                 myWriter.write(si.toString() + LINE_SEPARATOR);
             }
 
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Relations of the Connection State: ");
@@ -550,23 +568,19 @@ public final class FilesWriter {
                 myWriter.write(rlink.toString() + LINE_SEPARATOR);
             }
 
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
             myWriter.write("ExecutionTime in minutes: " + durationInMinutes);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.write(
-                    "---------------------------------------------------------------------------------------------------------------------------------------------");
+            myWriter.write(SEPARATOR_STRING);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
-            logger.info("Successfully wrote to the file.");
+            logger.info(SUCCESS_WRITE);
         } catch (IOException e) {
-            logger.error("An error occurred.");
+            logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());
         }
 

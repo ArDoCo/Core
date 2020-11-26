@@ -20,6 +20,8 @@ import modelconnector.textExtractor.state.NounMapping;
  */
 public final class GraphUtils {
 
+    private static final String VALUE = "value";
+
     private GraphUtils() {
         throw new IllegalAccessError();
     }
@@ -35,12 +37,9 @@ public final class GraphUtils {
      */
     public static boolean checkIfPrevNodeIsDt(INode n, IArcType relArcType) {
         INode prevNode = getPreviousNode(n, relArcType);
-        if (prevNode != null && prevNode.getAttributeValue("pos")
-                                        .toString()
-                                        .equals("DT")) {
-            return true;
-        }
-        return false;
+        return (prevNode != null && prevNode.getAttributeValue("pos")
+                                            .toString()
+                                            .equals("DT"));
     }
 
     /**
@@ -77,7 +76,7 @@ public final class GraphUtils {
     public static INode getPreviousNode(INode n, IArcType relArcType) {
         List<? extends IArc> inRelArcs = n.getIncomingArcsOfType(relArcType);
         Optional<? extends IArc> inNextArc = inRelArcs.stream()
-                                                      .filter(a -> a.getAttributeValue("value")
+                                                      .filter(a -> a.getAttributeValue(VALUE)
                                                                     .toString()
                                                                     .equals("NEXT"))
                                                       .findFirst();
@@ -103,7 +102,7 @@ public final class GraphUtils {
         ArrayList<Pair<String, Object>> attributeNameValuePairs = n.getAllAttributeNamesAndValuesAsPair();
         for (Pair<String, Object> pair : attributeNameValuePairs) {
             if (pair.getLeft()
-                    .equals("value")) {
+                    .equals(VALUE)) {
                 return pair.getRight()
                            .toString();
             }
@@ -191,7 +190,7 @@ public final class GraphUtils {
     public static INode getNextNode(INode n, IArcType relArcType) {
         List<? extends IArc> outRelArcs = n.getOutgoingArcsOfType(relArcType);
         Optional<? extends IArc> outNextArc = outRelArcs.stream()
-                                                        .filter(a -> a.getAttributeValue("value")
+                                                        .filter(a -> a.getAttributeValue(VALUE)
                                                                       .toString()
                                                                       .equals("NEXT"))
                                                         .findFirst();
