@@ -70,6 +70,9 @@ public final class Starter {
         long startTime = System.currentTimeMillis();
 
         IGraph graph = generateIndirectGraphFromText(text);
+        if (graph == null) {
+            throw new IllegalArgumentException("The input is invalid and caused the graph to be null!");
+        }
         runAdditionalIndirectAgentsOnGraph(graph);
 
         ModelExtractionState extractionState = ModelHardcoder.hardCodeExtractionStateOfTeammates();
@@ -124,6 +127,9 @@ public final class Starter {
         scanner.close();
 
         PrePipelineData ppd = init(content);
+        if (ppd == null) {
+            return null;
+        }
         return ppd.getGraph();
 
     }
