@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import edu.kit.ipd.indirect.depparser.DepParser;
 import edu.kit.ipd.indirect.textSNLP.Stanford;
 import edu.kit.ipd.indirect.textSNLP.TextSNLP;
@@ -33,6 +35,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  *
  */
 public final class Starter {
+    private static final Logger logger = Logger.getLogger(Starter.class);
 
     private Starter() {
         // private to disable instantiation
@@ -169,7 +172,7 @@ public final class Starter {
             graphBuilder.exec(ppd);
             return ppd;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e.getCause());
             return null;
         }
     }
