@@ -106,11 +106,7 @@ public final class SimilarityUtils {
             }
         }
 
-        if (counter / Math.max(originals.size(), words2test.size()) >= minProportion) {
-            return true;
-        }
-
-        return false;
+        return counter / Math.max(originals.size(), words2test.size()) >= minProportion;
     }
 
     /**
@@ -219,7 +215,7 @@ public final class SimilarityUtils {
                 allListsSimilar = 0;
             }
         }
-        if (whileSelection.size() == 0) {
+        if (whileSelection.isEmpty()) {
             return selection;
         }
         return whileSelection;
