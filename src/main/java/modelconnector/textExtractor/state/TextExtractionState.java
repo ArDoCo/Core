@@ -70,9 +70,7 @@ public class TextExtractionState {
             for (NounMapping nounMapping : nounMappingsWithNode) {
 
                 if (occurrences.stream()
-                               .filter(SimilarityUtils::containsSeparator)
-                               .findAny()
-                               .isPresent()
+                               .anyMatch(SimilarityUtils::containsSeparator)
                         && !SimilarityUtils.areWordsSimilar(nounMapping.getReference(), ref)) {
 
                     List<NounMapping> nounMappingsWithRef = SimilarityUtils.getMostLikelyNMappingsByReference(ref,
@@ -661,9 +659,9 @@ public class TextExtractionState {
     public List<TermMapping> getTermsByMappingsAndKind(List<NounMapping> nounMappings, MappingKind kind) {
         List<TermMapping> termsByMapping = getTermsByMappings(nounMappings);
         return termsByMapping.stream()
-                    .filter(t -> t.getKind()
-                                  .equals(kind))
-                    .collect(Collectors.toList());
+                             .filter(t -> t.getKind()
+                                           .equals(kind))
+                             .collect(Collectors.toList());
     }
 
     /**
