@@ -35,7 +35,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  *
  */
 public final class Starter {
-    private static final Logger logger = Logger.getLogger(Starter.class);
+    private static final Logger LOGGER = Logger.getLogger(Starter.class);
 
     private Starter() {
         // private to disable instantiation
@@ -45,8 +45,8 @@ public final class Starter {
         new File("evaluations").mkdirs();
     }
     static InputStream documentation = Starter.class.getResourceAsStream(
-            ModelConnectorConfiguration.documentation_Path);
-    static InputStream test = Starter.class.getResourceAsStream(ModelConnectorConfiguration.testDocumentation_Path);
+            ModelConnectorConfiguration.DOCUMENTATION_PATH);
+    static InputStream test = Starter.class.getResourceAsStream(ModelConnectorConfiguration.TEST_DOCUMENTATION_PATH);
 
     /**
      * Executes the preprocessing on the textual input. Sets the extraction state. Runs the agents of the model
@@ -172,7 +172,7 @@ public final class Starter {
             graphBuilder.exec(ppd);
             return ppd;
         } catch (Exception e) {
-            logger.debug(e.getMessage(), e.getCause());
+            LOGGER.debug(e.getMessage(), e.getCause());
             return null;
         }
     }

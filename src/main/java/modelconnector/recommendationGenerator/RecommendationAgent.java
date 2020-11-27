@@ -91,11 +91,11 @@ public class RecommendationAgent extends AbstractAgent {
 	 */
 	private void initializeWithGraph() {
 
-		for (RecommendationAnalyzerType analyzerType : ModelConnectorConfiguration.recommendationAgent_Analyzers) {
+		for (RecommendationAnalyzerType analyzerType : ModelConnectorConfiguration.RECOMMENDATION_AGENT_ANALYZERS) {
 			analyzers.add(analyzerType.create(graph, textExtractionState, modelExtractionState, recommendationState));
 		}
 
-		for (RecommendationSolverType solverType : ModelConnectorConfiguration.recommendationAgent_Solvers) {
+		for (RecommendationSolverType solverType : ModelConnectorConfiguration.RECOMMENDATION_AGENT_SOLVERS) {
 			solvers.add(solverType.create(graph, textExtractionState, modelExtractionState, recommendationState));
 		}
 

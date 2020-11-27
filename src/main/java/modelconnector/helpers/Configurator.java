@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  *
  */
 public final class Configurator {
-    private static final Logger logger = Logger.getLogger(Configurator.class);
+    private static final Logger LOGGER = Logger.getLogger(Configurator.class);
 
     private static final String propFile = "/config.properties";
 
@@ -34,7 +34,7 @@ public final class Configurator {
             prop.load(inputStream);
 
         } catch (IOException e) {
-            logger.debug(e.getMessage(), e.getCause());
+            LOGGER.debug(e.getMessage(), e.getCause());
         }
         return prop;
     }
@@ -61,7 +61,7 @@ public final class Configurator {
         try {
             return Double.parseDouble(config.getProperty(key));
         } catch (NumberFormatException n) {
-            logger.debug(n.getMessage(), n.getCause());
+            LOGGER.debug(n.getMessage(), n.getCause());
             return -1;
         }
     }
@@ -77,7 +77,7 @@ public final class Configurator {
         try {
             return Integer.parseInt(config.getProperty(key));
         } catch (NumberFormatException n) {
-            logger.debug(n.getMessage(), n.getCause());
+            LOGGER.debug(n.getMessage(), n.getCause());
             return -1;
         }
     }

@@ -25,7 +25,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class SeparatedRelationsSolver extends RecommendationSolver {
 
-	private double probability = ModelConnectorConfiguration.separatedRelationsSolver_Probability;
+	private double probability = ModelConnectorConfiguration.SEPARATED_RELATIONS_SOLVER_PROBABILITY;
 	private String relName = "separated";
 
 	/**

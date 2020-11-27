@@ -18,7 +18,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class InDepArcsAnalyzer extends TextExtractionAnalyzer {
 
-	private double probability = ModelConnectorConfiguration.inDepArcsAnalyzer_Probability;
+	private double probability = ModelConnectorConfiguration.IN_DEP_ARCS_ANALYZER_PROBABILITY;
 
 	/**
 	 * Creates a new InDepArcsAnalyzer

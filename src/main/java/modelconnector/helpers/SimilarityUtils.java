@@ -41,8 +41,8 @@ public final class SimilarityUtils {
 		if (original.toLowerCase().split(" ").length != word2test.toLowerCase().split(" ").length) {
 			return false;
 		}
-		int areWordsSimilarMinLength = ModelConnectorConfiguration.areWordsSimilar_MinLenght;
-		int areWordsSimilarMaxLdist = ModelConnectorConfiguration.areWordsSimilar_MaxLDist;
+		int areWordsSimilarMinLength = ModelConnectorConfiguration.ARE_WORDS_SIMILAR_MIN_LENGTH;
+		int areWordsSimilarMaxLdist = ModelConnectorConfiguration.ARE_WORDS_SIMILAR_MAX_L_DIST;
 		int ldist = ldistance.apply(original.toLowerCase(), word2test.toLowerCase());
 		int lcscount = getLongestCommonSubstring(original.toLowerCase(), word2test.toLowerCase());
 		if (original.length() <= areWordsSimilarMinLength) {
@@ -68,7 +68,7 @@ public final class SimilarityUtils {
 	 * @return true, if the test string is similar to the original; false if not.
 	 */
 	public static boolean areWordsSimilar(String original, String word2test) {
-		return areWordsSimilar(original, word2test, ModelConnectorConfiguration.areWordsSimilar_DefaultThreshold);
+		return areWordsSimilar(original, word2test, ModelConnectorConfiguration.ARE_WORDS_SIMILAR_DEFAULT_THRESHOLD);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public final class SimilarityUtils {
 		int counter = 0;
 		for (String o : originals) {
 			for (String wd : words2test) {
-				if (areWordsSimilar(o, wd, ModelConnectorConfiguration.areWordsOfListsSimilar_WordSimilarityThreshold)) {
+				if (areWordsSimilar(o, wd, ModelConnectorConfiguration.ARE_WORDS_OF_LISTS_SIMILAR_WORD_SIMILARITY_THRESHOLD)) {
 					counter++;
 				}
 			}
@@ -116,7 +116,7 @@ public final class SimilarityUtils {
 	 * @return true if the list are similar, false if not
 	 */
 	public static boolean areWordsOfListsSimilar(List<String> originals, List<String> words2test) {
-		return areWordsOfListsSimilar(originals, words2test, ModelConnectorConfiguration.areWordsOfListsSimilar_DefaultThreshold);
+		return areWordsOfListsSimilar(originals, words2test, ModelConnectorConfiguration.ARE_WORDS_OF_LISTS_SIMILAR_DEFAULT_THRESHOLD);
 	}
 
 	/**
@@ -171,8 +171,8 @@ public final class SimilarityUtils {
 		List<RecommendedInstance> selection = recommendedInstances.stream().filter(//
 				ri -> SimilarityUtils.areWordsOfListsSimilar(instanceNames, List.of(ri.getName()))).collect(Collectors.toList());
 
-		double getMostRecommendedIByRefMinProportion = ModelConnectorConfiguration.getMostRecommendedIByRef_MinProportion;
-		double getMostRecommendedIByRefIncrease = ModelConnectorConfiguration.getMostRecommendedIByref_Increase;
+		double getMostRecommendedIByRefMinProportion = ModelConnectorConfiguration.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
+		double getMostRecommendedIByRefIncrease = ModelConnectorConfiguration.GET_MOST_RECOMMENDED_I_BY_REF_INCREASE;
 
 		List<RecommendedInstance> whileSelection = new ArrayList<>(selection);
 		int allListsSimilar = 0;
@@ -217,13 +217,13 @@ public final class SimilarityUtils {
 	 */
 	public static List<NounMapping> getMostLikelyNMappingsByReference(String ref, List<NounMapping> nounMappings) {
 
-		double threshold = ModelConnectorConfiguration.getMostLikelyMpByReference_Threshold;
+		double threshold = ModelConnectorConfiguration.GET_MOST_LIKELY_MP_BY_REFERENCE_THRESHOLD;
 		List<NounMapping> selection = new ArrayList<>(SimilarityUtils.getAllSimilarNMappingsByReference(ref, nounMappings));
 		List<NounMapping> whileSelection = new ArrayList<>(selection);
 
 		while (whileSelection.size() > 1 && threshold < 1) {
 			selection = new ArrayList<>(whileSelection);
-			threshold += ModelConnectorConfiguration.getMostLikelyMpByReference_Increase;
+			threshold += ModelConnectorConfiguration.GET_MOST_LIKELY_MP_BY_REFERENCE_INCREASE;
 			final double wTh = threshold;
 			whileSelection = whileSelection.stream().filter(nnm -> SimilarityUtils.areWordsSimilar(ref, nnm.getReference(), wTh)).collect(Collectors.toList());
 
@@ -294,7 +294,7 @@ public final class SimilarityUtils {
 	 */
 	public static String splitAtSeparators(String reference) {
 		String ref = reference;
-		for (String sep : ModelConnectorConfiguration.separators_toSplit) {
+		for (String sep : ModelConnectorConfiguration.SEPARATORS_TO_SPLIT) {
 			ref = ref.replaceAll(sep, " ");
 		}
 		return ref;
@@ -307,7 +307,7 @@ public final class SimilarityUtils {
 	 * @return true, if a separator is contained or false, if not
 	 */
 	public static boolean containsSeparator(String reference) {
-		for (String sep : ModelConnectorConfiguration.separators_toContain) {
+		for (String sep : ModelConnectorConfiguration.SEPARATORS_TO_CONTAIN) {
 			if (reference.contains(sep) && !reference.contentEquals(sep)) {
 				return true;
 			}
