@@ -66,7 +66,7 @@ public final class FilesWriter {
      */
     public static void writeSentencesInFile(IGraph graph) {
 
-        File debugGraphSentences = new File(ModelConnectorConfiguration.fileForInput_Path);
+        File debugGraphSentences = new File(ModelConnectorConfiguration.FILE_FOR_INPUT_PATH);
 
         boolean fileCreated = createFileIfNonExistent(debugGraphSentences);
         if (!fileCreated) {
@@ -455,7 +455,7 @@ public final class FilesWriter {
             RecommendationState recommendationState, ConnectionState connectionState, double durationInMinutes) {
         // TODO: clean this up and try to put parts in helping methods
 
-        File resultFile = new File(ModelConnectorConfiguration.fileForResults_Path);
+        File resultFile = new File(ModelConnectorConfiguration.FILE_FOR_RESULTS_PATH);
 
         boolean fileCreated = createFileIfNonExistent(resultFile);
         if (!fileCreated) {

@@ -56,7 +56,7 @@ public class TextExtractionState {
 	 */
 	private void hardAdd(INode n, String ref, List<String> occurrences, double probability, MappingKind kind) {
 
-		double hardAddProbability = ModelConnectorConfiguration.textExtractionState_hardAddProbability * probability;
+		double hardAddProbability = ModelConnectorConfiguration.TEXT_EXTRACTION_STATE_HARD_ADD_PROBABILITY * probability;
 		List<NounMapping> nounMappingsWithNode = this.getNounMappingsByNode(n);
 
 		if (nounMappingsWithNode.isEmpty()) {
