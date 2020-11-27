@@ -22,8 +22,8 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class InstanceConnectionSolver extends ModelConnectionSolver {
 
-	private double probability = ModelConnectorConfiguration.instanceConnectionSolver_Probability;
-	private double probabilityWithoutType = ModelConnectorConfiguration.instanceConnectionSolver_ProbabilityWithoutType;
+	private double probability = ModelConnectorConfiguration.INSTANCE_CONNECTION_SOLVER_PROBABILITY;
+	private double probabilityWithoutType = ModelConnectorConfiguration.INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE;
 
 	/**
 	 * Creates a new InstanceMappingConnector.

@@ -21,7 +21,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class MultiplePartSolver extends TextExtractionSolver {
 
-	private double probability = ModelConnectorConfiguration.multiplePartSolver_Probability;
+	private double probability = ModelConnectorConfiguration.MULTIPLE_PART_SOLVER_PROBABILITY;
 
 	/**
 	 * Creates a new multiple part solver.

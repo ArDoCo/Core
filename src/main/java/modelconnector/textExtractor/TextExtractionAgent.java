@@ -62,11 +62,11 @@ public class TextExtractionAgent extends AbstractAgent {
 	 */
 	private void initializeWithGraph() {
 
-		for (TextExtractionAnalyzerType textAnalyzerType : ModelConnectorConfiguration.textExtractionAgent_Analyzers) {
+		for (TextExtractionAnalyzerType textAnalyzerType : ModelConnectorConfiguration.TEXT_EXTRACTION_AGENT_ANALYZERS) {
 			analyzers.add(textAnalyzerType.create(graph, textExtractionState));
 		}
 
-		for (TextExtractionSolverType textSolverType : ModelConnectorConfiguration.textExtractionAgemt_Solvers) {
+		for (TextExtractionSolverType textSolverType : ModelConnectorConfiguration.TEXT_EXTRACTION_AGENT_SOLVERS) {
 			solvers.add(textSolverType.create(graph, textExtractionState));
 		}
 	}

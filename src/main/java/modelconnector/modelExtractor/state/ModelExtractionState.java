@@ -46,7 +46,7 @@ public class ModelExtractionState {
 		for (Relation r : relations) {
 			relationTypes.add(r.getType());
 			List<String> typeParts = List.of(r.getType().split(" "));
-			if (typeParts.size() >= ModelConnectorConfiguration.extractionState_MinTypeParts) {
+			if (typeParts.size() >= ModelConnectorConfiguration.EXTRACTION_STATE_MIN_TYPE_PARTS) {
 				relationTypes.addAll(typeParts);
 			}
 		}

@@ -17,7 +17,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class SeparatedNamesAnalyzer extends TextExtractionAnalyzer {
 
-	double probability = ModelConnectorConfiguration.separatedNamesAnalyzer_Probability;
+	double probability = ModelConnectorConfiguration.SEPARATED_NAMES_ANALYZER_PROBABILITY;
 
 	/**
 	 * Creates a new SeparatedNamesIdentifier.

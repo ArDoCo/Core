@@ -25,9 +25,9 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class ExtractedTermsAnalyzer extends RecommendationAnalyzer {
 
-	private double probabilityAdjacentTerm = ModelConnectorConfiguration.extractedTermsAnalyzer_ProbabilityAdjacentTerm;
-	private double probabilityJustName = ModelConnectorConfiguration.extractedTermsAnalyzer_ProbabilityJustName;
-	private double probabilityJustAdjacentNoun = ModelConnectorConfiguration.extractedTermsAnalyzer_ProbabilityAdjacentNoun;
+	private double probabilityAdjacentTerm = ModelConnectorConfiguration.EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_TERM;
+	private double probabilityJustName = ModelConnectorConfiguration.EXTRACTED_TERMS_ANALYZER_PROBABILITY_JUST_NAME;
+	private double probabilityJustAdjacentNoun = ModelConnectorConfiguration.EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN;
 
 	/**
 	 * Instantiates a new extracted terms analyzer
