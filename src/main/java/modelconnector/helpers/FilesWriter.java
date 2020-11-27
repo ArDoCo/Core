@@ -347,81 +347,14 @@ public final class FilesWriter {
                 List<NounMapping> nameMappings = ri.getNameMappings();
                 List<NounMapping> typeMappings = ri.getTypeMappings();
 
-                List<String> typeMappingStrings = new ArrayList<>();
-                List<String> nameMappingStrings = new ArrayList<>();
+                List<String> nameMappingStrings = createNameMappingStrings(nameMappings);
 
-                for (NounMapping nameMapping : nameMappings) {
+                List<String> typeMappingStrings = createTypeMappingStrings(typeMappings);
 
-                    String nameString = EMPTY_STRING + //
-                            nameMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
-                            nameMapping.getKind() + SINGLE_SEPARATOR_WITH_SPACES + //
-                            String.join(", ", nameMapping.getOccurrences()) + SINGLE_SEPARATOR_WITH_SPACES + //
-                            nameMapping.getMappingSentenceNo() + //
-                            SINGLE_SEPARATOR_WITH_SPACES + nameMapping.getProbability() + SINGLE_SEPARATOR;
-                    nameMappingStrings.add(nameString);
-                }
+                String nameAndTypeMappingInfoString = createNameAndTypeMappingInfoString(name, type, probability,
+                        nameMappingStrings, typeMappingStrings);
 
-                for (NounMapping typeMapping : typeMappings) {
-
-                    String typeString = EMPTY_STRING + //
-                            typeMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
-                            typeMapping.getKind() + SINGLE_SEPARATOR_WITH_SPACES + //
-                            String.join(", ", typeMapping.getOccurrences()) + SINGLE_SEPARATOR_WITH_SPACES + //
-                            typeMapping.getMappingSentenceNo() + //
-                            SINGLE_SEPARATOR_WITH_SPACES + typeMapping.getProbability() + LINE_SEPARATOR;
-                    typeMappingStrings.add(typeString);
-                }
-
-                StringBuilder recommendationStringBuilder = new StringBuilder();
-                recommendationStringBuilder.append(name);
-                recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
-                recommendationStringBuilder.append(type);
-                recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
-                recommendationStringBuilder.append(probability);
-                recommendationStringBuilder.append(SPACE_STRING);
-                recommendationStringBuilder.append(SINGLE_SEPARATOR);
-
-                if (nameMappingStrings.size() >= 1) {
-                    recommendationStringBuilder.append(nameMappingStrings.get(0));
-
-                    nameMappingStrings.remove(0);
-                } else {
-                    recommendationStringBuilder.append(FIVE_SEPARATORS);
-                }
-
-                if (typeMappingStrings.size() >= 1) {
-                    recommendationStringBuilder.append(typeMappingStrings.get(0));
-
-                    typeMappingStrings.remove(0);
-                } else {
-                    recommendationStringBuilder.append(LINE_SEPARATOR);
-                }
-
-                for (int i = 0; i < nameMappingStrings.size() && i < typeMappingStrings.size(); i++) {
-
-                    recommendationStringBuilder.append(THREE_SEPARATORS);
-                    recommendationStringBuilder.append(nameMappingStrings.get(i));
-                    recommendationStringBuilder.append(typeMappingStrings.get(i));
-                }
-
-                int nameAmount = nameMappingStrings.size();
-                int typeAmount = typeMappingStrings.size();
-
-                if (nameAmount > 0 && typeAmount > nameAmount) {
-                    for (int i = nameAmount - 1; i < typeAmount; i++) {
-                        recommendationStringBuilder.append(EIGHT_SEPARATORS);
-                        recommendationStringBuilder.append(typeMappingStrings.get(i));
-                    }
-                } else if (typeAmount > 0 && nameAmount > typeAmount) {
-                    for (int i = typeAmount - 1; i < nameAmount; i++) {
-                        recommendationStringBuilder.append(THREE_SEPARATORS);
-                        recommendationStringBuilder.append(SPACE_STRING);
-                        recommendationStringBuilder.append(nameMappingStrings.get(i));
-                        recommendationStringBuilder.append(LINE_SEPARATOR);
-                    }
-                }
-
-                myWriter.append(recommendationStringBuilder.toString());
+                myWriter.append(nameAndTypeMappingInfoString);
 
             }
 
@@ -434,6 +367,92 @@ public final class FilesWriter {
             logger.debug(e.getMessage(), e.getCause());
         }
 
+    }
+
+    private static StringBuilder createRecommendationStringBuilder(String name, String type, double probability) {
+        StringBuilder recommendationStringBuilder = new StringBuilder();
+        recommendationStringBuilder.append(name);
+        recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
+        recommendationStringBuilder.append(type);
+        recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
+        recommendationStringBuilder.append(probability);
+        recommendationStringBuilder.append(SPACE_STRING);
+        recommendationStringBuilder.append(SINGLE_SEPARATOR);
+        return recommendationStringBuilder;
+    }
+
+    private static String createNameAndTypeMappingInfoString(String name, String type, double probability,
+            List<String> nameMappingStrings, List<String> typeMappingStrings) {
+
+        StringBuilder recommendationStringBuilder = createRecommendationStringBuilder(name, type, probability);
+        if (nameMappingStrings.size() >= 1) {
+            recommendationStringBuilder.append(nameMappingStrings.get(0));
+            nameMappingStrings.remove(0);
+        } else {
+            recommendationStringBuilder.append(FIVE_SEPARATORS);
+        }
+
+        if (typeMappingStrings.size() >= 1) {
+            recommendationStringBuilder.append(typeMappingStrings.get(0));
+            typeMappingStrings.remove(0);
+        } else {
+            recommendationStringBuilder.append(LINE_SEPARATOR);
+        }
+
+        for (int i = 0; i < nameMappingStrings.size() && i < typeMappingStrings.size(); i++) {
+
+            recommendationStringBuilder.append(THREE_SEPARATORS);
+            recommendationStringBuilder.append(nameMappingStrings.get(i));
+            recommendationStringBuilder.append(typeMappingStrings.get(i));
+        }
+
+        int nameAmount = nameMappingStrings.size();
+        int typeAmount = typeMappingStrings.size();
+
+        if (nameAmount > 0 && typeAmount > nameAmount) {
+            for (int i = nameAmount - 1; i < typeAmount; i++) {
+                recommendationStringBuilder.append(EIGHT_SEPARATORS);
+                recommendationStringBuilder.append(typeMappingStrings.get(i));
+            }
+        } else if (typeAmount > 0 && nameAmount > typeAmount) {
+            for (int i = typeAmount - 1; i < nameAmount; i++) {
+                recommendationStringBuilder.append(THREE_SEPARATORS);
+                recommendationStringBuilder.append(SPACE_STRING);
+                recommendationStringBuilder.append(nameMappingStrings.get(i));
+                recommendationStringBuilder.append(LINE_SEPARATOR);
+            }
+        }
+        return recommendationStringBuilder.toString();
+    }
+
+    private static List<String> createTypeMappingStrings(List<NounMapping> typeMappings) {
+        List<String> typeMappingStrings = new ArrayList<>();
+        for (NounMapping typeMapping : typeMappings) {
+
+            String typeString = EMPTY_STRING + //
+                    typeMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
+                    typeMapping.getKind() + SINGLE_SEPARATOR_WITH_SPACES + //
+                    String.join(", ", typeMapping.getOccurrences()) + SINGLE_SEPARATOR_WITH_SPACES + //
+                    typeMapping.getMappingSentenceNo() + //
+                    SINGLE_SEPARATOR_WITH_SPACES + typeMapping.getProbability() + LINE_SEPARATOR;
+            typeMappingStrings.add(typeString);
+        }
+        return typeMappingStrings;
+    }
+
+    private static List<String> createNameMappingStrings(List<NounMapping> nameMappings) {
+        List<String> nameMappingStrings = new ArrayList<>();
+        for (NounMapping nameMapping : nameMappings) {
+
+            String nameString = EMPTY_STRING + //
+                    nameMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
+                    nameMapping.getKind() + SINGLE_SEPARATOR_WITH_SPACES + //
+                    String.join(", ", nameMapping.getOccurrences()) + SINGLE_SEPARATOR_WITH_SPACES + //
+                    nameMapping.getMappingSentenceNo() + //
+                    SINGLE_SEPARATOR_WITH_SPACES + nameMapping.getProbability() + SINGLE_SEPARATOR;
+            nameMappingStrings.add(nameString);
+        }
+        return nameMappingStrings;
     }
 
     /***
