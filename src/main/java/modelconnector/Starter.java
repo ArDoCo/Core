@@ -2,6 +2,7 @@ package modelconnector;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.Scanner;
@@ -14,8 +15,10 @@ import edu.kit.ipd.indirect.textSNLP.TextSNLP;
 import edu.kit.ipd.indirect.tokenizer.Tokenizer;
 import edu.kit.ipd.parse.graphBuilder.GraphBuilder;
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
+import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.graph.IGraph;
+import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import modelconnector.connectionGenerator.ConnectionAgent;
 import modelconnector.connectionGenerator.state.ConnectionState;
@@ -57,19 +60,30 @@ public final class Starter {
      * @throws Exception
      *             if a step fails.
      */
-    public static void main(String[] args) throws Exception {
-        run(documentation);
+    public static void main(String[] args) {
+        runDocumentation();
     }
 
-    public static void runTest() throws Exception {
-        run(test);
+    public static void runTest() {
+        try {
+            run(test);
+        } catch (NoSuchMethodException | PipelineStageException | MissingDataException e) {
+            LOGGER.warn("Error occured during execution.");
+            LOGGER.debug(e.getMessage(), e.getCause());
+        }
     }
 
-    public static void runDocumentation() throws Exception {
-        run(documentation);
+    public static void runDocumentation() {
+        try {
+            run(documentation);
+        } catch (NoSuchMethodException | PipelineStageException | MissingDataException e) {
+            LOGGER.warn("Error occured during execution.");
+            LOGGER.debug(e.getMessage(), e.getCause());
+        }
     }
 
-    private static void run(InputStream text) throws Exception {
+    public static void run(InputStream text)
+            throws PipelineStageException, MissingDataException, NoSuchMethodException {
         long startTime = System.currentTimeMillis();
 
         IGraph graph = generateIndirectGraphFromText(text);
@@ -79,8 +93,6 @@ public final class Starter {
         runAdditionalIndirectAgentsOnGraph(graph);
 
         ModelExtractionState extractionState = ModelHardcoder.hardCodeExtractionStateOfTeammates();
-        // ModelExtractionState extractionState =
-        // ModelHardcoder.getEmptyExtractionState();
 
         TextExtractionAgent textExtractionAgent = new TextExtractionAgent();
         execute(graph, textExtractionAgent);
@@ -112,18 +124,16 @@ public final class Starter {
         FilesWriter.writeConnectionsToFile(connectionState, min);
         FilesWriter.writeConnectionRelationsToFile(connectionState);
 
-        // writeSentencesInFile(graph);
         FilesWriter.writeStatesToFile(extractionState, textExtractionState, recommendationState, connectionState, min);
-
-        return;
     }
 
-    private static void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws Exception {
+    private static void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws NoSuchMethodException {
         DepParser depAgent = new DepParser();
         execute(graph, depAgent);
     }
 
-    private static IGraph generateIndirectGraphFromText(InputStream inputText) throws Exception {
+    private static IGraph generateIndirectGraphFromText(InputStream inputText)
+            throws PipelineStageException, MissingDataException {
         Scanner scanner = new Scanner(inputText);
         scanner.useDelimiter("\\A");
         String content = scanner.next();
@@ -146,7 +156,7 @@ public final class Starter {
      * @throws Exception
      *             if a step of the preprocessing fails
      */
-    private static PrePipelineData init(String input) throws Exception {
+    private static PrePipelineData init(String input) throws PipelineStageException {
 
         Properties props = ConfigManager.getConfiguration(Stanford.class);
         props.setProperty("LEMMAS",
@@ -163,18 +173,17 @@ public final class Starter {
 
         PrePipelineData ppd = new PrePipelineData();
 
-        // ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(text, true));
         ppd.setTranscription(input);
 
         try {
             tokenizer.exec(ppd);
             snlp.exec(ppd);
             graphBuilder.exec(ppd);
-            return ppd;
-        } catch (Exception e) {
+        } catch (PipelineStageException e) {
             LOGGER.debug(e.getMessage(), e.getCause());
             return null;
         }
+        return ppd;
     }
 
     /**
@@ -184,15 +193,22 @@ public final class Starter {
      *            graph to run on
      * @param agent
      *            agent to run
+     * @throws SecurityException
+     * @throws NoSuchMethodException
      * @throws Exception
      *             if agent failes
      */
-    private static void execute(IGraph graph, AbstractAgent agent) throws Exception {
+    private static void execute(IGraph graph, AbstractAgent agent) throws NoSuchMethodException {
         agent.init();
         agent.setGraph(graph);
         Method exec = agent.getClass()
                            .getDeclaredMethod("exec");
-        exec.setAccessible(true);
-        exec.invoke(agent);
+        exec.setAccessible(true); // make "exec" accessible. TODO: remove necessity to do so
+        try {
+            exec.invoke(agent);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            LOGGER.warn("Error in executing agent!");
+            LOGGER.debug(e.getMessage(), e.getCause());
+        }
     }
 }
