@@ -21,9 +21,6 @@ public enum ModelConnectionAnalyzerType {
 
 	private Crea c;
 
-	ModelConnectionAnalyzerType(Crea c) {
-		this.c = c;
-	}
 
 	/**
 	 * Creates a new analyzer.
