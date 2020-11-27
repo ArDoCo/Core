@@ -45,11 +45,11 @@ public final class ModelConnectorConfiguration {
     /**
      * List of separators used for containing by a word in SimilarityUtils.
      */
-    public static final List<String> SEPARATORS_TO_CONTAIN = Configurator.getPropertyAsList("separators_ToContain");
+    protected static final List<String> SEPARATORS_TO_CONTAIN = Configurator.getPropertyAsList("separators_ToContain");
     /**
      * List of separators used for splitting a word in SimilarityUtils.
      */
-    public static final List<String> SEPARATORS_TO_SPLIT = Configurator.getPropertyAsList("separators_ToSplit");
+    protected static final List<String> SEPARATORS_TO_SPLIT = Configurator.getPropertyAsList("separators_ToSplit");
 
     /**
      * Int for the minimal length of word similarity for methods in SimilarityUtils.
@@ -102,14 +102,14 @@ public final class ModelConnectorConfiguration {
     /**
      * The list of text extraction agent types that should run.
      */
-    public static final List<TextExtractionAnalyzerType> TEXT_EXTRACTION_AGENT_ANALYZERS = //
+    protected static final List<TextExtractionAnalyzerType> TEXT_EXTRACTION_AGENT_ANALYZERS = //
             Configurator.getPropertyAsListOfEnumTypes("TextExtractionAgent_Analyzers",
                     TextExtractionAnalyzerType.class);
 
     /**
      * The list of text extraction solver types that should run.
      */
-    public static final List<TextExtractionSolverType> TEXT_EXTRACTION_AGENT_SOLVERS = //
+    protected static final List<TextExtractionSolverType> TEXT_EXTRACTION_AGENT_SOLVERS = //
             Configurator.getPropertyAsListOfEnumTypes("TextExtractionAgent_Solvers", TextExtractionSolverType.class);
 
     // TextExtractionState
@@ -171,27 +171,27 @@ public final class ModelConnectorConfiguration {
     /**
      * The list of analyzer types that should work on the recommendation state.
      */
-    public static final List<RecommendationAnalyzerType> RECOMMENDATION_AGENT_ANALYZERS = //
+    protected static final List<RecommendationAnalyzerType> RECOMMENDATION_AGENT_ANALYZERS = //
             Configurator.getPropertyAsListOfEnumTypes("RecommendationAgent_Analyzers",
                     RecommendationAnalyzerType.class);
 
     /**
      * The list of solver types that should work on the recommendation state.
      */
-    public static final List<RecommendationSolverType> RECOMMENDATION_AGENT_SOLVERS = //
+    protected static final List<RecommendationSolverType> RECOMMENDATION_AGENT_SOLVERS = //
             Configurator.getPropertyAsListOfEnumTypes("RecommendationAgent_Solvers", RecommendationSolverType.class);
 
     // ModelConnectionAgent
     /**
      * The list of analyzer types that should work on the connection state.
      */
-    public static final List<ModelConnectionAnalyzerType> MODEL_CONNECTION_AGENT_ANALYZERS = //
+    protected static final List<ModelConnectionAnalyzerType> MODEL_CONNECTION_AGENT_ANALYZERS = //
             Configurator.getPropertyAsListOfEnumTypes("ModelConnectionAgent_Analyzers",
                     ModelConnectionAnalyzerType.class);
     /**
      * The list of solver types that should work on the connection state.
      */
-    public static final List<ModelConnectionSolverType> MODEL_CONNECTION_AGENT_SOLVERS = //
+    protected static final List<ModelConnectionSolverType> MODEL_CONNECTION_AGENT_SOLVERS = //
             Configurator.getPropertyAsListOfEnumTypes("ModelConnectionAgent_Solvers", ModelConnectionSolverType.class);
 
     // SeparatedRelationSolver
