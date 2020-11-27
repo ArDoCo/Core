@@ -127,8 +127,8 @@ public class RelationMappingTest {
         nodes.addAll(nortMappings.get(0)
                                  .getNodes());
 
-        assertTrue(nodes.addAll(typeMappings.get(0)
-                                            .getNodes()));
+        nodes.addAll(typeMappings.get(0)
+                                 .getNodes());
     }
 
 }
