@@ -93,11 +93,11 @@ public class ConnectionAgent extends AbstractAgent {
 	 */
 	private void initializeWithGraph() {
 
-		for (ModelConnectionAnalyzerType analyzerType : ModelConnectorConfiguration.modelConnectionAgent_Analyzers) {
+		for (ModelConnectionAnalyzerType analyzerType : ModelConnectorConfiguration.MODEL_CONNECTION_AGENT_ANALYZERS) {
 			analyzers.add(analyzerType.create(graph, textExtractionState, modelExtractionState, recommendationState, connectionState));
 		}
 
-		for (ModelConnectionSolverType solverType : ModelConnectorConfiguration.modelConnectionAgent_Solvers) {
+		for (ModelConnectionSolverType solverType : ModelConnectorConfiguration.MODEL_CONNECTION_AGENT_SOLVERS) {
 			solvers.add(solverType.create(graph, textExtractionState, modelExtractionState, recommendationState, connectionState));
 		}
 	}

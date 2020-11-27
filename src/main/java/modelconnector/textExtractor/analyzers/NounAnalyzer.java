@@ -15,7 +15,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class NounAnalyzer extends TextExtractionAnalyzer {
 
-	double probability = ModelConnectorConfiguration.nounAnalyzer_Probability;
+	double probability = ModelConnectorConfiguration.NOUN_ANALYZER_PROBABILITY;
 
 	/**
 	 * Creates a new NounAnalyzer

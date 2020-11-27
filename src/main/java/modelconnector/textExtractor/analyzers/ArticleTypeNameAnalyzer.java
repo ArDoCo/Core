@@ -15,7 +15,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class ArticleTypeNameAnalyzer extends TextExtractionAnalyzer {
 
-	private double probability = ModelConnectorConfiguration.articleTypeNameAnalyzer_Probability;
+	private double probability = ModelConnectorConfiguration.ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY;
 
 	/**
 	 * Creates a new article type name analyzer.

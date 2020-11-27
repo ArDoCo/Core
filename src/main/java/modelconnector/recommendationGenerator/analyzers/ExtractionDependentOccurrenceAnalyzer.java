@@ -24,7 +24,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class ExtractionDependentOccurrenceAnalyzer extends RecommendationAnalyzer {
 
-	private double probability = ModelConnectorConfiguration.extractionDependentOccurrenceAnalyzer_Probability;
+	private double probability = ModelConnectorConfiguration.EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY;
 
 	/**
 	 * Creates a new extraction dependent occurrence marker.

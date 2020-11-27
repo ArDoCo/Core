@@ -28,7 +28,7 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class RelationConnectionSolver extends ModelConnectionSolver {
 
-	private double probability = ModelConnectorConfiguration.relationConnectionSolver_Probability;
+	private double probability = ModelConnectorConfiguration.RELATION_CONNECTION_SOLVER_PROBABILITY;
 
 	/**
 	 * Creates a new RelationConenctionSolver.

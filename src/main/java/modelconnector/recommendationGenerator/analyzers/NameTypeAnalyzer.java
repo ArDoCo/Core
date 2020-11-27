@@ -40,7 +40,7 @@ public class NameTypeAnalyzer extends RecommendationAnalyzer {
 		super(DependencyType.TEXT_MODEL_RECOMMENDATION, graph, textExtractionState, modelExtractionState, recommendationState);
 	}
 
-	private double probability = ModelConnectorConfiguration.nameTypeAnalyzerProbability;
+	private double probability = ModelConnectorConfiguration.NAME_TYPE_ANALYZER_PROBABILITY;
 
 	@Override
 	public void exec(INode n) {

@@ -23,9 +23,9 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class ReferenceSolver extends RecommendationSolver {
 
-	private double probability = ModelConnectorConfiguration.referenceSolver_Probability;
-	private double areNamesSimilarThreshold = ModelConnectorConfiguration.referenceSolver_AreNamesSimilarThreshold;
-	private double proportionalDecrease = ModelConnectorConfiguration.referenceSolver_ProportionalDecrease;
+	private double probability = ModelConnectorConfiguration.REFERENCE_SOLVER_PROBABILITY;
+	private double areNamesSimilarThreshold = ModelConnectorConfiguration.REFERENCE_SOLVER_ARE_NAMES_SIMILAR_THRESHOLD;
+	private double proportionalDecrease = ModelConnectorConfiguration.REFERENCE_SOLVER_PROPORTIONAL_DECREASE;
 
 	/**
 	 * Creates a new ReferenceSolver.
