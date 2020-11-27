@@ -18,85 +18,55 @@ import modelconnector.textExtractor.state.TextExtractionState;
  */
 public class InDepArcsAnalyzer extends TextExtractionAnalyzer {
 
-	private double probability = ModelConnectorConfiguration.IN_DEP_ARCS_ANALYZER_PROBABILITY;
+    private double probability = ModelConnectorConfiguration.IN_DEP_ARCS_ANALYZER_PROBABILITY;
 
-	/**
-	 * Creates a new InDepArcsAnalyzer
-	 *
-	 * @param graph               the PARSE graph
-	 * @param textExtractionState the text extraction state
-	 */
-	public InDepArcsAnalyzer(IGraph graph, TextExtractionState textExtractionState) {
-		super(DependencyType.TEXT, graph, textExtractionState);
-	}
+    /**
+     * Creates a new InDepArcsAnalyzer
+     *
+     * @param graph
+     *            the PARSE graph
+     * @param textExtractionState
+     *            the text extraction state
+     */
+    public InDepArcsAnalyzer(IGraph graph, TextExtractionState textExtractionState) {
+        super(DependencyType.TEXT, graph, textExtractionState);
+    }
 
-	@Override
-	public void exec(INode n) {
-		String nodeValue = GraphUtils.getNodeValue(n);
-		if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
-			return;
-		}
+    @Override
+    public void exec(INode n) {
+        String nodeValue = GraphUtils.getNodeValue(n);
+        if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
+            return;
+        }
 
-		examineIncomingDepArcs(n);
-	}
+        examineIncomingDepArcs(n);
+    }
 
-	/**
-	 * Examines the incoming dependency arcs from the PARSE graph.
-	 *
-	 * @param n the node to check
-	 */
-	private void examineIncomingDepArcs(INode n) {
+    /**
+     * Examines the incoming dependency arcs from the PARSE graph.
+     *
+     * @param n
+     *            the node to check
+     */
+    private void examineIncomingDepArcs(INode n) {
 
-		List<? extends IArc> incomingDepArcs = n.getIncomingArcsOfType(depArcType);
+        List<? extends IArc> incomingDepArcs = n.getIncomingArcsOfType(depArcType);
 
-		for (IArc arc : incomingDepArcs) {
-			String shortDepTag = arc.getAttributeValue("relationShort").toString();
+        for (IArc arc : incomingDepArcs) {
+            String shortDepTag = arc.getAttributeValue("relationShort")
+                                    .toString();
 
-			if (shortDepTag.equals("appos")) {
-				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
+            if (shortDepTag.equals("appos") || shortDepTag.equals("nsubj") || shortDepTag.equals("poss")) {
+                textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
+            } else if (shortDepTag.equals("dobj") || shortDepTag.equals("iobj") || shortDepTag.equals("nmod")
+                    || shortDepTag.equals("nsubjpass") || shortDepTag.equals("pobj")) {
+                if (GraphUtils.checkForIndirectPrevDt(n, relArcType)) {
+                    textExtractionState.addType(n, GraphUtils.getNodeValue(n), probability);
+                }
 
-			} else if (shortDepTag.equals("dobj")) {
-				if (GraphUtils.checkForIndirectPrevDt(n, relArcType)) {
-					textExtractionState.addType(n, GraphUtils.getNodeValue(n), probability);
-				}
-
-				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
-
-			} else if (shortDepTag.equals("iobj")) {
-				if (GraphUtils.checkForIndirectPrevDt(n, relArcType)) {
-					textExtractionState.addType(n, GraphUtils.getNodeValue(n), probability);
-				}
-
-				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
-
-			} else if (shortDepTag.equals("nmod")) {
-				if (GraphUtils.checkForIndirectPrevDt(n, relArcType)) {
-					textExtractionState.addType(n, GraphUtils.getNodeValue(n), probability);
-				}
-
-				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
-
-			} else if (shortDepTag.equals("nsubj")) {
-				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
-
-			} else if (shortDepTag.equals("nsubjpass")) {
-				if (GraphUtils.checkForIndirectPrevDt(n, relArcType)) {
-					textExtractionState.addType(n, GraphUtils.getNodeValue(n), probability);
-				}
-
-				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
-
-			} else if (shortDepTag.equals("pobj")) {
-				if (GraphUtils.checkForIndirectPrevDt(n, relArcType)) {
-					textExtractionState.addType(n, GraphUtils.getNodeValue(n), probability);
-				}
-
-				textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
-
-			} else if (shortDepTag.equals("poss")) {
-				textExtractionState.addName(n, GraphUtils.getNodeValue(n), probability);
-			}
-		}
-	}
+                textExtractionState.addNort(n, GraphUtils.getNodeValue(n), probability);
+            }
+        }
+    }
 
 }
