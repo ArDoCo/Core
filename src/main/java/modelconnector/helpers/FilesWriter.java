@@ -33,7 +33,6 @@ import modelconnector.textExtractor.state.TextExtractionState;
  *
  */
 public final class FilesWriter {
-    private static final String SEPARATOR_STRING = "---------------------------------------------------------------------------------------------------------------------------------------------";
 
     private static final String GENERIC_ERROR = "An error occurred.";
 
@@ -45,13 +44,13 @@ public final class FilesWriter {
 
     private static final Logger logger = Logger.getLogger(FilesWriter.class);
 
-    private static final String SPACE_STRING = " ";
-    private static final String EMPTY_STRING = "";
+    private static final String SPACE = " ";
     private static final String SINGLE_SEPARATOR = "|";
     private static final String SINGLE_SEPARATOR_WITH_SPACES = " | ";
     private static final String FIVE_SEPARATORS = "| | | | |";
     private static final String THREE_SEPARATORS = "| | |";
     private static final String EIGHT_SEPARATORS = "| | | | | | | |";
+    private static final String HORIZONTAL_RULE = "---------------------------------------------------------------------------------------------------------------------------------------------";
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private FilesWriter() {
@@ -83,7 +82,7 @@ public final class FilesWriter {
                     myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
                     minSentenceNumber++;
                 }
-                myWriter.append(SPACE_STRING + GraphUtils.getNodeValue(node));
+                myWriter.append(SPACE + GraphUtils.getNodeValue(node));
             }
 
             logger.info(SUCCESS_WRITE);
@@ -234,21 +233,27 @@ public final class FilesWriter {
             for (RelationLink rl : relationLinks) {
                 Relation modelRelation = rl.getModelRelation();
                 List<Instance> modelInstances = modelRelation.getInstances();
-                String modelInstanceNames = EMPTY_STRING;
+                StringBuilder modelInstanceNamesBuilder = new StringBuilder();
                 for (Instance i : modelInstances) {
-                    modelInstanceNames += i.getLongestName() + ":" + i.getLongestType() + ", ";
+                    modelInstanceNamesBuilder.append(i.getLongestName());
+                    modelInstanceNamesBuilder.append(":");
+                    modelInstanceNamesBuilder.append(i.getLongestType());
+                    modelInstanceNamesBuilder.append(", ");
                 }
 
-                String textualInstanceNames = EMPTY_STRING;
+                StringBuilder textualInstanceNamesBuilder = new StringBuilder();
                 for (RecommendedInstance ri : rl.getTextualRelation()
                                                 .getRelationInstances()) {
-                    textualInstanceNames += ri.getName() + ":" + ri.getType() + ", ";
+                    textualInstanceNamesBuilder.append(ri.getName());
+                    textualInstanceNamesBuilder.append(":");
+                    textualInstanceNamesBuilder.append(ri.getType());
+                    textualInstanceNamesBuilder.append(", ");
                 }
 
                 String relationLinkString = //
                         modelRelation.getUid() + SINGLE_SEPARATOR_WITH_SPACES + //
-                                modelInstanceNames + SINGLE_SEPARATOR_WITH_SPACES + //
-                                textualInstanceNames + SINGLE_SEPARATOR_WITH_SPACES + //
+                                modelInstanceNamesBuilder.toString() + SINGLE_SEPARATOR_WITH_SPACES + //
+                                textualInstanceNamesBuilder.toString() + SINGLE_SEPARATOR_WITH_SPACES + //
                                 rl.getProbability() + LINE_SEPARATOR;
                 myWriter.append(relationLinkString);
             }
@@ -376,7 +381,7 @@ public final class FilesWriter {
         recommendationStringBuilder.append(type);
         recommendationStringBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
         recommendationStringBuilder.append(probability);
-        recommendationStringBuilder.append(SPACE_STRING);
+        recommendationStringBuilder.append(SPACE);
         recommendationStringBuilder.append(SINGLE_SEPARATOR);
         return recommendationStringBuilder;
     }
@@ -385,14 +390,14 @@ public final class FilesWriter {
             List<String> nameMappingStrings, List<String> typeMappingStrings) {
 
         StringBuilder recommendationStringBuilder = createRecommendationStringBuilder(name, type, probability);
-        if (nameMappingStrings.size() >= 1) {
+        if (!nameMappingStrings.isEmpty()) {
             recommendationStringBuilder.append(nameMappingStrings.get(0));
             nameMappingStrings.remove(0);
         } else {
             recommendationStringBuilder.append(FIVE_SEPARATORS);
         }
 
-        if (typeMappingStrings.size() >= 1) {
+        if (!typeMappingStrings.isEmpty()) {
             recommendationStringBuilder.append(typeMappingStrings.get(0));
             typeMappingStrings.remove(0);
         } else {
@@ -417,7 +422,7 @@ public final class FilesWriter {
         } else if (typeAmount > 0 && nameAmount > typeAmount) {
             for (int i = typeAmount - 1; i < nameAmount; i++) {
                 recommendationStringBuilder.append(THREE_SEPARATORS);
-                recommendationStringBuilder.append(SPACE_STRING);
+                recommendationStringBuilder.append(SPACE);
                 recommendationStringBuilder.append(nameMappingStrings.get(i));
                 recommendationStringBuilder.append(LINE_SEPARATOR);
             }
@@ -429,8 +434,7 @@ public final class FilesWriter {
         List<String> typeMappingStrings = new ArrayList<>();
         for (NounMapping typeMapping : typeMappings) {
 
-            String typeString = EMPTY_STRING + //
-                    typeMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
+            String typeString = typeMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
                     typeMapping.getKind() + SINGLE_SEPARATOR_WITH_SPACES + //
                     String.join(", ", typeMapping.getOccurrences()) + SINGLE_SEPARATOR_WITH_SPACES + //
                     typeMapping.getMappingSentenceNo() + //
@@ -444,8 +448,7 @@ public final class FilesWriter {
         List<String> nameMappingStrings = new ArrayList<>();
         for (NounMapping nameMapping : nameMappings) {
 
-            String nameString = EMPTY_STRING + //
-                    nameMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
+            String nameString = nameMapping.getReference() + SINGLE_SEPARATOR_WITH_SPACES + //
                     nameMapping.getKind() + SINGLE_SEPARATOR_WITH_SPACES + //
                     String.join(", ", nameMapping.getOccurrences()) + SINGLE_SEPARATOR_WITH_SPACES + //
                     nameMapping.getMappingSentenceNo() + //
@@ -472,8 +475,6 @@ public final class FilesWriter {
      */
     public static void writeStatesToFile(ModelExtractionState extractionState, TextExtractionState ntrState, //
             RecommendationState recommendationState, ConnectionState connectionState, double durationInMinutes) {
-        // TODO: clean this up and try to put parts in helping methods
-
         File resultFile = new File(ModelConnectorConfiguration.FILE_FOR_RESULTS_PATH);
 
         boolean fileCreated = createFileIfNonExistent(resultFile);
@@ -485,13 +486,13 @@ public final class FilesWriter {
 
             myWriter.write("Results of ModelConnector: ");
             myWriter.append(LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("ExtractorState: ");
             myWriter.append(LINE_SEPARATOR);
             myWriter.write(extractionState.toString());
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundNames as Set: ");
@@ -499,7 +500,7 @@ public final class FilesWriter {
             List<String> nameList = ntrState.getNameList();
             Collections.sort(nameList);
             myWriter.write(nameList.toString() + LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundNameTerms as Set: ");
@@ -507,7 +508,7 @@ public final class FilesWriter {
             List<String> nameTermList = ntrState.getNameTermList();
             Collections.sort(nameTermList);
             myWriter.write(nameTermList.toString() + LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundNORTs as Set: ");
@@ -515,7 +516,7 @@ public final class FilesWriter {
             List<String> nortList = ntrState.getNortList();
             Collections.sort(nortList);
             myWriter.write(nortList.toString() + LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundTypes as Set: ");
@@ -523,7 +524,7 @@ public final class FilesWriter {
             List<String> typeList = ntrState.getTypeList();
             Collections.sort(typeList);
             myWriter.write(typeList.toString() + LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("FoundTypeTerms as Set: ");
@@ -531,7 +532,7 @@ public final class FilesWriter {
             List<String> typeTermList = ntrState.getTypeTermList();
             Collections.sort(typeTermList);
             myWriter.write(typeTermList.toString() + LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Instances of the Recommendation State: ");
@@ -544,7 +545,7 @@ public final class FilesWriter {
             for (RecommendedInstance ri : recommendedInstances) {
                 myWriter.write(ri.toString() + LINE_SEPARATOR);
             }
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Instances of the Connection State: ");
@@ -559,7 +560,7 @@ public final class FilesWriter {
                 myWriter.write(imap.toString() + LINE_SEPARATOR);
             }
 
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Relations of the Recommendation State: ");
@@ -573,7 +574,7 @@ public final class FilesWriter {
                 myWriter.write(si.toString() + LINE_SEPARATOR);
             }
 
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             myWriter.write("Relations of the Connection State: ");
@@ -587,14 +588,14 @@ public final class FilesWriter {
                 myWriter.write(rlink.toString() + LINE_SEPARATOR);
             }
 
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
             myWriter.write("ExecutionTime in minutes: " + durationInMinutes);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.write(SEPARATOR_STRING);
+            myWriter.write(HORIZONTAL_RULE);
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             logger.info(SUCCESS_WRITE);
