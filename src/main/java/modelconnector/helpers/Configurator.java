@@ -2,11 +2,13 @@ package modelconnector.helpers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
 /**
  * This class is able to load the config file.
@@ -17,9 +19,9 @@ import org.apache.log4j.Logger;
 public final class Configurator {
     private static final Logger LOGGER = Logger.getLogger(Configurator.class);
 
-    private static final String propFile = "/config.properties";
+    private static final String PROP_FILE = "/config.properties";
 
-    private static final Properties config = loadConfiguration();
+    private static final Properties CONFIG = loadConfiguration();
 
     private Configurator() {
         throw new IllegalAccessError();
@@ -29,7 +31,7 @@ public final class Configurator {
 
         Properties prop = new Properties();
 
-        try (InputStream inputStream = Configurator.class.getResourceAsStream(propFile)) {
+        try (InputStream inputStream = Configurator.class.getResourceAsStream(PROP_FILE)) {
 
             prop.load(inputStream);
 
@@ -47,7 +49,7 @@ public final class Configurator {
      * @return value of the property as a string
      */
     public static String getProperty(String key) {
-        return config.getProperty(key);
+        return CONFIG.getProperty(key);
     }
 
     /**
@@ -59,7 +61,7 @@ public final class Configurator {
      */
     public static double getPropertyAsDouble(String key) {
         try {
-            return Double.parseDouble(config.getProperty(key));
+            return Double.parseDouble(CONFIG.getProperty(key));
         } catch (NumberFormatException n) {
             LOGGER.debug(n.getMessage(), n.getCause());
             return -1;
@@ -75,7 +77,7 @@ public final class Configurator {
      */
     public static int getPropertyAsInt(String key) {
         try {
-            return Integer.parseInt(config.getProperty(key));
+            return Integer.parseInt(CONFIG.getProperty(key));
         } catch (NumberFormatException n) {
             LOGGER.debug(n.getMessage(), n.getCause());
             return -1;
@@ -91,9 +93,9 @@ public final class Configurator {
      * @throws Exception
      *             if the key is not found in the configuration file.
      */
-    public static List<String> getPropertyAsList(String key) throws IllegalArgumentException {
-        List<String> values = new ArrayList<>();
-        String value = config.getProperty(key);
+    public static List<String> getPropertyAsList(String key) {
+        List<String> values = Lists.mutable.empty();
+        String value = CONFIG.getProperty(key);
         if (value == null) {
             throw new IllegalArgumentException("Key: " + key + " not found in config");
         }
@@ -118,8 +120,8 @@ public final class Configurator {
      *            the class that holds the enum
      * @return the enum identified by the given string
      */
-    public static <T extends Enum<T>> List<T> getPropertyAsListOfEnumTypes(String data, Class<T> clazz) {
-        List<T> selectedValues = new ArrayList<>();
+    public static <T extends Enum<T>> ImmutableList<T> getPropertyAsListOfEnumTypes(String data, Class<T> clazz) {
+        MutableList<T> selectedValues = Lists.mutable.empty();
         T[] values = clazz.getEnumConstants();
         List<String> valueList = getPropertyAsList(data);
 
@@ -129,7 +131,7 @@ public final class Configurator {
             }
         }
 
-        return selectedValues;
+        return selectedValues.toImmutable();
 
     }
 }
