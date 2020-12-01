@@ -140,14 +140,14 @@ public class RecommendationStateTest {
 		state.addRecommendedInstance(name, type, 0.5, List.of(nameMappings.get(0)), List.of(typeMappings.get(0)));
 		currentInstances = state.getRecommendedInstances();
 		assertTrue(currentInstances.contains(prevStateRI));
-		assertTrue(currentInstances.size() == 1);
+		assertEquals(1, currentInstances.size());
 		assertEquals(prevStateRI.getNameMappings().size(), currentInstances.get(0).getNameMappings().size());
 		assertEquals(prevStateRI.getTypeMappings().size(), currentInstances.get(0).getTypeMappings().size());
 
 		state.addRecommendedInstance(name, type, 0.5, nameMappings, typeMappings);
 		currentInstances = state.getRecommendedInstances();
 		assertTrue(currentInstances.contains(prevStateRI));
-		assertTrue(currentInstances.size() == 1);
+		assertEquals(1, currentInstances.size());
 		assertEquals(prevStateRI.getNameMappings().size(), currentInstances.get(0).getNameMappings().size());
 		assertEquals(prevStateRI.getTypeMappings().size(), currentInstances.get(0).getTypeMappings().size());
 
@@ -178,7 +178,7 @@ public class RecommendationStateTest {
 		state.addRecommendedInstanceJustName(name, 0.5, List.of(nameMappings.get(0)));
 		List<RecommendedInstance> currentInstances = state.getRecommendedInstances();
 		assertTrue(currentInstances.contains(ri1));
-		assertEquals(currentInstances.size(), 1);
+		assertEquals(1, currentInstances.size());
 		assertEquals(currentInstances.get(0).getNameMappings(), ri0.getNameMappings());
 
 		RecommendedInstance ci = currentInstances.get(0);
@@ -186,24 +186,24 @@ public class RecommendationStateTest {
 
 		state.addRecommendedInstanceJustName(name, 0.5, List.of(nameMappings.get(0)));
 		assertTrue(currentInstances.contains(prevStateRI));
-		assertEquals(currentInstances.size(), 1);
+		assertEquals(1, currentInstances.size());
 		assertEquals(currentInstances.get(0).getNameMappings().size(), prevStateRI.getNameMappings().size());
 
 		state.addRecommendedInstanceJustName(name, 0.5, nameMappings);
 		assertTrue(currentInstances.contains(prevStateRI));
-		assertEquals(currentInstances.size(), 1);
-		assertTrue(nameMappings.size() >= 2);
+		assertEquals(1, currentInstances.size());
+		assertTrue(2 <= nameMappings.size());
 		assertEquals(currentInstances.get(0).getNameMappings().size(), prevStateRI.getNameMappings().size());
 
 		state.addRecommendedInstance(name, type, 0.5, nameMappings, typeMappings);
 		assertTrue(currentInstances.contains(ri1));
 		assertFalse(currentInstances.contains(ri3));
-		assertEquals(currentInstances.size(), 1);
+		assertEquals(1, currentInstances.size());
 		assertEquals(currentInstances.get(0).getNameMappings(), ri3.getNameMappings());
 		assertNotEquals(ri3.getTypeMappings(), currentInstances.get(0).getTypeMappings());
 
 		state.addRecommendedInstanceJustName(name2, 0.5, nameMappings);
-		assertEquals(currentInstances.size(), 1);
+		assertEquals(1, currentInstances.size());
 	}
 
 	/**
