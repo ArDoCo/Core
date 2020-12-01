@@ -85,7 +85,7 @@ public class NTRStateTests {
 		assertFalse(typeNodes.isEmpty());
 		assertFalse(nameNodes.isEmpty());
 		assertFalse(nortNodes.isEmpty());
-		assertEquals(separatedNortNodes.size(), 2);
+		assertEquals(2, separatedNortNodes.size());
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class NTRStateTests {
 		assertTrue(ntrState.isNodeContainedByNounMappings(typeNodes.get(0)));
 
 		List<NounMapping> typeMaps = ntrState.getNounMappingsByNode(typeNodes.get(0));
-		assertEquals(typeMaps.size(), 1);
+		assertEquals(1, typeMaps.size());
 		assertTrue(ntrState.getTypeList().contains(type));
 
 		ntrState.removeNounNode(typeMaps.get(0));
@@ -561,7 +561,7 @@ public class NTRStateTests {
 		ntrState.addNort(typeNode, ntrState.getNounMappingsByNode(nortNode).get(0).getReference(), 1.0, occurrences);
 
 		List<NounMapping> nms = ntrState.getNortNodesByNode(nortNode);
-		assertEquals(nms.size(), 1);
+		assertEquals(1, nms.size());
 
 		NounMapping nm = nms.get(0);
 		assertTrue(nm.getOccurrences().containsAll(occurrences));
@@ -581,7 +581,7 @@ public class NTRStateTests {
 		assertFalse(ntrState.getNameOrTypeMappings().isEmpty());
 		List<String> separatedNortParts = List.of(SimilarityUtils.splitAtSeparators(separatedNort).split(" "));
 
-		assertEquals(separatedNortParts.size(), 2);
+		assertEquals(2, separatedNortParts.size());
 		String separatedNortPart0 = separatedNortParts.get(0);
 		String separatedNortPart1 = separatedNortParts.get(1);
 
@@ -590,7 +590,7 @@ public class NTRStateTests {
 
 		List<NounMapping> nms = ntrState.getNortNodesByNode(separatedNortNode);
 
-		assertEquals(nms.size(), 2);
+		assertEquals(2, nms.size());
 		NounMapping nm0 = nms.get(0);
 		NounMapping nm1 = nms.get(1);
 
