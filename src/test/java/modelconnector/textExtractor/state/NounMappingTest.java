@@ -100,14 +100,14 @@ public class NounMappingTest {
 		NounMapping typeMapping3 = NounMapping.createMappingTypeNode(typeNodes.get(0), type, MappingKind.TYPE, 0.5, List.of(type));
 		NounMapping nortMapping3 = NounMapping.createMappingTypeNode(nortNodes.get(0), nort, MappingKind.NAME_OR_TYPE, 0.5, List.of(nort));
 
-		assertEquals(nameMapping, nameMapping2);
-		assertEquals(typeMapping, typeMapping2);
-		assertEquals(nortMapping, nortMapping2);
-		assertEquals(nameMapping, nameMapping3);
-		assertEquals(typeMapping, typeMapping3);
-		assertEquals(nortMapping, nortMapping3);
+		assertEquals(nameMapping2, nameMapping);
+		assertEquals(typeMapping2, typeMapping);
+		assertEquals(nortMapping2, nortMapping);
+		assertEquals(nameMapping3, nameMapping);
+		assertEquals(typeMapping3, typeMapping);
+		assertEquals(nortMapping3, nortMapping);
 
-		assertEquals(nameMapping.getNodes(), List.of(nameNodes.get(0)));
+		assertEquals(List.of(nameNodes.get(0)), nameMapping.getNodes());
 
 	}
 
@@ -123,14 +123,14 @@ public class NounMappingTest {
 		NounMapping typeMapping = NounMapping.createTypeMapping(typeNodes.get(0), 0.5, type, List.of(type));
 		NounMapping nortMapping = NounMapping.createNortMapping(nortNodes.get(0), 0.5, nort, List.of(nort));
 
-		assertEquals(nortMapping.getKind(), MappingKind.NAME_OR_TYPE);
-		assertEquals(nameMapping.getKind(), MappingKind.NAME);
-		assertEquals(typeMapping.getKind(), MappingKind.TYPE);
+		assertEquals(MappingKind.NAME_OR_TYPE, nortMapping.getKind());
+		assertEquals(MappingKind.NAME, nameMapping.getKind());
+		assertEquals(MappingKind.TYPE, typeMapping.getKind());
 
-		assertEquals(nortMapping.getOccurrences(), List.of(nort));
-		assertTrue(nortMapping.getProbability() == 0.5);
-		assertEquals(nortMapping.getReference(), nort);
-		assertTrue(nortMapping.getMappingSentenceNo().get(0) == 1);
+		assertEquals(List.of(nort), nortMapping.getOccurrences());
+		assertEquals(0.5, nortMapping.getProbability(), 0.001);
+		assertEquals(nort, nortMapping.getReference());
+		assertEquals(1.0, nortMapping.getMappingSentenceNo().get(0), 0.001);
 
 	}
 
@@ -143,13 +143,13 @@ public class NounMappingTest {
 	public void getRepresentativeComparables() {
 		NounMapping nameMapping = NounMapping.createNameMapping(nameNodes.get(0), 0.5, name, List.of(name));
 
-		assertEquals(nameMapping.getRepresentativeComparables(), nameMapping.getOccurrences());
+		assertEquals(nameMapping.getOccurrences(), nameMapping.getRepresentativeComparables());
 
 		List<String> occParts = new ArrayList<>(List.of(SimilarityUtils.splitAtSeparators(separatedNort).split(" ")));
 
 		NounMapping nortMapping = NounMapping.createNortMapping(separatedNortNodes.get(0), 0.5, occParts.get(0), List.of(separatedNort));
 
-		assertEquals(nortMapping.getRepresentativeComparables(), List.of(occParts.get(0), separatedNort));
+		assertEquals(List.of(occParts.get(0), separatedNort), nortMapping.getRepresentativeComparables());
 	}
 
 	/**
@@ -170,25 +170,25 @@ public class NounMappingTest {
 
 		nameMapping.changeMappingTypeTo(MappingKind.TYPE, 0.9);
 
-		assertEquals(nameMapping.getKind(), MappingKind.TYPE);
-		assertTrue(nameMapping.getProbability() != 0.5);
+		assertEquals(MappingKind.TYPE, nameMapping.getKind());
+		assertNotEquals(0.5, nameMapping.getProbability());
 
 		nameMapping.hardSetProbability(0.1);
-		assertTrue(nameMapping.getProbability() == 0.1);
+		assertEquals(0.1, nameMapping.getProbability(), 0.001);
 
 		nameMapping.updateReference(type, 0.15);
-		assertNotEquals(nameMapping.getReference(), type);
-		assertTrue(nameMapping.getProbability() == 0.1);
+		assertNotEquals(type, nameMapping.getReference());
+		assertEquals(0.1, nameMapping.getProbability(), 0.001);
 
 		nameMapping.updateReference(type, 0.05);
-		assertNotEquals(nameMapping.getReference(), type);
+		assertNotEquals(type, nameMapping.getReference());
 
 		nameMapping.updateReference(type, 0.9);
-		assertEquals(nameMapping.getReference(), type);
+		assertEquals(type, nameMapping.getReference());
 
-		assertTrue(nameMapping.getProbability() == 0.1);
+		assertEquals(0.1, nameMapping.getProbability(), 0.001);
 		nameMapping.updateProbability(0.75);
-		assertTrue(nameMapping.getProbability() != 0.1);
+		assertNotEquals(0.1, nameMapping.getProbability());
 
 		assertFalse(nameMapping.getOccurrences().contains(nort));
 		nameMapping.addOccurrence(List.of(nort));
@@ -249,7 +249,7 @@ public class NounMappingTest {
 		nodesAsSet.addAll(nortNodes);
 		nodesAsSet.add(typeNode);
 
-		assertTrue(nodesAsSet.size() == nortMapping.getNodes().size());
+		assertEquals(nortMapping.getNodes().size(), nodesAsSet.size());
 	}
 
 }
