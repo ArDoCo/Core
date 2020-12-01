@@ -3,7 +3,6 @@ package modelconnector.modelConnector.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,9 +119,9 @@ public class RelationLinkTest {
 
 		RelationLink rl = new RelationLink(rrl0, r0, 0.5);
 
-		assertTrue(rl.getProbability() == 0.5);
-		assertEquals(rl.getModelRelation(), r0);
-		assertEquals(rl.getTextualRelation(), rrl0);
+		assertEquals(0.5, rl.getProbability(), 0.001);
+		assertEquals(r0, rl.getModelRelation());
+		assertEquals(rrl0, rl.getTextualRelation());
 	}
 
 	/**
@@ -133,7 +132,7 @@ public class RelationLinkTest {
 	public void setter() {
 		RelationLink rl = new RelationLink(rrl0, r0, 0.5);
 		rl.setProbability(0.8);
-		assertTrue(rl.getProbability() == 0.8);
+		assertEquals(0.8, rl.getProbability(), 0.001);
 	}
 
 }

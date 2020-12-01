@@ -53,12 +53,12 @@ public class InstanceTest {
 	public void getter() {
 		Instance i0 = new Instance(longestName, longestType, 0);
 
-		assertEquals(i0.getLongestName(), longestName);
-		assertEquals(i0.getLongestType(), longestType);
+		assertEquals(longestName, i0.getLongestName());
+		assertEquals(longestType, i0.getLongestType());
 
-		assertEquals(i0.getNames(), names);
-		assertEquals(i0.getTypes(), types);
-		assertEquals(i0.getUid(), 0);
+		assertEquals(names, i0.getNames());
+		assertEquals(types, i0.getTypes());
+		assertEquals(0, i0.getUid());
 	}
 
 }

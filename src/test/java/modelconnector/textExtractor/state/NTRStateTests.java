@@ -85,7 +85,7 @@ public class NTRStateTests {
 		assertFalse(typeNodes.isEmpty());
 		assertFalse(nameNodes.isEmpty());
 		assertFalse(nortNodes.isEmpty());
-		assertTrue(separatedNortNodes.size() == 2);
+		assertEquals(separatedNortNodes.size(), 2);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class NTRStateTests {
 		assertTrue(ntrState.isNodeContainedByNounMappings(typeNodes.get(0)));
 
 		List<NounMapping> typeMaps = ntrState.getNounMappingsByNode(typeNodes.get(0));
-		assertTrue(typeMaps.size() == 1);
+		assertEquals(typeMaps.size(), 1);
 		assertTrue(ntrState.getTypeList().contains(type));
 
 		ntrState.removeNounNode(typeMaps.get(0));
@@ -561,7 +561,7 @@ public class NTRStateTests {
 		ntrState.addNort(typeNode, ntrState.getNounMappingsByNode(nortNode).get(0).getReference(), 1.0, occurrences);
 
 		List<NounMapping> nms = ntrState.getNortNodesByNode(nortNode);
-		assertTrue(nms.size() == 1);
+		assertEquals(nms.size(), 1);
 
 		NounMapping nm = nms.get(0);
 		assertTrue(nm.getOccurrences().containsAll(occurrences));
@@ -581,7 +581,7 @@ public class NTRStateTests {
 		assertFalse(ntrState.getNameOrTypeMappings().isEmpty());
 		List<String> separatedNortParts = List.of(SimilarityUtils.splitAtSeparators(separatedNort).split(" "));
 
-		assertTrue(separatedNortParts.size() == 2);
+		assertEquals(separatedNortParts.size(), 2);
 		String separatedNortPart0 = separatedNortParts.get(0);
 		String separatedNortPart1 = separatedNortParts.get(1);
 
@@ -590,7 +590,7 @@ public class NTRStateTests {
 
 		List<NounMapping> nms = ntrState.getNortNodesByNode(separatedNortNode);
 
-		assertTrue(nms.size() == 2);
+		assertEquals(nms.size(), 2);
 		NounMapping nm0 = nms.get(0);
 		NounMapping nm1 = nms.get(1);
 
@@ -632,7 +632,7 @@ public class NTRStateTests {
 
 		assertTrue(nm00.getReference().contentEquals(separatedNortParts.get(0)));
 		assertEquals(nm10, nm00);
-		assertNotEquals(nms0.get(1), nms1.get(1));
+		assertNotEquals(nms1.get(1), nms0.get(1));
 		assertTrue(nm00.getNodes().size() > preNodesSize);
 
 	}
@@ -656,19 +656,19 @@ public class NTRStateTests {
 		List<String> separatedNortParts = List.of(SimilarityUtils.splitAtSeparators(separatedNort).split(" "));
 
 		List<NounMapping> nms0 = ntrState.getNounMappingsByNode(separatedNortNode0);
-		assertTrue(nms0.size() == 2);
+		assertEquals(2, nms0.size());
 		NounMapping nm00 = nms0.get(0);
 
 		ntrState.addNort(separatedNortNode1, separatedNort, 0.8);
 		assertFalse(ntrState.getNameOrTypeMappings().isEmpty());
 
 		List<NounMapping> nms1 = ntrState.getNounMappingsByNode(separatedNortNode1);
-		assertTrue(nms1.size() == 2);
+		assertEquals(2, nms1.size());
 		NounMapping nm10 = nms1.get(0);
 
 		assertTrue(nm00.getReference().contentEquals(separatedNortParts.get(0)));
-		assertEquals(nm10, nm00);
-		assertEquals(nms0.get(1), nms1.get(1));
+		assertEquals(nm00, nm10);
+		assertEquals(nms1.get(1), nms0.get(1));
 		assertTrue(nm00.getNodes().size() > preNodesSize);
 
 	}
@@ -687,24 +687,24 @@ public class NTRStateTests {
 		NounMapping typeMapping = typeMappings.get(0);
 		NounMapping nortMapping = nortMappings.get(0);
 
-		assertTrue(ntrState.getRelations().size() == 0);
+		assertEquals(0, ntrState.getRelations().size());
 		RelationMapping rm = new RelationMapping(nortMapping, nameMapping, 0.5);
 
 		ntrState.addRelation(rm);
-		assertTrue(ntrState.getRelations().size() == 1);
-		assertEquals(ntrState.getRelations().get(0), rm);
+		assertEquals(1, ntrState.getRelations().size());
+		assertEquals(rm, ntrState.getRelations().get(0));
 
 		ntrState.addRelation(rm);
-		assertTrue(ntrState.getRelations().size() == 1);
+		assertEquals(1, ntrState.getRelations().size());
 
 		ntrState.addRelation(rm.getOccurrenceNodes().get(0), rm.getOccurrenceNodes().get(1), 0.6);
-		assertTrue(ntrState.getRelations().size() == 1);
+		assertEquals(1, ntrState.getRelations().size());
 
 		ntrState.addRelation(nameMapping, typeMapping, 0.6);
-		assertTrue(ntrState.getRelations().size() == 2);
+		assertEquals(2, ntrState.getRelations().size());
 
 		ntrState.addRelation(nameMapping, nortMapping, 0.6);
-		assertTrue(ntrState.getRelations().size() == 3);
+		assertEquals(3, ntrState.getRelations().size());
 
 	}
 
