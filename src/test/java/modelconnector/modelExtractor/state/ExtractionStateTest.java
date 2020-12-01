@@ -64,8 +64,8 @@ public class ExtractionStateTest {
 	public void getter() {
 		ModelExtractionState state = new ModelExtractionState(List.of(i0, i1), List.of(r0, r1));
 
-		assertEquals(state.getInstances(), List.of(i0, i1));
-		assertEquals(state.getInstancesOfType(longestType), List.of(i0));
+		assertEquals(List.of(i0, i1), state.getInstances());
+		assertEquals(List.of(i0), state.getInstancesOfType(longestType));
 		Set<String> currentNames = new HashSet<>();
 		currentNames.addAll(names);
 		currentNames.add(nami);
@@ -78,10 +78,10 @@ public class ExtractionStateTest {
 		currentRelationTypes.add(r0.getType());
 		currentRelationTypes.add(r1.getType());
 
-		assertEquals(state.getNames(), currentNames);
-		assertEquals(state.getInstanceTypes(), currentInstanceTypes);
-		assertEquals(state.getRelationTypes(), currentRelationTypes);
-		assertEquals(state.getRelations(), List.of(r0, r1));
-		assertEquals(state.getRelationsOfType(r0.getType()), List.of(r0));
+		assertEquals(currentNames, state.getNames());
+		assertEquals(currentInstanceTypes, state.getInstanceTypes());
+		assertEquals(currentRelationTypes, state.getRelationTypes());
+		assertEquals(List.of(r0, r1), state.getRelations());
+		assertEquals(List.of(r0), state.getRelationsOfType(r0.getType()));
 	}
 }

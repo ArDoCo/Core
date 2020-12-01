@@ -136,36 +136,36 @@ public class ConnectionStateTest {
 		RecommendedInstance ri = currentInstanceLinks.get(0).getTextualInstance();
 
 		assertTrue(state.getInstanceLinks().contains(il0));
-		assertTrue(state.getInstanceLinks().size() == 1);
+		assertEquals(1, state.getInstanceLinks().size());
 		assertTrue(ri.getNameMappings().containsAll(ri0.getNameMappings()));
-		assertTrue(ri.getNameMappings().size() == ri0.getNameMappings().size());
+		assertEquals(ri0.getNameMappings().size(), ri.getNameMappings().size());
 		assertTrue(ri.getTypeMappings().containsAll(ri0.getTypeMappings()));
-		assertTrue(ri.getTypeMappings().size() == ri0.getTypeMappings().size());
+		assertEquals(ri0.getTypeMappings().size(), ri.getTypeMappings().size());
 
 		state.addToLinks(ri0, i0, 0.5);
 		currentInstanceLinks = state.getInstanceLinks();
 		assertTrue(currentInstanceLinks.contains(il0));
-		assertTrue(currentInstanceLinks.size() == 1);
+		assertEquals(1, currentInstanceLinks.size());
 
 		state.addToLinks(ri1, i0, 0.5);
 		currentInstanceLinks = state.getInstanceLinks();
 		ri = currentInstanceLinks.get(0).getTextualInstance();
 		assertTrue(currentInstanceLinks.contains(il0));
-		assertTrue(currentInstanceLinks.size() == 1);
+		assertEquals(1, currentInstanceLinks.size());
 		assertTrue(ri.getNameMappings().containsAll(ri1.getNameMappings()));
-		assertTrue(ri.getNameMappings().size() == ri1.getNameMappings().size());
+		assertEquals(ri1.getNameMappings().size(), ri.getNameMappings().size());
 		assertTrue(ri.getTypeMappings().containsAll(ri1.getTypeMappings()));
-		assertTrue(ri.getTypeMappings().size() == ri1.getTypeMappings().size());
+		assertEquals(ri1.getTypeMappings().size(), ri.getTypeMappings().size());
 
 		state.addToLinks(il1);
 		currentInstanceLinks = state.getInstanceLinks();
 		assertTrue(currentInstanceLinks.containsAll(List.of(il1, il0)));
-		assertTrue(currentInstanceLinks.size() == 2);
+		assertEquals(2, currentInstanceLinks.size());
 
 		state.addToLinks(il1);
 		currentInstanceLinks = state.getInstanceLinks();
 		assertTrue(currentInstanceLinks.containsAll(List.of(il1, il0)));
-		assertTrue(currentInstanceLinks.size() == 2);
+		assertEquals(2, currentInstanceLinks.size());
 	}
 
 	/**
@@ -181,26 +181,26 @@ public class ConnectionStateTest {
 		state.addToLinks(rrl0, r0, 0.5);
 		List<RelationLink> currentRelationLinks = state.getRelationLinks();
 		assertTrue(currentRelationLinks.contains(rl0));
-		assertTrue(currentRelationLinks.size() == 1);
+		assertEquals(1, currentRelationLinks.size());
 		assertTrue(currentRelationLinks.get(0).getTextualRelation().getNodes().containsAll(rrl0.getNodes()));
-		assertTrue(currentRelationLinks.get(0).getTextualRelation().getNodes().size() == rrl0.getNodes().size());
+		assertEquals(rrl0.getNodes().size(), currentRelationLinks.get(0).getTextualRelation().getNodes().size());
 
 		state.addToLinks(rrl0, r0, 0.5);
 		currentRelationLinks = state.getRelationLinks();
 		assertTrue(currentRelationLinks.contains(rl0));
-		assertTrue(currentRelationLinks.size() == 1);
+		assertEquals(1, currentRelationLinks.size());
 
 		state.addToLinks(rl1);
 		currentRelationLinks = state.getRelationLinks();
 		assertTrue(currentRelationLinks.containsAll(List.of(rl1, rl0)));
-		assertTrue(currentRelationLinks.size() == 2);
+		assertEquals(2, currentRelationLinks.size());
 		assertTrue(currentRelationLinks.get(0).getTextualRelation().getNodes().containsAll(rrl1.getNodes()));
-		assertTrue(currentRelationLinks.get(0).getTextualRelation().getNodes().size() == rrl1.getNodes().size());
+		assertEquals(rrl1.getNodes().size(), currentRelationLinks.get(0).getTextualRelation().getNodes().size());
 
 		state.addToLinks(rl1);
 		currentRelationLinks = state.getRelationLinks();
 		assertTrue(currentRelationLinks.containsAll(List.of(rl1, rl0)));
-		assertTrue(currentRelationLinks.size() == 2);
+		assertEquals(2, currentRelationLinks.size());
 	}
 
 	/**
@@ -217,11 +217,11 @@ public class ConnectionStateTest {
 		state.addToLinks(rl0);
 		state.addToLinks(rl1);
 
-		assertEquals(state.getInstanceLinks(), List.of(il1, il0));
-		assertEquals(state.getInstanceLinks(name, type), List.of(il0));
-		assertEquals(state.getInstanceLinksByType(type), List.of(il0));
-		assertEquals(state.getInstanceLinksByName(name), List.of(il0));
-		assertEquals(state.getRelationLinks(), List.of(rl1, rl0));
+		assertEquals(List.of(il1, il0), state.getInstanceLinks());
+		assertEquals(List.of(il0), state.getInstanceLinks(name, type));
+		assertEquals(List.of(il0), state.getInstanceLinksByType(type));
+		assertEquals(List.of(il0), state.getInstanceLinksByName(name));
+		assertEquals(List.of(rl1, rl0), state.getRelationLinks());
 	}
 
 	/**
@@ -259,16 +259,16 @@ public class ConnectionStateTest {
 		state.addToLinks(rl1);
 
 		state.removeAllInstanceLinksWith(i0);
-		assertEquals(state.getInstanceLinks(), List.of(il1));
+		assertEquals(List.of(il1), state.getInstanceLinks());
 
 		state.removeAllInstanceLinksWith(ri0);
-		assertEquals(state.getInstanceLinks(), List.of());
+		assertEquals(List.of(), state.getInstanceLinks());
 
 		state.removeAllMappingsWith(r0);
-		assertEquals(state.getRelationLinks(), List.of(rl1));
+		assertEquals(List.of(rl1), state.getRelationLinks());
 
 		state.removeAllMappingsWith(rrl1);
-		assertEquals(state.getRelationLinks(), List.of());
+		assertEquals(List.of(), state.getRelationLinks());
 
 		state.addToLinks(il0);
 		state.addToLinks(il1);
@@ -276,10 +276,10 @@ public class ConnectionStateTest {
 		state.addToLinks(rl1);
 
 		state.removeFromMappings(il0);
-		assertEquals(state.getInstanceLinks(), List.of(il1));
+		assertEquals(List.of(il1), state.getInstanceLinks());
 
 		state.removeFromMappings(rl0);
-		assertEquals(state.getRelationLinks(), List.of(rl1));
+		assertEquals(List.of(rl1), state.getRelationLinks());
 
 	}
 

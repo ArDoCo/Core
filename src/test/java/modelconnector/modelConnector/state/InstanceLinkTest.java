@@ -3,7 +3,6 @@ package modelconnector.modelConnector.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,9 +102,9 @@ public class InstanceLinkTest {
 	public void getter() {
 		InstanceLink il = new InstanceLink(ri0, i0, 0.5);
 
-		assertEquals(il.getModelInstance(), i0);
-		assertEquals(il.getTextualInstance(), ri0);
-		assertTrue(il.getProbability() == 0.5);
+		assertEquals(i0, il.getModelInstance());
+		assertEquals(ri0, il.getTextualInstance());
+		assertEquals(0.5, il.getProbability(), 0.001);
 	}
 
 	/**
@@ -117,7 +116,7 @@ public class InstanceLinkTest {
 		InstanceLink il = new InstanceLink(ri0, i0, 0.5);
 
 		il.setProbability(0.8);
-		assertTrue(il.getProbability() == 0.8);
+		assertEquals(0.8, il.getProbability(), 0.001);
 	}
 
 }
