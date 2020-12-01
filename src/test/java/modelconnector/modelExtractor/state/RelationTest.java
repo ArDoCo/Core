@@ -61,9 +61,9 @@ public class RelationTest {
 
 		Relation r0 = new Relation(i0, i1, type, 0);
 
-		assertEquals(r0.getInstances(), List.of(i0, i1));
-		assertEquals(r0.getType(), type);
-		assertEquals(r0.getUid(), 0);
+		assertEquals(List.of(i0, i1), r0.getInstances());
+		assertEquals(type, r0.getType());
+		assertEquals(0, r0.getUid());
 	}
 
 	/**
@@ -77,17 +77,17 @@ public class RelationTest {
 		Relation r0 = new Relation(i0, i1, type, 0);
 
 		assertTrue(r0.getInstances().containsAll(List.of(i0, i1)));
-		assertTrue(r0.getInstances().size() == 2);
+		assertEquals(2, r0.getInstances().size());
 
 		r0.addOtherInstances(List.of(i0));
 
 		assertTrue(r0.getInstances().containsAll(List.of(i0, i1)));
-		assertTrue(r0.getInstances().size() == 2);
+		assertEquals(2, r0.getInstances().size());
 
 		r0.addOtherInstances(List.of(i2));
 
 		assertTrue(r0.getInstances().containsAll(List.of(i0, i1, i2)));
-		assertTrue(r0.getInstances().size() == 3);
+		assertEquals(3, r0.getInstances().size());
 	}
 
 }

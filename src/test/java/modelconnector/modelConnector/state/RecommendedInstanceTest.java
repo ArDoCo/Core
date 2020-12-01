@@ -97,11 +97,11 @@ public class RecommendedInstanceTest {
 	public void getter() {
 		RecommendedInstance ri = new RecommendedInstance(name, type, 0.5, nameMappings, typeMappings);
 
-		assertEquals(ri.getName(), name);
-		assertEquals(ri.getNameMappings(), nameMappings);
-		assertTrue(ri.getProbability() == 0.5);
-		assertEquals(ri.getType(), type);
-		assertEquals(ri.getTypeMappings(), typeMappings);
+		assertEquals(name, ri.getName());
+		assertEquals(nameMappings, ri.getNameMappings());
+		assertEquals(0.5, ri.getProbability(), 0.001);
+		assertEquals(type, ri.getType());
+		assertEquals(typeMappings, ri.getTypeMappings());
 	}
 
 	/**
@@ -129,21 +129,21 @@ public class RecommendedInstanceTest {
 		newNameMappings.add(nameMapping0);
 		newNameMappings.addAll(nortMappings);
 
-		assertEquals(ri.getNameMappings(), newNameMappings);
-		assertEquals(ri.getTypeMappings(), newTypeMappings);
+		assertEquals(newNameMappings, ri.getNameMappings());
+		assertEquals(newTypeMappings, ri.getTypeMappings());
 
 		ri.addMappings(nameMapping1, typeMapping1);
 
 		newNameMappings.add(nameMapping1);
 		newTypeMappings.add(typeMapping1);
 
-		assertEquals(ri.getNameMappings(), newNameMappings);
-		assertEquals(ri.getTypeMappings(), newTypeMappings);
+		assertEquals(newNameMappings, ri.getNameMappings());
+		assertEquals(newTypeMappings, ri.getTypeMappings());
 
 		ri.addMappings(nortMappings, nortMappings);
 		ri.addMappings(nameMapping1, typeMapping1);
-		assertEquals(ri.getNameMappings(), newNameMappings);
-		assertEquals(ri.getTypeMappings(), newTypeMappings);
+		assertEquals(newNameMappings, ri.getNameMappings());
+		assertEquals(newTypeMappings, ri.getTypeMappings());
 	}
 
 	/**
@@ -162,11 +162,11 @@ public class RecommendedInstanceTest {
 
 		ri.addName(nortMapping);
 		assertTrue(ri.getNameMappings().containsAll(List.of(nameMapping, nortMapping)));
-		assertTrue(ri.getNameMappings().size() == 2);
+		assertEquals(2, ri.getNameMappings().size());
 
 		ri.addType(nortMapping);
 		assertTrue(ri.getTypeMappings().containsAll(List.of(typeMapping, nortMapping)));
-		assertTrue(ri.getNameMappings().size() == 2);
+		assertEquals(2, ri.getNameMappings().size());
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class RecommendedInstanceTest {
 		newNameMappings.remove(nameMapping);
 
 		assertTrue(ri.getNameMappings().containsAll(newNameMappings));
-		assertTrue(ri.getNameMappings().size() == newNameMappings.size());
+		assertEquals(newNameMappings.size(), ri.getNameMappings().size());
 
 	}
 
@@ -201,13 +201,13 @@ public class RecommendedInstanceTest {
 		RecommendedInstance ri = new RecommendedInstance(name, type, 0.5, List.of(nameMappings.get(0)), List.of(typeMappings.get(0)));
 
 		ri.setProbability(0.8);
-		assertTrue(ri.getProbability() == 0.8);
+		assertEquals(0.8, ri.getProbability(), 0.001);
 
 		ri.setType(nort);
-		assertEquals(ri.getType(), nort);
+		assertEquals(nort, ri.getType());
 
 		ri.setName(nort);
-		assertEquals(ri.getName(), nort);
+		assertEquals(nort, ri.getName());
 
 	}
 

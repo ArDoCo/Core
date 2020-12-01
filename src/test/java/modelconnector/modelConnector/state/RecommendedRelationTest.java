@@ -112,10 +112,10 @@ public class RecommendedRelationTest {
 
 		RecommendedRelation rrl = new RecommendedRelation("in", ri0, ri1, List.of(ri2), 0.5, relationNodes);
 
-		assertEquals(rrl.getName(), "in");
+		assertEquals("in", rrl.getName());
 		assertTrue(rrl.getNodes().containsAll(relationNodes));
 		assertTrue(rrl.getNodes().size() == relationNodes.size());
-		assertTrue(rrl.getProbability() == 0.5);
+		assertEquals(0.5, rrl.getProbability(), 0.001);
 
 		Set<RecommendedInstance> rrlris = new HashSet<>();
 		rrlris.addAll(rrl.getRelationInstances());
@@ -123,7 +123,7 @@ public class RecommendedRelationTest {
 		Set<RecommendedInstance> relationInstances = new HashSet<>();
 		relationInstances.addAll(List.of(ri0, ri1, ri2));
 
-		assertEquals(rrlris, relationInstances);
+		assertEquals(relationInstances, rrlris);
 
 	}
 
@@ -138,12 +138,12 @@ public class RecommendedRelationTest {
 		rrl.addOccurrences(relationNodes);
 
 		assertTrue(rrl.getNodes().containsAll(relationNodes));
-		assertTrue(rrl.getNodes().size() == relationNodes.size());
+		assertEquals(relationNodes.size(), rrl.getNodes().size());
 
 		rrl.addOccurrences(relationNodes);
 
 		assertTrue(rrl.getNodes().containsAll(relationNodes));
-		assertTrue(rrl.getNodes().size() == relationNodes.size());
+		assertEquals(relationNodes.size(), rrl.getNodes().size());
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class RecommendedRelationTest {
 		RecommendedRelation rrl = new RecommendedRelation("in", ri0, ri1, List.of(ri2), 0.5, List.of());
 
 		rrl.updateProbability(0.9);
-		assertTrue(rrl.getProbability() != 0.5);
+		assertNotEquals(0.5, rrl.getProbability());
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class RecommendedRelationTest {
 		RecommendedRelation rrl = new RecommendedRelation("in", ri0, ri1, List.of(ri2), 0.5, List.of());
 
 		rrl.setProbability(0.9);
-		assertTrue(rrl.getProbability() == 0.9);
+		assertEquals(0.9, rrl.getProbability(), 0.001);
 	}
 
 }
