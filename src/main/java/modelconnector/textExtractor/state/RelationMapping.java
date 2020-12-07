@@ -35,13 +35,13 @@ public class RelationMapping {
 	}
 
 	/**
-	 * Adds more nodes to the relation.
+	 * Adds more NounMappings to the relation.
 	 *
-	 * @param nodes more nodes to add.
+	 * @param mappings more noun mappings to add.
 	 */
-	public void addNodesToRelation(List<NounMapping> nodes) {
-		for (NounMapping n : nodes) {
-			if (!this.relationNodes.contains(n)) {
+	public void addMappingsToRelation(List<NounMapping> mappings) {
+		for (NounMapping n : mappings) {
+			if (!relationNodes.contains(n)) {
 				relationNodes.add(n);
 			}
 		}

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -110,21 +111,29 @@ public class RelationMappingTest {
 	}
 
 	/**
-	 * Tests if nodes can be added to the relation mapping. When adding a node,
-	 * already contained by the relation mapping, the add should not be executed.
+	 * Tests if nodes can be added to the relation mapping. When adding a node that
+	 * is already contained by the relation mapping, the add should not be executed.
 	 * When adding a new node, it should be executed.
 	 */
 	@Test
 	public void addNodes() {
 		RelationMapping rm = new RelationMapping(nortMappings.get(0), nameMappings.get(0), 0.5);
 
-		List<INode> nodes = new ArrayList<>();
-		nodes.addAll(nortMappings.get(0).getNodes());
+		List<NounMapping> mappings = new ArrayList<>();
+		mappings.add(nortMappings.get(0));
 
-		rm.addNodesToRelation(List.of(typeMappings.get(0)));
+		List<NounMapping> currentRMNortMappings = rm.getOccurrenceNodes().stream().filter(n -> n.getKind().equals(MappingKind.NAME_OR_TYPE)).collect(Collectors.toList());
+		assertEquals(mappings, currentRMNortMappings);
 
-		nodes.addAll(nortMappings.get(0).getNodes());
-		nodes.addAll(typeMappings.get(0).getNodes());
+		rm.addMappingsToRelation(List.of(nortMappings.get(0)));
+		currentRMNortMappings = rm.getOccurrenceNodes().stream().filter(n -> n.getKind().equals(MappingKind.NAME_OR_TYPE)).collect(Collectors.toList());
+		assertEquals(mappings, currentRMNortMappings);
+
+		rm.addMappingsToRelation(List.of(nortMappings.get(1)));
+		mappings.addAll(List.of(nortMappings.get(1)));
+		currentRMNortMappings = rm.getOccurrenceNodes().stream().filter(n -> n.getKind().equals(MappingKind.NAME_OR_TYPE)).collect(Collectors.toList());
+		assertEquals(mappings, currentRMNortMappings);
+
 	}
 
 }
