@@ -16,7 +16,7 @@
 	    <repository>
 	      <id>github</id>
 	      <name>GitHub ArDoCo Apache Maven Packages</name>
-	      <url>https://maven.pkg.github.com/ArDoCo/ArDoCo-parent</url>
+	      <url>https://maven.pkg.github.com/ArDoCo/Core</url>
 	    </repository>
 	</repositories>
 
@@ -52,6 +52,11 @@
 			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
 		</repository>
+		<snapshotRepository>
+			<id>github</id>
+			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 </project>
