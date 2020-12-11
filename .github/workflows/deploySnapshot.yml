@@ -1,9 +1,10 @@
-name: Maven Verify
+name: Maven Deploy Snapshot
 
 on:
   push:
-  pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - 'main' # Build the latest SNAPSHOT
+
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,7 +18,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    - name: Set up JDK 14
+    - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
         java-version: 11
@@ -34,3 +35,5 @@ jobs:
         servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
     - name: Verify with Maven
       run: mvn -B verify --file pom.xml
+    - name: Publish Package
+      run: mvn -B deploy
