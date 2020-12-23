@@ -24,7 +24,7 @@
 
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>AnalyzerSolverInterfaces</artifactId>
+			<artifactId>analyzer_solver_interfaces</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
