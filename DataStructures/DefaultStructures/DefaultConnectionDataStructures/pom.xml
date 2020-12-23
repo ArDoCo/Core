@@ -4,16 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>DefaultStructures</artifactId>
+		<artifactId>default_structures</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>DefaultConnectionDataStructures</artifactId>
+	<artifactId>default_connection_data_structures</artifactId>
 	<name>DefaultConnectionDataStructures</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>ConnectionDataStructures</artifactId>
+			<artifactId>connection_data_structures</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

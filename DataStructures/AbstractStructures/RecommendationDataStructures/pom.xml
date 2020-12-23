@@ -4,26 +4,26 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>AbstractStructures</artifactId>
+		<artifactId>abstract_structures</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>RecommendationDataStructures</artifactId>
+	<artifactId>recommendation_data_structures</artifactId>
 	<name>RecommendationDataStructures</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>ModuleInterfaces</artifactId>
+			<artifactId>module_interfaces</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>ModelDataStructures</artifactId>
+			<artifactId>model_data_structures</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>TextDataStructures</artifactId>
+			<artifactId>text_data_structures</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>edu.kit.ipd.consistency_analyzer</groupId>
-    <artifactId>DataStructures</artifactId>
+    <artifactId>data_structures</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>DefaultStructures</artifactId>
+  <artifactId>default_structures</artifactId>
   <packaging>pom</packaging>
   <name>DefaultStructures</name>
   <modules>

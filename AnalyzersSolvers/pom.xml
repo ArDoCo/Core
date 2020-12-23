@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>edu.kit.ipd.consistency_analyzer</groupId>
-    <artifactId>ConsistencyAnalyzer</artifactId>
+    <artifactId>consistency_analyzer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>AnalyzersSolvers</artifactId>
+  <artifactId>analyzers_solvers</artifactId>
   <packaging>pom</packaging>
   <name>AnalyzersSolvers</name>
   <modules>
