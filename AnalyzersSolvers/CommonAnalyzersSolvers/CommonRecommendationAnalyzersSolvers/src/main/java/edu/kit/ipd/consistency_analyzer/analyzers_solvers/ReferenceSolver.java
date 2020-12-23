@@ -18,7 +18,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
  * as names. If it founds some similar names it creates recommendations.
  *
  * @author Sophie
- * 
+ *
  */
 @MetaInfServices(IRecommendationSolver.class)
 public class ReferenceSolver extends RecommendationSolver {
@@ -119,7 +119,7 @@ public class ReferenceSolver extends RecommendationSolver {
 		}
 
 		double prob = probability;
-		if (similarNameMappings.size() >= 1) {
+		if (!similarNameMappings.isEmpty()) {
 			prob = probability * proportionalDecrease;
 		}
 

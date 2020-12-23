@@ -38,7 +38,4 @@ public abstract class ConnectionSolver extends Solver implements IConnectionSolv
 		this.recommendationState = recommendationState;
 		this.connectionState = connectionState;
 	}
-
-	@Override
-	public abstract void exec();
 }

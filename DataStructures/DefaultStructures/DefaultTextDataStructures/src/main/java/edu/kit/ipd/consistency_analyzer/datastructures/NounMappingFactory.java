@@ -2,7 +2,11 @@ package edu.kit.ipd.consistency_analyzer.datastructures;
 
 import java.util.List;
 
-public class NounMappingFactory {
+public final class NounMappingFactory {
+
+	private NounMappingFactory() {
+		throw new IllegalAccessError();
+	}
 
 	/**
 	 * Creates a mapping dependent on the kind and a single node

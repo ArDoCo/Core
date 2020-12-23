@@ -1,11 +1,9 @@
 package edu.kit.ipd.consistency_analyzer.analyzers_solvers;
 
-import com.sun.tools.jconsole.JConsoleContext.ConnectionState;
-
+import edu.kit.ipd.consistency_analyzer.datastructures.IConnectionState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IModelExtractionState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendationState;
 import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 
 /**
  * This class represents an analyzer, that works on the level of the connection
@@ -19,7 +17,7 @@ public abstract class ConnectionAnalyzer extends Analyzer implements IConnection
 	protected ITextExtractionState textExtractionState;
 	protected IModelExtractionState modelExtractionState;
 	protected IRecommendationState recommendationState;
-	protected ConnectionState connectionState;
+	protected IConnectionState connectionState;
 
 	/**
 	 * Creates a new analyzer.
@@ -32,15 +30,11 @@ public abstract class ConnectionAnalyzer extends Analyzer implements IConnection
 	 * @param connectionState      the connection state to work with
 	 */
 	protected ConnectionAnalyzer(DependencyType dependencyType, ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, //
-			IRecommendationState recommendationState, ConnectionState connectionState) {
+			IRecommendationState recommendationState, IConnectionState connectionState) {
 		super(dependencyType);
 		this.textExtractionState = textExtractionState;
 		this.modelExtractionState = modelExtractionState;
 		this.recommendationState = recommendationState;
 		this.connectionState = connectionState;
 	}
-
-	@Override
-	public abstract void exec(IWord node);
-
 }

@@ -11,18 +11,11 @@ public abstract class Solver implements ISolver {
 	protected DependencyType type;
 
 	/**
-	 * An analyzer can be executed without additional arguments
-	 *
-	 */
-	@Override
-	public abstract void exec();
-
-	/**
 	 * Creates a new analyzer of the specified type.
 	 *
 	 * @param type the analyzer type
 	 */
-	public Solver(DependencyType type) {
+	protected Solver(DependencyType type) {
 		this.type = type;
 	}
 

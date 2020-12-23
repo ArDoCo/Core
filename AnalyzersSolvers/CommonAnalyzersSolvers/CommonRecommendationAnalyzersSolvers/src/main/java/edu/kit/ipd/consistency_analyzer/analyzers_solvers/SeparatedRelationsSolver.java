@@ -20,7 +20,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
  * separator a separator relation is recommended.
  *
  * @author Sophie
- * 
+ *
  */
 @MetaInfServices(IRecommendationSolver.class)
 public class SeparatedRelationsSolver extends RecommendationSolver {
@@ -76,59 +76,58 @@ public class SeparatedRelationsSolver extends RecommendationSolver {
 			List<String> occsWithSeparator = occs.stream().filter(SimilarityUtils::containsSeparator).collect(Collectors.toList());
 			if (occsWithSeparator.isEmpty()) {
 				continue;
-			} else {
-				for (String occ : occsWithSeparator) {
-					occ = SimilarityUtils.splitAtSeparators(occ);
-					List<String> occParts = new ArrayList<>(List.of(occ.split(" ")));
+			}
+			for (String occ : occsWithSeparator) {
+				occ = SimilarityUtils.splitAtSeparators(occ);
+				List<String> occParts = new ArrayList<>(List.of(occ.split(" ")));
 
-					List<String> similarParts = new ArrayList<>();
-					List<Integer> similarPositions = new ArrayList<>();
-					for (int i = 0; i < occParts.size(); i++) {
-						String part = occParts.get(i);
-						if (SimilarityUtils.areWordsSimilar(part, siName)) {
-							similarParts.add(part);
-							similarPositions.add(i);
-						}
+				List<String> similarParts = new ArrayList<>();
+				List<Integer> similarPositions = new ArrayList<>();
+				for (int i = 0; i < occParts.size(); i++) {
+					String part = occParts.get(i);
+					if (SimilarityUtils.areWordsSimilar(part, siName)) {
+						similarParts.add(part);
+						similarPositions.add(i);
 					}
-
-					int positionOfRi = -1;
-
-					if (similarPositions.size() == 1) {
-						positionOfRi = similarPositions.get(0);
-						occParts.removeAll(similarParts);
-					}
-
-					List<List<IRecommendedInstance>> riPossibilities = new ArrayList<>();
-
-					for (String occPart : occParts) {
-						List<IRecommendedInstance> ris = this.recommendationState.getRecommendedInstancesBySimilarName(occPart);
-						if (!ris.isEmpty()) {
-							riPossibilities.add(this.recommendationState.getRecommendedInstancesBySimilarName(occPart));
-						}
-					}
-
-					if (positionOfRi >= 0 && riPossibilities.size() == occParts.size()) {
-						riPossibilities.add(positionOfRi, List.of(ri));
-					}
-
-					if (riPossibilities.size() < 2) {
-						break;
-					} else {
-						List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(), riPossibilities);
-
-						for (List<IRecommendedInstance> possibility : allRelationProbabilities) {
-
-							IRecommendedInstance r1 = possibility.get(0);
-							IRecommendedInstance r2 = possibility.get(1);
-							possibility.remove(r1);
-							possibility.remove(r2);
-
-							this.recommendationState.addRecommendedRelation(relName, r1, r2, possibility, probability, new ArrayList<>());
-
-						}
-					}
-
 				}
+
+				int positionOfRi = -1;
+
+				if (similarPositions.size() == 1) {
+					positionOfRi = similarPositions.get(0);
+					occParts.removeAll(similarParts);
+				}
+
+				List<List<IRecommendedInstance>> riPossibilities = new ArrayList<>();
+
+				for (String occPart : occParts) {
+					List<IRecommendedInstance> ris = recommendationState.getRecommendedInstancesBySimilarName(occPart);
+					if (!ris.isEmpty()) {
+						riPossibilities.add(recommendationState.getRecommendedInstancesBySimilarName(occPart));
+					}
+				}
+
+				if (positionOfRi >= 0 && riPossibilities.size() == occParts.size()) {
+					riPossibilities.add(positionOfRi, List.of(ri));
+				}
+
+				if (riPossibilities.size() < 2) {
+					break;
+				} else {
+					List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(), riPossibilities);
+
+					for (List<IRecommendedInstance> possibility : allRelationProbabilities) {
+
+						IRecommendedInstance r1 = possibility.get(0);
+						IRecommendedInstance r2 = possibility.get(1);
+						possibility.remove(r1);
+						possibility.remove(r2);
+
+						recommendationState.addRecommendedRelation(relName, r1, r2, possibility, probability, new ArrayList<>());
+
+					}
+				}
+
 			}
 
 		}

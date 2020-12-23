@@ -15,9 +15,9 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
 
 /**
  * This connector finds names of model instance in recommended instances.
- * 
+ *
  * @author Sophie
- * 
+ *
  */
 @MetaInfServices(IConnectionSolver.class)
 public class InstanceConnectionSolver extends ConnectionSolver {
@@ -67,7 +67,7 @@ public class InstanceConnectionSolver extends ConnectionSolver {
 		for (IInstance i : modelExtractionState.getInstances()) {
 			List<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
 
-			List<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.stream().filter(ri -> ri.getTypeMappings().size() != 0).collect(Collectors.toList());
+			List<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.stream().filter(ri -> !ri.getTypeMappings().isEmpty()).collect(Collectors.toList());
 			mostLikelyRiWithoutType.stream().forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
 			mostLikelyRi.stream().forEach(ml -> connectionState.addToLinks(ml, i, probability));
 		}
