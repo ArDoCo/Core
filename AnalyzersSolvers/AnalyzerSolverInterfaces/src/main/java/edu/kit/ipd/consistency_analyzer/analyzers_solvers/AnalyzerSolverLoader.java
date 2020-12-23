@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-public class AnalyzerSolverLoader {
+public final class AnalyzerSolverLoader {
+
+	private AnalyzerSolverLoader() {
+		throw new IllegalAccessError();
+	}
 
 	public static <A extends ILoadable> Map<String, A> loadLoadable(Class<A> classA) {
 

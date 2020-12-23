@@ -3,7 +3,6 @@ package edu.kit.ipd.consistency_analyzer.analyzers_solvers;
 import edu.kit.ipd.consistency_analyzer.datastructures.IModelExtractionState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendationState;
 import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 
 /**
  * This class represents all analyzers that create work on recommendations.
@@ -33,8 +32,5 @@ public abstract class RecommendationAnalyzer extends Analyzer implements IRecomm
 		this.modelExtractionState = modelExtractionState;
 		this.recommendationState = recommendationState;
 	}
-
-	@Override
-	public abstract void exec(IWord node);
 
 }

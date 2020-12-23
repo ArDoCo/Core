@@ -23,7 +23,4 @@ public abstract class TextExtractionSolver extends Solver implements ITextSolver
 		super(dependencyType);
 		this.textExtractionState = textExtractionState;
 	}
-
-	@Override
-	public abstract void exec();
 }

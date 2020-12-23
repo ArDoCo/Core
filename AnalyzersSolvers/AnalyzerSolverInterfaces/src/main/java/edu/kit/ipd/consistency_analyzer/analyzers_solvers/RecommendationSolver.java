@@ -33,7 +33,4 @@ public abstract class RecommendationSolver extends Solver implements IRecommenda
 		this.modelExtractionState = modelExtractionState;
 		this.recommendationState = recommendationState;
 	}
-
-	@Override
-	public abstract void exec();
 }
