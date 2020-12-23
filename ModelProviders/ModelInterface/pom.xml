@@ -4,16 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>ModelProviders</artifactId>
+		<artifactId>model_providers</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>ModelInterface</artifactId>
+	<artifactId>model_interface</artifactId>
 	<name>ModelInterface</name>
 	<dependencies>
 
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>ModelDataStructures</artifactId>
+			<artifactId>model_data_structures</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

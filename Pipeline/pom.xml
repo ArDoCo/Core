@@ -4,43 +4,43 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>ConsistencyAnalyzer</artifactId>
+		<artifactId>consistency_analyzer</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>Pipeline</artifactId>
+	<artifactId>pipeline</artifactId>
 	<name>Pipeline</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>TextExtractor</artifactId>
+			<artifactId>text_extractor</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>ModelExtractor</artifactId>
+			<artifactId>model_extractor</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>RecommendationGenerator</artifactId>
+			<artifactId>recommendation_generator</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>ConnectionGenerator</artifactId>
+			<artifactId>connection_generator</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>ParseProvider</artifactId>
+			<artifactId>parse_provider</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>HardCodedModel</artifactId>
+			<artifactId>hard_coded_model</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

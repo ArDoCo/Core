@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-	<artifactId>ConsistencyAnalyzer</artifactId>
+	<artifactId>consistency_analyzer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>ConsistencyAnalyzer</name>
@@ -24,7 +24,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-
+	<repositories>
+		<repository>
+			<id>github</id>
+			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
+		</repository>
+	</repositories>
 
 	<distributionManagement>
 		<repository>
@@ -33,9 +39,9 @@
 			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
 		</repository>
 		<snapshotRepository>
-		            <id>github</id>
-		            <name>GitHub ArDoCo/Core Apache Maven Packages</name>
-		            <url>https://maven.pkg.github.com/ArDoCo/Core</url>
+			<id>github</id>
+			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
 		</snapshotRepository>
 	</distributionManagement>
 

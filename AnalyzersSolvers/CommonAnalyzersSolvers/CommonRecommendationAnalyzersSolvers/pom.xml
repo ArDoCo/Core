@@ -4,21 +4,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>CommonAnalyzersSolvers</artifactId>
+		<artifactId>common_analyzers_solvers</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>CommonRecommendationAnalyzersSolvers</artifactId>
+	<artifactId>common_recommendation_analyzers_solvers</artifactId>
 	<name>CommonRecommendationAnalyzersSolvers</name>
 	<dependencies>
 
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>Common</artifactId>
+			<artifactId>common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>CommonTextTools</artifactId>
+			<artifactId>common_text_tools</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

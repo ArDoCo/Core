@@ -4,22 +4,22 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>Modules</artifactId>
+		<artifactId>modules</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>RecommendationGenerator</artifactId>
+	<artifactId>recommendation_generator</artifactId>
 	<name>RecommendationGenerator</name>
 
 	<dependencies>
 
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>DefaultRecommendationDataStructures</artifactId>
+			<artifactId>default_recommendation_data_structures</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>CommonRecommendationAnalyzersSolvers</artifactId>
+			<artifactId>common_recommendation_analyzers_solvers</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
