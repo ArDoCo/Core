@@ -92,3 +92,5 @@ pom.xml.next
 release.properties
 .classpath
 .project
+Pipeline/src/main/resources/texts/
+Pipeline/evaluations/
