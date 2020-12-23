@@ -2,49 +2,29 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>edu.kit.ipd.ardoco</groupId>
-	<artifactId>core</artifactId>
+	<groupId>edu.kit.ipd.consistency_analyzer</groupId>
+	<artifactId>ConsistencyAnalyzer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
-  <parent>
-    <groupId>edu.kit.ipd</groupId>
-    <artifactId>ArDoCo</artifactId>
-    <version>0.1.0</version>
-  </parent>
-
-	<repositories>
-	    <repository>
-	      <id>github</id>
-	      <name>GitHub ArDoCo Apache Maven Packages</name>
-	      <url>https://maven.pkg.github.com/ArDoCo/Core</url>
-	    </repository>
-	</repositories>
+	<packaging>pom</packaging>
+	<name>ConsistencyAnalyzer</name>
+	<modules>
+		<module>DataStructures</module>
+		<module>Pipeline</module>
+		<module>Common</module>
+		<module>CommonTextTools</module>
+		<module>AnalyzersSolvers</module>
+		<module>Modules</module>
+		<module>ModelProviders</module>
+		<module>TextProviders</module>
+	</modules>
 
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
-
-		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
-		<sonar.organization>ardoco</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>edu.kit.ipd.indirect</groupId>
-			<artifactId>tokenizer</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.indirect</groupId>
-			<artifactId>depParser</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd</groupId>
-			<artifactId>GraphImprove</artifactId>
-			<version>0.1.0</version>
-			<type>jar</type>
-		</dependency>
-	</dependencies>
+
 
 	<distributionManagement>
 		<repository>
@@ -52,11 +32,7 @@
 			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
 		</repository>
-		<snapshotRepository>
-			<id>github</id>
-			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
-		</snapshotRepository>
 	</distributionManagement>
 
 </project>
+
