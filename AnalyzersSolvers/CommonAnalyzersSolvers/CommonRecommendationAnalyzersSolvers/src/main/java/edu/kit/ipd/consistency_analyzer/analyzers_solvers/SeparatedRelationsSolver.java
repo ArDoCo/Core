@@ -55,7 +55,7 @@ public class SeparatedRelationsSolver extends RecommendationSolver {
 	@Override
 	public void exec() {
 
-		addRelations();
+		addRelationsForAllRecommendedInstances();
 	}
 
 	/**
@@ -65,72 +65,73 @@ public class SeparatedRelationsSolver extends RecommendationSolver {
 	 * product is created. For each combination a possible recommendation is
 	 * created.
 	 */
-	private void addRelations() {
-		for (IRecommendedInstance ri : recommendationState.getRecommendedInstances()) {
-			String siName = ri.getName();
+	private void addRelationsForAllRecommendedInstances() {
+		for (IRecommendedInstance recommendedInstance : recommendationState.getRecommendedInstances()) {
 
-			List<String> occs = new ArrayList<>();
-			for (INounMapping nnm : ri.getNameMappings()) {
-				occs.addAll(nnm.getOccurrences());
-			}
-			List<String> occsWithSeparator = occs.stream().filter(SimilarityUtils::containsSeparator).collect(Collectors.toList());
-			if (occsWithSeparator.isEmpty()) {
-				continue;
-			}
-			for (String occ : occsWithSeparator) {
-				occ = SimilarityUtils.splitAtSeparators(occ);
-				List<String> occParts = new ArrayList<>(List.of(occ.split(" ")));
+			List<String> occurrencesWithSeparator = collectOccurrencesWithSeparators(recommendedInstance);
 
-				List<String> similarParts = new ArrayList<>();
-				List<Integer> similarPositions = new ArrayList<>();
-				for (int i = 0; i < occParts.size(); i++) {
-					String part = occParts.get(i);
-					if (SimilarityUtils.areWordsSimilar(part, siName)) {
-						similarParts.add(part);
-						similarPositions.add(i);
-					}
-				}
-
-				int positionOfRi = -1;
-
-				if (similarPositions.size() == 1) {
-					positionOfRi = similarPositions.get(0);
-					occParts.removeAll(similarParts);
-				}
-
-				List<List<IRecommendedInstance>> riPossibilities = new ArrayList<>();
-
-				for (String occPart : occParts) {
-					List<IRecommendedInstance> ris = recommendationState.getRecommendedInstancesBySimilarName(occPart);
-					if (!ris.isEmpty()) {
-						riPossibilities.add(recommendationState.getRecommendedInstancesBySimilarName(occPart));
-					}
-				}
-
-				if (positionOfRi >= 0 && riPossibilities.size() == occParts.size()) {
-					riPossibilities.add(positionOfRi, List.of(ri));
-				}
-
-				if (riPossibilities.size() < 2) {
-					break;
-				} else {
-					List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(), riPossibilities);
-
-					for (List<IRecommendedInstance> possibility : allRelationProbabilities) {
-
-						IRecommendedInstance r1 = possibility.get(0);
-						IRecommendedInstance r2 = possibility.get(1);
-						possibility.remove(r1);
-						possibility.remove(r2);
-
-						recommendationState.addRecommendedRelation(relName, r1, r2, possibility, probability, new ArrayList<>());
-
-					}
-				}
-
+			for (String occurrence : occurrencesWithSeparator) {
+				buildRelation(getAllCorrespondingRecommendationsForParticipants(recommendedInstance, occurrence));
 			}
 
 		}
+	}
+
+	private List<String> collectOccurrencesWithSeparators(IRecommendedInstance recommendedInstance) {
+		List<String> occs = collectOccurrencesAsStrings(recommendedInstance);
+		List<String> occsWithSeparator = occs.stream().filter(SimilarityUtils::containsSeparator).collect(Collectors.toList());
+
+		return occsWithSeparator;
+	}
+
+	private List<String> collectOccurrencesAsStrings(IRecommendedInstance recInstance) {
+		List<String> occurrences = new ArrayList<>();
+		for (INounMapping nnm : recInstance.getNameMappings()) {
+			occurrences.addAll(nnm.getOccurrences());
+		}
+		return occurrences;
+	}
+
+	private List<List<IRecommendedInstance>> getAllCorrespondingRecommendationsForParticipants(IRecommendedInstance recInstance, String occurrence) {
+		String recInstanceName = recInstance.getName();
+
+		occurrence = SimilarityUtils.splitAtSeparators(occurrence);
+		List<String> relationParticipants = new ArrayList<>(List.of(occurrence.split(" ")));
+
+		List<List<IRecommendedInstance>> participatingRecInstances = new ArrayList<>();
+
+		for (int i = 0; i < relationParticipants.size(); i++) {
+			String participant = relationParticipants.get(i);
+			participatingRecInstances.add(new ArrayList<IRecommendedInstance>());
+
+			if (SimilarityUtils.areWordsSimilar(recInstanceName, participant)) {
+				participatingRecInstances.get(i).add(recInstance);
+				continue;
+			}
+
+			participatingRecInstances.get(i).addAll(recommendationState.getRecommendedInstancesBySimilarName(participant));
+		}
+		return participatingRecInstances;
+	}
+
+	private void buildRelation(List<List<IRecommendedInstance>> recommendedParticipants) {
+		if (recommendedParticipants.size() < 2) {
+			return;
+		}
+
+		List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(), recommendedParticipants);
+
+		for (List<IRecommendedInstance> possibility : allRelationProbabilities) {
+
+			IRecommendedInstance r1 = possibility.get(0);
+			IRecommendedInstance r2 = possibility.get(1);
+			possibility.remove(r1);
+			possibility.remove(r2);
+
+			recommendationState.addRecommendedRelation(relName, r1, r2, possibility, probability, new ArrayList<>());
+
+		}
+
 	}
 
 }

@@ -19,7 +19,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.MappingKind;
  * This analyzer identifies terms and examines their textual environment.
  *
  * @author Sophie
- * 
+ *
  */
 @MetaInfServices(IRecommendationAnalyzer.class)
 public class ExtractedTermsAnalyzer extends RecommendationAnalyzer {
@@ -101,32 +101,12 @@ public class ExtractedTermsAnalyzer extends RecommendationAnalyzer {
 			List<INounMapping> wordMappings = SimilarityUtils.getMostLikelyNMappingsByReference(word, termNounMappings);
 
 			for (INounMapping wordMapping : wordMappings) {
-				boolean stop = false;
 
 				int position = termNounMappings.indexOf(wordMapping);
 
-				IWord currentNode = n;
-
-				for (int i = position - 1; i >= 0 && !stop; i--) {
-					String preWord = currentNode.getPreWord().getText();
-					String reference = termNounMappings.get(i).getReference();
-					if (!SimilarityUtils.areWordsSimilar(reference, preWord)) {
-						stop = true;
-					}
-				}
-
-				currentNode = n;
-
-				for (int i = position + 1; i < termNounMappings.size() && !stop; i++) {
-					String postWord = currentNode.getNextWord().getText();
-					String reference = termNounMappings.get(i).getReference();
-
-					if (!SimilarityUtils.areWordsSimilar(reference, postWord)) {
-						stop = true;
-					}
-				}
-
-				if (!stop) {
+				if (//
+				!arePreviousWordsEqualToReferences(termNounMappings, n, position) && //
+						!areNextWordsEqualToReferences(termNounMappings, n, position)) {
 					possibleOccuredTermMappings.add(term);
 					break; // TODO: poss. rework -> assumption: There is only one corresponding term
 							// mapping -> change return type
@@ -137,6 +117,35 @@ public class ExtractedTermsAnalyzer extends RecommendationAnalyzer {
 		}
 		return possibleOccuredTermMappings;
 
+	}
+
+	private boolean areNextWordsEqualToReferences(List<INounMapping> references, IWord currentWord, int currentPosition) {
+		boolean stop = false;
+
+		for (int i = currentPosition + 1; i < references.size() && !stop; i++) {
+			String postWord = currentWord.getNextWord().getText();
+			String reference = references.get(i).getReference();
+
+			if (!SimilarityUtils.areWordsSimilar(reference, postWord)) {
+				stop = true;
+			}
+		}
+
+		return stop;
+	}
+
+	private boolean arePreviousWordsEqualToReferences(List<INounMapping> references, IWord currentWord, int currentPosition) {
+		boolean stop = false;
+
+		for (int i = currentPosition - 1; i >= 0 && !stop; i--) {
+			String preWord = currentWord.getPreWord().getText();
+			String reference = references.get(i).getReference();
+			if (!SimilarityUtils.areWordsSimilar(reference, preWord)) {
+				stop = true;
+			}
+		}
+
+		return stop;
 	}
 
 	private void createRecommendedInstancesForAdjacentTermMappings(IWord termStartNode, ITermMapping term, List<ITermMapping> adjacentTermMappings) {
@@ -161,16 +170,13 @@ public class ExtractedTermsAnalyzer extends RecommendationAnalyzer {
 			while (!nounMappings.isEmpty()) {
 				INounMapping resultOfPreMatch = matchNode(nounMappings, preTermNode);
 
-				if (sentence == preTermNode.getSentenceNo()) {
+				if (sentence == preTermNode.getSentenceNo() || resultOfPreMatch == null) {
 					break;
 				}
 
-				if (resultOfPreMatch != null) {
-					nounMappings.remove(resultOfPreMatch);
-					preTermNode = preTermNode.getPreWord();
-				} else {
-					break;
-				}
+				nounMappings.remove(resultOfPreMatch);
+				preTermNode = preTermNode.getPreWord();
+
 			}
 			if (nounMappings.isEmpty()) {
 				adjCompleteTermMappings.add(adjTerm);
@@ -194,16 +200,11 @@ public class ExtractedTermsAnalyzer extends RecommendationAnalyzer {
 			while (!nounMappings.isEmpty()) {
 				INounMapping resultOfPostMatch = matchNode(nounMappings, afterTermNode);
 
-				if (sentence == afterTermNode.getSentenceNo()) {
+				if (sentence == afterTermNode.getSentenceNo() || resultOfPostMatch == null) {
 					break;
 				}
-
-				if (resultOfPostMatch != null) {
-					nounMappings.remove(resultOfPostMatch);
-					afterTermNode = afterTermNode.getNextWord();
-				} else {
-					break;
-				}
+				nounMappings.remove(resultOfPostMatch);
+				afterTermNode = afterTermNode.getNextWord();
 
 			}
 			if (nounMappings.isEmpty()) {
@@ -227,7 +228,7 @@ public class ExtractedTermsAnalyzer extends RecommendationAnalyzer {
 
 	private IWord getAfterTermNode(IWord termStartNode, ITermMapping term) {
 		IWord afterTermNode = termStartNode.getNextWord();
-		for (int i = 0; i < term.getMappings().size(); i++) {
+		for (INounMapping element : term.getMappings()) {
 			afterTermNode = afterTermNode.getNextWord();
 		}
 		return afterTermNode;

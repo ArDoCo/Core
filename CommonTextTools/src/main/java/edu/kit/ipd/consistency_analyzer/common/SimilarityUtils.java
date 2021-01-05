@@ -141,9 +141,9 @@ public final class SimilarityUtils {
 	 * @param INounMappings the mappings to filter
 	 * @return list of mappings which are similar to the given ref.
 	 */
-	public static List<INounMapping> getAllSimilarNMappingsByReference(String ref, List<INounMapping> INounMappings) {
+	public static List<INounMapping> getAllSimilarNMappingsByReference(String ref, List<INounMapping> nounMappings) {
 
-		return INounMappings.stream().filter(n -> SimilarityUtils.areWordsSimilar(n.getReference(), ref)).collect(Collectors.toList());
+		return nounMappings.stream().filter(n -> SimilarityUtils.areWordsSimilar(n.getReference(), ref)).collect(Collectors.toList());
 
 	}
 
@@ -157,14 +157,14 @@ public final class SimilarityUtils {
 	 * remaining lists are sorted out in the same run, all are returned. Elsewhere
 	 * only the remaining recommended instance is returned within the list.
 	 *
-	 * @param instance              instance to use as original for compare
-	 * @param IRecommendedInstances recommended instances to check for similarity
+	 * @param instance             instance to use as original for compare
+	 * @param recommendedInstances recommended instances to check for similarity
 	 * @return a list of the most similar recommended instances (to the instance
 	 *         names)
 	 */
-	public static List<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IInstance instance, List<IRecommendedInstance> IRecommendedInstances) {
+	public static List<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IInstance instance, List<IRecommendedInstance> recommendedInstances) {
 		List<String> instanceNames = instance.getNames();
-		List<IRecommendedInstance> selection = IRecommendedInstances.stream().filter(//
+		List<IRecommendedInstance> selection = recommendedInstances.stream().filter(//
 				ri -> SimilarityUtils.areWordsOfListsSimilar(instanceNames, List.of(ri.getName()))).collect(Collectors.toList());
 
 		double getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
@@ -207,14 +207,14 @@ public final class SimilarityUtils {
 	 * almost similar to
 	 * {@link #getMostRecommendedInstancesToInstanceByReferences(Instance, List)}.
 	 *
-	 * @param ref           the given reference
-	 * @param INounMappings the noun mappings to filter
+	 * @param ref          the given reference
+	 * @param nounMappings the noun mappings to filter
 	 * @return the most similar noun mapping(s)
 	 */
-	public static List<INounMapping> getMostLikelyNMappingsByReference(String ref, List<INounMapping> INounMappings) {
+	public static List<INounMapping> getMostLikelyNMappingsByReference(String ref, List<INounMapping> nounMappings) {
 
 		double threshold = CommonTextToolsConfig.GET_MOST_LIKELY_MP_BY_REFERENCE_THRESHOLD;
-		List<INounMapping> selection = new ArrayList<>(SimilarityUtils.getAllSimilarNMappingsByReference(ref, INounMappings));
+		List<INounMapping> selection = new ArrayList<>(SimilarityUtils.getAllSimilarNMappingsByReference(ref, nounMappings));
 		List<INounMapping> whileSelection = new ArrayList<>(selection);
 
 		while (whileSelection.size() > 1 && threshold < 1) {
@@ -235,7 +235,7 @@ public final class SimilarityUtils {
 	/**
 	 * Extracts most similar mappings from a given recommended model instance. This
 	 * method uses {@link #getMostLikelyNMappingsByReference(String, List)}.
-	 * 
+	 *
 	 * @param ri recommended instance under investigation
 	 * @return most similar mappings
 	 */
