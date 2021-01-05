@@ -21,6 +21,14 @@ public class RecommendationState implements IRecommendationState {
 	private List<IRecommendedInstance> recommendedInstances;
 	private List<IRecommendedRelation> recommendedRelations;
 
+	@Override
+	public IRecommendationState createCopy() {
+		RecommendationState recommendationState = new RecommendationState();
+		recommendationState.recommendedInstances = recommendedInstances.stream().map(IRecommendedInstance::createCopy).collect(Collectors.toList());
+		recommendationState.recommendedRelations = recommendedRelations.stream().map(IRecommendedRelation::createCopy).collect(Collectors.toList());
+		return recommendationState;
+	}
+
 	/**
 	 * Creates a new recommendation state.
 	 */

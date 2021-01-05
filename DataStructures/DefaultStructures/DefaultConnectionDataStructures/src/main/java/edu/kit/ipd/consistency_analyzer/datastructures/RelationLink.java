@@ -5,13 +5,18 @@ package edu.kit.ipd.consistency_analyzer.datastructures;
  * recommended relation.
  *
  * @author Sophie
- * 
+ *
  */
 public class RelationLink implements IRelationLink {
 
 	private IRecommendedRelation textualRelation;
 	private IRelation modelRelation;
 	private double probability;
+
+	@Override
+	public IRelationLink createCopy() {
+		return new RelationLink(textualRelation.createCopy(), modelRelation.createCopy(), probability);
+	}
 
 	/**
 	 * Creates a new relation mapping
@@ -21,7 +26,7 @@ public class RelationLink implements IRelationLink {
 	 * @param probability   probability for similarity
 	 */
 	public RelationLink(IRecommendedRelation textRelation, IRelation modelRelation, double probability) {
-		this.textualRelation = textRelation;
+		textualRelation = textRelation;
 		this.modelRelation = modelRelation;
 		this.probability = probability;
 	}
@@ -107,7 +112,7 @@ public class RelationLink implements IRelationLink {
 	@Override
 	public String toString() {
 
-		return "RelationLink: " + this.getModelRelation().toString() + " by " + this.getTextualRelation().toString() + "probability: " + probability;
+		return "RelationLink: " + getModelRelation().toString() + " by " + getTextualRelation().toString() + "probability: " + probability;
 	}
 
 }

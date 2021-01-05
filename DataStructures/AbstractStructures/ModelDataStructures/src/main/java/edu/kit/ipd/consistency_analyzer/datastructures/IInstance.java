@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface IInstance {
 
+	IInstance createCopy();
+
 	/**
 	 * Returns the longest name of the instance.
 	 *
@@ -39,10 +41,13 @@ public interface IInstance {
 	 */
 	String getUid();
 
+	@Override
 	String toString();
 
+	@Override
 	int hashCode();
 
+	@Override
 	boolean equals(Object obj);
 
 }

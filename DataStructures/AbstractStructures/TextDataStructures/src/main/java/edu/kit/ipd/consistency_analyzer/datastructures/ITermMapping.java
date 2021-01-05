@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface ITermMapping {
 
+	ITermMapping createCopy();
+
 	/**
 	 * Returns the mappings, of the term.
 	 *

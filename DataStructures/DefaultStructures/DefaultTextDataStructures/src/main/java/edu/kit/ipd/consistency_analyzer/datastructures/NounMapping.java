@@ -28,6 +28,13 @@ public final class NounMapping implements INounMapping {
 	private String reference;
 	private List<String> occurrences;
 
+	@Override
+	public INounMapping createCopy() {
+
+		return new NounMapping(nodes, probability, kind, reference, occurrences);
+
+	}
+
 	/**
 	 * The kind of word defines if the mapping is one word of two graph nodes or if
 	 * it contains words represented by a single node.

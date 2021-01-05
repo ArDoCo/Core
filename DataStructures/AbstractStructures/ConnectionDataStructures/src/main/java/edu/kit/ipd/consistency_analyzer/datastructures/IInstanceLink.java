@@ -2,6 +2,8 @@ package edu.kit.ipd.consistency_analyzer.datastructures;
 
 public interface IInstanceLink {
 
+	IInstanceLink createCopy();
+
 	/**
 	 * Returns the probability of the correctness of this link.
 	 *

@@ -6,9 +6,11 @@ import edu.kit.ipd.consistency_analyzer.modules.IState;
 
 public interface ITextExtractionState extends IState {
 
+	ITextExtractionState createCopy();
+
 	/***
 	 * Adds a name mapping to the state
-	 * 
+	 *
 	 * @param n           node of the mapping
 	 * @param name        reference of the mapping
 	 * @param probability probability to be a name mapping

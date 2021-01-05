@@ -2,6 +2,7 @@ package edu.kit.ipd.consistency_analyzer.datastructures;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents relations found in the graph. A relation mapping has
@@ -9,13 +10,27 @@ import java.util.List;
  * being a relation and an assignable preposition.
  *
  * @author Sophie
- * 
+ *
  */
 public class RelationMapping implements IRelationMapping {
 
 	private List<INounMapping> relationNodes;
 	private double probability;
 	private IWord preposition;
+
+	@Override
+	public IRelationMapping createCopy() {
+		return new RelationMapping(relationNodes.stream().map(INounMapping::createCopy).collect(Collectors.toList()), probability, preposition);
+
+	}
+
+	private RelationMapping(List<INounMapping> relationNodes, double probability, IWord preposition) {
+
+		this.relationNodes = relationNodes;
+		this.preposition = preposition;
+		this.probability = probability;
+
+	}
 
 	/**
 	 * Creates a new relation mapping. Other mappings, as well as a preposition can

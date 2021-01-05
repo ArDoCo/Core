@@ -7,6 +7,8 @@ import edu.kit.ipd.consistency_analyzer.modules.IState;
 
 public interface IModelExtractionState extends IState {
 
+	IModelExtractionState createCopy();
+
 	/**
 	 * Returns the instances of a specific type.
 	 *

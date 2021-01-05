@@ -6,6 +6,8 @@ import edu.kit.ipd.consistency_analyzer.modules.IState;
 
 public interface IConnectionState extends IState {
 
+	IConnectionState createCopy();
+
 	/**
 	 * Returns all instance links.
 	 *

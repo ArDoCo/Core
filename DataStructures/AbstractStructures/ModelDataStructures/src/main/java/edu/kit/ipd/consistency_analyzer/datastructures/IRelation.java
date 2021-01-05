@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface IRelation {
 
+	IRelation createCopy();
+
 	/**
 	 * Adds more end points to the relation. Checks if the instance is already
 	 * contained.

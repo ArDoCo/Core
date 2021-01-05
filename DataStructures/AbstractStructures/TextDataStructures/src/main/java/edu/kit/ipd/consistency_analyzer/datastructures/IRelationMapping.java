@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface IRelationMapping {
 
+	IRelationMapping createCopy();
+
 	/**
 	 * Adds more NounMappings to the relation.
 	 *

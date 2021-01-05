@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface IRecommendedInstance {
 
+	IRecommendedInstance createCopy();
+
 	/**
 	 * Returns the involved name mappings.
 	 *

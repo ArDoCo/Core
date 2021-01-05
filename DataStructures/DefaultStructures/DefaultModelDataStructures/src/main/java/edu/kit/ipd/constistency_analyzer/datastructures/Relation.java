@@ -20,6 +20,19 @@ public class Relation implements IRelation {
 	private String type;
 	private String uid;
 
+	@Override
+	public IRelation createCopy() {
+		return new Relation(new ArrayList<>(instances), type, uid);
+	}
+
+	private Relation(List<IInstance> instances, String type, String uid) {
+
+		this.instances = instances;
+		this.type = type;
+		this.uid = uid;
+
+	}
+
 	/**
 	 * Creates a new relation.
 	 *
