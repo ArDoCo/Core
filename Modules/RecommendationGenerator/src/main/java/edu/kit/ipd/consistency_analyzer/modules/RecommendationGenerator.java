@@ -27,7 +27,7 @@ public class RecommendationGenerator implements IAnalyzerSolverModule<IRecommend
 	/**
 	 * Creates a new model connection agent with the given extraction state and ntr
 	 * state.
-	 * 
+	 *
 	 * @param graph
 	 *
 	 * @param extractionState the extraction state
@@ -35,8 +35,8 @@ public class RecommendationGenerator implements IAnalyzerSolverModule<IRecommend
 	 */
 	public RecommendationGenerator(IText graph, IModelExtractionState extractionState, ITextExtractionState ntrState) {
 		this.graph = graph;
-		this.modelExtractionState = extractionState;
-		this.textExtractionState = ntrState;
+		modelExtractionState = extractionState;
+		textExtractionState = ntrState;
 
 		initializeAnalyzerSolvers();
 	}
@@ -47,9 +47,6 @@ public class RecommendationGenerator implements IAnalyzerSolverModule<IRecommend
 		runAnalyzers();
 
 		runSolvers();
-
-		return;
-
 	}
 
 	/**
@@ -58,7 +55,7 @@ public class RecommendationGenerator implements IAnalyzerSolverModule<IRecommend
 	 * @param modelextractionState the current model extraction state.
 	 */
 	public void setModelExtractionState(IModelExtractionState modelextractionState) {
-		this.modelExtractionState = modelextractionState;
+		modelExtractionState = modelextractionState;
 	}
 
 	/**
@@ -120,7 +117,7 @@ public class RecommendationGenerator implements IAnalyzerSolverModule<IRecommend
 
 	@Override
 	public IRecommendationState getState() {
-		return this.recommendationState;
+		return recommendationState;
 	}
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
  * recommended instance has a unique name.
  *
  * @author Sophie
- * 
+ *
  */
 public class RecommendedInstance implements IRecommendedInstance {
 
@@ -33,8 +33,8 @@ public class RecommendedInstance implements IRecommendedInstance {
 		this.type = type;
 		this.name = name;
 		this.probability = probability;
-		this.nameMappings = new ArrayList<>(nameNodes);
-		this.typeMappings = new ArrayList<>(typeNodes);
+		nameMappings = new ArrayList<>(nameNodes);
+		typeMappings = new ArrayList<>(typeNodes);
 	}
 
 	/**
@@ -85,8 +85,8 @@ public class RecommendedInstance implements IRecommendedInstance {
 	 */
 	@Override
 	public void addMappings(INounMapping nameMapping, INounMapping typeMapping) {
-		this.addName(nameMapping);
-		this.addType(typeMapping);
+		addName(nameMapping);
+		addType(typeMapping);
 	}
 
 	/**
@@ -177,6 +177,7 @@ public class RecommendedInstance implements IRecommendedInstance {
 
 	@Override
 	public String toString() {
+		String separator = "\n\t\t\t\t\t";
 		List<String> typeNodeVals = new ArrayList<>();
 		List<String> typeOccurrences = new ArrayList<>();
 		List<Integer> typePositions = new ArrayList<>();
@@ -195,7 +196,7 @@ public class RecommendedInstance implements IRecommendedInstance {
 			namePositions.addAll(nameMapping.getMappingSentenceNo());
 		}
 		return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + probability + //
-				", mappings:]=\n\t\t\t\t\t" + String.join("\n\t\t\t\t\t", nameNodeVals) + "\n\t\t\t\t\t" + String.join("\n\t\t\t\t\t", typeNodeVals) + "\n";
+				", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";
 	}
 
 	@Override

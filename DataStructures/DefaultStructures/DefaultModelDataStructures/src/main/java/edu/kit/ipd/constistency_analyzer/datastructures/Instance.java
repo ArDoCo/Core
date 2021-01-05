@@ -133,10 +133,7 @@ public class Instance implements IInstance {
 		} else if (!longestType.equals(other.longestType)) {
 			return false;
 		}
-		if (uid != other.uid) {
-			return false;
-		}
-		return true;
+		return (uid == other.uid);
 	}
 
 }

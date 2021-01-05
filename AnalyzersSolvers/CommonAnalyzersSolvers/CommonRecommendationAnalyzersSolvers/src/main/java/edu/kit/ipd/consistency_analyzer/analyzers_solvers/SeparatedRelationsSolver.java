@@ -79,9 +79,8 @@ public class SeparatedRelationsSolver extends RecommendationSolver {
 
 	private List<String> collectOccurrencesWithSeparators(IRecommendedInstance recommendedInstance) {
 		List<String> occs = collectOccurrencesAsStrings(recommendedInstance);
-		List<String> occsWithSeparator = occs.stream().filter(SimilarityUtils::containsSeparator).collect(Collectors.toList());
+		return occs.stream().filter(SimilarityUtils::containsSeparator).collect(Collectors.toList());
 
-		return occsWithSeparator;
 	}
 
 	private List<String> collectOccurrencesAsStrings(IRecommendedInstance recInstance) {
@@ -102,7 +101,7 @@ public class SeparatedRelationsSolver extends RecommendationSolver {
 
 		for (int i = 0; i < relationParticipants.size(); i++) {
 			String participant = relationParticipants.get(i);
-			participatingRecInstances.add(new ArrayList<IRecommendedInstance>());
+			participatingRecInstances.add(new ArrayList<>());
 
 			if (SimilarityUtils.areWordsSimilar(recInstanceName, participant)) {
 				participatingRecInstances.get(i).add(recInstance);

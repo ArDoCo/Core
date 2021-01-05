@@ -29,12 +29,12 @@ public class ParseConverter {
 	}
 
 	public void convert() {
-		this.reset();
+		reset();
 
-		this.createWords();
-		this.createDeps();
+		createWords();
+		createDeps();
 
-		this.createText();
+		createText();
 	}
 
 	public IText getAnnotatedText() {
@@ -45,12 +45,12 @@ public class ParseConverter {
 		instances = new HashMap<>();
 		orderedWords = new ArrayList<>();
 
-		List<INode> tokens = this.graph.getNodesOfType(this.graph.getNodeType("token"));
+		List<INode> tokens = graph.getNodesOfType(graph.getNodeType("token"));
 
 		for (INode token : tokens) {
 			Word word = new Word(token);
-			this.orderedWords.add(word);
-			this.instances.put(token, word);
+			orderedWords.add(word);
+			instances.put(token, word);
 		}
 	}
 
@@ -59,8 +59,8 @@ public class ParseConverter {
 
 		Map<String, DependencyTag> dependencyMap = Arrays.stream(DependencyTag.values()).collect(Collectors.toMap(d -> String.valueOf(d).toLowerCase(), d -> d));
 
-		for (INode node : graph.getNodesOfType(this.graph.getNodeType("token"))) {
-			Word sourceWord = this.instances.get(node);
+		for (INode node : graph.getNodesOfType(graph.getNodeType("token"))) {
+			Word sourceWord = instances.get(node);
 			for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType("typedDependency"))) {
 				Word targetWord = instances.get(arc.getTargetNode());
 
@@ -76,14 +76,14 @@ public class ParseConverter {
 	}
 
 	private void createText() {
-		IText text = new Text(this.orderedWords);
-		this.annotatedText = text;
+		IText text = new Text(orderedWords);
+		annotatedText = text;
 	}
 
 	private void reset() {
-		this.annotatedText = null;
-		this.instances = null;
-		this.orderedWords = null;
+		annotatedText = null;
+		instances = null;
+		orderedWords = null;
 	}
 
 	private static final class Word implements IWord {
@@ -96,7 +96,7 @@ public class ParseConverter {
 		private final Map<DependencyTag, List<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values()).collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
 		private final Map<DependencyTag, List<IWord>> wordsThatAreDependentOnThis = Arrays.stream(DependencyTag.values()).collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
 
-		private transient IText parent;
+		private IText parent;
 
 		Word(INode node) {
 			text = String.valueOf(node.getAttributeValue("value"));
@@ -108,7 +108,7 @@ public class ParseConverter {
 
 		private PosTag getPosTag(INode node) {
 
-			Map<String, PosTag> posTagMap = Arrays.stream(PosTag.values()).collect(Collectors.toMap(d -> String.valueOf(d), d -> d));
+			Map<String, PosTag> posTagMap = Arrays.stream(PosTag.values()).collect(Collectors.toMap(String::valueOf, d -> d));
 
 			return posTagMap.get(String.valueOf(node.getAttributeValue("pos")));
 
@@ -136,7 +136,7 @@ public class ParseConverter {
 
 		@Override
 		public String getLemma() {
-			return this.lemma;
+			return lemma;
 		}
 
 		@Override
@@ -172,18 +172,18 @@ public class ParseConverter {
 
 		public Text(List<Word> orderedWords) {
 			orderedWords.stream().forEach(w -> w.parent = this);
-			this.words = Collections.unmodifiableList(orderedWords);
+			words = Collections.unmodifiableList(orderedWords);
 
 		}
 
 		@Override
 		public IWord getStartNode() {
-			return this.words.isEmpty() ? null : this.words.get(0);
+			return words.isEmpty() ? null : words.get(0);
 		}
 
 		@Override
 		public List<IWord> getNodes() {
-			return this.words;
+			return words;
 		}
 	}
 }

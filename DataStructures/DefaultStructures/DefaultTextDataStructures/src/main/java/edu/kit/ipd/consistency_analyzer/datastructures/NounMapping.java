@@ -18,7 +18,7 @@ import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
  * mapping is supposed to be: A name, type or both (if its not decided yet).
  *
  * @author Sophie
- * 
+ *
  */
 public final class NounMapping implements INounMapping {
 
@@ -227,7 +227,7 @@ public final class NounMapping implements INounMapping {
 		return "NounMapping [" + "mappingTypea=" + kind + //
 				", reference=" + reference + //
 				", node=" + String.join(", ", occurrences) + //
-				", position=" + String.join(", ", this.nodes.stream().map(word -> String.valueOf(word.getPosition())).collect(Collectors.toList())) + //
+				", position=" + String.join(", ", nodes.stream().map(word -> String.valueOf(word.getPosition())).collect(Collectors.toList())) + //
 				", probability=" + probability + "]";
 	}
 
@@ -290,7 +290,7 @@ public final class NounMapping implements INounMapping {
 	 * @return list of containing node lemmas
 	 */
 	public List<String> getMappingLemmas() {
-		return this.nodes.stream().map(word -> word.getLemma()).collect(Collectors.toList());
+		return nodes.stream().map(IWord::getLemma).collect(Collectors.toList());
 	}
 
 	/**
