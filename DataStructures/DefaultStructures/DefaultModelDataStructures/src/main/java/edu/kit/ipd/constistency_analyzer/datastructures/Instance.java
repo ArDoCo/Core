@@ -1,5 +1,6 @@
 package edu.kit.ipd.constistency_analyzer.datastructures;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,20 @@ public class Instance implements IInstance {
 	private List<String> names;
 	private List<String> types;
 	private String uid;
+
+	@Override
+	public IInstance createCopy() {
+		return new Instance(longestName, longestType, new ArrayList<>(names), new ArrayList<>(types), uid);
+
+	}
+
+	private Instance(String longestName, String longestType, List<String> names, List<String> types, String uid) {
+		this.longestName = longestName;
+		this.longestType = longestType;
+		this.names = names;
+		this.types = types;
+		this.uid = uid;
+	}
 
 	/**
 	 * Creates a new instance.

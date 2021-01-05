@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Represents a trace link between an instance of the extracted model and a
  * recommended instance.
- * 
+ *
  * @author Sophie
  *
  */
@@ -18,6 +18,11 @@ public class InstanceLink implements IInstanceLink {
 	private IRecommendedInstance textualInstance;
 	private IInstance modelInstance;
 	private double probability;
+
+	@Override
+	public IInstanceLink createCopy() {
+		return new InstanceLink(textualInstance.createCopy(), modelInstance.createCopy(), probability);
+	}
 
 	/**
 	 * Creates a new instance link.
@@ -145,7 +150,7 @@ public class InstanceLink implements IInstanceLink {
 		}
 		return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getLongestName() + //
 				", as=" + String.join(", ", modelInstance.getLongestType()) + ", probability=" + probability + ", FOUND: " + //
-				this.textualInstance.getName() + " : " + this.getTextualInstance().getType() + ", occurrences= " + //
+				textualInstance.getName() + " : " + getTextualInstance().getType() + ", occurrences= " + //
 				"NameVariants: " + names.size() + ": " + names.toString() + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
 				", TypeVariants: " + types.size() + ": " + types.toString() + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";
 	}

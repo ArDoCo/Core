@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class represents recommended relations. These relations should be
@@ -18,6 +19,21 @@ public class RecommendedRelation implements IRecommendedRelation {
 	private double probability;
 	private List<IWord> nodes;
 	private String name;
+
+	@Override
+	public IRecommendedRelation createCopy() {
+
+		return new RecommendedRelation(relationInstances.stream().map(IRecommendedInstance::createCopy).collect(Collectors.toSet()), probability, new ArrayList<>(nodes), name);
+
+	}
+
+	private RecommendedRelation(Set<IRecommendedInstance> relationInstances, double probability, List<IWord> nodes, String name) {
+		this.relationInstances = relationInstances;
+		this.probability = probability;
+		this.nodes = nodes;
+		this.name = name;
+
+	}
 
 	/**
 	 * Creates a new recommended relation.

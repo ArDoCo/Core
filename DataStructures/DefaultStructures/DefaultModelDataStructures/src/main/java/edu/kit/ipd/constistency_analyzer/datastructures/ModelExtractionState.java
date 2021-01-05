@@ -25,6 +25,21 @@ public class ModelExtractionState implements IModelExtractionState {
 	private List<IInstance> instances;
 	private List<IRelation> relations;
 
+	@Override
+	public IModelExtractionState createCopy() {
+		return new ModelExtractionState(instanceTypes, relationTypes, names, instances.stream().map(IInstance::createCopy).collect(Collectors.toList()),
+				relations.stream().map(IRelation::createCopy).collect(Collectors.toList()));
+	}
+
+	private ModelExtractionState(Set<String> instanceTypes, Set<String> relationTypes, Set<String> names, List<IInstance> instances, List<IRelation> relations) {
+		this.instanceTypes = instanceTypes;
+		this.relationTypes = relationTypes;
+		this.relations = relations;
+		this.instances = instances;
+		this.names = names;
+
+	}
+
 	/**
 	 * Creates a new model extraction state.
 	 *

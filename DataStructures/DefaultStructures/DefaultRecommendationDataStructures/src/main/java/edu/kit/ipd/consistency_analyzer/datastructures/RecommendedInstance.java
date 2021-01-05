@@ -2,6 +2,7 @@ package edu.kit.ipd.consistency_analyzer.datastructures;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents recommended instances. These instances should be
@@ -18,6 +19,12 @@ public class RecommendedInstance implements IRecommendedInstance {
 	private double probability;
 	private List<INounMapping> typeMappings;
 	private List<INounMapping> nameMappings;
+
+	@Override
+	public IRecommendedInstance createCopy() {
+		return new RecommendedInstance(name, type, probability, nameMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()),
+				typeMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()));
+	}
 
 	/**
 	 * Creates a new recommended instance.

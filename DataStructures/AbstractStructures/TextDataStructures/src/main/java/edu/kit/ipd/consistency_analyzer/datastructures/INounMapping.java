@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface INounMapping {
 
+	INounMapping createCopy();
+
 	/**
 	 * Splits all occurrences with a whitespace in it at their spaces and returns
 	 * all parts that are similar to the reference. If it contains a separator or

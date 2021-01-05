@@ -13,12 +13,20 @@ import java.util.stream.Collectors;
  * in instance and relation links.
  *
  * @author Sophie
- * 
+ *
  */
 public class ConnectionState implements IConnectionState {
 
 	private Set<IInstanceLink> instanceLinks;
 	private Set<IRelationLink> relationLinks;
+
+	@Override
+	public IConnectionState createCopy() {
+		ConnectionState newState = new ConnectionState();
+		newState.instanceLinks = instanceLinks.stream().map(IInstanceLink::createCopy).collect(Collectors.toSet());
+		newState.relationLinks = relationLinks.stream().map(IRelationLink::createCopy).collect(Collectors.toSet());
+		return newState;
+	}
 
 	/**
 	 * Creates a new connection state.

@@ -21,6 +21,15 @@ public class TextExtractionState implements ITextExtractionState {
 	private List<IRelationMapping> relationMappings;
 	private List<ITermMapping> terms;
 
+	@Override
+	public ITextExtractionState createCopy() {
+		TextExtractionState textExtractionState = new TextExtractionState();
+		textExtractionState.nounMappings = nounMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList());
+		textExtractionState.relationMappings = relationMappings.stream().map(IRelationMapping::createCopy).collect(Collectors.toList());
+		textExtractionState.terms = terms.stream().map(ITermMapping::createCopy).collect(Collectors.toList());
+		return textExtractionState;
+	}
+
 	/**
 	 * Creates a new name type relation state
 	 */

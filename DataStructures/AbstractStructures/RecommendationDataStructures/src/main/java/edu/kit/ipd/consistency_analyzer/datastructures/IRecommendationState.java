@@ -6,6 +6,8 @@ import edu.kit.ipd.consistency_analyzer.modules.IState;
 
 public interface IRecommendationState extends IState {
 
+	IRecommendationState createCopy();
+
 	/**
 	 * Returns all recommended instances.
 	 *

@@ -3,6 +3,7 @@ package edu.kit.ipd.consistency_analyzer.datastructures;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the concatenation of words to one term. A term has at
@@ -17,6 +18,20 @@ public class TermMapping implements ITermMapping {
 	private List<INounMapping> mappings;
 	private double probability;
 	private MappingKind kind;
+
+	@Override
+	public ITermMapping createCopy() {
+
+		return new TermMapping(reference, mappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()), probability, kind);
+
+	}
+
+	public TermMapping(String reference, List<INounMapping> mappings, double probability, MappingKind kind) {
+		this.reference = reference;
+		this.kind = kind;
+		this.probability = probability;
+		this.mappings = mappings;
+	}
 
 	/**
 	 * Creates a new term out of two terms (noun mappings).

@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface IRecommendedRelation {
 
+	IRecommendedRelation createCopy();
+
 	/**
 	 * Returns the nodes representing the relation.
 	 *
