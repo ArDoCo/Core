@@ -12,7 +12,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IRelation;
  * two end points. These end points are defined as instances.
  *
  * @author Sophie
- * 
+ *
  */
 public class Relation implements IRelation {
 
@@ -57,7 +57,7 @@ public class Relation implements IRelation {
 	 * @return list of connected instances by this relation
 	 */
 	@Override
-	public List<IInstance> getInstances() {
+	public List<? extends IInstance> getInstances() {
 		return instances;
 	}
 
@@ -84,9 +84,9 @@ public class Relation implements IRelation {
 	@Override
 	public String toString() {
 
-		List<String> instanceNames = this.instances.stream().map(IInstance::getLongestName).collect(Collectors.toList());
+		List<String> instanceNames = instances.stream().map(IInstance::getLongestName).collect(Collectors.toList());
 
-		return "Relation: [" + " name=" + this.type + ", instances= " + String.join(", ", instanceNames) + "]";
+		return "Relation: [" + " name=" + type + ", instances= " + String.join(", ", instanceNames) + "]";
 	}
 
 	@Override

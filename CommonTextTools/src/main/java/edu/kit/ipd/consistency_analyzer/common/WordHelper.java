@@ -22,24 +22,19 @@ public final class WordHelper {
 		}
 
 		PosTag prePosTag = preWord.getPosTag();
-		if (PosTag.DT.equals(prePosTag)) {
-			return true;
-		}
-		return false;
+		return PosTag.DT.equals(prePosTag);
+
 	}
 
 	public static boolean hasIndirectDeterminerAsPreWord(IWord word) {
-		if (hasDeterminerAsPreWord(word) && (word.getText().equalsIgnoreCase("a") || word.getText().equalsIgnoreCase("an"))) {
-			return true;
-		}
-		return false;
+		return hasDeterminerAsPreWord(word) && (word.getText().equalsIgnoreCase("a") || word.getText().equalsIgnoreCase("an"));
 	}
 
 	public static List<DependencyTag> getIncomingDependencyTags(IWord word) {
-		return Arrays.stream(DependencyTag.values()).filter(d -> word.getWordsThatAreDependentOnThis(d).size() > 0).collect(Collectors.toList());
+		return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependentOnThis(d).isEmpty()).collect(Collectors.toList());
 	}
 
 	public static List<DependencyTag> getOutgoingDependencyTags(IWord word) {
-		return Arrays.stream(DependencyTag.values()).filter(d -> word.getWordsThatAreDependencyOfThis(d).size() > 0).collect(Collectors.toList());
+		return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty()).collect(Collectors.toList());
 	}
 }
