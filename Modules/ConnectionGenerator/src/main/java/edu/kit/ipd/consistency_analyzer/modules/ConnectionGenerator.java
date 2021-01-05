@@ -56,8 +56,6 @@ public class ConnectionGenerator implements IAnalyzerSolverModule<IConnectionSta
 	public void exec() {
 		runAnalyzers();
 		runSolvers();
-
-		return;
 	}
 
 	/**
@@ -135,6 +133,6 @@ public class ConnectionGenerator implements IAnalyzerSolverModule<IConnectionSta
 
 	@Override
 	public IConnectionState getState() {
-		return this.connectionState;
+		return connectionState;
 	}
 }
