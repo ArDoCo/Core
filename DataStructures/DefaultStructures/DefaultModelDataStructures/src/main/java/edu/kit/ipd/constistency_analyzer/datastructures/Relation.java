@@ -125,10 +125,7 @@ public class Relation implements IRelation {
 		} else if (!type.equals(other.type)) {
 			return false;
 		}
-		if (uid != other.uid) {
-			return false;
-		}
-		return true;
+		return (uid == other.uid);
 	}
 
 }

@@ -33,9 +33,7 @@ public class HardCodedModelConnector implements IModelConnector {
 	public List<IRelation> getRelations(List<IInstance> instances) throws InconsistentModelException {
 		List<ModeledRelation> modeledRelations = loadRelationsFromModel();
 
-		List<IRelation> relations = matchModeledRelationsWithInstances(instances, modeledRelations);
-
-		return relations;
+		return matchModeledRelationsWithInstances(instances, modeledRelations);
 	}
 
 	private List<ModeledRelation> loadRelationsFromModel() {

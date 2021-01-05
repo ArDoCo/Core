@@ -1,6 +1,5 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
@@ -22,9 +21,6 @@ public class ModelExtractor implements IModule<IModelExtractionState> {
 	protected IModelExtractionState modelExtractionState;
 	private IModelConnector modelConnector;
 
-	private List<IInstance> instances = new ArrayList<>();
-	private List<IRelation> relations = new ArrayList<>();
-
 	public ModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
 		this.modelConnector = modelConnector;
 	}
@@ -38,8 +34,8 @@ public class ModelExtractor implements IModule<IModelExtractionState> {
 	@Override
 	public void exec() {
 
-		instances = modelConnector.getInstances();
-		relations = modelConnector.getRelations(instances);
+		List<IInstance> instances = modelConnector.getInstances();
+		List<IRelation> relations = modelConnector.getRelations(instances);
 
 		modelExtractionState = new ModelExtractionState(instances, relations);
 

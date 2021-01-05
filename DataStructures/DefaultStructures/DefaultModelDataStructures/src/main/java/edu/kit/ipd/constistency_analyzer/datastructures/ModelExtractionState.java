@@ -15,7 +15,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IRelation;
  * and names are stored additionally.
  *
  * @author Sophie
- * 
+ *
  */
 public class ModelExtractionState implements IModelExtractionState {
 
@@ -37,7 +37,7 @@ public class ModelExtractionState implements IModelExtractionState {
 		instanceTypes = new HashSet<>();
 		relationTypes = new HashSet<>();
 		names = new HashSet<>();
-		this.collectTypesAndNames();
+		collectTypesAndNames();
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class ModelExtractionState implements IModelExtractionState {
 	 */
 	@Override
 	public List<IInstance> getInstancesOfType(String type) {
-		return this.instances.stream().filter(i -> i.getTypes().contains(type)).collect(Collectors.toList());
+		return instances.stream().filter(i -> i.getTypes().contains(type)).collect(Collectors.toList());
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class ModelExtractionState implements IModelExtractionState {
 	 */
 	@Override
 	public List<IRelation> getRelationsOfType(String type) {
-		return this.relations.stream().filter(r -> r.getType().equals(type)).collect(Collectors.toList());
+		return relations.stream().filter(r -> r.getType().equals(type)).collect(Collectors.toList());
 	}
 
 	/**
@@ -132,15 +132,15 @@ public class ModelExtractionState implements IModelExtractionState {
 
 	@Override
 	public String toString() {
-		String output = "Instances:\n";
+		StringBuilder output = new StringBuilder("Instances:\n");
 		for (IInstance i : instances) {
-			output += i.toString() + "\n";
+			output.append(i.toString() + "\n");
 		}
-		output += "Relations:\n";
+		output.append("Relations:\n");
 		for (IRelation r : relations) {
-			output += r.toString() + "\n";
+			output.append(r.toString() + "\n");
 		}
-		return output;
+		return output.toString();
 	}
 
 }

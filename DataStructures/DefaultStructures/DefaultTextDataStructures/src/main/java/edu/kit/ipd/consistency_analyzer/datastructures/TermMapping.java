@@ -9,7 +9,7 @@ import java.util.Objects;
  * least two words stored as noun mappings.
  *
  * @author Sophie
- * 
+ *
  */
 public class TermMapping implements ITermMapping {
 
@@ -30,7 +30,7 @@ public class TermMapping implements ITermMapping {
 	 */
 	public TermMapping(String reference, INounMapping mapping1, INounMapping mapping2, MappingKind kind, double probability) {
 		this.reference = reference;
-		this.mappings = new ArrayList<>();
+		mappings = new ArrayList<>();
 		mappings.add(mapping1);
 		mappings.add(mapping2);
 		this.probability = probability;
@@ -52,7 +52,7 @@ public class TermMapping implements ITermMapping {
 	 */
 	public TermMapping(String reference, INounMapping iNounMapping, INounMapping iNounMapping2, List<INounMapping> list, MappingKind kind, double probability) {
 		this.reference = reference;
-		this.mappings = new ArrayList<>();
+		mappings = new ArrayList<>();
 		mappings.add(iNounMapping);
 		mappings.add(iNounMapping2);
 		mappings.addAll(list);
@@ -131,7 +131,9 @@ public class TermMapping implements ITermMapping {
 	public void updateProbability(double probability2) {
 		if (probability == 1.0) {
 			return;
-		} else if (probability2 == 1.0) {
+		}
+
+		if (probability2 == 1.0) {
 			probability = 1.0;
 		} else if (probability >= probability2) {
 			probability += probability2 * (1 - probability);

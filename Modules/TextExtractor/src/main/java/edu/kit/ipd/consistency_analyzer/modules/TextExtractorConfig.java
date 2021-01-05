@@ -15,12 +15,12 @@ public class TextExtractorConfig {
 	/**
 	 * The list of text extraction agent types that should run.
 	 */
-	public static final List<String> TEXT_EXTRACTION_AGENT_ANALYZERS = CONFIG.getPropertyAsList("TextExtractionAgent_Analyzers");
+	protected static final List<String> TEXT_EXTRACTION_AGENT_ANALYZERS = CONFIG.getPropertyAsList("TextExtractionAgent_Analyzers");
 
 	/**
 	 * The list of text extraction solver types that should run.
 	 */
-	public static final List<String> TEXT_EXTRACTION_AGENT_SOLVERS = CONFIG.getPropertyAsList("TextExtractionAgent_Solvers");
+	protected static final List<String> TEXT_EXTRACTION_AGENT_SOLVERS = CONFIG.getPropertyAsList("TextExtractionAgent_Solvers");
 
 	private static SystemParameters loadParameters(String filePath) {
 		return new SystemParameters(filePath, true);

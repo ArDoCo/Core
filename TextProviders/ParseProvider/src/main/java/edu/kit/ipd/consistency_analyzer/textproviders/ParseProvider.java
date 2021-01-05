@@ -118,7 +118,6 @@ public class ParseProvider implements ITextConnector {
 		agent.init();
 		agent.setGraph(graph);
 		Method exec = agent.getClass().getDeclaredMethod("exec");
-		exec.setAccessible(true);
 		try {
 			exec.invoke(agent);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

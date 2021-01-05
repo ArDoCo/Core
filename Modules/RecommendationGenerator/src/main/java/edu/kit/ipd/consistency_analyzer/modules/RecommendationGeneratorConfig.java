@@ -15,12 +15,12 @@ public class RecommendationGeneratorConfig {
 	/**
 	 * The list of analyzer types that should work on the recommendation state.
 	 */
-	public static final List<String> RECOMMENDATION_AGENT_ANALYZERS = CONFIG.getPropertyAsList("RecommendationAgent_Analyzers");
+	protected static final List<String> RECOMMENDATION_AGENT_ANALYZERS = CONFIG.getPropertyAsList("RecommendationAgent_Analyzers");
 
 	/**
 	 * The list of solver types that should work on the recommendation state.
 	 */
-	public static final List<String> RECOMMENDATION_AGENT_SOLVERS = CONFIG.getPropertyAsList("RecommendationAgent_Solvers");
+	protected static final List<String> RECOMMENDATION_AGENT_SOLVERS = CONFIG.getPropertyAsList("RecommendationAgent_Solvers");
 
 	private static SystemParameters loadParameters(String filePath) {
 		return new SystemParameters(filePath, true);

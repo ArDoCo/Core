@@ -60,8 +60,8 @@ public class RecommendedRelation implements IRecommendedRelation {
 	@Override
 	public void addOccurrences(List<IWord> occs) {
 		for (IWord occ : occs) {
-			if (!this.nodes.contains(occ)) {
-				this.nodes.add(occ);
+			if (!nodes.contains(occ)) {
+				nodes.add(occ);
 			}
 		}
 	}
@@ -75,7 +75,8 @@ public class RecommendedRelation implements IRecommendedRelation {
 	public void updateProbability(double probability2) {
 		if (probability == 1.0) {
 			return;
-		} else if (probability2 == 1.0) {
+		}
+		if (probability2 == 1.0) {
 			probability = 1.0;
 		} else if (probability >= probability2) {
 			probability += probability2 * (1 - probability);
@@ -126,9 +127,9 @@ public class RecommendedRelation implements IRecommendedRelation {
 	}
 
 	private String getInstanceNameTypePairs() {
-		String result = "";
-		for (IRecommendedInstance ri : this.relationInstances) {
-			result += ri.getName() + ":" + ri.getType() + ", ";
+		StringBuilder result = new StringBuilder("");
+		for (IRecommendedInstance ri : relationInstances) {
+			result.append(ri.getName()).append(":").append(ri.getType()).append(", ");
 		}
 
 		return result.substring(0, result.length() - 2);

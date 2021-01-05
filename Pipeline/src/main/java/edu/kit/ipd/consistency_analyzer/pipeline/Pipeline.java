@@ -31,7 +31,7 @@ public class Pipeline {
 	static InputStream documentation = Pipeline.class.getResourceAsStream(PipelineConfig.DOCUMENTATION_PATH);
 	static InputStream test = Pipeline.class.getResourceAsStream(PipelineConfig.TEST_DOCUMENTATION_PATH);
 
-	public static void main(String args[]) throws NoSuchMethodException, InconsistentModelException, PipelineStageException, MissingDataException {
+	public static void main(String[] args) throws NoSuchMethodException, InconsistentModelException, PipelineStageException, MissingDataException {
 		run(documentation);
 	}
 

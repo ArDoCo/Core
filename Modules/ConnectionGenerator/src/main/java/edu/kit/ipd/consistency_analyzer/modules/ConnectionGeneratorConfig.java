@@ -15,11 +15,11 @@ public class ConnectionGeneratorConfig {
 	/**
 	 * The list of analyzer types that should work on the connection state.
 	 */
-	public static final List<String> MODEL_CONNECTION_AGENT_ANALYZERS = CONFIG.getPropertyAsList("ModelConnectionAgent_Analyzers");
+	protected static final List<String> MODEL_CONNECTION_AGENT_ANALYZERS = CONFIG.getPropertyAsList("ModelConnectionAgent_Analyzers");
 	/**
 	 * The list of solver types that should work on the connection state.
 	 */
-	public static final List<String> MODEL_CONNECTION_AGENT_SOLVERS = CONFIG.getPropertyAsList("ModelConnectionAgent_Solvers");
+	protected static final List<String> MODEL_CONNECTION_AGENT_SOLVERS = CONFIG.getPropertyAsList("ModelConnectionAgent_Solvers");
 
 	private static SystemParameters loadParameters(String filePath) {
 		return new SystemParameters(filePath, true);
