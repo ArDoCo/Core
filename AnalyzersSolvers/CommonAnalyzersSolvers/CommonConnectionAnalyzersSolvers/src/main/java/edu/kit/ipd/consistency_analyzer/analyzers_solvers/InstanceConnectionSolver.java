@@ -22,8 +22,8 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
 @MetaInfServices(IConnectionSolver.class)
 public class InstanceConnectionSolver extends ConnectionSolver {
 
-	private double probability = GenericConnectionAnalyzerSolverConfig.INSTANCE_CONNECTION_SOLVER_PROBABILITY;
-	private double probabilityWithoutType = GenericConnectionAnalyzerSolverConfig.INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE;
+	private double probability;
+	private double probabilityWithoutType;
 
 	/**
 	 * Creates a new InstanceMappingConnector.
@@ -37,10 +37,20 @@ public class InstanceConnectionSolver extends ConnectionSolver {
 	public InstanceConnectionSolver(//
 			ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState) {
 		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, textExtractionState, modelExtractionState, recommendationState, connectionState);
+		probability = GenericConnectionAnalyzerSolverConfig.INSTANCE_CONNECTION_SOLVER_PROBABILITY;
+		probabilityWithoutType = GenericConnectionAnalyzerSolverConfig.INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE;
 	}
 
+	// Required for the service loader
 	public InstanceConnectionSolver() {
 		this(null, null, null, null);
+	}
+
+	public InstanceConnectionSolver(ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState,
+			double probability, double probabilityWithoutType) {
+		this(textExtractionState, modelExtractionState, recommendationState, connectionState);
+		this.probability = probability;
+		this.probabilityWithoutType = probabilityWithoutType;
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.MappingKind;
 @MetaInfServices(ITextSolver.class)
 public class MultiplePartSolver extends TextExtractionSolver {
 
-	private double probability = GenericTextAnalyzerSolverConfig.MULTIPLE_PART_SOLVER_PROBABILITY;
+	private double probability;
 
 	/**
 	 * Creates a new multiple part solver.
@@ -31,6 +31,14 @@ public class MultiplePartSolver extends TextExtractionSolver {
 	 */
 	public MultiplePartSolver(ITextExtractionState textExtractionState) {
 		super(DependencyType.TEXT, textExtractionState);
+		probability = GenericTextAnalyzerSolverConfig.MULTIPLE_PART_SOLVER_PROBABILITY;
+	}
+
+	public MultiplePartSolver(ITextExtractionState textExtractionState, double probability) {
+
+		this(textExtractionState);
+		this.probability = probability;
+
 	}
 
 	@Override
