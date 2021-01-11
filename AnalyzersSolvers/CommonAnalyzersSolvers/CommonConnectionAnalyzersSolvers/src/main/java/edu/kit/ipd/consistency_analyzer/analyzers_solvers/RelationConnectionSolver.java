@@ -30,7 +30,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
 @MetaInfServices(IConnectionSolver.class)
 public class RelationConnectionSolver extends ConnectionSolver {
 
-	private double probability = GenericConnectionAnalyzerSolverConfig.RELATION_CONNECTION_SOLVER_PROBABILITY;
+	private double probability;
 
 	/**
 	 * Creates a new RelationConenctionSolver.
@@ -44,6 +44,13 @@ public class RelationConnectionSolver extends ConnectionSolver {
 	public RelationConnectionSolver(//
 			ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState) {
 		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, textExtractionState, modelExtractionState, recommendationState, connectionState);
+		probability = GenericConnectionAnalyzerSolverConfig.RELATION_CONNECTION_SOLVER_PROBABILITY;
+	}
+
+	public RelationConnectionSolver(//
+			ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState, double probability) {
+		this(textExtractionState, modelExtractionState, recommendationState, connectionState);
+		this.probability = probability;
 	}
 
 	public RelationConnectionSolver() {

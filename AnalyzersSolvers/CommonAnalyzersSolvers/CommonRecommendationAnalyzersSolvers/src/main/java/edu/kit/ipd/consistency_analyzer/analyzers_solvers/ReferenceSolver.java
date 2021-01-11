@@ -37,6 +37,17 @@ public class ReferenceSolver extends RecommendationSolver {
 	 */
 	public ReferenceSolver(ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState) {
 		super(DependencyType.TEXT_MODEL_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
+		probability = GenericRecommendationAnalyzerSolverConfig.REFERENCE_SOLVER_PROBABILITY;
+		areNamesSimilarThreshold = GenericRecommendationAnalyzerSolverConfig.REFERENCE_SOLVER_ARE_NAMES_SIMILAR_THRESHOLD;
+		proportionalDecrease = GenericRecommendationAnalyzerSolverConfig.REFERENCE_SOLVER_PROPORTIONAL_DECREASE;
+	}
+
+	public ReferenceSolver(ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState, double probability,
+			double areNamesSimilarThreshold, double proportionalDecrease) {
+		this(textExtractionState, modelExtractionState, recommendationState);
+		this.probability = probability;
+		this.areNamesSimilarThreshold = areNamesSimilarThreshold;
+		this.proportionalDecrease = proportionalDecrease;
 	}
 
 	public ReferenceSolver() {

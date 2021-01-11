@@ -22,6 +22,12 @@ public class ArticleTypeNameAnalyzer extends TextExtractionAnalyzer {
 		return new ArticleTypeNameAnalyzer(textExtractionState);
 	}
 
+	public ITextAnalyzer create(ITextExtractionState textExtractionState, double probability) {
+		ArticleTypeNameAnalyzer analyzer = new ArticleTypeNameAnalyzer(textExtractionState);
+		analyzer.probability = probability;
+		return analyzer;
+	}
+
 	public ArticleTypeNameAnalyzer() {
 		this(null);
 	}

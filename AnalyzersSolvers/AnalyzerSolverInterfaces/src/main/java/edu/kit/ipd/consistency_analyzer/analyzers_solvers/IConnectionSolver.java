@@ -10,4 +10,5 @@ public interface IConnectionSolver extends ISolver {
 	IConnectionSolver create(//
 			ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, //
 			IRecommendationState recommendationState, IConnectionState connectionState);
+
 }

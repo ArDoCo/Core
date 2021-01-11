@@ -25,7 +25,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
 @MetaInfServices(IRecommendationSolver.class)
 public class SeparatedRelationsSolver extends RecommendationSolver {
 
-	private double probability = GenericRecommendationAnalyzerSolverConfig.SEPARATED_RELATIONS_SOLVER_PROBABILITY;
+	private double probability;
 	private String relName = "separated";
 
 	/**
@@ -38,15 +38,21 @@ public class SeparatedRelationsSolver extends RecommendationSolver {
 	 */
 	public SeparatedRelationsSolver(ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState) {
 		super(DependencyType.RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
+		probability = GenericRecommendationAnalyzerSolverConfig.SEPARATED_RELATIONS_SOLVER_PROBABILITY;
 	}
 
-	public SeparatedRelationsSolver() {
-		this(null, null, null);
+	public SeparatedRelationsSolver(ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState, double probability) {
+		this(textExtractionState, modelExtractionState, recommendationState);
+		this.probability = probability;
 	}
 
 	@Override
 	public IRecommendationSolver create(ITextExtractionState textExtractionState, IModelExtractionState modelExtractionState, IRecommendationState recommendationState) {
 		return new SeparatedRelationsSolver(textExtractionState, modelExtractionState, recommendationState);
+	}
+
+	public SeparatedRelationsSolver() {
+		this(null, null, null);
 	}
 
 	/**
