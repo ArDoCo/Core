@@ -13,7 +13,7 @@
 
 	<properties>
 		<eclipse.collections.version>9.2.0</eclipse.collections.version>
-		<log4j.version>2.12.1</log4j.version>
+		<log4j.version>2.13.2</log4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
