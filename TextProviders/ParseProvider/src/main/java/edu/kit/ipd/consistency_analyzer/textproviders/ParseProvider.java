@@ -119,6 +119,7 @@ public class ParseProvider implements ITextConnector {
 		agent.setGraph(graph);
 		Method exec = agent.getClass().getDeclaredMethod("exec");
 		try {
+			exec.setAccessible(true);
 			exec.invoke(agent);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			LOGGER.warn("Error in executing agent!");

@@ -3,7 +3,7 @@ package edu.kit.ipd.consistency_analyzer.modules;
 import java.util.List;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
-import edu.kit.ipd.consistency_analyzer.datastructures.IModelExtractionState;
+import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRelation;
 import edu.kit.ipd.consistency_analyzer.modelproviders.IModelConnector;
 import edu.kit.ipd.consistency_analyzer.modelproviders.exception.InconsistentModelException;
@@ -16,9 +16,9 @@ import edu.kit.ipd.constistency_analyzer.datastructures.ModelExtractionState;
  * @author Sophie
  *
  */
-public class ModelExtractor implements IModule<IModelExtractionState> {
+public class ModelExtractor implements IModule<IModelState> {
 
-	protected IModelExtractionState modelExtractionState;
+	protected IModelState modelExtractionState;
 	private IModelConnector modelConnector;
 
 	public ModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
@@ -26,7 +26,7 @@ public class ModelExtractor implements IModule<IModelExtractionState> {
 	}
 
 	@Override
-	public IModelExtractionState getState() throws InconsistentModelException {
+	public IModelState getState() throws InconsistentModelException {
 		return modelExtractionState;
 	}
 

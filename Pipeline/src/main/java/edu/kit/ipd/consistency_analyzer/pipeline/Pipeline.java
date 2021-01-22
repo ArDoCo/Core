@@ -3,11 +3,9 @@ package edu.kit.ipd.consistency_analyzer.pipeline;
 import java.io.File;
 import java.io.InputStream;
 
-import edu.kit.ipd.consistency_analyzer.datastructures.IConnectionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IModelExtractionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendationState;
+import edu.kit.ipd.consistency_analyzer.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
-import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
 import edu.kit.ipd.consistency_analyzer.modelproviders.HardCodedModelConnector;
 import edu.kit.ipd.consistency_analyzer.modelproviders.HardCodedModelInput;
 import edu.kit.ipd.consistency_analyzer.modelproviders.IModelConnector;
@@ -44,51 +42,49 @@ public class Pipeline {
 		HardCodedModelInput hardCodedModel = new HardCodedModelInput();
 		IModelConnector modelConnector = new HardCodedModelConnector(hardCodedModel);
 
-		IModelExtractionState modelExtractionState = runModelExtractor(modelConnector);
-		ITextExtractionState textExtractionState = runTextExtractor(annotatedText);
-		IRecommendationState recommendationState = runRecommendationGenerator(annotatedText, modelExtractionState, textExtractionState);
-		IConnectionState connectionState = runConnectionGenerator(annotatedText, modelExtractionState, textExtractionState, recommendationState);
+		AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(modelConnector), null, null);
+		data.overwrite(runTextExtractor(data));
+		data.overwrite(runRecommendationGenerator(data));
+		data.overwrite(runConnectionGenerator(data));
 
 		double duration = (System.currentTimeMillis() - startTime) / 1000.0;
 		double min = duration / 60;
 
-		printResultsInFiles(annotatedText, modelExtractionState, textExtractionState, recommendationState, connectionState, min);
+		printResultsInFiles(data, min);
 	}
 
 	private static void printResultsInFiles(//
-			IText text, IModelExtractionState modelExtractionState, ITextExtractionState textExtractionState, //
-			IRecommendationState recommendationState, IConnectionState connectionState, double min) {
+			AgentDatastructure data, double min) {
 
 		// FilePrinter.writeEval1ToFile(text, textExtractionState, 0);
 		// FilePrinter.writeRecommendationsToFile(recommendationState, 0);
 		// FilePrinter.writeRecommendedRelationToFile(recommendationState);
 		// FilePrinter.writeConnectionsToFile(connectionState, 0);
 		// FilePrinter.writeConnectionRelationsToFile(connectionState);
-		FilePrinter.writeStatesToFile(modelExtractionState, textExtractionState, recommendationState, connectionState, min);
+		FilePrinter.writeStatesToFile(data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), min);
 
 	}
 
-	private static IModelExtractionState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
-		IModule<IModelExtractionState> hardCodedModelExtractor = new ModelExtractor(modelConnector);
+	private static IModelState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
+		IModule<IModelState> hardCodedModelExtractor = new ModelExtractor(modelConnector);
 		hardCodedModelExtractor.exec();
 		return hardCodedModelExtractor.getState();
 	}
 
-	private static ITextExtractionState runTextExtractor(IText graph) {
-		IModule<ITextExtractionState> textModule = new TextExtractor(graph);
+	private static AgentDatastructure runTextExtractor(AgentDatastructure data) {
+		IModule<AgentDatastructure> textModule = new TextExtractor(data);
 		textModule.exec();
 		return textModule.getState();
 	}
 
-	private static IRecommendationState runRecommendationGenerator(IText graph, IModelExtractionState modelExtractionState, ITextExtractionState textExtractionState) {
-		IModule<IRecommendationState> recommendationModule = new RecommendationGenerator(graph, modelExtractionState, textExtractionState);
+	private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data) {
+		IModule<AgentDatastructure> recommendationModule = new RecommendationGenerator(data);
 		recommendationModule.exec();
 		return recommendationModule.getState();
 	}
 
-	private static IConnectionState runConnectionGenerator(IText graph, IModelExtractionState modelExtractionState, ITextExtractionState textExtractionState,
-			IRecommendationState recommendationState) {
-		IModule<IConnectionState> mcAgent = new ConnectionGenerator(graph, modelExtractionState, textExtractionState, recommendationState);
+	private static AgentDatastructure runConnectionGenerator(AgentDatastructure data) {
+		IModule<AgentDatastructure> mcAgent = new ConnectionGenerator(data);
 		mcAgent.exec();
 		return mcAgent.getState();
 	}

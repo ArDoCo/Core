@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import edu.kit.ipd.consistency_analyzer.datastructures.IConnectionState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstanceLink;
-import edu.kit.ipd.consistency_analyzer.datastructures.IModelExtractionState;
+import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.INounMapping;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendationState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendedInstance;
@@ -23,7 +23,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendedRelation;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRelation;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRelationLink;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
-import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
+import edu.kit.ipd.consistency_analyzer.datastructures.ITextState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 import edu.kit.ipd.consistency_analyzer.pipeline.PipelineConfig;
 
@@ -67,7 +67,7 @@ public class FilePrinter {
 		try (FileWriter myWriter = new FileWriter(debugGraphSentences)) {
 
 			int minSentenceNumber = 0;
-			for (IWord node : graph.getNodes()) {
+			for (IWord node : graph.getWords()) {
 				int sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
 				if (sentenceNumber + 1 > minSentenceNumber) {
 					myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
@@ -100,7 +100,7 @@ public class FilePrinter {
 		return true;
 	}
 
-	public static void writeEval1ToFile(IText graph, ITextExtractionState textExtractionState, double min) {
+	public static void writeEval1ToFile(IText graph, ITextState textExtractionState, double min) {
 
 		File debugGraphSentences = new File("evaluations/EvalA1.txt");
 
@@ -113,7 +113,7 @@ public class FilePrinter {
 			int minSentenceNumber = 0;
 			StringBuilder valueBuilder = new StringBuilder(SINGLE_SEPARATOR_WITH_SPACES);
 
-			for (IWord node : graph.getNodes()) {
+			for (IWord node : graph.getWords()) {
 				int sentenceNo = Integer.parseInt(String.valueOf(node.getSentenceNo()));
 
 				if (sentenceNo + 1 > minSentenceNumber) {
@@ -453,7 +453,7 @@ public class FilePrinter {
 	 * @param durationInMinutes   past time in minutes the approach needed to
 	 *                            calculate the results
 	 */
-	public static void writeStatesToFile(IModelExtractionState extractionState, ITextExtractionState ntrState, //
+	public static void writeStatesToFile(IModelState extractionState, ITextState ntrState, //
 			IRecommendationState recommendationState, IConnectionState connectionState, double durationInMinutes) {
 		File resultFile = new File(PipelineConfig.FILE_FOR_RESULTS_PATH);
 
