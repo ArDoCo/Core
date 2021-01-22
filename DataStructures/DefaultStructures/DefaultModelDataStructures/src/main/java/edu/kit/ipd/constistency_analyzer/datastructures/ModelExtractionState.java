@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
-import edu.kit.ipd.consistency_analyzer.datastructures.IModelExtractionState;
+import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRelation;
 
 /**
@@ -17,7 +17,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IRelation;
  * @author Sophie
  *
  */
-public class ModelExtractionState implements IModelExtractionState {
+public class ModelExtractionState implements IModelState {
 
 	private Set<String> instanceTypes;
 	private Set<String> relationTypes;
@@ -26,7 +26,7 @@ public class ModelExtractionState implements IModelExtractionState {
 	private List<IRelation> relations;
 
 	@Override
-	public IModelExtractionState createCopy() {
+	public IModelState createCopy() {
 		return new ModelExtractionState(instanceTypes, relationTypes, names, instances.stream().map(IInstance::createCopy).collect(Collectors.toList()),
 				relations.stream().map(IRelation::createCopy).collect(Collectors.toList()));
 	}

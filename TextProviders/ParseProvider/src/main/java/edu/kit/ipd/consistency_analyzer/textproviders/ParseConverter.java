@@ -154,7 +154,7 @@ public class ParseConverter {
 			if (position == 0) {
 				return null;
 			}
-			return parent.getNodes().get(position - 1);
+			return parent.getWords().get(position - 1);
 		}
 
 		@Override
@@ -162,7 +162,7 @@ public class ParseConverter {
 			if (position == parent.getLength() - 1) {
 				return null;
 			}
-			return parent.getNodes().get(position + 1);
+			return parent.getWords().get(position + 1);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class ParseConverter {
 		}
 
 		@Override
-		public List<IWord> getNodes() {
+		public List<IWord> getWords() {
 			return words;
 		}
 	}

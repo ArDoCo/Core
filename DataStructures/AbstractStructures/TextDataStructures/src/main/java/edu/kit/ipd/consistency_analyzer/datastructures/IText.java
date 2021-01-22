@@ -7,8 +7,8 @@ public interface IText {
 	public IWord getStartNode();
 
 	public default int getLength() {
-		return getNodes().size();
+		return getWords().size();
 	}
 
-	public List<IWord> getNodes();
+	public List<IWord> getWords();
 }

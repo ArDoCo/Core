@@ -15,14 +15,14 @@ import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
  * @author Sophie
  *
  */
-public class TextExtractionState implements ITextExtractionState {
+public class TextExtractionState implements ITextState {
 
 	private List<INounMapping> nounMappings;
 	private List<IRelationMapping> relationMappings;
 	private List<ITermMapping> terms;
 
 	@Override
-	public ITextExtractionState createCopy() {
+	public ITextState createCopy() {
 		TextExtractionState textExtractionState = new TextExtractionState();
 		textExtractionState.nounMappings = nounMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList());
 		textExtractionState.relationMappings = relationMappings.stream().map(IRelationMapping::createCopy).collect(Collectors.toList());

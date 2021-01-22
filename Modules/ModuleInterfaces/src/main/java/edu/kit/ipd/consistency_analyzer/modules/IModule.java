@@ -1,6 +1,6 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
-public interface IModule<S extends IState> {
+public interface IModule<AgentDatastructure> {
 
 	// TODO: generic defintion of InputStates
 
@@ -14,6 +14,6 @@ public interface IModule<S extends IState> {
 	 *
 	 * @return current state
 	 */
-	S getState();
+	AgentDatastructure getState();
 
 }
