@@ -26,8 +26,14 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>luna</artifactId>
-			<version>0.5.10</version>
+			<version>0.6.6</version>
 		</dependency>
+		<dependency>
+			<groupId>edu.kit.ipd.parse</groupId>
+			<artifactId>change_watchdog</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>depParser</artifactId>

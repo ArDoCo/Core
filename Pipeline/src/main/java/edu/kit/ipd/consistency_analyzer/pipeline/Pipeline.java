@@ -18,8 +18,7 @@ import edu.kit.ipd.consistency_analyzer.modules.TextExtractor;
 import edu.kit.ipd.consistency_analyzer.pipeline.helpers.FilePrinter;
 import edu.kit.ipd.consistency_analyzer.textproviders.ITextConnector;
 import edu.kit.ipd.consistency_analyzer.textproviders.ParseProvider;
-import edu.kit.ipd.parse.luna.data.MissingDataException;
-import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
+import edu.kit.ipd.parse.luna.LunaRunException;
 
 public class Pipeline {
 
@@ -29,11 +28,11 @@ public class Pipeline {
 	static InputStream documentation = Pipeline.class.getResourceAsStream(PipelineConfig.DOCUMENTATION_PATH);
 	static InputStream test = Pipeline.class.getResourceAsStream(PipelineConfig.TEST_DOCUMENTATION_PATH);
 
-	public static void main(String[] args) throws NoSuchMethodException, InconsistentModelException, PipelineStageException, MissingDataException {
+	public static void main(String[] args) throws LunaRunException {
 		run(documentation);
 	}
 
-	public static void run(InputStream text) throws NoSuchMethodException, InconsistentModelException, PipelineStageException, MissingDataException {
+	public static void run(InputStream text) throws LunaRunException {
 		long startTime = System.currentTimeMillis();
 
 		ITextConnector connector = new ParseProvider(text);
