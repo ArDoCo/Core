@@ -53,6 +53,19 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
 	}
 
 	@Override
+	public void setProbability(List<Double> probabilities) {
+		if (probabilities.size() > 3) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+		} else if (probabilities.isEmpty()) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+		} else {
+			probabilityAdjacentTerm = probabilities.get(0);
+			probabilityJustName = probabilities.get(1);
+			probabilityJustAdjacentNoun = probabilities.get(2);
+		}
+	}
+
+	@Override
 	public void exec(IWord n) {
 
 		createRecommendedInstancesForTerm(n);
@@ -228,7 +241,7 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
 
 	private IWord getAfterTermNode(IWord termStartNode, ITermMapping term) {
 		IWord afterTermNode = termStartNode.getNextWord();
-		for (INounMapping element : term.getMappings()) {
+		for (int i=0; i< term.getMappings().size(); i++) {
 			afterTermNode = afterTermNode.getNextWord();
 		}
 		return afterTermNode;

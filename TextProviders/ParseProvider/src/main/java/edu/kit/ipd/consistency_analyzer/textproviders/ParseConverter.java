@@ -173,7 +173,6 @@ public class ParseConverter {
 		public Text(List<Word> orderedWords) {
 			orderedWords.stream().forEach(w -> w.parent = this);
 			words = Collections.unmodifiableList(orderedWords);
-
 		}
 
 		@Override

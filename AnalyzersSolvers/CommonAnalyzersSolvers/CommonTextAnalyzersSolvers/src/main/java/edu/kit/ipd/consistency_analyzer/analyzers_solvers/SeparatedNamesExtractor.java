@@ -1,5 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.analyzers_solvers;
 
+import java.util.List;
+
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.ipd.consistency_analyzer.agents.DependencyType;
@@ -29,6 +31,17 @@ public class SeparatedNamesExtractor extends TextExtractor {
 	 */
 	public SeparatedNamesExtractor(ITextState textExtractionState) {
 		super(DependencyType.TEXT, textExtractionState);
+	}
+
+	@Override
+	public void setProbability(List<Double> probabilities) {
+		if (probabilities.size() > 1) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+		} else if (probabilities.isEmpty()) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+		} else {
+			probability = probabilities.get(0);
+		}
 	}
 
 	@Override

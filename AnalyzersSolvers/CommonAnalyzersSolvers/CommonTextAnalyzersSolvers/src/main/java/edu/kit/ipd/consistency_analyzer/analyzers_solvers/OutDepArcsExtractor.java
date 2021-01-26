@@ -34,6 +34,17 @@ public class OutDepArcsExtractor extends TextExtractor {
 	}
 
 	@Override
+	public void setProbability(List<Double> probabilities) {
+		if (probabilities.size() > 1) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+		} else if (probabilities.isEmpty()) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+		} else {
+			probability = probabilities.get(0);
+		}
+	}
+
+	@Override
 	public TextExtractor create(ITextState textExtractionState) {
 		return new OutDepArcsExtractor(textExtractionState);
 	}
