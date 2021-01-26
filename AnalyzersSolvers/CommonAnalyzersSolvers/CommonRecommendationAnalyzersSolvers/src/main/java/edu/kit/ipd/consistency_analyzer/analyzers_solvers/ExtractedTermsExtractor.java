@@ -228,7 +228,7 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
 
 	private IWord getAfterTermNode(IWord termStartNode, ITermMapping term) {
 		IWord afterTermNode = termStartNode.getNextWord();
-		for (INounMapping element : term.getMappings()) {
+		for (int i = 0; i < term.getMappings().size(); i++) {
 			afterTermNode = afterTermNode.getNextWord();
 		}
 		return afterTermNode;
