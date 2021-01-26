@@ -108,6 +108,7 @@ public class SystemParameters {
         }
 
         values.addAll(List.of(value.split(" ")));
+        values.removeIf(String::isBlank);
         return values;
     }
 
