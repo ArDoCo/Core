@@ -4,7 +4,8 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
 import edu.kit.ipd.indirect.textSNLP.Stanford;
@@ -16,50 +17,60 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
 
 public class ParseProvider implements ITextConnector {
 
-	private static final Logger LOGGER = Logger.getLogger(ParseProvider.class);
-	private IText annotatedText;
+    private static final Logger logger = LogManager.getLogger(ParseProvider.class);
 
-	public ParseProvider(InputStream text) throws LunaRunException {
-		IGraph graph = calculatePARSEGraph(text);
-		annotatedText = convertParseGraphToAnnotatedText(graph);
-	}
+    private IText annotatedText;
 
-	private IText convertParseGraphToAnnotatedText(IGraph graph) {
-		ParseConverter converter = new ParseConverter(graph);
-		converter.convert();
-		return converter.getAnnotatedText();
-	}
+    public ParseProvider(InputStream text) throws LunaRunException {
+        IGraph graph = calculatePARSEGraph(text);
+        annotatedText = convertParseGraphToAnnotatedText(graph);
+    }
 
-	private IGraph calculatePARSEGraph(InputStream text) throws LunaRunException {
-		Scanner scanner = new Scanner(text);
-		scanner.useDelimiter("\\A");
-		String content = scanner.next();
-		scanner.close();
+    private IText convertParseGraphToAnnotatedText(IGraph graph) {
+        ParseConverter converter = new ParseConverter(graph);
+        converter.convert();
+        return converter.getAnnotatedText();
+    }
 
-		Properties stanfordProps = ConfigManager.getConfiguration(Stanford.class);
-		stanfordProps.setProperty("LEMMAS", "seconds/NNS/second;milliseconds/NNS/millisecond;hours/NNS/hour;minutes/NNS/minute;months/NNS/month;years/NNS/year");
-		stanfordProps.setProperty("TAGGER_MODEL", "/edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger");
+    private IGraph calculatePARSEGraph(InputStream text) throws LunaRunException {
+        if (logger.isDebugEnabled())
+            logger.debug("Starting creation of PARSE Graph");
 
-		Properties changeWatchdogProps = ConfigManager.getConfiguration(ChangeWatchdog.class);
-		// TODO Find a suitable time for termination. Currently 10s
-		changeWatchdogProps.setProperty("CHANGE_TIMEOUT_THRESHOLD", "10000");
+        Scanner scanner = new Scanner(text);
+        scanner.useDelimiter("\\A");
+        String content = scanner.next();
+        scanner.close();
 
-		Properties lunaProps = ConfigManager.getConfiguration(Luna.class);
-		lunaProps.setProperty("PRE_PIPE", String.join(",", "indirect_tokenizer", "textSNLP", "graphBuilder"));
-		lunaProps.setProperty("AGENTS", String.join(",", "depParser", "changeWatchdog"));
+        Properties stanfordProps = ConfigManager.getConfiguration(Stanford.class);
+        stanfordProps.setProperty("LEMMAS",
+                "seconds/NNS/second;milliseconds/NNS/millisecond;hours/NNS/hour;minutes/NNS/minute;months/NNS/month;years/NNS/year");
+        stanfordProps.setProperty("TAGGER_MODEL",
+                "/edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger");
 
-		Luna luna = Luna.getInstance();
-		luna.getPrePipelineData().setTranscription(content);
+        Properties changeWatchdogProps = ConfigManager.getConfiguration(ChangeWatchdog.class);
+        // TODO Find a suitable time for termination. Currently 10s
+        changeWatchdogProps.setProperty("CHANGE_TIMEOUT_THRESHOLD", "10000");
 
-		luna.init();
-		luna.run();
-		return luna.getMainGraph();
+        Properties lunaProps = ConfigManager.getConfiguration(Luna.class);
+        lunaProps.setProperty("PRE_PIPE", String.join(",", "indirect_tokenizer", "textSNLP", "graphBuilder"));
+        lunaProps.setProperty("AGENTS", String.join(",", "depParser", "changeWatchdog"));
 
-	}
+        Luna luna = Luna.getInstance();
+        luna.getPrePipelineData()
+            .setTranscription(content);
 
-	@Override
-	public IText getAnnotatedText() {
-		return annotatedText;
-	}
+        luna.init();
+        luna.run();
+
+        if (logger.isDebugEnabled())
+            logger.debug("Finished creation of PARSE Graph");
+        return luna.getMainGraph();
+
+    }
+
+    @Override
+    public IText getAnnotatedText() {
+        return annotatedText;
+    }
 
 }

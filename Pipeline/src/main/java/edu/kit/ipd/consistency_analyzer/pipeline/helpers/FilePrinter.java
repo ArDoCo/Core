@@ -11,7 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IConnectionState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
@@ -36,7 +37,7 @@ public class FilePrinter {
 
     private static final String SUCCESS_WRITE = "Successfully wrote to the file.";
 
-    private static final Logger logger = Logger.getLogger(FilePrinter.class);
+    private static final Logger logger = LogManager.getLogger(FilePrinter.class);
 
     private static final String SPACE = " ";
     private static final String SINGLE_SEPARATOR = "|";
