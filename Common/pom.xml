@@ -10,35 +10,4 @@
 
 	<artifactId>common</artifactId>
 	<name>Common</name>
-
-	<properties>
-		<eclipse.collections.version>9.2.0</eclipse.collections.version>
-		<log4j.version>2.13.2</log4j.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
-	<dependencies>
-
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.collections</groupId>
-			<artifactId>eclipse-collections-api</artifactId>
-			<version>${eclipse.collections.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.collections</groupId>
-			<artifactId>eclipse-collections</artifactId>
-			<version>${eclipse.collections.version}</version>
-		</dependency>
-
-	</dependencies>
 </project>
