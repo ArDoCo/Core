@@ -11,6 +11,11 @@
 	<name>AnalyzerSolverInterfaces</name>
 	<dependencies>
 		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.12</version>
+		</dependency>
+		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
 			<artifactId>text_data_structures</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
