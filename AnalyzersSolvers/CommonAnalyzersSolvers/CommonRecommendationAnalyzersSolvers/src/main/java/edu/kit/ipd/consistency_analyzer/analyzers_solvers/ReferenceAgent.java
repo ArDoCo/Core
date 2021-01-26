@@ -54,12 +54,15 @@ public class ReferenceAgent extends RecommendationAgent {
 		this.proportionalDecrease = proportionalDecrease;
 	}
 
-	public ReferenceAgent(AgentDatastructure data) {
-		this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState());
+	public ReferenceAgent(AgentDatastructure data, double probability, double areNamesSimilarThreshold, double proportionalDecrease) {
+		this(data);
+		this.probability = probability;
+		this.areNamesSimilarThreshold = areNamesSimilarThreshold;
+		this.proportionalDecrease = proportionalDecrease;
 	}
 
-	public ReferenceAgent(AgentDatastructure data, double probability, double areNamesSimilarThreshold, double proportionalDecrease) {
-		this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), probability, areNamesSimilarThreshold, proportionalDecrease);
+	public ReferenceAgent(AgentDatastructure data) {
+		this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState());
 	}
 
 	public ReferenceAgent() {

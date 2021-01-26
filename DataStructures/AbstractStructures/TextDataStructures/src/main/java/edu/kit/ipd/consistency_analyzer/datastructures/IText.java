@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface IText {
 
-	public IWord getStartNode();
+	IWord getStartNode();
 
-	public default int getLength() {
+	default int getLength() {
 		return getWords().size();
 	}
 
-	public List<IWord> getWords();
+	List<IWord> getWords();
 }

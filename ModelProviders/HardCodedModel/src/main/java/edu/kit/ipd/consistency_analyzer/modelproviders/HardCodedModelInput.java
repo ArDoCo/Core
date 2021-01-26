@@ -23,19 +23,19 @@ public class HardCodedModelInput {
 
 		String compositeComponent = "composite component";
 		String interfaceItem = "interface";
-		String basicComponent = "basicComponent";
+		String basicComponent = "basic component";
 
-		Triple<String, String, String> i0 = new Triple<>("Common", compositeComponent, "i0");
-		Triple<String, String, String> i1 = new Triple<>("Common Interface", interfaceItem, "i1");
-		Triple<String, String, String> i2 = new Triple<>("util", basicComponent, "i2");
-		Triple<String, String, String> i3 = new Triple<>("exception", basicComponent, "i3");
-		Triple<String, String, String> i4 = new Triple<>("datatransfer", basicComponent, "i4");
+		Triple<String, String, String> i0 = new Triple<>("Common", compositeComponent, "i00");
+		Triple<String, String, String> i1 = new Triple<>("Common Interface", interfaceItem, "i01");
+		Triple<String, String, String> i2 = new Triple<>("util", basicComponent, "i02");
+		Triple<String, String, String> i3 = new Triple<>("exception", basicComponent, "i03");
+		Triple<String, String, String> i4 = new Triple<>("datatransfer", basicComponent, "i04");
 
-		Triple<String, String, String> i5 = new Triple<>("UI", compositeComponent, "i5");
-		Triple<String, String, String> i6 = new Triple<>("UI Interface", interfaceItem, "i6");
-		Triple<String, String, String> i7 = new Triple<>("automated", basicComponent, "i7");
-		Triple<String, String, String> i8 = new Triple<>("webapi", basicComponent, "i8");
-		Triple<String, String, String> i9 = new Triple<>("website", basicComponent, "i9");
+		Triple<String, String, String> i5 = new Triple<>("UI", compositeComponent, "i05");
+		Triple<String, String, String> i6 = new Triple<>("UI Interface", interfaceItem, "i06");
+		Triple<String, String, String> i7 = new Triple<>("automated", basicComponent, "i07");
+		Triple<String, String, String> i8 = new Triple<>("webapi", basicComponent, "i08");
+		Triple<String, String, String> i9 = new Triple<>("website", basicComponent, "i09");
 		Triple<String, String, String> i10 = new Triple<>("UI website Interface", interfaceItem, "i10");
 
 		Triple<String, String, String> i11 = new Triple<>("Logic", compositeComponent, "i11");
@@ -86,21 +86,21 @@ public class HardCodedModelInput {
 		String in = "in";
 
 		// Common
-		Quadruple<String, String, String, String> r0 = new Quadruple<>("i0", "i1", provide, "r0");
-		Quadruple<String, String, String, String> r1 = new Quadruple<>("i2", "i0", in, "r1");
-		Quadruple<String, String, String, String> r2 = new Quadruple<>("i3", "i0", in, "r2");
-		Quadruple<String, String, String, String> r3 = new Quadruple<>("i4", "i0", in, "r3");
-		Quadruple<String, String, String, String> r4 = new Quadruple<>("i4", "i19", use, "r4");
+		Quadruple<String, String, String, String> r0 = new Quadruple<>("i00", "i01", provide, "r00");
+		Quadruple<String, String, String, String> r1 = new Quadruple<>("i02", "i00", in, "r01");
+		Quadruple<String, String, String, String> r2 = new Quadruple<>("i03", "i00", in, "r02");
+		Quadruple<String, String, String, String> r3 = new Quadruple<>("i04", "i00", in, "r03");
+		Quadruple<String, String, String, String> r4 = new Quadruple<>("i04", "i19", use, "r04");
 
 		// UI
-		Quadruple<String, String, String, String> r5 = new Quadruple<>("i5", "i6", provide, "r5");
-		Quadruple<String, String, String, String> r6 = new Quadruple<>("i9", "i10", provide, "r6");
-		Quadruple<String, String, String, String> r7 = new Quadruple<>("i7", "i5", in, "r7");
-		Quadruple<String, String, String, String> r8 = new Quadruple<>("i8", "i5", in, "r8");
-		Quadruple<String, String, String, String> r9 = new Quadruple<>("i9", "i5", in, "r9");
-		Quadruple<String, String, String, String> r10 = new Quadruple<>("i5", "i1", use, "r10");
-		Quadruple<String, String, String, String> r11 = new Quadruple<>("i7", "i16", use, "r11");
-		Quadruple<String, String, String, String> r12 = new Quadruple<>("i8", "i16", use, "r12");
+		Quadruple<String, String, String, String> r5 = new Quadruple<>("i05", "i06", provide, "r05");
+		Quadruple<String, String, String, String> r6 = new Quadruple<>("i09", "i10", provide, "r06");
+		Quadruple<String, String, String, String> r7 = new Quadruple<>("i07", "i05", in, "r07");
+		Quadruple<String, String, String, String> r8 = new Quadruple<>("i08", "i05", in, "r08");
+		Quadruple<String, String, String, String> r9 = new Quadruple<>("i09", "i05", in, "r09");
+		Quadruple<String, String, String, String> r10 = new Quadruple<>("i05", "i01", use, "r10");
+		Quadruple<String, String, String, String> r11 = new Quadruple<>("i07", "i16", use, "r11");
+		Quadruple<String, String, String, String> r12 = new Quadruple<>("i08", "i16", use, "r12");
 
 		// Logic
 		Quadruple<String, String, String, String> r13 = new Quadruple<>("i11", "i12", provide, "r13");
@@ -108,7 +108,7 @@ public class HardCodedModelInput {
 		Quadruple<String, String, String, String> r15 = new Quadruple<>("i15", "i16", provide, "r15");
 		Quadruple<String, String, String, String> r16 = new Quadruple<>("i13", "i11", in, "r16");
 		Quadruple<String, String, String, String> r17 = new Quadruple<>("i15", "i11", in, "r17");
-		Quadruple<String, String, String, String> r18 = new Quadruple<>("i11", "i1", use, "r18");
+		Quadruple<String, String, String, String> r18 = new Quadruple<>("i11", "i01", use, "r18");
 		Quadruple<String, String, String, String> r19 = new Quadruple<>("i15", "i14", use, "r19");
 		Quadruple<String, String, String, String> r20 = new Quadruple<>("i14", "i18", use, "r20");
 
@@ -119,7 +119,7 @@ public class HardCodedModelInput {
 		Quadruple<String, String, String, String> r24 = new Quadruple<>("i20", "i17", in, "r24");
 		Quadruple<String, String, String, String> r25 = new Quadruple<>("i21", "i17", in, "r25");
 		Quadruple<String, String, String, String> r26 = new Quadruple<>("i22", "i17", in, "r26");
-		Quadruple<String, String, String, String> r27 = new Quadruple<>("i17", "i1", use, "r27");
+		Quadruple<String, String, String, String> r27 = new Quadruple<>("i17", "i01", use, "r27");
 		Quadruple<String, String, String, String> r28 = new Quadruple<>("i21", "i19", use, "r28");
 		Quadruple<String, String, String, String> r29 = new Quadruple<>("i21", "i23", use, "r29");
 		Quadruple<String, String, String, String> r30 = new Quadruple<>("i21", "i39", use, "r30");

@@ -54,6 +54,12 @@ public class InstanceConnectionAgent extends ConnectionAgent {
 		this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState());
 	}
 
+	public InstanceConnectionAgent(AgentDatastructure data, double probability, double probabilityWithoutType) {
+		this(data);
+		this.probability = probability;
+		this.probabilityWithoutType = probabilityWithoutType;
+	}
+
 	public InstanceConnectionAgent(IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState,
 			double probability, double probabilityWithoutType) {
 		this(text, textExtractionState, modelExtractionState, recommendationState, connectionState);

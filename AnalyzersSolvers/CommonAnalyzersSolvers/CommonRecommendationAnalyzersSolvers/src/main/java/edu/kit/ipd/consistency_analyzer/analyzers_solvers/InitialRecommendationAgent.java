@@ -3,6 +3,7 @@ package edu.kit.ipd.consistency_analyzer.analyzers_solvers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.kohsuke.MetaInfServices;
 
@@ -10,6 +11,7 @@ import edu.kit.ipd.consistency_analyzer.agents.AgentDatastructure;
 import edu.kit.ipd.consistency_analyzer.agents.DependencyType;
 import edu.kit.ipd.consistency_analyzer.agents.Loader;
 import edu.kit.ipd.consistency_analyzer.agents.RecommendationAgent;
+import edu.kit.ipd.consistency_analyzer.common.Tuple;
 import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendationState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
@@ -21,6 +23,7 @@ import edu.kit.ipd.consistency_analyzer.extractors.RecommendationExtractor;
 @MetaInfServices(RecommendationAgent.class)
 public class InitialRecommendationAgent extends RecommendationAgent {
 
+	private Logger logger = Logger.getLogger(getName());
 	private List<IExtractor> extractors = new ArrayList<>();
 
 	public InitialRecommendationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
@@ -34,6 +37,21 @@ public class InitialRecommendationAgent extends RecommendationAgent {
 
 	public InitialRecommendationAgent() {
 		super(DependencyType.TEXT_MODEL_RECOMMENDATION);
+	}
+
+	public InitialRecommendationAgent(AgentDatastructure data, Tuple<List<IExtractor>, Map<IExtractor, List<Double>>> extractorsTuple) {
+
+		this(data);
+
+		extractors = new ArrayList<>(extractorsTuple.getFirst());
+		Map<IExtractor, List<Double>> map = extractorsTuple.getSecond();
+		for (IExtractor extractor : extractors) {
+			if (map.containsKey(extractor)) {
+				extractor.setProbability(map.get(extractor));
+			} else {
+				logger.warning("The extractor " + extractor.getName() + " has no specified probability!");
+			}
+		}
 	}
 
 	private void initializeAgents() {

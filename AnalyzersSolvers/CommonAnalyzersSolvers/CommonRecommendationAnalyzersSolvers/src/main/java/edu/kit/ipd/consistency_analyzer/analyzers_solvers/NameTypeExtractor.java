@@ -28,6 +28,8 @@ import edu.kit.ipd.consistency_analyzer.extractors.RecommendationExtractor;
 @MetaInfServices(RecommendationExtractor.class)
 public class NameTypeExtractor extends RecommendationExtractor {
 
+	private double probability = GenericRecommendationConfig.NAME_TYPE_ANALYZER_PROBABILITY;
+
 	/**
 	 * Creates a new NameTypeAnalyzer.
 	 *
@@ -49,7 +51,16 @@ public class NameTypeExtractor extends RecommendationExtractor {
 		return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState);
 	}
 
-	private double probability = GenericRecommendationConfig.NAME_TYPE_ANALYZER_PROBABILITY;
+	@Override
+	public void setProbability(List<Double> probabilities) {
+		if (probabilities.size() > 1) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+		} else if (probabilities.isEmpty()) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+		} else {
+			probability = probabilities.get(0);
+		}
+	}
 
 	@Override
 	public void exec(IWord n) {

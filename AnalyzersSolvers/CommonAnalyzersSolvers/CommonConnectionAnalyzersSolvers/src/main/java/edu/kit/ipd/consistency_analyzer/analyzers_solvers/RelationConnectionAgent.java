@@ -57,6 +57,11 @@ public class RelationConnectionAgent extends ConnectionAgent {
 		this.probability = probability;
 	}
 
+	public RelationConnectionAgent(AgentDatastructure data, double probability) {
+		this(data);
+		this.probability = probability;
+	}
+
 	public RelationConnectionAgent() {
 		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION);
 	}

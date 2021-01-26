@@ -44,6 +44,11 @@ public class MultiplePartAgent extends TextAgent {
 
 	}
 
+	public MultiplePartAgent(AgentDatastructure data, double probability) {
+		this(data);
+		this.probability = probability;
+	}
+
 	public MultiplePartAgent(AgentDatastructure data) {
 		this(data.getText(), data.getTextState());
 	}

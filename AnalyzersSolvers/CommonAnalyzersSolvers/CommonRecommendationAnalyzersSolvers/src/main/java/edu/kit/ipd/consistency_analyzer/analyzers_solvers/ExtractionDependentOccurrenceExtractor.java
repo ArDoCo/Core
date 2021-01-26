@@ -50,6 +50,17 @@ public class ExtractionDependentOccurrenceExtractor extends RecommendationExtrac
 	}
 
 	@Override
+	public void setProbability(List<Double> probabilities) {
+		if (probabilities.size() > 1) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+		} else if (probabilities.isEmpty()) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+		} else {
+			probability = probabilities.get(0);
+		}
+	}
+
+	@Override
 	public void exec(IWord n) {
 
 		searchForName(n);
