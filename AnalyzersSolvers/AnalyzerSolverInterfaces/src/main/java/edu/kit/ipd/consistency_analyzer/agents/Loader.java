@@ -16,7 +16,7 @@ import org.reflections.Reflections;
 public final class Loader {
 
     // Just for local debugging, as this method finds all necessary classes
-    public static boolean useReflections = true;
+    public static final boolean USE_REFLECTION = true;
 
     private static final Logger logger = LogManager.getLogger(Loader.class);
 
@@ -25,7 +25,7 @@ public final class Loader {
     }
 
     public static <A extends ILoadable> Map<String, A> loadLoadable(Class<A> classA) {
-        return useReflections ? loadLoadableViaReflect(classA) : loadLoadableViaServiceLoader(classA);
+        return USE_REFLECTION ? loadLoadableViaReflect(classA) : loadLoadableViaServiceLoader(classA);
     }
 
     public static <A extends ILoadable> Map<String, A> loadLoadableViaServiceLoader(Class<A> classA) {
