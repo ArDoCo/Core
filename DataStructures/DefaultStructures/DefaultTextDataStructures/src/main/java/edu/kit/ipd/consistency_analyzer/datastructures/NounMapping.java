@@ -34,14 +34,6 @@ public final class NounMapping implements INounMapping {
     }
 
     /**
-     * The kind of word defines if the mapping is one word of two graph nodes or if it contains words represented by a
-     * single node.
-     *
-     * @author Sophie
-     *
-     */
-
-    /**
      * Creates a new mapping.
      *
      * @param nodes
