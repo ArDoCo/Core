@@ -6,6 +6,7 @@ public abstract class ResolverAgent extends Agent {
 		super(dependencyType);
 	}
 
+	@Override
 	public abstract void exec();
 
 }
