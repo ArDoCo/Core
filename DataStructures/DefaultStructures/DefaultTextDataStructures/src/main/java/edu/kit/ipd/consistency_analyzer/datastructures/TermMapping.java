@@ -21,10 +21,7 @@ public class TermMapping implements ITermMapping {
     @Override
     public ITermMapping createCopy() {
 
-        return new TermMapping(reference, mappings.stream()
-                                                  .map(INounMapping::createCopy)
-                                                  .collect(Collectors.toList()),
-                probability, kind);
+        return new TermMapping(reference, mappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()), probability, kind);
 
     }
 
@@ -38,19 +35,13 @@ public class TermMapping implements ITermMapping {
     /**
      * Creates a new term out of two terms (noun mappings).
      *
-     * @param reference
-     *            the reference of the term. With its reference it is compared.
-     * @param mapping1
-     *            the first word of the term
-     * @param mapping2
-     *            the second word of the term
-     * @param kind
-     *            the kind of the term
-     * @param probability
-     *            the probability that these words build a term of that kind
+     * @param reference   the reference of the term. With its reference it is compared.
+     * @param mapping1    the first word of the term
+     * @param mapping2    the second word of the term
+     * @param kind        the kind of the term
+     * @param probability the probability that these words build a term of that kind
      */
-    public TermMapping(String reference, INounMapping mapping1, INounMapping mapping2, MappingKind kind,
-            double probability) {
+    public TermMapping(String reference, INounMapping mapping1, INounMapping mapping2, MappingKind kind, double probability) {
         this.reference = reference;
         mappings = new ArrayList<>();
         mappings.add(mapping1);
@@ -63,21 +54,14 @@ public class TermMapping implements ITermMapping {
     /**
      * Creates a new term out of two terms (noun mappings).
      *
-     * @param reference
-     *            the reference of the term. With its reference it is compared.
-     * @param iNounMapping
-     *            the first word of the term
-     * @param iNounMapping2
-     *            the second word of the term
-     * @param list
-     *            the other mappings in order of their occurrence.
-     * @param kind
-     *            the kind of the term
-     * @param probability
-     *            the probability that these words build a term of that kind
+     * @param reference     the reference of the term. With its reference it is compared.
+     * @param iNounMapping  the first word of the term
+     * @param iNounMapping2 the second word of the term
+     * @param list          the other mappings in order of their occurrence.
+     * @param kind          the kind of the term
+     * @param probability   the probability that these words build a term of that kind
      */
-    public TermMapping(String reference, INounMapping iNounMapping, INounMapping iNounMapping2, List<INounMapping> list,
-            MappingKind kind, double probability) {
+    public TermMapping(String reference, INounMapping iNounMapping, INounMapping iNounMapping2, List<INounMapping> list, MappingKind kind, double probability) {
         this.reference = reference;
         mappings = new ArrayList<>();
         mappings.add(iNounMapping);
@@ -148,8 +132,7 @@ public class TermMapping implements ITermMapping {
     /**
      * Updates the probability
      *
-     * @param probability2
-     *            the probability to update with.
+     * @param probability2 the probability to update with.
      */
     @Override
     public void updateProbability(double probability2) {
@@ -170,8 +153,7 @@ public class TermMapping implements ITermMapping {
     /**
      * Sets the probability of the mapping
      *
-     * @param probability
-     *            probability to set on
+     * @param probability probability to set on
      */
     @Override
     public void hardSetProbability(double probability) {

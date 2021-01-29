@@ -55,8 +55,7 @@ public class FilePrinter {
     /**
      * Writes the sentences as they are stored in the PARSE graph into a file.
      *
-     * @param graph
-     *            the graph to read from.
+     * @param graph the graph to read from.
      */
     public static void writeSentencesInFile(IText graph) {
 
@@ -131,8 +130,7 @@ public class FilePrinter {
                     continue;
                 }
                 myWriter.append(nodeValue + SINGLE_SEPARATOR_WITH_SPACES);
-                if (textExtractionState.getNounMappingsByNode(node)
-                                       .isEmpty()) {
+                if (textExtractionState.getNounMappingsByNode(node).isEmpty()) {
                     valueBuilder.append("0");
                     valueBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
                 } else {
@@ -234,8 +232,7 @@ public class FilePrinter {
                 }
 
                 StringBuilder textualInstanceNamesBuilder = new StringBuilder();
-                for (IRecommendedInstance ri : rl.getTextualRelation()
-                                                 .getRelationInstances()) {
+                for (IRecommendedInstance ri : rl.getTextualRelation().getRelationInstances()) {
                     textualInstanceNamesBuilder.append(ri.getName());
                     textualInstanceNamesBuilder.append(":");
                     textualInstanceNamesBuilder.append(ri.getType());
@@ -269,8 +266,7 @@ public class FilePrinter {
 
             List<IInstanceLink> instanceLinks = connectionState.getInstanceLinks();
 
-            myWriter.append(
-                    "UID (Ansatz) | Model Name | ModelType | Textual Name| Names|Textual Type| Types |Probability ");
+            myWriter.append("UID (Ansatz) | Model Name | ModelType | Textual Name| Names|Textual Type| Types |Probability ");
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             for (IInstanceLink il : instanceLinks) {
@@ -291,13 +287,11 @@ public class FilePrinter {
                     typePositions.addAll(typeMapping.getMappingSentenceNo());
                 }
 
-                String instanceLinkString = modelInstance.getUid() + SINGLE_SEPARATOR_WITH_SPACES
-                        + modelInstance.getLongestName() + //
-                        SINGLE_SEPARATOR_WITH_SPACES + String.join(", ", modelInstance.getLongestType())
-                        + SINGLE_SEPARATOR_WITH_SPACES + textualInstance.getName() + //
-                        SINGLE_SEPARATOR_WITH_SPACES + names.toString() + SINGLE_SEPARATOR_WITH_SPACES
-                        + textualInstance.getType() + SINGLE_SEPARATOR_WITH_SPACES + types.toString()
-                        + SINGLE_SEPARATOR_WITH_SPACES + //
+                String instanceLinkString = modelInstance.getUid() + SINGLE_SEPARATOR_WITH_SPACES + modelInstance.getLongestName() + //
+                        SINGLE_SEPARATOR_WITH_SPACES + String.join(", ", modelInstance.getLongestType()) + SINGLE_SEPARATOR_WITH_SPACES
+                        + textualInstance.getName() + //
+                        SINGLE_SEPARATOR_WITH_SPACES + names.toString() + SINGLE_SEPARATOR_WITH_SPACES + textualInstance.getType()
+                        + SINGLE_SEPARATOR_WITH_SPACES + types.toString() + SINGLE_SEPARATOR_WITH_SPACES + //
                         il.getProbability() + LINE_SEPARATOR;
 
                 myWriter.append(instanceLinkString);
@@ -331,8 +325,7 @@ public class FilePrinter {
 
             myWriter.append("Name | Type | Probability | nameMappings| | | | | typeMappings| | | |");
             myWriter.append(LINE_SEPARATOR);
-            myWriter.append(
-                    "| | | reference | kind| occurrences | position| probability| reference | kind | occurrences | position| probability");
+            myWriter.append("| | | reference | kind| occurrences | position| probability| reference | kind | occurrences | position| probability");
             myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
             for (IRecommendedInstance ri : recommendedInstances) {
@@ -348,8 +341,7 @@ public class FilePrinter {
 
                 List<String> typeMappingStrings = createTypeMappingStrings(typeMappings);
 
-                String nameAndTypeMappingInfoString = createNameAndTypeMappingInfoString(name, type, probability,
-                        nameMappingStrings, typeMappingStrings);
+                String nameAndTypeMappingInfoString = createNameAndTypeMappingInfoString(name, type, probability, nameMappingStrings, typeMappingStrings);
 
                 myWriter.append(nameAndTypeMappingInfoString);
 
@@ -378,8 +370,8 @@ public class FilePrinter {
         return recommendationStringBuilder;
     }
 
-    private static String createNameAndTypeMappingInfoString(String name, String type, double probability,
-            List<String> nameMappingStrings, List<String> typeMappingStrings) {
+    private static String createNameAndTypeMappingInfoString(String name, String type, double probability, List<String> nameMappingStrings,
+            List<String> typeMappingStrings) {
 
         StringBuilder recommendationStringBuilder = createRecommendationStringBuilder(name, type, probability);
         if (!nameMappingStrings.isEmpty()) {
@@ -453,17 +445,13 @@ public class FilePrinter {
     /***
      * Writes the states into a file
      *
-     * @param extractionState
-     *            the extraction state, containing the extracted elements of the model
-     * @param ntrState
-     *            the name type relation state, containing the mappings found in the text, sorted in name, type or
-     *            name_or_type
-     * @param recommendationState
-     *            the supposing state, containing the supposing mappings for instances, as well as relations
-     * @param connectionState
-     *            containing all instances and relations, matched by supposed mappings
-     * @param duration
-     *            past time the approach needed to calculate the results
+     * @param extractionState     the extraction state, containing the extracted elements of the model
+     * @param ntrState            the name type relation state, containing the mappings found in the text, sorted in
+     *                            name, type or name_or_type
+     * @param recommendationState the supposing state, containing the supposing mappings for instances, as well as
+     *                            relations
+     * @param connectionState     containing all instances and relations, matched by supposed mappings
+     * @param duration            past time the approach needed to calculate the results
      */
     public static void writeStatesToFile(IModelState extractionState, ITextState ntrState, //
             IRecommendationState recommendationState, IConnectionState connectionState, Duration duration) {
@@ -599,31 +587,19 @@ public class FilePrinter {
     }
 
     private static Comparator<IRecommendedInstance> getRecommendedInstancesComparator() {
-        return (ri1, ri2) -> ri1.getName()
-                                .compareTo(ri2.getName());
+        return (ri1, ri2) -> ri1.getName().compareTo(ri2.getName());
     }
 
     private static Comparator<IInstanceLink> getInstanceLinkComparator() {
-        return (i1, i2) -> i1.getModelInstance()
-                             .getUid()
-                             .compareTo(i2.getModelInstance()
-                                          .getUid());
+        return (i1, i2) -> i1.getModelInstance().getUid().compareTo(i2.getModelInstance().getUid());
     }
 
     private static Comparator<IRecommendedRelation> getRecommendedRelationComparator() {
-        return (rl1, rl2) -> rl1.getRelationInstances()
-                                .get(0)
-                                .getName()
-                                .compareTo(rl2.getRelationInstances()
-                                              .get(0)
-                                              .getName());
+        return (rl1, rl2) -> rl1.getRelationInstances().get(0).getName().compareTo(rl2.getRelationInstances().get(0).getName());
     }
 
     private static Comparator<IRelationLink> getRelationLinkComparator() {
-        return (i1, i2) -> i1.getModelRelation()
-                             .getUid()
-                             .compareTo(i2.getModelRelation()
-                                          .getUid());
+        return (i1, i2) -> i1.getModelRelation().getUid().compareTo(i2.getModelRelation().getUid());
     }
 
 }

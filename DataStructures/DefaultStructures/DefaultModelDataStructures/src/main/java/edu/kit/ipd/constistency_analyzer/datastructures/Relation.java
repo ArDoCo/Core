@@ -37,14 +37,10 @@ public class Relation implements IRelation {
     /**
      * Creates a new relation.
      *
-     * @param instance1
-     *            first instance
-     * @param instance2
-     *            second instance
-     * @param type
-     *            title of relation
-     * @param uid
-     *            unique identifier for trace linking
+     * @param instance1 first instance
+     * @param instance2 second instance
+     * @param type      title of relation
+     * @param uid       unique identifier for trace linking
      */
     public Relation(IInstance instance1, IInstance instance2, String type, String uid) {
         instances = new ArrayList<>();
@@ -57,8 +53,7 @@ public class Relation implements IRelation {
     /**
      * Adds more end points to the relation. Checks if the instance is already contained.
      *
-     * @param others
-     *            list of other end points of this relation
+     * @param others list of other end points of this relation
      */
     @Override
     public void addOtherInstances(List<? extends IInstance> others) {
@@ -102,9 +97,7 @@ public class Relation implements IRelation {
     @Override
     public String toString() {
 
-        List<String> instanceNames = instances.stream()
-                                              .map(IInstance::getLongestName)
-                                              .collect(Collectors.toList());
+        List<String> instanceNames = instances.stream().map(IInstance::getLongestName).collect(Collectors.toList());
 
         return "Relation: [" + " name=" + type + ", instances= " + String.join(", ", instanceNames) + "]";
     }
@@ -116,13 +109,14 @@ public class Relation implements IRelation {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         Relation other = (Relation) obj;
-        return Objects.equals(instances, other.instances) && Objects.equals(type, other.type)
-                && Objects.equals(uid, other.uid);
+        return Objects.equals(instances, other.instances) && Objects.equals(type, other.type) && Objects.equals(uid, other.uid);
     }
 
 }

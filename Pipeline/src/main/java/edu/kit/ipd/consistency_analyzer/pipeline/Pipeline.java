@@ -42,8 +42,7 @@ public class Pipeline {
         HardCodedModelInput hardCodedModel = new HardCodedModelInput();
         IModelConnector modelConnector = new HardCodedModelConnector(hardCodedModel);
 
-        AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(modelConnector), null,
-                null);
+        AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(modelConnector), null, null);
         data.overwrite(runTextExtractor(data));
         data.overwrite(runRecommendationGenerator(data));
         data.overwrite(runConnectionGenerator(data));
@@ -61,8 +60,7 @@ public class Pipeline {
         // FilePrinter.writeRecommendedRelationToFile(recommendationState);
         // FilePrinter.writeConnectionsToFile(connectionState, 0);
         // FilePrinter.writeConnectionRelationsToFile(connectionState);
-        FilePrinter.writeStatesToFile(data.getModelState(), data.getTextState(), data.getRecommendationState(),
-                data.getConnectionState(), duration);
+        FilePrinter.writeStatesToFile(data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
 
     }
 

@@ -36,20 +36,14 @@ public final class NounMapping implements INounMapping {
     /**
      * Creates a new mapping.
      *
-     * @param nodes
-     *            nodes representing the mapping.
-     * @param probability
-     *            of being of that mappingType.
-     * @param kind
-     *            the kind of the mapping
-     * @param reference
-     *            the reference, the unique name, of the mapping. This reference is used for comparison and should be
-     *            mostly general.
-     * @param occurrences
-     *            the occurrences, e.g. values of the nodes, that appears at the nodes listed in this mapping.
+     * @param nodes       nodes representing the mapping.
+     * @param probability of being of that mappingType.
+     * @param kind        the kind of the mapping
+     * @param reference   the reference, the unique name, of the mapping. This reference is used for comparison and
+     *                    should be mostly general.
+     * @param occurrences the occurrences, e.g. values of the nodes, that appears at the nodes listed in this mapping.
      */
-    public NounMapping(List<IWord> nodes, double probability, MappingKind kind, String reference,
-            List<String> occurrences) {
+    public NounMapping(List<IWord> nodes, double probability, MappingKind kind, String reference, List<String> occurrences) {
 
         this.nodes = new ArrayList<>(nodes);
         this.probability = probability;
@@ -69,8 +63,7 @@ public final class NounMapping implements INounMapping {
         List<String> comparables = new ArrayList<>();
         for (String occ : occurrences) {
             if (SimilarityUtils.containsSeparator(occ)) {
-                List<String> parts = List.of(SimilarityUtils.splitAtSeparators(occ)
-                                                            .split(" "));
+                List<String> parts = List.of(SimilarityUtils.splitAtSeparators(occ).split(" "));
                 for (String part : parts) {
                     if (SimilarityUtils.areWordsSimilar(reference, part)) {
                         comparables.add(part);
@@ -89,8 +82,7 @@ public final class NounMapping implements INounMapping {
     /**
      * Sets the probability of the mapping
      *
-     * @param probability
-     *            probability to set on
+     * @param probability probability to set on
      */
     @Override
     public void hardSetProbability(double probability) {
@@ -120,8 +112,7 @@ public final class NounMapping implements INounMapping {
     /**
      * Adds nodes to the mapping, if they are not already contained.
      *
-     * @param nodes
-     *            graph nodes to add to the mapping
+     * @param nodes graph nodes to add to the mapping
      */
     @Override
     public void addNodes(List<IWord> nodes) {
@@ -133,8 +124,7 @@ public final class NounMapping implements INounMapping {
     /**
      * Adds a node to the mapping, it its not already contained.
      *
-     * @param n
-     *            graph node to add.
+     * @param n graph node to add.
      */
     @Override
     public void addNode(IWord n) {
@@ -177,10 +167,8 @@ public final class NounMapping implements INounMapping {
      * Changes the kind to another one and recalculates the probability with
      * {@link #recalculateProbability(double, double)}.
      *
-     * @param kind
-     *            the new kind
-     * @param probability
-     *            the probability of the new mappingTzpe
+     * @param kind        the new kind
+     * @param probability the probability of the new mappingTzpe
      */
     @Override
     public void changeMappingTypeTo(MappingKind kind, double probability) {
@@ -191,10 +179,8 @@ public final class NounMapping implements INounMapping {
     /**
      * Recalculates the probability.
      *
-     * @param beforeProbability
-     *            the probability of the mapping before the change
-     * @param afterProbability
-     *            the probability of the mapping after the change
+     * @param beforeProbability the probability of the mapping before the change
+     * @param afterProbability  the probability of the mapping after the change
      * @return the resulting probability.
      */
     private double recalculateProbability(double beforeProbability, double afterProbability) {
@@ -219,10 +205,8 @@ public final class NounMapping implements INounMapping {
     /**
      * Updates the reference if the probability is high enough.
      *
-     * @param ref
-     *            new reference
-     * @param probability
-     *            probability for the new reference.
+     * @param ref         new reference
+     * @param probability probability for the new reference.
      */
     @Override
     public void updateReference(String ref, double probability) {
@@ -236,10 +220,7 @@ public final class NounMapping implements INounMapping {
         return "NounMapping [" + "mappingTypea=" + kind + //
                 ", reference=" + reference + //
                 ", node=" + String.join(", ", occurrences) + //
-                ", position=" + String.join(", ", nodes.stream()
-                                                       .map(word -> String.valueOf(word.getPosition()))
-                                                       .collect(Collectors.toList()))
-                + //
+                ", position=" + String.join(", ", nodes.stream().map(word -> String.valueOf(word.getPosition())).collect(Collectors.toList())) + //
                 ", probability=" + probability + "]";
     }
 
@@ -258,20 +239,17 @@ public final class NounMapping implements INounMapping {
         }
         NounMapping other = (NounMapping) obj;
 
-        if (!SimilarityUtils.areWordsSimilar(reference, other.reference) && !reference.contentEquals("")
-                && !other.reference.contentEquals("")) {
+        if (!SimilarityUtils.areWordsSimilar(reference, other.reference) && !reference.contentEquals("") && !other.reference.contentEquals("")) {
             return false;
         }
         return kind == other.kind && Objects.equals(nodes, other.nodes) && //
-                Objects.equals(occurrences, other.occurrences)
-                && SimilarityUtils.areWordsSimilar(reference, other.reference);
+                Objects.equals(occurrences, other.occurrences) && SimilarityUtils.areWordsSimilar(reference, other.reference);
     }
 
     /**
      * Adds occurrences to the mapping
      *
-     * @param occurrences2
-     *            occurrences to add
+     * @param occurrences2 occurrences to add
      */
     @Override
     public void addOccurrence(List<String> occurrences2) {
@@ -285,17 +263,12 @@ public final class NounMapping implements INounMapping {
     /**
      * Copies all nodes and occurrences matching the occurrence to another mapping
      *
-     * @param occurrence
-     *            the occurrence to copy
-     * @param createdMapping
-     *            the other mapping
+     * @param occurrence     the occurrence to copy
+     * @param createdMapping the other mapping
      */
     @Override
     public void copyOccurrencesAndNodesTo(String occurrence, INounMapping createdMapping) {
-        List<IWord> occNodes = nodes.stream()
-                                    .filter(n -> n.getText()
-                                                  .equals(occurrence))
-                                    .collect(Collectors.toList());
+        List<IWord> occNodes = nodes.stream().filter(n -> n.getText().equals(occurrence)).collect(Collectors.toList());
         createdMapping.addNodes(occNodes);
         createdMapping.addOccurrence(List.of(occurrence));
 
@@ -307,16 +280,13 @@ public final class NounMapping implements INounMapping {
      * @return list of containing node lemmas
      */
     public List<String> getMappingLemmas() {
-        return nodes.stream()
-                    .map(IWord::getLemma)
-                    .collect(Collectors.toList());
+        return nodes.stream().map(IWord::getLemma).collect(Collectors.toList());
     }
 
     /**
      * Updates the probability
      *
-     * @param newProbability
-     *            the probability to update with.
+     * @param newProbability the probability to update with.
      */
     @Override
     public void updateProbability(double newProbability) {

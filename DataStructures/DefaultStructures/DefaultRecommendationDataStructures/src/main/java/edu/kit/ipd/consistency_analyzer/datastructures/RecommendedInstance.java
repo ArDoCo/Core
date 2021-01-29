@@ -22,30 +22,20 @@ public class RecommendedInstance implements IRecommendedInstance {
 
     @Override
     public IRecommendedInstance createCopy() {
-        return new RecommendedInstance(name, type, probability, nameMappings.stream()
-                                                                            .map(INounMapping::createCopy)
-                                                                            .collect(Collectors.toList()),
-                typeMappings.stream()
-                            .map(INounMapping::createCopy)
-                            .collect(Collectors.toList()));
+        return new RecommendedInstance(name, type, probability, nameMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()),
+                typeMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()));
     }
 
     /**
      * Creates a new recommended instance.
      *
-     * @param name
-     *            the name of the instance
-     * @param type
-     *            the type of the instance
-     * @param probability
-     *            the probability that this instance should be found in the model
-     * @param nameNodes
-     *            the involved name mappings
-     * @param typeNodes
-     *            the involved type mappings
+     * @param name        the name of the instance
+     * @param type        the type of the instance
+     * @param probability the probability that this instance should be found in the model
+     * @param nameNodes   the involved name mappings
+     * @param typeNodes   the involved type mappings
      */
-    public RecommendedInstance(String name, String type, double probability, List<INounMapping> nameNodes,
-            List<INounMapping> typeNodes) {
+    public RecommendedInstance(String name, String type, double probability, List<INounMapping> nameNodes, List<INounMapping> typeNodes) {
         this.type = type;
         this.name = name;
         this.probability = probability;
@@ -86,8 +76,7 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Removes nameMappings from this recommended instance.
      *
-     * @param nameMappings
-     *            the name mappings to remove
+     * @param nameMappings the name mappings to remove
      */
     @Override
     public void removeNounNodeMappingsFromName(List<INounMapping> nameMappings) {
@@ -97,10 +86,8 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Adds a name and type mapping to this recommended instance.
      *
-     * @param nameMapping
-     *            the name mapping to add
-     * @param typeMapping
-     *            the type mapping to add
+     * @param nameMapping the name mapping to add
+     * @param typeMapping the type mapping to add
      */
     @Override
     public void addMappings(INounMapping nameMapping, INounMapping typeMapping) {
@@ -111,10 +98,8 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Adds name and type mappings to this recommended instance.
      *
-     * @param nameMapping
-     *            the name mappings to add
-     * @param typeMapping
-     *            the type mappings to add
+     * @param nameMapping the name mappings to add
+     * @param typeMapping the type mappings to add
      */
     @Override
     public void addMappings(List<INounMapping> nameMapping, List<INounMapping> typeMapping) {
@@ -125,8 +110,7 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Adds a name mapping to this recommended instance.
      *
-     * @param nameMapping
-     *            the name mapping to add
+     * @param nameMapping the name mapping to add
      */
     @Override
     public void addName(INounMapping nameMapping) {
@@ -138,8 +122,7 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Adds a type mapping to this recommended instance.
      *
-     * @param typeMapping
-     *            the type mapping to add
+     * @param typeMapping the type mapping to add
      */
     @Override
     public void addType(INounMapping typeMapping) {
@@ -151,8 +134,7 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Sets the probability to a given probability.
      *
-     * @param probability
-     *            the new probability
+     * @param probability the new probability
      */
     @Override
     public void setProbability(double probability) {
@@ -182,8 +164,7 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Sets the type of this recommended instance to the given type.
      *
-     * @param type
-     *            the new type
+     * @param type the new type
      */
     @Override
     public void setType(String type) {
@@ -193,8 +174,7 @@ public class RecommendedInstance implements IRecommendedInstance {
     /**
      * Sets the name of this recommended instance to the given name.
      *
-     * @param name
-     *            the new name
+     * @param name the new name
      */
     @Override
     public void setName(String name) {
@@ -222,8 +202,7 @@ public class RecommendedInstance implements IRecommendedInstance {
             namePositions.addAll(nameMapping.getMappingSentenceNo());
         }
         return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + probability + //
-                ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator
-                + String.join(separator, typeNodeVals) + "\n";
+                ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";
     }
 
     @Override
@@ -233,10 +212,12 @@ public class RecommendedInstance implements IRecommendedInstance {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         RecommendedInstance other = (RecommendedInstance) obj;
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
     }

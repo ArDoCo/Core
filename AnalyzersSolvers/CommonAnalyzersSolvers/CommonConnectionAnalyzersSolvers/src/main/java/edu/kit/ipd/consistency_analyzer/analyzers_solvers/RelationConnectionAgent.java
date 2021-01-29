@@ -24,9 +24,8 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextState;
 
 /**
  *
- * The relation connection solver searches for relations of the model extraction
- * state and the recommendation state. If similar relations are found a relation
- * link is created in the connection state.
+ * The relation connection solver searches for relations of the model extraction state and the recommendation state. If
+ * similar relations are found a relation link is created in the connection state.
  *
  * @author Sophie
  *
@@ -34,139 +33,145 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextState;
 @MetaInfServices(ConnectionAgent.class)
 public class RelationConnectionAgent extends ConnectionAgent {
 
-	private double probability;
+    private double probability;
 
-	/**
-	 * Creates a new RelationConenctionSolver.
-	 *
-	 * @param graph                the PARSE graph
-	 * @param textExtractionState  the text extraction state
-	 * @param modelExtractionState the model extraction state
-	 * @param recommendationState  the recommendation state
-	 * @param connectionState      the connection state
-	 */
-	public RelationConnectionAgent(//
-			IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState) {
-		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, text, textExtractionState, modelExtractionState, recommendationState, connectionState);
-		probability = GenericConnectionAnalyzerSolverConfig.RELATION_CONNECTION_SOLVER_PROBABILITY;
-	}
+    /**
+     * Creates a new RelationConenctionSolver.
+     *
+     * @param graph                the PARSE graph
+     * @param textExtractionState  the text extraction state
+     * @param modelExtractionState the model extraction state
+     * @param recommendationState  the recommendation state
+     * @param connectionState      the connection state
+     */
+    public RelationConnectionAgent(//
+            IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            IConnectionState connectionState) {
+        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, text, textExtractionState, modelExtractionState, recommendationState, connectionState);
+        probability = GenericConnectionAnalyzerSolverConfig.RELATION_CONNECTION_SOLVER_PROBABILITY;
+    }
 
-	public RelationConnectionAgent(//
-			IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState, double probability) {
-		this(text, textExtractionState, modelExtractionState, recommendationState, connectionState);
-		this.probability = probability;
-	}
+    public RelationConnectionAgent(//
+            IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            IConnectionState connectionState, double probability) {
+        this(text, textExtractionState, modelExtractionState, recommendationState, connectionState);
+        this.probability = probability;
+    }
 
-	public RelationConnectionAgent(AgentDatastructure data, double probability) {
-		this(data);
-		this.probability = probability;
-	}
+    public RelationConnectionAgent(AgentDatastructure data, double probability) {
+        this(data);
+        this.probability = probability;
+    }
 
-	public RelationConnectionAgent() {
-		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION);
-	}
+    public RelationConnectionAgent() {
+        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION);
+    }
 
-	public RelationConnectionAgent(AgentDatastructure data) {
-		this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState());
-	}
+    public RelationConnectionAgent(AgentDatastructure data) {
+        this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState());
+    }
 
-	@Override
-	public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState) {
-		return new RelationConnectionAgent(text, textState, modelState, recommendationState, connectionState);
-	}
+    @Override
+    public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState) {
+        return new RelationConnectionAgent(text, textState, modelState, recommendationState, connectionState);
+    }
 
-	@Override
-	public void exec() {
-		solveReferencesOfRelations();
+    @Override
+    public void exec() {
+        solveReferencesOfRelations();
 
-	}
+    }
 
-	/**
-	 * Searches for relations of the modelExtractionState in recommended relations
-	 * of the recommendationState. If a relation with the same order of similar
-	 * instances can be found a relationLink is created.
-	 */
-	private void solveReferencesOfRelations() {
+    /**
+     * Searches for relations of the modelExtractionState in recommended relations of the recommendationState. If a
+     * relation with the same order of similar instances can be found a relationLink is created.
+     */
+    private void solveReferencesOfRelations() {
 
-		for (IRelation relation : modelState.getRelations()) {
-			List<IRecommendedRelation> similarRecommendedRelations = new ArrayList<>();
+        for (IRelation relation : modelState.getRelations()) {
+            List<IRecommendedRelation> similarRecommendedRelations = new ArrayList<>();
 
-			for (IRecommendedRelation recommendedRelation : recommendationState.getRecommendedRelations()) {
+            for (IRecommendedRelation recommendedRelation : recommendationState.getRecommendedRelations()) {
 
-				int relationSize = relation.getInstances().size();
-				int recommendedRelationSize = recommendedRelation.getRelationInstances().size();
-				if (relationSize != recommendedRelationSize) {
-					continue;
-				}
+                int relationSize = relation.getInstances().size();
+                int recommendedRelationSize = recommendedRelation.getRelationInstances().size();
+                if (relationSize != recommendedRelationSize) {
+                    continue;
+                }
 
-				List<List<IRecommendedInstance>> possibilities = getPossibilities(relation, recommendedRelation);
+                List<List<IRecommendedInstance>> possibilities = getPossibilities(relation, recommendedRelation);
 
-				if (possibilities.size() == relationSize) {
-					similarRecommendedRelations.add(recommendedRelation);
-				} else {
-					possibilities.addAll(getPossibilitesBackwards(relation, recommendedRelation));
+                if (possibilities.size() == relationSize) {
+                    similarRecommendedRelations.add(recommendedRelation);
+                } else {
+                    possibilities.addAll(getPossibilitesBackwards(relation, recommendedRelation));
 
-					if (possibilities.size() == relationSize) {
-						similarRecommendedRelations.add(recommendedRelation);
-					}
-				}
+                    if (possibilities.size() == relationSize) {
+                        similarRecommendedRelations.add(recommendedRelation);
+                    }
+                }
 
-			}
+            }
 
-			addRelationIfInstanceInConnectionState(similarRecommendedRelations, relation);
+            addRelationIfInstanceInConnectionState(similarRecommendedRelations, relation);
 
-		}
+        }
 
-	}
+    }
 
-	private List<List<IRecommendedInstance>> getPossibilitesBackwards(IRelation relation, IRecommendedRelation recommendedRelation) {
-		List<List<IRecommendedInstance>> possibilities = new ArrayList<>();
-		int relationSize = relation.getInstances().size();
-		for (int i = 0; i < relationSize; i++) {
-			IInstance relationInstance = relation.getInstances().get(i);
-			int indexForRecommendedRelation = relationSize - 1 - i;
-			IRecommendedInstance recommendedRelationInstance = recommendedRelation.getRelationInstances().get(indexForRecommendedRelation);
-			List<IRecommendedInstance> possibility = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(relationInstance, List.of(recommendedRelationInstance));
+    private List<List<IRecommendedInstance>> getPossibilitesBackwards(IRelation relation, IRecommendedRelation recommendedRelation) {
+        List<List<IRecommendedInstance>> possibilities = new ArrayList<>();
+        int relationSize = relation.getInstances().size();
+        for (int i = 0; i < relationSize; i++) {
+            IInstance relationInstance = relation.getInstances().get(i);
+            int indexForRecommendedRelation = relationSize - 1 - i;
+            IRecommendedInstance recommendedRelationInstance = recommendedRelation.getRelationInstances().get(indexForRecommendedRelation);
+            List<IRecommendedInstance> possibility = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(relationInstance,
+                    List.of(recommendedRelationInstance));
 
-			if (possibility.isEmpty()) {
-				break;
+            if (possibility.isEmpty()) {
+                break;
 
-			}
-			possibilities.add(possibility);
+            }
+            possibilities.add(possibility);
 
-		}
+        }
 
-		return possibilities;
-	}
+        return possibilities;
+    }
 
-	private List<List<IRecommendedInstance>> getPossibilities(IRelation relation, IRecommendedRelation recommendedRelation) {
-		List<List<IRecommendedInstance>> possibilities = new ArrayList<>();
-		int relationSize = relation.getInstances().size();
-		for (int i = 0; i < relationSize; i++) {
-			IInstance relationInstance = relation.getInstances().get(i);
-			IRecommendedInstance recommendedRelationInstance = recommendedRelation.getRelationInstances().get(i);
-			List<IRecommendedInstance> possibility = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(relationInstance, List.of(recommendedRelationInstance));
+    private List<List<IRecommendedInstance>> getPossibilities(IRelation relation, IRecommendedRelation recommendedRelation) {
+        List<List<IRecommendedInstance>> possibilities = new ArrayList<>();
+        int relationSize = relation.getInstances().size();
+        for (int i = 0; i < relationSize; i++) {
+            IInstance relationInstance = relation.getInstances().get(i);
+            IRecommendedInstance recommendedRelationInstance = recommendedRelation.getRelationInstances().get(i);
+            List<IRecommendedInstance> possibility = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(relationInstance,
+                    List.of(recommendedRelationInstance));
 
-			if (possibility.isEmpty()) {
-				break;
-			}
-			possibilities.add(possibility);
+            if (possibility.isEmpty()) {
+                break;
+            }
+            possibilities.add(possibility);
 
-		}
-		return possibilities;
-	}
+        }
+        return possibilities;
+    }
 
-	private void addRelationIfInstanceInConnectionState(List<IRecommendedRelation> similarRecommendedRelations, IRelation relation) {
+    private void addRelationIfInstanceInConnectionState(List<IRecommendedRelation> similarRecommendedRelations, IRelation relation) {
 
-		Predicate<? super IRecommendedRelation> filterPredicate = similarRecommendedInstance -> similarRecommendedInstance.getRelationInstances().stream().anyMatch(recommendedInstance -> {
-			List<IInstanceLink> instanceLinksByRecommendedInstance = connectionState.getInstanceLinksByRecommendedInstance(recommendedInstance);
-			return !instanceLinksByRecommendedInstance.isEmpty();
-		});
-		List<IRecommendedRelation> similarRecommendedRelations2 = similarRecommendedRelations.stream().filter(filterPredicate).collect(Collectors.toList());
+        Predicate<? super IRecommendedRelation> filterPredicate = similarRecommendedInstance -> similarRecommendedInstance.getRelationInstances()
+                .stream()
+                .anyMatch(recommendedInstance -> {
+                    List<IInstanceLink> instanceLinksByRecommendedInstance = connectionState.getInstanceLinksByRecommendedInstance(recommendedInstance);
+                    return !instanceLinksByRecommendedInstance.isEmpty();
+                });
+        List<IRecommendedRelation> similarRecommendedRelations2 = similarRecommendedRelations.stream().filter(filterPredicate).collect(Collectors.toList());
 
-		for (IRecommendedRelation similarReRelation : similarRecommendedRelations2) {
-			connectionState.addToLinks(similarReRelation, relation, probability / similarRecommendedRelations2.size());
-		}
-	}
+        for (IRecommendedRelation similarReRelation : similarRecommendedRelations2) {
+            connectionState.addToLinks(similarReRelation, relation, probability / similarRecommendedRelations2.size());
+        }
+    }
 
 }

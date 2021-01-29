@@ -8,10 +8,10 @@ import edu.kit.ipd.consistency_analyzer.modelproviders.exception.InconsistentMod
 
 public interface IModelConnector {
 
-	// TODO: Model as Input?
+    // TODO: Model as Input?
 
-	public List<IInstance> getInstances();
+    List<IInstance> getInstances();
 
-	public List<IRelation> getRelations(List<IInstance> instances) throws InconsistentModelException;
+    List<IRelation> getRelations(List<IInstance> instances) throws InconsistentModelException;
 
 }

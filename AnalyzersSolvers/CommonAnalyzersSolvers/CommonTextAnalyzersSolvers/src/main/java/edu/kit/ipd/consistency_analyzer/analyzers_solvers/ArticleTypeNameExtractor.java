@@ -19,86 +19,83 @@ import edu.kit.ipd.consistency_analyzer.extractors.TextExtractor;
 @MetaInfServices(TextExtractor.class)
 public class ArticleTypeNameExtractor extends TextExtractor {
 
-	private double probability = GenericTextConfig.ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY;
+    private double probability = GenericTextConfig.ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY;
 
-	@Override
-	public TextExtractor create(ITextState textState) {
-		return new ArticleTypeNameExtractor(textState);
-	}
+    @Override
+    public TextExtractor create(ITextState textState) {
+        return new ArticleTypeNameExtractor(textState);
+    }
 
-	@Override
-	public void setProbability(List<Double> probabilities) {
-		if (probabilities.size() > 1) {
-			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
-		} else if (probabilities.isEmpty()) {
-			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
-		} else {
-			probability = probabilities.get(0);
-		}
-	}
+    @Override
+    public void setProbability(List<Double> probabilities) {
+        if (probabilities.size() > 1) {
+            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+        } else if (probabilities.isEmpty()) {
+            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+        } else {
+            probability = probabilities.get(0);
+        }
+    }
 
-	public ArticleTypeNameExtractor() {
-		this(null);
-	}
+    public ArticleTypeNameExtractor() {
+        this(null);
+    }
 
-	/**
-	 * Creates a new article type name analyzer.
-	 *
-	 * @param graph
-	 * @param textExtractionState the text extraction state
-	 */
-	public ArticleTypeNameExtractor(ITextState textState) {
-		super(DependencyType.TEXT, textState);
-	}
+    /**
+     * Creates a new article type name analyzer.
+     *
+     * @param textState the text extraction state
+     */
+    public ArticleTypeNameExtractor(ITextState textState) {
+        super(DependencyType.TEXT, textState);
+    }
 
-	@Override
-	public void exec(IWord n) {
+    @Override
+    public void exec(IWord n) {
 
-		if (!checkIfNodeIsName(n)) {
-			checkIfNodeIsType(n);
-		}
-	}
+        if (!checkIfNodeIsName(n)) {
+            checkIfNodeIsType(n);
+        }
+    }
 
-	/**
-	 * If the current node is contained by name-or-type mappings, the previous node
-	 * is contained by type nodes and the preprevious an article the node is added
-	 * as a name mapping.
-	 *
-	 * @param n node to check
-	 */
-	private boolean checkIfNodeIsName(IWord n) {
-		if (textState.isNodeContainedByNameOrTypeNodes(n)) {
+    /**
+     * If the current node is contained by name-or-type mappings, the previous node is contained by type nodes and the
+     * preprevious an article the node is added as a name mapping.
+     *
+     * @param n node to check
+     */
+    private boolean checkIfNodeIsName(IWord n) {
+        if (textState.isNodeContainedByNameOrTypeNodes(n)) {
 
-			IWord prevNode = n.getPreWord();
-			if (prevNode != null && textState.isNodeContainedByTypeNodes(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+            IWord prevNode = n.getPreWord();
+            if (prevNode != null && textState.isNodeContainedByTypeNodes(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
 
-				textState.addName(n, n.getText(), probability);
-				return true;
+                textState.addName(n, n.getText(), probability);
+                return true;
 
-			}
-		}
-		return false;
-	}
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * If the current node is contained by name-or-type mappings, the previous node
-	 * is contained by name nodes and the preprevious an article the node is added
-	 * as a type mapping.
-	 *
-	 * @param n node to check
-	 */
-	private boolean checkIfNodeIsType(IWord n) {
-		if (textState.isNodeContainedByNameOrTypeNodes(n)) {
+    /**
+     * If the current node is contained by name-or-type mappings, the previous node is contained by name nodes and the
+     * preprevious an article the node is added as a type mapping.
+     *
+     * @param n node to check
+     */
+    private boolean checkIfNodeIsType(IWord n) {
+        if (textState.isNodeContainedByNameOrTypeNodes(n)) {
 
-			IWord prevNode = n.getPreWord();
-			if (prevNode != null && textState.isNodeContainedByNameNodes(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+            IWord prevNode = n.getPreWord();
+            if (prevNode != null && textState.isNodeContainedByNameNodes(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
 
-				textState.addType(n, n.getText(), probability);
-				return true;
-			}
+                textState.addType(n, n.getText(), probability);
+                return true;
+            }
 
-		}
-		return false;
+        }
+        return false;
 
-	}
+    }
 }

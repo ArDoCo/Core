@@ -19,8 +19,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 import edu.kit.ipd.consistency_analyzer.extractors.RecommendationExtractor;
 
 /**
- * This analyzer searches for name type patterns. If these patterns occur
- * recommendations are created.
+ * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
  * @author Sophie
  *
@@ -28,203 +27,197 @@ import edu.kit.ipd.consistency_analyzer.extractors.RecommendationExtractor;
 @MetaInfServices(RecommendationExtractor.class)
 public class NameTypeExtractor extends RecommendationExtractor {
 
-	private double probability = GenericRecommendationConfig.NAME_TYPE_ANALYZER_PROBABILITY;
+    private double probability = GenericRecommendationConfig.NAME_TYPE_ANALYZER_PROBABILITY;
 
-	/**
-	 * Creates a new NameTypeAnalyzer.
-	 *
-	 * @param graph                the PARSE graph
-	 * @param textExtractionState  the text extraction state
-	 * @param modelExtractionState the model extraction state
-	 * @param recommendationState  the recommendation state
-	 */
-	public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
-		super(DependencyType.TEXT_MODEL_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
-	}
+    /**
+     * Creates a new NameTypeAnalyzer.
+     *
+     * @param graph                the PARSE graph
+     * @param textExtractionState  the text extraction state
+     * @param modelExtractionState the model extraction state
+     * @param recommendationState  the recommendation state
+     */
+    public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
+        super(DependencyType.TEXT_MODEL_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
+    }
 
-	public NameTypeExtractor() {
-		this(null, null, null);
-	}
+    public NameTypeExtractor() {
+        this(null, null, null);
+    }
 
-	@Override
-	public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState) {
-		return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState);
-	}
+    @Override
+    public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState) {
+        return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState);
+    }
 
-	@Override
-	public void setProbability(List<Double> probabilities) {
-		if (probabilities.size() > 1) {
-			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
-		} else if (probabilities.isEmpty()) {
-			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
-		} else {
-			probability = probabilities.get(0);
-		}
-	}
+    @Override
+    public void setProbability(List<Double> probabilities) {
+        if (probabilities.size() > 1) {
+            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+        } else if (probabilities.isEmpty()) {
+            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+        } else {
+            probability = probabilities.get(0);
+        }
+    }
 
-	@Override
-	public void exec(IWord n) {
-		checkForNameAfterType(textState, n);
-		checkForNameBeforeType(textState, n);
-		checkForNortBeforeType(textState, n);
-		checkForNortAfterType(textState, n);
-	}
+    @Override
+    public void exec(IWord n) {
+        checkForNameAfterType(textState, n);
+        checkForNameBeforeType(textState, n);
+        checkForNortBeforeType(textState, n);
+        checkForNortAfterType(textState, n);
+    }
 
-	/**
-	 * Checks if the current node is a type in the text extraction state. If the
-	 * names of the text extraction state contain the previous node. If that's the
-	 * case a recommendation for the combination of both is created.
-	 *
-	 * @param textExtractionState text extraction state
-	 * @param n                   the current node
-	 */
-	private void checkForNameBeforeType(ITextState textExtractionState, IWord n) {
-		IWord pre = n.getPreWord();
+    /**
+     * Checks if the current node is a type in the text extraction state. If the names of the text extraction state
+     * contain the previous node. If that's the case a recommendation for the combination of both is created.
+     *
+     * @param textExtractionState text extraction state
+     * @param n                   the current node
+     */
+    private void checkForNameBeforeType(ITextState textExtractionState, IWord n) {
+        IWord pre = n.getPreWord();
 
-		Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-		identifiers.addAll(modelState.getInstanceTypes());
+        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
+        identifiers.addAll(modelState.getInstanceTypes());
 
-		List<String> similarTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
+        List<String> similarTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
 
-		if (!similarTypes.isEmpty()) {
-			textExtractionState.addType(n, similarTypes.get(0), probability);
-			IInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
+        if (!similarTypes.isEmpty()) {
+            textExtractionState.addType(n, similarTypes.get(0), probability);
+            IInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
 
-			List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-			List<INounMapping> nameMappings = textExtractionState.getNameNodesByNode(pre);
+            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
+            List<INounMapping> nameMappings = textExtractionState.getNameNodesByNode(pre);
 
-			addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nameMappings, typeMappings);
+            addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nameMappings, typeMappings);
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Checks if the current node is a type in the text extraction state. If the
-	 * names of the text extraction state contain the following node. If that's the
-	 * case a recommendation for the combination of both is created.
-	 *
-	 * @param textExtractionState text extraction state
-	 * @param n                   the current node
-	 */
-	private void checkForNameAfterType(ITextState textExtractionState, IWord n) {
-		IWord after = n.getNextWord();
+    /**
+     * Checks if the current node is a type in the text extraction state. If the names of the text extraction state
+     * contain the following node. If that's the case a recommendation for the combination of both is created.
+     *
+     * @param textExtractionState text extraction state
+     * @param n                   the current node
+     */
+    private void checkForNameAfterType(ITextState textExtractionState, IWord n) {
+        IWord after = n.getNextWord();
 
-		Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-		identifiers.addAll(modelState.getInstanceTypes());
+        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
+        identifiers.addAll(modelState.getInstanceTypes());
 
-		List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
-		if (!sameLemmaTypes.isEmpty()) {
-			textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
-			IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
+        List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
+        if (!sameLemmaTypes.isEmpty()) {
+            textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
+            IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
-			List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-			List<INounMapping> nameMappings = textExtractionState.getNameNodesByNode(after);
+            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
+            List<INounMapping> nameMappings = textExtractionState.getNameNodesByNode(after);
 
-			addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nameMappings, typeMappings);
+            addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nameMappings, typeMappings);
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Checks if the current node is a type in the text extraction state. If the
-	 * name_or_types of the text extraction state contain the previous node. If
-	 * that's the case a recommendation for the combination of both is created.
-	 *
-	 * @param textExtractionState text extraction state
-	 * @param n                   the current node
-	 */
-	private void checkForNortBeforeType(ITextState textExtractionState, IWord n) {
+    /**
+     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
+     * state contain the previous node. If that's the case a recommendation for the combination of both is created.
+     *
+     * @param textExtractionState text extraction state
+     * @param n                   the current node
+     */
+    private void checkForNortBeforeType(ITextState textExtractionState, IWord n) {
 
-		IWord pre = n.getPreWord();
+        IWord pre = n.getPreWord();
 
-		Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-		identifiers.addAll(modelState.getInstanceTypes());
+        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
+        identifiers.addAll(modelState.getInstanceTypes());
 
-		List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
+        List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
 
-		if (!sameLemmaTypes.isEmpty()) {
-			textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
-			IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
+        if (!sameLemmaTypes.isEmpty()) {
+            textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
+            IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
 
-			List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-			List<INounMapping> nortMappings = textExtractionState.getNortNodesByNode(pre);
+            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
+            List<INounMapping> nortMappings = textExtractionState.getNortNodesByNode(pre);
 
-			addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nortMappings, typeMappings);
-		}
-	}
+            addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nortMappings, typeMappings);
+        }
+    }
 
-	/**
-	 * Adds a RecommendedInstance to the recommendation state if the mapping of the
-	 * current node exists. Otherwise a recommendation is added for each existing
-	 * mapping.
-	 *
-	 * @param currentNode         the current node
-	 * @param textExtractionState the text extraction state
-	 * @param instance            the instance
-	 * @param nameMappings        the name mappings
-	 * @param typeMappings        the type mappings
-	 */
-	private void addRecommendedInstanceIfNodeNotNull(//
-			IWord currentNode, ITextState textExtractionState, IInstance instance, List<INounMapping> nameMappings, List<INounMapping> typeMappings) {
-		if (textExtractionState.getNounMappingsByNode(currentNode) != null && instance != null) {
-			List<INounMapping> nmappings = textExtractionState.getNounMappingsByNode(currentNode);
-			for (INounMapping nmapping : nmappings) {
-				recommendationState.addRecommendedInstance(instance.getLongestName(), nmapping.getReference(), probability, nameMappings, typeMappings);
-			}
-		}
-	}
+    /**
+     * Adds a RecommendedInstance to the recommendation state if the mapping of the current node exists. Otherwise a
+     * recommendation is added for each existing mapping.
+     *
+     * @param currentNode         the current node
+     * @param textExtractionState the text extraction state
+     * @param instance            the instance
+     * @param nameMappings        the name mappings
+     * @param typeMappings        the type mappings
+     */
+    private void addRecommendedInstanceIfNodeNotNull(//
+            IWord currentNode, ITextState textExtractionState, IInstance instance, List<INounMapping> nameMappings, List<INounMapping> typeMappings) {
+        if (textExtractionState.getNounMappingsByNode(currentNode) != null && instance != null) {
+            List<INounMapping> nmappings = textExtractionState.getNounMappingsByNode(currentNode);
+            for (INounMapping nmapping : nmappings) {
+                recommendationState.addRecommendedInstance(instance.getLongestName(), nmapping.getReference(), probability, nameMappings, typeMappings);
+            }
+        }
+    }
 
-	/**
-	 * Checks if the current node is a type in the text extraction state. If the
-	 * name_or_types of the text extraction state contain the afterwards node. If
-	 * that's the case a recommendation for the combination of both is created.
-	 *
-	 * @param textExtractionState text extraction state
-	 * @param n                   the current node
-	 */
-	private void checkForNortAfterType(ITextState textExtractionState, IWord n) {
-		IWord after = n.getNextWord();
+    /**
+     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
+     * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
+     *
+     * @param textExtractionState text extraction state
+     * @param n                   the current node
+     */
+    private void checkForNortAfterType(ITextState textExtractionState, IWord n) {
+        IWord after = n.getNextWord();
 
-		Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-		identifiers.addAll(modelState.getInstanceTypes());
+        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
+        identifiers.addAll(modelState.getInstanceTypes());
 
-		List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
-		if (!sameLemmaTypes.isEmpty()) {
-			textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
-			IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
+        List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
+        if (!sameLemmaTypes.isEmpty()) {
+            textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
+            IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
-			List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-			List<INounMapping> nortMappings = textExtractionState.getNortNodesByNode(after);
+            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
+            List<INounMapping> nortMappings = textExtractionState.getNortNodesByNode(after);
 
-			addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nortMappings, typeMappings);
-		}
-	}
+            addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nortMappings, typeMappings);
+        }
+    }
 
-	/**
-	 * Tries to identify instances by the given similar types and the name of a
-	 * given node. If an unambiguous instance can be found it is returned and the
-	 * name is added to the text extraction state.
-	 *
-	 * @param textExtractioinState the next extraction state to work with
-	 * @param similarTypes         the given similar types
-	 * @param n                    the node for name identification
-	 * @return the unique matching instance
-	 */
-	private IInstance tryToIdentify(ITextState textExtractioinState, List<String> similarTypes, IWord n) {
-		List<IInstance> matchingInstances = new ArrayList<>();
+    /**
+     * Tries to identify instances by the given similar types and the name of a given node. If an unambiguous instance
+     * can be found it is returned and the name is added to the text extraction state.
+     *
+     * @param textExtractioinState the next extraction state to work with
+     * @param similarTypes         the given similar types
+     * @param n                    the node for name identification
+     * @return the unique matching instance
+     */
+    private IInstance tryToIdentify(ITextState textExtractioinState, List<String> similarTypes, IWord n) {
+        List<IInstance> matchingInstances = new ArrayList<>();
 
-		for (String type : similarTypes) {
-			matchingInstances.addAll(modelState.getInstancesOfType(type));
-		}
+        for (String type : similarTypes) { matchingInstances.addAll(modelState.getInstancesOfType(type)); }
 
-		matchingInstances = matchingInstances.stream().filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), List.of(n.getText()))).collect(Collectors.toList());
+        matchingInstances = matchingInstances.stream()
+                .filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), List.of(n.getText())))
+                .collect(Collectors.toList());
 
-		if (matchingInstances.size() == 1) {
+        if (matchingInstances.size() == 1) {
 
-			textExtractioinState.addName(n, matchingInstances.get(0).getLongestName(), probability);
-			return matchingInstances.get(0);
-		}
-		return null;
-	}
+            textExtractioinState.addName(n, matchingInstances.get(0).getLongestName(), probability);
+            return matchingInstances.get(0);
+        }
+        return null;
+    }
 
 }
