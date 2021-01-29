@@ -20,10 +20,7 @@ public class RelationMapping implements IRelationMapping {
 
     @Override
     public IRelationMapping createCopy() {
-        return new RelationMapping(relationNodes.stream()
-                                                .map(INounMapping::createCopy)
-                                                .collect(Collectors.toList()),
-                probability, preposition);
+        return new RelationMapping(relationNodes.stream().map(INounMapping::createCopy).collect(Collectors.toList()), probability, preposition);
 
     }
 
@@ -38,12 +35,9 @@ public class RelationMapping implements IRelationMapping {
     /**
      * Creates a new relation mapping. Other mappings, as well as a preposition can be added afterwards.
      *
-     * @param node1
-     *            the first node of the relation
-     * @param node2
-     *            another node in the relation
-     * @param prob
-     *            probability for being a relation
+     * @param node1 the first node of the relation
+     * @param node2 another node in the relation
+     * @param prob  probability for being a relation
      */
     public RelationMapping(INounMapping node1, INounMapping node2, double prob) {
         relationNodes = new ArrayList<>();
@@ -55,8 +49,7 @@ public class RelationMapping implements IRelationMapping {
     /**
      * Adds more NounMappings to the relation.
      *
-     * @param mappings
-     *            more noun mappings to add.
+     * @param mappings more noun mappings to add.
      */
     @Override
     public void addMappingsToRelation(List<? extends INounMapping> mappings) {
@@ -70,8 +63,7 @@ public class RelationMapping implements IRelationMapping {
     /**
      * Sets the preposition of the node.
      *
-     * @param prep
-     *            the graph node representing the preposition
+     * @param prep the graph node representing the preposition
      */
     @Override
     public void setPreposition(IWord prep) {
@@ -113,8 +105,7 @@ public class RelationMapping implements IRelationMapping {
      * Prints the relation mapping. Contains relation nodes, probability and preposition.
      */
     public String toString() {
-        return "RelationNode [relationNodes=" + relationNodes + ", probability=" + probability + ", preposition="
-                + preposition + "]";
+        return "RelationNode [relationNodes=" + relationNodes + ", probability=" + probability + ", preposition=" + preposition + "]";
     }
 
     @Override
@@ -124,10 +115,12 @@ public class RelationMapping implements IRelationMapping {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         RelationMapping other = (RelationMapping) obj;
         return Objects.equals(relationNodes, other.relationNodes);
     }

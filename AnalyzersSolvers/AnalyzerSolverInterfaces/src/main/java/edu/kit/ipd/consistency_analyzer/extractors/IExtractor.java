@@ -7,8 +7,8 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 
 public interface IExtractor extends ILoadable {
 
-	void exec(IWord word);
+    void exec(IWord word);
 
-	void setProbability(List<Double> probabilities);
+    void setProbability(List<Double> probabilities);
 
 }

@@ -27,12 +27,9 @@ public class InstanceLink implements IInstanceLink {
     /**
      * Creates a new instance link.
      *
-     * @param textualInstance
-     *            the recommended instance
-     * @param modelInstance
-     *            the extracted instance
-     * @param probability
-     *            the probability of this link
+     * @param textualInstance the recommended instance
+     * @param modelInstance   the extracted instance
+     * @param probability     the probability of this link
      */
     public InstanceLink(IRecommendedInstance textualInstance, IInstance modelInstance, double probability) {
         this.textualInstance = textualInstance;
@@ -53,8 +50,7 @@ public class InstanceLink implements IInstanceLink {
     /**
      * Sets the probability to the given probability.
      *
-     * @param probability
-     *            the new probability
+     * @param probability the new probability
      */
     @Override
     public void setProbability(double probability) {
@@ -88,13 +84,14 @@ public class InstanceLink implements IInstanceLink {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         InstanceLink other = (InstanceLink) obj;
-        return Objects.equals(modelInstance, other.modelInstance)
-                && Objects.equals(textualInstance, other.textualInstance);
+        return Objects.equals(modelInstance, other.modelInstance) && Objects.equals(textualInstance, other.textualInstance);
     }
 
     /**
@@ -111,8 +108,7 @@ public class InstanceLink implements IInstanceLink {
             namePositions.addAll(nameMapping.getMappingSentenceNo());
         }
 
-        return "name=" + textualInstance.getName() + "occurrences= " + "NameVariants: " + names.size() + ": "
-                + names.toString() + //
+        return "name=" + textualInstance.getName() + "occurrences= " + "NameVariants: " + names.size() + ": " + names.toString() + //
                 " sentences{" + Arrays.toString(namePositions.toArray()) + "}";
     }
 
@@ -132,12 +128,9 @@ public class InstanceLink implements IInstanceLink {
             typePositions.addAll(typeMapping.getMappingSentenceNo());
         }
         return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getLongestName() + //
-                ", as=" + String.join(", ", modelInstance.getLongestType()) + ", probability=" + probability
-                + ", FOUND: " + //
+                ", as=" + String.join(", ", modelInstance.getLongestType()) + ", probability=" + probability + ", FOUND: " + //
                 textualInstance.getName() + " : " + getTextualInstance().getType() + ", occurrences= " + //
-                "NameVariants: " + names.size() + ": " + names.toString() + " sentences{"
-                + Arrays.toString(namePositions.toArray()) + "}" + //
-                ", TypeVariants: " + types.size() + ": " + types.toString() + "sentences{"
-                + Arrays.toString(typePositions.toArray()) + "}" + "]";
+                "NameVariants: " + names.size() + ": " + names.toString() + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
+                ", TypeVariants: " + types.size() + ": " + types.toString() + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";
     }
 }

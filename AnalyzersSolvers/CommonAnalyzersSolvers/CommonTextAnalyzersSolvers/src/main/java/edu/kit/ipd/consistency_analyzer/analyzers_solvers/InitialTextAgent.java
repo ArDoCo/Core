@@ -21,66 +21,65 @@ import edu.kit.ipd.consistency_analyzer.extractors.TextExtractor;
 @MetaInfServices(TextAgent.class)
 public class InitialTextAgent extends TextAgent {
 
-	private List<IExtractor> extractors = new ArrayList<>();
+    private List<IExtractor> extractors = new ArrayList<>();
 
-	private Logger logger = Logger.getLogger(getName());
+    private Logger logger = Logger.getLogger(getName());
 
-	public InitialTextAgent(IText text, ITextState textState) {
-		super(DependencyType.TEXT, text, textState);
-		initializeAgents();
-	}
+    public InitialTextAgent(IText text, ITextState textState) {
+        super(DependencyType.TEXT, text, textState);
+        initializeAgents();
+    }
 
-	@Override
-	public TextAgent create(IText text, ITextState textExtractionState) {
-		return new InitialTextAgent(text, textExtractionState);
-	}
+    @Override
+    public TextAgent create(IText text, ITextState textExtractionState) {
+        return new InitialTextAgent(text, textExtractionState);
+    }
 
-	public InitialTextAgent(AgentDatastructure data) {
-		this(data.getText(), data.getTextState());
-	}
+    public InitialTextAgent(AgentDatastructure data) {
+        this(data.getText(), data.getTextState());
+    }
 
-	public InitialTextAgent(AgentDatastructure data, Tuple<List<IExtractor>, Map<IExtractor, List<Double>>> extractorsTuple) {
-		this(data);
+    public InitialTextAgent(AgentDatastructure data, Tuple<List<IExtractor>, Map<IExtractor, List<Double>>> extractorsTuple) {
+        this(data);
 
-		extractors = new ArrayList<>(extractorsTuple.getFirst());
-		Map<IExtractor, List<Double>> map = extractorsTuple.getSecond();
-		for (IExtractor extractor : extractors) {
-			if (map.containsKey(extractor)) {
-				extractor.setProbability(map.get(extractor));
-			} else {
-				logger.warning("The extractor " + extractor.getName() + " has no specified probability!");
-			}
-		}
-	}
+        extractors = new ArrayList<>(extractorsTuple.getFirst());
+        Map<IExtractor, List<Double>> map = extractorsTuple.getSecond();
+        for (IExtractor extractor : extractors) {
+            if (map.containsKey(extractor)) {
+                extractor.setProbability(map.get(extractor));
+            } else {
+                logger.warning("The extractor " + extractor.getName() + " has no specified probability!");
+            }
+        }
+    }
 
-	public InitialTextAgent() {
-		super(DependencyType.TEXT);
-	}
+    public InitialTextAgent() {
+        super(DependencyType.TEXT);
+    }
 
-	@Override
-	public void exec() {
+    @Override
+    public void exec() {
+        for (IWord word : text.getWords()) {
+            for (IExtractor extractor : extractors) {
+                extractor.exec(word);
+            }
+        }
+    }
 
-		for (IWord word : text.getWords()) {
-			for (IExtractor extractor : extractors) {
-				extractor.exec(word);
-			}
-		}
-	}
+    /**
+     * Initializes graph dependent analyzers and solvers
+     */
 
-	/**
-	 * Initializes graph dependent analyzers and solvers
-	 */
+    private void initializeAgents() {
 
-	private void initializeAgents() {
+        Map<String, TextExtractor> loadedExtractors = Loader.loadLoadable(TextExtractor.class);
 
-		Map<String, TextExtractor> loadedExtractors = Loader.loadLoadable(TextExtractor.class);
-
-		for (String textExtractor : GenericTextConfig.TEXT_EXTRACTORS) {
-			if (!loadedExtractors.containsKey(textExtractor)) {
-				throw new IllegalArgumentException("TextAgent " + textExtractor + " not found");
-			}
-			extractors.add(loadedExtractors.get(textExtractor).create(textState));
-		}
-	}
+        for (String textExtractor : GenericTextConfig.TEXT_EXTRACTORS) {
+            if (!loadedExtractors.containsKey(textExtractor)) {
+                throw new IllegalArgumentException("TextAgent " + textExtractor + " not found");
+            }
+            extractors.add(loadedExtractors.get(textExtractor).create(textState));
+        }
+    }
 
 }

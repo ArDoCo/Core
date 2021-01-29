@@ -24,15 +24,12 @@ public class RecommendedRelation implements IRecommendedRelation {
     @Override
     public IRecommendedRelation createCopy() {
 
-        return new RecommendedRelation(relationInstances.stream()
-                                                        .map(IRecommendedInstance::createCopy)
-                                                        .collect(Collectors.toSet()),
-                probability, new ArrayList<>(nodes), name);
+        return new RecommendedRelation(relationInstances.stream().map(IRecommendedInstance::createCopy).collect(Collectors.toSet()), probability,
+                new ArrayList<>(nodes), name);
 
     }
 
-    private RecommendedRelation(Set<IRecommendedInstance> relationInstances, double probability, List<IWord> nodes,
-            String name) {
+    private RecommendedRelation(Set<IRecommendedInstance> relationInstances, double probability, List<IWord> nodes, String name) {
         this.relationInstances = relationInstances;
         this.probability = probability;
         this.nodes = nodes;
@@ -43,21 +40,15 @@ public class RecommendedRelation implements IRecommendedRelation {
     /**
      * Creates a new recommended relation.
      *
-     * @param name
-     *            the name of the relation
-     * @param instance0
-     *            the first end point of the relation, as recommended instance
-     * @param instance1
-     *            the second end point of the relation, as recommended instance
-     * @param otherInstances
-     *            possible other instances, that are involved
-     * @param probability
-     *            the probability that this is a relation
-     * @param nodes
-     *            the nodes representing this relation. These are not the end points of the instances!
+     * @param name           the name of the relation
+     * @param instance0      the first end point of the relation, as recommended instance
+     * @param instance1      the second end point of the relation, as recommended instance
+     * @param otherInstances possible other instances, that are involved
+     * @param probability    the probability that this is a relation
+     * @param nodes          the nodes representing this relation. These are not the end points of the instances!
      */
-    public RecommendedRelation(String name, IRecommendedInstance instance0, IRecommendedInstance instance1,
-            List<IRecommendedInstance> otherInstances, double probability, List<IWord> nodes) {
+    public RecommendedRelation(String name, IRecommendedInstance instance0, IRecommendedInstance instance1, List<IRecommendedInstance> otherInstances,
+            double probability, List<IWord> nodes) {
         relationInstances = new HashSet<>();
         relationInstances.add(instance0);
         relationInstances.add(instance1);
@@ -80,8 +71,7 @@ public class RecommendedRelation implements IRecommendedRelation {
     /**
      * Adds more occurrences as a list of nodes.
      *
-     * @param occs
-     *            list of nodes; every node represents the relation
+     * @param occs list of nodes; every node represents the relation
      */
     @Override
     public void addOccurrences(List<IWord> occs) {
@@ -95,8 +85,7 @@ public class RecommendedRelation implements IRecommendedRelation {
     /**
      * updates the probability of the recommended relation.
      *
-     * @param probability2
-     *            the probability to update with
+     * @param probability2 the probability to update with
      */
     @Override
     public void updateProbability(double probability2) {
@@ -136,8 +125,7 @@ public class RecommendedRelation implements IRecommendedRelation {
     /**
      * Sets the probability to the given probability.
      *
-     * @param probability
-     *            the new probability
+     * @param probability the new probability
      */
     @Override
     public void setProbability(double probability) {
@@ -157,10 +145,7 @@ public class RecommendedRelation implements IRecommendedRelation {
     private String getInstanceNameTypePairs() {
         StringBuilder result = new StringBuilder("");
         for (IRecommendedInstance ri : relationInstances) {
-            result.append(ri.getName())
-                  .append(":")
-                  .append(ri.getType())
-                  .append(", ");
+            result.append(ri.getName()).append(":").append(ri.getType()).append(", ");
         }
 
         return result.substring(0, result.length() - 2);
@@ -169,8 +154,7 @@ public class RecommendedRelation implements IRecommendedRelation {
     @Override
     public String toString() {
 
-        return "RecommendedRelation [" + " name=" + name + ", recommendedInstances= " + getInstanceNameTypePairs()
-                + ", probability=" + probability + "]";
+        return "RecommendedRelation [" + " name=" + name + ", recommendedInstances= " + getInstanceNameTypePairs() + ", probability=" + probability + "]";
     }
 
     @Override
@@ -180,10 +164,12 @@ public class RecommendedRelation implements IRecommendedRelation {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         RecommendedRelation other = (RecommendedRelation) obj;
         return Objects.equals(name, other.name) && Objects.equals(relationInstances, other.relationInstances);
     }

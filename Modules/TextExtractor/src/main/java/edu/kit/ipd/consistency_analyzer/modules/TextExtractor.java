@@ -12,56 +12,54 @@ import edu.kit.ipd.consistency_analyzer.datastructures.TextExtractionState;
 
 public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
-	private AgentDatastructure data;
-	private List<TextAgent> agents = new ArrayList<>();
+    private AgentDatastructure data;
+    private List<TextAgent> agents = new ArrayList<>();
 
-	/**
-	 * Creates a new model connection agent with the given extraction states.
-	 *
-	 * @param graph                the PARSE graph
-	 * @param modelExtractionState the model extraction state
-	 * @param textExtractionState  the text extraction state
-	 * @param recommendationState  the state with the recommendations
-	 */
-	public TextExtractor(AgentDatastructure data) {
-		this.data = data;
-		data.setTextState(new TextExtractionState());
-		initializeAgents();
-	}
+    /**
+     * Creates a new model connection agent with the given extraction states.
+     *
+     * @param graph                the PARSE graph
+     * @param modelExtractionState the model extraction state
+     * @param textExtractionState  the text extraction state
+     * @param recommendationState  the state with the recommendations
+     */
+    public TextExtractor(AgentDatastructure data) {
+        this.data = data;
+        data.setTextState(new TextExtractionState());
+        initializeAgents();
+    }
 
-	@Override
-	public void exec() {
+    @Override
+    public void exec() {
+        runAgents();
+    }
 
-		runAgents();
+    /**
+     * Initializes graph dependent analyzers and solvers
+     */
 
-	}
+    private void initializeAgents() {
 
-	/**
-	 * Initializes graph dependent analyzers and solvers
-	 */
+        Map<String, TextAgent> myAgents = Loader.loadLoadable(TextAgent.class);
 
-	private void initializeAgents() {
+        for (String agent : TextExtractorConfig.TEXT_AGENTS) {
+            if (!myAgents.containsKey(agent)) {
+                throw new IllegalArgumentException("TextAgent " + agent + " not found");
+            }
+            agents.add(myAgents.get(agent).create(data));
+        }
+    }
 
-		Map<String, TextAgent> myAgents = Loader.loadLoadable(TextAgent.class);
+    @Override
+    public void runAgents() {
+        for (IAgent agent : agents) {
+            agent.exec();
+        }
+    }
 
-		for (String agent : TextExtractorConfig.TEXT_AGENTS) {
-			if (!myAgents.containsKey(agent)) {
-				throw new IllegalArgumentException("TextAgent " + agent + " not found");
-			}
-			agents.add(myAgents.get(agent).create(data));
-		}
-	}
-
-	@Override
-	public void runAgents() {
-		for (IAgent agent : agents) {
-			agent.exec();
-		}
-	}
-
-	@Override
-	public AgentDatastructure getState() {
-		return data;
-	}
+    @Override
+    public AgentDatastructure getState() {
+        return data;
+    }
 
 }

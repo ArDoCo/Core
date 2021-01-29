@@ -4,22 +4,22 @@ import java.util.List;
 
 public interface IWord {
 
-	int getSentenceNo();
+    int getSentenceNo();
 
-	String getText();
+    String getText();
 
-	PosTag getPosTag();
+    PosTag getPosTag();
 
-	IWord getPreWord();
+    IWord getPreWord();
 
-	IWord getNextWord();
+    IWord getNextWord();
 
-	int getPosition();
+    int getPosition();
 
-	String getLemma();
+    String getLemma();
 
-	List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag);
+    List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag);
 
-	List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag);
+    List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag);
 
 }

@@ -41,22 +41,17 @@ public class Instance implements IInstance {
     /**
      * Creates a new instance.
      *
-     * @param name
-     *            name of the instance.
-     * @param type
-     *            type of the instance.
-     * @param string
-     *            unique identifier of the instance needed for trace linking.
+     * @param name   name of the instance.
+     * @param type   type of the instance.
+     * @param string unique identifier of the instance needed for trace linking.
      */
     public Instance(String name, String type, String string) {
 
-        names = Arrays.stream(name.split(" "))
-                      .collect(Collectors.toList());
+        names = Arrays.stream(name.split(" ")).collect(Collectors.toList());
         if (names.size() != 1) {
             names.add(name);
         }
-        types = Arrays.stream(type.split(" "))
-                      .collect(Collectors.toList());
+        types = Arrays.stream(type.split(" ")).collect(Collectors.toList());
         if (types.size() != 1) {
             types.add(type);
         }
@@ -127,13 +122,14 @@ public class Instance implements IInstance {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         Instance other = (Instance) obj;
-        return Objects.equals(longestName, other.longestName) && Objects.equals(longestType, other.longestType)
-                && Objects.equals(uid, other.uid);
+        return Objects.equals(longestName, other.longestName) && Objects.equals(longestType, other.longestType) && Objects.equals(uid, other.uid);
     }
 
 }

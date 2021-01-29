@@ -22,12 +22,9 @@ public class RelationLink implements IRelationLink {
     /**
      * Creates a new relation mapping
      *
-     * @param textRelation
-     *            recommended relation
-     * @param modelRelation
-     *            relation from the model extraction state
-     * @param probability
-     *            probability for similarity
+     * @param textRelation  recommended relation
+     * @param modelRelation relation from the model extraction state
+     * @param probability   probability for similarity
      */
     public RelationLink(IRecommendedRelation textRelation, IRelation modelRelation, double probability) {
         textualRelation = textRelation;
@@ -42,13 +39,14 @@ public class RelationLink implements IRelationLink {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         RelationLink other = (RelationLink) obj;
-        return Objects.equals(modelRelation, other.modelRelation)
-                && Objects.equals(textualRelation, other.textualRelation);
+        return Objects.equals(modelRelation, other.modelRelation) && Objects.equals(textualRelation, other.textualRelation);
     }
 
     /**
@@ -64,8 +62,7 @@ public class RelationLink implements IRelationLink {
     /**
      * Sets the probability of this mapping to the given probability.
      *
-     * @param probability
-     *            the new probability
+     * @param probability the new probability
      */
     @Override
     public void setProbability(double probability) {
@@ -95,8 +92,7 @@ public class RelationLink implements IRelationLink {
     @Override
     public String toString() {
 
-        return "RelationLink: " + getModelRelation().toString() + " by " + getTextualRelation().toString()
-                + "probability: " + probability;
+        return "RelationLink: " + getModelRelation().toString() + " by " + getTextualRelation().toString() + "probability: " + probability;
     }
 
 }

@@ -10,31 +10,31 @@ import edu.kit.ipd.consistency_analyzer.datastructures.PosTag;
 
 public final class WordHelper {
 
-	private WordHelper() {
-		throw new IllegalAccessError();
-	}
+    private WordHelper() {
+        throw new IllegalAccessError();
+    }
 
-	public static boolean hasDeterminerAsPreWord(IWord word) {
+    public static boolean hasDeterminerAsPreWord(IWord word) {
 
-		IWord preWord = word.getPreWord();
-		if (preWord == null) {
-			return false;
-		}
+        IWord preWord = word.getPreWord();
+        if (preWord == null) {
+            return false;
+        }
 
-		PosTag prePosTag = preWord.getPosTag();
-		return PosTag.DT.equals(prePosTag);
+        PosTag prePosTag = preWord.getPosTag();
+        return PosTag.DT.equals(prePosTag);
 
-	}
+    }
 
-	public static boolean hasIndirectDeterminerAsPreWord(IWord word) {
-		return hasDeterminerAsPreWord(word) && (word.getText().equalsIgnoreCase("a") || word.getText().equalsIgnoreCase("an"));
-	}
+    public static boolean hasIndirectDeterminerAsPreWord(IWord word) {
+        return hasDeterminerAsPreWord(word) && (word.getText().equalsIgnoreCase("a") || word.getText().equalsIgnoreCase("an"));
+    }
 
-	public static List<DependencyTag> getIncomingDependencyTags(IWord word) {
-		return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependentOnThis(d).isEmpty()).collect(Collectors.toList());
-	}
+    public static List<DependencyTag> getIncomingDependencyTags(IWord word) {
+        return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependentOnThis(d).isEmpty()).collect(Collectors.toList());
+    }
 
-	public static List<DependencyTag> getOutgoingDependencyTags(IWord word) {
-		return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty()).collect(Collectors.toList());
-	}
+    public static List<DependencyTag> getOutgoingDependencyTags(IWord word) {
+        return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty()).collect(Collectors.toList());
+    }
 }

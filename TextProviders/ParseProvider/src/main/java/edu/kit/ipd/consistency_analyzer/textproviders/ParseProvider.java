@@ -33,8 +33,9 @@ public class ParseProvider implements ITextConnector {
     }
 
     private IGraph calculatePARSEGraph(InputStream text) throws LunaRunException {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug("Starting creation of PARSE Graph");
+        }
 
         Scanner scanner = new Scanner(text);
         scanner.useDelimiter("\\A");
@@ -44,8 +45,7 @@ public class ParseProvider implements ITextConnector {
         Properties stanfordProps = ConfigManager.getConfiguration(Stanford.class);
         stanfordProps.setProperty("LEMMAS",
                 "seconds/NNS/second;milliseconds/NNS/millisecond;hours/NNS/hour;minutes/NNS/minute;months/NNS/month;years/NNS/year");
-        stanfordProps.setProperty("TAGGER_MODEL",
-                "/edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger");
+        stanfordProps.setProperty("TAGGER_MODEL", "/edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger");
 
         Properties changeWatchdogProps = ConfigManager.getConfiguration(ChangeWatchdog.class);
         // TODO Find a suitable time for termination. Currently 10s
@@ -56,14 +56,14 @@ public class ParseProvider implements ITextConnector {
         lunaProps.setProperty("AGENTS", String.join(",", "depParser", "changeWatchdog"));
 
         Luna luna = Luna.getInstance();
-        luna.getPrePipelineData()
-            .setTranscription(content);
+        luna.getPrePipelineData().setTranscription(content);
 
         luna.init();
         luna.run();
 
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug("Finished creation of PARSE Graph");
+        }
         return luna.getMainGraph();
 
     }
