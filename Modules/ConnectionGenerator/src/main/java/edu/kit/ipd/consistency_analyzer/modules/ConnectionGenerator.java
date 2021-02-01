@@ -4,135 +4,72 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.ipd.consistency_analyzer.analyzers_solvers.AnalyzerSolverLoader;
-import edu.kit.ipd.consistency_analyzer.analyzers_solvers.IConnectionAnalyzer;
-import edu.kit.ipd.consistency_analyzer.analyzers_solvers.IConnectionSolver;
+import edu.kit.ipd.consistency_analyzer.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents.ConnectionAgent;
+import edu.kit.ipd.consistency_analyzer.agents.Loader;
 import edu.kit.ipd.consistency_analyzer.datastructures.ConnectionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IConnectionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IModelExtractionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendationState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IText;
-import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 
 /**
- * The ModelConnectionAgent runs different analyzers and solvers. This agent
- * creates recommendations as well as matchings between text and model. The
- * order is important: All connections should run after the recommendations have
+ * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as
+ * matchings between text and model. The order is important: All connections should run after the recommendations have
  * been made.
  *
  * @author Sophie
  *
  */
-public class ConnectionGenerator implements IAnalyzerSolverModule<IConnectionState> {
+public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
 
-	private IText graph;
-	private IModelExtractionState modelExtractionState;
-	private ITextExtractionState textExtractionState;
-	private IConnectionState connectionState = new ConnectionState();
-	private IRecommendationState recommendationState;
+    private AgentDatastructure data;
 
-	private List<IConnectionAnalyzer> analyzers = new ArrayList<>();
-	private List<IConnectionSolver> solvers = new ArrayList<>();
+    private List<ConnectionAgent> agents = new ArrayList<>();
 
-	/**
-	 * Creates a new model connection agent with the given extraction states.
-	 *
-	 * @param graph                the PARSE graph
-	 * @param modelExtractionState the model extraction state
-	 * @param textExtractionState  the text extraction state
-	 * @param recommendationState  the state with the recommendations
-	 */
-	public ConnectionGenerator(IText graph, IModelExtractionState modelExtractionState, ITextExtractionState textExtractionState, IRecommendationState recommendationState) {
-		this.graph = graph;
-		this.modelExtractionState = modelExtractionState;
-		this.textExtractionState = textExtractionState;
-		this.recommendationState = recommendationState;
+    /**
+     * Creates a new model connection agent with the given extraction states.
+     *
+     * @param text                the PARSE graph
+     * @param modelState          the model extraction state
+     * @param textState           the text extraction state
+     * @param recommendationState the state with the recommendations
+     */
+    public ConnectionGenerator(AgentDatastructure data) {
+        this.data = data;
+        data.setConnectionState(new ConnectionState());
+        initializeAgents();
+    }
 
-		initializeAnalyzerSolvers();
-	}
+    @Override
+    public void exec() {
+        runAgents();
+    }
 
-	@Override
-	public void exec() {
-		runAnalyzers();
-		runSolvers();
-	}
+    /**
+     * Initializes graph dependent analyzers.
+     */
+    private void initializeAgents() {
 
-	/**
-	 * Sets the model extraction state.
-	 *
-	 * @param modelExtractionState the current model extraction state.
-	 */
-	public void setModelExtractionState(IModelExtractionState modelExtractionState) {
-		this.modelExtractionState = modelExtractionState;
-	}
+        Map<String, ConnectionAgent> myAgents = Loader.loadLoadable(ConnectionAgent.class);
 
-	/**
-	 * Sets the text extraction state.
-	 *
-	 * @param textExtractionState the current text extraction state.
-	 */
-	public void setTextExtractionState(ITextExtractionState textExtractionState) {
-		this.textExtractionState = textExtractionState;
-	}
+        for (String connectionAnalyzer : ConnectionGeneratorConfig.CONNECTION_AGENTS) {
+            if (!myAgents.containsKey(connectionAnalyzer)) {
+                throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
+            }
+            agents.add(myAgents.get(connectionAnalyzer).create(data));
+        }
 
-	/**
-	 * Initializes graph dependent analyzers.
-	 */
-	private void initializeAnalyzerSolvers() {
+    }
 
-		Map<String, IConnectionAnalyzer> myAnalyzers = AnalyzerSolverLoader.loadLoadable(IConnectionAnalyzer.class);
+    /**
+     * Runs solvers, that connect model extraction State and Recommendation State.
+     */
+    @Override
+    public void runAgents() {
+        for (ConnectionAgent agent : agents) {
+            agent.exec();
+        }
+    }
 
-		for (String connectionAnalyzer : ConnectionGeneratorConfig.MODEL_CONNECTION_AGENT_ANALYZERS) {
-			if (!myAnalyzers.containsKey(connectionAnalyzer)) {
-				throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
-			}
-			analyzers.add(myAnalyzers.get(connectionAnalyzer).create(textExtractionState, modelExtractionState, recommendationState, connectionState));
-		}
-
-		Map<String, IConnectionSolver> mySolvers = AnalyzerSolverLoader.loadLoadable(IConnectionSolver.class);
-
-		for (String connectionSolver : ConnectionGeneratorConfig.MODEL_CONNECTION_AGENT_SOLVERS) {
-			if (!mySolvers.containsKey(connectionSolver)) {
-				throw new IllegalArgumentException("ConnectionSolver " + connectionSolver + " not found");
-			}
-			solvers.add(mySolvers.get(connectionSolver).create(textExtractionState, modelExtractionState, recommendationState, connectionState));
-		}
-	}
-
-	/**
-	 * Runs solvers, that connect model extraction State and Recommendation State.
-	 */
-	@Override
-	public void runSolvers() {
-		for (IConnectionSolver solver : solvers) {
-			solver.exec();
-		}
-	}
-
-	/**
-	 * Runs analyzers, that work node by node.
-	 */
-	@Override
-	public void runAnalyzers() {
-		for (IWord n : graph.getNodes()) {
-			for (IConnectionAnalyzer analyzer : analyzers) {
-				analyzer.exec(n);
-			}
-		}
-	}
-
-	/**
-	 * Returns the connection state.
-	 *
-	 * @return the current connection state
-	 */
-	public IConnectionState getConnectionState() {
-		return connectionState;
-	}
-
-	@Override
-	public IConnectionState getState() {
-		return connectionState;
-	}
+    @Override
+    public AgentDatastructure getState() {
+        return data;
+    }
 }

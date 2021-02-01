@@ -1,18 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>edu.kit.ipd.consistency_analyzer</groupId>
-    <artifactId>consistency_analyzer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>modules</artifactId>
-  <packaging>pom</packaging>
-  <name>Modules</name>
-  <modules>
-  	<module>ModuleInterfaces</module>
-  	<module>ModelExtractor</module>
-  	<module>ConnectionGenerator</module>
-  	<module>RecommendationGenerator</module>
-  	<module>TextExtractor</module>
-  </modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
+		<artifactId>consistency_analyzer</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>modules</artifactId>
+	<packaging>pom</packaging>
+	<name>Modules</name>
+	<modules>
+		<module>ModuleInterfaces</module>
+		<module>ModelExtractor</module>
+		<module>ConnectionGenerator</module>
+		<module>RecommendationGenerator</module>
+		<module>TextExtractor</module>
+	</modules>
 </project>

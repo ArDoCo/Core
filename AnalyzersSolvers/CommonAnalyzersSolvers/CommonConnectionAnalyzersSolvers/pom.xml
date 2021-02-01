@@ -16,11 +16,11 @@
 			<artifactId>common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-	<dependency>
-		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>common_text_tools</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
+		<dependency>
+			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
+			<artifactId>common_text_tools</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
