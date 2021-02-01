@@ -23,7 +23,7 @@
 		<maven.compiler.target>14</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<log4j.version>2.12.1</log4j.version>
+		<log4j.version>[2.13.2,)</log4j.version>
 		<eclipse.collections.version>9.2.0</eclipse.collections.version>
 
 		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
