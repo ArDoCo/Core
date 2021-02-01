@@ -10,7 +10,7 @@
 	<artifactId>model_data_structures</artifactId>
 	<name>ModelDataStructures</name>
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
 			<artifactId>module_interfaces</artifactId>

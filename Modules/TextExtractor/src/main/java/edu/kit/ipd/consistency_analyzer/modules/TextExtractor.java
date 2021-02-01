@@ -4,88 +4,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.ipd.consistency_analyzer.analyzers_solvers.AnalyzerSolverLoader;
-import edu.kit.ipd.consistency_analyzer.analyzers_solvers.ITextAnalyzer;
-import edu.kit.ipd.consistency_analyzer.analyzers_solvers.ITextSolver;
-import edu.kit.ipd.consistency_analyzer.datastructures.IText;
-import edu.kit.ipd.consistency_analyzer.datastructures.ITextExtractionState;
-import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
+import edu.kit.ipd.consistency_analyzer.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents.IAgent;
+import edu.kit.ipd.consistency_analyzer.agents.Loader;
+import edu.kit.ipd.consistency_analyzer.agents.TextAgent;
 import edu.kit.ipd.consistency_analyzer.datastructures.TextExtractionState;
 
-public class TextExtractor implements IAnalyzerSolverModule<ITextExtractionState> {
+public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
-	private IText graph;
-	private ITextExtractionState textExtractionState = new TextExtractionState();
-	private List<ITextAnalyzer> analyzers = new ArrayList<>();
-	private List<ITextSolver> solvers = new ArrayList<>();
+    private AgentDatastructure data;
+    private List<TextAgent> agents = new ArrayList<>();
 
-	/**
-	 * Creates a new model connection agent with the given extraction states.
-	 *
-	 * @param graph                the PARSE graph
-	 * @param modelExtractionState the model extraction state
-	 * @param textExtractionState  the text extraction state
-	 * @param recommendationState  the state with the recommendations
-	 */
-	public TextExtractor(IText graph) {
-		this.graph = graph;
+    /**
+     * Creates a new model connection agent with the given extraction states.
+     *
+     * @param graph                the PARSE graph
+     * @param modelExtractionState the model extraction state
+     * @param textExtractionState  the text extraction state
+     * @param recommendationState  the state with the recommendations
+     */
+    public TextExtractor(AgentDatastructure data) {
+        this.data = data;
+        data.setTextState(new TextExtractionState());
+        initializeAgents();
+    }
 
-		initializeAnalyzerSolvers();
-	}
+    @Override
+    public void exec() {
+        runAgents();
+    }
 
-	@Override
-	public void exec() {
+    /**
+     * Initializes graph dependent analyzers and solvers
+     */
 
-		runAnalyzers();
+    private void initializeAgents() {
 
-		runSolvers();
+        Map<String, TextAgent> myAgents = Loader.loadLoadable(TextAgent.class);
 
-	}
+        for (String agent : TextExtractorConfig.TEXT_AGENTS) {
+            if (!myAgents.containsKey(agent)) {
+                throw new IllegalArgumentException("TextAgent " + agent + " not found");
+            }
+            agents.add(myAgents.get(agent).create(data));
+        }
+    }
 
-	/**
-	 * Initializes graph dependent analyzers and solvers
-	 */
+    @Override
+    public void runAgents() {
+        for (IAgent agent : agents) {
+            agent.exec();
+        }
+    }
 
-	private void initializeAnalyzerSolvers() {
-
-		Map<String, ITextAnalyzer> myAnalyzers = AnalyzerSolverLoader.loadLoadable(ITextAnalyzer.class);
-
-		for (String textAnalyzer : TextExtractorConfig.TEXT_EXTRACTION_AGENT_ANALYZERS) {
-			if (!myAnalyzers.containsKey(textAnalyzer)) {
-				throw new IllegalArgumentException("TextAnalyzer " + textAnalyzer + " not found");
-			}
-			analyzers.add(myAnalyzers.get(textAnalyzer).create(textExtractionState));
-		}
-
-		Map<String, ITextSolver> mySolvers = AnalyzerSolverLoader.loadLoadable(ITextSolver.class);
-
-		for (String textSolver : TextExtractorConfig.TEXT_EXTRACTION_AGENT_SOLVERS) {
-			if (!mySolvers.containsKey(textSolver)) {
-				throw new IllegalArgumentException("TextSolver " + textSolver + " not found");
-			}
-			solvers.add(mySolvers.get(textSolver).create(textExtractionState));
-		}
-	}
-
-	@Override
-	public void runAnalyzers() {
-		for (IWord n : graph.getNodes()) {
-			for (ITextAnalyzer analyzer : analyzers) {
-				analyzer.exec(n);
-			}
-		}
-	}
-
-	@Override
-	public void runSolvers() {
-		for (ITextSolver solver : solvers) {
-			solver.exec();
-		}
-	}
-
-	@Override
-	public ITextExtractionState getState() {
-		return this.textExtractionState;
-	}
+    @Override
+    public AgentDatastructure getState() {
+        return data;
+    }
 
 }

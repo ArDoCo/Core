@@ -24,19 +24,14 @@ public class SystemParameters {
             Object loader = new Object() {
             };
 
-            try (InputStream inputStream = loader.getClass()
-                                                 .getResourceAsStream(filepath)) {
-
+            try (InputStream inputStream = loader.getClass().getResourceAsStream(filepath)) {
                 prop.load(inputStream);
-
             } catch (IOException e) {
                 LOGGER.debug(e.getMessage(), e.getCause());
             }
         } else {
             try (InputStream inputStream = new FileInputStream(filepath)) {
-
                 prop.load(inputStream);
-
             } catch (IOException e) {
                 LOGGER.debug(e.getMessage(), e.getCause());
             }
@@ -46,8 +41,7 @@ public class SystemParameters {
     /**
      * Returns the specified property of the config file as a string.
      *
-     * @param key
-     *            name of the specified property
+     * @param key name of the specified property
      * @return value of the property as a string
      */
     public String getProperty(String key) {
@@ -57,8 +51,7 @@ public class SystemParameters {
     /**
      * Returns the specified property of the config file as a double.
      *
-     * @param key
-     *            name of the specified property
+     * @param key name of the specified property
      * @return value of the property as a double
      */
     public double getPropertyAsDouble(String key) {
@@ -73,8 +66,7 @@ public class SystemParameters {
     /**
      * Returns the specified property of the config file as an int.
      *
-     * @param key
-     *            name of the specified property
+     * @param key name of the specified property
      * @return value of the property as an int
      */
     public int getPropertyAsInt(String key) {
@@ -89,11 +81,9 @@ public class SystemParameters {
     /**
      * Returns the specified property of the config file as a list of strings.
      *
-     * @param key
-     *            name of the specified property
+     * @param key name of the specified property
      * @return value of the property as a list of strings
-     * @throws Exception
-     *             if the key is not found in the configuration file.
+     * @throws Exception if the key is not found in the configuration file.
      */
     public List<String> getPropertyAsList(String key) {
         List<String> values = Lists.mutable.empty();
@@ -102,24 +92,21 @@ public class SystemParameters {
             throw new IllegalArgumentException("Key: " + key + " not found in config");
         }
 
-        if (value.strip()
-                 .length() == 0) {
+        if (value.strip().length() == 0) {
             return values;
         }
 
         values.addAll(List.of(value.split(" ")));
+        values.removeIf(String::isBlank);
         return values;
     }
 
     /**
      * Identifies the meant specific enum of the class clazz by the data string and returns it.
      *
-     * @param <T>
-     *            the enum identified by the string
-     * @param data
-     *            the string that identifies the enum, the names have to be equal
-     * @param clazz
-     *            the class that holds the enum
+     * @param <T>   the enum identified by the string
+     * @param data  the string that identifies the enum, the names have to be equal
+     * @param clazz the class that holds the enum
      * @return the enum identified by the given string
      */
     public <T extends Enum<T>> ImmutableList<T> getPropertyAsListOfEnumTypes(String data, Class<T> clazz) {

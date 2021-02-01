@@ -1,19 +1,19 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
-public interface IModule<S extends IState> {
+public interface IModule<AgentDatastructure> {
 
-	// TODO: generic defintion of InputStates
+    // TODO: generic defintion of InputStates
 
-	/**
-	 * Runs the agent with its analyzers and finders.
-	 */
-	void exec();
+    /**
+     * Runs the agent with its analyzers and finders.
+     */
+    void exec();
 
-	/**
-	 * Returns the current state.
-	 *
-	 * @return current state
-	 */
-	S getState();
+    /**
+     * Returns the current state.
+     *
+     * @return current state
+     */
+    AgentDatastructure getState();
 
 }
