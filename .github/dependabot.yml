@@ -8,7 +8,7 @@ updates:
       time: "11:00"
       timezone: "Europe/Berlin"
     commit-message:
-      prefix: "Dependency update"
+      prefix: "Dependency"
       include: "scope"
   - package-ecosystem: "maven"
     directory: "/"
@@ -18,5 +18,5 @@ updates:
       time: "11:00"
       timezone: "Europe/Berlin"
     commit-message:
-      prefix: "Dependency update"
+      prefix: "Dependency"
       include: "scope"
