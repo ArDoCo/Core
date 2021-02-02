@@ -2,6 +2,9 @@ name: Maven Verify
 
 on:
   push:
+    branches-ignore:
+      - main
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -10,7 +13,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
