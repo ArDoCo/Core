@@ -1,7 +1,9 @@
 package edu.kit.ipd.consistency_analyzer.agents;
 
-public abstract class Agent implements IAgent {
+import java.util.logging.Logger;
 
+public abstract class Agent implements IAgent {
+    protected final Logger logger = Logger.getLogger(getName());
     protected DependencyType dependencyType;
 
     public abstract Agent create(AgentDatastructure data);

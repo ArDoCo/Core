@@ -27,7 +27,7 @@ public class InitialTextAgent extends TextAgent {
 
     public InitialTextAgent(IText text, ITextState textState) {
         super(DependencyType.TEXT, text, textState);
-        initializeAgents();
+        initializeAgents(GenericTextConfig.TEXT_EXTRACTORS);
     }
 
     @Override
@@ -39,14 +39,15 @@ public class InitialTextAgent extends TextAgent {
         this(data.getText(), data.getTextState());
     }
 
-    public InitialTextAgent(AgentDatastructure data, Tuple<List<IExtractor>, Map<IExtractor, List<Double>>> extractorsTuple) {
+    public InitialTextAgent(AgentDatastructure data, Tuple<List<String>, Map<String, List<Double>>> extractorsTuple) {
         this(data);
+        extractors.clear();
+        initializeAgents(extractorsTuple.getFirst());
 
-        extractors = new ArrayList<>(extractorsTuple.getFirst());
-        Map<IExtractor, List<Double>> map = extractorsTuple.getSecond();
+        Map<String, List<Double>> map = extractorsTuple.getSecond();
         for (IExtractor extractor : extractors) {
-            if (map.containsKey(extractor)) {
-                extractor.setProbability(map.get(extractor));
+            if (map.containsKey(extractor.getName())) {
+                extractor.setProbability(map.get(extractor.getName()));
             } else {
                 logger.warning("The extractor " + extractor.getName() + " has no specified probability!");
             }
@@ -70,11 +71,11 @@ public class InitialTextAgent extends TextAgent {
      * Initializes graph dependent analyzers and solvers
      */
 
-    private void initializeAgents() {
+    private void initializeAgents(List<String> extractorList) {
 
         Map<String, TextExtractor> loadedExtractors = Loader.loadLoadable(TextExtractor.class);
 
-        for (String textExtractor : GenericTextConfig.TEXT_EXTRACTORS) {
+        for (String textExtractor : extractorList) {
             if (!loadedExtractors.containsKey(textExtractor)) {
                 throw new IllegalArgumentException("TextAgent " + textExtractor + " not found");
             }

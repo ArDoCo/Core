@@ -24,6 +24,7 @@ public class AgentDatastructure {
     public AgentDatastructure createCopy() {
         AgentDatastructure data = new AgentDatastructure();
         data.text = text;
+        data.textState = textState.createCopy();
         data.modelState = modelState.createCopy();
         data.recommendationState = recommendationState.createCopy();
         data.connectionState = connectionState.createCopy();

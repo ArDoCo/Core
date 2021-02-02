@@ -76,8 +76,7 @@ public class ExtractionDependentOccurrenceExtractor extends RecommendationExtrac
     private void searchForName(IWord n) {
         List<IInstance> instances = modelState.getInstances()
                 .stream()
-                .filter(//
-                        i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), List.of(n.getText())))
+                .filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), List.of(n.getText())))
                 .collect(Collectors.toList());
         if (instances.size() == 1) {
             textState.addName(n, instances.get(0).getLongestName(), probability);
@@ -97,8 +96,7 @@ public class ExtractionDependentOccurrenceExtractor extends RecommendationExtrac
     private void searchForType(IWord n) {
         List<IInstance> instances = modelState.getInstances()
                 .stream()
-                .filter(//
-                        i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), List.of(n.getText())))
+                .filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), List.of(n.getText())))
                 .collect(Collectors.toList());
         if (instances.size() == 1) {
             textState.addType(n, instances.get(0).getLongestType(), probability);
