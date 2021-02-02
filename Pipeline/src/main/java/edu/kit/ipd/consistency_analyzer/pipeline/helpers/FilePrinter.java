@@ -3,6 +3,8 @@ package edu.kit.ipd.consistency_analyzer.pipeline.helpers;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -443,6 +445,145 @@ public class FilePrinter {
     }
 
     /***
+     * Writes the states into a string
+     *
+     * @param extractionState     the extraction state, containing the extracted elements of the model
+     * @param ntrState            the name type relation state, containing the mappings found in the text, sorted in
+     *                            name, type or name_or_type
+     * @param recommendationState the supposing state, containing the supposing mappings for instances, as well as
+     *                            relations
+     * @param connectionState     containing all instances and relations, matched by supposed mappings
+     * @param duration            past time the approach needed to calculate the results
+     */
+    public static String getPrettyInformation(IModelState extractionState, ITextState ntrState, //
+            IRecommendationState recommendationState, IConnectionState connectionState, Duration duration) {
+
+        try (StringWriter sw = new StringWriter()) {
+            writeStates(sw, extractionState, ntrState, recommendationState, connectionState, duration);
+            return sw.toString();
+
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e.getCause());
+        }
+
+        return null;
+    }
+
+    private static void writeStates(Writer myWriter, IModelState extractionState, ITextState ntrState, //
+            IRecommendationState recommendationState, IConnectionState connectionState, Duration duration) throws IOException {
+        myWriter.write("Results of ModelConnector: ");
+        myWriter.append(LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("ExtractorState: ");
+        myWriter.append(LINE_SEPARATOR);
+        myWriter.write(extractionState.toString());
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("FoundNames as Set: ");
+        myWriter.append(LINE_SEPARATOR);
+        List<String> nameList = ntrState.getNameList();
+        Collections.sort(nameList);
+        myWriter.write(nameList.toString() + LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("FoundNameTerms as Set: ");
+        myWriter.append(LINE_SEPARATOR);
+        List<String> nameTermList = ntrState.getNameTermList();
+        Collections.sort(nameTermList);
+        myWriter.write(nameTermList.toString() + LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("FoundNORTs as Set: ");
+        myWriter.append(LINE_SEPARATOR);
+        List<String> nortList = ntrState.getNortList();
+        Collections.sort(nortList);
+        myWriter.write(nortList.toString() + LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("FoundTypes as Set: ");
+        myWriter.append(LINE_SEPARATOR);
+        List<String> typeList = ntrState.getTypeList();
+        Collections.sort(typeList);
+        myWriter.write(typeList.toString() + LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("FoundTypeTerms as Set: ");
+        myWriter.append(LINE_SEPARATOR);
+        List<String> typeTermList = ntrState.getTypeTermList();
+        Collections.sort(typeTermList);
+        myWriter.write(typeTermList.toString() + LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("Instances of the Recommendation State: ");
+        myWriter.append(LINE_SEPARATOR);
+
+        List<IRecommendedInstance> recommendedInstances = recommendationState.getRecommendedInstances();
+        Comparator<IRecommendedInstance> comRecommendedInstanceByName = getRecommendedInstancesComparator();
+        Collections.sort(recommendedInstances, comRecommendedInstanceByName);
+
+        for (IRecommendedInstance ri : recommendedInstances) { myWriter.write(ri.toString() + LINE_SEPARATOR); }
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("Instances of the Connection State: ");
+        myWriter.append(LINE_SEPARATOR);
+
+        Comparator<IInstanceLink> compInstByUID = getInstanceLinkComparator();
+        List<IInstanceLink> instanceMappings = new ArrayList<>(connectionState.getInstanceLinks());
+        Collections.sort(instanceMappings, compInstByUID);
+
+        for (IInstanceLink imap : instanceMappings) {
+
+            myWriter.write(imap.toString() + LINE_SEPARATOR);
+        }
+
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("Relations of the Recommendation State: ");
+        myWriter.append(LINE_SEPARATOR);
+
+        List<IRecommendedRelation> rels = recommendationState.getRecommendedRelations();
+        Comparator<IRecommendedRelation> compRRelationsByFirstInstanceName = getRecommendedRelationComparator();
+        Collections.sort(rels, compRRelationsByFirstInstanceName);
+
+        for (IRecommendedRelation si : rels) { myWriter.write(si.toString() + LINE_SEPARATOR); }
+
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        myWriter.write("Relations of the Connection State: ");
+        myWriter.append(LINE_SEPARATOR);
+
+        Comparator<IRelationLink> compRelByUID = getRelationLinkComparator();
+        List<IRelationLink> relationLinks = new ArrayList<>(connectionState.getRelationLinks());
+        Collections.sort(relationLinks, compRelByUID);
+
+        for (IRelationLink rlink : relationLinks) { myWriter.write(rlink.toString() + LINE_SEPARATOR); }
+
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.write("ExecutionTime: " + duration);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.write(HORIZONTAL_RULE);
+        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+
+        logger.info(SUCCESS_WRITE);
+    }
+
+    /***
      * Writes the states into a file
      *
      * @param extractionState     the extraction state, containing the extracted elements of the model
@@ -463,122 +604,8 @@ public class FilePrinter {
         }
 
         try (FileWriter myWriter = new FileWriter(resultFile)) {
+            writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState, duration);
 
-            myWriter.write("Results of ModelConnector: ");
-            myWriter.append(LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("ExtractorState: ");
-            myWriter.append(LINE_SEPARATOR);
-            myWriter.write(extractionState.toString());
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("FoundNames as Set: ");
-            myWriter.append(LINE_SEPARATOR);
-            List<String> nameList = ntrState.getNameList();
-            Collections.sort(nameList);
-            myWriter.write(nameList.toString() + LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("FoundNameTerms as Set: ");
-            myWriter.append(LINE_SEPARATOR);
-            List<String> nameTermList = ntrState.getNameTermList();
-            Collections.sort(nameTermList);
-            myWriter.write(nameTermList.toString() + LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("FoundNORTs as Set: ");
-            myWriter.append(LINE_SEPARATOR);
-            List<String> nortList = ntrState.getNortList();
-            Collections.sort(nortList);
-            myWriter.write(nortList.toString() + LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("FoundTypes as Set: ");
-            myWriter.append(LINE_SEPARATOR);
-            List<String> typeList = ntrState.getTypeList();
-            Collections.sort(typeList);
-            myWriter.write(typeList.toString() + LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("FoundTypeTerms as Set: ");
-            myWriter.append(LINE_SEPARATOR);
-            List<String> typeTermList = ntrState.getTypeTermList();
-            Collections.sort(typeTermList);
-            myWriter.write(typeTermList.toString() + LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("Instances of the Recommendation State: ");
-            myWriter.append(LINE_SEPARATOR);
-
-            List<IRecommendedInstance> recommendedInstances = recommendationState.getRecommendedInstances();
-            Comparator<IRecommendedInstance> comRecommendedInstanceByName = getRecommendedInstancesComparator();
-            Collections.sort(recommendedInstances, comRecommendedInstanceByName);
-
-            for (IRecommendedInstance ri : recommendedInstances) {
-                myWriter.write(ri.toString() + LINE_SEPARATOR);
-            }
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("Instances of the Connection State: ");
-            myWriter.append(LINE_SEPARATOR);
-
-            Comparator<IInstanceLink> compInstByUID = getInstanceLinkComparator();
-            List<IInstanceLink> instanceMappings = new ArrayList<>(connectionState.getInstanceLinks());
-            Collections.sort(instanceMappings, compInstByUID);
-
-            for (IInstanceLink imap : instanceMappings) {
-
-                myWriter.write(imap.toString() + LINE_SEPARATOR);
-            }
-
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("Relations of the Recommendation State: ");
-            myWriter.append(LINE_SEPARATOR);
-
-            List<IRecommendedRelation> rels = recommendationState.getRecommendedRelations();
-            Comparator<IRecommendedRelation> compRRelationsByFirstInstanceName = getRecommendedRelationComparator();
-            Collections.sort(rels, compRRelationsByFirstInstanceName);
-
-            for (IRecommendedRelation si : rels) {
-                myWriter.write(si.toString() + LINE_SEPARATOR);
-            }
-
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            myWriter.write("Relations of the Connection State: ");
-            myWriter.append(LINE_SEPARATOR);
-
-            Comparator<IRelationLink> compRelByUID = getRelationLinkComparator();
-            List<IRelationLink> relationLinks = new ArrayList<>(connectionState.getRelationLinks());
-            Collections.sort(relationLinks, compRelByUID);
-
-            for (IRelationLink rlink : relationLinks) {
-                myWriter.write(rlink.toString() + LINE_SEPARATOR);
-            }
-
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.write("ExecutionTime: " + duration);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.write(HORIZONTAL_RULE);
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-            logger.info(SUCCESS_WRITE);
         } catch (IOException e) {
             logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());

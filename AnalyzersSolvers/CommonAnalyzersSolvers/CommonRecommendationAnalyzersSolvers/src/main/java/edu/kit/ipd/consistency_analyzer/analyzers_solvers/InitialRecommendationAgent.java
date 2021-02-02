@@ -3,7 +3,6 @@ package edu.kit.ipd.consistency_analyzer.analyzers_solvers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.kohsuke.MetaInfServices;
 
@@ -23,12 +22,11 @@ import edu.kit.ipd.consistency_analyzer.extractors.RecommendationExtractor;
 @MetaInfServices(RecommendationAgent.class)
 public class InitialRecommendationAgent extends RecommendationAgent {
 
-    private Logger logger = Logger.getLogger(getName());
     private List<IExtractor> extractors = new ArrayList<>();
 
     public InitialRecommendationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
         super(DependencyType.TEXT_MODEL_RECOMMENDATION, text, textState, modelState, recommendationState);
-        initializeAgents();
+        initializeAgents(GenericRecommendationConfig.RECOMMENDATION_EXTRACTORS);
     }
 
     public InitialRecommendationAgent(AgentDatastructure data) {
@@ -39,25 +37,25 @@ public class InitialRecommendationAgent extends RecommendationAgent {
         super(DependencyType.TEXT_MODEL_RECOMMENDATION);
     }
 
-    public InitialRecommendationAgent(AgentDatastructure data, Tuple<List<IExtractor>, Map<IExtractor, List<Double>>> extractorsTuple) {
+    public InitialRecommendationAgent(AgentDatastructure data, Tuple<List<String>, Map<String, List<Double>>> extractorsTuple) {
 
         this(data);
-
-        extractors = new ArrayList<>(extractorsTuple.getFirst());
-        Map<IExtractor, List<Double>> map = extractorsTuple.getSecond();
+        extractors.clear();
+        initializeAgents(extractorsTuple.getFirst());
+        Map<String, List<Double>> map = extractorsTuple.getSecond();
         for (IExtractor extractor : extractors) {
-            if (map.containsKey(extractor)) {
-                extractor.setProbability(map.get(extractor));
+            if (map.containsKey(extractor.getName())) {
+                extractor.setProbability(map.get(extractor.getName()));
             } else {
                 logger.warning("The extractor " + extractor.getName() + " has no specified probability!");
             }
         }
     }
 
-    private void initializeAgents() {
+    private void initializeAgents(List<String> extractorList) {
         Map<String, RecommendationExtractor> loadedExtractors = Loader.loadLoadable(RecommendationExtractor.class);
 
-        for (String recommendationExtractor : GenericRecommendationConfig.RECOMMENDATION_EXTRACTORS) {
+        for (String recommendationExtractor : extractorList) {
             if (!loadedExtractors.containsKey(recommendationExtractor)) {
                 throw new IllegalArgumentException("RecommendationExtractor " + recommendationExtractor + " not found");
             }
