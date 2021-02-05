@@ -26,35 +26,28 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>luna</artifactId>
-			<version>0.6.6</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>change_watchdog</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>depParser</artifactId>
-			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>tokenizer</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>graphBuilder</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>textSNLP</artifactId>
-			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
@@ -65,6 +58,15 @@
 			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
 			<artifactId>text_interface</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
 		</dependency>
 	</dependencies>
 </project>
