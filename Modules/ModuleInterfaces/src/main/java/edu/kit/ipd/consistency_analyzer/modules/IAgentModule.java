@@ -1,6 +1,6 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
-public interface IAgentModule<AgentDatastructure> extends IModule<AgentDatastructure> {
+public interface IAgentModule<T> extends IModule<T> {
 
     /**
      * Runs the agents.
