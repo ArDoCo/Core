@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.ipd.consistency_analyzer.agents.AgentDatastructure;
-import edu.kit.ipd.consistency_analyzer.agents.IAgent;
-import edu.kit.ipd.consistency_analyzer.agents.Loader;
-import edu.kit.ipd.consistency_analyzer.agents.RecommendationAgent;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.IAgent;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Loader;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.RecommendationAgent;
 import edu.kit.ipd.consistency_analyzer.datastructures.RecommendationState;
 
 public class RecommendationGenerator implements IAgentModule<AgentDatastructure> {

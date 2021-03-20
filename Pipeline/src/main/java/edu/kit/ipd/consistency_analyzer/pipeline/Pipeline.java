@@ -1,10 +1,9 @@
 package edu.kit.ipd.consistency_analyzer.pipeline;
 
-import java.io.File;
 import java.io.InputStream;
 import java.time.Duration;
 
-import edu.kit.ipd.consistency_analyzer.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
 import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
 import edu.kit.ipd.consistency_analyzer.modelproviders.HardCodedModelConnector;
@@ -23,13 +22,9 @@ import edu.kit.ipd.parse.luna.LunaRunException;
 
 public class Pipeline {
 
-    static {
-        new File("evaluations").mkdirs();
-    }
-    static InputStream documentation = Pipeline.class.getResourceAsStream(PipelineConfig.DOCUMENTATION_PATH);
-    static InputStream test = Pipeline.class.getResourceAsStream(PipelineConfig.TEST_DOCUMENTATION_PATH);
-
     public static void main(String[] args) throws LunaRunException {
+        InputStream documentation = Pipeline.class.getResourceAsStream(PipelineConfig.DOCUMENTATION_PATH);
+        // InputStream test = Pipeline.class.getResourceAsStream(PipelineConfig.TEST_DOCUMENTATION_PATH);
         run(documentation);
     }
 
