@@ -6,19 +6,20 @@ import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
 public class RecommendationGeneratorConfig {
 
-    private RecommendationGeneratorConfig() {
-        throw new IllegalAccessError();
-    }
+	public static final RecommendationGeneratorConfig DEFAULT_CONFIG = new RecommendationGeneratorConfig();
 
-    private static final SystemParameters CONFIG = loadParameters("/configs/RecommendationGenerator.properties");
+	private RecommendationGeneratorConfig() {
+		SystemParameters config = new SystemParameters("/configs/RecommendationGenerator.properties", true);
+		recommendationAgents = config.getPropertyAsList("Recommendation_Agents");
+	}
 
-    /**
-     * The list of analyzer types that should work on the recommendation state.
-     */
-    protected static final List<String> RECOMMENDATION_AGENTS = CONFIG.getPropertyAsList("Recommendation_Agents");
+	public RecommendationGeneratorConfig(List<String> recommendation) {
+		recommendationAgents = recommendation;
+	}
 
-    private static SystemParameters loadParameters(String filePath) {
-        return new SystemParameters(filePath, true);
-    }
+	/**
+	 * The list of analyzer types that should work on the recommendation state.
+	 */
+	public final List<String> recommendationAgents;
 
 }
