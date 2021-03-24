@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.kohsuke.MetaInfServices;
 
-import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.DependencyType;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.RecommendationAgent;
 import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
@@ -40,21 +39,13 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
      * @param recommendationState the recommendation state
      */
     public SeparatedRelationsAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
+        this(text, textState, modelState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    }
+
+    public SeparatedRelationsAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            GenericRecommendationConfig config) {
         super(DependencyType.RECOMMENDATION, text, textState, modelState, recommendationState);
-        probability = GenericRecommendationConfig.SEPARATED_RELATIONS_SOLVER_PROBABILITY;
-    }
-
-    public SeparatedRelationsAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, double probability) {
-        this(text, textState, modelState, recommendationState);
-        this.probability = probability;
-    }
-
-    public SeparatedRelationsAgent(AgentDatastructure data) {
-        this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState());
-    }
-
-    public SeparatedRelationsAgent(AgentDatastructure data, double probability) {
-        this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), probability);
+        probability = config.separatedRelationSolverProbility;
     }
 
     public SeparatedRelationsAgent() {

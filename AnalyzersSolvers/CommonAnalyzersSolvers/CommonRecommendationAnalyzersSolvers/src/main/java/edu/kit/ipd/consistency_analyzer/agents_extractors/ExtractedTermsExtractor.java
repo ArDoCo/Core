@@ -26,9 +26,9 @@ import edu.kit.ipd.consistency_analyzer.datastructures.MappingKind;
 @MetaInfServices(RecommendationExtractor.class)
 public class ExtractedTermsExtractor extends RecommendationExtractor {
 
-    private double probabilityAdjacentTerm = GenericRecommendationConfig.EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_TERM;
-    private double probabilityJustName = GenericRecommendationConfig.EXTRACTED_TERMS_ANALYZER_PROBABILITY_JUST_NAME;
-    private double probabilityJustAdjacentNoun = GenericRecommendationConfig.EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN;
+    private double probabilityAdjacentTerm;
+    private double probabilityJustName;
+    private double probabilityJustAdjacentNoun;
 
     /**
      * Instantiates a new extracted terms analyzer
@@ -39,7 +39,15 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
      * @param recommendationState  the recommendation state to write the results and read existing recommendations from
      */
     public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
+        this(textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    }
+
+    public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            GenericRecommendationConfig config) {
         super(DependencyType.TEXT_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
+        probabilityAdjacentTerm = config.extractedTermsAnalyzerProbabilityAdjacentTerm;
+        probabilityJustName = config.extractedTermsAnalyzerProbabilityJustName;
+        probabilityJustAdjacentNoun = config.extractedTermsAnalyzerProbabilityAdjacentNoun;
     }
 
     public ExtractedTermsExtractor() {
