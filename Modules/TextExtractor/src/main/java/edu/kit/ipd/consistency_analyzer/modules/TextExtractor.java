@@ -8,7 +8,7 @@ import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastruct
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.IAgent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Loader;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.TextAgent;
-import edu.kit.ipd.consistency_analyzer.datastructures.TextExtractionState;
+import edu.kit.ipd.consistency_analyzer.datastructures.TextStateWithoutClustering;
 
 public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
@@ -25,7 +25,8 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
      */
     public TextExtractor(AgentDatastructure data) {
         this.data = data;
-        data.setTextState(new TextExtractionState());
+        // data.setTextState(new TextExtractionState());
+        data.setTextState(new TextStateWithoutClustering());
         initializeAgents();
     }
 
