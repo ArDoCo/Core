@@ -40,9 +40,15 @@ public class InstanceConnectionAgent extends ConnectionAgent {
      */
     public InstanceConnectionAgent(//
             IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState) {
+        this(text, textState, modelState, recommendationState, connectionState, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
+    }
+
+    public InstanceConnectionAgent(//
+            IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState,
+            GenericConnectionAnalyzerSolverConfig config) {
         super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, text, textState, modelState, recommendationState, connectionState);
-        probability = GenericConnectionAnalyzerSolverConfig.INSTANCE_CONNECTION_SOLVER_PROBABILITY;
-        probabilityWithoutType = GenericConnectionAnalyzerSolverConfig.INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE;
+        probability = config.instanceConnectionSolverProbability;
+        probabilityWithoutType = config.instanceConnectionSolverProbabilityWithoutType;
     }
 
     // Required for the service loader

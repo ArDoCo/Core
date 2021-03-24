@@ -47,8 +47,14 @@ public class RelationConnectionAgent extends ConnectionAgent {
     public RelationConnectionAgent(//
             IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState) {
+        this(text, textExtractionState, modelExtractionState, recommendationState, connectionState, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
+    }
+
+    public RelationConnectionAgent(//
+            IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            IConnectionState connectionState, GenericConnectionAnalyzerSolverConfig config) {
         super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, text, textExtractionState, modelExtractionState, recommendationState, connectionState);
-        probability = GenericConnectionAnalyzerSolverConfig.RELATION_CONNECTION_SOLVER_PROBABILITY;
+        probability = config.relationConnectionSolverProbability;
     }
 
     public RelationConnectionAgent(//
