@@ -22,7 +22,7 @@ public class GenericConnectionAnalyzerSolverConfig {
     public final double instanceConnectionSolverProbabilityWithoutType;
 
     private GenericConnectionAnalyzerSolverConfig() {
-        SystemParameters config = loadParameters("/configs/ConnectionAnalyzerSolverConfig.properties");
+        SystemParameters config = new SystemParameters("/configs/ConnectionAnalyzerSolverConfig.properties", true);
         relationConnectionSolverProbability = config.getPropertyAsDouble("RelationConnectionSolver_Probability");
         instanceConnectionSolverProbability = config.getPropertyAsDouble("InstanceConnectionSolver_Probability");
         instanceConnectionSolverProbabilityWithoutType = config.getPropertyAsDouble("InstanceConnectionSolver_ProbabilityWithoutType");
@@ -33,10 +33,6 @@ public class GenericConnectionAnalyzerSolverConfig {
         this.relationConnectionSolverProbability = relationConnectionSolverProbability;
         this.instanceConnectionSolverProbabilityWithoutType = instanceConnectionSolverProbabilityWithoutType;
         this.instanceConnectionSolverProbability = instanceConnectionSolverProbability;
-    }
-
-    private static SystemParameters loadParameters(String filePath) {
-        return new SystemParameters(filePath, true);
     }
 
 }
