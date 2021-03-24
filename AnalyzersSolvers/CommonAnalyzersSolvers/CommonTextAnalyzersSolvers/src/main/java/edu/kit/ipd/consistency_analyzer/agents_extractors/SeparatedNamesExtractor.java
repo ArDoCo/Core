@@ -21,57 +21,62 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 @MetaInfServices(TextExtractor.class)
 public class SeparatedNamesExtractor extends TextExtractor {
 
-    double probability = GenericTextConfig.SEPARATED_NAMES_ANALYZER_PROBABILITY;
+	private double probability;
 
-    /**
-     * Creates a new SeparatedNamesIdentifier.
-     *
-     * @param graph               current PARSE graph
-     * @param textExtractionState the text extraction state
-     */
-    public SeparatedNamesExtractor(ITextState textExtractionState) {
-        super(DependencyType.TEXT, textExtractionState);
-    }
+	public SeparatedNamesExtractor() {
+		this(null);
+	}
 
-    @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
-    }
+	public SeparatedNamesExtractor(ITextState textExtractionState) {
+		this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
+	}
 
-    @Override
-    public TextExtractor create(ITextState textExtractionState) {
-        return new SeparatedNamesExtractor(textExtractionState);
-    }
+	/**
+	 * Creates a new SeparatedNamesIdentifier.
+	 *
+	 * @param textExtractionState the text extraction state
+	 * @param config              the module configuration
+	 */
+	public SeparatedNamesExtractor(ITextState textExtractionState, GenericTextConfig config) {
+		super(DependencyType.TEXT, textExtractionState);
+		this.probability = config.separatedNamesAnalyzerProbability;
+	}
 
-    public SeparatedNamesExtractor() {
-        this(null);
-    }
+	@Override
+	public void setProbability(List<Double> probabilities) {
+		if (probabilities.size() > 1) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+		} else if (probabilities.isEmpty()) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+		} else {
+			probability = probabilities.get(0);
+		}
+	}
 
-    /***
-     * Checks if Node Value contains separator. If true, it is splitted and added separately to the names of the text
-     * extraction state.
-     */
-    @Override
-    public void exec(IWord node) {
-        checkForSeparatedNode(node);
-    }
+	@Override
+	public TextExtractor create(ITextState textExtractionState) {
+		return new SeparatedNamesExtractor(textExtractionState);
+	}
 
-    /***
-     * Checks if Node Value contains separator. If true, it is splitted and added separately to the names of the text
-     * extraction state.
-     *
-     * @param n node to check
-     */
-    private void checkForSeparatedNode(IWord n) {
-        if (SimilarityUtils.containsSeparator(n.getText())) {
-            textState.addName(n, n.getText(), probability);
-        }
-    }
+	/***
+	 * Checks if Node Value contains separator. If true, it is splitted and added separately to the names of the text
+	 * extraction state.
+	 */
+	@Override
+	public void exec(IWord node) {
+		checkForSeparatedNode(node);
+	}
+
+	/***
+	 * Checks if Node Value contains separator. If true, it is splitted and added separately to the names of the text
+	 * extraction state.
+	 *
+	 * @param n node to check
+	 */
+	private void checkForSeparatedNode(IWord n) {
+		if (SimilarityUtils.containsSeparator(n.getText())) {
+			textState.addName(n, n.getText(), probability);
+		}
+	}
 
 }

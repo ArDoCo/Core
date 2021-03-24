@@ -6,51 +6,66 @@ import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
 public class GenericTextConfig {
 
-    private GenericTextConfig() {
-        throw new IllegalAccessError();
-    }
+	public static final GenericTextConfig DEFAULT_CONFIG = new GenericTextConfig();
 
-    private static final SystemParameters CONFIG = loadParameters("/configs/TextAnalyzerSolverConfig.properties");
+	public final List<String> textExtractors;
 
-    public static final List<String> TEXT_EXTRACTORS = CONFIG.getPropertyAsList("Extractors");
+	// ArticleTypeNameAnalyzer
+	/**
+	 * The probability of the article type name analyzer.
+	 */
+	public final double articleTypeNameAnalyzerProbability;
 
-    // ArticleTypeNameAnalyzer
-    /**
-     * The probability of the article type name analyzer.
-     */
-    public static final double ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY = CONFIG.getPropertyAsDouble("ArticleTypeNameAnalyzer_Probability");
+	// InDepArcsAnalyzer
+	/**
+	 * The probability of the in dep arcs analyzer.
+	 */
+	public final double inDepArcsAnalyzerProbability;
 
-    // InDepArcsAnalyzer
-    /**
-     * The probability of the in dep arcs analyzer.
-     */
-    public static final double IN_DEP_ARCS_ANALYZER_PROBABILITY = CONFIG.getPropertyAsDouble("InDepArcsAnalyzer_Probability");
+	// MultiplePartSolver
+	/**
+	 * The probability of the multiple part solver.
+	 */
+	public final double multiplePartSolverProbability;
 
-    // MultiplePartSolver
-    /**
-     * The probability of the multiple part solver.
-     */
-    public static final double MULTIPLE_PART_SOLVER_PROBABILITY = CONFIG.getPropertyAsDouble("MultiplePartSolver_Probability");
+	// NounAnalyzer
+	/**
+	 * The probability of the noun analyzer.
+	 */
+	public final double nounAnalyzerProbability;
 
-    // NounAnalyzer
-    /**
-     * The probability of the noun analyzer.
-     */
-    public static final double NOUN_ANALYZER_PROBABILITY = CONFIG.getPropertyAsDouble("NounAnalyzer_Probability");
+	// OutDepArcsAnalyzer
+	/**
+	 * The probability of the out dep arcs analyzer.
+	 */
+	public final double outDepArcsAnalyzerProbability;
 
-    // OutDepArcsAnalyzer
-    /**
-     * The probability of the out dep arcs analyzer.
-     */
-    public static final double OUT_DEP_ARCS_ANALYZER_PROBABILITY = CONFIG.getPropertyAsDouble("OutDepArcsAnalyzer_Probability");
+	// SeparatedNamesAnalyzer
+	/**
+	 * The probability of the separated names analyzer.
+	 */
+	public final double separatedNamesAnalyzerProbability;
 
-    // SeparatedNamesAnalyzer
-    /**
-     * The probability of the separated names analyzer.
-     */
-    public static final double SEPARATED_NAMES_ANALYZER_PROBABILITY = CONFIG.getPropertyAsDouble("SeparatedNamesAnalyzer_Probability");
+	private GenericTextConfig() {
+		SystemParameters CONFIG = new SystemParameters("/configs/TextAnalyzerSolverConfig.properties", true);
+		textExtractors = CONFIG.getPropertyAsList("Extractors");
+		articleTypeNameAnalyzerProbability = CONFIG.getPropertyAsDouble("ArticleTypeNameAnalyzer_Probability");
+		inDepArcsAnalyzerProbability = CONFIG.getPropertyAsDouble("InDepArcsAnalyzer_Probability");
+		multiplePartSolverProbability = CONFIG.getPropertyAsDouble("MultiplePartSolver_Probability");
+		nounAnalyzerProbability = CONFIG.getPropertyAsDouble("NounAnalyzer_Probability");
+		outDepArcsAnalyzerProbability = CONFIG.getPropertyAsDouble("OutDepArcsAnalyzer_Probability");
+		separatedNamesAnalyzerProbability = CONFIG.getPropertyAsDouble("SeparatedNamesAnalyzer_Probability");
+	}
 
-    private static SystemParameters loadParameters(String filePath) {
-        return new SystemParameters(filePath, true);
-    }
+	public GenericTextConfig(List<String> textExtractors, double articleTypeNameAnalyzerProbability, double inDepArcsAnalyzerProbability, double multiplePartSolverProbability,
+			double nounAnalyzerProbability, double outDepArcsAnalyzerProbability, double separatedNamesAnalyzerProbability) {
+		this.textExtractors = textExtractors;
+		this.articleTypeNameAnalyzerProbability = articleTypeNameAnalyzerProbability;
+		this.inDepArcsAnalyzerProbability = inDepArcsAnalyzerProbability;
+		this.multiplePartSolverProbability = multiplePartSolverProbability;
+		this.nounAnalyzerProbability = nounAnalyzerProbability;
+		this.outDepArcsAnalyzerProbability = outDepArcsAnalyzerProbability;
+		this.separatedNamesAnalyzerProbability = separatedNamesAnalyzerProbability;
+	}
+
 }

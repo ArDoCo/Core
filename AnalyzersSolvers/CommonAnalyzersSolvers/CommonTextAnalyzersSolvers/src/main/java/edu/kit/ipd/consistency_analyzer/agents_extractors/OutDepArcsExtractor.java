@@ -21,71 +21,76 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 @MetaInfServices(TextExtractor.class)
 public class OutDepArcsExtractor extends TextExtractor {
 
-    private double probability = GenericTextConfig.OUT_DEP_ARCS_ANALYZER_PROBABILITY;
+	private double probability;
 
-    /**
-     * Creates a new OutDepArcsAnalyzer
-     *
-     * @param graph               the current PARSE graph
-     * @param textExtractionState the text extraction state
-     */
-    public OutDepArcsExtractor(ITextState textExtractionState) {
-        super(DependencyType.TEXT, textExtractionState);
-    }
+	public OutDepArcsExtractor() {
+		this(null);
+	}
 
-    @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
-    }
+	public OutDepArcsExtractor(ITextState textExtractionState) {
+		this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
+	}
 
-    @Override
-    public TextExtractor create(ITextState textExtractionState) {
-        return new OutDepArcsExtractor(textExtractionState);
-    }
+	/**
+	 * Creates a new OutDepArcsAnalyzer
+	 *
+	 * @param textExtractionState the text extraction state
+	 * @param config              the module configuration
+	 */
+	public OutDepArcsExtractor(ITextState textExtractionState, GenericTextConfig config) {
+		super(DependencyType.TEXT, textExtractionState);
+		this.probability = config.outDepArcsAnalyzerProbability;
+	}
 
-    public OutDepArcsExtractor() {
-        this(null);
-    }
+	@Override
+	public void setProbability(List<Double> probabilities) {
+		if (probabilities.size() > 1) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+		} else if (probabilities.isEmpty()) {
+			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+		} else {
+			probability = probabilities.get(0);
+		}
+	}
 
-    @Override
-    public void exec(IWord n) {
+	@Override
+	public TextExtractor create(ITextState textExtractionState) {
+		return new OutDepArcsExtractor(textExtractionState);
+	}
 
-        String nodeValue = n.getText();
-        if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
-            return;
-        }
-        examineOutgoingDepArcs(n);
-    }
+	@Override
+	public void exec(IWord n) {
 
-    /**
-     * Examines the outgoing dependencies of a node.
-     *
-     * @param n the node to check
-     */
-    private void examineOutgoingDepArcs(IWord n) {
+		String nodeValue = n.getText();
+		if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
+			return;
+		}
+		examineOutgoingDepArcs(n);
+	}
 
-        List<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(n);
+	/**
+	 * Examines the outgoing dependencies of a node.
+	 *
+	 * @param n the node to check
+	 */
+	private void examineOutgoingDepArcs(IWord n) {
 
-        for (DependencyTag shortDepTag : outgoingDepArcs) {
+		List<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(n);
 
-            if (shortDepTag.equals(DependencyTag.AGENT)) {
-                textState.addNort(n, n.getText(), probability);
+		for (DependencyTag shortDepTag : outgoingDepArcs) {
 
-            } else if (shortDepTag.equals(DependencyTag.NUM)) {
-                textState.addType(n, n.getText(), probability);
+			if (shortDepTag.equals(DependencyTag.AGENT)) {
+				textState.addNort(n, n.getText(), probability);
 
-            } else if (shortDepTag.equals(DependencyTag.PREDET)) {
-                textState.addType(n, n.getText(), probability);
+			} else if (shortDepTag.equals(DependencyTag.NUM)) {
+				textState.addType(n, n.getText(), probability);
 
-            } else if (shortDepTag.equals(DependencyTag.RCMOD)) {
-                textState.addNort(n, n.getText(), probability);
-            }
-        }
-    }
+			} else if (shortDepTag.equals(DependencyTag.PREDET)) {
+				textState.addType(n, n.getText(), probability);
+
+			} else if (shortDepTag.equals(DependencyTag.RCMOD)) {
+				textState.addNort(n, n.getText(), probability);
+			}
+		}
+	}
 }
