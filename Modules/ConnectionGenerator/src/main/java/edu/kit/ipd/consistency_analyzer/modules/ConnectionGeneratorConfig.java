@@ -6,18 +6,20 @@ import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
 public class ConnectionGeneratorConfig {
 
-    private ConnectionGeneratorConfig() {
-        throw new IllegalAccessError();
-    }
+	public static final ConnectionGeneratorConfig DEFAULT_CONFIG = new ConnectionGeneratorConfig();
 
-    private static final SystemParameters CONFIG = loadParameters("/configs/ConnectionGenerator.properties");
+	private ConnectionGeneratorConfig() {
+		SystemParameters config = new SystemParameters("/configs/ConnectionGenerator.properties", true);
+		connectionAgents = config.getPropertyAsList("Connection_Agents");
+	}
 
-    /**
-     * The list of solver types that should work on the connection state.
-     */
-    protected static final List<String> CONNECTION_AGENTS = CONFIG.getPropertyAsList("Connection_Agents");
+	public ConnectionGeneratorConfig(List<String> connectionAgents) {
+		this.connectionAgents = connectionAgents;
+	}
 
-    private static SystemParameters loadParameters(String filePath) {
-        return new SystemParameters(filePath, true);
-    }
+	/**
+	 * The list of solver types that should work on the connection state.
+	 */
+	public final List<String> connectionAgents;
+
 }

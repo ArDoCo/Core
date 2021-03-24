@@ -19,57 +19,62 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ConnectionState;
  */
 public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
 
-    private AgentDatastructure data;
+	private AgentDatastructure data;
 
-    private List<ConnectionAgent> agents = new ArrayList<>();
+	private List<ConnectionAgent> agents = new ArrayList<>();
 
-    /**
-     * Creates a new model connection agent with the given extraction states.
-     *
-     * @param text                the PARSE graph
-     * @param modelState          the model extraction state
-     * @param textState           the text extraction state
-     * @param recommendationState the state with the recommendations
-     */
-    public ConnectionGenerator(AgentDatastructure data) {
-        this.data = data;
-        data.setConnectionState(new ConnectionState());
-        initializeAgents();
-    }
+	private ConnectionGeneratorConfig config;
 
-    @Override
-    public void exec() {
-        runAgents();
-    }
+	/**
+	 * Creates a new model connection agent with the given extraction states.
+	 */
+	public ConnectionGenerator(AgentDatastructure data) {
+		this(data, ConnectionGeneratorConfig.DEFAULT_CONFIG);
+	}
 
-    /**
-     * Initializes graph dependent analyzers.
-     */
-    private void initializeAgents() {
+	/**
+	 * Creates a new model connection agent with the given extraction states.
+	 */
+	public ConnectionGenerator(AgentDatastructure data, ConnectionGeneratorConfig conf) {
+		this.data = data;
+		this.config = conf;
+		data.setConnectionState(new ConnectionState());
+		initializeAgents();
+	}
 
-        Map<String, ConnectionAgent> myAgents = Loader.loadLoadable(ConnectionAgent.class);
+	@Override
+	public void exec() {
+		runAgents();
+	}
 
-        for (String connectionAnalyzer : ConnectionGeneratorConfig.CONNECTION_AGENTS) {
-            if (!myAgents.containsKey(connectionAnalyzer)) {
-                throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
-            }
-            agents.add(myAgents.get(connectionAnalyzer).create(data));
-        }
+	/**
+	 * Initializes graph dependent analyzers.
+	 */
+	private void initializeAgents() {
 
-    }
+		Map<String, ConnectionAgent> myAgents = Loader.loadLoadable(ConnectionAgent.class);
 
-    /**
-     * Runs solvers, that connect model extraction State and Recommendation State.
-     */
-    @Override
-    public void runAgents() {
-        for (ConnectionAgent agent : agents) {
-            agent.exec();
-        }
-    }
+		for (String connectionAnalyzer : config.connectionAgents) {
+			if (!myAgents.containsKey(connectionAnalyzer)) {
+				throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
+			}
+			agents.add(myAgents.get(connectionAnalyzer).create(data));
+		}
 
-    @Override
-    public AgentDatastructure getState() {
-        return data;
-    }
+	}
+
+	/**
+	 * Runs solvers, that connect model extraction State and Recommendation State.
+	 */
+	@Override
+	public void runAgents() {
+		for (ConnectionAgent agent : agents) {
+			agent.exec();
+		}
+	}
+
+	@Override
+	public AgentDatastructure getState() {
+		return data;
+	}
 }
