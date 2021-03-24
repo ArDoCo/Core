@@ -24,7 +24,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 @MetaInfServices(RecommendationExtractor.class)
 public class ExtractionDependentOccurrenceExtractor extends RecommendationExtractor {
 
-    private double probability = GenericRecommendationConfig.EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY;
+    private double probability;
 
     /**
      * Creates a new extraction dependent occurrence marker.
@@ -36,7 +36,13 @@ public class ExtractionDependentOccurrenceExtractor extends RecommendationExtrac
      */
     public ExtractionDependentOccurrenceExtractor(//
             ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
+        this(textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    }
+
+    public ExtractionDependentOccurrenceExtractor(//
+            ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState, GenericRecommendationConfig config) {
         super(DependencyType.TEXT_MODEL, textExtractionState, modelExtractionState, recommendationState);
+        probability = config.extractionDependentOccurrenceAnalyzerProbability;
     }
 
     public ExtractionDependentOccurrenceExtractor() {

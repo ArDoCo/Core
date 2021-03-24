@@ -6,66 +6,85 @@ import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
 public class GenericRecommendationConfig {
 
-    private GenericRecommendationConfig() {
-        throw new IllegalAccessError();
-    }
+    public static final GenericRecommendationConfig DEFAULT_CONFIG = new GenericRecommendationConfig();
 
-    private static final SystemParameters CONFIG = loadParameters("/configs/RecommendationAnalyzerSolverConfig.properties");
-
-    public static final List<String> RECOMMENDATION_EXTRACTORS = CONFIG.getPropertyAsList("Recommendation_Extractors");
+    public final List<String> recommendationExtractors;
 
     // ExtractionDependendOccurrenceAnalyzer
     /**
      * The probability of the extraction dependent occurrence analyzer.
      */
-    public static final double EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY = //
-            CONFIG.getPropertyAsDouble("ExtractionDependentOccurrenceAnalyzer_Probability");
+    public final double extractionDependentOccurrenceAnalyzerProbability;
 
     // ExtractedTermsAnalyzer
     /**
      * The probability for terms with an adjacent noun to be of that type or have that name.
      */
-    public static final double EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN = //
-            CONFIG.getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityAdjacentNoun");
+    public final double extractedTermsAnalyzerProbabilityAdjacentNoun;
     /**
      * The probability for terms with no adjacent nouns and therefore without type, to be recommended.
      */
-    public static final double EXTRACTED_TERMS_ANALYZER_PROBABILITY_JUST_NAME = CONFIG.getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityJustName");
+    public final double extractedTermsAnalyzerProbabilityJustName;
     /**
      * The probability term combinations are recommended with.
      */
-    public static final double EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_TERM = //
-            CONFIG.getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityAdjacentTerm");
+    public final double extractedTermsAnalyzerProbabilityAdjacentTerm;
 
     // NameTypeAnalyzer
     /**
      * The probability of the name type analyzer.
      */
-    public static final double NAME_TYPE_ANALYZER_PROBABILITY = CONFIG.getPropertyAsDouble("NameTypeAnalyzer_Probability");
+    public final double nameTypeAnalyzerProbability;
 
     // ReferenceSolver
     /**
      * The probability of the reference solver.
      */
-    public static final double REFERENCE_SOLVER_PROBABILITY = CONFIG.getPropertyAsDouble("ReferenceSolver_Probability");
+    public final double referenceSolverProbability;
     /**
      * The decrease of the reference solver.
      */
-    public static final double REFERENCE_SOLVER_PROPORTIONAL_DECREASE = CONFIG.getPropertyAsDouble("ReferenceSolver_ProportionalDecrease");
+    public final double referenceSolverProportionalDecrease;
 
     /**
      * The threshold for words similarities in the reference solver.
      */
-    public static final double REFERENCE_SOLVER_ARE_NAMES_SIMILAR_THRESHOLD = CONFIG.getPropertyAsDouble("ReferenceSolver_areNamesSimilarThreshold");
+    public final double referenceSolverAreNamesSimilarThreshold;
 
     // SeparatedRelationSolver
     /**
      * The probability of the separated relations solver.
      */
-    public static final double SEPARATED_RELATIONS_SOLVER_PROBABILITY = CONFIG.getPropertyAsDouble("SeparatedRelationsSolver_Probability");
+    public final double separatedRelationSolverProbility;
 
-    private static SystemParameters loadParameters(String filePath) {
-        return new SystemParameters(filePath, true);
+    private GenericRecommendationConfig() {
+        SystemParameters config = new SystemParameters("/configs/RecommendationAnalyzerSolverConfig.properties", true);
+        recommendationExtractors = config.getPropertyAsList("Recommendation_Extractors");
+        extractionDependentOccurrenceAnalyzerProbability = config.getPropertyAsDouble("ExtractionDependentOccurrenceAnalyzer_Probability");
+        extractedTermsAnalyzerProbabilityAdjacentNoun = config.getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityAdjacentNoun");
+        extractedTermsAnalyzerProbabilityJustName = config.getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityJustName");
+        extractedTermsAnalyzerProbabilityAdjacentTerm = config.getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityAdjacentTerm");
+        nameTypeAnalyzerProbability = config.getPropertyAsDouble("NameTypeAnalyzer_Probability");
+        referenceSolverProbability = config.getPropertyAsDouble("ReferenceSolver_Probability");
+        referenceSolverProportionalDecrease = config.getPropertyAsDouble("ReferenceSolver_ProportionalDecrease");
+        referenceSolverAreNamesSimilarThreshold = config.getPropertyAsDouble("ReferenceSolver_areNamesSimilarThreshold");
+        separatedRelationSolverProbility = config.getPropertyAsDouble("SeparatedRelationsSolver_Probability");
+    }
+
+    public GenericRecommendationConfig(List<String> recommendationExtractors, double extractionDependentOccurrenceAnalyzerProbability,
+            double extractedTermsAnalyzerProbabilityAdjacentNoun, double extractedTermsAnalyzerProbabilityJustName,
+            double extractedTermsAnalyzerProbabilityAdjacentTerm, double nameTypeAnalyzerProbability, double referenceSolverProbability,
+            double referenceSolverProportionalDecrease, double referenceSolverAreNamesSimilarThreshold, double separatedRelationSolverProbility) {
+        this.recommendationExtractors = recommendationExtractors;
+        this.extractionDependentOccurrenceAnalyzerProbability = extractionDependentOccurrenceAnalyzerProbability;
+        this.extractedTermsAnalyzerProbabilityAdjacentNoun = extractedTermsAnalyzerProbabilityAdjacentNoun;
+        this.extractedTermsAnalyzerProbabilityJustName = extractedTermsAnalyzerProbabilityJustName;
+        this.extractedTermsAnalyzerProbabilityAdjacentTerm = extractedTermsAnalyzerProbabilityAdjacentTerm;
+        this.nameTypeAnalyzerProbability = nameTypeAnalyzerProbability;
+        this.referenceSolverProbability = referenceSolverProbability;
+        this.referenceSolverProportionalDecrease = referenceSolverProportionalDecrease;
+        this.referenceSolverAreNamesSimilarThreshold = referenceSolverAreNamesSimilarThreshold;
+        this.separatedRelationSolverProbility = separatedRelationSolverProbility;
     }
 
 }

@@ -12,7 +12,6 @@ import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Loader;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.RecommendationAgent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.extractors.IExtractor;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.extractors.RecommendationExtractor;
-import edu.kit.ipd.consistency_analyzer.common.Tuple;
 import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IRecommendationState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
@@ -24,9 +23,14 @@ public class InitialRecommendationAgent extends RecommendationAgent {
 
     private List<IExtractor> extractors = new ArrayList<>();
 
-    public InitialRecommendationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
+    public InitialRecommendationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            GenericRecommendationConfig config) {
         super(DependencyType.TEXT_MODEL_RECOMMENDATION, text, textState, modelState, recommendationState);
-        initializeAgents(GenericRecommendationConfig.RECOMMENDATION_EXTRACTORS);
+        initializeAgents(config.recommendationExtractors);
+    }
+
+    public InitialRecommendationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
+        this(text, textState, modelState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
     }
 
     public InitialRecommendationAgent(AgentDatastructure data) {
@@ -35,21 +39,6 @@ public class InitialRecommendationAgent extends RecommendationAgent {
 
     public InitialRecommendationAgent() {
         super(DependencyType.TEXT_MODEL_RECOMMENDATION);
-    }
-
-    public InitialRecommendationAgent(AgentDatastructure data, Tuple<List<String>, Map<String, List<Double>>> extractorsTuple) {
-
-        this(data);
-        extractors.clear();
-        initializeAgents(extractorsTuple.getFirst());
-        Map<String, List<Double>> map = extractorsTuple.getSecond();
-        for (IExtractor extractor : extractors) {
-            if (map.containsKey(extractor.getName())) {
-                extractor.setProbability(map.get(extractor.getName()));
-            } else {
-                logger.warning("The extractor " + extractor.getName() + " has no specified probability!");
-            }
-        }
     }
 
     private void initializeAgents(List<String> extractorList) {
