@@ -13,5 +13,6 @@
 	<modules>
 		<module>HardCodedModel</module>
 		<module>ModelInterface</module>
+		<module>PCMOntologyModelInterface</module>
 	</modules>
 </project>
