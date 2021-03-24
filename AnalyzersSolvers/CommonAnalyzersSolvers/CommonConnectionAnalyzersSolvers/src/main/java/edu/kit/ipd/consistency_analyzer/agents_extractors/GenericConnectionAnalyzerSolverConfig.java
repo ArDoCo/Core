@@ -4,27 +4,36 @@ import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
 public class GenericConnectionAnalyzerSolverConfig {
 
-    private GenericConnectionAnalyzerSolverConfig() {
-        throw new IllegalAccessError();
-    }
-
-    private static final SystemParameters CONFIG = loadParameters("/configs/ConnectionAnalyzerSolverConfig.properties");
+    public static final GenericConnectionAnalyzerSolverConfig DEFAULT_CONFIG = new GenericConnectionAnalyzerSolverConfig();
 
     /**
      * The probability of the relation connection solver.
      */
-    public static final double RELATION_CONNECTION_SOLVER_PROBABILITY = CONFIG.getPropertyAsDouble("RelationConnectionSolver_Probability");
+    public final double relationConnectionSolverProbability;
 
     /**
      * The probability of the instance mapping connection solver.
      */
-    public static final double INSTANCE_CONNECTION_SOLVER_PROBABILITY = CONFIG.getPropertyAsDouble("InstanceConnectionSolver_Probability");
+    public final double instanceConnectionSolverProbability;
     /**
      * The probability of the instance mapping connection solver, if the connection does not include the comparison of a
      * type.
      */
-    public static final double INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE = //
-            CONFIG.getPropertyAsDouble("InstanceConnectionSolver_ProbabilityWithoutType");
+    public final double instanceConnectionSolverProbabilityWithoutType;
+
+    private GenericConnectionAnalyzerSolverConfig() {
+        SystemParameters config = loadParameters("/configs/ConnectionAnalyzerSolverConfig.properties");
+        relationConnectionSolverProbability = config.getPropertyAsDouble("RelationConnectionSolver_Probability");
+        instanceConnectionSolverProbability = config.getPropertyAsDouble("InstanceConnectionSolver_Probability");
+        instanceConnectionSolverProbabilityWithoutType = config.getPropertyAsDouble("InstanceConnectionSolver_ProbabilityWithoutType");
+    }
+
+    public GenericConnectionAnalyzerSolverConfig(double relationConnectionSolverProbability, double instanceConnectionSolverProbability,
+            double instanceConnectionSolverProbabilityWithoutType) {
+        this.relationConnectionSolverProbability = relationConnectionSolverProbability;
+        this.instanceConnectionSolverProbabilityWithoutType = instanceConnectionSolverProbabilityWithoutType;
+        this.instanceConnectionSolverProbability = instanceConnectionSolverProbability;
+    }
 
     private static SystemParameters loadParameters(String filePath) {
         return new SystemParameters(filePath, true);
