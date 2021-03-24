@@ -27,7 +27,7 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
 @MetaInfServices(RecommendationExtractor.class)
 public class NameTypeExtractor extends RecommendationExtractor {
 
-    private double probability = GenericRecommendationConfig.NAME_TYPE_ANALYZER_PROBABILITY;
+    private double probability;
 
     /**
      * Creates a new NameTypeAnalyzer.
@@ -38,7 +38,13 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param recommendationState  the recommendation state
      */
     public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
+        this(textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    }
+
+    public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            GenericRecommendationConfig config) {
         super(DependencyType.TEXT_MODEL_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
+        probability = config.nameTypeAnalyzerProbability;
     }
 
     public NameTypeExtractor() {

@@ -27,9 +27,9 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextState;
 @MetaInfServices(RecommendationAgent.class)
 public class ReferenceAgent extends RecommendationAgent {
 
-    private double probability = GenericRecommendationConfig.REFERENCE_SOLVER_PROBABILITY;
-    private double areNamesSimilarThreshold = GenericRecommendationConfig.REFERENCE_SOLVER_ARE_NAMES_SIMILAR_THRESHOLD;
-    private double proportionalDecrease = GenericRecommendationConfig.REFERENCE_SOLVER_PROPORTIONAL_DECREASE;
+    private double probability;
+    private double areNamesSimilarThreshold;
+    private double proportionalDecrease;
 
     /**
      * Creates a new ReferenceSolver.
@@ -40,25 +40,15 @@ public class ReferenceAgent extends RecommendationAgent {
      * @param textExtractionState  the text extraction state
      */
     public ReferenceAgent(IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
+        this(text, textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    }
+
+    public ReferenceAgent(IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            GenericRecommendationConfig config) {
         super(DependencyType.TEXT_MODEL_RECOMMENDATION, text, textExtractionState, modelExtractionState, recommendationState);
-        probability = GenericRecommendationConfig.REFERENCE_SOLVER_PROBABILITY;
-        areNamesSimilarThreshold = GenericRecommendationConfig.REFERENCE_SOLVER_ARE_NAMES_SIMILAR_THRESHOLD;
-        proportionalDecrease = GenericRecommendationConfig.REFERENCE_SOLVER_PROPORTIONAL_DECREASE;
-    }
-
-    public ReferenceAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, double probability,
-            double areNamesSimilarThreshold, double proportionalDecrease) {
-        this(text, textState, modelState, recommendationState);
-        this.probability = probability;
-        this.areNamesSimilarThreshold = areNamesSimilarThreshold;
-        this.proportionalDecrease = proportionalDecrease;
-    }
-
-    public ReferenceAgent(AgentDatastructure data, double probability, double areNamesSimilarThreshold, double proportionalDecrease) {
-        this(data);
-        this.probability = probability;
-        this.areNamesSimilarThreshold = areNamesSimilarThreshold;
-        this.proportionalDecrease = proportionalDecrease;
+        probability = config.referenceSolverProbability;
+        areNamesSimilarThreshold = config.referenceSolverAreNamesSimilarThreshold;
+        proportionalDecrease = config.referenceSolverProportionalDecrease;
     }
 
     public ReferenceAgent(AgentDatastructure data) {
