@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
@@ -41,23 +42,43 @@ public class Instance implements IInstance {
     /**
      * Creates a new instance.
      *
-     * @param name   name of the instance.
-     * @param type   type of the instance.
-     * @param string unique identifier of the instance needed for trace linking.
+     * @param name name of the instance.
+     * @param type type of the instance.
+     * @param uid  unique identifier of the instance needed for trace linking.
      */
-    public Instance(String name, String type, String string) {
+    public Instance(String name, String type, String uid) {
 
-        names = Arrays.stream(name.split(" ")).collect(Collectors.toList());
-        if (names.size() != 1) {
+        String splitName = splitSnakeAndKebabCase(name);
+        splitName = splitCamelCase(splitName);
+        names = Arrays.stream(splitName.split(" ")).collect(Collectors.toList());
+        if (names.size() > 1) {
             names.add(name);
         }
-        types = Arrays.stream(type.split(" ")).collect(Collectors.toList());
-        if (types.size() != 1) {
+
+        String splitType = splitCamelCase(type);
+        types = Arrays.stream(splitType.split(" ")).collect(Collectors.toList());
+        if (types.size() > 1) {
             types.add(type);
         }
-        uid = string;
+        this.uid = uid;
         longestName = name;
         longestType = type;
+    }
+
+    private static String splitCamelCase(String name) {
+        StringJoiner joiner = new StringJoiner(" ");
+        for (String namePart : name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")) {
+            joiner.add(namePart);
+        }
+        return joiner.toString().replaceAll("\\s+", " "); // also remove extra spaces between words
+    }
+
+    private static String splitSnakeAndKebabCase(String name) {
+        StringJoiner joiner = new StringJoiner(" ");
+        for (String namePart : name.split("[-_]")) {
+            joiner.add(namePart);
+        }
+        return joiner.toString().replaceAll("\\s+", " "); // also remove extra spaces between words
     }
 
     /**
