@@ -26,7 +26,7 @@ public abstract class Agent implements IAgent {
 	}
 
 	public final Agent create(AgentDatastructure data, Configuration config) {
-		if (!configType.isAssignableFrom(config.getClass())) {
+		if (!configType.isInstance(config)) {
 			throw new IllegalArgumentException(String.format("Configuration invalid: Expected: %s - Present: %s", configType, config.getClass()));
 		}
 		return this.createInternal(data, config);
