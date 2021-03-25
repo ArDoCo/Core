@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.GenericTextConfig;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.IAgent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Loader;
@@ -14,6 +15,8 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
     private AgentDatastructure data;
     private List<TextAgent> agents = new ArrayList<>();
+    private TextExtractorConfig config;
+    private GenericTextConfig agentConfig;
 
     /**
      * Creates a new model connection agent with the given extraction states.
@@ -24,7 +27,13 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
      * @param recommendationState  the state with the recommendations
      */
     public TextExtractor(AgentDatastructure data) {
+        this(data, TextExtractorConfig.DEFAULT_CONFIG, GenericTextConfig.DEFAULT_CONFIG);
+    }
+
+    public TextExtractor(AgentDatastructure data, TextExtractorConfig config, GenericTextConfig agentConfig) {
         this.data = data;
+        this.config = config;
+        this.agentConfig = agentConfig;
         // data.setTextState(new TextExtractionState());
         data.setTextState(new TextStateWithoutClustering());
         initializeAgents();
@@ -43,11 +52,11 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
         Map<String, TextAgent> myAgents = Loader.loadLoadable(TextAgent.class);
 
-        for (String agent : TextExtractorConfig.TEXT_AGENTS) {
+        for (String agent : config.textAgents) {
             if (!myAgents.containsKey(agent)) {
                 throw new IllegalArgumentException("TextAgent " + agent + " not found");
             }
-            agents.add(myAgents.get(agent).create(data));
+            agents.add(myAgents.get(agent).create(data, agentConfig));
         }
     }
 

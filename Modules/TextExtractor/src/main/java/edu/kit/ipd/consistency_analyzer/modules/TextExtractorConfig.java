@@ -2,22 +2,25 @@ package edu.kit.ipd.consistency_analyzer.modules;
 
 import java.util.List;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
-public class TextExtractorConfig {
+public class TextExtractorConfig extends Configuration {
 
-    private TextExtractorConfig() {
-        throw new IllegalAccessError();
-    }
-
-    private static final SystemParameters CONFIG = loadParameters("/configs/TextExtractor.properties");
+    public static final TextExtractorConfig DEFAULT_CONFIG = new TextExtractorConfig();
 
     /**
      * The list of text extraction agent types that should run.
      */
-    protected static final List<String> TEXT_AGENTS = CONFIG.getPropertyAsList("Text_Agents");
+    public final List<String> textAgents;
 
-    private static SystemParameters loadParameters(String filePath) {
-        return new SystemParameters(filePath, true);
+    public TextExtractorConfig() {
+        SystemParameters config = new SystemParameters("/configs/TextExtractor.properties", true);
+        textAgents = config.getPropertyAsList("Text_Agents");
     }
+
+    public TextExtractorConfig(List<String> textAgents) {
+        this.textAgents = textAgents;
+    }
+
 }

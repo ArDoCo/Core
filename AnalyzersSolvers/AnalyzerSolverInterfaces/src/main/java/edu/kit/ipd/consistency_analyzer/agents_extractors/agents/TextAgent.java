@@ -9,12 +9,14 @@ public abstract class TextAgent extends Agent {
     protected ITextState textState;
 
     @Override
-    public TextAgent create(AgentDatastructure data) {
+    public TextAgent create(AgentDatastructure data, Configuration config) {
         if (null == data.getText() || null == data.getTextState()) {
             throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
         }
-        return create(data.getText(), data.getTextState());
+        return create(data.getText(), data.getTextState(), config);
     }
+
+    public abstract TextAgent create(IText text, ITextState textState, Configuration config);
 
     public abstract TextAgent create(IText text, ITextState textState);
 

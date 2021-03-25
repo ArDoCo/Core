@@ -6,6 +6,8 @@ public abstract class Agent implements IAgent {
     protected final Logger logger = Logger.getLogger(getName());
     protected DependencyType dependencyType;
 
+    public abstract Agent create(AgentDatastructure data, Configuration config);
+
     public abstract Agent create(AgentDatastructure data);
 
     /**
