@@ -15,30 +15,19 @@ public abstract class ConnectionAgent extends Agent {
     protected IConnectionState connectionState;
 
     @Override
-    public ConnectionAgent create(AgentDatastructure data) {
+    public ConnectionAgent create(AgentDatastructure data, Configuration config) {
         if (null == data.getText() || null == data.getTextState() || null == data.getModelState() || null == data.getRecommendationState()
                 || null == data.getConnectionState()) {
             throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
         }
-        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState());
+        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(), config);
     }
 
     public abstract ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState);
+            IConnectionState connectionState, Configuration config);
 
-    /**
-     * Creates a new agent.
-     *
-     * @param dependencyType      the dependencies of the agent
-     * @param graph               the PARSE graph to look up
-     * @param textState           the text extraction state to look up
-     * @param modelState          the model extraction state to look up
-     * @param recommendationState the model extraction state to look up
-     * @param connectionState     the connection state to work with
-     */
-    protected ConnectionAgent(DependencyType dependencyType, AgentDatastructure data) {
-        this(dependencyType, data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState());
-    }
+    public abstract ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState);
 
     protected ConnectionAgent(DependencyType dependencyType, IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState) {
@@ -53,4 +42,5 @@ public abstract class ConnectionAgent extends Agent {
     protected ConnectionAgent(DependencyType dependencyType) {
         super(dependencyType);
     }
+
 }

@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.kohsuke.MetaInfServices;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Agent;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.DependencyType;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.RecommendationAgent;
 import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
@@ -53,8 +56,9 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
     }
 
     @Override
-    public RecommendationAgent create(IText text, ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState) {
-        return new SeparatedRelationsAgent(text, textState, modelExtractionState, recommendationState);
+    public RecommendationAgent create(IText text, ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            Configuration config) {
+        return new SeparatedRelationsAgent(text, textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
     }
 
     /**
@@ -135,6 +139,16 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
 
         }
 
+    }
+
+    @Override
+    public RecommendationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
+        return create(text, textState, modelState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    }
+
+    @Override
+    public Agent create(AgentDatastructure data) {
+        return create(data, GenericRecommendationConfig.DEFAULT_CONFIG);
     }
 
 }

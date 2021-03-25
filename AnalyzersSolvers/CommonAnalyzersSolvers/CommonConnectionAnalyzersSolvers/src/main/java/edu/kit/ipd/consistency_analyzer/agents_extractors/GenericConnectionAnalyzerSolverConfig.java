@@ -1,8 +1,9 @@
 package edu.kit.ipd.consistency_analyzer.agents_extractors;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
-public class GenericConnectionAnalyzerSolverConfig {
+public class GenericConnectionAnalyzerSolverConfig extends Configuration {
 
     public static final GenericConnectionAnalyzerSolverConfig DEFAULT_CONFIG = new GenericConnectionAnalyzerSolverConfig();
 

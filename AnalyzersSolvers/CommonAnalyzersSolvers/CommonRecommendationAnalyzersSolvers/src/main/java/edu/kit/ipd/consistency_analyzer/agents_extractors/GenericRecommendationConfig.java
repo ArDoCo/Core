@@ -2,9 +2,10 @@ package edu.kit.ipd.consistency_analyzer.agents_extractors;
 
 import java.util.List;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
-public class GenericRecommendationConfig {
+public class GenericRecommendationConfig extends Configuration {
 
     public static final GenericRecommendationConfig DEFAULT_CONFIG = new GenericRecommendationConfig();
 
@@ -57,7 +58,7 @@ public class GenericRecommendationConfig {
      */
     public final double separatedRelationSolverProbility;
 
-    private GenericRecommendationConfig() {
+    public GenericRecommendationConfig() {
         SystemParameters config = new SystemParameters("/configs/RecommendationAnalyzerSolverConfig.properties", true);
         recommendationExtractors = config.getPropertyAsList("Recommendation_Extractors");
         extractionDependentOccurrenceAnalyzerProbability = config.getPropertyAsDouble("ExtractionDependentOccurrenceAnalyzer_Probability");

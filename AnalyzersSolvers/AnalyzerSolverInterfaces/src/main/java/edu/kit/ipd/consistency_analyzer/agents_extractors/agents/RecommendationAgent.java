@@ -13,12 +13,15 @@ public abstract class RecommendationAgent extends Agent {
     protected IRecommendationState recommendationState;
 
     @Override
-    public RecommendationAgent create(AgentDatastructure data) {
+    public RecommendationAgent create(AgentDatastructure data, Configuration config) {
         if (null == data.getText() || null == data.getTextState() || null == data.getModelState() || null == data.getRecommendationState()) {
             throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
         }
-        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState());
+        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
     }
+
+    public abstract RecommendationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            Configuration config);
 
     public abstract RecommendationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState);
 

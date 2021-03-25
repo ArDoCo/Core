@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.kohsuke.MetaInfServices;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Agent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.ConnectionAgent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.DependencyType;
 import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
@@ -56,14 +58,9 @@ public class InstanceConnectionAgent extends ConnectionAgent {
         super(DependencyType.MODEL_RECOMMENDATION_CONNECTION);
     }
 
-    public InstanceConnectionAgent(AgentDatastructure data) {
-        this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState());
-    }
-
-    public InstanceConnectionAgent(AgentDatastructure data, double probability, double probabilityWithoutType) {
-        this(data);
-        this.probability = probability;
-        this.probabilityWithoutType = probabilityWithoutType;
+    public InstanceConnectionAgent(AgentDatastructure data, Configuration config) {
+        this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(),
+                (GenericConnectionAnalyzerSolverConfig) config);
     }
 
     public InstanceConnectionAgent(IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
@@ -75,8 +72,8 @@ public class InstanceConnectionAgent extends ConnectionAgent {
 
     @Override
     public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState) {
-        return new InstanceConnectionAgent(text, textState, modelState, recommendationState, connectionState);
+            IConnectionState connectionState, Configuration config) {
+        return new InstanceConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionAnalyzerSolverConfig) config);
     }
 
     /**
@@ -103,6 +100,17 @@ public class InstanceConnectionAgent extends ConnectionAgent {
             mostLikelyRiWithoutType.stream().forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
             mostLikelyRi.stream().forEach(ml -> connectionState.addToLinks(ml, i, probability));
         }
+    }
+
+    @Override
+    public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState) {
+        return create(text, textState, modelState, recommendationState, connectionState, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
+    }
+
+    @Override
+    public Agent create(AgentDatastructure data) {
+        return create(data, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
     }
 
 }

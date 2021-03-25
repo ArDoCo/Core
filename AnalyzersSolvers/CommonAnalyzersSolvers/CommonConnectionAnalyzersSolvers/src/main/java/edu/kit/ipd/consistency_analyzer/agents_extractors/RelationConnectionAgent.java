@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import org.kohsuke.MetaInfServices;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Agent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.ConnectionAgent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.DependencyType;
 import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
@@ -73,14 +75,19 @@ public class RelationConnectionAgent extends ConnectionAgent {
         super(DependencyType.MODEL_RECOMMENDATION_CONNECTION);
     }
 
+    @Override
+    public RelationConnectionAgent create(AgentDatastructure data, Configuration config) {
+        return create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(), config);
+    }
+
     public RelationConnectionAgent(AgentDatastructure data) {
         this(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState());
     }
 
     @Override
-    public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState) {
-        return new RelationConnectionAgent(text, textState, modelState, recommendationState, connectionState);
+    public RelationConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState, Configuration config) {
+        return new RelationConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionAnalyzerSolverConfig) config);
     }
 
     @Override
@@ -178,6 +185,17 @@ public class RelationConnectionAgent extends ConnectionAgent {
         for (IRecommendedRelation similarReRelation : similarRecommendedRelations2) {
             connectionState.addToLinks(similarReRelation, relation, probability / similarRecommendedRelations2.size());
         }
+    }
+
+    @Override
+    public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState) {
+        return create(text, textState, modelState, recommendationState, connectionState, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
+    }
+
+    @Override
+    public Agent create(AgentDatastructure data) {
+        return create(data, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
     }
 
 }
