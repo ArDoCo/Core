@@ -5,7 +5,7 @@
     <artifactId>model_providers</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>pcm_ontology_model_Interface</artifactId>
+  <artifactId>pcm_ontology_model_interface</artifactId>
   <name>PCMOntologyModelInterface</name>
   <description>ModelInterface for Palladio Component Models using (OWL) Ontologies</description>
   
