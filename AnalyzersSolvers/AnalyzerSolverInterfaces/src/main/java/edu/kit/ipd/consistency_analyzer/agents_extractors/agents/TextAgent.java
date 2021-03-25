@@ -5,40 +5,30 @@ import edu.kit.ipd.consistency_analyzer.datastructures.ITextState;
 
 public abstract class TextAgent extends Agent {
 
-    protected IText text;
-    protected ITextState textState;
+	protected IText text;
+	protected ITextState textState;
 
-    @Override
-    public TextAgent create(AgentDatastructure data, Configuration config) {
-        if (null == data.getText() || null == data.getTextState()) {
-            throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
-        }
-        return create(data.getText(), data.getTextState(), config);
-    }
+	/**
+	 * Prototype Constructor
+	 */
+	protected TextAgent(Class<? extends Configuration> configType) {
+		super(configType);
+	}
 
-    public abstract TextAgent create(IText text, ITextState textState, Configuration config);
+	protected TextAgent(DependencyType dependencyType, Class<? extends Configuration> configType, IText text, ITextState textState) {
+		super(dependencyType, configType);
+		this.text = text;
+		this.textState = textState;
+	}
 
-    public abstract TextAgent create(IText text, ITextState textState);
+	@Override
+	protected final TextAgent createInternal(AgentDatastructure data, Configuration config) {
+		if (data.getText() == null || data.getTextState() == null) {
+			throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
+		}
+		return create(data.getText(), data.getTextState(), config);
+	}
 
-    /**
-     * Creates a new NameTypeRelationAnalyzer
-     *
-     * @param dependencyType      the dependencies of the analyzer
-     * @param graph               PARSE graph which contains the arcs
-     * @param textExtractionState the text extraction state
-     */
-    protected TextAgent(DependencyType dependencyType, AgentDatastructure data) {
-        this(dependencyType, data.getText(), data.getTextState());
-    }
-
-    protected TextAgent(DependencyType dependencyType, IText text, ITextState textState) {
-        super(dependencyType);
-        this.text = text;
-        this.textState = textState;
-    }
-
-    protected TextAgent(DependencyType dependencyType) {
-        super(dependencyType);
-    }
+	public abstract TextAgent create(IText text, ITextState textState, Configuration config);
 
 }

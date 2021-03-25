@@ -1,36 +1,58 @@
 package edu.kit.ipd.consistency_analyzer.agents_extractors.agents;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public abstract class Agent implements IAgent {
-    protected final Logger logger = Logger.getLogger(getName());
-    protected DependencyType dependencyType;
+	protected final Logger logger = Logger.getLogger(getName());
+	protected DependencyType dependencyType;
+	private final Class<? extends Configuration> configType;
 
-    public abstract Agent create(AgentDatastructure data, Configuration config);
+	/**
+	 * Prototype Constructor
+	 */
+	protected Agent(Class<? extends Configuration> configType) {
+		this.configType = Objects.requireNonNull(configType);
+	}
 
-    public abstract Agent create(AgentDatastructure data);
+	/**
+	 * Creates a new agent of the specified type.
+	 *
+	 * @param type the agent type
+	 */
+	protected Agent(DependencyType dependencyType, Class<? extends Configuration> configType) {
+		this.dependencyType = dependencyType;
+		this.configType = configType;
+	}
 
-    /**
-     * Creates a new agent of the specified type.
-     *
-     * @param type the agent type
-     */
-    protected Agent(DependencyType dependencyType) {
-        this.dependencyType = dependencyType;
-    }
+	public final Agent create(AgentDatastructure data, Configuration config) {
+		if (!configType.isAssignableFrom(config.getClass())) {
+			throw new IllegalArgumentException(String.format("Configuration invalid: Expected: %s - Present: %s", configType, config.getClass()));
+		}
+		return this.createInternal(data, config);
+	}
 
-    /**
-     * Returns the dependency type of the current agent.
-     *
-     * @return the dependency type of the current agent
-     */
-    public DependencyType getDependencyType() {
-        return dependencyType;
-    }
+	/**
+	 * Create the agent. It is guaranteed that config is an instance of {@link #configType}.
+	 *
+	 * @param  data   the data structure
+	 * @param  config the configuration
+	 * @return        the new agent
+	 */
+	protected abstract Agent createInternal(AgentDatastructure data, Configuration config);
 
-    @Override
-    public String getName() {
-        return this.getClass().getSimpleName();
-    }
+	/**
+	 * Returns the dependency type of the current agent.
+	 *
+	 * @return the dependency type of the current agent
+	 */
+	public DependencyType getDependencyType() {
+		return dependencyType;
+	}
+
+	@Override
+	public String getName() {
+		return this.getClass().getSimpleName();
+	}
 
 }
