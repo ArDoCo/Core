@@ -1,6 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
 import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
@@ -39,6 +40,11 @@ public class ModelExtractor implements IModule<IModelState> {
 
         modelExtractionState = new ModelExtractionState(instances, relations);
 
+    }
+
+    @Override
+    public IModule<IModelState> create(IModelState data, Map<String, String> configs) {
+        return new ModelExtractor(modelConnector);
     }
 
 }

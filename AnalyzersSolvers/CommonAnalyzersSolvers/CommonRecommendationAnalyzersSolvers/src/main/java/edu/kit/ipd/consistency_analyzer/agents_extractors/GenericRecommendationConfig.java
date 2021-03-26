@@ -1,6 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.agents_extractors;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
@@ -72,20 +73,17 @@ public class GenericRecommendationConfig extends Configuration {
         separatedRelationSolverProbility = config.getPropertyAsDouble("SeparatedRelationsSolver_Probability");
     }
 
-    public GenericRecommendationConfig(List<String> recommendationExtractors, double extractionDependentOccurrenceAnalyzerProbability,
-            double extractedTermsAnalyzerProbabilityAdjacentNoun, double extractedTermsAnalyzerProbabilityJustName,
-            double extractedTermsAnalyzerProbabilityAdjacentTerm, double nameTypeAnalyzerProbability, double referenceSolverProbability,
-            double referenceSolverProportionalDecrease, double referenceSolverAreNamesSimilarThreshold, double separatedRelationSolverProbility) {
-        this.recommendationExtractors = recommendationExtractors;
-        this.extractionDependentOccurrenceAnalyzerProbability = extractionDependentOccurrenceAnalyzerProbability;
-        this.extractedTermsAnalyzerProbabilityAdjacentNoun = extractedTermsAnalyzerProbabilityAdjacentNoun;
-        this.extractedTermsAnalyzerProbabilityJustName = extractedTermsAnalyzerProbabilityJustName;
-        this.extractedTermsAnalyzerProbabilityAdjacentTerm = extractedTermsAnalyzerProbabilityAdjacentTerm;
-        this.nameTypeAnalyzerProbability = nameTypeAnalyzerProbability;
-        this.referenceSolverProbability = referenceSolverProbability;
-        this.referenceSolverProportionalDecrease = referenceSolverProportionalDecrease;
-        this.referenceSolverAreNamesSimilarThreshold = referenceSolverAreNamesSimilarThreshold;
-        this.separatedRelationSolverProbility = separatedRelationSolverProbility;
+    public GenericRecommendationConfig(Map<String, String> configs) {
+        recommendationExtractors = getPropertyAsList("Recommendation_Extractors", configs);
+        extractionDependentOccurrenceAnalyzerProbability = getPropertyAsDouble("ExtractionDependentOccurrenceAnalyzer_Probability", configs);
+        extractedTermsAnalyzerProbabilityAdjacentNoun = getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityAdjacentNoun", configs);
+        extractedTermsAnalyzerProbabilityJustName = getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityJustName", configs);
+        extractedTermsAnalyzerProbabilityAdjacentTerm = getPropertyAsDouble("ExtractedTermsAnalyzer_ProbabilityAdjacentTerm", configs);
+        nameTypeAnalyzerProbability = getPropertyAsDouble("NameTypeAnalyzer_Probability", configs);
+        referenceSolverProbability = getPropertyAsDouble("ReferenceSolver_Probability", configs);
+        referenceSolverProportionalDecrease = getPropertyAsDouble("ReferenceSolver_ProportionalDecrease", configs);
+        referenceSolverAreNamesSimilarThreshold = getPropertyAsDouble("ReferenceSolver_areNamesSimilarThreshold", configs);
+        separatedRelationSolverProbility = getPropertyAsDouble("SeparatedRelationsSolver_Probability", configs);
     }
 
 }

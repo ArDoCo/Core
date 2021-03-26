@@ -1,5 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
+import java.util.Map;
+
 public interface IModule<T> {
 
     // TODO: generic defintion of InputStates
@@ -15,5 +17,7 @@ public interface IModule<T> {
      * @return current state
      */
     T getState();
+
+    IModule<T> create(T data, Map<String, String> configs);
 
 }

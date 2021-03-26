@@ -1,6 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
@@ -14,8 +15,8 @@ public class RecommendationGeneratorConfig extends Configuration {
         recommendationAgents = config.getPropertyAsList("Recommendation_Agents");
     }
 
-    public RecommendationGeneratorConfig(List<String> recommendation) {
-        recommendationAgents = recommendation;
+    public RecommendationGeneratorConfig(Map<String, String> configs) {
+        recommendationAgents = getPropertyAsList("Recommendation_Agents", configs);
     }
 
     /**

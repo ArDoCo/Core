@@ -1,6 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
@@ -19,8 +20,8 @@ public class TextExtractorConfig extends Configuration {
         textAgents = config.getPropertyAsList("Text_Agents");
     }
 
-    public TextExtractorConfig(List<String> textAgents) {
-        this.textAgents = textAgents;
-    }
+    public TextExtractorConfig(Map<String, String> configs) {
+        textAgents = getPropertyAsList("Text_Agents", configs);
 
+    }
 }

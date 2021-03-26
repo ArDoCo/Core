@@ -1,5 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.agents_extractors;
 
+import java.util.Map;
+
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
 
@@ -29,11 +31,10 @@ public class GenericConnectionAnalyzerSolverConfig extends Configuration {
         instanceConnectionSolverProbabilityWithoutType = config.getPropertyAsDouble("InstanceConnectionSolver_ProbabilityWithoutType");
     }
 
-    public GenericConnectionAnalyzerSolverConfig(double relationConnectionSolverProbability, double instanceConnectionSolverProbability,
-            double instanceConnectionSolverProbabilityWithoutType) {
-        this.relationConnectionSolverProbability = relationConnectionSolverProbability;
-        this.instanceConnectionSolverProbabilityWithoutType = instanceConnectionSolverProbabilityWithoutType;
-        this.instanceConnectionSolverProbability = instanceConnectionSolverProbability;
+    public GenericConnectionAnalyzerSolverConfig(Map<String, String> configs) {
+        relationConnectionSolverProbability = getPropertyAsDouble("RelationConnectionSolver_Probability", configs);
+        instanceConnectionSolverProbability = getPropertyAsDouble("InstanceConnectionSolver_Probability", configs);
+        instanceConnectionSolverProbabilityWithoutType = getPropertyAsDouble("InstanceConnectionSolver_ProbabilityWithoutType", configs);
     }
 
 }

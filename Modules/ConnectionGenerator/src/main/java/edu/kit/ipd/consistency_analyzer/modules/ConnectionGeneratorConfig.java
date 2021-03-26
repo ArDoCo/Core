@@ -1,6 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.modules;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
@@ -14,8 +15,8 @@ public class ConnectionGeneratorConfig extends Configuration {
         connectionAgents = config.getPropertyAsList("Connection_Agents");
     }
 
-    public ConnectionGeneratorConfig(List<String> connectionAgents) {
-        this.connectionAgents = connectionAgents;
+    public ConnectionGeneratorConfig(Map<String, String> configs) {
+        connectionAgents = getPropertyAsList("Connection_Agents", configs);
     }
 
     /**
