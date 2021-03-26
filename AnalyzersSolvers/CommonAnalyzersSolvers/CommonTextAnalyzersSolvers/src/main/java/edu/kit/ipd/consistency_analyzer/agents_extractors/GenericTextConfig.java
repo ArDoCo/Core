@@ -1,6 +1,7 @@
 package edu.kit.ipd.consistency_analyzer.agents_extractors;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.common.SystemParameters;
@@ -58,16 +59,15 @@ public class GenericTextConfig extends Configuration {
         separatedNamesAnalyzerProbability = CONFIG.getPropertyAsDouble("SeparatedNamesAnalyzer_Probability");
     }
 
-    public GenericTextConfig(List<String> textExtractors, double articleTypeNameAnalyzerProbability, double inDepArcsAnalyzerProbability,
-            double multiplePartSolverProbability, double nounAnalyzerProbability, double outDepArcsAnalyzerProbability,
-            double separatedNamesAnalyzerProbability) {
-        this.textExtractors = textExtractors;
-        this.articleTypeNameAnalyzerProbability = articleTypeNameAnalyzerProbability;
-        this.inDepArcsAnalyzerProbability = inDepArcsAnalyzerProbability;
-        this.multiplePartSolverProbability = multiplePartSolverProbability;
-        this.nounAnalyzerProbability = nounAnalyzerProbability;
-        this.outDepArcsAnalyzerProbability = outDepArcsAnalyzerProbability;
-        this.separatedNamesAnalyzerProbability = separatedNamesAnalyzerProbability;
+    public GenericTextConfig(Map<String, String> configs) {
+        textExtractors = getPropertyAsList("Extractors", configs);
+        articleTypeNameAnalyzerProbability = getPropertyAsDouble("ArticleTypeNameAnalyzer_Probability", configs);
+        inDepArcsAnalyzerProbability = getPropertyAsDouble("InDepArcsAnalyzer_Probability", configs);
+        multiplePartSolverProbability = getPropertyAsDouble("MultiplePartSolver_Probability", configs);
+        nounAnalyzerProbability = getPropertyAsDouble("NounAnalyzer_Probability", configs);
+        outDepArcsAnalyzerProbability = getPropertyAsDouble("OutDepArcsAnalyzer_Probability", configs);
+        separatedNamesAnalyzerProbability = getPropertyAsDouble("SeparatedNamesAnalyzer_Probability", configs);
+
     }
 
 }
