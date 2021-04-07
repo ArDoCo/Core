@@ -33,6 +33,9 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
         initializeAgents();
     }
 
+    public RecommendationGenerator() {
+    }
+
     @Override
     public void exec() {
         runAgents();

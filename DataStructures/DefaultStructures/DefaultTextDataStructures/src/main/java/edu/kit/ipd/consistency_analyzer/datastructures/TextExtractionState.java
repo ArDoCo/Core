@@ -872,4 +872,10 @@ public class TextExtractionState implements ITextState {
         return nounMappings;
     }
 
+    @Override
+    public void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences) {
+        INounMapping mapping = new NounMapping(nodes, confidence, kind, reference, occurrences);
+        nounMappings.add(mapping);
+    }
+
 }

@@ -391,4 +391,12 @@ public class TextStateForEagle implements ITextStateWithDistributions {
         return new ArrayList<>(nounMappings.values());
     }
 
+    @Override
+    public void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences) {
+
+        NounMappingForEagle mapping = new NounMappingForEagle(nodes, Map.of(kind, confidence), reference, occurrences);
+        nounMappings.put(mapping.getReference(), mapping);
+
+    }
+
 }
