@@ -362,4 +362,6 @@ public interface ITextState extends IState {
 
     List<INounMapping> getAllMappings();
 
+    void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences);
+
 }
