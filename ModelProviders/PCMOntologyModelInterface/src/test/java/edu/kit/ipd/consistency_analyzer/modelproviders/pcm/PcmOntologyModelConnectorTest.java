@@ -17,8 +17,6 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
 class PcmOntologyModelConnectorTest {
     private static Logger logger = LogManager.getLogger();
 
-    private static PcmOntologyModelConnector connectorMediaStore;
-
     static PcmOntologyModelConnector setupMediaStore() {
         File file = new File("src/test/resources/mediastore.owl");
 
