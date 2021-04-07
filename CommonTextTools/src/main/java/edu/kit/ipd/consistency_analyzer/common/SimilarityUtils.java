@@ -282,12 +282,12 @@ public final class SimilarityUtils {
      * @param reference given string
      * @return reference with whitespaces instead of separators
      */
-    public static String splitAtSeparators(String reference) {
+    public static List<String> splitAtSeparators(String reference) {
         String ref = reference;
         for (String sep : CommonTextToolsConfig.SEPARATORS_TO_SPLIT) {
             ref = ref.replaceAll(sep, " ");
         }
-        return ref;
+        return new ArrayList<>(List.of(ref.split(" ")));
     }
 
     /**

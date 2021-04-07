@@ -360,4 +360,6 @@ public interface ITextState extends IState {
     @Override
     String toString();
 
+    List<INounMapping> getAllMappings();
+
 }

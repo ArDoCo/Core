@@ -121,7 +121,7 @@ public class TextStateWithoutClustering implements ITextState {
     private void updateKindOfNounMapping(INounMapping nounMapping, MappingKind kind, double probability) {
         MappingKind preKind = nounMapping.getKind();
         if (preKind == kind) {
-            nounMapping.changeMappingTypeTo(kind, probability);
+            nounMapping.changeMappingType(kind, probability);
             return;
         }
 
@@ -130,7 +130,7 @@ public class TextStateWithoutClustering implements ITextState {
                         t -> t.getMappings().contains(nounMapping))
                 .collect(Collectors.toList());
 
-        nounMapping.changeMappingTypeTo(kind, probability);
+        nounMapping.changeMappingType(kind, probability);
 
         for (ITermMapping termWithMapping : termsWithMapping) {
             if (!termWithMapping.getKind().equals(kind) && hasAnyTermMatchingKind(kind, termWithMapping)) {
@@ -220,8 +220,7 @@ public class TextStateWithoutClustering implements ITextState {
 
     private void addNounMappingWithSeparator(IWord n, String reference, double probability, MappingKind kind) {
 
-        String wholeName = SimilarityUtils.splitAtSeparators(reference);
-        List<String> parts = List.of(wholeName.split(" "));
+        List<String> parts = SimilarityUtils.splitAtSeparators(reference);
         parts = parts.stream().filter(part -> part.length() > 1).collect(Collectors.toList());
         for (String part : parts) {
             hardAdd(n, part, List.of(reference), probability, kind);
@@ -246,9 +245,9 @@ public class TextStateWithoutClustering implements ITextState {
         } else {
             boolean existingMappingIsNortAndNewProbabilityIsHigher = nnm.getKind().equals(MappingKind.NAME_OR_TYPE) || probability >= nnm.getProbability();
             if (kind.equals(MappingKind.TYPE) && existingMappingIsNortAndNewProbabilityIsHigher) {
-                nnm.changeMappingTypeTo(MappingKind.TYPE, probability);
+                nnm.changeMappingType(MappingKind.TYPE, probability);
             } else if (kind.equals(MappingKind.NAME) && existingMappingIsNortAndNewProbabilityIsHigher) {
-                nnm.changeMappingTypeTo(MappingKind.NAME, probability);
+                nnm.changeMappingType(MappingKind.NAME, probability);
             }
         }
 
@@ -830,6 +829,11 @@ public class TextStateWithoutClustering implements ITextState {
     public String toString() {
         return "TextExtractionState [nounMappings=" + String.join("\n", nounMappings.toString()) + ", relationNodes="
                 + String.join("\n", relationMappings.toString()) + "]";
+    }
+
+    @Override
+    public List<INounMapping> getAllMappings() {
+        return nounMappings;
     }
 
 }

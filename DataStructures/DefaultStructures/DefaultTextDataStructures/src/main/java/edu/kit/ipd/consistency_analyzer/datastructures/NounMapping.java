@@ -63,7 +63,7 @@ public final class NounMapping implements INounMapping {
         List<String> comparables = new ArrayList<>();
         for (String occ : occurrences) {
             if (SimilarityUtils.containsSeparator(occ)) {
-                List<String> parts = List.of(SimilarityUtils.splitAtSeparators(occ).split(" "));
+                List<String> parts = SimilarityUtils.splitAtSeparators(occ);
                 for (String part : parts) {
                     if (SimilarityUtils.areWordsSimilar(reference, part)) {
                         comparables.add(part);
@@ -96,7 +96,7 @@ public final class NounMapping implements INounMapping {
      */
     @Override
     public List<String> getOccurrences() {
-        return occurrences;
+        return new ArrayList<>(occurrences);
     }
 
     /**
@@ -106,7 +106,7 @@ public final class NounMapping implements INounMapping {
      */
     @Override
     public List<IWord> getNodes() {
-        return nodes;
+        return new ArrayList<>(nodes);
     }
 
     /**
@@ -171,7 +171,7 @@ public final class NounMapping implements INounMapping {
      * @param probability the probability of the new mappingTzpe
      */
     @Override
-    public void changeMappingTypeTo(MappingKind kind, double probability) {
+    public void changeMappingType(MappingKind kind, double probability) {
         this.kind = kind;
         this.probability = recalculateProbability(this.probability, probability);
     }

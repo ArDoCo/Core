@@ -24,10 +24,10 @@ public class AgentDatastructure {
     public AgentDatastructure createCopy() {
         AgentDatastructure data = new AgentDatastructure();
         data.text = text;
-        data.textState = textState.createCopy();
-        data.modelState = modelState.createCopy();
-        data.recommendationState = recommendationState.createCopy();
-        data.connectionState = connectionState.createCopy();
+        data.textState = textState == null ? null : textState.createCopy();
+        data.modelState = modelState == null ? null : modelState.createCopy();
+        data.recommendationState = recommendationState == null ? null : recommendationState.createCopy();
+        data.connectionState = connectionState == null ? null : connectionState.createCopy();
         return data;
     }
 
