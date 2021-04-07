@@ -1,8 +1,10 @@
 package edu.kit.ipd.consistency_analyzer.datastructures;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -17,8 +19,8 @@ public class RecommendedInstance implements IRecommendedInstance {
     private String type;
     private String name;
     private double probability;
-    private List<INounMapping> typeMappings;
-    private List<INounMapping> nameMappings;
+    private Set<INounMapping> typeMappings;
+    private Set<INounMapping> nameMappings;
 
     @Override
     public IRecommendedInstance createCopy() {
@@ -39,8 +41,8 @@ public class RecommendedInstance implements IRecommendedInstance {
         this.type = type;
         this.name = name;
         this.probability = probability;
-        nameMappings = new ArrayList<>(nameNodes);
-        typeMappings = new ArrayList<>(typeNodes);
+        nameMappings = new HashSet<>(nameNodes);
+        typeMappings = new HashSet<>(typeNodes);
     }
 
     /**
@@ -50,7 +52,7 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public List<INounMapping> getNameMappings() {
-        return nameMappings;
+        return new ArrayList<>(nameMappings);
     }
 
     /**
@@ -60,7 +62,7 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public List<INounMapping> getTypeMappings() {
-        return typeMappings;
+        return new ArrayList<>(typeMappings);
     }
 
     /**
@@ -114,8 +116,9 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public void addName(INounMapping nameMapping) {
-        if (!nameMappings.contains(nameMapping)) {
-            nameMappings.add(nameMapping);
+        nameMappings.add(nameMapping);
+        if (nameMappings.stream().filter(nm -> nm.getReference().equals(nameMapping.getReference())).collect(Collectors.toList()).size() > 1) {
+            int i = 0;
         }
     }
 
@@ -126,8 +129,9 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public void addType(INounMapping typeMapping) {
-        if (!typeMappings.contains(typeMapping)) {
-            typeMappings.add(typeMapping);
+        typeMappings.add(typeMapping);
+        if (typeMappings.stream().filter(nm -> nm.getReference().equals(typeMapping.getReference())).collect(Collectors.toList()).size() > 1) {
+            int i = 0;
         }
     }
 

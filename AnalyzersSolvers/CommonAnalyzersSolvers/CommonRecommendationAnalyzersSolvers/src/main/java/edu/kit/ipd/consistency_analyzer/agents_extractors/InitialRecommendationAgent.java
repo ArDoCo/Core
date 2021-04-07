@@ -52,8 +52,9 @@ public class InitialRecommendationAgent extends RecommendationAgent {
 	@Override
 	public void exec() {
 
-		for (IWord word : text.getWords()) {
+		
 			for (IExtractor extractor : extractors) {
+			    for (IWord word : text.getWords()) {
 				extractor.exec(word);
 			}
 		}
