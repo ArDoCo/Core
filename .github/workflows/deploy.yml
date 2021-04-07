@@ -27,7 +27,7 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - name: Set maven settings.xml
-      uses: whelk-io/maven-settings-xml-action@v14
+      uses: whelk-io/maven-settings-xml-action@v15
       with:
         servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
     - name: Verify with Maven
