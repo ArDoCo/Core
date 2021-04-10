@@ -15,8 +15,8 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
     private AgentDatastructure data;
     private List<IAgent> agents = new ArrayList<>();
-    private TextExtractorConfig config;
-    private GenericTextConfig agentConfig;
+    private final TextExtractorConfig config;
+    private final GenericTextConfig agentConfig;
 
     /**
      * Creates a new model connection agent with the given extraction states.
@@ -31,6 +31,8 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
     }
 
     public TextExtractor() {
+        config = null;
+        agentConfig = null;
 
     }
 

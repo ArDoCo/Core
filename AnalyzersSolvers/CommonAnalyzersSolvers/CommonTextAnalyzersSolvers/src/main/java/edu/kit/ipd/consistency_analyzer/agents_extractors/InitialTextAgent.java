@@ -27,7 +27,7 @@ public class InitialTextAgent extends TextAgent {
 
     private InitialTextAgent(IText text, ITextState textState, GenericTextConfig config) {
         super(DependencyType.TEXT, GenericTextConfig.class, text, textState);
-        initializeAgents(config.textExtractors);
+        initializeAgents(config.textExtractors, config);
     }
 
     @Override
@@ -44,14 +44,14 @@ public class InitialTextAgent extends TextAgent {
         }
     }
 
-    private void initializeAgents(List<String> extractorList) {
+    private void initializeAgents(List<String> extractorList, GenericTextConfig config) {
         Map<String, TextExtractor> loadedExtractors = Loader.loadLoadable(TextExtractor.class);
 
         for (String textExtractor : extractorList) {
             if (!loadedExtractors.containsKey(textExtractor)) {
                 throw new IllegalArgumentException("TextAgent " + textExtractor + " not found");
             }
-            extractors.add(loadedExtractors.get(textExtractor).create(textState));
+            extractors.add(loadedExtractors.get(textExtractor).create(textState, config));
         }
     }
 }

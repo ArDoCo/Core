@@ -1,13 +1,14 @@
 package edu.kit.ipd.consistency_analyzer.agents_extractors.extractors;
 
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.DependencyType;
 
 public abstract class Extractor implements IExtractor {
 
     protected DependencyType dependencyType;
 
-    public abstract Extractor create(AgentDatastructure data);
+    public abstract Extractor create(AgentDatastructure data, Configuration config);
 
     /**
      * Creates a new agent of the specified type.
