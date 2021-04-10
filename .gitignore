@@ -94,3 +94,4 @@ release.properties
 .project
 Pipeline/src/main/resources/texts/
 Pipeline/evaluations/
+Pipeline/ecsaEvaluations/

@@ -55,7 +55,9 @@ public class Pipeline {
         // FilePrinter.writeRecommendedRelationToFile(recommendationState);
         // FilePrinter.writeConnectionsToFile(connectionState, 0);
         // FilePrinter.writeConnectionRelationsToFile(connectionState);
+
         FilePrinter.writeStatesToFile(data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
+        FilePrinter.writeTraceLinksInCsvFile(data.getConnectionState(), duration);
 
     }
 
