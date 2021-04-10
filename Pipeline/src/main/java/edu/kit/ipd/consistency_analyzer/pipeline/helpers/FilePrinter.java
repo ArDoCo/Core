@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +35,8 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IRelationLink;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
 import edu.kit.ipd.consistency_analyzer.datastructures.ITextState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
+import edu.kit.ipd.consistency_analyzer.datastructures.MappingKind;
+import edu.kit.ipd.consistency_analyzer.datastructures.NounMappingForEagle;
 import edu.kit.ipd.consistency_analyzer.pipeline.PipelineConfig;
 
 public class FilePrinter {
@@ -618,6 +621,14 @@ public class FilePrinter {
 
     }
 
+    private static File createFileWithDate(String name) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_at_'HH-mm");
+        Date date = new Date(System.currentTimeMillis());
+
+        String fileName = PipelineConfig.FILE_FOR_CSV_RESULTS_PATH + "Eval_" + name + "_" + formatter.format(date) + ".csv";
+        return new File(fileName);
+    }
+
     /**
      * https://www.baeldung.com/java-csv
      *
@@ -625,29 +636,53 @@ public class FilePrinter {
      * @param duration
      * @throws FileNotFoundException
      */
-    public static void writeTraceLinksInCsvFile(IConnectionState connectionState) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_at_'HH-mm");
-        Date date = new Date(System.currentTimeMillis());
-
-        String fileName = PipelineConfig.FILE_FOR_CSV_RESULTS_PATH + "Eval_" + formatter.format(date) + ".csv";
-        File resultFile = new File(fileName);
-        printLinksInCsvFile(resultFile, connectionState);
-
+    public static void writeTraceLinksInCsvFile(File file, IConnectionState connectionState) {
+        File resultFile = file;
+        if (resultFile == null) {
+            resultFile = createFileWithDate("Links");
+        }
+        List<String[]> dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
+        writeDataLinesInFile(resultFile, dataLines);
     }
 
-    public static void printLinksInCsvFile(File file, IConnectionState connectionState) {
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_at_'HH-mm");
-        Date date = new Date(System.currentTimeMillis());
-
-        boolean fileCreated = createFileIfNonExistent(file);
-        if (!fileCreated) {
-            return;
+    public static void writeNounMappingsInCsvFile(File file, ITextState textState) {
+        File resultFile = file;
+        if (resultFile == null) {
+            resultFile = createFileWithDate("Mappings");
         }
+        List<String[]> dataLines = getMappingsAsDataLinesOfTextState(textState);
+        writeDataLinesInFile(resultFile, dataLines);
+    }
 
+    private static List<String[]> getMappingsAsDataLinesOfTextState(ITextState textState) {
         List<String[]> dataLines = new ArrayList<>();
 
-        dataLines.add(new String[] { "Found TraceLinks: ", "", formatter.format(date) });
+        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingForEagle)) {
+            return dataLines;
+        }
+
+        dataLines.add(new String[] { "Found NounMappings: ", "", "", "" });
+        dataLines.add(new String[] { "" });
+        dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
+
+        for (INounMapping mapping : textState.getAllMappings()) {
+
+            NounMappingForEagle eagleMapping = (NounMappingForEagle) mapping;
+            Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
+            String nameProb = Double.toString(distribution.get(MappingKind.NAME));
+            String typeProb = Double.toString(distribution.get(MappingKind.TYPE));
+            String nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
+
+            dataLines.add(new String[] { eagleMapping.getReference(), nameProb, typeProb, nortProb });
+
+        }
+        return dataLines;
+    }
+
+    private static List<String[]> getLinksAsDataLinesOfConnectionState(IConnectionState connectionState) {
+        List<String[]> dataLines = new ArrayList<>();
+
+        dataLines.add(new String[] { "Found TraceLinks: ", "", "" });
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "UID of Modelelement", "SentenceNumber", "Probability" });
 
@@ -663,6 +698,10 @@ public class FilePrinter {
             }
 
         }
+        return dataLines;
+    }
+
+    public static void writeDataLinesInFile(File file, List<String[]> dataLines) {
 
         try (FileWriter pw = new FileWriter(file)) {
             dataLines.stream().map(FilePrinter::convertToCSV).forEach(s -> {
