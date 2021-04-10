@@ -12,7 +12,7 @@ import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
 public class NounMappingForEagle implements INounMappingWithDistribution {
 
     private List<IWord> words;
-    private MappingKind mostPropableKind;
+    private MappingKind mostProbableKind;
     private Double highestProbability;
     private Map<MappingKind, Double> distribution;
     private String reference;
@@ -23,8 +23,8 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
         initializeDistribution(distribution);
         this.reference = reference;
         this.occurrences = new ArrayList<>(occurrences);
-        mostPropableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElseGet(null);
-        highestProbability = mostPropableKind != null ? distribution.get(mostPropableKind) : 0.0;
+        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElseGet(null);
+        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
 
     }
 
@@ -52,8 +52,8 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
         initializeDistribution(distribution);
         this.reference = reference;
         this.occurrences = new ArrayList<>(occurrences);
-        mostPropableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElseGet(null);
-        highestProbability = mostPropableKind != null ? distribution.get(mostPropableKind) : 0.0;
+        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElseGet(null);
+        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
     }
 
     public void addKindWithProbability(MappingKind kind, double probability) {
@@ -61,9 +61,9 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
     }
 
     private void updateBestValues() {
-        mostPropableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElseGet(null);
-        if (mostPropableKind != null) {
-            highestProbability = distribution.get(mostPropableKind);
+        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElseGet(null);
+        if (mostProbableKind != null) {
+            highestProbability = distribution.get(mostProbableKind);
         }
     }
 
@@ -118,7 +118,7 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
     @Override
     public void hardSetProbability(double newProbability) {
 
-        recalculateProbability(mostPropableKind, newProbability);
+        recalculateProbability(mostProbableKind, newProbability);
     }
 
     /**
@@ -182,7 +182,7 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
      */
     @Override
     public MappingKind getKind() {
-        return mostPropableKind;
+        return mostProbableKind;
     }
 
     /**
@@ -198,30 +198,52 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
     /**
      *
      * @param kind        the new kind
-     * @param probability the probability of the new mappingTzpe
+     * @param probability the probability of the new mappingType
      */
     @Override
     public void changeMappingType(MappingKind kind, double probability) {
         recalculateProbability(kind, highestProbability * probability);
     }
 
-    /**
-     * Recalculates the probability.
-     */
     private void recalculateProbability(MappingKind kind, double newProbability) {
 
-        double name = distribution.get(MappingKind.NAME);
-        double type = distribution.get(MappingKind.TYPE);
-        double nort = distribution.get(MappingKind.NAME_OR_TYPE);
+        double currentProbability = distribution.get(kind);
+        distribution.put(kind, currentProbability + newProbability);
 
-        if (name + type + nort + newProbability - distribution.get(kind) <= 1) {
-            highestProbability = newProbability;
-        } else {
-            double scale = 1 / (name + type + nort - distribution.get(kind) + newProbability);
-            rescaleProbabilities(scale);
+        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElseGet(null);
+        if (mostProbableKind != null) {
+            if (mostProbableKind == MappingKind.NAME_OR_TYPE && (distribution.get(MappingKind.NAME) > 0 || distribution.get(MappingKind.TYPE) > 0)) {
+
+                if (distribution.get(MappingKind.NAME) >= distribution.get(MappingKind.TYPE)) {
+                    mostProbableKind = MappingKind.NAME;
+                } else {
+                    mostProbableKind = MappingKind.TYPE;
+                }
+            }
+            highestProbability = distribution.get(mostProbableKind);
         }
-        updateBestValues();
     }
+
+    /*
+     * private void recalculateProbability(MappingKind kind, double newProbability) {
+     *
+     * double name = distribution.get(MappingKind.NAME); double type = distribution.get(MappingKind.TYPE); double nort =
+     * distribution.get(MappingKind.NAME_OR_TYPE);
+     *
+     * double loss = 0.8; double currentProbability = distribution.get(kind);
+     *
+     *
+     * if (kind.equals(MappingKind.NAME_OR_TYPE) && (name > 0 || type > 0)) { double probabilityToSetName = loss * ;
+     *
+     *
+     *
+     *
+     * } else { double probabilityToSet = loss * (newProbability + currentProbability);
+     *
+     * if (name + type + nort + probabilityToSet - distribution.get(kind) <= 1) { distribution.put(kind,
+     * probabilityToSet); } else { double scale = 1 / (name + type + nort - distribution.get(kind) + probabilityToSet);
+     * rescaleProbabilities(scale); } } updateBestValues(); }
+     */
 
     private void rescaleProbabilities(double scale) {
         double name = distribution.get(MappingKind.NAME);
@@ -349,13 +371,13 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
             // do nothing
         } else if (newProbability == 1.0) {
             highestProbability = newProbability;
-            distribution.put(mostPropableKind, newProbability);
+            distribution.put(mostProbableKind, newProbability);
         } else if (highestProbability >= newProbability) {
             double porbabilityToSet = highestProbability + newProbability * (1 - highestProbability);
-            recalculateProbability(mostPropableKind, porbabilityToSet);
+            recalculateProbability(mostProbableKind, porbabilityToSet);
         } else {
             double porbabilityToSet = (highestProbability + newProbability) * 0.5;
-            recalculateProbability(mostPropableKind, porbabilityToSet);
+            recalculateProbability(mostProbableKind, porbabilityToSet);
         }
     }
 
