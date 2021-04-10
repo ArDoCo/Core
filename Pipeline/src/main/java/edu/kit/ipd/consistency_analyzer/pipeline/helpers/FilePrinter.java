@@ -657,13 +657,24 @@ public class FilePrinter {
     private static List<String[]> getMappingsAsDataLinesOfTextState(ITextState textState) {
         List<String[]> dataLines = new ArrayList<>();
 
-        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingForEagle)) {
-            return dataLines;
-        }
-
         dataLines.add(new String[] { "Found NounMappings: ", "", "", "" });
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
+
+        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingForEagle)) {
+            for (INounMapping mapping : textState.getAllMappings()) {
+
+                MappingKind kind = mapping.getKind();
+
+                String nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
+                String typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
+                String nortProb = Double.toString(kind == MappingKind.NAME_OR_TYPE ? mapping.getProbability() : 0);
+
+                dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
+
+            }
+            return dataLines;
+        }
 
         for (INounMapping mapping : textState.getAllMappings()) {
 
