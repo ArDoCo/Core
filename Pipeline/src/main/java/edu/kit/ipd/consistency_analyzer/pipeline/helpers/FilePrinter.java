@@ -1,17 +1,22 @@
 package edu.kit.ipd.consistency_analyzer.pipeline.helpers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -611,6 +616,85 @@ public class FilePrinter {
             logger.debug(e.getMessage(), e.getCause());
         }
 
+    }
+
+    /**
+     * https://www.baeldung.com/java-csv
+     *
+     * @param connectionState
+     * @param duration
+     * @throws FileNotFoundException
+     */
+    public static void writeTraceLinksInCsvFile(IConnectionState connectionState, Duration duration) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_at_'HH-mm");
+        Date date = new Date(System.currentTimeMillis());
+
+        String fileName = PipelineConfig.FILE_FOR_CSV_RESULTS_PATH + "Eval_" + formatter.format(date) + ".csv";
+        File resultFile = new File(fileName);
+
+        boolean fileCreated = createFileIfNonExistent(resultFile);
+        if (!fileCreated) {
+            return;
+        }
+
+        List<String[]> dataLines = new ArrayList<>();
+
+        dataLines.add(new String[] { "Found TraceLinks: ", "", formatter.format(date) });
+        dataLines.add(new String[] { "" });
+        dataLines.add(new String[] { "UID of Modelelement", "SentenceNumber", "Probability" });
+
+        for (IInstanceLink instanceLink : connectionState.getInstanceLinks()) {
+
+            String probability = Double.toString(instanceLink.getProbability());
+            String modelElementUid = instanceLink.getModelInstance().getUid();
+
+            for (INounMapping nameMapping : instanceLink.getTextualInstance().getNameMappings()) {
+                for (IWord word : nameMapping.getNodes()) {
+                    dataLines.add(new String[] { modelElementUid, Integer.toString(word.getSentenceNo()), probability });
+                }
+            }
+
+        }
+
+        try (FileWriter pw = new FileWriter(resultFile)) {
+            dataLines.stream().map(FilePrinter::convertToCSV).forEach(s -> {
+                try {
+                    pw.append(s).append("\n");
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e.getCause());
+        }
+
+    }
+
+    /**
+     * https://www.baeldung.com/java-csv
+     *
+     * @param data
+     * @return
+     */
+    private static String convertToCSV(String[] data) {
+        return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(","));
+    }
+
+    /**
+     * https://www.baeldung.com/java-csv
+     *
+     * @param data
+     * @return
+     */
+    private static String escapeSpecialCharacters(String data) {
+        String escapedData = data.replaceAll("\\R", " ");
+        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+            data = data.replace("\"", "\"\"");
+            escapedData = "\"" + data + "\"";
+        }
+        return escapedData;
     }
 
     private static Comparator<IRecommendedInstance> getRecommendedInstancesComparator() {

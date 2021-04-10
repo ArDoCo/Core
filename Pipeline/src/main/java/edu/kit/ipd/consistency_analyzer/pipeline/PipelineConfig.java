@@ -29,6 +29,8 @@ public class PipelineConfig {
      */
     public static final String FILE_FOR_RESULTS_PATH = CONFIG.getProperty("fileForResults_Path");
 
+    public static final String FILE_FOR_CSV_RESULTS_PATH = CONFIG.getProperty("fileForCSVResults_Path");
+
     private static SystemParameters loadParameters(String filePath) {
         return new SystemParameters(filePath, true);
     }
