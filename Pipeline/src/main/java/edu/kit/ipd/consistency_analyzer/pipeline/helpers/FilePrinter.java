@@ -625,14 +625,22 @@ public class FilePrinter {
      * @param duration
      * @throws FileNotFoundException
      */
-    public static void writeTraceLinksInCsvFile(IConnectionState connectionState, Duration duration) {
+    public static void writeTraceLinksInCsvFile(IConnectionState connectionState) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_at_'HH-mm");
         Date date = new Date(System.currentTimeMillis());
 
         String fileName = PipelineConfig.FILE_FOR_CSV_RESULTS_PATH + "Eval_" + formatter.format(date) + ".csv";
         File resultFile = new File(fileName);
+        printLinksInCsvFile(resultFile, connectionState);
 
-        boolean fileCreated = createFileIfNonExistent(resultFile);
+    }
+
+    public static void printLinksInCsvFile(File file, IConnectionState connectionState) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_at_'HH-mm");
+        Date date = new Date(System.currentTimeMillis());
+
+        boolean fileCreated = createFileIfNonExistent(file);
         if (!fileCreated) {
             return;
         }
@@ -656,7 +664,7 @@ public class FilePrinter {
 
         }
 
-        try (FileWriter pw = new FileWriter(resultFile)) {
+        try (FileWriter pw = new FileWriter(file)) {
             dataLines.stream().map(FilePrinter::convertToCSV).forEach(s -> {
                 try {
                     pw.append(s).append("\n");
