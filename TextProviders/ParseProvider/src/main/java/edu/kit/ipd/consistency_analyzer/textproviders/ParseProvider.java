@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
+import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 
@@ -17,7 +18,7 @@ public class ParseProvider implements ITextConnector {
 
     private IText annotatedText;
 
-    public ParseProvider(InputStream text) throws LunaRunException {
+    public ParseProvider(InputStream text) throws LunaRunException, LunaInitException {
         IPARSEExecution parse = useLUNA ? new LunaExecution() : new SingleExecution();
         IGraph graph = parse.calculatePARSEGraph(text);
         annotatedText = convertParseGraphToAnnotatedText(graph);

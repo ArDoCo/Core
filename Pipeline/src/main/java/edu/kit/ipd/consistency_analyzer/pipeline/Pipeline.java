@@ -18,17 +18,18 @@ import edu.kit.ipd.consistency_analyzer.modules.TextExtractor;
 import edu.kit.ipd.consistency_analyzer.pipeline.helpers.FilePrinter;
 import edu.kit.ipd.consistency_analyzer.textproviders.ITextConnector;
 import edu.kit.ipd.consistency_analyzer.textproviders.ParseProvider;
+import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 
 public class Pipeline {
 
-    public static void main(String[] args) throws LunaRunException {
+    public static void main(String[] args) throws LunaRunException, LunaInitException {
         InputStream documentation = Pipeline.class.getResourceAsStream(PipelineConfig.DOCUMENTATION_PATH);
         // InputStream test = Pipeline.class.getResourceAsStream(PipelineConfig.TEST_DOCUMENTATION_PATH);
         run(documentation);
     }
 
-    public static void run(InputStream text) throws LunaRunException {
+    public static void run(InputStream text) throws LunaRunException, LunaInitException {
         long startTime = System.currentTimeMillis();
 
         ITextConnector connector = new ParseProvider(text);
