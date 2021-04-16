@@ -17,8 +17,8 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IInstance;
 class PcmOntologyModelConnectorTest {
     private static Logger logger = LogManager.getLogger();
 
-    static PcmOntologyModelConnector setupMediaStore() {
-        File file = new File("src/test/resources/mediastore.owl");
+    private static PcmOntologyModelConnector loadModel(String modelFile) {
+        File file = new File(modelFile);
 
         String absolutePath = file.getAbsolutePath();
         return new PcmOntologyModelConnector(absolutePath);
@@ -27,7 +27,7 @@ class PcmOntologyModelConnectorTest {
     @Test
     @DisplayName("Get all instances from MediaStore ontology")
     void getInstancesFromMediaStoreTest() {
-        PcmOntologyModelConnector connectorMediaStore = setupMediaStore();
+        PcmOntologyModelConnector connectorMediaStore = loadModel("src/test/resources/mediastore.owl");
         if (connectorMediaStore == null) {
             logger.debug("connector is null");
         }
@@ -57,17 +57,10 @@ class PcmOntologyModelConnectorTest {
         connectorMediaStore = null;
     }
 
-    static PcmOntologyModelConnector setupTeaStore() {
-        File file = new File("src/test/resources/teastore.owl");
-
-        String absolutePath = file.getAbsolutePath();
-        return new PcmOntologyModelConnector(absolutePath);
-    }
-
     @Test
     @DisplayName("Get all instances from TeaStore ontology")
     void getInstancesFromTeaStoreTest() {
-        PcmOntologyModelConnector connectorTeaStore = setupTeaStore();
+        PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teastore.owl");
         if (connectorTeaStore == null) {
             logger.debug("connector is null");
         }
@@ -85,6 +78,28 @@ class PcmOntologyModelConnectorTest {
 
         int expectedNumberOfInstances = 13;
         Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "The number of expected and found instances differs!");
+
+        connectorTeaStore = null;
+    }
+
+    @Test
+    @DisplayName("Get all instances from TEAMMATES ontology")
+    void getInstancesFromTeammatesTest() {
+        PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teammates.owl");
+        if (connectorTeaStore == null) {
+            logger.debug("connector is null");
+        }
+        List<IInstance> instances = connectorTeaStore.getInstances();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Listing TEAMMATES instances:");
+            for (IInstance instance : instances) {
+                String info = instance.toString();
+                logger.debug(info);
+                logger.debug(instance.getNames());
+            }
+            logger.debug("\n");
+        }
 
         connectorTeaStore = null;
     }
