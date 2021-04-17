@@ -77,7 +77,7 @@ public interface INounMapping {
      * @param kind        the new kind
      * @param probability the probability of the new mappingTzpe
      */
-    void changeMappingTypeTo(MappingKind kind, double probability);
+    void changeMappingType(MappingKind kind, double probability);
 
     /**
      * Returns the sentence numbers of occurrences, sorted.

@@ -20,6 +20,11 @@ public class RecommendationState implements IRecommendationState {
     private List<IRecommendedInstance> recommendedInstances;
     private List<IRecommendedRelation> recommendedRelations;
 
+    private int calledAddedInstances = 0;
+    private int calledAddedRelations = 0;
+    private int addedInstances = 0;
+    private int addedRelations = 0;
+
     @Override
     public IRecommendationState createCopy() {
         RecommendationState recommendationState = new RecommendationState();
@@ -121,6 +126,7 @@ public class RecommendationState implements IRecommendationState {
         RecommendedInstance ri = new RecommendedInstance(name, type, probability, new ArrayList<>(new HashSet<>(nameMappings)),
                 new ArrayList<>(new HashSet<>(typeMappings)));
         this.addRecommendedInstance(ri);
+
         return ri;
     }
 

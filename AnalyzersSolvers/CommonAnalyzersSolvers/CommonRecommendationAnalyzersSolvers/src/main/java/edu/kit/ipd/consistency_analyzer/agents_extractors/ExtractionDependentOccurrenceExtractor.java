@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.kohsuke.MetaInfServices;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.DependencyType;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.extractors.RecommendationExtractor;
 import edu.kit.ipd.consistency_analyzer.common.SimilarityUtils;
@@ -50,8 +51,9 @@ public class ExtractionDependentOccurrenceExtractor extends RecommendationExtrac
     }
 
     @Override
-    public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState) {
-        return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState);
+    public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            Configuration config) {
+        return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
     }
 
     @Override

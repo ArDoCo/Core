@@ -9,14 +9,14 @@ import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastruct
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.IAgent;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Loader;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.TextAgent;
-import edu.kit.ipd.consistency_analyzer.datastructures.TextStateWithoutClustering;
+import edu.kit.ipd.consistency_analyzer.datastructures.TextStateForEagle;
 
 public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
     private AgentDatastructure data;
     private List<IAgent> agents = new ArrayList<>();
-    private TextExtractorConfig config;
-    private GenericTextConfig agentConfig;
+    private final TextExtractorConfig config;
+    private final GenericTextConfig agentConfig;
 
     /**
      * Creates a new model connection agent with the given extraction states.
@@ -30,12 +30,18 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
         this(data, TextExtractorConfig.DEFAULT_CONFIG, GenericTextConfig.DEFAULT_CONFIG);
     }
 
+    public TextExtractor() {
+        config = null;
+        agentConfig = null;
+
+    }
+
     public TextExtractor(AgentDatastructure data, TextExtractorConfig config, GenericTextConfig agentConfig) {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
         // data.setTextState(new TextExtractionState());
-        data.setTextState(new TextStateWithoutClustering());
+        data.setTextState(new TextStateForEagle());
         initializeAgents();
     }
 
