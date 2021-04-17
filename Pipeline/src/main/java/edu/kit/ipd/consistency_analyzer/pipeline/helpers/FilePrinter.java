@@ -1,17 +1,23 @@
 package edu.kit.ipd.consistency_analyzer.pipeline.helpers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +35,8 @@ import edu.kit.ipd.consistency_analyzer.datastructures.IRelationLink;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
 import edu.kit.ipd.consistency_analyzer.datastructures.ITextState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IWord;
+import edu.kit.ipd.consistency_analyzer.datastructures.MappingKind;
+import edu.kit.ipd.consistency_analyzer.datastructures.NounMappingForEagle;
 import edu.kit.ipd.consistency_analyzer.pipeline.PipelineConfig;
 
 public class FilePrinter {
@@ -611,6 +619,165 @@ public class FilePrinter {
             logger.debug(e.getMessage(), e.getCause());
         }
 
+    }
+
+    private static File createFileWithDate(String name) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_at_'HH-mm");
+        Date date = new Date(System.currentTimeMillis());
+
+        String fileName = PipelineConfig.FILE_FOR_CSV_RESULTS_PATH + "Eval_" + name + "_" + formatter.format(date) + ".csv";
+        return new File(fileName);
+    }
+
+    public static void writeModelInstancesInCsvFile(File file, IModelState modelState, String name) {
+        File resultFile = file;
+        if (resultFile == null) {
+            resultFile = createFileWithDate(name + "_instances");
+        }
+        List<String[]> dataLines = getInstancesFromModelState(modelState, name);
+        writeDataLinesInFile(resultFile, dataLines);
+    }
+
+    private static List<String[]> getInstancesFromModelState(IModelState modelState, String name) {
+        List<String[]> dataLines = new ArrayList<>();
+
+        dataLines.add(new String[] { "Found Model Elements in " + name + ":", "", "" });
+        dataLines.add(new String[] { "" });
+        dataLines.add(new String[] { "UID", "Name", "Type" });
+
+        for (IInstance instance : modelState.getInstances()) {
+
+            dataLines.add(new String[] { instance.getUid(), instance.getLongestName(), instance.getLongestType() });
+
+        }
+
+        return dataLines;
+    }
+
+    /**
+     * https://www.baeldung.com/java-csv
+     *
+     * @param connectionState
+     * @param duration
+     * @throws FileNotFoundException
+     */
+    public static void writeTraceLinksInCsvFile(File file, IConnectionState connectionState) {
+        File resultFile = file;
+        if (resultFile == null) {
+            resultFile = createFileWithDate("Links");
+        }
+        List<String[]> dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
+        writeDataLinesInFile(resultFile, dataLines);
+    }
+
+    public static void writeNounMappingsInCsvFile(File file, ITextState textState) {
+        File resultFile = file;
+        if (resultFile == null) {
+            resultFile = createFileWithDate("Mappings");
+        }
+        List<String[]> dataLines = getMappingsAsDataLinesOfTextState(textState);
+        writeDataLinesInFile(resultFile, dataLines);
+    }
+
+    private static List<String[]> getMappingsAsDataLinesOfTextState(ITextState textState) {
+        List<String[]> dataLines = new ArrayList<>();
+
+        dataLines.add(new String[] { "Found NounMappings: ", "", "", "" });
+        dataLines.add(new String[] { "" });
+        dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
+
+        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingForEagle)) {
+            for (INounMapping mapping : textState.getAllMappings()) {
+
+                MappingKind kind = mapping.getKind();
+
+                String nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
+                String typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
+                String nortProb = Double.toString(kind == MappingKind.NAME_OR_TYPE ? mapping.getProbability() : 0);
+
+                dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
+
+            }
+            return dataLines;
+        }
+
+        for (INounMapping mapping : textState.getAllMappings()) {
+
+            NounMappingForEagle eagleMapping = (NounMappingForEagle) mapping;
+            Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
+            String nameProb = Double.toString(distribution.get(MappingKind.NAME));
+            String typeProb = Double.toString(distribution.get(MappingKind.TYPE));
+            String nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
+
+            dataLines.add(new String[] { eagleMapping.getReference(), nameProb, typeProb, nortProb });
+
+        }
+        return dataLines;
+    }
+
+    private static List<String[]> getLinksAsDataLinesOfConnectionState(IConnectionState connectionState) {
+        List<String[]> dataLines = new ArrayList<>();
+
+        dataLines.add(new String[] { "Found TraceLinks: ", "", "" });
+        dataLines.add(new String[] { "" });
+        dataLines.add(new String[] { "UID of Modelelement", "SentenceNumber", "Probability" });
+
+        for (IInstanceLink instanceLink : connectionState.getInstanceLinks()) {
+
+            String probability = Double.toString(instanceLink.getProbability());
+            String modelElementUid = instanceLink.getModelInstance().getUid();
+
+            for (INounMapping nameMapping : instanceLink.getTextualInstance().getNameMappings()) {
+                for (IWord word : nameMapping.getNodes()) {
+                    dataLines.add(new String[] { modelElementUid, Integer.toString(word.getSentenceNo()), probability });
+                }
+            }
+
+        }
+        return dataLines;
+    }
+
+    public static void writeDataLinesInFile(File file, List<String[]> dataLines) {
+
+        try (FileWriter pw = new FileWriter(file)) {
+            dataLines.stream().map(FilePrinter::convertToCSV).forEach(s -> {
+                try {
+                    pw.append(s).append("\n");
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e.getCause());
+        }
+
+    }
+
+    /**
+     * https://www.baeldung.com/java-csv
+     *
+     * @param data
+     * @return
+     */
+    private static String convertToCSV(String[] data) {
+        return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(","));
+    }
+
+    /**
+     * https://www.baeldung.com/java-csv
+     *
+     * @param data
+     * @return
+     */
+    private static String escapeSpecialCharacters(String data) {
+        String escapedData = data.replaceAll("\\R", " ");
+        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+            data = data.replace("\"", "\"\"");
+            escapedData = "\"" + data + "\"";
+        }
+        return escapedData;
     }
 
     private static Comparator<IRecommendedInstance> getRecommendedInstancesComparator() {

@@ -360,4 +360,8 @@ public interface ITextState extends IState {
     @Override
     String toString();
 
+    List<INounMapping> getAllMappings();
+
+    void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences);
+
 }

@@ -6,10 +6,9 @@ import java.time.Duration;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.AgentDatastructure;
 import edu.kit.ipd.consistency_analyzer.datastructures.IModelState;
 import edu.kit.ipd.consistency_analyzer.datastructures.IText;
-import edu.kit.ipd.consistency_analyzer.modelproviders.HardCodedModelConnector;
-import edu.kit.ipd.consistency_analyzer.modelproviders.HardCodedModelInput;
 import edu.kit.ipd.consistency_analyzer.modelproviders.IModelConnector;
 import edu.kit.ipd.consistency_analyzer.modelproviders.exception.InconsistentModelException;
+import edu.kit.ipd.consistency_analyzer.modelproviders.pcm.PcmOntologyModelConnector;
 import edu.kit.ipd.consistency_analyzer.modules.ConnectionGenerator;
 import edu.kit.ipd.consistency_analyzer.modules.IModule;
 import edu.kit.ipd.consistency_analyzer.modules.ModelExtractor;
@@ -34,10 +33,18 @@ public class Pipeline {
         ITextConnector connector = new ParseProvider(text);
         IText annotatedText = connector.getAnnotatedText();
 
-        HardCodedModelInput hardCodedModel = new HardCodedModelInput();
-        IModelConnector modelConnector = new HardCodedModelConnector(hardCodedModel);
+        // HardCodedModelInput hardCodedModel = new HardCodedModelInput();
+        // IModelConnector modelConnector = new HardCodedModelConnector(hardCodedModel);
+        IModelConnector pcmTeammatesModel = new PcmOntologyModelConnector("src/main/resources/teammates.owl");
+        FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(pcmTeammatesModel), "Teammates");
 
-        AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(modelConnector), null, null);
+        IModelConnector mediaStoreModel = new PcmOntologyModelConnector("src/main/resources/mediastore.owl");
+        FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(mediaStoreModel), "MediaStore");
+
+        IModelConnector teaStoreModel = new PcmOntologyModelConnector("src/main/resources/TeaStore.owl");
+        FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(teaStoreModel), "TeaStore");
+
+        AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmTeammatesModel), null, null);
         data.overwrite(runTextExtractor(data));
         data.overwrite(runRecommendationGenerator(data));
         data.overwrite(runConnectionGenerator(data));
@@ -55,7 +62,10 @@ public class Pipeline {
         // FilePrinter.writeRecommendedRelationToFile(recommendationState);
         // FilePrinter.writeConnectionsToFile(connectionState, 0);
         // FilePrinter.writeConnectionRelationsToFile(connectionState);
+
         FilePrinter.writeStatesToFile(data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
+        FilePrinter.writeNounMappingsInCsvFile(null, data.getTextState());
+        FilePrinter.writeTraceLinksInCsvFile(null, data.getConnectionState());
 
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.kohsuke.MetaInfServices;
 
+import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.Configuration;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.agents.DependencyType;
 import edu.kit.ipd.consistency_analyzer.agents_extractors.extractors.TextExtractor;
 import edu.kit.ipd.consistency_analyzer.common.WordHelper;
@@ -24,8 +25,8 @@ public class InDepArcsExtractor extends TextExtractor {
     private double probability;
 
     @Override
-    public TextExtractor create(ITextState textExtractionState) {
-        return new InDepArcsExtractor(textExtractionState);
+    public TextExtractor create(ITextState textExtractionState, Configuration config) {
+        return new InDepArcsExtractor(textExtractionState, (GenericTextConfig) config);
     }
 
     @Override
