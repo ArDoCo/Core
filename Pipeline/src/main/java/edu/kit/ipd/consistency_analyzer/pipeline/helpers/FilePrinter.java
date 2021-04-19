@@ -629,6 +629,31 @@ public class FilePrinter {
         return new File(fileName);
     }
 
+    public static void writeModelInstancesInCsvFile(File file, IModelState modelState, String name) {
+        File resultFile = file;
+        if (resultFile == null) {
+            resultFile = createFileWithDate(name + "_instances");
+        }
+        List<String[]> dataLines = getInstancesFromModelState(modelState, name);
+        writeDataLinesInFile(resultFile, dataLines);
+    }
+
+    private static List<String[]> getInstancesFromModelState(IModelState modelState, String name) {
+        List<String[]> dataLines = new ArrayList<>();
+
+        dataLines.add(new String[] { "Found Model Elements in " + name + ":", "", "" });
+        dataLines.add(new String[] { "" });
+        dataLines.add(new String[] { "UID", "Name", "Type" });
+
+        for (IInstance instance : modelState.getInstances()) {
+
+            dataLines.add(new String[] { instance.getUid(), instance.getLongestName(), instance.getLongestType() });
+
+        }
+
+        return dataLines;
+    }
+
     /**
      * https://www.baeldung.com/java-csv
      *
