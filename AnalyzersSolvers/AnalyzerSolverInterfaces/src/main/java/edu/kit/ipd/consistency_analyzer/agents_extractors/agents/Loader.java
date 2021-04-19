@@ -3,8 +3,11 @@ package edu.kit.ipd.consistency_analyzer.agents_extractors.agents;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -14,9 +17,10 @@ import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 
 public final class Loader {
-
     // Just for local debugging, as this method finds all necessary classes
     public static final boolean USE_REFLECTION = true;
+
+    private static final Map<Class<?>, List<Class<?>>> CACHE = new HashMap<>();
 
     private static final Logger logger = LogManager.getLogger(Loader.class);
 
@@ -38,17 +42,27 @@ public final class Loader {
     }
 
     public static <A extends ILoadable> Map<String, A> loadLoadableViaReflect(Class<A> classA) {
-        Reflections reflect = new Reflections("edu.kit.ipd.consistency_analyzer");
-        Set<Class<? extends A>> subtypes = new HashSet<>(reflect.getSubTypesOf(classA));
+        Map<String, A> loads = new HashMap<>();
 
+        synchronized (CACHE) {
+            if (CACHE.containsKey(classA)) {
+                Set<A> loaded = load(CACHE.get(classA));
+                for (A a : loaded) { loads.put(a.getName(), a); }
+                return loads;
+            }
+        }
+
+        Reflections reflect = new Reflections("edu.kit.ipd.consistency_analyzer");
+        Set<Class<?>> subtypes = new HashSet<>(reflect.getSubTypesOf(classA));
         subtypes.removeIf(Loader::hasNoPublicConstructor);
 
+        synchronized (CACHE) {
+            CACHE.put(classA, new ArrayList<>(subtypes));
+        }
+
         Set<A> loaded = load(subtypes);
-        Map<String, A> loads = new HashMap<>();
         for (A a : loaded) { loads.put(a.getName(), a); }
-
         return loads;
-
     }
 
     private static boolean hasNoPublicConstructor(Class<?> clazz) {
@@ -67,10 +81,11 @@ public final class Loader {
 
     }
 
-    private static <A extends ILoadable> Set<A> load(Set<Class<? extends A>> clazzes) {
+    private static <A extends ILoadable> Set<A> load(Collection<Class<?>> clazzes) {
         Set<A> instances = new HashSet<>();
-        for (Class<? extends A> clazz : clazzes) {
-            A a = create(clazz);
+        for (Class<?> clazz : clazzes) {
+            @SuppressWarnings("unchecked")
+            A a = create((Class<? extends A>) clazz);
             if (a != null) {
                 instances.add(a);
             }
