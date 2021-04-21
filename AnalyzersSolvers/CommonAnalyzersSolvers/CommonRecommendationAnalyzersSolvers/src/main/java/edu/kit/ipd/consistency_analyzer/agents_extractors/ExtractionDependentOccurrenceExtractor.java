@@ -53,7 +53,7 @@ public class ExtractionDependentOccurrenceExtractor extends RecommendationExtrac
     @Override
     public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
             Configuration config) {
-        return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
+        return new ExtractionDependentOccurrenceExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
     }
 
     @Override
