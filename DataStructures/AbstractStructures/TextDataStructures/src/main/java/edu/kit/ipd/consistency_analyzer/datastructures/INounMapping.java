@@ -116,4 +116,9 @@ public interface INounMapping {
      */
     void updateProbability(double newProbability);
 
+    double getProbabilityForName();
+
+    double getProbabilityForType();
+
+    double getProbabilityForNort();
 }

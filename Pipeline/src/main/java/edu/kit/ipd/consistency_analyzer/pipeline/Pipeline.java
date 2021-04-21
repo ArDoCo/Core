@@ -38,11 +38,11 @@ public class Pipeline {
         IModelConnector pcmTeammatesModel = new PcmOntologyModelConnector("src/main/resources/teammates.owl");
         FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(pcmTeammatesModel), "Teammates");
 
-        IModelConnector mediaStoreModel = new PcmOntologyModelConnector("src/main/resources/mediastore.owl");
-        FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(mediaStoreModel), "MediaStore");
+        // IModelConnector mediaStoreModel = new PcmOntologyModelConnector("src/main/resources/mediastore.owl");
+        // FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(mediaStoreModel), "MediaStore");
 
-        IModelConnector teaStoreModel = new PcmOntologyModelConnector("src/main/resources/TeaStore.owl");
-        FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(teaStoreModel), "TeaStore");
+        // IModelConnector teaStoreModel = new PcmOntologyModelConnector("src/main/resources/TeaStore.owl");
+        // FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(teaStoreModel), "TeaStore");
 
         AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmTeammatesModel), null, null);
         data.overwrite(runTextExtractor(data));
@@ -57,7 +57,7 @@ public class Pipeline {
     private static void printResultsInFiles(//
             AgentDatastructure data, Duration duration) {
 
-        // FilePrinter.writeEval1ToFile(text, textExtractionState, 0);
+        FilePrinter.writeEval1ToFile(data.getText(), data.getTextState(), 0);
         // FilePrinter.writeRecommendationsToFile(recommendationState, 0);
         // FilePrinter.writeRecommendedRelationToFile(recommendationState);
         // FilePrinter.writeConnectionsToFile(connectionState, 0);

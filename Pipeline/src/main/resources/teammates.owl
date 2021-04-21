@@ -1,0 +1,3276 @@
+@prefix :      <http://palladiosimulator.org/PalladioComponentModel/5.2/owl#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix model: <http://palladiosimulator.org/PalladioComponentModel/5.2/owl#> .
+
+model:seffTypeID_-_ServiceEffectSpecification
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ServiceEffectSpecification ;
+        rdfs:range    xsd:string .
+
+model:SetVariableAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:usageModel_UsageScenario_-_UsageScenario
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UsageScenario ;
+        rdfs:range    model:UsageModel .
+
+model:signatures__OperationInterface_-_OperationInterface
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:OperationInterface ;
+        rdfs:range    model:OperationSignature .
+
+model:ExternalCallAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:FailureHandlingEntity , model:CallReturnAction , model:AbstractAction .
+
+model:Loop  a            owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractUserAction .
+
+model:NamedElement  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:EClass .
+
+model:components__Repository_-_Repository
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Repository ;
+        rdfs:range    model:RepositoryComponent .
+
+model:communicationLinkResourceType_CommunicationLinkResourceSpecification_-_CommunicationLinkResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:CommunicationLinkResourceSpecification ;
+        rdfs:range    model:CommunicationLinkResourceType .
+
+model:operationSignature__EntryLevelSystemCall_-_EntryLevelSystemCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:EntryLevelSystemCall ;
+        rdfs:range    model:OperationSignature .
+
+model:MTTR_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    xsd:double .
+
+model:resourceRepository__ResourceInterface_-_ResourceInterface
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceInterface ;
+        rdfs:range    model:ResourceRepository .
+
+model:InfrastructureRequiredRole
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:RequiredRole .
+
+model:SubSystem  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SubSystem/5.2"@nsURI ;
+        rdfs:subClassOf  model:RepositoryComponent , model:ComposedProvidingRequiringEntity .
+
+model:connectedResourceContainers_LinkingResource_-_LinkingResource
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:LinkingResource ;
+        rdfs:range    model:ResourceContainer .
+
+model:abstractBranchTransition_ResourceDemandingBehaviour_-_ResourceDemandingBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ResourceDemandingBehaviour ;
+        rdfs:range    model:AbstractBranchTransition .
+
+model:AssemblyContext
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:EmitEventAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:CallAction , model:AbstractAction .
+
+model:OperationInterface_IArukKETEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "_IArukKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "GAE Datastore" ;
+        model:entityName_-_NamedElement
+                "GAE Datastore" ;
+        model:id_-_Identifier  "_IArukKETEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:OperationInterface_FMKYgKETEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "_FMKYgKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Client" ;
+        model:entityName_-_NamedElement
+                "Client" ;
+        model:id_-_Identifier  "_FMKYgKETEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:ResourceProvidedRole
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:subClassOf  model:Role .
+
+model:id_-_Identifier
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://sdq.ipd.uka.de/Identifier/2.1"@nsURI ;
+        rdfs:domain   model:Identifier ;
+        rdfs:range    xsd:string .
+
+model:EEnum  a  owl:Class .
+
+model:assemblyContext_AllocationContext_-_AllocationContext
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:domain   model:AllocationContext ;
+        rdfs:range    model:AssemblyContext .
+
+model:protocol  a        owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Protocol/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:Start  a           owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractUserAction .
+
+model:OperationRequiredRole_Y1qHoKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_Y1qHoKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Common.Storage.OperationRequiredRole1" ;
+        model:entityName_-_NamedElement
+                "Common.Storage.OperationRequiredRole1" ;
+        model:id_-_Identifier  "_Y1qHoKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_777jQKESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_zUmhEKESEeu-mYqkDskRow .
+
+model:outerSinkRole__SinkRole_-_SinkDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:SinkDelegationConnector ;
+        rdfs:range    model:SinkRole .
+
+model:failureType_-_Signature
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Signature ;
+        rdfs:range    model:FailureType .
+
+model:Repository  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:requiringAssemblyContext_AssemblyConnector_-_AssemblyConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:Signature  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:composition  a     owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:core .
+
+model:core  a            owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:asynchronousForkedBehaviours_ForkAction_-_ForkAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ForkAction ;
+        rdfs:range    model:ForkedBehaviour .
+
+model:linkingResource_CommunicationLinkResourceSpecification_-_CommunicationLinkResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:CommunicationLinkResourceSpecification ;
+        rdfs:range    model:LinkingResource .
+
+model:requiredCharacterisations_-_Interface
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Interface ;
+        rdfs:range    model:RequiredCharacterisation .
+
+model:VariableCharacterisationType_STRUCTURE
+        a                       model:VariableCharacterisationType ;
+        model:ELiteral_-_EEnum  "STRUCTURE" ;
+        model:EValue_-_EEnum    "0"^^xsd:int .
+
+model:resourceRepository_ResourceType_-_ResourceType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceType ;
+        rdfs:range    model:ResourceRepository .
+
+model:dataType__Parameter_-_Parameter
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Parameter ;
+        rdfs:range    model:DataType .
+
+model:specification_SpecifiedExecutionTime_-_SpecifiedExecutionTime
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedExecutionTime ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:compositeDataType_InnerDeclaration_-_InnerDeclaration
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:InnerDeclaration ;
+        rdfs:range    model:CompositeDataType .
+
+model:actions_ScenarioBehaviour_-_ScenarioBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:ScenarioBehaviour ;
+        rdfs:range    model:AbstractUserAction .
+
+model:CommunicationLinkResourceSpecification
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:subClassOf  model:Identifier .
+
+model:forkAction_SynchronisationPoint_-_SynchronisationPoint
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:SynchronisationPoint ;
+        rdfs:range    model:ForkAction .
+
+model:ResourceInterface
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:infrastructureSignatures__InfrastructureInterface_-_InfrastructureInterface
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureInterface ;
+        rdfs:range    model:InfrastructureSignature .
+
+model:parameters__OperationSignature_-_OperationSignature
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:OperationSignature ;
+        rdfs:range    model:Parameter .
+
+model:signature__ResourceCall_-_ResourceCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ResourceCall ;
+        rdfs:range    model:ResourceSignature .
+
+model:outerRequiredRole__RequiredInfrastructureDelegationConnector_-_RequiredInfrastructureDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredInfrastructureDelegationConnector ;
+        rdfs:range    model:InfrastructureRequiredRole .
+
+model:resourceSignatures__ResourceInterface_-_ResourceInterface
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceInterface ;
+        rdfs:range    model:ResourceSignature .
+
+model:entryLevelSystemCall_InputParameterUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:EntryLevelSystemCall .
+
+model:VariableCharacterisationType_NUMBER_OF_ELEMENTS
+        a                       model:VariableCharacterisationType ;
+        model:ELiteral_-_EEnum  "NUMBER_OF_ELEMENTS" ;
+        model:EValue_-_EEnum    "1"^^xsd:int .
+
+model:OperationInterface_777jQKESEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "_777jQKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "Storage" ;
+        model:entityName_-_NamedElement
+                "Storage" ;
+        model:id_-_Identifier  "_777jQKESEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:OperationProvidedRole_RmiOgKETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_RmiOgKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Test Driver.Test Driver.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "Test Driver.Test Driver.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_RmiOgKETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface__RE6IKESEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_Bae2oKETEeu-mYqkDskRow .
+
+model:outerResourceRequiredRole_ResourceRequiredDelegationConnector_-_ResourceRequiredDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRequiredDelegationConnector ;
+        rdfs:range    model:ResourceRequiredRole .
+
+model:ProcessingResourceSpecification
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:subClassOf  model:Identifier .
+
+model:providedRole__AssemblyInfrastructureConnector_-_AssemblyInfrastructureConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyInfrastructureConnector ;
+        rdfs:range    model:InfrastructureProvidedRole .
+
+model:assemblyContext__SourceDelegationConnector_-_SourceDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:SourceDelegationConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:resourceEnvironment_LinkingResource_-_LinkingResource
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:LinkingResource ;
+        rdfs:range    model:ResourceEnvironment .
+
+model:innerResourceRequiredRole_ResourceRequiredDelegationConnector_-_ResourceRequiredDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRequiredDelegationConnector ;
+        rdfs:range    model:ResourceRequiredRole .
+
+model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:OperationProvidedRole ;
+        rdfs:range    model:OperationInterface .
+
+model:repository  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:schedulingPolicies__ResourceRepository_-_ResourceRepository
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRepository ;
+        rdfs:range    model:SchedulingPolicy .
+
+model:InfrastructureInterface
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Interface .
+
+model:UnitCarryingElement
+        a                owl:Class ;
+        rdfs:comment     "http://sdq.ipd.uka.de/Units/2.1"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:outerProvidedRole__ProvidedInfrastructureDelegationConnector_-_ProvidedInfrastructureDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ProvidedInfrastructureDelegationConnector ;
+        rdfs:range    model:InfrastructureProvidedRole .
+
+model:Entity  a          owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:NamedElement , model:Identifier .
+
+model:schedulingPolicy_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    model:SchedulingPolicy .
+
+model:VariableCharacterisationType_VALUE
+        a                       model:VariableCharacterisationType ;
+        model:ELiteral_-_EEnum  "VALUE" ;
+        model:EValue_-_EEnum    "2"^^xsd:int .
+
+model:EventChannelSourceConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:Connector .
+
+model:InfrastructureProvidedRole
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:ProvidedRole .
+
+model:OperationRequiredRole
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:RequiredRole .
+
+model:resourceInterface__ResourceSignature_-_ResourceSignature
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceSignature ;
+        rdfs:range    model:ResourceInterface .
+
+model:LoopAction  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractLoopAction .
+
+model:assemblyContext__VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:AssemblyContext .
+
+model:SoftwareInducedFailureType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:FailureType .
+
+model:branchBehaviour_BranchTransition_-_AbstractBranchTransition
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractBranchTransition ;
+        rdfs:range    model:ResourceDemandingBehaviour .
+
+model:OperationInterface_2dI_UKESEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "_2dI_UKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "Logic" ;
+        model:entityName_-_NamedElement
+                "Logic" ;
+        model:id_-_Identifier  "_2dI_UKESEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:InterfaceRequiringEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:ResourceInterfaceRequiringEntity , model:Entity .
+
+model:priority_-_EntryLevelSystemCall
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:EntryLevelSystemCall ;
+        rdfs:range    xsd:integer .
+
+model:parameters__InfrastructureSignature_-_InfrastructureSignature
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureSignature ;
+        rdfs:range    model:Parameter .
+
+model:resourceEnvironment_ResourceContainer_-_ResourceContainer
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ResourceContainer ;
+        rdfs:range    model:ResourceEnvironment .
+
+model:ResourceSignature
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:specification_VariableCharacterisation_-_VariableCharacterisation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableCharacterisation ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:localVariableUsages_SetVariableAction_-_SetVariableAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:SetVariableAction ;
+        rdfs:range    model:VariableUsage .
+
+model:BasicComponent_KGVMcKETEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_KGVMcKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "GAE Datastore" ;
+        model:entityName_-_NamedElement
+                "GAE Datastore" ;
+        model:id_-_Identifier  "_KGVMcKETEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_TPwPEKETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:OperationProvidedRole_SNuKUKETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_SNuKUKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "E2E.E2E.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "E2E.E2E.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_SNuKUKETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface_C6tTQKETEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_EIoe8KETEeu-mYqkDskRow .
+
+model:innerProvidedRole_ProvidedDelegationConnector_-_ProvidedDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ProvidedDelegationConnector ;
+        rdfs:range    model:OperationProvidedRole .
+
+model:assemblyContext__EventChannelSourceConnector_-_EventChannelSourceConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannelSourceConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:PrimitiveTypeEnum_BYTE
+        a                       model:PrimitiveTypeEnum ;
+        model:ELiteral_-_EEnum  "BYTE" ;
+        model:EValue_-_EEnum    "5"^^xsd:int .
+
+model:sinkRole__EventChannelSinkConnector_-_EventChannelSinkConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannelSinkConnector ;
+        rdfs:range    model:SinkRole .
+
+model:OperationRequiredRole_kSxrMKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_kSxrMKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Test Driver.UI.OperationRequiredRole1" ;
+        model:entityName_-_NamedElement
+                "Test Driver.UI.OperationRequiredRole1" ;
+        model:id_-_Identifier  "_kSxrMKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_0kie8KESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_Bae2oKETEeu-mYqkDskRow .
+
+model:innerRequiredRole__RequiredInfrastructureDelegationConnector_-_RequiredInfrastructureDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredInfrastructureDelegationConnector ;
+        rdfs:range    model:InfrastructureRequiredRole .
+
+model:sourceRole__AssemblyEventConnector_-_AssemblyEventConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyEventConnector ;
+        rdfs:range    model:SourceRole .
+
+model:passiveResource_capacity_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:PassiveResource .
+
+model:signature_SpecifiedQoSAnnation_-_SpecifiedQoSAnnotation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedQoSAnnotation ;
+        rdfs:range    model:Signature .
+
+model:connectors__ComposedStructure_-_ComposedStructure
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ComposedStructure ;
+        rdfs:range    model:Connector .
+
+model:exceptionMessage_-_ExceptionType
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:ExceptionType ;
+        rdfs:range    xsd:string .
+
+model:processingResourceSpecification_processingRate_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:ProcessingResourceSpecification .
+
+model:innerProvidedRole__ProvidedInfrastructureDelegationConnector_-_ProvidedInfrastructureDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ProvidedInfrastructureDelegationConnector ;
+        rdfs:range    model:InfrastructureProvidedRole .
+
+model:resourceInterfaces__ResourceRepository_-_ResourceRepository
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRepository ;
+        rdfs:range    model:ResourceInterface .
+
+model:OperationProvidedRole_Q3LOIKETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_Q3LOIKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Storage.Storage.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "Storage.Storage.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_Q3LOIKETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface_777jQKESEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_9JlCIKESEeu-mYqkDskRow .
+
+model:resourceDemandingInternalBehaviours_-_ResourceDemandingSEFF
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ResourceDemandingSEFF ;
+        rdfs:range    model:ResourceDemandingInternalBehaviour .
+
+model:variableCharacterisation_Specification_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:VariableCharacterisation .
+
+model:eventChannelSourceConnector__EventChannel_-_EventChannel
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannel ;
+        rdfs:range    model:EventChannelSourceConnector .
+
+model:passiveResource_BasicComponent_-_BasicComponent
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:BasicComponent ;
+        rdfs:range    model:PassiveResource .
+
+model:BasicComponent_1lMqsKESEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_1lMqsKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "UI" ;
+        model:entityName_-_NamedElement
+                "UI" ;
+        model:id_-_Identifier  "_1lMqsKESEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_OOWxwKETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow ;
+        model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+                model:OperationRequiredRole_aOjNMKETEeu-mYqkDskRow , model:OperationRequiredRole_Va7GIKETEeu-mYqkDskRow .
+
+model:OperationRequiredRole_iejUgKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_iejUgKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "E2E.UI.OperationRequiredRole1" ;
+        model:entityName_-_NamedElement
+                "E2E.UI.OperationRequiredRole1" ;
+        model:id_-_Identifier  "_iejUgKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_0kie8KESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_EIoe8KETEeu-mYqkDskRow .
+
+model:BasicComponent_EIoe8KETEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_EIoe8KETEeu-mYqkDskRow"@id ;
+        rdfs:label             "E2E" ;
+        model:entityName_-_NamedElement
+                "E2E" ;
+        model:id_-_Identifier  "_EIoe8KETEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_SNuKUKETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow ;
+        model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+                model:OperationRequiredRole_iejUgKETEeu-mYqkDskRow .
+
+model:assemblyContext__ProvidedInfrastructureDelegationConnector_-_ProvidedInfrastructureDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ProvidedInfrastructureDelegationConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:successor_AbstractAction_-_AbstractAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractAction ;
+        rdfs:range    model:AbstractAction .
+
+model:eventChannelSinkConnector__EventChannel_-_EventChannel
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannel ;
+        rdfs:range    model:EventChannelSinkConnector .
+
+model:guardedBranchTransition_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:GuardedBranchTransition .
+
+model:assemblyContext__RequiredInfrastructureDelegationConnector_-_RequiredInfrastructureDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredInfrastructureDelegationConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:processingRate_ProcessingResourceSpecification_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:parameter__ResourceSignature_-_ResourceSignature
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceSignature ;
+        rdfs:range    model:Parameter .
+
+model:inputParameterUsages_EntryLevelSystemCall_-_EntryLevelSystemCall
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:EntryLevelSystemCall ;
+        rdfs:range    model:VariableUsage .
+
+model:OperationProvidedRole
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:ProvidedRole .
+
+model:OperationInterface_0kie8KESEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "_0kie8KESEeu-mYqkDskRow"@id ;
+        rdfs:label             "UI" ;
+        model:entityName_-_NamedElement
+                "UI" ;
+        model:id_-_Identifier  "_0kie8KESEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:VariableCharacterisationType_BYTESIZE
+        a                       model:VariableCharacterisationType ;
+        model:ELiteral_-_EEnum  "BYTESIZE" ;
+        model:EValue_-_EEnum    "3"^^xsd:int .
+
+model:innerDeclaration_CompositeDataType_-_CompositeDataType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:CompositeDataType ;
+        rdfs:range    model:InnerDeclaration .
+
+model:providingAssemblyContext_AssemblyConnector_-_AssemblyConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:calledResourceDemandingInternalBehaviour_-_InternalCallAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:InternalCallAction ;
+        rdfs:range    model:ResourceDemandingInternalBehaviour .
+
+model:PrimitiveTypeEnum_LONG
+        a                       model:PrimitiveTypeEnum ;
+        model:ELiteral_-_EEnum  "LONG" ;
+        model:EValue_-_EEnum    "6"^^xsd:int .
+
+model:inputVariableUsages__CallAction_-_CallAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:CallAction ;
+        rdfs:range    model:VariableUsage .
+
+model:passiveResource__ResourceTimeoutFailureType_-_ResourceTimeoutFailureType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:ResourceTimeoutFailureType ;
+        rdfs:range    model:PassiveResource .
+
+model:protocols__Interface_-_Interface
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Interface ;
+        rdfs:range    model:Protocol .
+
+model:internalFailureOccurrenceDescriptions__SoftwareInducedFailureType_-_SoftwareInducedFailureType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:SoftwareInducedFailureType ;
+        rdfs:range    model:InternalFailureOccurrenceDescription .
+
+model:usageScenario_SenarioBehaviour_-_ScenarioBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:ScenarioBehaviour ;
+        rdfs:range    model:UsageScenario .
+
+model:CharacterisedVariable
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:subClassOf  model:Variable .
+
+model:OpenWorkload  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:Workload .
+
+model:DummyClass  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:InfrastructureCall
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:subClassOf  model:CallAction .
+
+model:recoveryActionBehaviours__RecoveryAction_-_RecoveryAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:domain   model:RecoveryAction ;
+        rdfs:range    model:RecoveryActionBehaviour .
+
+model:ComponentSpecifiedExecutionTime
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.2"@nsURI ;
+        rdfs:subClassOf  model:SpecifiedExecutionTime .
+
+model:interface__OperationSignature_-_OperationSignature
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:OperationSignature ;
+        rdfs:range    model:OperationInterface .
+
+model:eventChannel__AllocationContext_-_AllocationContext
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:domain   model:AllocationContext ;
+        rdfs:range    model:EventChannel .
+
+model:Allocation  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:system_Allocation_-_Allocation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:domain   model:Allocation ;
+        rdfs:range    model:System .
+
+model:resourceContainer_ResourceEnvironment_-_ResourceEnvironment
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ResourceEnvironment ;
+        rdfs:range    model:ResourceContainer .
+
+model:availableResourceTypes_ResourceRepository_-_ResourceRepository
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRepository ;
+        rdfs:range    model:ResourceType .
+
+model:Variable  a        owl:Class ;
+        rdfs:comment     "http://sdq.ipd.uka.de/StochasticExpressions/2.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:variableCharacterisation_VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:VariableCharacterisation .
+
+model:loop_LoopIteration_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:Loop .
+
+model:primaryBehaviour__RecoveryAction_-_RecoveryAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:domain   model:RecoveryAction ;
+        rdfs:range    model:RecoveryActionBehaviour .
+
+model:branch_BranchTransition_-_BranchTransition
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:BranchTransition ;
+        rdfs:range    model:Branch .
+
+model:branchTransition_ScenarioBehaviour_-_ScenarioBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:ScenarioBehaviour ;
+        rdfs:range    model:BranchTransition .
+
+model:repository__Interface_-_Interface
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Interface ;
+        rdfs:range    model:Repository .
+
+model:userData_UsageModel_-_UsageModel
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UsageModel ;
+        rdfs:range    model:UserData .
+
+model:parameter  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:PrimitiveDataType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:DataType .
+
+model:parentInterfaces__Interface_-_Interface
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Interface ;
+        rdfs:range    model:Interface .
+
+model:entityName_-_NamedElement
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:NamedElement ;
+        rdfs:range    xsd:string .
+
+model:BasicComponent_Bae2oKETEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_Bae2oKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Test Driver" ;
+        model:entityName_-_NamedElement
+                "Test Driver" ;
+        model:id_-_Identifier  "_Bae2oKETEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_RmiOgKETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow ;
+        model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+                model:OperationRequiredRole_kSxrMKETEeu-mYqkDskRow .
+
+model:ComposedStructure
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:eventGroup__SinkRole_-_SinkRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:SinkRole ;
+        rdfs:range    model:EventGroup .
+
+model:eventChannelSinkConnector__FilterCondition_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:EventChannelSinkConnector .
+
+model:eventGroup__SourceRole_-_SourceRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:SourceRole ;
+        rdfs:range    model:EventGroup .
+
+model:eventType__EmitEventAction_-_EmitEventAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:EmitEventAction ;
+        rdfs:range    model:EventType .
+
+model:sourceRole__EventChannelSourceRole_-_EventChannelSourceConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannelSourceConnector ;
+        rdfs:range    model:SourceRole .
+
+model:CallReturnAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:CallAction .
+
+model:outerRequiredRole_RequiredDelegationConnector_-_RequiredDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredDelegationConnector ;
+        rdfs:range    model:OperationRequiredRole .
+
+model:ProvidedInfrastructureDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:DelegationConnector .
+
+model:allocation  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:action__ResourceCall_-_ResourceCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ResourceCall ;
+        rdfs:range    model:AbstractInternalControlFlowAction .
+
+model:ParameterModifier_none
+        a                       model:ParameterModifier ;
+        model:ELiteral_-_EEnum  "none" ;
+        model:EValue_-_EEnum    "0"^^xsd:int .
+
+model:interface_RequiredCharacterisation_-_RequiredCharacterisation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:RequiredCharacterisation ;
+        rdfs:range    model:Interface .
+
+model:eventType__Parameter_-_Parameter
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Parameter ;
+        rdfs:range    model:EventType .
+
+model:PassiveResource
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:ResourceInterfaceProvidingEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:bodyBehaviour_Loop_-_Loop
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:Loop ;
+        rdfs:range    model:ScenarioBehaviour .
+
+model:DelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Connector .
+
+model:Branch  a          owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractUserAction .
+
+model:eventChannel__EventChannelSourceConnector_-_EventChannelSourceConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannelSourceConnector ;
+        rdfs:range    model:EventChannel .
+
+model:SourceDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:DelegationConnector .
+
+model:OperationRequiredRole_aOjNMKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_aOjNMKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "UI.Logic.OperationRequiredRole2" ;
+        model:entityName_-_NamedElement
+                "UI.Logic.OperationRequiredRole2" ;
+        model:id_-_Identifier  "_aOjNMKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_2dI_UKESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_1lMqsKESEeu-mYqkDskRow .
+
+model:ComponentType_INFRASTRUCTURE_COMPONENT
+        a                       model:ComponentType ;
+        model:ELiteral_-_EEnum  "INFRASTRUCTURE_COMPONENT" ;
+        model:EValue_-_EEnum    "1"^^xsd:int .
+
+model:action_ParametricResourceDemand_-_ParametricResourceDemand
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ParametricResourceDemand ;
+        rdfs:range    model:AbstractInternalControlFlowAction .
+
+model:componentType_-_ImplementationComponentType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:ImplementationComponentType ;
+        rdfs:range    model:ComponentType .
+
+model:system_QoSAnnotations_-_QoSAnnotations
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:QoSAnnotations ;
+        rdfs:range    model:System .
+
+model:synchronisationPoint_ForkedBehaviour_-_ForkedBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ForkedBehaviour ;
+        rdfs:range    model:SynchronisationPoint .
+
+model:branches_Branch_-_BranchAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:BranchAction ;
+        rdfs:range    model:AbstractBranchTransition .
+
+model:hddResourceSpecifications_-_ResourceContainer
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ResourceContainer ;
+        rdfs:range    model:HDDProcessingResourceSpecification .
+
+model:specifiedExecutionTime_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:SpecifiedExecutionTime .
+
+model:MTTF_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    xsd:double .
+
+model:resourceContainer_-_HDDProcessingResourceSpecification
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:HDDProcessingResourceSpecification ;
+        rdfs:range    model:ResourceContainer .
+
+model:reliability  a     owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:parentStructure__AssemblyContext_-_AssemblyContext
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyContext ;
+        rdfs:range    model:ComposedStructure .
+
+model:StartAction  a     owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:requiringAssemblyContext__AssemblyInfrastructureConnector_-_AssemblyInfrastructureConnector
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyInfrastructureConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:ClosedWorkload  a  owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:Workload .
+
+model:allocation_AllocationContext_-_AllocationContext
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:domain   model:AllocationContext ;
+        rdfs:range    model:Allocation .
+
+model:numberOfReplicas_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    xsd:integer .
+
+model:SourceRole  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:RequiredRole .
+
+model:parameter_CollectionIteratorAction_-_CollectionIteratorAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:CollectionIteratorAction ;
+        rdfs:range    model:Parameter .
+
+model:variableUsage_VariableCharacterisation_-_VariableCharacterisation
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableCharacterisation ;
+        rdfs:range    model:VariableUsage .
+
+model:FailureType  a     owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:branchProbability_-_ProbabilisticBranchTransition
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ProbabilisticBranchTransition ;
+        rdfs:range    xsd:double .
+
+model:Connector  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:requiredRole__AssemblyInfrastructureConnector_-_AssemblyInfrastructureConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyInfrastructureConnector ;
+        rdfs:range    model:InfrastructureRequiredRole .
+
+model:namedReference__VariableUsage_-_VariableUsage
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:AbstractNamedReference .
+
+model:VariableCharacterisation
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:ResourceCall  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:subClassOf  model:CallAction .
+
+model:SinkDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:DelegationConnector .
+
+model:branchedBehaviour_BranchTransition_-_BranchTransition
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:BranchTransition ;
+        rdfs:range    model:ScenarioBehaviour .
+
+model:system  a          owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/System/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:PrimitiveTypeEnum_BOOL
+        a                       model:PrimitiveTypeEnum ;
+        model:ELiteral_-_EEnum  "BOOL" ;
+        model:EValue_-_EEnum    "2"^^xsd:int .
+
+model:SynchronisationPoint
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:Identifier .
+
+model:resourceServiceId_-_ResourceSignature
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ResourceSignature ;
+        rdfs:range    xsd:integer .
+
+model:OperationRequiredRole_e_6DYKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_e_6DYKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Storage.GAE Datastore.OperationRequiredRole2" ;
+        model:entityName_-_NamedElement
+                "Storage.GAE Datastore.OperationRequiredRole2" ;
+        model:id_-_Identifier  "_e_6DYKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_IArukKETEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_9JlCIKESEeu-mYqkDskRow .
+
+model:capacity_PassiveResource_-_PassiveResource
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:PassiveResource ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:callAction__VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:CallAction .
+
+model:EClass  a  owl:Class .
+
+model:OperationProvidedRole_OOWxwKETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_OOWxwKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "UI.UI.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "UI.UI.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_OOWxwKETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface_0kie8KESEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_1lMqsKESEeu-mYqkDskRow .
+
+model:AbstractLoopAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:resourceContainer_ProcessingResourceSpecification_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    model:ResourceContainer .
+
+model:qosannotations  a  owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:qos_performance
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.2"@nsURI ;
+        rdfs:subClassOf  model:qosannotations .
+
+model:communicationLinkResourceSpecifcation_throughput_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:CommunicationLinkResourceSpecification .
+
+model:forkAction_ForkedBehaivour_-_ForkedBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ForkedBehaviour ;
+        rdfs:range    model:ForkAction .
+
+model:thinkTime_ClosedWorkload_-_ClosedWorkload
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:ClosedWorkload ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:InfrastructureSignature
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Signature .
+
+model:serviceEffectSpecifications__BasicComponent_-_BasicComponent
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:BasicComponent ;
+        rdfs:range    model:ServiceEffectSpecification .
+
+model:workload_UsageScenario_-_UsageScenario
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UsageScenario ;
+        rdfs:range    model:Workload .
+
+model:softwareInducedFailureType__InternalFailureOccurrenceDescription_-_InternalFailureOccurrenceDescription
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:InternalFailureOccurrenceDescription ;
+        rdfs:range    model:SoftwareInducedFailureType .
+
+model:returnVariableUsage__CallReturnAction_-_CallReturnAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:CallReturnAction ;
+        rdfs:range    model:VariableUsage .
+
+model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:InterfaceRequiringEntity ;
+        rdfs:range    model:RequiredRole .
+
+model:GuardedBranchTransition
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractBranchTransition .
+
+model:outerRequiredRole__RequiredResourceDelegationConnector_-_RequiredResourceDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredResourceDelegationConnector ;
+        rdfs:range    model:ResourceRequiredRole .
+
+model:role_SpecifiedQoSAnnotation_-_SpecifiedQoSAnnotation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedQoSAnnotation ;
+        rdfs:range    model:Role .
+
+model:QoSAnnotations  a  owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:failureProbability_-_FailureOccurrenceDescription
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:FailureOccurrenceDescription ;
+        rdfs:range    xsd:double .
+
+model:OperationProvidedRole_TPwPEKETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_TPwPEKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "GAE Datastore.GAE Datastore.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "GAE Datastore.GAE Datastore.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_TPwPEKETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface_IArukKETEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_KGVMcKETEeu-mYqkDskRow .
+
+model:communicationLinkResourceType__NetworkInducedFailureType_-_NetworkInducedFailureType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:NetworkInducedFailureType ;
+        rdfs:range    model:CommunicationLinkResourceType .
+
+model:throughput_CommunicationLinkResourceSpecification_-_CommunicationLinkResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:CommunicationLinkResourceSpecification ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:ResourceContainer
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:internalFailureOccurrenceDescriptions__InternalAction_-_InternalAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:InternalAction ;
+        rdfs:range    model:InternalFailureOccurrenceDescription .
+
+model:VariableCharacterisationType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:subClassOf  model:EEnum ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  model:VariableCharacterisationType ;
+                           owl:onProperty     model:characterisationType_-_CharacterisedVariable
+                         ] ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  model:VariableCharacterisationType ;
+                           owl:onProperty     model:type_-_VariableCharacterisation
+                         ] ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  model:VariableCharacterisationType ;
+                           owl:onProperty     model:type_-_RequiredCharacterisation
+                         ] ;
+        owl:oneOf        ( model:VariableCharacterisationType_STRUCTURE model:VariableCharacterisationType_NUMBER_OF_ELEMENTS model:VariableCharacterisationType_VALUE model:VariableCharacterisationType_BYTESIZE model:VariableCharacterisationType_TYPE ) .
+
+model:AllocationContext
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:encapsulatedComponent__AssemblyContext_-_AssemblyContext
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyContext ;
+        rdfs:range    model:RepositoryComponent .
+
+model:usageScenario_Workload_-_Workload
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:Workload ;
+        rdfs:range    model:UsageScenario .
+
+model:requiredByContainer_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    xsd:boolean .
+
+model:  a       owl:Ontology .
+
+model:signature__InfrastructureCall_-_InfrastructureCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureCall ;
+        rdfs:range    model:InfrastructureSignature .
+
+model:usageModel_UserData_-_UserData
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UserData ;
+        rdfs:range    model:UsageModel .
+
+model:recoveryAction__RecoveryActionBehaviour_-_RecoveryActionBehaviour
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:domain   model:RecoveryActionBehaviour ;
+        rdfs:range    model:RecoveryAction .
+
+model:EValue_-_EEnum  a  owl:DatatypeProperty ;
+        rdfs:domain  model:EEnum ;
+        rdfs:range   xsd:integer .
+
+model:SchedulingPolicy
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:BasicComponent_GaP8QKETEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_GaP8QKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Client" ;
+        model:entityName_-_NamedElement
+                "Client" ;
+        model:id_-_Identifier  "_GaP8QKETEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_Stjg8KETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow ;
+        model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+                model:OperationRequiredRole_giScIKETEeu-mYqkDskRow .
+
+model:BasicComponent  a  owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:ImplementationComponentType .
+
+model:modifier__Parameter_-_Parameter
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Parameter ;
+        rdfs:range    model:ParameterModifier .
+
+model:failureProbability_-_CommunicationLinkResourceSpecification
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:CommunicationLinkResourceSpecification ;
+        rdfs:range    xsd:double .
+
+model:RandomVariable  a  owl:Class ;
+        rdfs:comment     "http://sdq.ipd.uka.de/StochasticExpressions/2.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:failureTypes__Repository_-_Repository
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Repository ;
+        rdfs:range    model:FailureType .
+
+model:returnType__OperationSignature_-_OperationSignature
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:OperationSignature ;
+        rdfs:range    model:DataType .
+
+model:repository__RepositoryComponent_-_RepositoryComponent
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:RepositoryComponent ;
+        rdfs:range    model:Repository .
+
+model:resourceContainer_AllocationContext_-_AllocationContext
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:domain   model:AllocationContext ;
+        rdfs:range    model:ResourceContainer .
+
+model:ResourceInterfaceRequiringEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:resourceSignature__Parameter_-_Parameter
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Parameter ;
+        rdfs:range    model:ResourceSignature .
+
+model:qos_reliability
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:qosannotations .
+
+model:ResourceRepository
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:RequiredResourceDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:DelegationConnector .
+
+model:OperationInterface_C6tTQKETEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "_C6tTQKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "E2E" ;
+        model:entityName_-_NamedElement
+                "E2E" ;
+        model:id_-_Identifier  "_C6tTQKETEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:RequiredDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:DelegationConnector .
+
+model:BasicComponent_9JlCIKESEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_9JlCIKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "Storage" ;
+        model:entityName_-_NamedElement
+                "Storage" ;
+        model:id_-_Identifier  "_9JlCIKESEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_Q3LOIKETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow ;
+        model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+                model:OperationRequiredRole_e_6DYKETEeu-mYqkDskRow , model:OperationRequiredRole_XL7JsKETEeu-mYqkDskRow .
+
+model:InternalCallAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction , model:CallAction .
+
+model:CompositeDataType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:DataType , model:Entity .
+
+model:subsystem  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SubSystem/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:resourceDemandingSEFF_ResourceDemandingInternalBehaviour_-_ResourceDemandingInternalBehaviour
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ResourceDemandingInternalBehaviour ;
+        rdfs:range    model:ResourceDemandingSEFF .
+
+model:synchronousForkedBehaviours_SynchronisationPoint_-_SynchronisationPoint
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:SynchronisationPoint ;
+        rdfs:range    model:ForkedBehaviour .
+
+model:BasicComponent_zUmhEKESEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_zUmhEKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "Common" ;
+        model:entityName_-_NamedElement
+                "Common" ;
+        model:id_-_Identifier  "_zUmhEKESEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_M9u3YKETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow ;
+        model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+                model:OperationRequiredRole_Y1qHoKETEeu-mYqkDskRow .
+
+model:StopAction  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:ResourceTimeoutFailureType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:SoftwareInducedFailureType .
+
+model:signature_SpecifiedOutputParameterAbstraction_-_SpecifiedOutputParameterAbstraction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedOutputParameterAbstraction ;
+        rdfs:range    model:Signature .
+
+model:timeoutValue_-_AcquireAction
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AcquireAction ;
+        rdfs:range    xsd:double .
+
+model:synchronisingBehaviours_ForkAction_-_ForkAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ForkAction ;
+        rdfs:range    model:SynchronisationPoint .
+
+model:ServiceEffectSpecification
+        a                owl:Class ;
+        rdfs:comment     "abstract"@classType , "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:VariableUsage  a   owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:infrastructureSignature__Parameter_-_Parameter
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Parameter ;
+        rdfs:range    model:InfrastructureSignature .
+
+model:OperationRequiredRole_b_8SUKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_b_8SUKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Logic.Storage.OperationRequiredRole2" ;
+        model:entityName_-_NamedElement
+                "Logic.Storage.OperationRequiredRole2" ;
+        model:id_-_Identifier  "_b_8SUKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_777jQKESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_3LCnIKESEeu-mYqkDskRow .
+
+model:repository__FailureType_-_FailureType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:FailureType ;
+        rdfs:range    model:Repository .
+
+model:sinkAssemblyContext__AssemblyEventConnector_-_AssemblyEventConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyEventConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:PrimitiveTypeEnum_INT
+        a                       model:PrimitiveTypeEnum ;
+        model:ELiteral_-_EEnum  "INT" ;
+        model:EValue_-_EEnum    "0"^^xsd:int .
+
+model:loop_ScenarioBehaviour_-_ScenarioBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:ScenarioBehaviour ;
+        rdfs:range    model:Loop .
+
+model:parentStructure__EventChannel_-_EventChannel
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannel ;
+        rdfs:range    model:ComposedStructure .
+
+model:SpecifiedQoSAnnotation
+        a                owl:Class ;
+        rdfs:comment     "abstract"@classType , "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:OperationRequiredRole_XL7JsKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_XL7JsKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Storage.Common.OperationRequiredRole1" ;
+        model:entityName_-_NamedElement
+                "Storage.Common.OperationRequiredRole1" ;
+        model:id_-_Identifier  "_XL7JsKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_ylL2UKESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_9JlCIKESEeu-mYqkDskRow .
+
+model:latency_CommunicationLinkResourceSpecification_-_CommunicationLinkResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:CommunicationLinkResourceSpecification ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:PrimitiveTypeEnum_STRING
+        a                       model:PrimitiveTypeEnum ;
+        model:ELiteral_-_EEnum  "STRING" ;
+        model:EValue_-_EEnum    "1"^^xsd:int .
+
+model:ResourceInterfaceProvidingRequiringEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:subClassOf  model:ResourceInterfaceProvidingEntity , model:ResourceInterfaceRequiringEntity .
+
+model:AbstractAction  a  owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:CompositeComponent
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:ImplementationComponentType , model:ComposedProvidingRequiringEntity .
+
+model:assemblyContexts__ComposedStructure_-_ComposedStructure
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ComposedStructure ;
+        rdfs:range    model:AssemblyContext .
+
+model:assemblyContext_userData_-_UserData
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UserData ;
+        rdfs:range    model:AssemblyContext .
+
+model:System  a          owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/System/5.2"@nsURI ;
+        rdfs:subClassOf  model:ComposedProvidingRequiringEntity , model:Entity .
+
+model:FailureOccurrenceDescription
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:EClass .
+
+model:RecoveryAction  a  owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:action__InfrastructureCall_-_InfrastructureCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureCall ;
+        rdfs:range    model:AbstractInternalControlFlowAction .
+
+model:failureType__ExternalFailureOccurrenceDescription_-_ExternalFailureOccurrenceDescription
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:ExternalFailureOccurrenceDescription ;
+        rdfs:range    model:FailureType .
+
+model:HardwareInducedFailureType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:FailureType .
+
+model:protocolTypeID_-_Protocol
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Protocol/5.2"@nsURI ;
+        rdfs:domain   model:Protocol ;
+        rdfs:range    xsd:string .
+
+model:ScenarioBehaviour
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:exceptionName_-_ExceptionType
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:ExceptionType ;
+        rdfs:range    xsd:string .
+
+model:retryCount_-_ExternalCallAction
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ExternalCallAction ;
+        rdfs:range    xsd:integer .
+
+model:qosAnnotations_SpecifiedQoSAnnotation_-_SpecifiedQoSAnnotation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedQoSAnnotation ;
+        rdfs:range    model:QoSAnnotations .
+
+model:parametricResourceDemand_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:ParametricResourceDemand .
+
+model:activeResourceType_ActiveResourceSpecification_-_ProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceSpecification ;
+        rdfs:range    model:ProcessingResourceType .
+
+model:providingEntity_ProvidedRole_-_ProvidedRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:ProvidedRole ;
+        rdfs:range    model:InterfaceProvidingEntity .
+
+model:ParameterModifier_in
+        a                       model:ParameterModifier ;
+        model:ELiteral_-_EEnum  "in" ;
+        model:EValue_-_EEnum    "1"^^xsd:int .
+
+model:resourceRequiredDelegationConnectors_ComposedStructure_-_ComposedStructure
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ComposedStructure ;
+        rdfs:range    model:ResourceRequiredDelegationConnector .
+
+model:PCMRandomVariable
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:subClassOf  model:RandomVariable .
+
+model:seff_performance
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:subClassOf  model:seff .
+
+model:communicationLinkResourceSpecifications_LinkingResource_-_LinkingResource
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:LinkingResource ;
+        rdfs:range    model:CommunicationLinkResourceSpecification .
+
+model:BranchAction  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:OperationRequiredRole ;
+        rdfs:range    model:OperationInterface .
+
+model:PrimitiveTypeEnum
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:EEnum ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  model:PrimitiveTypeEnum ;
+                           owl:onProperty     model:type_-_PrimitiveDataType
+                         ] ;
+        owl:oneOf        ( model:PrimitiveTypeEnum_INT model:PrimitiveTypeEnum_STRING model:PrimitiveTypeEnum_BOOL model:PrimitiveTypeEnum_DOUBLE model:PrimitiveTypeEnum_CHAR model:PrimitiveTypeEnum_BYTE model:PrimitiveTypeEnum_LONG ) .
+
+model:OperationRequiredRole_WUytYKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_WUytYKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Logic.Common.OperationRequiredRole1" ;
+        model:entityName_-_NamedElement
+                "Logic.Common.OperationRequiredRole1" ;
+        model:id_-_Identifier  "_WUytYKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_ylL2UKESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_3LCnIKESEeu-mYqkDskRow .
+
+model:EntryLevelSystemCall
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractUserAction .
+
+model:type_-_VariableCharacterisation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableCharacterisation ;
+        rdfs:range    model:VariableCharacterisationType .
+
+[ a                   owl:Restriction ;
+  owl:maxCardinality  "1"^^xsd:int ;
+  owl:onProperty      model:repositoryDescription_-_Repository
+] .
+
+model:innerSinkRole__SinkRole_-_SinkDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:SinkDelegationConnector ;
+        rdfs:range    model:SinkRole .
+
+model:AbstractBranchTransition
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:resourceRequiredRole__ResourceCall_-_ResourceCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ResourceCall ;
+        rdfs:range    model:ResourceRequiredRole .
+
+model:OperationProvidedRole_PZ4JsKETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_PZ4JsKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Logic.Logic.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "Logic.Logic.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_PZ4JsKETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface_2dI_UKESEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_3LCnIKESEeu-mYqkDskRow .
+
+model:EventGroup  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Interface .
+
+model:synchronisationPoint_VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:SynchronisationPoint .
+
+model:RecoveryActionBehaviour
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:ResourceDemandingBehaviour , model:FailureHandlingEntity .
+
+model:providedRole_AssemblyConnector_-_AssemblyConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyConnector ;
+        rdfs:range    model:OperationProvidedRole .
+
+model:innerType_CollectionDataType_-_CollectionDataType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:CollectionDataType ;
+        rdfs:range    model:DataType .
+
+model:resourceProvidedRoles__ResourceInterfaceProvidingEntity_-_ResourceInterfaceProvidingEntity
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:ResourceInterfaceProvidingEntity ;
+        rdfs:range    model:ResourceProvidedRole .
+
+model:ELiteral_-_EEnum
+        a            owl:DatatypeProperty ;
+        rdfs:domain  model:EEnum ;
+        rdfs:range   xsd:string .
+
+model:delay_TimeSpecification_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:Delay .
+
+model:resourceTimeoutFailureType__PassiveResource_-_PassiveResource
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:PassiveResource ;
+        rdfs:range    model:ResourceTimeoutFailureType .
+
+model:outputParameterUsages_EntryLevelSystemCall_-_EntryLevelSystemCall
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:EntryLevelSystemCall ;
+        rdfs:range    model:VariableUsage .
+
+model:expectedExternalOutputs_SpecifiedOutputParameterAbstraction_-_SpecifiedOutputParameterAbstraction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedOutputParameterAbstraction ;
+        rdfs:range    model:VariableUsage .
+
+model:resourceRequiredRoles__ResourceInterfaceRequiringEntity_-_ResourceInterfaceRequiringEntity
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:ResourceInterfaceRequiringEntity ;
+        rdfs:range    model:ResourceRequiredRole .
+
+model:basicComponent_ServiceEffectSpecification_-_ServiceEffectSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ServiceEffectSpecification ;
+        rdfs:range    model:BasicComponent .
+
+model:requiredRole_AssemblyConnector_-_AssemblyConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyConnector ;
+        rdfs:range    model:OperationRequiredRole .
+
+model:VariableCharacterisationType_TYPE
+        a                       model:VariableCharacterisationType ;
+        model:ELiteral_-_EEnum  "TYPE" ;
+        model:EValue_-_EEnum    "4"^^xsd:int .
+
+model:dataTypes__Repository_-_Repository
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Repository ;
+        rdfs:range    model:DataType .
+
+model:ComposedProvidingRequiringEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:InterfaceProvidingRequiringEntity , model:ComposedStructure .
+
+model:Delay  a           owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractUserAction .
+
+model:ParametricResourceDemand
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:writeProcessingRate_-_HDDProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:HDDProcessingResourceSpecification ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:CommunicationLinkResourceType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:subClassOf  model:ResourceType .
+
+model:numberOfCalls__InfrastructureCall_-_InfrastructureCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureCall ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:ResourceDemandingSEFF
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:ResourceDemandingBehaviour , model:ServiceEffectSpecification , model:Identifier .
+
+model:parentType_CompositeDataType_-_CompositeDataType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:CompositeDataType ;
+        rdfs:range    model:CompositeDataType .
+
+model:RequiredCharacterisation
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:usageScenario_UsageModel_-_UsageModel
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UsageModel ;
+        rdfs:range    model:UsageScenario .
+
+model:ProcessingResourceType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:subClassOf  model:ResourceType .
+
+model:InternalAction  a  owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:successor_-_AbstractUserAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:AbstractUserAction ;
+        rdfs:range    model:AbstractUserAction .
+
+model:Protocol  a        owl:Class ;
+        rdfs:comment     "abstract"@classType , "http://palladiosimulator.org/PalladioComponentModel/Protocol/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:openWorkload_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:OpenWorkload .
+
+model:eventGroup__EventChannel_-_EventChannel
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannel ;
+        rdfs:range    model:EventGroup .
+
+model:Identifier  a      owl:Class ;
+        rdfs:comment     "abstract"@classType , "http://sdq.ipd.uka.de/Identifier/2.1"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:AbstractNamedReference
+        a                owl:Class ;
+        rdfs:comment     "http://sdq.ipd.uka.de/StochasticExpressions/2.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:resourceInterfaceProvidingEntity__ResourceProvidedRole_-_ResourceProvidedRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:ResourceProvidedRole ;
+        rdfs:range    model:ResourceInterfaceProvidingEntity .
+
+model:characterisationType_-_CharacterisedVariable
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:CharacterisedVariable ;
+        rdfs:range    model:VariableCharacterisationType .
+
+model:resourceenvironment
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:ResourceType  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:ResourceInterfaceProvidingEntity , model:UnitCarryingElement , model:Entity .
+
+model:sinkRole__AssemblyEventConnector_-_AssemblyEventConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyEventConnector ;
+        rdfs:range    model:SinkRole .
+
+model:basicComponent_PassiveResource_-_PassiveResource
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:PassiveResource ;
+        rdfs:range    model:BasicComponent .
+
+model:OperationRequiredRole_giScIKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_giScIKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Client.GAE Datastore.OperationRequiredRole1" ;
+        model:entityName_-_NamedElement
+                "Client.GAE Datastore.OperationRequiredRole1" ;
+        model:id_-_Identifier  "_giScIKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_IArukKETEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_GaP8QKETEeu-mYqkDskRow .
+
+model:innerRequiredRole_RequiredDelegationConnector_-_RequiredDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredDelegationConnector ;
+        rdfs:range    model:OperationRequiredRole .
+
+model:abstractLoopAction_ResourceDemandingBehaviour_-_ResourceDemandingBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ResourceDemandingBehaviour ;
+        rdfs:range    model:AbstractLoopAction .
+
+model:EventChannelSinkConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:Connector .
+
+model:CollectionIteratorAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractLoopAction .
+
+model:ExceptionType  a   owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:population_-_ClosedWorkload
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:ClosedWorkload ;
+        rdfs:range    xsd:integer .
+
+model:predecessor_AbstractAction_-_AbstractAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractAction ;
+        rdfs:range    model:AbstractAction .
+
+model:ComponentType_BUSINESS_COMPONENT
+        a                       model:ComponentType ;
+        model:ELiteral_-_EEnum  "BUSINESS_COMPONENT" ;
+        model:EValue_-_EEnum    "0"^^xsd:int .
+
+model:parentStructure_ResourceRequiredDelegationConnector_-_ResourceRequiredDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRequiredDelegationConnector ;
+        rdfs:range    model:ComposedStructure .
+
+model:operationSignature__Parameter_-_Parameter
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Parameter ;
+        rdfs:range    model:OperationSignature .
+
+model:ProvidesComponentType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:RepositoryComponent .
+
+model:internalAction__InternalFailureOccurrenceDescription_-_InternalFailureOccurrenceDescription
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:InternalFailureOccurrenceDescription ;
+        rdfs:range    model:InternalAction .
+
+model:ParameterModifier
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:EEnum ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  model:ParameterModifier ;
+                           owl:onProperty     model:modifier__Parameter_-_Parameter
+                         ] ;
+        owl:oneOf        ( model:ParameterModifier_none model:ParameterModifier_in model:ParameterModifier_out model:ParameterModifier_inout ) .
+
+model:FailureHandlingEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:hardwareInducedFailureType__ProcessingResourceType_-_ProcessingResourceType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:ProcessingResourceType ;
+        rdfs:range    model:HardwareInducedFailureType .
+
+model:targetResourceEnvironment_Allocation_-_Allocation
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:domain   model:Allocation ;
+        rdfs:range    model:ResourceEnvironment .
+
+model:AcquireAction  a   owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:timeout_-_AcquireAction
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AcquireAction ;
+        rdfs:range    xsd:boolean .
+
+model:UsageScenario  a   owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:NetworkInducedFailureType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:FailureType .
+
+model:qosAnnotations_SpecifiedOutputParameterAbstraction_-_SpecifiedOutputParameterAbstraction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedOutputParameterAbstraction ;
+        rdfs:range    model:QoSAnnotations .
+
+model:EventType  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Signature .
+
+model:userDataParameterUsages_UserData_-_UserData
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UserData ;
+        rdfs:range    model:VariableUsage .
+
+model:loopAction_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:LoopAction .
+
+model:SinkRole  a        owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:ProvidedRole .
+
+model:UsageModel  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:failureTypes_FailureHandlingEntity_-_FailureHandlingEntity
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:domain   model:FailureHandlingEntity ;
+        rdfs:range    model:FailureType .
+
+model:resourceCall__PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:ResourceCall .
+
+model:exceptions__Signature_-_Signature
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Signature ;
+        rdfs:range    model:ExceptionType .
+
+model:OperationInterface_ylL2UKESEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "_ylL2UKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "Common" ;
+        model:entityName_-_NamedElement
+                "Common" ;
+        model:id_-_Identifier  "_ylL2UKESEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:AbstractInternalControlFlowAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:AbstractAction .
+
+model:activeResourceSpecifications_ResourceContainer_-_ResourceContainer
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ResourceContainer ;
+        rdfs:range    model:ProcessingResourceSpecification .
+
+model:ProbabilisticBranchTransition
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractBranchTransition .
+
+model:RepositoryComponent
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:InterfaceProvidingRequiringEntity .
+
+model:resourcetype  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:parentStructure__Connector_-_Connector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:Connector ;
+        rdfs:range    model:ComposedStructure .
+
+model:providedResourceInterface__ResourceProvidedRole_-_ResourceProvidedRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:ResourceProvidedRole ;
+        rdfs:range    model:ResourceInterface .
+
+model:outerProvidedRole_ProvidedDelegationConnector_-_ProvidedDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ProvidedDelegationConnector ;
+        rdfs:range    model:OperationProvidedRole .
+
+model:CallAction  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:userData_VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:UserData .
+
+model:providingAssemblyContext__AssemblyInfrastructureConnector_-_AssemblyInfrastructureConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyInfrastructureConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:CompleteComponentType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:RepositoryComponent .
+
+model:passiveresource_AcquireAction_-_AcquireAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AcquireAction ;
+        rdfs:range    model:PassiveResource .
+
+model:pcm  a             owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:EPackage .
+
+model:OperationRequiredRole_Va7GIKETEeu-mYqkDskRow
+        a                      model:OperationRequiredRole ;
+        rdfs:comment           "_Va7GIKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "UI.Common.OperationRequiredRole1" ;
+        model:entityName_-_NamedElement
+                "UI.Common.OperationRequiredRole1" ;
+        model:id_-_Identifier  "_Va7GIKETEeu-mYqkDskRow" ;
+        model:requiredInterface__OperationRequiredRole_-_OperationRequiredRole
+                model:OperationInterface_ylL2UKESEeu-mYqkDskRow ;
+        model:requiringEntity_RequiredRole_-_RequiredRole
+                model:BasicComponent_1lMqsKESEeu-mYqkDskRow .
+
+model:predecessor_-_AbstractUserAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:AbstractUserAction ;
+        rdfs:range    model:AbstractUserAction .
+
+model:SpecifiedOutputParameterAbstraction
+        a                owl:Class ;
+        rdfs:comment     "abstract"@classType , "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:nestedResourceContainers__ResourceContainer_-_ResourceContainer
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ResourceContainer ;
+        rdfs:range    model:ResourceContainer .
+
+model:ParameterModifier_out
+        a                       model:ParameterModifier ;
+        model:ELiteral_-_EEnum  "out" ;
+        model:EValue_-_EEnum    "2"^^xsd:int .
+
+model:communicationLinkResourceSpecification_latency_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:CommunicationLinkResourceSpecification .
+
+model:BasicComponent_3LCnIKESEeu-mYqkDskRow
+        a                      model:BasicComponent ;
+        rdfs:comment           "_3LCnIKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "Logic" ;
+        model:entityName_-_NamedElement
+                "Logic" ;
+        model:id_-_Identifier  "_3LCnIKESEeu-mYqkDskRow" ;
+        model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+                model:OperationProvidedRole_PZ4JsKETEeu-mYqkDskRow ;
+        model:repository__RepositoryComponent_-_RepositoryComponent
+                model:Repository_tRJJ0KESEeu-mYqkDskRow ;
+        model:requiredRoles_InterfaceRequiringEntity_-_InterfaceRequiringEntity
+                model:OperationRequiredRole_b_8SUKETEeu-mYqkDskRow , model:OperationRequiredRole_WUytYKETEeu-mYqkDskRow .
+
+model:role_ExternalService_-_ExternalCallAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ExternalCallAction ;
+        rdfs:range    model:OperationRequiredRole .
+
+model:externalFailureOccurrenceDescriptions__SpecifiedReliabilityAnnotation_-_SpecifiedReliabilityAnnotation
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Reliability/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedReliabilityAnnotation ;
+        rdfs:range    model:ExternalFailureOccurrenceDescription .
+
+model:PrimitiveTypeEnum_DOUBLE
+        a                       model:PrimitiveTypeEnum ;
+        model:ELiteral_-_EEnum  "DOUBLE" ;
+        model:EValue_-_EEnum    "3"^^xsd:int .
+
+model:infrastructureCall__Action_-_AbstractInternalControlFlowAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractInternalControlFlowAction ;
+        rdfs:range    model:InfrastructureCall .
+
+model:passiveResource_ReleaseAction_-_ReleaseAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ReleaseAction ;
+        rdfs:range    model:PassiveResource .
+
+model:resourceDemandingBehaviour_AbstractAction_-_AbstractAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractAction ;
+        rdfs:range    model:ResourceDemandingBehaviour .
+
+model:ExternalFailureOccurrenceDescription
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:FailureOccurrenceDescription .
+
+model:UserData  a        owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:role_SpecifiedOutputParameterAbstraction_-_SpecifiedOutputParameterAbstraction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:SpecifiedOutputParameterAbstraction ;
+        rdfs:range    model:Role .
+
+model:Interface  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:eventChannel__ComposedStructure_-_ComposedStructure
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ComposedStructure ;
+        rdfs:range    model:EventChannel .
+
+model:linkingResources__ResourceEnvironment_-_ResourceEnvironment
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ResourceEnvironment ;
+        rdfs:range    model:LinkingResource .
+
+model:InterfaceProvidingRequiringEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:InterfaceRequiringEntity , model:InterfaceProvidingEntity .
+
+model:calledService_ExternalService_-_ExternalCallAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ExternalCallAction ;
+        rdfs:range    model:OperationSignature .
+
+model:specifiedReliabilityAnnotation__ExternalFailureOccurrenceDescription_-_ExternalFailureOccurrenceDescription
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:ExternalFailureOccurrenceDescription ;
+        rdfs:range    model:SpecifiedReliabilityAnnotation .
+
+model:sourceRole__EmitEventAction_-_EmitEventAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:EmitEventAction ;
+        rdfs:range    model:SourceRole .
+
+model:ParameterModifier_inout
+        a                       model:ParameterModifier ;
+        model:ELiteral_-_EEnum  "inout" ;
+        model:EValue_-_EEnum    "3"^^xsd:int .
+
+model:processingResourceType__HardwareInducedFailureType_-_HardwareInducedFailureType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:domain   model:HardwareInducedFailureType ;
+        rdfs:range    model:ProcessingResourceType .
+
+model:assemblyContext_ProvidedDelegationConnector_-_ProvidedDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:ProvidedDelegationConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:parameterName_-_Parameter
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Parameter ;
+        rdfs:range    xsd:string .
+
+model:loopIteration_Loop_-_Loop
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:Loop ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:ProvidedDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:DelegationConnector .
+
+model:branchTransitions_Branch_-_Branch
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:Branch ;
+        rdfs:range    model:BranchTransition .
+
+model:EPackage  a  owl:Class .
+
+model:assemblyContext_RequiredDelegationConnector_-_RequiredDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredDelegationConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:RequiredRole  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Role .
+
+model:sourceAssemblyContext__AssemblyEventConnector_-_AssemblyEventConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyEventConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:repository__DataType_-_DataType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:DataType ;
+        rdfs:range    model:Repository .
+
+model:branchAction_AbstractBranchTransition_-_AbstractBranchTransition
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractBranchTransition ;
+        rdfs:range    model:BranchAction .
+
+model:parameter_-_RequiredCharacterisation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:RequiredCharacterisation ;
+        rdfs:range    model:Parameter .
+
+model:infrastructureCall__PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:InfrastructureCall .
+
+model:outerSourceRole__SourceRole_-_SourceDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:SourceDelegationConnector ;
+        rdfs:range    model:SourceRole .
+
+model:AssemblyEventConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:Connector .
+
+model:requiredResourceInterface__ResourceRequiredRole_-_ResourceRequiredRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRequiredRole ;
+        rdfs:range    model:ResourceInterface .
+
+model:repositoryDescription_-_Repository
+        a             owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Repository ;
+        rdfs:range    xsd:string .
+
+model:specifiedOutputParameterAbstractions_QoSAnnotations_-_QoSAnnotations
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:QoSAnnotations ;
+        rdfs:range    model:SpecifiedOutputParameterAbstraction .
+
+model:eventTypes__EventGroup_-_EventGroup
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:EventGroup ;
+        rdfs:range    model:EventType .
+
+model:ForkedBehaviour
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:ResourceDemandingBehaviour .
+
+model:InnerDeclaration
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:NamedElement .
+
+model:SystemSpecifiedExecutionTime
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.2"@nsURI ;
+        rdfs:subClassOf  model:SpecifiedExecutionTime .
+
+model:callReturnAction__VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:CallReturnAction .
+
+model:filterCondition__AssemblyEventConnector_-_AssemblyEventConnector
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyEventConnector ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:filterCondition__EventChannelSinkConnector_-_EventChannelSinkConnector
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannelSinkConnector ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:CollectionDataType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:DataType , model:Entity .
+
+model:ForkAction  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:steps_Behaviour_-_ResourceDemandingBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ResourceDemandingBehaviour ;
+        rdfs:range    model:AbstractAction .
+
+model:bodyBehaviour_Loop_-_AbstractLoopAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractLoopAction ;
+        rdfs:range    model:ResourceDemandingBehaviour .
+
+model:ResourceRequiredDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:AssemblyInfrastructureConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:Connector .
+
+model:providedRoles_InterfaceProvidingEntity_-_InterfaceProvidingEntity
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:InterfaceProvidingEntity ;
+        rdfs:range    model:ProvidedRole .
+
+model:innerRequiredRole__RequiredResourceDelegationConnector_-_RequiredResourceDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredResourceDelegationConnector ;
+        rdfs:range    model:ResourceRequiredRole .
+
+model:allocationContexts_Allocation_-_Allocation
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2"@nsURI ;
+        rdfs:domain   model:Allocation ;
+        rdfs:range    model:AllocationContext .
+
+model:InternalFailureOccurrenceDescription
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:FailureOccurrenceDescription .
+
+model:requiringEntity_RequiredRole_-_RequiredRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:RequiredRole ;
+        rdfs:range    model:InterfaceRequiringEntity .
+
+model:resourceRepository__SchedulingPolicy_-_SchedulingPolicy
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:SchedulingPolicy ;
+        rdfs:range    model:ResourceRepository .
+
+model:Parameter  a       owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:entryLevelSystemCall_OutputParameterUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:EntryLevelSystemCall .
+
+model:requiredRole__InfrastructureCall_-_InfrastructureCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureCall ;
+        rdfs:range    model:InfrastructureRequiredRole .
+
+model:Repository_tRJJ0KESEeu-mYqkDskRow
+        a                      model:Repository ;
+        rdfs:comment           "_tRJJ0KESEeu-mYqkDskRow"@id ;
+        rdfs:label             "New Repository" ;
+        model:components__Repository_-_Repository
+                model:BasicComponent_KGVMcKETEeu-mYqkDskRow , model:BasicComponent_GaP8QKETEeu-mYqkDskRow , model:BasicComponent_3LCnIKESEeu-mYqkDskRow , model:BasicComponent_Bae2oKETEeu-mYqkDskRow , model:BasicComponent_1lMqsKESEeu-mYqkDskRow , model:BasicComponent_9JlCIKESEeu-mYqkDskRow , model:BasicComponent_zUmhEKESEeu-mYqkDskRow , model:BasicComponent_EIoe8KETEeu-mYqkDskRow ;
+        model:entityName_-_NamedElement
+                "New Repository" ;
+        model:id_-_Identifier  "_tRJJ0KESEeu-mYqkDskRow" ;
+        model:interfaces__Repository_-_Repository
+                model:OperationInterface_777jQKESEeu-mYqkDskRow , model:OperationInterface_0kie8KESEeu-mYqkDskRow , model:OperationInterface_ylL2UKESEeu-mYqkDskRow , model:OperationInterface_2dI_UKESEeu-mYqkDskRow , model:OperationInterface_FMKYgKETEeu-mYqkDskRow , model:OperationInterface_IArukKETEeu-mYqkDskRow , model:OperationInterface_C6tTQKETEeu-mYqkDskRow , model:OperationInterface__RE6IKESEeu-mYqkDskRow .
+
+model:componentParameterUsage_ImplementationComponentType_-_ImplementationComponentType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:ImplementationComponentType ;
+        rdfs:range    model:VariableUsage .
+
+model:BranchTransition
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:specifiedQoSAnnotations_QoSAnnotations_-_QoSAnnotations
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/5.2"@nsURI ;
+        rdfs:domain   model:QoSAnnotations ;
+        rdfs:range    model:SpecifiedQoSAnnotation .
+
+model:Stop  a            owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractUserAction .
+
+model:assemblyEventConnector__FilterCondition_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:AssemblyEventConnector .
+
+model:parentResourceContainer__ResourceContainer_-_ResourceContainer
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:ResourceContainer ;
+        rdfs:range    model:ResourceContainer .
+
+model:providedRole_EntryLevelSystemCall_-_EntryLevelSystemCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:EntryLevelSystemCall ;
+        rdfs:range    model:OperationProvidedRole .
+
+model:numberOfCalls__ResourceCall_-_ResourceCall
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ResourceCall ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:seff  a            owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:assemblyContext_ComponentSpecifiedExecutionTime_-_ComponentSpecifiedExecutionTime
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ComponentSpecifiedExecutionTime ;
+        rdfs:range    model:AssemblyContext .
+
+model:OperationInterface__RE6IKESEeu-mYqkDskRow
+        a                      model:OperationInterface ;
+        rdfs:comment           "__RE6IKESEeu-mYqkDskRow"@id ;
+        rdfs:label             "Test Driver" ;
+        model:entityName_-_NamedElement
+                "Test Driver" ;
+        model:id_-_Identifier  "__RE6IKESEeu-mYqkDskRow" ;
+        model:repository__Interface_-_Interface
+                model:Repository_tRJJ0KESEeu-mYqkDskRow .
+
+model:type_-_RequiredCharacterisation
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:RequiredCharacterisation ;
+        rdfs:range    model:VariableCharacterisationType .
+
+model:closedWorkload_PCMRandomVariable_-_PCMRandomVariable
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/5.2"@nsURI ;
+        rdfs:domain   model:PCMRandomVariable ;
+        rdfs:range    model:ClosedWorkload .
+
+model:type_-_PrimitiveDataType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:PrimitiveDataType ;
+        rdfs:range    model:PrimitiveTypeEnum .
+
+model:ProvidedRole  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Role .
+
+model:interArrivalTime_OpenWorkload_-_OpenWorkload
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:OpenWorkload ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:ResourceDemandingInternalBehaviour
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:ResourceDemandingBehaviour .
+
+model:resourceDemand_Action_-_AbstractInternalControlFlowAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractInternalControlFlowAction ;
+        rdfs:range    model:ParametricResourceDemand .
+
+model:DataType  a        owl:Class ;
+        rdfs:comment     "abstract"@classType , "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:EClass .
+
+model:requiredInterface__InfrastructureRequiredRole_-_InfrastructureRequiredRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureRequiredRole ;
+        rdfs:range    model:InfrastructureInterface .
+
+model:outputParameterUsage_SynchronisationPoint_-_SynchronisationPoint
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:SynchronisationPoint ;
+        rdfs:range    model:VariableUsage .
+
+model:timeSpecification_Delay_-_Delay
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:Delay ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:requiredResource_ParametricResourceDemand_-_ParametricResourceDemand
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ParametricResourceDemand ;
+        rdfs:range    model:ProcessingResourceType .
+
+model:eventGroup__EventType_-_EventType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:EventType ;
+        rdfs:range    model:EventGroup .
+
+model:seff_reliability
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:seff .
+
+model:entity  a          owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:subClassOf  model:core .
+
+model:innerSourceRole__SourceRole_-_SourceDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:SourceDelegationConnector ;
+        rdfs:range    model:SourceRole .
+
+model:AbstractUserAction
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:OperationInterface
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Interface .
+
+model:assemblyContext__RequiredResourceDelegationConnector_-_RequiredResourceDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:RequiredResourceDelegationConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:OperationProvidedRole_Stjg8KETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_Stjg8KETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Client.Client.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "Client.Client.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_Stjg8KETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface_FMKYgKETEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_GaP8QKETEeu-mYqkDskRow .
+
+model:ReleaseAction  a   owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:AbstractInternalControlFlowAction .
+
+model:assemblyContext__SinkDelegationConnector_-_SinkDelegationConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:SinkDelegationConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:setVariableAction_VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:SetVariableAction .
+
+model:networkInducedFailureType__CommunicationLinkResourceType_-_CommunicationLinkResourceType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2"@nsURI ;
+        rdfs:domain   model:CommunicationLinkResourceType ;
+        rdfs:range    model:NetworkInducedFailureType .
+
+model:scenarioBehaviour_AbstractUserAction_-_AbstractUserAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:AbstractUserAction ;
+        rdfs:range    model:ScenarioBehaviour .
+
+model:Role  a            owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:usagemodel  a      owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:subClassOf  model:pcm .
+
+model:specifiedOutputParameterAbstraction_expectedExternalOutputs_VariableUsage_-_VariableUsage
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2"@nsURI ;
+        rdfs:domain   model:VariableUsage ;
+        rdfs:range    model:SpecifiedOutputParameterAbstraction .
+
+model:eventChannel__EventChannelSinkConnector_-_EventChannelSinkConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannelSinkConnector ;
+        rdfs:range    model:EventChannel .
+
+model:parentProvidesComponentTypes_-_CompleteComponentType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:CompleteComponentType ;
+        rdfs:range    model:ProvidesComponentType .
+
+model:interfaces__Repository_-_Repository
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:Repository ;
+        rdfs:range    model:Interface .
+
+model:OperationProvidedRole_M9u3YKETEeu-mYqkDskRow
+        a                      model:OperationProvidedRole ;
+        rdfs:comment           "_M9u3YKETEeu-mYqkDskRow"@id ;
+        rdfs:label             "Common.Common.OperationProvidedRole1" ;
+        model:entityName_-_NamedElement
+                "Common.Common.OperationProvidedRole1" ;
+        model:id_-_Identifier  "_M9u3YKETEeu-mYqkDskRow" ;
+        model:providedInterface__OperationProvidedRole_-_OperationProvidedRole
+                model:OperationInterface_ylL2UKESEeu-mYqkDskRow ;
+        model:providingEntity_ProvidedRole_-_ProvidedRole
+                model:BasicComponent_zUmhEKESEeu-mYqkDskRow .
+
+model:datatype_InnerDeclaration_-_InnerDeclaration
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:InnerDeclaration ;
+        rdfs:range    model:DataType .
+
+model:PrimitiveTypeEnum_CHAR
+        a                       model:PrimitiveTypeEnum ;
+        model:ELiteral_-_EEnum  "CHAR" ;
+        model:EValue_-_EEnum    "4"^^xsd:int .
+
+model:InterfaceProvidingEntity
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:Entity .
+
+model:infrastructureInterface__InfrastructureSignature_-_InfrastructureSignature
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureSignature ;
+        rdfs:range    model:InfrastructureInterface .
+
+model:LinkingResource
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:HDDProcessingResourceSpecification
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:subClassOf  model:ProcessingResourceSpecification .
+
+model:failureHandlingAlternatives__RecoveryActionBehaviour_-_RecoveryActionBehaviour
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Reliability/5.2"@nsURI ;
+        rdfs:domain   model:RecoveryActionBehaviour ;
+        rdfs:range    model:RecoveryActionBehaviour .
+
+model:providedInterface__InfrastructureProvidedRole_-_InfrastructureProvidedRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:InfrastructureProvidedRole ;
+        rdfs:range    model:InfrastructureInterface .
+
+model:OperationSignature
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:Signature .
+
+model:SpecifiedExecutionTime
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:SpecifiedQoSAnnotation .
+
+model:qosAnnotations_System_-_System
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/System/5.2"@nsURI ;
+        rdfs:domain   model:System ;
+        rdfs:range    model:QoSAnnotations .
+
+model:ResourceRequiredRole
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:subClassOf  model:Role .
+
+model:describedService__SEFF_-_ServiceEffectSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:ServiceEffectSpecification ;
+        rdfs:range    model:Signature .
+
+model:RequiredInfrastructureDelegationConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:DelegationConnector .
+
+model:AssemblyConnector
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:Connector .
+
+model:parameter__EventType_-_EventType
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:EventType ;
+        rdfs:range    model:Parameter .
+
+model:iterationCount_LoopAction_-_LoopAction
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:LoopAction ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:ImplementationComponentType
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:RepositoryComponent .
+
+model:scenarioBehaviour_UsageScenario_-_UsageScenario
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:UsageScenario ;
+        rdfs:range    model:ScenarioBehaviour .
+
+model:branchCondition_GuardedBranchTransition_-_GuardedBranchTransition
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:GuardedBranchTransition ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:resourceCall__Action_-_AbstractInternalControlFlowAction
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:domain   model:AbstractInternalControlFlowAction ;
+        rdfs:range    model:ResourceCall .
+
+model:SpecifiedReliabilityAnnotation
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/QoSAnnotations/QoS_Reliability/5.2"@nsURI ;
+        rdfs:subClassOf  model:SpecifiedQoSAnnotation .
+
+model:resourceInterfaceRequiringEntity__ResourceRequiredRole_-_ResourceRequiredRole
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2"@nsURI ;
+        rdfs:domain   model:ResourceRequiredRole ;
+        rdfs:range    model:ResourceInterfaceRequiringEntity .
+
+model:specification_ParametericResourceDemand_-_ParametricResourceDemand
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/SEFF/SEFF_Performance/5.2"@nsURI ;
+        rdfs:domain   model:ParametricResourceDemand ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:assemblyContext__EventChannelSinkConnector_-_EventChannelSinkConnector
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:EventChannelSinkConnector ;
+        rdfs:range    model:AssemblyContext .
+
+model:configParameterUsages__AssemblyContext_-_AssemblyContext
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:domain   model:AssemblyContext ;
+        rdfs:range    model:VariableUsage .
+
+model:parentCompleteComponentTypes_-_ImplementationComponentType
+        a             owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:domain   model:ImplementationComponentType ;
+        rdfs:range    model:CompleteComponentType .
+
+model:EventChannel  a    owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2"@nsURI ;
+        rdfs:subClassOf  model:Entity .
+
+model:readProcessingRate_-_HDDProcessingResourceSpecification
+        a             owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:domain   model:HDDProcessingResourceSpecification ;
+        rdfs:range    model:PCMRandomVariable .
+
+model:Workload  a        owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI , "abstract"@classType ;
+        rdfs:subClassOf  model:EClass .
+
+model:ComponentType  a   owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/Repository/5.2"@nsURI ;
+        rdfs:subClassOf  model:EEnum ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  model:ComponentType ;
+                           owl:onProperty     model:componentType_-_ImplementationComponentType
+                         ] ;
+        owl:oneOf        ( model:ComponentType_BUSINESS_COMPONENT model:ComponentType_INFRASTRUCTURE_COMPONENT ) .
+
+model:branchProbability_-_BranchTransition
+        a             owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:comment  "http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2"@nsURI ;
+        rdfs:domain   model:BranchTransition ;
+        rdfs:range    xsd:double .
+
+model:ResourceDemandingBehaviour
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2"@nsURI ;
+        rdfs:subClassOf  model:Identifier .
+
+model:ResourceEnvironment
+        a                owl:Class ;
+        rdfs:comment     "http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2"@nsURI ;
+        rdfs:subClassOf  model:NamedElement .

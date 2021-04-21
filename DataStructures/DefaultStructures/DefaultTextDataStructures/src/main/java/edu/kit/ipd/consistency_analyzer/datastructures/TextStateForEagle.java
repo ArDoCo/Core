@@ -45,6 +45,8 @@ public class TextStateForEagle implements ITextStateWithDistributions {
             // extend existing nounMapping
             NounMappingForEagle existingMapping = nounMappings.get(reference);
             existingMapping.addKindWithProbability(kind, probability);
+            existingMapping.addOccurrence(occurrences);
+            existingMapping.addNode(word);
 
         } else {
             // create new nounMapping
@@ -101,6 +103,18 @@ public class TextStateForEagle implements ITextStateWithDistributions {
     @Override
     public void addNort(IWord n, String ref, double probability, List<String> occurrences) {
         addNounMapping(n, ref.toLowerCase(), MappingKind.NAME_OR_TYPE, probability, occurrences);
+        List<NounMappingForEagle> wordsWithSimilarNode = nounMappings.values()
+                .stream()
+                .filter(mapping -> mapping.getNodes().contains(n))
+                .collect(Collectors.toList());
+        for (NounMappingForEagle mapping : wordsWithSimilarNode) {
+            if (mapping.getProbabilityForName() == 0) {
+                mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
+            }
+            if (mapping.getProbabilityForType() == 0) {
+                mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
+            }
+        }
     }
 
     @Override
