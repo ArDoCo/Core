@@ -156,7 +156,8 @@ public final class SimilarityUtils {
         List<String> instanceNames = instance.getNames();
         List<IRecommendedInstance> selection = recommendedInstances.stream()
                 .filter(//
-                        ri -> SimilarityUtils.areWordsOfListsSimilar(instanceNames, List.of(ri.getName())))
+                        ri -> (SimilarityUtils.areWordsOfListsSimilar(instanceNames, List.of(ri.getName()))
+                                || SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName())))
                 .collect(Collectors.toList());
 
         double getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
