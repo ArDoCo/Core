@@ -15,13 +15,16 @@ public class TextExtractorConfig extends Configuration {
      */
     public final List<String> textAgents;
 
+    public final double similarityPercentage;
+
     public TextExtractorConfig() {
         SystemParameters config = new SystemParameters("/configs/TextExtractor.properties", true);
         textAgents = config.getPropertyAsList("Text_Agents");
+        similarityPercentage = config.getPropertyAsDouble("similarityPercentage");
     }
 
     public TextExtractorConfig(Map<String, String> configs) {
         textAgents = getPropertyAsList("Text_Agents", configs);
-
+        similarityPercentage = getPropertyAsDouble("similarityPercentage", configs);
     }
 }
