@@ -718,9 +718,9 @@ public class FilePrinter {
     private static List<String[]> getLinksAsDataLinesOfConnectionState(IConnectionState connectionState) {
         List<String[]> dataLines = new ArrayList<>();
 
-        dataLines.add(new String[] { "Found TraceLinks: ", "", "" });
+        dataLines.add(new String[] { "#Found TraceLinks: ", "", "" });
         dataLines.add(new String[] { "" });
-        dataLines.add(new String[] { "UID of Modelelement", "SentenceNumber", "Probability" });
+        dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
         for (IInstanceLink instanceLink : connectionState.getInstanceLinks()) {
 

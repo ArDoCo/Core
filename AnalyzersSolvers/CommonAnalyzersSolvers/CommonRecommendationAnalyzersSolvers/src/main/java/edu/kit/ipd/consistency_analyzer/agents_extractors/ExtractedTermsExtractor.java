@@ -249,7 +249,8 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
 
     private IWord getAfterTermNode(IWord termStartNode, ITermMapping term) {
         IWord afterTermNode = termStartNode.getNextWord();
-        for (int i = 0; i < term.getMappings().size(); i++) { afterTermNode = afterTermNode.getNextWord(); }
+        for (int i = 0; i < term.getMappings().size() && afterTermNode != null; i++) { afterTermNode = afterTermNode.getNextWord(); }
+
         return afterTermNode;
     }
 
@@ -262,12 +263,12 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
 
         List<INounMapping> possibleMappings = new ArrayList<>();
 
-        if (sentence == preTermNode.getSentenceNo()) {
+        if (preTermNode != null && sentence == preTermNode.getSentenceNo()) {
 
             List<INounMapping> nounMappingsOfPreTermNode = textState.getNounMappingsByNode(preTermNode);
             possibleMappings.addAll(nounMappingsOfPreTermNode);
         }
-        if (sentence == afterTermNode.getSentenceNo()) {
+        if (afterTermNode != null && sentence == afterTermNode.getSentenceNo()) {
             List<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByNode(afterTermNode);
             possibleMappings.addAll(nounMappingsOfAfterTermNode);
         }
