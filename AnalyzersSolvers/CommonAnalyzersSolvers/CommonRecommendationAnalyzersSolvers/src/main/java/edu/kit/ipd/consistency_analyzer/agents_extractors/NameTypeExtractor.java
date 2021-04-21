@@ -55,7 +55,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
     @Override
     public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
             Configuration config) {
-        return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
+        return new NameTypeExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
     }
 
     @Override
