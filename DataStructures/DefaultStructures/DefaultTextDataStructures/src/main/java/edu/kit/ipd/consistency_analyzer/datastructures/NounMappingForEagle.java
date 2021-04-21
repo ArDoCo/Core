@@ -381,4 +381,19 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
         }
     }
 
+    @Override
+    public double getProbabilityForName() {
+        return distribution.get(MappingKind.NAME);
+    }
+
+    @Override
+    public double getProbabilityForType() {
+        return distribution.get(MappingKind.TYPE);
+    }
+
+    @Override
+    public double getProbabilityForNort() {
+        return distribution.get(MappingKind.NAME_OR_TYPE);
+    }
+
 }

@@ -302,4 +302,31 @@ public final class NounMapping implements INounMapping {
         }
     }
 
+    @Override
+    public double getProbabilityForName() {
+        if (kind.equals(MappingKind.NAME)) {
+            return probability;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public double getProbabilityForType() {
+        if (kind.equals(MappingKind.TYPE)) {
+            return probability;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public double getProbabilityForNort() {
+        if (kind.equals(MappingKind.NAME_OR_TYPE)) {
+            return probability;
+        } else {
+            return 0;
+        }
+    }
+
 }

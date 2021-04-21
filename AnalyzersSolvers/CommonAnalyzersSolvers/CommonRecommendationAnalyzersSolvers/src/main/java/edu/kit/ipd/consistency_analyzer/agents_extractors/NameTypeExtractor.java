@@ -96,8 +96,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
             textExtractionState.addType(n, similarTypes.get(0), probability);
             IInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
 
-            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-            List<INounMapping> nameMappings = textExtractionState.getNameNodesByNode(pre);
+            List<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(n);
+            List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(pre);
 
             addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nameMappings, typeMappings);
 
@@ -122,8 +122,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
             textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
             IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
-            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-            List<INounMapping> nameMappings = textExtractionState.getNameNodesByNode(after);
+            List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
+            List<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
 
             addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nameMappings, typeMappings);
 
@@ -150,8 +150,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
             textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
             IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
 
-            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-            List<INounMapping> nortMappings = textExtractionState.getNortNodesByNode(pre);
+            List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
+            List<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
 
             addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nortMappings, typeMappings);
         }
@@ -195,8 +195,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
             textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
             IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
-            List<INounMapping> typeMappings = textExtractionState.getTypeNodesByNode(n);
-            List<INounMapping> nortMappings = textExtractionState.getNortNodesByNode(after);
+            List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
+            List<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
 
             addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nortMappings, typeMappings);
         }
