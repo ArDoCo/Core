@@ -14,7 +14,10 @@ public final class TextExtractionStateConfig {
      */
     public static final double HARD_ADD_PROBABILITY = CONFIG.getPropertyAsDouble("hardAddProbability");
 
+    public static final double NORT_PROBABILITY_FOR_NAME_AND_TYPE = CONFIG.getPropertyAsDouble("nortProbabilityForNameAndType");
+
     private static SystemParameters loadParameters(String filePath) {
         return new SystemParameters(filePath, true);
     }
+
 }
