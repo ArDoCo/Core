@@ -14,10 +14,11 @@ public class TextStateForEagle implements ITextStateWithDistributions {
     private Map<String, NounMappingForEagle> nounMappings;
     private List<IRelationMapping> relationMappings;
     private List<ITermMapping> terms;
+    private double similarityPercentage;
 
     @Override
     public ITextState createCopy() {
-        TextStateForEagle textExtractionState = new TextStateForEagle();
+        TextStateForEagle textExtractionState = new TextStateForEagle(similarityPercentage);
         textExtractionState.nounMappings = new HashMap<>(nounMappings);
         textExtractionState.relationMappings = relationMappings.stream().map(IRelationMapping::createCopy).collect(Collectors.toList());
         textExtractionState.terms = terms.stream().map(ITermMapping::createCopy).collect(Collectors.toList());
@@ -27,10 +28,11 @@ public class TextStateForEagle implements ITextStateWithDistributions {
     /**
      * Creates a new name type relation state
      */
-    public TextStateForEagle() {
+    public TextStateForEagle(double similarityPercentage) {
         nounMappings = new HashMap<>();
         relationMappings = new ArrayList<>();
         terms = new ArrayList<>();
+        this.similarityPercentage = similarityPercentage;
     }
 
     private void addNounMapping(IWord word, String reference, MappingKind kind, double probability, List<String> occurrences) {
@@ -40,8 +42,11 @@ public class TextStateForEagle implements ITextStateWithDistributions {
             for (String referencePart : parts) {
                 addNounMapping(word, referencePart, kind, probability, occurrences);
             }
+            return;
 
-        } else if (nounMappings.containsKey(reference)) {
+        }
+
+        if (nounMappings.containsKey(reference)) {
             // extend existing nounMapping
             NounMappingForEagle existingMapping = nounMappings.get(reference);
             existingMapping.addKindWithProbability(kind, probability);
@@ -49,9 +54,32 @@ public class TextStateForEagle implements ITextStateWithDistributions {
             existingMapping.addNode(word);
 
         } else {
-            // create new nounMapping
-            NounMappingForEagle mapping = new NounMappingForEagle(List.of(word), kind, probability, reference, occurrences);
-            nounMappings.put(reference, mapping);
+
+            List<String> similarRefs = nounMappings.keySet()
+                    .stream()
+                    .filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference, similarityPercentage))
+                    .collect(Collectors.toList());
+
+            if (!similarRefs.isEmpty()) {
+                if (similarRefs.size() == 1) {
+                    NounMappingForEagle similarMapping = nounMappings.get(similarRefs.get(0));
+                    similarMapping.addOccurrence(occurrences);
+                    similarMapping.addNode(word);
+                    similarMapping.addKindWithProbability(kind, probability);
+
+                } else {
+                    for (String ref : similarRefs) {
+                        NounMappingForEagle similarMapping = nounMappings.get(ref);
+                        similarMapping.addOccurrence(occurrences);
+                        similarMapping.addNode(word);
+                        similarMapping.addKindWithProbability(kind, probability);
+                    }
+                }
+            } else {
+                // create new nounMapping
+                NounMappingForEagle mapping = new NounMappingForEagle(List.of(word), kind, probability, reference, occurrences);
+                nounMappings.put(reference, mapping);
+            }
         }
 
     }
