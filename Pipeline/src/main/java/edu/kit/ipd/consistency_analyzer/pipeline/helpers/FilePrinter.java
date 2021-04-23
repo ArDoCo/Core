@@ -722,17 +722,30 @@ public class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        for (IInstanceLink instanceLink : connectionState.getInstanceLinks()) {
+        Set<String> modelElementUids = connectionState.getInstanceLinks()
+                .stream()
+                .map(instanceLink -> instanceLink.getModelInstance().getUid())
+                .collect(Collectors.toSet());
+        for (String modelElementUid : modelElementUids) {
+            List<IInstanceLink> instanceLinksForUid = connectionState.getInstanceLinks()
+                    .stream()
+                    .filter(instanceLink -> instanceLink.getModelInstance().getUid().equals(modelElementUid))
+                    .collect(Collectors.toList());
 
-            String probability = Double.toString(instanceLink.getProbability());
-            String modelElementUid = instanceLink.getModelInstance().getUid();
-
-            for (INounMapping nameMapping : instanceLink.getTextualInstance().getNameMappings()) {
-                for (IWord word : nameMapping.getNodes()) {
-                    dataLines.add(new String[] { modelElementUid, Integer.toString(word.getSentenceNo()), probability });
+            IInstanceLink instanceLinkWithBestConfidence = instanceLinksForUid.get(0);
+            for (IInstanceLink instanceLink : instanceLinksForUid) {
+                if (instanceLink.getProbability() > instanceLinkWithBestConfidence.getProbability()) {
+                    instanceLinkWithBestConfidence = instanceLink;
                 }
             }
 
+            String probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
+
+            for (INounMapping nameMapping : instanceLinkWithBestConfidence.getTextualInstance().getNameMappings()) {
+                for (IWord word : nameMapping.getNodes()) {
+                    dataLines.add(new String[] { modelElementUid, Integer.toString(word.getSentenceNo() + 1), probability });
+                }
+            }
         }
         return dataLines;
     }
