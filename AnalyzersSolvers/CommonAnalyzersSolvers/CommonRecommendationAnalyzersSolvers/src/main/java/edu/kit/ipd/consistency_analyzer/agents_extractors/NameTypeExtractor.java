@@ -96,8 +96,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
             textExtractionState.addType(n, similarTypes.get(0), probability);
             IInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
 
-            List<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(n);
-            List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(pre);
+            List<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
+            List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
 
             addRecommendedInstanceIfNodeNotNull(n, textExtractionState, instance, nameMappings, typeMappings);
 
