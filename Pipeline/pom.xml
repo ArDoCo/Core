@@ -1,74 +1,31 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-		<artifactId>consistency_analyzer</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>pipeline</artifactId>
-	<name>Pipeline</name>
-
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<useUniqueVersions>false</useUniqueVersions>
-							<classpathLayoutType>repository</classpathLayoutType>
-							<mainClass>edu.kit.ipd.consistency_analyzer.pipeline.Pipeline</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-
-	<dependencies>
-		<dependency>
-			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>text_extractor</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>model_extractor</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>recommendation_generator</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>connection_generator</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>parse_provider</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>hard_coded_model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.consistency_analyzer</groupId>
-			<artifactId>pcm_ontology_model_interface</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>edu.kit.kastel.mcse.ardoco</groupId>
+    <artifactId>core</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>pipeline</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+  		<artifactId>connection-generator</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+  		<artifactId>recommendation-generator</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+  		<artifactId>text-extractor</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+  		<artifactId>text-provider-indirect</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+  		<artifactId>model-provider-owl</artifactId>
+  	</dependency>
+  </dependencies>
 </project>
