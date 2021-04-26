@@ -5,6 +5,7 @@ import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 
@@ -15,7 +16,7 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
  *
  */
 interface IPARSEExecution {
-	Logger logger = LogManager.getLogger(ParseProvider.class);
+    Logger logger = LogManager.getLogger(ParseProvider.class);
 
-	IGraph calculatePARSEGraph(InputStream text) throws LunaRunException;
+    IGraph calculatePARSEGraph(InputStream text) throws LunaRunException, LunaInitException;
 }

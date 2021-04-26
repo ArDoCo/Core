@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.Duration;
 
+import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
@@ -22,83 +23,83 @@ import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
 
 public class Pipeline {
 
-	public static void main(String[] args) throws LunaRunException {
-		InputStream documentation = Pipeline.class.getResourceAsStream(PipelineConfig.DOCUMENTATION_PATH);
-		// InputStream test =
-		// Pipeline.class.getResourceAsStream(PipelineConfig.TEST_DOCUMENTATION_PATH);
-		run(documentation);
-	}
+    public static void main(String[] args) throws LunaRunException, LunaInitException {
+        InputStream documentation = Pipeline.class.getResourceAsStream(PipelineConfig.DOCUMENTATION_PATH);
+        // InputStream test =
+        // Pipeline.class.getResourceAsStream(PipelineConfig.TEST_DOCUMENTATION_PATH);
+        run(documentation);
+    }
 
-	public static void run(InputStream text) throws LunaRunException {
+    public static void run(InputStream text) throws LunaRunException, LunaInitException {
 
-		new File("evaluations").mkdirs();
-		new File("ecsaEvaluations").mkdirs();
+        new File("evaluations").mkdirs();
+        new File("ecsaEvaluations").mkdirs();
 
-		long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
 
-		ITextConnector connector = new ParseProvider(text);
-		IText annotatedText = connector.getAnnotatedText();
+        ITextConnector connector = new ParseProvider(text);
+        IText annotatedText = connector.getAnnotatedText();
 
-		IModelConnector pcmTeammatesModel = new PcmOntologyModelConnector("src/main/resources/teammates.owl");
-		FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(pcmTeammatesModel), "Teammates");
+        IModelConnector pcmTeammatesModel = new PcmOntologyModelConnector("src/main/resources/teammates.owl");
+        FilePrinter.writeModelInstancesInCsvFile(null, runModelExtractor(pcmTeammatesModel), "Teammates");
 
-		// IModelConnector mediaStoreModel = new
-		// PcmOntologyModelConnector("src/main/resources/mediastore.owl");
-		// FilePrinter.writeModelInstancesInCsvFile(null,
-		// runModelExtractor(mediaStoreModel), "MediaStore");
+        // IModelConnector mediaStoreModel = new
+        // PcmOntologyModelConnector("src/main/resources/mediastore.owl");
+        // FilePrinter.writeModelInstancesInCsvFile(null,
+        // runModelExtractor(mediaStoreModel), "MediaStore");
 
-		// IModelConnector teaStoreModel = new
-		// PcmOntologyModelConnector("src/main/resources/TeaStore.owl");
-		// FilePrinter.writeModelInstancesInCsvFile(null,
-		// runModelExtractor(teaStoreModel), "TeaStore");
+        // IModelConnector teaStoreModel = new
+        // PcmOntologyModelConnector("src/main/resources/TeaStore.owl");
+        // FilePrinter.writeModelInstancesInCsvFile(null,
+        // runModelExtractor(teaStoreModel), "TeaStore");
 
-		AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmTeammatesModel), null, null);
-		data.overwrite(runTextExtractor(data));
-		data.overwrite(runRecommendationGenerator(data));
-		data.overwrite(runConnectionGenerator(data));
+        AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmTeammatesModel), null, null);
+        data.overwrite(runTextExtractor(data));
+        data.overwrite(runRecommendationGenerator(data));
+        data.overwrite(runConnectionGenerator(data));
 
-		Duration duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
+        Duration duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
 
-		printResultsInFiles(data, duration);
-	}
+        printResultsInFiles(data, duration);
+    }
 
-	private static void printResultsInFiles(//
-			AgentDatastructure data, Duration duration) {
+    private static void printResultsInFiles(//
+            AgentDatastructure data, Duration duration) {
 
-		FilePrinter.writeEval1ToFile(data.getText(), data.getTextState(), 0);
-		// FilePrinter.writeRecommendationsToFile(recommendationState, 0);
-		// FilePrinter.writeRecommendedRelationToFile(recommendationState);
-		// FilePrinter.writeConnectionsToFile(connectionState, 0);
-		// FilePrinter.writeConnectionRelationsToFile(connectionState);
+        FilePrinter.writeEval1ToFile(data.getText(), data.getTextState(), 0);
+        // FilePrinter.writeRecommendationsToFile(recommendationState, 0);
+        // FilePrinter.writeRecommendedRelationToFile(recommendationState);
+        // FilePrinter.writeConnectionsToFile(connectionState, 0);
+        // FilePrinter.writeConnectionRelationsToFile(connectionState);
 
-		FilePrinter.writeStatesToFile(data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
-		FilePrinter.writeNounMappingsInCsvFile(null, data.getTextState());
-		FilePrinter.writeTraceLinksInCsvFile(null, data.getConnectionState());
+        FilePrinter.writeStatesToFile(data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
+        FilePrinter.writeNounMappingsInCsvFile(null, data.getTextState());
+        FilePrinter.writeTraceLinksInCsvFile(null, data.getConnectionState());
 
-	}
+    }
 
-	private static IModelState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
-		IModule<IModelState> hardCodedModelExtractor = new ModelProvider(modelConnector);
-		hardCodedModelExtractor.exec();
-		return hardCodedModelExtractor.getState();
-	}
+    private static IModelState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
+        IModule<IModelState> hardCodedModelExtractor = new ModelProvider(modelConnector);
+        hardCodedModelExtractor.exec();
+        return hardCodedModelExtractor.getState();
+    }
 
-	private static AgentDatastructure runTextExtractor(AgentDatastructure data) {
-		IModule<AgentDatastructure> textModule = new TextExtractor(data);
-		textModule.exec();
-		return textModule.getState();
-	}
+    private static AgentDatastructure runTextExtractor(AgentDatastructure data) {
+        IModule<AgentDatastructure> textModule = new TextExtractor(data);
+        textModule.exec();
+        return textModule.getState();
+    }
 
-	private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data) {
-		IModule<AgentDatastructure> recommendationModule = new RecommendationGenerator(data);
-		recommendationModule.exec();
-		return recommendationModule.getState();
-	}
+    private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data) {
+        IModule<AgentDatastructure> recommendationModule = new RecommendationGenerator(data);
+        recommendationModule.exec();
+        return recommendationModule.getState();
+    }
 
-	private static AgentDatastructure runConnectionGenerator(AgentDatastructure data) {
-		IModule<AgentDatastructure> mcAgent = new ConnectionGenerator(data);
-		mcAgent.exec();
-		return mcAgent.getState();
-	}
+    private static AgentDatastructure runConnectionGenerator(AgentDatastructure data) {
+        IModule<AgentDatastructure> mcAgent = new ConnectionGenerator(data);
+        mcAgent.exec();
+        return mcAgent.getState();
+    }
 
 }
