@@ -19,5 +19,4 @@ public interface IModule<T> {
     T getState();
 
     IModule<T> create(T data, Map<String, String> configs);
-
 }

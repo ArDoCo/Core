@@ -86,4 +86,20 @@ public class GenericRecommendationConfig extends Configuration {
         separatedRelationSolverProbility = getPropertyAsDouble("SeparatedRelationsSolver_Probability", configs);
     }
 
+    @Override
+    protected Map<String, String> getAllProperties() {
+        return Map.of(//
+                "Recommendation_Extractors", String.join(" ", recommendationExtractors), "ExtractionDependentOccurrenceAnalyzer_Probability",
+                String.valueOf(extractionDependentOccurrenceAnalyzerProbability), //
+                "ExtractedTermsAnalyzer_ProbabilityAdjacentNoun", String.valueOf(extractedTermsAnalyzerProbabilityAdjacentNoun), //
+                "ExtractedTermsAnalyzer_ProbabilityJustName", String.valueOf(extractedTermsAnalyzerProbabilityJustName), //
+                "ExtractedTermsAnalyzer_ProbabilityAdjacentTerm", String.valueOf(extractedTermsAnalyzerProbabilityAdjacentTerm), //
+                "NameTypeAnalyzer_Probability", String.valueOf(nameTypeAnalyzerProbability), //
+                "ReferenceSolver_Probability", String.valueOf(referenceSolverProbability), //
+                "ReferenceSolver_ProportionalDecrease", String.valueOf(referenceSolverProportionalDecrease), //
+                "ReferenceSolver_areNamesSimilarThreshold", String.valueOf(referenceSolverAreNamesSimilarThreshold), //
+                "SeparatedRelationsSolver_Probability", String.valueOf(separatedRelationSolverProbility) //
+        );
+    }
+
 }
