@@ -11,14 +11,9 @@
 
 	<repositories>
 		<repository>
-			<id>ipdNexus-public-releases</id>
+			<id>ipdNexus-public-all</id>
 			<name>IPD-Repository</name>
-			<url>http://bob.ipd.kit.edu/nexus/repository/maven-public-releases</url>
-		</repository>
-		<repository>
-			<id>ipdNexus-public-snapshots</id>
-			<name>IPD-Repository</name>
-			<url>http://bob.ipd.kit.edu/nexus/repository/maven-public-snapshots</url>
+			<url>http://bob.ipd.kit.edu/nexus/repository/maven-public-all</url>
 		</repository>
 	</repositories>
 
@@ -39,8 +34,12 @@
 			<artifactId>luna</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>edu.kit.ipd.parse</groupId>
+			<groupId>edu.kit.ipd.pronat</groupId>
 			<artifactId>change_watchdog</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.ipd.pronat</groupId>
+			<artifactId>pre_pipeline_data_model</artifactId>
 		</dependency>
 
 		<dependency>
