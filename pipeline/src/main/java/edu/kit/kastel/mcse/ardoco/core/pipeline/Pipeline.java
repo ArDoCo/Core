@@ -124,8 +124,9 @@ public class Pipeline {
 
     private static void printResultsInFiles(File outputDir, AgentDatastructure data, Duration duration) {
 
-        FilePrinter.writeEval1ToFile(Path.of(outputDir.getAbsolutePath(), "eval1.csv").toFile(), data.getText(), data.getTextState(), 0);
-
+        FilePrinter.writeEval1ToFile(Path.of(outputDir.getAbsolutePath(), "eval1.csv").toFile(), data.getText(), data.getTextState());
+        FilePrinter.writeTraceLinksWithTextInFile(Path.of(outputDir.getAbsolutePath(), "traceLinksToText.csv").toFile(), data.getText(),
+                data.getConnectionState());
         FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), "stats.csv").toFile(), //
                 data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
         FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), "noun_mappings.csv").toFile(), data.getTextState());
