@@ -107,7 +107,7 @@ public class FilePrinter {
         return true;
     }
 
-    public static void writeEval1ToFile(File debugGraphSentences, IText graph, ITextState textExtractionState, double min) {
+    public static void writeEval1ToFile(File debugGraphSentences, IText graph, ITextState textExtractionState) {
 
         boolean fileCreated = createFileIfNonExistent(debugGraphSentences);
         if (!fileCreated) {
@@ -143,15 +143,58 @@ public class FilePrinter {
             }
             myWriter.append(LINE_SEPARATOR + valueBuilder.toString() + LINE_SEPARATOR);
 
-            myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-            myWriter.append(PROCESSING_TIME + min);
-
             logger.info(SUCCESS_WRITE);
         } catch (IOException | NumberFormatException e) {
             logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e.getCause());
         }
 
+    }
+
+    public static void writeTraceLinksWithTextInFile(File debugGraphSentences, IText graph, IConnectionState connectionState) {
+        boolean fileCreated = createFileIfNonExistent(debugGraphSentences);
+        if (!fileCreated) {
+            return;
+        }
+
+        try (FileWriter myWriter = new FileWriter(debugGraphSentences)) {
+            int minSentenceNumber = 0;
+            StringBuilder valueBuilder = new StringBuilder(SINGLE_SEPARATOR_WITH_SPACES);
+
+            for (IWord node : graph.getWords()) {
+                int sentenceNo = Integer.parseInt(String.valueOf(node.getSentenceNo()));
+
+                if (sentenceNo + 1 > minSentenceNumber) {
+                    myWriter.append(LINE_SEPARATOR + valueBuilder.toString() + LINE_SEPARATOR);
+                    myWriter.append(LINE_SEPARATOR + (sentenceNo + 1) + SINGLE_SEPARATOR_WITH_SPACES);
+                    valueBuilder = new StringBuilder(SINGLE_SEPARATOR_WITH_SPACES);
+                    minSentenceNumber++;
+                }
+
+                String nodeValue = node.getText();
+                if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
+                    continue;
+                }
+                myWriter.append(nodeValue + SINGLE_SEPARATOR_WITH_SPACES);
+
+                if (!connectionState.getInstanceLinks()
+                        .stream()
+                        .anyMatch(
+                                link -> link.getTextualInstance().getNameMappings().stream().anyMatch(mapping -> mapping.getNodes().contains(node) == true))) {
+                    valueBuilder.append("0");
+                    valueBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
+                } else {
+                    valueBuilder.append("1");
+                    valueBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
+                }
+            }
+            myWriter.append(LINE_SEPARATOR + valueBuilder.toString() + LINE_SEPARATOR);
+
+            logger.info(SUCCESS_WRITE);
+        } catch (IOException | NumberFormatException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e.getCause());
+        }
     }
 
     public static void writeRecommendedRelationToFile(IRecommendationState recommendationState) {
