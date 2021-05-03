@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -10,28 +9,23 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMappingWithDistribution;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
 
-public class NounMappingForEagle implements INounMappingWithDistribution {
+public class NounMappingWithDistribution extends AbstractNounMapping implements INounMappingWithDistribution {
 
-    private List<IWord> words;
     private MappingKind mostProbableKind;
     private Double highestProbability;
     private Map<MappingKind, Double> distribution;
-    private String reference;
-    private List<String> occurrences;
 
-    public NounMappingForEagle(List<IWord> words, Map<MappingKind, Double> distribution, String reference, List<String> occurrences) {
+    public NounMappingWithDistribution(List<IWord> words, Map<MappingKind, Double> distribution, String reference, List<String> occurrences) {
         this.words = new ArrayList<>(words);
         initializeDistribution(distribution);
         this.reference = reference;
         this.occurrences = new ArrayList<>(occurrences);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
-
     }
 
     private void initializeDistribution(Map<MappingKind, Double> distribution) {
@@ -50,7 +44,7 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
 
     }
 
-    public NounMappingForEagle(List<IWord> words, MappingKind kind, double probability, String reference, List<String> occurrences) {
+    public NounMappingWithDistribution(List<IWord> words, MappingKind kind, double probability, String reference, List<String> occurrences) {
         Map<MappingKind, Double> distribution = new HashMap<>();
         distribution.put(kind, probability);
 
@@ -66,27 +60,14 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
         recalculateProbability(kind, probability);
     }
 
-    private void updateBestValues() {
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        if (mostProbableKind != null) {
-            highestProbability = distribution.get(mostProbableKind);
-        }
-    }
-
     @Override
-    public NounMappingForEagle createCopy() {
-        return new NounMappingForEagle(words, distribution, reference, occurrences);
-    }
-
-    public void hardsetProbabilities(double name, double type, double nort) {
-        distribution.put(MappingKind.NAME, name);
-        distribution.put(MappingKind.TYPE, type);
-        distribution.put(MappingKind.NAME_OR_TYPE, nort);
+    public NounMappingWithDistribution createCopy() {
+        return new NounMappingWithDistribution(words, distribution, reference, occurrences);
     }
 
     @Override
     public Map<MappingKind, Double> getDistribution() {
-        return distribution;
+        return new EnumMap<>(distribution);
     }
 
     /**
@@ -121,52 +102,7 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
      */
     @Override
     public void hardSetProbability(double newProbability) {
-
         recalculateProbability(mostProbableKind, newProbability);
-    }
-
-    /**
-     * Returns the occurrences of this mapping.
-     *
-     * @return all appearances of the mapping
-     */
-    @Override
-    public List<String> getOccurrences() {
-        return occurrences;
-    }
-
-    /**
-     * Returns all nodes contained by the mapping
-     *
-     * @return all mapping nodes
-     */
-    @Override
-    public List<IWord> getNodes() {
-        return words;
-    }
-
-    /**
-     * Adds nodes to the mapping, if they are not already contained.
-     *
-     * @param nodes graph nodes to add to the mapping
-     */
-    @Override
-    public void addNodes(List<IWord> nodes) {
-        for (IWord n : nodes) {
-            addNode(n);
-        }
-    }
-
-    /**
-     * Adds a node to the mapping, it its not already contained.
-     *
-     * @param n graph node to add.
-     */
-    @Override
-    public void addNode(IWord n) {
-        if (!words.contains(n)) {
-            words.add(n);
-        }
     }
 
     /**
@@ -187,16 +123,6 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
     @Override
     public MappingKind getKind() {
         return mostProbableKind;
-    }
-
-    /**
-     * Returns the reference, the comparable and naming attribute of this mapping.
-     *
-     * @return the reference
-     */
-    @Override
-    public String getReference() {
-        return reference;
     }
 
     /**
@@ -226,51 +152,6 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
             }
             highestProbability = distribution.get(mostProbableKind);
         }
-    }
-
-    /*
-     * private void recalculateProbability(MappingKind kind, double newProbability) {
-     *
-     * double name = distribution.get(MappingKind.NAME); double type = distribution.get(MappingKind.TYPE); double nort =
-     * distribution.get(MappingKind.NAME_OR_TYPE);
-     *
-     * double loss = 0.8; double currentProbability = distribution.get(kind);
-     *
-     *
-     * if (kind.equals(MappingKind.NAME_OR_TYPE) && (name > 0 || type > 0)) { double probabilityToSetName = loss * ;
-     *
-     *
-     *
-     *
-     * } else { double probabilityToSet = loss * (newProbability + currentProbability);
-     *
-     * if (name + type + nort + probabilityToSet - distribution.get(kind) <= 1) { distribution.put(kind,
-     * probabilityToSet); } else { double scale = 1 / (name + type + nort - distribution.get(kind) + probabilityToSet);
-     * rescaleProbabilities(scale); } } updateBestValues(); }
-     */
-
-    private void rescaleProbabilities(double scale) {
-        double name = distribution.get(MappingKind.NAME);
-        double type = distribution.get(MappingKind.TYPE);
-        double nort = distribution.get(MappingKind.NAME_OR_TYPE);
-        distribution.put(MappingKind.NAME, name * scale);
-        distribution.put(MappingKind.TYPE, type * scale);
-        distribution.put(MappingKind.NAME_OR_TYPE, nort * scale);
-    }
-
-    /**
-     * Returns the sentence numbers of occurrences, sorted.
-     *
-     * @return sentence numbers of the occurrences of this mapping.
-     */
-    @Override
-    public List<Integer> getMappingSentenceNo() {
-        List<Integer> positions = new ArrayList<>();
-        for (IWord n : words) {
-            positions.add(n.getSentenceNo() + 1);
-        }
-        Collections.sort(positions);
-        return positions;
     }
 
     /**
@@ -306,54 +187,14 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        NounMappingForEagle other = (NounMappingForEagle) obj;
+        NounMappingWithDistribution other = (NounMappingWithDistribution) obj;
         if (!Objects.equals(reference, other.reference)) {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Adds occurrences to the mapping
-     *
-     * @param occurrences2 occurrences to add
-     */
-    @Override
-    public void addOccurrence(List<String> occurrences2) {
-        for (String occ2 : occurrences2) {
-            if (!occurrences.contains(occ2)) {
-                occurrences.add(occ2);
-            }
-        }
-    }
-
-    /**
-     * Copies all nodes and occurrences matching the occurrence to another mapping
-     *
-     * @param occurrence     the occurrence to copy
-     * @param createdMapping the other mapping
-     */
-    @Override
-    public void copyOccurrencesAndNodesTo(String occurrence, INounMapping createdMapping) {
-        List<IWord> occNodes = words.stream().filter(n -> n.getText().equals(occurrence)).collect(Collectors.toList());
-        createdMapping.addNodes(occNodes);
-        createdMapping.addOccurrence(List.of(occurrence));
-
-    }
-
-    /**
-     * Returns a list of all node lemmas encapsulated by a mapping.
-     *
-     * @return list of containing node lemmas
-     */
-    public List<String> getMappingLemmas() {
-        return words.stream().map(IWord::getLemma).collect(Collectors.toList());
     }
 
     /**
@@ -363,7 +204,6 @@ public class NounMappingForEagle implements INounMappingWithDistribution {
      */
     @Override
     public void updateProbability(double newProbability) {
-
         if (highestProbability == 1.0) {
             // do nothing
         } else if (newProbability == 1.0) {
