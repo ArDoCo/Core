@@ -54,7 +54,7 @@ public class CoreferenceResolution extends AbstractAgent {
     private static final String SENTENCE_NUMBER = "sentenceNumber";
     private static final String ANNOTATOR_NAME = "BasicDependenciesAnnotation";
     private static final String TOKEN_LEMMA_ATTRIBUTE_NAME = "lemma";
-    private static final List<String> COREF_ALGORITHMS = List.of("neural", "fastneural", "statistical", "clustering", "hybrid");
+    private static final List<String> COREF_ALGORITHMS = List.of("neural", "statistical", "clustering");
 
     private WordsToSentencesAnnotator ssplit = null;
     private NERCombinerAnnotator nerAnnotator;
