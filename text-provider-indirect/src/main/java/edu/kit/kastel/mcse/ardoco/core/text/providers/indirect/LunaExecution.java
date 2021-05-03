@@ -43,7 +43,8 @@ class LunaExecution implements IPARSEExecution {
 
         Properties lunaProps = ConfigManager.getConfiguration(Luna.class);
         lunaProps.setProperty("PRE_PIPE", String.join(",", "indirect_tokenizer", "textSNLP", "graphBuilder"));
-        lunaProps.setProperty("AGENTS", String.join(",", "depParser", "changeWatchdog"));
+        lunaProps.setProperty("AGENTS",
+                String.join(",", "depParser", /* "entityRecognizer", "conceptualizer", "corefAnalyzer", */"changeWatchdog"));
 
         Luna luna = Luna.getInstance();
         PrePipelineData ppd = new PrePipelineData();
