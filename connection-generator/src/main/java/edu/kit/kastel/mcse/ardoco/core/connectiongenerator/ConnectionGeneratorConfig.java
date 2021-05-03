@@ -24,4 +24,9 @@ public class ConnectionGeneratorConfig extends Configuration {
      */
     public final List<String> connectionAgents;
 
+    @Override
+    protected Map<String, String> getAllProperties() {
+        return Map.of("Connection_Agents", String.join(" ", connectionAgents));
+    }
+
 }

@@ -24,4 +24,9 @@ public class RecommendationGeneratorConfig extends Configuration {
      */
     public final List<String> recommendationAgents;
 
+    @Override
+    protected Map<String, String> getAllProperties() {
+        return Map.of("Recommendation_Agents", String.join(" ", recommendationAgents));
+    }
+
 }

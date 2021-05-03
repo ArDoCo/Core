@@ -15,7 +15,7 @@ import org.eclipse.collections.impl.factory.Lists;
 public class SystemParameters {
 
     private final Properties prop = new Properties();
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(SystemParameters.class);
 
     public SystemParameters(String filepath, boolean isResource) {
 

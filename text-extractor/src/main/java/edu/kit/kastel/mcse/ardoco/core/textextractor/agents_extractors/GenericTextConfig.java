@@ -70,4 +70,17 @@ public class GenericTextConfig extends Configuration {
 
     }
 
+    @Override
+    protected Map<String, String> getAllProperties() {
+        return Map.of(//
+                "Extractors", String.join(" ", textExtractors), //
+                "ArticleTypeNameAnalyzer_Probability", String.valueOf(articleTypeNameAnalyzerProbability), //
+                "InDepArcsAnalyzer_Probability", String.valueOf(inDepArcsAnalyzerProbability), //
+                "MultiplePartSolver_Probability", String.valueOf(multiplePartSolverProbability), //
+                "NounAnalyzer_Probability", String.valueOf(nounAnalyzerProbability), //
+                "OutDepArcsAnalyzer_Probability", String.valueOf(outDepArcsAnalyzerProbability), //
+                "SeparatedNamesAnalyzer_Probability", String.valueOf(separatedNamesAnalyzerProbability) //
+        );
+    }
+
 }

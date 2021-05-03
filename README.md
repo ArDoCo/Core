@@ -10,4 +10,25 @@ This project is based on the master thesis [Linking Software Architecture Docume
 
 For more information about the setup or the architecture have a look on the [wiki](https://github.com/ArDoCo/Core/wiki/Overview).
 
+## CLI
+The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW Architecture Documentation. The CLI is part of the pipeline module of this project. The PCM models have to be converted to ontologies using [Ecore2OWL](https://github.com/kit-sdq/Ecore2OWL).
 
+### Usage
+```
+java -jar ardoco-core-pipeline \
+	
+	-n NAME_OF_THE_PROJECT (will be stored in the results)
+	-m PATH_TO_THE_PCM_MODEL_AS_OWL (use Ecore2OWL to obtain PCM models as ontology)
+	-t PATH_TO_PLAIN_TEXT
+	-o PATH_TO_OUTPUT_FOLDER
+	
+	Optional Parameters:
+	
+	-c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
+	
+```
+
+### Case Studies
+To test the Core, you could use case studies provided in ..
+* [ArDoCo Case Studies](https://github.com/ArDoCo/CaseStudies)
+* [SWATTR](https://github.com/ArDoCo/SWATTR)
