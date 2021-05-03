@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.parse;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents;
 
 import java.util.List;
 

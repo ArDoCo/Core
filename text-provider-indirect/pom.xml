@@ -58,10 +58,6 @@
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>textSNLP</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
-			<artifactId>util</artifactId>
-		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>edu.kit.ipd.indirect</groupId> -->
 <!-- 			<artifactId>coref</artifactId> -->
