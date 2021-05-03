@@ -40,7 +40,7 @@ public final class NounMappingFactory {
 	 * @return the created name mapping
 	 */
 	public static INounMapping createNameNode(List<IWord> nodes, double probability, String name, List<String> occurrences) {
-		return new NounMapping(nodes, probability, MappingKind.NAME, name, occurrences);
+		return new NounMappingWithoutDistribution(nodes, probability, MappingKind.NAME, name, occurrences);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public final class NounMappingFactory {
 	 * @return the created name mapping
 	 */
 	public static INounMapping createNameMapping(IWord node, double probability, String type, List<String> occurrences) {
-		return new NounMapping(List.of(node), probability, MappingKind.NAME, type, occurrences);
+		return new NounMappingWithoutDistribution(List.of(node), probability, MappingKind.NAME, type, occurrences);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public final class NounMappingFactory {
 	 * @return the created type mapping
 	 */
 	public static INounMapping createTypeMapping(IWord node, double probability, String type, List<String> occurrences) {
-		return new NounMapping(List.of(node), probability, MappingKind.TYPE, type, occurrences);
+		return new NounMappingWithoutDistribution(List.of(node), probability, MappingKind.TYPE, type, occurrences);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public final class NounMappingFactory {
 	 * @return the created type mapping
 	 */
 	public static INounMapping createTypeNode(List<IWord> nodes, double probability, String type, List<String> occurrences) {
-		return new NounMapping(nodes, probability, MappingKind.TYPE, type, occurrences);
+		return new NounMappingWithoutDistribution(nodes, probability, MappingKind.TYPE, type, occurrences);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public final class NounMappingFactory {
 	 * @return the created name or type mapping
 	 */
 	public static INounMapping createNortMapping(IWord node, double probability, String type, List<String> occurrences) {
-		return new NounMapping(List.of(node), probability, MappingKind.NAME_OR_TYPE, type, occurrences);
+		return new NounMappingWithoutDistribution(List.of(node), probability, MappingKind.NAME_OR_TYPE, type, occurrences);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class NounMappingFactory {
 	 * @return the created name or type mapping
 	 */
 	public static INounMapping createNortNode(List<IWord> nodes, double probability, String ref, List<String> occurrences) {
-		return new NounMapping(nodes, probability, MappingKind.NAME_OR_TYPE, ref, occurrences);
+		return new NounMappingWithoutDistribution(nodes, probability, MappingKind.NAME_OR_TYPE, ref, occurrences);
 	}
 
 }

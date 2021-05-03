@@ -14,10 +14,10 @@ import edu.kit.ipd.indirect.tokenizer.Tokenizer;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
-import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
+import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.CoreferenceResolution;
 
 /**
@@ -94,16 +94,22 @@ class SingleExecution implements IPARSEExecution {
             }
             throw new LunaRunException(e);
         }
-
         return ppd;
     }
 
     private void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws LunaRunException {
         DepParser depAgent = new DepParser();
         execute(graph, depAgent);
-
         CoreferenceResolution coref = new CoreferenceResolution();
         execute(graph, coref);
+
+        // EntityRecognizer entityRecognizer = new EntityRecognizer();
+        // execute(graph, entityRecognizer);
+        // Conceptualizer conceptualizer = new Conceptualizer();
+        // execute(graph, conceptualizer);
+        // CorefAnalyzer corefAnalyzer = new CorefAnalyzer();
+        // execute(graph, corefAnalyzer);
+
     }
 
     /**
