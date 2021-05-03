@@ -15,6 +15,7 @@ import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.INodeType;
+import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
@@ -27,7 +28,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.DeterministicCorefAnnotator;
+import edu.stanford.nlp.pipeline.CorefAnnotator;
 import edu.stanford.nlp.pipeline.NERCombinerAnnotator;
 import edu.stanford.nlp.pipeline.ParserAnnotator;
 import edu.stanford.nlp.pipeline.WordsToSentencesAnnotator;
@@ -35,6 +36,7 @@ import edu.stanford.nlp.util.CoreMap;
 
 @MetaInfServices(AbstractAgent.class)
 public class CoreferenceResolution extends AbstractAgent {
+    private static final String COREF_ALGORITHM_ATTRIBUTE = "coref.algorithm";
     private static final Logger logger = LoggerFactory.getLogger(CoreferenceResolution.class);
     private static final String ID = "coref";
 
@@ -52,11 +54,12 @@ public class CoreferenceResolution extends AbstractAgent {
     private static final String SENTENCE_NUMBER = "sentenceNumber";
     private static final String ANNOTATOR_NAME = "BasicDependenciesAnnotation";
     private static final String TOKEN_LEMMA_ATTRIBUTE_NAME = "lemma";
+    private static final List<String> COREF_ALGORITHMS = List.of("neural", "fastneural", "statistical", "clustering", "hybrid");
 
     private WordsToSentencesAnnotator ssplit = null;
     private NERCombinerAnnotator nerAnnotator;
     private ParserAnnotator parserAnnotator;
-    private DeterministicCorefAnnotator corefAnnotator;
+    private CorefAnnotator corefAnnotator;
 
     private INodeType corefClusterNodeType = null;
     private IArcType corefArcType = null;
@@ -64,7 +67,11 @@ public class CoreferenceResolution extends AbstractAgent {
     @Override
     public void init() {
         // TODO add proper properties
-        // Properties props = ConfigManager.getConfiguration(CoreferenceResolution.class);
+        Properties props = ConfigManager.getConfiguration(CoreferenceResolution.class);
+        String corefAlgorithm = props.getProperty(COREF_ALGORITHM_ATTRIBUTE, COREF_ALGORITHMS.get(0));
+        if (!COREF_ALGORITHMS.contains(corefAlgorithm)) {
+            logger.warn("Provided CoRef-Algorithm not found. Selecting default.");
+        }
 
         try {
             nerAnnotator = new NERCombinerAnnotator();
@@ -73,8 +80,10 @@ public class CoreferenceResolution extends AbstractAgent {
         }
         Properties parserProperties = new Properties();
         parserAnnotator = new ParserAnnotator(ANNOTATOR_NAME, parserProperties);
+
         Properties corefProperties = new Properties();
-        corefAnnotator = new DeterministicCorefAnnotator(corefProperties);
+        corefProperties.put(COREF_ALGORITHM_ATTRIBUTE, corefAlgorithm);
+        corefAnnotator = new CorefAnnotator(corefProperties);
 
         super.setId(ID);
     }
@@ -252,6 +261,10 @@ public class CoreferenceResolution extends AbstractAgent {
             for (int i = positionStart; i < positionEnd; i++) {
                 INode node = sentences.get(sentenceNumber - STANFORD_OFFSET).get(i - STANFORD_OFFSET);
                 createCorefClusterArc(node, corefClusterNode);
+            }
+            if (logger.isInfoEnabled()) {
+                String logText = "\tMention: " + mention.mentionSpan;
+                logger.info(logText);
             }
         }
     }
