@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringJoiner;
 
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
@@ -16,7 +15,8 @@ import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.kastel.mcse.ardoco.core.parse.ParseUtil;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
-import edu.stanford.nlp.coref.data.Mention;
+import edu.stanford.nlp.coref.data.CorefChain;
+import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
@@ -49,7 +49,6 @@ public class CoreferenceResolution extends AbstractAgent {
     private WordsToSentencesAnnotator ssplit = null;
     private NERCombinerAnnotator nerAnnotator;
     private ParserAnnotator parserAnnotator;
-    // private CorefAnnotator corefAnnotator;
     private DeterministicCorefAnnotator corefAnnotator;
 
     @Override
@@ -63,7 +62,6 @@ public class CoreferenceResolution extends AbstractAgent {
             logger.warn(e.getMessage(), e.getCause());
         }
         parserAnnotator = new ParserAnnotator(ANNOTATOR_NAME, props);
-        // corefAnnotator = new CorefAnnotator(props);
         corefAnnotator = new DeterministicCorefAnnotator(props);
 
         super.setId(ID);
@@ -212,30 +210,21 @@ public class CoreferenceResolution extends AbstractAgent {
     }
 
     // TODO write Info to graph!
-    private void addToGraph(Annotation doc, List<INode> text) {
-        List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
+    private void addToGraph(Annotation document, List<INode> text) {
+        List<CoreMap> sentences = document.get(SentencesAnnotation.class);
         sentences.sort(Comparator.comparingInt(cm -> cm.get(SentenceIndexAnnotation.class)));
-        int offset = 0;
-        for (CoreMap sentence : sentences) {
-            System.out.println(sentence.toShorterString());
-            for (Mention mention : sentence.get(CorefCoreAnnotations.CorefMentionsAnnotation.class)) {
-                List<String> context = mention.getContext();
-                if (context.isEmpty()) {
-                    continue;
-                }
-                System.out.println("Word: " + mention.headWord.word());
-                System.out.println("\tRelation: " + mention.getRelation());
-                StringJoiner senSj = new StringJoiner(" ");
-                for (CoreLabel cl : mention.sentenceWords) {
-                    senSj.add(cl.word());
-                }
-                System.out.println("\tSentence: " + senSj.toString());
-                StringJoiner sj = new StringJoiner(", ");
-                for (String s : context) {
-                    sj.add(s);
-                }
-                String contextStr = "Context: " + sj.toString();
-                System.out.println("\t" + contextStr);
+
+        for (CorefChain cc : document.get(CorefCoreAnnotations.CorefChainAnnotation.class).values()) {
+            System.out.println("\t" + cc);
+            for (CorefMention mention : cc.getMentionsInTextualOrder()) {
+                int sentenceNumber = mention.sentNum;
+                int positionStart = mention.startIndex;
+                int positionEnd = mention.endIndex;
+                String mentionSpan = mention.mentionSpan;
+                int corefClusterID = mention.corefClusterID;
+                String out = String.format("Sentence: %d\nStart: %d\nEnd: %d\nSpan: %s\nClusterID: %d", sentenceNumber, positionStart, positionEnd, mentionSpan,
+                        corefClusterID);
+                System.out.println(out);
             }
         }
     }
