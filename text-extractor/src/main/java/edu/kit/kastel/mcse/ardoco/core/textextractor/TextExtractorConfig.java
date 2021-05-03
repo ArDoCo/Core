@@ -27,4 +27,12 @@ public class TextExtractorConfig extends Configuration {
         textAgents = getPropertyAsList("Text_Agents", configs);
         similarityPercentage = getPropertyAsDouble("similarityPercentage", configs);
     }
+
+    @Override
+    protected Map<String, String> getAllProperties() {
+        return Map.of(//
+                "Text_Agents", String.join(" ", textAgents), //
+                "similarityPercentage", String.valueOf(similarityPercentage) //
+        );
+    }
 }

@@ -37,4 +37,13 @@ public class GenericConnectionAnalyzerSolverConfig extends Configuration {
         instanceConnectionSolverProbabilityWithoutType = getPropertyAsDouble("InstanceConnectionSolver_ProbabilityWithoutType", configs);
     }
 
+    @Override
+    protected Map<String, String> getAllProperties() {
+        return Map.of(//
+                "RelationConnectionSolver_Probability", String.valueOf(relationConnectionSolverProbability), //
+                "InstanceConnectionSolver_Probability", String.valueOf(instanceConnectionSolverProbability), //
+                "InstanceConnectionSolver_ProbabilityWithoutType", String.valueOf(instanceConnectionSolverProbabilityWithoutType) //
+        );
+    }
+
 }
