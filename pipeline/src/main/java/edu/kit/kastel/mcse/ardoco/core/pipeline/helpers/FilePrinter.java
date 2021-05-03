@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMappingForEagle;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMappingWithDistribution;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
@@ -180,7 +180,7 @@ public class FilePrinter {
                 if (!connectionState.getInstanceLinks()
                         .stream()
                         .anyMatch(
-                                link -> link.getTextualInstance().getNameMappings().stream().anyMatch(mapping -> mapping.getNodes().contains(node) == true))) {
+                                link -> link.getTextualInstance().getNameMappings().stream().anyMatch(mapping -> mapping.getWords().contains(node) == true))) {
                     valueBuilder.append("0");
                     valueBuilder.append(SINGLE_SEPARATOR_WITH_SPACES);
                 } else {
@@ -707,7 +707,7 @@ public class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
 
-        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingForEagle)) {
+        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingWithDistribution)) {
             for (INounMapping mapping : textState.getAllMappings()) {
 
                 MappingKind kind = mapping.getKind();
@@ -724,7 +724,7 @@ public class FilePrinter {
 
         for (INounMapping mapping : textState.getAllMappings()) {
 
-            NounMappingForEagle eagleMapping = (NounMappingForEagle) mapping;
+            NounMappingWithDistribution eagleMapping = (NounMappingWithDistribution) mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
             String nameProb = Double.toString(distribution.get(MappingKind.NAME));
             String typeProb = Double.toString(distribution.get(MappingKind.TYPE));
@@ -763,7 +763,7 @@ public class FilePrinter {
             String probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
 
             for (INounMapping nameMapping : instanceLinkWithBestConfidence.getTextualInstance().getNameMappings()) {
-                for (IWord word : nameMapping.getNodes()) {
+                for (IWord word : nameMapping.getWords()) {
                     dataLines.add(new String[] { modelElementUid, Integer.toString(word.getSentenceNo() + 1), probability });
                 }
             }

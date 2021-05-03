@@ -33,7 +33,7 @@ public interface INounMapping {
      *
      * @return all mapping nodes
      */
-    List<IWord> getNodes();
+    List<IWord> getWords();
 
     /**
      * Adds nodes to the mapping, if they are not already contained.

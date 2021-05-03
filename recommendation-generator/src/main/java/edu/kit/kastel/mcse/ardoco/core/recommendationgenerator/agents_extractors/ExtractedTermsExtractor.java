@@ -244,7 +244,7 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
 
     private INounMapping matchNode(List<INounMapping> nounMappings, IWord node) {
         for (INounMapping mapping : nounMappings) {
-            if (mapping.getNodes().contains(node)) {
+            if (mapping.getWords().contains(node)) {
                 return mapping;
             }
         }
