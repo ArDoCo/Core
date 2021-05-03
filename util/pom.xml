@@ -17,9 +17,5 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
 		</dependency>
-		<dependency>
-	        <groupId>edu.kit.ipd.parse</groupId>
-	        <artifactId>luna</artifactId>
-	      </dependency>
 	</dependencies>
 </project>
