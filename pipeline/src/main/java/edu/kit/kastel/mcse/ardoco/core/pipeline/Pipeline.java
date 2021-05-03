@@ -17,6 +17,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGeneratorConfig;
@@ -47,14 +48,17 @@ public class Pipeline {
     }
 
     private static final Logger logger = LogManager.getLogger(Pipeline.class);
+
+    private static final String CMD_HELP = "h";
     private static final String CMD_NAME = "n";
     private static final String CMD_MODEL = "m";
     private static final String CMD_TEXT = "t";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
 
-    public static void main(String[] args) throws LunaRunException {
+    public static void main(String[] args) {
         // Parameters:
+        // -h : Help
         // -n : Name of the Run
         // -m : Model Path
         // -t : Text Path
@@ -66,7 +70,13 @@ public class Pipeline {
             cmd = parseCommandLine(args);
         } catch (IllegalArgumentException | ParseException e) {
             logger.error(e.getMessage());
+            printUsage();
             System.exit(1);
+        }
+
+        if (cmd.hasOption(CMD_HELP)) {
+            printUsage();
+            return;
         }
 
         File inputText = null;
@@ -97,6 +107,23 @@ public class Pipeline {
         run(name, inputText, inputModel, additionalConfigs, outputDir);
     }
 
+    private static void printUsage() {
+        System.err.println(
+                """
+                        Usage: java -jar ardoco-core-pipeline.jar
+
+                        -n NAME_OF_THE_PROJECT (will be stored in the results)
+                        -m PATH_TO_THE_PCM_MODEL_AS_OWL (use Ecore2OWL to obtain PCM models as ontology)
+                        -t PATH_TO_PLAIN_TEXT
+                        -o PATH_TO_OUTPUT_FOLDER
+
+                        Optional Parameters:
+
+                        -c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
+
+                        """);
+    }
+
     private static void run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir) {
         long startTime = System.currentTimeMillis();
 
@@ -105,7 +132,7 @@ public class Pipeline {
         try {
             ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
             annotatedText = textConnector.getAnnotatedText();
-        } catch (IOException | LunaRunException e) {
+        } catch (IOException | LunaRunException | LunaInitException e) {
             logger.error(e.getMessage(), e);
             System.exit(1);
         }
@@ -119,19 +146,19 @@ public class Pipeline {
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
 
         Duration duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        printResultsInFiles(outputDir, data, duration);
+        printResultsInFiles(outputDir, name, data, duration);
     }
 
-    private static void printResultsInFiles(File outputDir, AgentDatastructure data, Duration duration) {
+    private static void printResultsInFiles(File outputDir, String name, AgentDatastructure data, Duration duration) {
 
-        FilePrinter.writeEval1ToFile(Path.of(outputDir.getAbsolutePath(), "eval1.csv").toFile(), data.getText(), data.getTextState());
-        FilePrinter.writeTraceLinksWithTextInFile(Path.of(outputDir.getAbsolutePath(), "traceLinksToText.csv").toFile(), data.getText(),
+        FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings.csv").toFile(), //
+                data.getTextState());
+
+        FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_trace_links.csv").toFile(), //
                 data.getConnectionState());
-        FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), "stats.csv").toFile(), //
-                data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
-        FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), "noun_mappings.csv").toFile(), data.getTextState());
-        FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), "trace_links.csv").toFile(), data.getConnectionState());
 
+        FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states.csv").toFile(), //
+                data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
@@ -197,13 +224,11 @@ public class Pipeline {
         if (file.exists()) {
             return file;
         }
-        if (create) {
-            file.createNewFile();
+        if (create && file.createNewFile()) {
             return file;
         }
-
         // File not available
-        throw new IOException("The specified file does not exist: " + path);
+        throw new IOException("The specified file does not exist and/or could not be created: " + path);
     }
 
     /**
@@ -233,6 +258,10 @@ public class Pipeline {
         Option opt;
 
         // Define Options ..
+        opt = new Option(CMD_HELP, "help", false, "show help");
+        opt.setRequired(false);
+        options.addOption(opt);
+
         opt = new Option(CMD_NAME, "name", true, "name of the run");
         opt.setRequired(true);
         opt.setType(String.class);

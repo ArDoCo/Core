@@ -56,7 +56,7 @@ public class MultiplePartAgent extends TextAgent {
 
 	private void searchForName() {
 		for (INounMapping nameMap : textState.getNames()) {
-			List<IWord> nameNodes = new ArrayList<>(nameMap.getNodes());
+			List<IWord> nameNodes = new ArrayList<>(nameMap.getWords());
 			for (IWord n : nameNodes) {
 				IWord pre = n.getPreWord();
 				if (pre != null && textState.isNodeContainedByNounMappings(pre) && !textState.isNodeContainedByTypeNodes(pre)) {
@@ -69,7 +69,7 @@ public class MultiplePartAgent extends TextAgent {
 
 	private void searchForType() {
 		for (INounMapping typeMap : textState.getTypes()) {
-			List<IWord> typeNodes = new ArrayList<>(typeMap.getNodes());
+			List<IWord> typeNodes = new ArrayList<>(typeMap.getWords());
 			for (IWord n : typeNodes) {
 				IWord pre = n.getPreWord();
 				if (pre != null && textState.isNodeContainedByNounMappings(pre) && !textState.isNodeContainedByNameNodes(pre)) {

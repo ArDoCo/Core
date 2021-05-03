@@ -2,9 +2,6 @@ name: Maven Verify
 
 on:
   push:
-    branches-ignore:
-      - main
-      - master
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -23,7 +20,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: 14
+        java-version: 16
     - name: Cache Maven packages
       uses: actions/cache@v2.1.5
       with:
