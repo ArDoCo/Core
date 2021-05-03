@@ -94,6 +94,12 @@ class SingleExecution implements IPARSEExecution {
     private void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws LunaRunException {
         DepParser depAgent = new DepParser();
         execute(graph, depAgent);
+        // EntityRecognizer entityRecognizer = new EntityRecognizer();
+        // execute(graph, entityRecognizer);
+        // Conceptualizer conceptualizer = new Conceptualizer();
+        // execute(graph, conceptualizer);
+        // CorefAnalyzer corefAnalyzer = new CorefAnalyzer();
+        // execute(graph, corefAnalyzer);
     }
 
     /**
