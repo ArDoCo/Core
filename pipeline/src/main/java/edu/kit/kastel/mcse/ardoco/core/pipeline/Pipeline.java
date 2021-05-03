@@ -198,13 +198,11 @@ public class Pipeline {
         if (file.exists()) {
             return file;
         }
-        if (create) {
-            file.createNewFile();
+        if (create && file.createNewFile()) {
             return file;
         }
-
         // File not available
-        throw new IOException("The specified file does not exist: " + path);
+        throw new IOException("The specified file does not exist and/or could not be created: " + path);
     }
 
     /**
