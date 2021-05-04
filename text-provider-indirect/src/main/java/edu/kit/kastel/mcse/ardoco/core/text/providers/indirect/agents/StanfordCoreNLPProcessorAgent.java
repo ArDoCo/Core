@@ -75,6 +75,8 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     private static final String TOKEN_WORD_ATTRIBUTE_NAME = "value";
     private static final String TOKEN_POS_ATTRIBUTE_NAME = "pos";
     private static final String SENTENCE_NUMBER = "sentenceNumber";
+    private static final String NER_ATTRIBUTE_NAME = "ner";
+    private static final String NO_NER = "O";
 
     private static final String BASIC_DEP_ANNOTATIONS = "BasicDependenciesAnnotation";
 
@@ -153,12 +155,9 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         Annotation text = prepareDocAnnotation(textNodes);
 
         nerAnnotator.annotate(text);
-        addNERToGraph(text, textNodes);
-
-        parserAnnotator.annotate(text);
-
+        parserAnnotator.annotate(text); // TODO currently not saved to graph, but might want to do that!
         depParse.annotate(text);
-        addDependenciesToGraph(text, textNodes);
+        addDependenciesAndNERToGraph(text, textNodes);
 
         corefAnnotator.annotate(text);
         addCorefToGraph(text, textNodes);
@@ -294,11 +293,15 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         }
     }
 
-    private void addNERToGraph(Annotation text, List<INode> textNodes) {
-        // TODO write Info of NER to graph!
+    private void prepareGraphForNER() {
+        INodeType tokenType = graph.getNodeType(TOKEN_TYPE_NAME);
+        if (!tokenType.containsAttribute(NER_ATTRIBUTE_NAME, STRING_TYPE)) {
+            tokenType.addAttributeToType(STRING_TYPE, NER_ATTRIBUTE_NAME);
+        }
     }
 
-    private void addDependenciesToGraph(Annotation doc, List<INode> textNodes) {
+    private void addDependenciesAndNERToGraph(Annotation doc, List<INode> textNodes) {
+        prepareGraphForNER();
         dependencyArcType = createDependencyArcType();
         extendTokenNodeType();
         // delete outdated Info
@@ -309,6 +312,10 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         int offset = 0;
         for (CoreMap sentence : sentences) {
             List<CoreLabel> tokens = sentence.get(TokensAnnotation.class);
+
+            addNERToGraph(textNodes, offset, tokens);
+
+            // add dependencies
             SemanticGraph dependencies = sentence.get(chosenAnnType);
             addDependenciesToGraph(dependencies, offset, textNodes);
 
@@ -319,7 +326,21 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         }
     }
 
-    private void addDependenciesToGraph(SemanticGraph dependencies, int sentenceOffset, List<INode> utterance) {
+    private int addNERToGraph(List<INode> textNodes, int startIndex, List<CoreLabel> tokens) {
+        int index = startIndex;
+        for (CoreLabel token : tokens) {
+            INode node = textNodes.get(index);
+            String ner = token.ner();
+            if (ner == null) {
+                ner = NO_NER;
+            }
+            node.setAttributeValue(NER_ATTRIBUTE_NAME, ner);
+            index++;
+        }
+        return index;
+    }
+
+    private void addDependenciesToGraph(SemanticGraph dependencies, int sentenceOffset, List<INode> textNodes) {
         Collection<TypedDependency> typed = dependencies.typedDependencies();
         for (TypedDependency dep : typed) {
             IndexedWord dest = dep.dep();
@@ -329,16 +350,16 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
             INode srcNode;
             if (src.index() == 0) {
                 // Root Arc
-                srcNode = utterance.get(sentenceOffset + dest.index() - 1);
+                srcNode = textNodes.get(sentenceOffset + dest.index() - 1);
                 destNode = srcNode;
             } else if (dest.index() == 0) {
                 // Arc to Root
-                srcNode = utterance.get(sentenceOffset + src.index() - 1);
+                srcNode = textNodes.get(sentenceOffset + src.index() - 1);
                 destNode = srcNode;
 
             } else {
-                srcNode = utterance.get(sentenceOffset + src.index() - 1);
-                destNode = utterance.get(sentenceOffset + dest.index() - 1);
+                srcNode = textNodes.get(sentenceOffset + src.index() - 1);
+                destNode = textNodes.get(sentenceOffset + dest.index() - 1);
             }
             IArc arc = graph.createArc(srcNode, destNode, dependencyArcType);
             arc.setAttributeValue(RELATION_TYPE_SHORT, rel.getShortName());
