@@ -2,6 +2,8 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
+import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.INodeType;
@@ -19,26 +22,46 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
+import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.DocIDAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.IsNewlineAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.SentenceIndexAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.CorefAnnotator;
+import edu.stanford.nlp.pipeline.DependencyParseAnnotator;
 import edu.stanford.nlp.pipeline.NERCombinerAnnotator;
 import edu.stanford.nlp.pipeline.ParserAnnotator;
 import edu.stanford.nlp.pipeline.WordsToSentencesAnnotator;
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.BasicDependenciesAnnotation;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.EnhancedDependenciesAnnotation;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.EnhancedPlusPlusDependenciesAnnotation;
+import edu.stanford.nlp.trees.GrammaticalRelation;
+import edu.stanford.nlp.trees.TypedDependency;
 import edu.stanford.nlp.util.CoreMap;
 
+/**
+ * Agent to process the input text with Stanford CoreNLP. Processes different Stanford pipeline processes like NER,
+ * DepParse, and Coref.
+ *
+ * The DepParse was originally created by Tobias Hey.
+ *
+ * @author Jan Keim, Tobias Hey
+ *
+ */
 @MetaInfServices(AbstractAgent.class)
-public class CoreferenceResolution extends AbstractAgent {
+public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     private static final String COREF_ALGORITHM_ATTRIBUTE = "coref.algorithm";
-    private static final Logger logger = LoggerFactory.getLogger(CoreferenceResolution.class);
-    private static final String ID = "coref";
+    private static final Logger logger = LoggerFactory.getLogger(StanfordCoreNLPProcessorAgent.class);
+    private static final String ID = "stanfordAgent";
 
     private static final int STANFORD_OFFSET = 1;
 
@@ -52,22 +75,39 @@ public class CoreferenceResolution extends AbstractAgent {
     private static final String TOKEN_WORD_ATTRIBUTE_NAME = "value";
     private static final String TOKEN_POS_ATTRIBUTE_NAME = "pos";
     private static final String SENTENCE_NUMBER = "sentenceNumber";
-    private static final String ANNOTATOR_NAME = "BasicDependenciesAnnotation";
+
+    private static final String BASIC_DEP_ANNOTATIONS = "BasicDependenciesAnnotation";
+
+    static final String RELATION_TYPE_LONG = "relationLong";
+    static final String RELATION_TYPE_SHORT = "relationShort";
+    static final String DEPENDENCY_ARC_TYPE = "typedDependency";
+
     private static final String TOKEN_LEMMA_ATTRIBUTE_NAME = "lemma";
     private static final List<String> COREF_ALGORITHMS = List.of("neural", "statistical", "clustering");
+
+    private static final Map<String, Class<? extends CoreAnnotation<SemanticGraph>>> DEP_ANN_TYPES = Map.ofEntries(
+            Map.entry(BASIC_DEP_ANNOTATIONS, BasicDependenciesAnnotation.class),
+            Map.entry("EnhancedDependenciesAnnotation", EnhancedDependenciesAnnotation.class),
+            Map.entry("EnhancedPlusPlusDependenciesAnnotation", EnhancedPlusPlusDependenciesAnnotation.class));
 
     private WordsToSentencesAnnotator ssplit = null;
     private NERCombinerAnnotator nerAnnotator;
     private ParserAnnotator parserAnnotator;
+    private DependencyParseAnnotator depParse;
     private CorefAnnotator corefAnnotator;
 
+    private Class<? extends CoreAnnotation<SemanticGraph>> chosenAnnType;
     private INodeType corefClusterNodeType = null;
     private IArcType corefArcType = null;
+    private IArcType dependencyArcType;
 
     @Override
     public void init() {
-        // TODO add proper properties
-        Properties props = ConfigManager.getConfiguration(CoreferenceResolution.class);
+        Properties props = ConfigManager.getConfiguration(StanfordCoreNLPProcessorAgent.class);
+
+        chosenAnnType = DEP_ANN_TYPES.getOrDefault(props.getOrDefault("DEPENDENCY_ANNOTATION_TYPE", "EnhancedPlusPlusDependenciesAnnotation"),
+                EnhancedPlusPlusDependenciesAnnotation.class);
+
         String corefAlgorithm = props.getProperty(COREF_ALGORITHM_ATTRIBUTE, COREF_ALGORITHMS.get(0));
         if (!COREF_ALGORITHMS.contains(corefAlgorithm)) {
             logger.warn("Provided CoRef-Algorithm not found. Selecting default.");
@@ -78,8 +118,12 @@ public class CoreferenceResolution extends AbstractAgent {
         } catch (ClassNotFoundException | IOException e) {
             logger.warn(e.getMessage(), e.getCause());
         }
+
         Properties parserProperties = new Properties();
-        parserAnnotator = new ParserAnnotator(ANNOTATOR_NAME, parserProperties);
+        parserAnnotator = new ParserAnnotator(BASIC_DEP_ANNOTATIONS, parserProperties);
+
+        Properties depParserProperties = new Properties(props);
+        depParse = new DependencyParseAnnotator(depParserProperties);
 
         Properties corefProperties = new Properties();
         corefProperties.put(COREF_ALGORITHM_ATTRIBUTE, corefAlgorithm);
@@ -105,21 +149,19 @@ public class CoreferenceResolution extends AbstractAgent {
             return;
         }
 
-        // TODO We need to execute NER and (Dep)Parse before CoRef. Write these infos also in Graph? Create own agents?
-
         List<INode> textNodes = ParseUtil.getINodesInOrder(graph);
         Annotation text = prepareDocAnnotation(textNodes);
-        try {
-            nerAnnotator.annotate(text);
-        } catch (NumberFormatException e) {
-            logger.info("NER had problem with NumberFormat: {}", e.getMessage());
-        }
 
-        parserAnnotator.annotate(text); // TODO currently theoretically runs twice, because also executed as agent
-        // ^ Run or skip this dynamically by loading from the graph and only execute,
-        // ^ if you cannot rebuild the annotations (because they do not exist)
+        nerAnnotator.annotate(text);
+        addNERToGraph(text, textNodes);
+
+        parserAnnotator.annotate(text);
+
+        depParse.annotate(text);
+        addDependenciesToGraph(text, textNodes);
+
         corefAnnotator.annotate(text);
-        addToGraph(text, textNodes);
+        addCorefToGraph(text, textNodes);
     }
 
     private Annotation prepareDocAnnotation(List<INode> textNodes) {
@@ -229,7 +271,82 @@ public class CoreferenceResolution extends AbstractAgent {
         }
     }
 
-    private void addToGraph(Annotation document, List<INode> text) {
+    private IArcType createDependencyArcType() {
+        IArcType arcType;
+        if (!graph.hasArcType(DEPENDENCY_ARC_TYPE)) {
+            arcType = graph.createArcType(DEPENDENCY_ARC_TYPE);
+            arcType.addAttributeToType(STRING_TYPE, RELATION_TYPE_LONG);
+            arcType.addAttributeToType(STRING_TYPE, RELATION_TYPE_SHORT);
+
+        } else {
+            arcType = graph.getArcType(DEPENDENCY_ARC_TYPE);
+        }
+        return arcType;
+    }
+
+    private void extendTokenNodeType() {
+        INodeType nodeType = null;
+        if (graph.hasNodeType(TOKEN_TYPE_NAME)) {
+            nodeType = graph.getNodeType(TOKEN_TYPE_NAME);
+            if (!nodeType.containsAttribute(SENTENCE_NUMBER, INT_TYPE)) {
+                nodeType.addAttributeToType(INT_TYPE, SENTENCE_NUMBER);
+            }
+        }
+    }
+
+    private void addNERToGraph(Annotation text, List<INode> textNodes) {
+        // TODO write Info of NER to graph!
+    }
+
+    private void addDependenciesToGraph(Annotation doc, List<INode> textNodes) {
+        dependencyArcType = createDependencyArcType();
+        extendTokenNodeType();
+        // delete outdated Info
+        graph.getArcsOfType(dependencyArcType).forEach(arc -> graph.deleteArc(arc));
+
+        List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
+        sentences.sort(Comparator.comparingInt(cm -> cm.get(SentenceIndexAnnotation.class)));
+        int offset = 0;
+        for (CoreMap sentence : sentences) {
+            List<CoreLabel> tokens = sentence.get(TokensAnnotation.class);
+            SemanticGraph dependencies = sentence.get(chosenAnnType);
+            addDependenciesToGraph(dependencies, offset, textNodes);
+
+            if (tokens.size() <= textNodes.size()) {
+
+                offset += tokens.size();
+            }
+        }
+    }
+
+    private void addDependenciesToGraph(SemanticGraph dependencies, int sentenceOffset, List<INode> utterance) {
+        Collection<TypedDependency> typed = dependencies.typedDependencies();
+        for (TypedDependency dep : typed) {
+            IndexedWord dest = dep.dep();
+            IndexedWord src = dep.gov();
+            GrammaticalRelation rel = dep.reln();
+            INode destNode;
+            INode srcNode;
+            if (src.index() == 0) {
+                // Root Arc
+                srcNode = utterance.get(sentenceOffset + dest.index() - 1);
+                destNode = srcNode;
+            } else if (dest.index() == 0) {
+                // Arc to Root
+                srcNode = utterance.get(sentenceOffset + src.index() - 1);
+                destNode = srcNode;
+
+            } else {
+                srcNode = utterance.get(sentenceOffset + src.index() - 1);
+                destNode = utterance.get(sentenceOffset + dest.index() - 1);
+            }
+            IArc arc = graph.createArc(srcNode, destNode, dependencyArcType);
+            arc.setAttributeValue(RELATION_TYPE_SHORT, rel.getShortName());
+            arc.setAttributeValue(RELATION_TYPE_LONG, rel.getLongName());
+        }
+    }
+
+    private void addCorefToGraph(Annotation document, List<INode> text) {
         for (CorefChain cc : document.get(CorefCoreAnnotations.CorefChainAnnotation.class).values()) {
             addCorefClusterToGraph(cc, text);
         }
