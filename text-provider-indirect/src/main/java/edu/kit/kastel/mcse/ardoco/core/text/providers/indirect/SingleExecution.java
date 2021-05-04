@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.Scanner;
 
-import edu.kit.ipd.indirect.depparser.DepParser;
 import edu.kit.ipd.indirect.graphBuilder.GraphBuilder;
 import edu.kit.ipd.indirect.textSNLP.Stanford;
 import edu.kit.ipd.indirect.textSNLP.TextSNLP;
@@ -18,7 +17,7 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.CoreferenceResolution;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.StanfordCoreNLPProcessorAgent;
 
 /**
  * Simply invoke each agent in a suitable order (once).
@@ -98,10 +97,8 @@ class SingleExecution implements IPARSEExecution {
     }
 
     private void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws LunaRunException {
-        DepParser depAgent = new DepParser();
-        execute(graph, depAgent);
-        CoreferenceResolution coref = new CoreferenceResolution();
-        execute(graph, coref);
+        StanfordCoreNLPProcessorAgent stanfordAgent = new StanfordCoreNLPProcessorAgent();
+        execute(graph, stanfordAgent);
 
         // EntityRecognizer entityRecognizer = new EntityRecognizer();
         // execute(graph, entityRecognizer);
