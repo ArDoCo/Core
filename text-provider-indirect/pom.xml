@@ -50,7 +50,7 @@
 			<groupId>edu.stanford.nlp</groupId>
 			<artifactId>stanford-corenlp</artifactId>
 			<classifier>models</classifier>
-			<version>3.9.2</version>
+			<version>4.2.0</version>
 		</dependency>
 		<!-- <dependency> -->
 		<!-- <groupId>edu.kit.ipd.indirect</groupId> -->
