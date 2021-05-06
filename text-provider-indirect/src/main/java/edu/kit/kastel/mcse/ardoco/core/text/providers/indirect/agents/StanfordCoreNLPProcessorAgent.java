@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -35,10 +34,9 @@ import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.CorefAnnotator;
-import edu.stanford.nlp.pipeline.DependencyParseAnnotator;
-import edu.stanford.nlp.pipeline.NERCombinerAnnotator;
-import edu.stanford.nlp.pipeline.ParserAnnotator;
+import edu.stanford.nlp.pipeline.AnnotatorImplementations;
+import edu.stanford.nlp.pipeline.AnnotatorPool;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.pipeline.WordsToSentencesAnnotator;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.BasicDependenciesAnnotation;
@@ -59,11 +57,12 @@ import edu.stanford.nlp.util.CoreMap;
  */
 @MetaInfServices(AbstractAgent.class)
 public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
-    private static final String COREF_ALGORITHM_ATTRIBUTE = "coref.algorithm";
+
     private static final Logger logger = LoggerFactory.getLogger(StanfordCoreNLPProcessorAgent.class);
     private static final String ID = "stanfordAgent";
 
     private static final int STANFORD_OFFSET = 1;
+    private static final String[] STANFORD_PIPELINE = { "ner", "parse", "depparse", "coref" };
 
     private static final String STRING_TYPE = "String";
     private static final String INT_TYPE = "int";
@@ -77,26 +76,22 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     private static final String SENTENCE_NUMBER = "sentenceNumber";
     private static final String NER_ATTRIBUTE_NAME = "ner";
     private static final String NO_NER = "O";
-
-    private static final String BASIC_DEP_ANNOTATIONS = "BasicDependenciesAnnotation";
-
-    static final String RELATION_TYPE_LONG = "relationLong";
-    static final String RELATION_TYPE_SHORT = "relationShort";
-    static final String DEPENDENCY_ARC_TYPE = "typedDependency";
-
     private static final String TOKEN_LEMMA_ATTRIBUTE_NAME = "lemma";
-    private static final List<String> COREF_ALGORITHMS = List.of("neural", "statistical", "clustering");
 
+    private static final String COREF_ALGORITHM_ATTRIBUTE = "coref.algorithm";
+    private static final List<String> COREF_ALGORITHMS = List.of("neural", "statistical", "clustering");
+    private static final String BASIC_DEP_ANNOTATIONS = "BasicDependenciesAnnotation";
     private static final Map<String, Class<? extends CoreAnnotation<SemanticGraph>>> DEP_ANN_TYPES = Map.ofEntries(
             Map.entry(BASIC_DEP_ANNOTATIONS, BasicDependenciesAnnotation.class),
             Map.entry("EnhancedDependenciesAnnotation", EnhancedDependenciesAnnotation.class),
             Map.entry("EnhancedPlusPlusDependenciesAnnotation", EnhancedPlusPlusDependenciesAnnotation.class));
 
+    static final String RELATION_TYPE_LONG = "relationLong";
+    static final String RELATION_TYPE_SHORT = "relationShort";
+    static final String DEPENDENCY_ARC_TYPE = "typedDependency";
+
     private WordsToSentencesAnnotator ssplit = null;
-    private NERCombinerAnnotator nerAnnotator;
-    private ParserAnnotator parserAnnotator;
-    private DependencyParseAnnotator depParse;
-    private CorefAnnotator corefAnnotator;
+    private AnnotatorPool annotatorPool;
 
     private Class<? extends CoreAnnotation<SemanticGraph>> chosenAnnType;
     private INodeType corefClusterNodeType = null;
@@ -110,28 +105,30 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         chosenAnnType = DEP_ANN_TYPES.getOrDefault(props.getOrDefault("DEPENDENCY_ANNOTATION_TYPE", "EnhancedPlusPlusDependenciesAnnotation"),
                 EnhancedPlusPlusDependenciesAnnotation.class);
 
-        String corefAlgorithm = props.getProperty(COREF_ALGORITHM_ATTRIBUTE, COREF_ALGORITHMS.get(0));
+        Properties stanfordProperties = getStanfordProperties(props);
+        annotatorPool = StanfordCoreNLP.getDefaultAnnotatorPool(stanfordProperties, new AnnotatorImplementations());
+
+        super.setId(ID);
+    }
+
+    private Properties getStanfordProperties(Properties properties) {
+        Properties allStanfordProperties = new Properties(properties);
+
+        if (!allStanfordProperties.contains("parse.type")) {
+            allStanfordProperties.put("parse.type", "stanford");
+        }
+
+        if (!allStanfordProperties.containsKey("depparse.model")) {
+            allStanfordProperties.put("depparse.model", "edu/stanford/nlp/models/parser/nndep/english_UD.gz");
+        }
+
+        String corefAlgorithm = allStanfordProperties.getProperty(COREF_ALGORITHM_ATTRIBUTE, COREF_ALGORITHMS.get(0));
         if (!COREF_ALGORITHMS.contains(corefAlgorithm)) {
             logger.warn("Provided CoRef-Algorithm not found. Selecting default.");
         }
+        allStanfordProperties.put(COREF_ALGORITHM_ATTRIBUTE, corefAlgorithm);
 
-        try {
-            nerAnnotator = new NERCombinerAnnotator();
-        } catch (ClassNotFoundException | IOException e) {
-            logger.warn(e.getMessage(), e.getCause());
-        }
-
-        Properties parserProperties = new Properties();
-        parserAnnotator = new ParserAnnotator(BASIC_DEP_ANNOTATIONS, parserProperties);
-
-        Properties depParserProperties = new Properties(props);
-        depParse = new DependencyParseAnnotator(depParserProperties);
-
-        Properties corefProperties = new Properties();
-        corefProperties.put(COREF_ALGORITHM_ATTRIBUTE, corefAlgorithm);
-        corefAnnotator = new CorefAnnotator(corefProperties);
-
-        super.setId(ID);
+        return allStanfordProperties;
     }
 
     private boolean checkMandatoryPreconditions() {
@@ -154,12 +151,13 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         List<INode> textNodes = ParseUtil.getINodesInOrder(graph);
         Annotation text = prepareDocAnnotation(textNodes);
 
-        nerAnnotator.annotate(text);
-        parserAnnotator.annotate(text); // TODO currently not saved to graph, but might want to do that!
-        depParse.annotate(text);
-        addDependenciesAndNERToGraph(text, textNodes);
+        for (String pipelineStep : STANFORD_PIPELINE) {
+            annotatorPool.get(pipelineStep).annotate(text);
+        }
 
-        corefAnnotator.annotate(text);
+        // TODO currently "parse" is not saved to graph, but might want to do that!
+
+        addDependenciesAndNERToGraph(text, textNodes);
         addCorefToGraph(text, textNodes);
     }
 
