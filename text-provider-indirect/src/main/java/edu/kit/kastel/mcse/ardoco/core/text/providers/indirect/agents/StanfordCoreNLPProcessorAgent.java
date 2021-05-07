@@ -166,9 +166,11 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         int begin = 0;
         int end = 0;
         List<CoreLabel> instruction = new ArrayList<>();
+        StringBuilder input = new StringBuilder();
         for (INode node : textNodes) {
             CoreLabel clToken = new CoreLabel();
             String word = (String) node.getAttributeValue(TOKEN_WORD_ATTRIBUTE_NAME);
+            input.append(word).append(" ");
             String pos = (String) node.getAttributeValue(TOKEN_POS_ATTRIBUTE_NAME);
             end = begin + word.length() - 1;
             String lemma = (String) node.getAttributeValue(TOKEN_LEMMA_ATTRIBUTE_NAME);
@@ -184,8 +186,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
             instruction.add(clToken);
             begin += word.length() + 1;
         }
-        String text = ParseUtil.recreateText(textNodes);
-        Annotation doc = new Annotation(text);
+        Annotation doc = new Annotation(input.toString().trim());
         doc.set(DocIDAnnotation.class, "0");
         doc.set(TokensAnnotation.class, instruction);
         doc.set(CharacterOffsetBeginAnnotation.class, charBegin);
