@@ -19,6 +19,7 @@ public class ParseUtil {
 
     private static final String TOKEN_NODE_TYPE = "token";
     private static final String VALUE = "value";
+    private static final String TOKEN_POS_ATTRIBUTE_NAME = "pos";
 
     private static final String ARC_TYPE_NAME = "relation";
     private static final String ARC_TYPE_VALUE = "NEXT";
@@ -61,6 +62,38 @@ public class ParseUtil {
             }
         }
         return orderedNodes;
+    }
+
+    public static String recreateText(List<INode> textNodes) {
+        StringBuilder textBuilder = new StringBuilder();
+        List<String> specialPos = List.of("-RRB-", ".", ",", ":", "POS");
+        for (int i = 0; i < textNodes.size(); i++) {
+            INode node = textNodes.get(i);
+            String word = (String) node.getAttributeValue(VALUE);
+            String pos = (String) node.getAttributeValue(TOKEN_POS_ATTRIBUTE_NAME);
+
+            if (word.equals("-LRB-")) {
+                textBuilder.append("(");
+            } else if (word.equals("-RRB-")) {
+                textBuilder.append(")");
+            } else {
+                textBuilder.append(word);
+            }
+
+            // Add a space after each word, but only, if the word is not a opening bracket "(" or the next word is
+            // special (like "." or ",").
+            if (i + 1 < textNodes.size()) {
+                INode nextNode = textNodes.get(i + 1);
+                String nextPos = (String) nextNode.getAttributeValue(TOKEN_POS_ATTRIBUTE_NAME);
+                if (specialPos.contains(nextPos)) {
+                    continue;
+                }
+            }
+            if (!"-LRB-".equals(pos)) {
+                textBuilder.append(" ");
+            }
+        }
+        return textBuilder.toString().trim();
     }
 
     /**
