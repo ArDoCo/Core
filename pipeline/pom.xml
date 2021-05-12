@@ -24,6 +24,10 @@
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+			<artifactId>inconsistency-detection</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 			<artifactId>text-extractor</artifactId>
 		</dependency>
 		<dependency>
