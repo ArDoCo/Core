@@ -338,6 +338,13 @@ public final class Pipeline {
         return inconsistencyChecker.getBlackboard();
     }
 
+    private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
+        IModule<AgentDatastructure> inconsistencyChecker = new InconsistencyChecker(data);
+
+        inconsistencyChecker.exec();
+        return inconsistencyChecker.getState();
+    }
+
     /**
      * Ensure that a file exists (or create if allowed by parameter).
      *
