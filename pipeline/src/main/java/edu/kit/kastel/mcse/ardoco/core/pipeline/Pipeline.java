@@ -189,6 +189,8 @@ public final class Pipeline {
         
         data.overwrite(runInconsistencyChecker(data));
 
+        Duration duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
+        printResultsInFiles(outputDir, name, data, duration);
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
         if (saveOutput) {
@@ -303,10 +305,17 @@ public final class Pipeline {
         }
 
         connectionGenerator.exec();
+    }
+
+    private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
         return connectionGenerator.getBlackboard();
     }
 
     private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
+        IModule<AgentDatastructure> inconsistencyChecker = new InconsistencyChecker(data);
+
+        inconsistencyChecker.exec();
+        return inconsistencyChecker.getState();
         IModule<AgentDatastructure> inconsistencyChecker = new InconsistencyChecker(data);
 
         inconsistencyChecker.exec();
