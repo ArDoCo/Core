@@ -37,13 +37,13 @@ public class RelationConnectionAgent extends ConnectionAgent {
 	private double probability;
 
 	public RelationConnectionAgent() {
-		super(GenericConnectionAnalyzerSolverConfig.class);
+		super(GenericConnectionConfig.class);
 	}
 
 	private RelationConnectionAgent(//
 			IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
-			IConnectionState connectionState, GenericConnectionAnalyzerSolverConfig config) {
-		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericConnectionAnalyzerSolverConfig.class, text, textExtractionState, modelExtractionState,
+			IConnectionState connectionState, GenericConnectionConfig config) {
+		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericConnectionConfig.class, text, textExtractionState, modelExtractionState,
 				recommendationState, connectionState);
 		probability = config.relationConnectionSolverProbability;
 	}
@@ -51,7 +51,7 @@ public class RelationConnectionAgent extends ConnectionAgent {
 	@Override
 	public RelationConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
 			IConnectionState connectionState, Configuration config) {
-		return new RelationConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionAnalyzerSolverConfig) config);
+		return new RelationConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionConfig) config);
 	}
 
 	@Override
