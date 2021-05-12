@@ -31,13 +31,13 @@ public class InstanceConnectionAgent extends ConnectionAgent {
 
 	// Required for the service loader
 	public InstanceConnectionAgent() {
-		super(GenericConnectionAnalyzerSolverConfig.class);
+		super(GenericConnectionConfig.class);
 	}
 
 	private InstanceConnectionAgent(//
 			IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState,
-			GenericConnectionAnalyzerSolverConfig config) {
-		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericConnectionAnalyzerSolverConfig.class, text, textState, modelState, recommendationState,
+			GenericConnectionConfig config) {
+		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericConnectionConfig.class, text, textState, modelState, recommendationState,
 				connectionState);
 		probability = config.instanceConnectionSolverProbability;
 		probabilityWithoutType = config.instanceConnectionSolverProbabilityWithoutType;
@@ -46,7 +46,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
 	@Override
 	public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
 			IConnectionState connectionState, Configuration config) {
-		return new InstanceConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionAnalyzerSolverConfig) config);
+		return new InstanceConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionConfig) config);
 	}
 
 	/**

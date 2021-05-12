@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.kohsuke.MetaInfServices;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
@@ -16,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITermMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.RecommendationExtractor;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.ConnectionExtractor;
 
 /**
  * This analyzer identifies terms and examines their textual environment.
@@ -24,8 +25,8 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.RecommendationE
  * @author Sophie
  *
  */
-@MetaInfServices(RecommendationExtractor.class)
-public class ExtractedTermsExtractor extends RecommendationExtractor {
+@MetaInfServices(ConnectionExtractor.class)
+public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     private double probabilityAdjacentTerm;
     private double probabilityJustName;
@@ -39,26 +40,27 @@ public class ExtractedTermsExtractor extends RecommendationExtractor {
      * @param modelExtractionState the model extraction state to work with
      * @param recommendationState  the recommendation state to write the results and read existing recommendations from
      */
-    public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
-        this(textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            IConnectionState connectionState) {
+        this(textExtractionState, modelExtractionState, recommendationState, connectionState, GenericConnectionConfig.DEFAULT_CONFIG);
     }
 
     public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
-            GenericRecommendationConfig config) {
-        super(DependencyType.TEXT_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
+            IConnectionState connectionState, GenericConnectionConfig config) {
+        super(DependencyType.TEXT_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState, connectionState);
         probabilityAdjacentTerm = config.extractedTermsAnalyzerProbabilityAdjacentTerm;
         probabilityJustName = config.extractedTermsAnalyzerProbabilityJustName;
         probabilityJustAdjacentNoun = config.extractedTermsAnalyzerProbabilityAdjacentNoun;
     }
 
     public ExtractedTermsExtractor() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     @Override
-    public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
-            Configuration config) {
-        return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
+    public ConnectionExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
+            IConnectionState connectionState, Configuration config) {
+        return new ExtractedTermsExtractor(textState, modelExtractionState, recommendationState, connectionState, (GenericConnectionConfig) config);
     }
 
     @Override

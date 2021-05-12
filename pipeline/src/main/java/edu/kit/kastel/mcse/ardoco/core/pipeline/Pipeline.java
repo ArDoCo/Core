@@ -21,7 +21,7 @@ import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGeneratorConfig;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors.GenericConnectionAnalyzerSolverConfig;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -202,7 +202,7 @@ public class Pipeline {
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();
             Configuration.mergeConfigToMap(configs, ConnectionGeneratorConfig.DEFAULT_CONFIG);
-            Configuration.mergeConfigToMap(configs, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
+            Configuration.mergeConfigToMap(configs, GenericConnectionConfig.DEFAULT_CONFIG);
             Configuration.overrideConfigInMap(configs, additionalConfigs);
             connectionGenerator = connectionGenerator.create(data, configs);
         }
