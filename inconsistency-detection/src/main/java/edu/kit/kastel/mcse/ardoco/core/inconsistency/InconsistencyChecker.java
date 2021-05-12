@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.InconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InconsistencyConfig;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.GenericInconsistencyConfig;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.InconsistencyState;
 
 public class InconsistencyChecker implements IAgentModule<AgentDatastructure> {
@@ -18,13 +18,13 @@ public class InconsistencyChecker implements IAgentModule<AgentDatastructure> {
     private AgentDatastructure data;
     private List<IAgent> agents = new ArrayList<>();
     private InconsistencyCheckerConfig config;
-    private InconsistencyConfig agentConfig;
+    private GenericInconsistencyConfig agentConfig;
 
     public InconsistencyChecker(AgentDatastructure data) {
-        this(data, InconsistencyCheckerConfig.DEFAULT_CONFIG, InconsistencyConfig.DEFAULT_CONFIG);
+        this(data, InconsistencyCheckerConfig.DEFAULT_CONFIG, GenericInconsistencyConfig.DEFAULT_CONFIG);
     }
 
-    public InconsistencyChecker(AgentDatastructure data, InconsistencyCheckerConfig config, InconsistencyConfig agentConfig) {
+    public InconsistencyChecker(AgentDatastructure data, InconsistencyCheckerConfig config, GenericInconsistencyConfig agentConfig) {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
@@ -55,7 +55,7 @@ public class InconsistencyChecker implements IAgentModule<AgentDatastructure> {
 
     @Override
     public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
-        return new InconsistencyChecker(data, new InconsistencyCheckerConfig(configs), new InconsistencyConfig(configs));
+        return new InconsistencyChecker(data, new InconsistencyCheckerConfig(configs), new GenericInconsistencyConfig(configs));
     }
 
     @Override
