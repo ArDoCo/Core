@@ -27,6 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelException;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
@@ -144,6 +145,7 @@ public class Pipeline {
         data.overwrite(runTextExtractor(data, additionalConfigs));
         data.overwrite(runRecommendationGenerator(data, additionalConfigs));
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
+        data.overwrite(runInconsistencyChecker(data));
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         printResultsInFiles(outputDir, name, data, duration);
@@ -209,6 +211,13 @@ public class Pipeline {
 
         connectionGenerator.exec();
         return connectionGenerator.getState();
+    }
+
+    private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
+        IModule<AgentDatastructure> inconsistencyChecker = new InconsistencyChecker(data);
+
+        inconsistencyChecker.exec();
+        return inconsistencyChecker.getState();
     }
 
     /**

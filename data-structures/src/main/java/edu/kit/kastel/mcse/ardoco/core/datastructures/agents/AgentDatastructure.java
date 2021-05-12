@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 import java.util.logging.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
@@ -17,12 +18,13 @@ public class AgentDatastructure {
     private IModelState modelState;
     private IRecommendationState recommendationState;
     private IConnectionState connectionState;
+    private IInconsistencyState inconsistencyState;
 
     public AgentDatastructure() {
     }
 
     public AgentDatastructure createCopy() {
-        var data = new AgentDatastructure();
+        AgentDatastructure data = new AgentDatastructure();
         data.text = text;
         data.textState = textState == null ? null : textState.createCopy();
         data.modelState = modelState == null ? null : modelState.createCopy();
@@ -32,12 +34,13 @@ public class AgentDatastructure {
     }
 
     public AgentDatastructure(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState) {
+            IConnectionState connectionState, IInconsistencyState inconsistencyState) {
         this.text = text;
         this.textState = textState;
         this.modelState = modelState;
         this.recommendationState = recommendationState;
         this.connectionState = connectionState;
+        this.inconsistencyState = inconsistencyState;
     }
 
     public IText getText() {
@@ -78,6 +81,14 @@ public class AgentDatastructure {
 
     public void setConnectionState(IConnectionState connectionState) {
         this.connectionState = connectionState;
+    }
+
+    public IInconsistencyState getInconsistencyState() {
+        return inconsistencyState;
+    }
+
+    public void setInconsistencyState(IInconsistencyState inconsistencyState) {
+        this.inconsistencyState = inconsistencyState;
     }
 
     public void overwrite(AgentDatastructure newData) {
@@ -125,6 +136,14 @@ public class AgentDatastructure {
             logger.warning("ConnectionState was overwritten.");
         } else {
             this.connectionState = connectionState;
+        }
+    }
+
+    public void extend(IInconsistencyState inconsistencyState) {
+        if (null != this.inconsistencyState) {
+            logger.warning("InconsistencyState was overwritten.");
+        } else {
+            this.inconsistencyState = inconsistencyState;
         }
     }
 
