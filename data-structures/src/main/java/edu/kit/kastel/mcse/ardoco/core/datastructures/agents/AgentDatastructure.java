@@ -35,7 +35,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      */
     @Override
     public AgentDatastructure createCopy() {
-        var data = new AgentDatastructure();
+        AgentDatastructure data = new AgentDatastructure();
         data.text = text;
         data.textState = textState == null ? null : textState.createCopy();
         data.modelState = modelState == null ? null : modelState.createCopy();
@@ -164,6 +164,14 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         recommendationState = newData.recommendationState;
         connectionState = newData.connectionState;
         inconsistencyState = newData.inconsistencyState;
+    }
+
+    public void extend(IInconsistencyState inconsistencyState) {
+        if (null != this.inconsistencyState) {
+            logger.warning("InconsistencyState was overwritten.");
+        } else {
+            this.inconsistencyState = inconsistencyState;
+        }
     }
 
 }
