@@ -163,6 +163,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         modelState = newData.modelState;
         recommendationState = newData.recommendationState;
         connectionState = newData.connectionState;
+        inconsistencyState = newData.inconsistencyState;
     }
 
 }
