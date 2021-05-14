@@ -97,6 +97,7 @@ public class AgentDatastructure {
         modelState = newData.modelState;
         recommendationState = newData.recommendationState;
         connectionState = newData.connectionState;
+        inconsistencyState = newData.inconsistencyState;
     }
 
     public void extend(IModelState modelState) {
