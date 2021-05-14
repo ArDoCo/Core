@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors.GenericConnectionAnalyzerSolverConfig;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
@@ -29,7 +29,7 @@ public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
 	private List<IAgent> agents = new ArrayList<>();
 
 	private ConnectionGeneratorConfig config;
-	private GenericConnectionAnalyzerSolverConfig agentConfig;
+	private GenericConnectionConfig agentConfig;
 
 	public ConnectionGenerator() {
 	}
@@ -38,13 +38,13 @@ public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
 	 * Creates a new model connection agent with the given extraction states.
 	 */
 	public ConnectionGenerator(AgentDatastructure data) {
-		this(data, ConnectionGeneratorConfig.DEFAULT_CONFIG, GenericConnectionAnalyzerSolverConfig.DEFAULT_CONFIG);
+		this(data, ConnectionGeneratorConfig.DEFAULT_CONFIG, GenericConnectionConfig.DEFAULT_CONFIG);
 	}
 
 	/**
 	 * Creates a new model connection agent with the given extraction states.
 	 */
-	public ConnectionGenerator(AgentDatastructure data, ConnectionGeneratorConfig config, GenericConnectionAnalyzerSolverConfig agentConfig) {
+	public ConnectionGenerator(AgentDatastructure data, ConnectionGeneratorConfig config, GenericConnectionConfig agentConfig) {
 		this.data = data;
 		this.config = config;
 		this.agentConfig = agentConfig;
@@ -90,6 +90,6 @@ public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
 
 	@Override
 	public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
-		return new ConnectionGenerator(data, new ConnectionGeneratorConfig(configs), new GenericConnectionAnalyzerSolverConfig(configs));
+		return new ConnectionGenerator(data, new ConnectionGeneratorConfig(configs), new GenericConnectionConfig(configs));
 	}
 }
