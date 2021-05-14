@@ -221,6 +221,7 @@
 		<module>data-structures</module>
 		<module>pipeline</module>
 		<module>connection-generator</module>
+		<module>inconsistency-detection</module>
 		<module>model-provider</module>
 		<module>model-provider-owl</module>
 		<module>util</module>
