@@ -18,7 +18,7 @@ public abstract class ConnectionExtractor extends Extractor {
     @Override
     public ConnectionExtractor create(AgentDatastructure data, Configuration config) {
 
-        if (null == data.getTextState() || null == data.getModelState() || null == data.getRecommendationState()) {
+        if (null == data.getTextState() || null == data.getModelState() || null == data.getRecommendationState() || null == data.getConnectionState()) {
             throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
         }
         return create(data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(), config);
@@ -33,5 +33,6 @@ public abstract class ConnectionExtractor extends Extractor {
         this.textState = textState;
         this.modelState = modelState;
         this.recommendationState = recommendationState;
+        this.connectionState = connectionState;
     }
 }
