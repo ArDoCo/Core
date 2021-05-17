@@ -161,6 +161,8 @@ public class Pipeline {
 
         FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states.csv").toFile(), //
                 data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
+
+        FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(), data.getInconsistencyState());
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
