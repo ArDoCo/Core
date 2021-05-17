@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMappingWithDistribution;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -355,6 +357,24 @@ public class FilePrinter {
             logger.debug(e.getMessage(), e);
         }
 
+    }
+
+    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).collect(Collectors.toList());
+        try (var pw = new FileWriter(file)) {
+            inconsistencyReasons.stream().forEach(s -> {
+                logger.info("Found Inconsistency: {}", s);
+                try {
+                    pw.append(s).append("\n");
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            });
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e);
+        }
     }
 
     private static String convertToCSV(String[] data) {
