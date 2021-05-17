@@ -373,7 +373,25 @@ public final class FilePrinter {
 
     }
 
+        try (var pw = new FileWriter(file)) {
+                try {
+                    pw.append(s).append("\n");
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            });
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e);
+        }
+    }
+
     public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).collect(Collectors.toList());
+            inconsistencyReasons.stream().forEach(s -> {
+                logger.info("Found Inconsistency: {}", s);
         List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
         List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).collect(Collectors.toList());
         try (var pw = new FileWriter(file)) {
