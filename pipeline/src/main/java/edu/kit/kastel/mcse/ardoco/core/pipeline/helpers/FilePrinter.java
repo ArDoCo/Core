@@ -391,6 +391,24 @@ public final class FilePrinter {
         }
     }
 
+    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).collect(Collectors.toList());
+        try (var pw = new FileWriter(file)) {
+            inconsistencyReasons.stream().forEach(s -> {
+                logger.info("Found Inconsistency: {}", s);
+                try {
+                    pw.append(s).append("\n");
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            });
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e);
+        }
+    }
+
     private static String convertToCSV(String[] data) {
         return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(","));
     }
