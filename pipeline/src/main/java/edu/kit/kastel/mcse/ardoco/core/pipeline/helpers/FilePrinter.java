@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMappingWithDistribution;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -77,8 +79,7 @@ public class FilePrinter {
     private static boolean createFileIfNonExistent(File file) {
         try {
             if (file.createNewFile()) {
-                logger.info("File created: " + file.getAbsolutePath());
-
+                logger.info("File created: %s", file.getAbsolutePath());
             } else {
                 logger.info("File already exists.");
             }
@@ -228,7 +229,7 @@ public class FilePrinter {
             return;
         }
 
-        try (FileWriter myWriter = new FileWriter(resultFile)) {
+        try (var myWriter = new FileWriter(resultFile)) {
             writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState, duration);
 
         } catch (IOException e) {
@@ -281,9 +282,9 @@ public class FilePrinter {
 
                 MappingKind kind = mapping.getKind();
 
-                String nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
-                String typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
-                String nortProb = Double.toString(kind == MappingKind.NAME_OR_TYPE ? mapping.getProbability() : 0);
+                var nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
+                var typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
+                var nortProb = Double.toString(kind == MappingKind.NAME_OR_TYPE ? mapping.getProbability() : 0);
 
                 dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
 
@@ -295,9 +296,9 @@ public class FilePrinter {
 
             NounMappingWithDistribution eagleMapping = (NounMappingWithDistribution) mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
-            String nameProb = Double.toString(distribution.get(MappingKind.NAME));
-            String typeProb = Double.toString(distribution.get(MappingKind.TYPE));
-            String nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
+            var nameProb = Double.toString(distribution.get(MappingKind.NAME));
+            var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
+            var nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
 
             dataLines.add(new String[] { eagleMapping.getReference(), nameProb, typeProb, nortProb });
 
@@ -329,7 +330,7 @@ public class FilePrinter {
                 }
             }
 
-            String probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
+            var probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
 
             for (INounMapping nameMapping : instanceLinkWithBestConfidence.getTextualInstance().getNameMappings()) {
                 for (IWord word : nameMapping.getWords()) {
@@ -342,7 +343,7 @@ public class FilePrinter {
 
     public static void writeDataLinesInFile(File file, List<String[]> dataLines) {
 
-        try (FileWriter pw = new FileWriter(file)) {
+        try (var pw = new FileWriter(file)) {
             dataLines.stream().map(FilePrinter::convertToCSV).forEach(s -> {
                 try {
                     pw.append(s).append("\n");
@@ -355,6 +356,24 @@ public class FilePrinter {
             logger.debug(e.getMessage(), e);
         }
 
+    }
+
+    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).collect(Collectors.toList());
+        try (var pw = new FileWriter(file)) {
+            inconsistencyReasons.stream().forEach(s -> {
+                logger.info("Found Inconsistency: {}", s);
+                try {
+                    pw.append(s).append("\n");
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            });
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e);
+        }
     }
 
     private static String convertToCSV(String[] data) {
