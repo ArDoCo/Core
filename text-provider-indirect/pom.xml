@@ -44,18 +44,14 @@
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
 			<artifactId>stanford-corenlp</artifactId>
-			<version>3.9.2</version>
+			<version>4.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
 			<artifactId>stanford-corenlp</artifactId>
 			<classifier>models</classifier>
-			<version>3.9.2</version>
+			<version>4.2.2</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>edu.kit.ipd.indirect</groupId> -->
-		<!-- <artifactId>depParser</artifactId> -->
-		<!-- </dependency> -->
 		<dependency>
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>tokenizer</artifactId>
@@ -68,17 +64,5 @@
 			<groupId>edu.kit.ipd.indirect</groupId>
 			<artifactId>textSNLP</artifactId>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>edu.kit.ipd.indirect</groupId> -->
-		<!-- <artifactId>coref</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>edu.kit.ipd.indirect</groupId> -->
-		<!-- <artifactId>entityRecognizer</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>edu.kit.ipd.indirect</groupId> -->
-		<!-- <artifactId>conceptualizer</artifactId> -->
-		<!-- </dependency> -->
 	</dependencies>
 </project>
