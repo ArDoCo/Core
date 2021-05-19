@@ -79,7 +79,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     private static final String TOKEN_LEMMA_ATTRIBUTE_NAME = "lemma";
 
     private static final String COREF_ALGORITHM_ATTRIBUTE = "coref.algorithm";
-    private static final List<String> COREF_ALGORITHMS = List.of("neural", "statistical", "clustering");
+    private static final List<String> COREF_ALGORITHMS = List.of("fastneural", "neural", "statistical", "clustering");
     private static final String BASIC_DEP_ANNOTATIONS = "BasicDependenciesAnnotation";
     private static final Map<String, Class<? extends CoreAnnotation<SemanticGraph>>> DEP_ANN_TYPES = Map.ofEntries(
             Map.entry(BASIC_DEP_ANNOTATIONS, BasicDependenciesAnnotation.class),
