@@ -25,12 +25,12 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
     private static final String REGEX_DIVIDER = "[\\.:]";
 
     public NameInconsistencyAgent() {
-        super(GenericInconsistencyConfig.class);
+        super(InconsistencyConfig.class);
     }
 
     private NameInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
-        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericInconsistencyConfig.class, text, textState, modelState, recommendationState,
+            IConnectionState connectionState, IInconsistencyState inconsistencyState, InconsistencyConfig inconsistencyConfig) {
+        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, InconsistencyConfig.class, text, textState, modelState, recommendationState,
                 connectionState, inconsistencyState);
     }
 
@@ -38,7 +38,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
     public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
         return new NameInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState,
-                (GenericInconsistencyConfig) config);
+                (InconsistencyConfig) config);
 
     }
 

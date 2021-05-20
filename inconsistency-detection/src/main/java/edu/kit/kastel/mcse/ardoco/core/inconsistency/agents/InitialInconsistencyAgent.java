@@ -16,12 +16,12 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 public class InitialInconsistencyAgent extends InconsistencyAgent {
 
     public InitialInconsistencyAgent() {
-        super(GenericInconsistencyConfig.class);
+        super(InconsistencyConfig.class);
     }
 
     private InitialInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig config) {
-        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericInconsistencyConfig.class, text, textState, modelState, recommendationState,
+            IConnectionState connectionState, IInconsistencyState inconsistencyState, InconsistencyConfig config) {
+        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, InconsistencyConfig.class, text, textState, modelState, recommendationState,
                 connectionState, inconsistencyState);
     }
 
@@ -29,7 +29,7 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
     public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
         return new InitialInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState,
-                (GenericInconsistencyConfig) config);
+                (InconsistencyConfig) config);
     }
 
     @Override
