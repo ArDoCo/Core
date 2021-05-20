@@ -125,6 +125,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         String corefAlgorithm = allStanfordProperties.getProperty(COREF_ALGORITHM_ATTRIBUTE, COREF_ALGORITHMS.get(0));
         if (!COREF_ALGORITHMS.contains(corefAlgorithm)) {
             logger.warn("Provided CoRef-Algorithm not found. Selecting default.");
+            corefAlgorithm = COREF_ALGORITHMS.get(0);
         }
         allStanfordProperties.put(COREF_ALGORITHM_ATTRIBUTE, corefAlgorithm);
 
