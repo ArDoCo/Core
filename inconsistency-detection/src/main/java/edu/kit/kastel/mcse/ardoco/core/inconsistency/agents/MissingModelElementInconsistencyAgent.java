@@ -18,21 +18,24 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.MissingModel
 @MetaInfServices(InconsistencyAgent.class)
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
+    private double threshold = 0.7d;
+
     public MissingModelElementInconsistencyAgent() {
-        super(GenericInconsistencyConfig.class);
+        super(InconsistencyConfig.class);
     }
 
     private MissingModelElementInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
-        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericInconsistencyConfig.class, text, textState, modelState, recommendationState,
-                connectionState, inconsistencyState);
+            IConnectionState connectionState, IInconsistencyState inconsistencyState, InconsistencyConfig inconsistencyConfig) {
+        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, InconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState,
+                inconsistencyState);
+        threshold = inconsistencyConfig.getMissingModelInstanceInconsistencyThreshold();
     }
 
     @Override
     public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
         return new MissingModelElementInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState,
-                (GenericInconsistencyConfig) config);
+                (InconsistencyConfig) config);
     }
 
     @Override
@@ -45,9 +48,13 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
             recommendedInstances.remove(textualInstance);
         }
 
+        // TODO set and fine-tune a threshold to filter some recommended instances
         for (var recommendedInstance : recommendedInstances) {
-            MissingModelInstanceInconsistency inconsistency = new MissingModelInstanceInconsistency(recommendedInstance);
-            inconsistencyState.addInconsistency(inconsistency);
+            var confidence = recommendedInstance.getProbability();
+            if (confidence >= threshold) {
+                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(recommendedInstance));
+            }
+
         }
 
     }
