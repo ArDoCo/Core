@@ -62,12 +62,12 @@ public class PcmOntologyModelConnector implements IModelConnector {
             return instances;
         }
         OntClass clazz = optionalClass.get();
-        Property entityNameProperty = getEntityNameProperty();
-        Property idProperty = getIdProperty();
+        var entityNameProperty = getEntityNameProperty();
+        var idProperty = getIdProperty();
         for (Individual individual : getInstancesOfClass(clazz)) {
-            String name = individual.getProperty(entityNameProperty).getString();
-            String identifier = individual.getProperty(idProperty).getString();
-            Instance instance = new Instance(name, type, identifier);
+            var name = individual.getProperty(entityNameProperty).getString();
+            var identifier = individual.getProperty(idProperty).getString();
+            var instance = new Instance(name, type, identifier);
             instances.add(instance);
         }
         return instances;
@@ -98,11 +98,10 @@ public class PcmOntologyModelConnector implements IModelConnector {
 
     private static OntModel loadOntology(String ontologyUrl) {
         // ontology either conforms to the URI convention at the start, then we can skip
-        // preprocessing
-        // preprocessing then looks if it is a file and checks if it exists. Then
-        // prepends "file:///"
+        // preprocessing looks if it is a file and checks if it exists.
+        // Then prepends "file:///"
         if (!ontologyUrl.startsWith("file") && !ontologyUrl.startsWith("https")) {
-            File file = new File(ontologyUrl);
+            var file = new File(ontologyUrl);
             if (!file.exists()) {
                 logger.warn("Cannot load ontology");
                 throw new IllegalArgumentException("Provided Ontology URL cannot be accessed");
@@ -110,7 +109,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
             ontologyUrl = "file:///" + file.getAbsolutePath();
         }
 
-        OntModel ontModel = ModelFactory.createOntologyModel(modelSpec);
+        var ontModel = ModelFactory.createOntologyModel(modelSpec);
         ontModel.read(ontologyUrl, ONT_LANG);
         ontModel.setDynamicImports(true);
         return ontModel;
