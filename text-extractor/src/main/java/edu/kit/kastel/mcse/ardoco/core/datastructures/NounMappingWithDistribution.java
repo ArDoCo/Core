@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,7 +44,7 @@ public class NounMappingWithDistribution extends AbstractNounMapping implements 
     }
 
     public NounMappingWithDistribution(List<IWord> words, MappingKind kind, double probability, String reference, List<String> occurrences) {
-        Map<MappingKind, Double> distribution = new HashMap<>();
+        distribution = new EnumMap<>(MappingKind.class);
         distribution.put(kind, probability);
 
         this.words = new ArrayList<>(words);
@@ -191,10 +190,7 @@ public class NounMappingWithDistribution extends AbstractNounMapping implements 
             return false;
         }
         NounMappingWithDistribution other = (NounMappingWithDistribution) obj;
-        if (!Objects.equals(reference, other.reference)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(reference, other.reference);
     }
 
     /**
