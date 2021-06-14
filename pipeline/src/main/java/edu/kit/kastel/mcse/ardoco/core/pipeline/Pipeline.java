@@ -109,7 +109,7 @@ public class Pipeline {
     }
 
     private static void printUsage() {
-        System.err.println(
+        logger.info(
                 """
                         Usage: java -jar ardoco-core-pipeline.jar
 
