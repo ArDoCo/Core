@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -44,7 +43,7 @@ class SingleExecution implements IPARSEExecution {
     }
 
     private IGraph generateIndirectGraphFromText(InputStream inputText) throws LunaRunException {
-        Scanner scanner = new Scanner(inputText);
+        var scanner = new Scanner(inputText);
         scanner.useDelimiter("\\A");
         String content = scanner.next();
         scanner.close();
@@ -72,14 +71,14 @@ class SingleExecution implements IPARSEExecution {
         props.setProperty(LEMMAS, LEMMAS_PROPERTIES);
         props.setProperty(TAGGER_MODEL, TAGGER_MODEL_PROPERTY);
 
-        Tokenizer tokenizer = new Tokenizer();
+        var tokenizer = new Tokenizer();
         tokenizer.init();
-        TextSNLP snlp = new TextSNLP();
+        var snlp = new TextSNLP();
         snlp.init();
-        GraphBuilder graphBuilder = new GraphBuilder();
+        var graphBuilder = new GraphBuilder();
         graphBuilder.init();
 
-        PrePipelineData ppd = new PrePipelineData();
+        var ppd = new PrePipelineData();
 
         ppd.setTranscription(input);
 
@@ -97,16 +96,8 @@ class SingleExecution implements IPARSEExecution {
     }
 
     private void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws LunaRunException {
-        StanfordCoreNLPProcessorAgent stanfordAgent = new StanfordCoreNLPProcessorAgent();
+        var stanfordAgent = new StanfordCoreNLPProcessorAgent();
         execute(graph, stanfordAgent);
-
-        // EntityRecognizer entityRecognizer = new EntityRecognizer();
-        // execute(graph, entityRecognizer);
-        // Conceptualizer conceptualizer = new Conceptualizer();
-        // execute(graph, conceptualizer);
-        // CorefAnalyzer corefAnalyzer = new CorefAnalyzer();
-        // execute(graph, corefAnalyzer);
-
     }
 
     /**
@@ -122,7 +113,7 @@ class SingleExecution implements IPARSEExecution {
         agent.init();
         agent.setGraph(graph);
         try {
-            Method exec = agent.getClass().getDeclaredMethod("exec");
+            var exec = agent.getClass().getDeclaredMethod("exec");
             exec.setAccessible(true);
             exec.invoke(agent);
         } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
