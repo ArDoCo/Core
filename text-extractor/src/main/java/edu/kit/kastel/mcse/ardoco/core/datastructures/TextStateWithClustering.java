@@ -28,7 +28,7 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
 
     @Override
     public ITextState createCopy() {
-        TextStateWithClustering textExtractionState = new TextStateWithClustering(similarityPercentage);
+        var textExtractionState = new TextStateWithClustering(similarityPercentage);
         textExtractionState.nounMappings = new HashMap<>(nounMappings);
         textExtractionState.relationMappings = relationMappings.stream().map(IRelationMapping::createCopy).collect(Collectors.toList());
         textExtractionState.terms = terms.stream().map(ITermMapping::createCopy).collect(Collectors.toList());
@@ -76,24 +76,15 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
                     .filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference, similarityPercentage))
                     .collect(Collectors.toList());
 
-            if (!similarRefs.isEmpty()) {
-                if (similarRefs.size() == 1) {
-                    NounMappingWithDistribution similarMapping = nounMappings.get(similarRefs.get(0));
-                    similarMapping.addOccurrence(occurrences);
-                    similarMapping.addNode(word);
-                    similarMapping.addKindWithProbability(kind, probability);
-
-                } else {
-                    for (String ref : similarRefs) {
-                        NounMappingWithDistribution similarMapping = nounMappings.get(ref);
-                        similarMapping.addOccurrence(occurrences);
-                        similarMapping.addNode(word);
-                        similarMapping.addKindWithProbability(kind, probability);
-                    }
-                }
-            } else {
+            for (String ref : similarRefs) {
+                NounMappingWithDistribution similarMapping = nounMappings.get(ref);
+                similarMapping.addOccurrence(occurrences);
+                similarMapping.addNode(word);
+                similarMapping.addKindWithProbability(kind, probability);
+            }
+            if (similarRefs.isEmpty()) {
                 // create new nounMapping
-                NounMappingWithDistribution mapping = new NounMappingWithDistribution(List.of(word), kind, probability, reference, occurrences);
+                var mapping = new NounMappingWithDistribution(List.of(word), kind, probability, reference, occurrences);
                 nounMappings.put(reference, mapping);
             }
         }
