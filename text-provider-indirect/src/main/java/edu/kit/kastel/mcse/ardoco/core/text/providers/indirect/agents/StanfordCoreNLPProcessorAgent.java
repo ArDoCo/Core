@@ -105,14 +105,14 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         chosenAnnType = DEP_ANN_TYPES.getOrDefault(props.getOrDefault("DEPENDENCY_ANNOTATION_TYPE", "EnhancedPlusPlusDependenciesAnnotation"),
                 EnhancedPlusPlusDependenciesAnnotation.class);
 
-        Properties stanfordProperties = getStanfordProperties(props);
+        var stanfordProperties = getStanfordProperties(props);
         annotatorPool = StanfordCoreNLP.getDefaultAnnotatorPool(stanfordProperties, new AnnotatorImplementations());
 
         super.setId(ID);
     }
 
     private Properties getStanfordProperties(Properties properties) {
-        Properties allStanfordProperties = new Properties(properties);
+        var allStanfordProperties = new Properties(properties);
 
         if (!allStanfordProperties.contains("parse.type")) {
             allStanfordProperties.put("parse.type", "stanford");
@@ -150,7 +150,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         }
 
         List<INode> textNodes = ParseUtil.getINodesInOrder(graph);
-        Annotation text = prepareDocAnnotation(textNodes);
+        var text = prepareDocAnnotation(textNodes);
 
         for (String pipelineStep : STANFORD_PIPELINE) {
             annotatorPool.get(pipelineStep).annotate(text);
@@ -163,13 +163,13 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     }
 
     private Annotation prepareDocAnnotation(List<INode> textNodes) {
-        int charBegin = 0;
-        int begin = 0;
-        int end = 0;
+        var charBegin = 0;
+        var begin = 0;
+        var end = 0;
         List<CoreLabel> instruction = new ArrayList<>();
-        StringBuilder input = new StringBuilder();
+        var input = new StringBuilder();
         for (INode node : textNodes) {
-            CoreLabel clToken = new CoreLabel();
+            var clToken = new CoreLabel();
             String word = (String) node.getAttributeValue(TOKEN_WORD_ATTRIBUTE_NAME);
             input.append(word).append(" ");
             String pos = (String) node.getAttributeValue(TOKEN_POS_ATTRIBUTE_NAME);
@@ -187,7 +187,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
             instruction.add(clToken);
             begin += word.length() + 1;
         }
-        Annotation doc = new Annotation(input.toString().trim());
+        var doc = new Annotation(input.toString().trim());
         doc.set(DocIDAnnotation.class, "0");
         doc.set(TokensAnnotation.class, instruction);
         doc.set(CharacterOffsetBeginAnnotation.class, charBegin);
@@ -207,9 +207,9 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         String docID = doc.get(CoreAnnotations.DocIDAnnotation.class);
         List<Sentence> sentences = new ArrayList<>();
         Integer currSentenceNumber = (Integer) textNodes.get(0).getAttributeValue(SENTENCE_NUMBER);
-        StringBuilder currSentenceText = new StringBuilder();
+        var currSentenceText = new StringBuilder();
         List<CoreLabel> sentenceTokens = new ArrayList<>();
-        int index = 0;
+        var index = 0;
         for (INode node : textNodes) {
             if (!node.getAttributeValue(SENTENCE_NUMBER).equals(currSentenceNumber)) {
 
@@ -225,10 +225,10 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         if (!sentenceTokens.isEmpty()) {
             sentences.add(new Sentence(currSentenceText.toString(), sentenceTokens, currSentenceNumber));
         }
-        int tokenOffset = 0;
+        var tokenOffset = 0;
         List<CoreMap> result = new ArrayList<>();
         for (Sentence sentence : sentences) {
-            Annotation sentenceAnn = new Annotation(sentence.words);
+            var sentenceAnn = new Annotation(sentence.words);
             CoreLabel first = sentence.tokens.get(0);
             CoreLabel last = sentence.tokens.get(sentence.tokens.size() - 1);
             sentenceAnn.set(CoreAnnotations.CharacterOffsetBeginAnnotation.class, first.get(CoreAnnotations.CharacterOffsetBeginAnnotation.class));
@@ -243,7 +243,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
                 sentenceAnn.set(CoreAnnotations.DocIDAnnotation.class, docID);
             }
 
-            int i = 1;
+            var i = 1;
             for (CoreLabel token : sentence.tokens) {
                 token.setIndex(i);
                 token.setSentIndex(result.size());
@@ -308,7 +308,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
 
         List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
         sentences.sort(Comparator.comparingInt(cm -> cm.get(SentenceIndexAnnotation.class)));
-        int offset = 0;
+        var offset = 0;
         for (CoreMap sentence : sentences) {
             List<CoreLabel> tokens = sentence.get(TokensAnnotation.class);
 

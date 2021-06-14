@@ -58,10 +58,10 @@ public class FilePrinter {
             return;
         }
 
-        try (FileWriter myWriter = new FileWriter(target)) {
-            int minSentenceNumber = 0;
+        try (var myWriter = new FileWriter(target)) {
+            var minSentenceNumber = 0;
             for (IWord node : graph.getWords()) {
-                int sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
+                var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
                 if (sentenceNumber + 1 > minSentenceNumber) {
                     myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
                     minSentenceNumber++;
@@ -79,7 +79,8 @@ public class FilePrinter {
     private static boolean createFileIfNonExistent(File file) {
         try {
             if (file.createNewFile()) {
-                logger.info("File created: %s", file.getAbsolutePath());
+                logger.info("File created: {}", file.getAbsolutePath());
+
             } else {
                 logger.info("File already exists.");
             }
