@@ -23,7 +23,7 @@ public class TextExtractorConfig extends Configuration {
     public final double similarityPercentage;
 
     public TextExtractorConfig() {
-        SystemParameters config = new SystemParameters(CONFIGS_TEXT_EXTRACTOR_PROPERTIES, true);
+        var config = new SystemParameters(CONFIGS_TEXT_EXTRACTOR_PROPERTIES, true);
         textAgents = config.getPropertyAsList(TEXT_AGENTS);
         similarityPercentage = config.getPropertyAsDouble(SIMILARITY_PERCENTAGE);
     }

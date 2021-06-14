@@ -47,7 +47,7 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
 
     @Override
     public void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences) {
-        NounMappingWithDistribution mapping = new NounMappingWithDistribution(nodes, Map.of(kind, confidence), reference, occurrences);
+        var mapping = new NounMappingWithDistribution(nodes, Map.of(kind, confidence), reference, occurrences);
         nounMappings.put(mapping.getReference(), mapping);
     }
 
