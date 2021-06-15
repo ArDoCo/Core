@@ -240,7 +240,7 @@ public class Pipeline {
      * @throws IOException if something went wrong
      */
     private static File ensureDir(String path, boolean create) throws IOException {
-        File file = new File(path);
+        var file = new File(path);
         if (file.isDirectory() && file.exists()) {
             return file;
         }

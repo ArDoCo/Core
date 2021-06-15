@@ -40,7 +40,7 @@ public class ParseUtil {
             logger.error("Graph cannot be processed!");
             return Lists.mutable.empty();
         }
-        ParseGraph parseGraph = (ParseGraph) graph;
+        var parseGraph = (ParseGraph) graph;
         IArcType arcType = graph.getArcType(ARC_TYPE_NAME);
 
         MutableList<INode> orderedNodes = Lists.mutable.empty();
@@ -65,9 +65,9 @@ public class ParseUtil {
     }
 
     public static String recreateText(List<INode> textNodes) {
-        StringBuilder textBuilder = new StringBuilder();
+        var textBuilder = new StringBuilder();
         List<String> specialPos = List.of("-RRB-", ".", ",", ":", "POS");
-        for (int i = 0; i < textNodes.size(); i++) {
+        for (var i = 0; i < textNodes.size(); i++) {
             INode node = textNodes.get(i);
             String word = (String) node.getAttributeValue(VALUE);
             String pos = (String) node.getAttributeValue(TOKEN_POS_ATTRIBUTE_NAME);
