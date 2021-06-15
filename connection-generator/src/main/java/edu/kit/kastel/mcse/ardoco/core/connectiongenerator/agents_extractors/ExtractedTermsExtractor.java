@@ -132,8 +132,9 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
                 !arePreviousWordsEqualToReferences(termNounMappings, n, position) && //
                         !areNextWordsEqualToReferences(termNounMappings, n, position)) {
                     possibleOccuredTermMappings.add(term);
-                    break; // TODO: poss. rework -> assumption: There is only one corresponding term
-                           // mapping -> change return type
+                    break;
+                    // TODO: poss. rework -> assumption: There is only one corresponding term
+                    // mapping -> change return type
                 }
 
             }
@@ -144,7 +145,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     }
 
     private boolean areNextWordsEqualToReferences(List<INounMapping> references, IWord currentWord, int currentPosition) {
-        boolean stop = false;
+        var stop = false;
 
         for (int i = currentPosition + 1; i < references.size() && !stop; i++) {
             String postWord = currentWord.getNextWord().getText();
@@ -159,7 +160,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     }
 
     private boolean arePreviousWordsEqualToReferences(List<INounMapping> references, IWord currentWord, int currentPosition) {
-        boolean stop = false;
+        var stop = false;
 
         for (int i = currentPosition - 1; i >= 0 && !stop; i--) {
             String preWord = currentWord.getPreWord().getText();
@@ -255,7 +256,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     private IWord getAfterTermNode(IWord termStartNode, ITermMapping term) {
         IWord afterTermNode = termStartNode.getNextWord();
-        for (int i = 0; i < term.getMappings().size() && afterTermNode != null; i++) {
+        for (var i = 0; i < term.getMappings().size() && afterTermNode != null; i++) {
             afterTermNode = afterTermNode.getNextWord();
         }
 

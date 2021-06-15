@@ -140,12 +140,12 @@ public class Pipeline {
         IModelConnector pcmModel = new PcmOntologyModelConnector(inputModel.getAbsolutePath());
         FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
 
-        AgentDatastructure data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
+        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
         data.overwrite(runTextExtractor(data, additionalConfigs));
         data.overwrite(runRecommendationGenerator(data, additionalConfigs));
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
 
-        Duration duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
+        var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         printResultsInFiles(outputDir, name, data, duration);
     }
 
@@ -220,7 +220,7 @@ public class Pipeline {
      * @throws IOException if something went wrong
      */
     private static File ensureFile(String path, boolean create) throws IOException {
-        File file = new File(path);
+        var file = new File(path);
         if (file.exists()) {
             return file;
         }
@@ -254,7 +254,7 @@ public class Pipeline {
     }
 
     private static CommandLine parseCommandLine(String[] args) throws ParseException {
-        Options options = new Options();
+        var options = new Options();
         Option opt;
 
         // Define Options ..

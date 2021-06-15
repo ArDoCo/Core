@@ -228,7 +228,7 @@ public class FilePrinter {
             return;
         }
 
-        try (FileWriter myWriter = new FileWriter(resultFile)) {
+        try (var myWriter = new FileWriter(resultFile)) {
             writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState, duration);
 
         } catch (IOException e) {
