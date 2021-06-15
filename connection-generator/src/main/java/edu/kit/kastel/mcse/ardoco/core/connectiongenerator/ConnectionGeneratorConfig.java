@@ -8,15 +8,16 @@ import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
 public class ConnectionGeneratorConfig extends Configuration {
 
+    private static final String CONNECTION_AGENTS = "Connection_Agents";
     public static final ConnectionGeneratorConfig DEFAULT_CONFIG = new ConnectionGeneratorConfig();
 
     private ConnectionGeneratorConfig() {
-        SystemParameters config = new SystemParameters("/configs/ConnectionGenerator.properties", true);
-        connectionAgents = config.getPropertyAsList("Connection_Agents");
+        var config = new SystemParameters("/configs/ConnectionGenerator.properties", true);
+        connectionAgents = config.getPropertyAsList(CONNECTION_AGENTS);
     }
 
     public ConnectionGeneratorConfig(Map<String, String> configs) {
-        connectionAgents = getPropertyAsList("Connection_Agents", configs);
+        connectionAgents = getPropertyAsList(CONNECTION_AGENTS, configs);
     }
 
     /**
@@ -26,7 +27,7 @@ public class ConnectionGeneratorConfig extends Configuration {
 
     @Override
     protected Map<String, String> getAllProperties() {
-        return Map.of("Connection_Agents", String.join(" ", connectionAgents));
+        return Map.of(CONNECTION_AGENTS, String.join(" ", connectionAgents));
     }
 
 }
