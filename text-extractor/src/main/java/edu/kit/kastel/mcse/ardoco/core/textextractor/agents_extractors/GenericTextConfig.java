@@ -8,6 +8,14 @@ import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
 public class GenericTextConfig extends Configuration {
 
+    private static final String SEPARATED_NAMES_ANALYZER_PROBABILITY = "SeparatedNamesAnalyzer_Probability";
+    private static final String OUT_DEP_ARCS_ANALYZER_PROBABILITY = "OutDepArcsAnalyzer_Probability";
+    private static final String NOUN_ANALYZER_PROBABILITY = "NounAnalyzer_Probability";
+    private static final String MULTIPLE_PART_SOLVER_PROBABILITY = "MultiplePartSolver_Probability";
+    private static final String IN_DEP_ARCS_ANALYZER_PROBABILITY = "InDepArcsAnalyzer_Probability";
+    private static final String ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY = "ArticleTypeNameAnalyzer_Probability";
+    private static final String EXTRACTORS = "Extractors";
+
     public static final GenericTextConfig DEFAULT_CONFIG = new GenericTextConfig();
 
     public final List<String> textExtractors;
@@ -49,37 +57,37 @@ public class GenericTextConfig extends Configuration {
     public final double separatedNamesAnalyzerProbability;
 
     private GenericTextConfig() {
-        SystemParameters CONFIG = new SystemParameters("/configs/TextAnalyzerSolverConfig.properties", true);
-        textExtractors = CONFIG.getPropertyAsList("Extractors");
-        articleTypeNameAnalyzerProbability = CONFIG.getPropertyAsDouble("ArticleTypeNameAnalyzer_Probability");
-        inDepArcsAnalyzerProbability = CONFIG.getPropertyAsDouble("InDepArcsAnalyzer_Probability");
-        multiplePartSolverProbability = CONFIG.getPropertyAsDouble("MultiplePartSolver_Probability");
-        nounAnalyzerProbability = CONFIG.getPropertyAsDouble("NounAnalyzer_Probability");
-        outDepArcsAnalyzerProbability = CONFIG.getPropertyAsDouble("OutDepArcsAnalyzer_Probability");
-        separatedNamesAnalyzerProbability = CONFIG.getPropertyAsDouble("SeparatedNamesAnalyzer_Probability");
+        var config = new SystemParameters("/configs/TextAnalyzerSolverConfig.properties", true);
+        textExtractors = config.getPropertyAsList(EXTRACTORS);
+        articleTypeNameAnalyzerProbability = config.getPropertyAsDouble(ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY);
+        inDepArcsAnalyzerProbability = config.getPropertyAsDouble(IN_DEP_ARCS_ANALYZER_PROBABILITY);
+        multiplePartSolverProbability = config.getPropertyAsDouble(MULTIPLE_PART_SOLVER_PROBABILITY);
+        nounAnalyzerProbability = config.getPropertyAsDouble(NOUN_ANALYZER_PROBABILITY);
+        outDepArcsAnalyzerProbability = config.getPropertyAsDouble(OUT_DEP_ARCS_ANALYZER_PROBABILITY);
+        separatedNamesAnalyzerProbability = config.getPropertyAsDouble(SEPARATED_NAMES_ANALYZER_PROBABILITY);
     }
 
     public GenericTextConfig(Map<String, String> configs) {
-        textExtractors = getPropertyAsList("Extractors", configs);
-        articleTypeNameAnalyzerProbability = getPropertyAsDouble("ArticleTypeNameAnalyzer_Probability", configs);
-        inDepArcsAnalyzerProbability = getPropertyAsDouble("InDepArcsAnalyzer_Probability", configs);
-        multiplePartSolverProbability = getPropertyAsDouble("MultiplePartSolver_Probability", configs);
-        nounAnalyzerProbability = getPropertyAsDouble("NounAnalyzer_Probability", configs);
-        outDepArcsAnalyzerProbability = getPropertyAsDouble("OutDepArcsAnalyzer_Probability", configs);
-        separatedNamesAnalyzerProbability = getPropertyAsDouble("SeparatedNamesAnalyzer_Probability", configs);
+        textExtractors = getPropertyAsList(EXTRACTORS, configs);
+        articleTypeNameAnalyzerProbability = getPropertyAsDouble(ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY, configs);
+        inDepArcsAnalyzerProbability = getPropertyAsDouble(IN_DEP_ARCS_ANALYZER_PROBABILITY, configs);
+        multiplePartSolverProbability = getPropertyAsDouble(MULTIPLE_PART_SOLVER_PROBABILITY, configs);
+        nounAnalyzerProbability = getPropertyAsDouble(NOUN_ANALYZER_PROBABILITY, configs);
+        outDepArcsAnalyzerProbability = getPropertyAsDouble(OUT_DEP_ARCS_ANALYZER_PROBABILITY, configs);
+        separatedNamesAnalyzerProbability = getPropertyAsDouble(SEPARATED_NAMES_ANALYZER_PROBABILITY, configs);
 
     }
 
     @Override
     protected Map<String, String> getAllProperties() {
         return Map.of(//
-                "Extractors", String.join(" ", textExtractors), //
-                "ArticleTypeNameAnalyzer_Probability", String.valueOf(articleTypeNameAnalyzerProbability), //
-                "InDepArcsAnalyzer_Probability", String.valueOf(inDepArcsAnalyzerProbability), //
-                "MultiplePartSolver_Probability", String.valueOf(multiplePartSolverProbability), //
-                "NounAnalyzer_Probability", String.valueOf(nounAnalyzerProbability), //
-                "OutDepArcsAnalyzer_Probability", String.valueOf(outDepArcsAnalyzerProbability), //
-                "SeparatedNamesAnalyzer_Probability", String.valueOf(separatedNamesAnalyzerProbability) //
+                EXTRACTORS, String.join(" ", textExtractors), //
+                ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY, String.valueOf(articleTypeNameAnalyzerProbability), //
+                IN_DEP_ARCS_ANALYZER_PROBABILITY, String.valueOf(inDepArcsAnalyzerProbability), //
+                MULTIPLE_PART_SOLVER_PROBABILITY, String.valueOf(multiplePartSolverProbability), //
+                NOUN_ANALYZER_PROBABILITY, String.valueOf(nounAnalyzerProbability), //
+                OUT_DEP_ARCS_ANALYZER_PROBABILITY, String.valueOf(outDepArcsAnalyzerProbability), //
+                SEPARATED_NAMES_ANALYZER_PROBABILITY, String.valueOf(separatedNamesAnalyzerProbability) //
         );
     }
 
