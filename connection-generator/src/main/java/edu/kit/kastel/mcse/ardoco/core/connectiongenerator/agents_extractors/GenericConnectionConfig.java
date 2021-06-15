@@ -10,25 +10,15 @@ import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 public class GenericConnectionConfig extends Configuration {
 
     private static final String INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE = "InstanceConnectionSolver_ProbabilityWithoutType";
-
     private static final String INSTANCE_CONNECTION_SOLVER_PROBABILITY = "InstanceConnectionSolver_Probability";
-
     private static final String RELATION_CONNECTION_SOLVER_PROBABILITY = "RelationConnectionSolver_Probability";
-
     private static final String REFERENCE_SOLVER_ARE_NAMES_SIMILAR_THRESHOLD = "ReferenceSolver_areNamesSimilarThreshold";
-
     private static final String REFERENCE_SOLVER_PROPORTIONAL_DECREASE = "ReferenceSolver_ProportionalDecrease";
-
     private static final String REFERENCE_SOLVER_PROBABILITY = "ReferenceSolver_Probability";
-
     private static final String EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_TERM = "ExtractedTermsAnalyzer_ProbabilityAdjacentTerm";
-
     private static final String EXTRACTED_TERMS_ANALYZER_PROBABILITY_JUST_NAME = "ExtractedTermsAnalyzer_ProbabilityJustName";
-
     private static final String EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN = "ExtractedTermsAnalyzer_ProbabilityAdjacentNoun";
-
     private static final String EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY = "ExtractionDependentOccurrenceAnalyzer_Probability";
-
     private static final String CONNECTION_EXTRACTORS = "Connection_Extractors";
 
     public static final GenericConnectionConfig DEFAULT_CONFIG = new GenericConnectionConfig();
