@@ -71,17 +71,17 @@ public abstract class Configuration {
      * @param additionalConfigs the file with additional configs
      */
     public static void overrideConfigInMap(Map<String, String> configs, File additionalConfigs) {
-        try (Scanner scan = new Scanner(additionalConfigs)) {
+        try (var scan = new Scanner(additionalConfigs)) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
                 if (line == null || line.isBlank()) {
-                    logger.warn("Illegal Line in config: \"" + line + "\"");
+                    logger.warn("Illegal Line in config: \"{}\"", line);
                     continue;
                 }
 
                 String[] kv = line.trim().split("=", 2);
                 if (kv.length != 2) {
-                    logger.warn("Illegal Line in config: \"" + line + "\"");
+                    logger.warn("Illegal Line in config: \"{}\"", line);
                     continue;
                 }
 
