@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
@@ -24,13 +23,13 @@ public class SystemParameters {
             Object loader = new Object() {
             };
 
-            try (InputStream inputStream = loader.getClass().getResourceAsStream(filepath)) {
+            try (var inputStream = loader.getClass().getResourceAsStream(filepath)) {
                 prop.load(inputStream);
             } catch (IOException e) {
                 LOGGER.debug(e.getMessage(), e.getCause());
             }
         } else {
-            try (InputStream inputStream = new FileInputStream(filepath)) {
+            try (var inputStream = new FileInputStream(filepath)) {
                 prop.load(inputStream);
             } catch (IOException e) {
                 LOGGER.debug(e.getMessage(), e.getCause());

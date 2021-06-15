@@ -27,7 +27,7 @@ class LunaExecution implements IPARSEExecution {
             logger.debug("Starting creation of PARSE Graph");
         }
 
-        Scanner scanner = new Scanner(text);
+        var scanner = new Scanner(text);
         scanner.useDelimiter("\\A");
         String content = scanner.next();
         scanner.close();
@@ -45,8 +45,8 @@ class LunaExecution implements IPARSEExecution {
         lunaProps.setProperty("PRE_PIPE", String.join(",", "indirect_tokenizer", "textSNLP", "graphBuilder"));
         lunaProps.setProperty("AGENTS", String.join(",", "stanfordAgent", "changeWatchdog"));
 
-        Luna luna = Luna.getInstance();
-        PrePipelineData ppd = new PrePipelineData();
+        var luna = Luna.getInstance();
+        var ppd = new PrePipelineData();
         ppd.setTranscription(content);
         luna.setPrePipelineData(ppd);
 
