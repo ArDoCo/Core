@@ -42,7 +42,6 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
-        // data.setTextState(new TextExtractionState());
         data.setTextState(new TextStateWithClustering(config.similarityPercentage));
         initializeAgents();
     }
