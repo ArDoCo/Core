@@ -8,15 +8,16 @@ import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
 public class RecommendationGeneratorConfig extends Configuration {
 
+    private static final String RECOMMENDATION_AGENTS = "Recommendation_Agents";
     public static final RecommendationGeneratorConfig DEFAULT_CONFIG = new RecommendationGeneratorConfig();
 
     private RecommendationGeneratorConfig() {
-        SystemParameters config = new SystemParameters("/configs/RecommendationGenerator.properties", true);
-        recommendationAgents = config.getPropertyAsList("Recommendation_Agents");
+        var config = new SystemParameters("/configs/RecommendationGenerator.properties", true);
+        recommendationAgents = config.getPropertyAsList(RECOMMENDATION_AGENTS);
     }
 
     public RecommendationGeneratorConfig(Map<String, String> configs) {
-        recommendationAgents = getPropertyAsList("Recommendation_Agents", configs);
+        recommendationAgents = getPropertyAsList(RECOMMENDATION_AGENTS, configs);
     }
 
     /**
@@ -26,7 +27,7 @@ public class RecommendationGeneratorConfig extends Configuration {
 
     @Override
     protected Map<String, String> getAllProperties() {
-        return Map.of("Recommendation_Agents", String.join(" ", recommendationAgents));
+        return Map.of(RECOMMENDATION_AGENTS, String.join(" ", recommendationAgents));
     }
 
 }
