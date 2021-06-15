@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -367,21 +366,15 @@ public interface ITextState extends IState {
     void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences);
 
     default List<INounMapping> getMappingsThatCouldBeAType(IWord word) {
-        List<INounMapping> typeMappings = new ArrayList<>();
-        typeMappings = getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForType() > 0).collect(Collectors.toList());
-        return typeMappings;
+        return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForType() > 0).collect(Collectors.toList());
     }
 
     default List<INounMapping> getMappingsThatCouldBeAName(IWord word) {
-        List<INounMapping> nameMappings = new ArrayList<>();
-        nameMappings = getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForName() > 0).collect(Collectors.toList());
-        return nameMappings;
+        return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForName() > 0).collect(Collectors.toList());
     }
 
     default List<INounMapping> getMappingsThatCouldBeANort(IWord word) {
-        List<INounMapping> nortMappings = new ArrayList<>();
-        nortMappings = getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForNort() > 0).collect(Collectors.toList());
-        return nortMappings;
+        return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForNort() > 0).collect(Collectors.toList());
     }
 
 }
