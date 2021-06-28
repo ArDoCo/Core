@@ -5,10 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 import java.util.Scanner;
 
-import edu.kit.ipd.indirect.graphBuilder.GraphBuilder;
-import edu.kit.ipd.indirect.textSNLP.Stanford;
-import edu.kit.ipd.indirect.textSNLP.TextSNLP;
-import edu.kit.ipd.indirect.tokenizer.Tokenizer;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
@@ -17,6 +13,10 @@ import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.StanfordCoreNLPProcessorAgent;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.GraphBuilder;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.Stanford;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.TextSNLP;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.Tokenizer;
 
 /**
  * Simply invoke each agent in a suitable order (once).

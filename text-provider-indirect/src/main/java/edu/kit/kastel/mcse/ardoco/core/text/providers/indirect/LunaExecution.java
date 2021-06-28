@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Scanner;
 
-import edu.kit.ipd.indirect.textSNLP.Stanford;
 import edu.kit.ipd.parse.luna.Luna;
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
@@ -12,6 +11,7 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.ipd.pronat.change_watchdog.ChangeWatchdog;
 import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.Stanford;
 
 /**
  * Simply invoke LUNA Framework.
