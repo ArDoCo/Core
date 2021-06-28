@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import edu.stanford.nlp.util.CoreMap;
  * @author Markus Kocybik
  * @author Tobias Hey - MaxentTagger only loaded once (2016-07-28) - adapted interface and added stemming - add lemma
  *         replacement from config (2020-03-20)
+ * @author Jan Keim - update model loading and minor style fixes
  */
 public class Stanford {
 
@@ -42,8 +44,14 @@ public class Stanford {
     private final Map<String, Lemma> lemmas;
 
     Stanford() {
-        Properties props = ConfigManager.getConfiguration(getClass());
-        tagger = new MaxentTagger(getClass().getResourceAsStream(props.getProperty("TAGGER_MODEL")));
+        Properties props = ConfigManager.getConfiguration(Stanford.class);
+        var taggerModel = props.getProperty("TAGGER_MODEL");
+        System.out.println(taggerModel);
+        InputStream taggerModelStream = getClass().getResourceAsStream(taggerModel);
+        if (taggerModelStream == null) {
+            System.out.println("NULL");
+        }
+        tagger = new MaxentTagger(taggerModelStream);
         lemmas = initLemmas(props);
         morph = new Morphology();
         ssplit = new WordsToSentencesAnnotator();
