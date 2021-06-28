@@ -37,10 +37,6 @@
 			<artifactId>change_watchdog</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>edu.kit.ipd.pronat</groupId>
-			<artifactId>pre_pipeline_data_model</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>parseBios</artifactId>
 		</dependency>

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
-import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
