@@ -10,7 +10,7 @@ import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.ipd.pronat.change_watchdog.ChangeWatchdog;
-import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.PrePipelineData;
 
 /**
  * Simply invoke LUNA Framework.

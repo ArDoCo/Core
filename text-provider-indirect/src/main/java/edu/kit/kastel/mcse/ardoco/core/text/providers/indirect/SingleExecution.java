@@ -9,11 +9,11 @@ import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
-import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.StanfordCoreNLPProcessorAgent;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.GraphBuilder;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.TextSNLP;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.Tokenizer;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.PrePipelineData;
 
 /**
  * Simply invoke each agent in a suitable order (once).
