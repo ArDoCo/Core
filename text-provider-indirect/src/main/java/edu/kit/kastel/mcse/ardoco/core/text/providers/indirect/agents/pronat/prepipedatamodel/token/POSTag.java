@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sebastian Weigelt
  * @author Markus Kocybik
+ * @author Jan Keim
  */
 public enum POSTag {
     //@formatter:off
@@ -56,7 +57,16 @@ public enum POSTag {
 	OPEN_QUOTE("``"),
 	CLOSE_QUOTE("''"),
 	DOLLAR("$"),
-	HASHTAG("#");
+	HASHTAG("#"),
+	// added because these tags are now recognized by Stanford
+	// they are originally from the Web Treebank corpus and/or the OntoNotes 4.0
+    HYPH("HYPH"),
+    NFP("NFP"),
+    ADD("ADD"),
+    AFX("AFX"),
+    GW("GW"),
+    XX("XX")
+    ;
 	//@formatter:on
 
     private static final Logger logger = LoggerFactory.getLogger(POSTag.class);
