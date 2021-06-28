@@ -46,11 +46,7 @@ public class Stanford {
     Stanford() {
         Properties props = ConfigManager.getConfiguration(Stanford.class);
         var taggerModel = props.getProperty("TAGGER_MODEL");
-        System.out.println(taggerModel);
         InputStream taggerModelStream = getClass().getResourceAsStream(taggerModel);
-        if (taggerModelStream == null) {
-            System.out.println("NULL");
-        }
         tagger = new MaxentTagger(taggerModelStream);
         lemmas = initLemmas(props);
         morph = new Morphology();
