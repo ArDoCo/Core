@@ -39,7 +39,6 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>parseBios</artifactId>
-			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<!-- Stanford -->
 		<dependency>
