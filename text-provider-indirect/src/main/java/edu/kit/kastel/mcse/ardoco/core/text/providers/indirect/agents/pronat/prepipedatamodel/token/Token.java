@@ -2,6 +2,8 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.pr
 
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
+
 /**
  * This class represents the internal representation of a token. Each token consists of a word, position, pos tag, chunk
  * and an instruction number.

@@ -1,7 +1,7 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token;
+package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class represents all valid pos tags
@@ -69,7 +69,7 @@ public enum POSTag {
     ;
 	//@formatter:on
 
-    private static final Logger logger = LoggerFactory.getLogger(POSTag.class);
+    private static final Logger logger = LogManager.getLogger(POSTag.class);
 
     private final String tag;
 
