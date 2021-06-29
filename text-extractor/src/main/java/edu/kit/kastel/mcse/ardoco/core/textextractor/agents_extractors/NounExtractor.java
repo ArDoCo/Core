@@ -8,7 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.PosTag;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
 
 /**
@@ -21,74 +21,73 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
 @MetaInfServices(TextExtractor.class)
 public class NounExtractor extends TextExtractor {
 
-	private double probability;
+    private double probability;
 
-	public NounExtractor() {
-		this(null);
-	}
+    public NounExtractor() {
+        this(null);
+    }
 
-	public NounExtractor(ITextState textExtractionState) {
-		this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
-	}
+    public NounExtractor(ITextState textExtractionState) {
+        this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
+    }
 
-	/**
-	 * Creates a new NounAnalyzer
-	 *
-	 * @param graph               PARSE graph to run on
-	 * @param textExtractionState the text extraction state
-	 * @param config              the module configuration
-	 */
-	public NounExtractor(ITextState textExtractionState, GenericTextConfig config) {
-		super(DependencyType.TEXT, textExtractionState);
-		probability = config.nounAnalyzerProbability;
-	}
+    /**
+     * Creates a new NounAnalyzer
+     *
+     * @param graph               PARSE graph to run on
+     * @param textExtractionState the text extraction state
+     * @param config              the module configuration
+     */
+    public NounExtractor(ITextState textExtractionState, GenericTextConfig config) {
+        super(DependencyType.TEXT, textExtractionState);
+        probability = config.nounAnalyzerProbability;
+    }
 
-	@Override
-	public void setProbability(List<Double> probabilities) {
-		if (probabilities.size() > 1) {
-			throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
-		} else if (probabilities.isEmpty()) {
-			throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
-		} else {
-			probability = probabilities.get(0);
-		}
-	}
+    @Override
+    public void setProbability(List<Double> probabilities) {
+        if (probabilities.size() > 1) {
+            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+        } else if (probabilities.isEmpty()) {
+            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+        } else {
+            probability = probabilities.get(0);
+        }
+    }
 
-	@Override
-	public TextExtractor create(ITextState textExtractionState, Configuration config) {
-		return new NounExtractor(textExtractionState, (GenericTextConfig) config);
-	}
+    @Override
+    public TextExtractor create(ITextState textExtractionState, Configuration config) {
+        return new NounExtractor(textExtractionState, (GenericTextConfig) config);
+    }
 
-	@Override
-	public void exec(IWord n) {
+    @Override
+    public void exec(IWord n) {
 
-		String nodeValue = n.getText();
-		if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
-			return;
-		}
+        String nodeValue = n.getText();
+        if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
+            return;
+        }
 
-		findSingleNouns(n);
+        findSingleNouns(n);
 
-	}
+    }
 
-	/**
-	 * Finds all nouns and adds them as name-or-type mappings (and types) to the
-	 * text extraction state.
-	 *
-	 * @param n node to check
-	 */
-	private void findSingleNouns(IWord n) {
-		PosTag pos = n.getPosTag();
-		if (PosTag.NNP.equals(pos) || //
-				PosTag.NN.equals(pos) || //
-				PosTag.NNPS.equals(pos)) {
+    /**
+     * Finds all nouns and adds them as name-or-type mappings (and types) to the text extraction state.
+     *
+     * @param n node to check
+     */
+    private void findSingleNouns(IWord n) {
+        POSTag pos = n.getPosTag();
+        if (POSTag.NOUN_PROPER_SINGULAR.equals(pos) || //
+                POSTag.NOUN.equals(pos) || //
+                POSTag.NOUN_PROPER_PLURAL.equals(pos)) {
 
-			textState.addNort(n, n.getText(), probability);
-		}
-		if (PosTag.NNS.equals(pos)) {
-			textState.addType(n, n.getText(), probability);
-		}
+            textState.addNort(n, n.getText(), probability);
+        }
+        if (POSTag.NOUN_PLURAL.equals(pos)) {
+            textState.addType(n, n.getText(), probability);
+        }
 
-	}
+    }
 
 }
