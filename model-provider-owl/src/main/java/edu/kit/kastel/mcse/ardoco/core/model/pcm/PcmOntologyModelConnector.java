@@ -30,7 +30,6 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private static Logger logger = LogManager.getLogger(PcmOntologyModelConnector.class);
 
     private static final String DEFAULT_PREFIX = "";
-    private static final String ONT_LANG = "TURTLE";
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
 
     private static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
@@ -120,7 +119,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         }
 
         var ontModel = ModelFactory.createOntologyModel(modelSpec);
-        ontModel.read(ontologyUrl, ONT_LANG);
+        ontModel.read(ontologyUrl);
         ontModel.setDynamicImports(true);
         return ontModel;
     }
@@ -136,16 +135,57 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     public Optional<OntClass> getClass(String className) {
-        return Optional.ofNullable(ontModel.getOntClass(createUri(DEFAULT_PREFIX, className)));
+        var prefixes = ontModel.getNsPrefixMap().keySet();
+        for (var prefix : prefixes) {
+            var optClass = getClass(className, prefix);
+            if (optClass.isPresent()) {
+                return optClass;
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<OntClass> getClass(String className, String prefix) {
+        if (prefix == null || prefix.isEmpty()) {
+            prefix = DEFAULT_PREFIX;
+        }
+        var uri = createUri(prefix, className);
+        return getClassByIri(uri);
+    }
+
+    public Optional<OntClass> getClassByIri(String iri) {
+        String uri = ontModel.expandPrefix(iri);
+        var clazz = ontModel.getOntClass(uri);
+
+        return Optional.ofNullable(clazz);
     }
 
     private MutableList<Individual> getInstancesOfClass(OntClass clazz) {
         return createMutableListFromIterator(ontModel.listIndividuals(clazz));
     }
 
-    private Optional<Property> getProperty(String propertyName) {
-        String propertyUri = createUri(DEFAULT_PREFIX, propertyName);
-        return Optional.ofNullable(ontModel.getDatatypeProperty(propertyUri));
+    public Optional<Property> getProperty(String dataPropertyLocalName) {
+        var prefixes = ontModel.getNsPrefixMap().keySet();
+        for (var prefix : prefixes) {
+            var optDP = getProperty(dataPropertyLocalName, prefix);
+            if (optDP.isPresent()) {
+                return optDP;
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Property> getProperty(String dataPropertyLocalName, String prefix) {
+        if (prefix == null || prefix.isEmpty()) {
+            prefix = DEFAULT_PREFIX;
+        }
+        var uri = createUri(prefix, dataPropertyLocalName);
+        return getPropertyByUri(uri);
+    }
+
+    public Optional<Property> getPropertyByUri(String dataPropertyUri) {
+        var datatypeProperty = ontModel.getDatatypeProperty(dataPropertyUri);
+        return Optional.ofNullable(datatypeProperty);
     }
 
     private static <T> MutableList<T> createMutableListFromIterator(Iterator<T> iterator) {
