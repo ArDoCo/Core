@@ -35,7 +35,7 @@ class PcmOntologyModelConnectorTest {
         List<IInstance> instances = connectorMediaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Listing MediaStore insances:");
+            logger.debug("Listing MediaStore instances:");
             for (IInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
@@ -69,7 +69,7 @@ class PcmOntologyModelConnectorTest {
         List<IInstance> instances = connectorTeaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Listing TeaStore insances:");
+            logger.debug("Listing TeaStore instances:");
             for (IInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
