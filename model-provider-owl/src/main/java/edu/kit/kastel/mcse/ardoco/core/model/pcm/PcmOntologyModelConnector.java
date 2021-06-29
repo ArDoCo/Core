@@ -2,6 +2,8 @@ package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
@@ -97,8 +99,8 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     private static OntModel loadOntology(String ontologyUrl) {
-        // ontology either conforms to the URI convention at the start, then we can skip
-        // preprocessing looks if it is a file and checks if it exists.
+        // ontology either conforms to the URI convention at the start, then we can skip preprocessing
+        // looks if it is a file and checks if it exists.
         // Then prepends "file:///"
         if (!ontologyUrl.startsWith("file") && !ontologyUrl.startsWith("https")) {
             var file = new File(ontologyUrl);
@@ -106,7 +108,15 @@ public class PcmOntologyModelConnector implements IModelConnector {
                 logger.warn("Cannot load ontology");
                 throw new IllegalArgumentException("Provided Ontology URL cannot be accessed");
             }
-            ontologyUrl = "file:///" + file.getAbsolutePath();
+            var uri = file.toURI();
+            URL url;
+            try {
+                url = uri.toURL();
+            } catch (MalformedURLException e) {
+                logger.warn("Cannot load ontology");
+                throw new IllegalArgumentException("Provided Ontology URL cannot be accessed");
+            }
+            ontologyUrl = url.toString();
         }
 
         var ontModel = ModelFactory.createOntologyModel(modelSpec);
