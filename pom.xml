@@ -127,6 +127,11 @@
 				<artifactId>util</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>ontology-connector</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -155,5 +160,6 @@
 		<module>model-provider</module>
 		<module>model-provider-owl</module>
 		<module>util</module>
+		<module>ontology-connector</module>
 	</modules>
 </project>
