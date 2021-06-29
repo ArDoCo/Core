@@ -141,7 +141,7 @@ public class Pipeline {
         IModelConnector pcmModel = new PcmOntologyModelConnector(inputModel.getAbsolutePath());
         FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
 
-        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
+        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
         data.overwrite(runTextExtractor(data, additionalConfigs));
         data.overwrite(runRecommendationGenerator(data, additionalConfigs));
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
