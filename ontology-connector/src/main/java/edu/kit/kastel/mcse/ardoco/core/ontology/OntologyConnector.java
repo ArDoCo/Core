@@ -1,6 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.ontology;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,8 +16,10 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.Ontology;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.riot.Lang;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
@@ -31,10 +36,112 @@ public class OntologyConnector {
     private final OntModel ontModel;
 
     private String pathToOntology;
+    private Ontology ontology;
 
     public OntologyConnector(String ontologyUrl) {
         pathToOntology = ontologyUrl;
         ontModel = loadOntology(pathToOntology);
+        ontology = getBaseOntology().orElseThrow(() -> new IllegalArgumentException("Could not load ontology: No base ontology found"));
+    }
+
+    /**
+     * Save the ontology to a given file (path). This method uses the RDF/XML language.
+     *
+     * @param file String containing the path of the file the ontology should be saved to
+     * @return true if saving was successful, otherwise false is returned
+     */
+    public boolean save(String file) {
+        return save(file, Lang.RDFXML);
+    }
+
+    /**
+     * Save the ontology to a given file (path). This method uses the N3 language to save.
+     *
+     * @param file     String containing the path of the file the ontology should be saved to
+     * @param language The language the file should be written in
+     * @return true if saving was successful, otherwise false is returned
+     */
+    public boolean save(String file, Lang language) {
+        if (file == null || file.isEmpty()) {
+            return false;
+        }
+
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+
+        ontModel.write(out, language.getName());
+        return true;
+    }
+
+    private static OntModel loadOntology(String ontologyUrl) {
+        if (!ontologyUrl.startsWith("file") && !ontologyUrl.startsWith("https")) {
+            var file = new File(ontologyUrl);
+            if (!file.exists()) {
+                logger.warn("Cannot load ontology");
+                throw new IllegalArgumentException("Provided Ontology URL cannot be accessed");
+            }
+            var uri = file.toURI();
+            URL url;
+            try {
+                url = uri.toURL();
+            } catch (MalformedURLException e) {
+                logger.warn("Cannot load ontology");
+                throw new IllegalArgumentException("Provided Ontology URL cannot be accessed");
+            }
+            ontologyUrl = url.toString();
+        }
+
+        var ontModel = ModelFactory.createOntologyModel(modelSpec);
+        ontModel.read(ontologyUrl);
+        ontModel.setDynamicImports(true);
+        return ontModel;
+    }
+
+    /**
+     * Add an Ontology based on its IRI
+     *
+     * @param importIRI the IRI of the ontology that should be imported
+     */
+    public void addOntologyImport(String importIRI) {
+        var importResource = ontModel.createResource(importIRI);
+        ontology.addImport(importResource);
+        ontModel.loadImports();
+    }
+
+    /**
+     * Returns the first {@link Ontology} that is not an imported ontology in the {@link OntModel}. This is assumed to
+     * be the base ontology.
+     *
+     * @return the first {@link Ontology} that is not an imported ontology in the {@link OntModel}
+     */
+    protected Optional<Ontology> getBaseOntology() {
+        var importedOntologies = ontModel.listImportedOntologyURIs();
+        for (var onto : ontModel.listOntologies().toSet()) {
+            var ontologyUri = onto.getURI();
+            if (!importedOntologies.contains(ontologyUri)) {
+                return Optional.of(onto);
+            }
+        }
+        return Optional.empty();
+    }
+
+    protected OntModel getOntModel() {
+        return ontModel;
+    }
+
+    private String createUri(String prefix, String suffix) {
+        String encodedSuffix = suffix;
+        try {
+            encodedSuffix = URLEncoder.encode(suffix, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
     }
 
     public List<IInstance> getInstancesOfType(String type) {
@@ -70,43 +177,6 @@ public class OntologyConnector {
             throw new IllegalStateException("Cannot find the \"entityName\" property!");
         }
         return optionalProperty.get();
-    }
-
-    private static OntModel loadOntology(String ontologyUrl) {
-        // ontology either conforms to the URI convention at the start, then we can skip preprocessing
-        // looks if it is a file and checks if it exists.
-        // Then prepends "file:///"
-        if (!ontologyUrl.startsWith("file") && !ontologyUrl.startsWith("https")) {
-            var file = new File(ontologyUrl);
-            if (!file.exists()) {
-                logger.warn("Cannot load ontology");
-                throw new IllegalArgumentException("Provided Ontology URL cannot be accessed");
-            }
-            var uri = file.toURI();
-            URL url;
-            try {
-                url = uri.toURL();
-            } catch (MalformedURLException e) {
-                logger.warn("Cannot load ontology");
-                throw new IllegalArgumentException("Provided Ontology URL cannot be accessed");
-            }
-            ontologyUrl = url.toString();
-        }
-
-        var ontModel = ModelFactory.createOntologyModel(modelSpec);
-        ontModel.read(ontologyUrl);
-        ontModel.setDynamicImports(true);
-        return ontModel;
-    }
-
-    private String createUri(String prefix, String suffix) {
-        String encodedSuffix = suffix;
-        try {
-            encodedSuffix = URLEncoder.encode(suffix, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
     }
 
     public Optional<OntClass> getClass(String className) {
