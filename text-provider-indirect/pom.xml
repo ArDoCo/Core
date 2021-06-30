@@ -26,6 +26,10 @@
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 			<artifactId>data-structures</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+			<artifactId>ontology-connector</artifactId>
+		</dependency>
 
 		<!-- PARSE / INDIRECT -->
 		<dependency>
@@ -40,6 +44,7 @@
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>parseBios</artifactId>
 		</dependency>
+		
 		<!-- Stanford -->
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
