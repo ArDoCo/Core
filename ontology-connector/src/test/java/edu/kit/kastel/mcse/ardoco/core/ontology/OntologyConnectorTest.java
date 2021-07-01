@@ -1,5 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.ontology;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,9 +15,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests the {@link OntologyConnector}. As the {@link OntologyConnector} is only a utility class mostly using the Apache
+ * Jena library, we won't test the core functionality of Jena but assume it to work properly. We rather test some of the
+ * more elaborated methods that need to combine different calls to check if our logic here is correct.
+ *
+ * @author Jan Keim
+ *
+ */
 @RunWith(JUnitPlatform.class)
 class OntologyConnectorTest {
-
     private static Logger logger = LogManager.getLogger();
     private static String ontologyPath = "src/test/resources/mediastore.owl";
 
@@ -25,6 +36,10 @@ class OntologyConnectorTest {
     private static final String LABEL_SYSTEM = "defaultSystem";
     private static final String URI_SYSTEM = "https://informalin.github.io/knowledgebases/examples/mediastore.owl#System_oPwBYHDhEeSqnN80MQ2uGw";
     private static final String BASIC_COMPONENT = "BasicComponent";
+    private static final String OBJECT_PROPERTY_URI = "https://informalin.github.io/knowledgebases/informalin_base_pcm.owl#basicComponent_ServiceEffectSpecification_-_ServiceEffectSpecification";
+    private static final String OBJECT_PROPERTY_LABEL = "basicComponent_ServiceEffectSpecification_-_ServiceEffectSpecification";
+    private static final String DATA_PROPERTY_URI = "https://informalin.github.io/knowledgebases/informalin_base_pcm.owl#entityName_-_NamedElement";
+    private static final String DATA_PROPERTY_LABEL = "entityName_-_NamedElement";
 
     private OntologyConnector ontologyConnector;
 
@@ -62,7 +77,7 @@ class OntologyConnectorTest {
     void getClassWithLabelTest() {
         var clazz = ontologyConnector.getClass(LABEL_E_CLASS);
         Assertions.assertTrue(clazz.isPresent(), "Could not find class with name in label.");
-        Assertions.assertTrue(clazz.get().hasURI(URI_E_CLASS), "Found class has invalid URI.");
+        Assertions.assertEquals(URI_E_CLASS, clazz.get().getURI(), "Found class has invalid URI.");
     }
 
     @Test
@@ -70,7 +85,7 @@ class OntologyConnectorTest {
     void getClassWithUriTest() {
         var clazz = ontologyConnector.getClass(LOCAL_IRI_NAMED_ELEMENT);
         Assertions.assertTrue(clazz.isPresent(), "Could not find class with name in Iri.");
-        Assertions.assertTrue(clazz.get().hasURI(URI_NAMED_ELEMENT), "Found class has invalid URI.");
+        Assertions.assertEquals(URI_NAMED_ELEMENT, clazz.get().getURI(), "Found class has invalid URI.");
     }
 
     @Test
@@ -102,15 +117,88 @@ class OntologyConnectorTest {
 
     @Test
     @DisplayName("Test retrieval of individuals of a certain class")
-    void getInstancesOfClassTest() {
-        var instances = ontologyConnector.getInstancesOfClass(BASIC_COMPONENT);
+    void getIndividualsOfClassTest() {
+        var instances = ontologyConnector.getIndividualsOfClass(BASIC_COMPONENT);
         var expectedNumberOfInstances = 14;
         Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "Number of instances for BasicComponent differs");
 
-        instances = ontologyConnector.getInstancesOfClass("BooleanOperations");
+        instances = ontologyConnector.getIndividualsOfClass("BooleanOperations");
         expectedNumberOfInstances = 3;
         Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "Number of instances for BooleanOperations differs");
 
+    }
+
+    @Test
+    @DisplayName("Test if retrieval of single individual via name works")
+    void getIndividualTest() {
+        var individual = ontologyConnector.getIndividual(LABEL_SYSTEM);
+        Assertions.assertTrue(individual.isPresent(), "Could not find expected individual.");
+        Assertions.assertEquals(URI_SYSTEM, individual.get().getURI(), "Found individual for \"System\" has invalid URI.");
+
+        // try to get a non-individual and non-existing individuals, which should fail
+        individual = ontologyConnector.getIndividual(LABEL_E_CLASS);
+        Assertions.assertTrue(individual.isEmpty(), "Unexpectedly found individual that should not be present.");
+        individual = ontologyConnector.getIndividual(NONEXISTENT);
+        Assertions.assertTrue(individual.isEmpty(), "Unexpectedly found individual that should not be present.");
+    }
+
+    @Test
+    @DisplayName("Test if retrieval of single individual via uri")
+    void getIndividualByUriTest() {
+        var individual = ontologyConnector.getIndividualByIri(URI_SYSTEM);
+        Assertions.assertTrue(individual.isPresent(), "Could not find expected individual.");
+    }
+
+    @Test
+    @DisplayName("Test creation of populated RDFList")
+    void createListTest() {
+        // TODO
+        List<Individual> individuals = new ArrayList<>();
+        Individual system = ontologyConnector.getIndividual(LABEL_SYSTEM).get();
+        individuals.add(system);
+        Individual cache = ontologyConnector.getIndividual("Cache").get();
+        individuals.add(cache);
+
+        var list = ontologyConnector.createList(individuals);
+        Assertions.assertEquals(2, list.size());
+
+        var head = list.getHead();
+        Assertions.assertEquals(system, head, "Head did not match the expected head.");
+        var secondElement = list.get(1);
+        Assertions.assertEquals(cache, secondElement, "Element at position 1 did not match the expected element.");
+    }
+
+    @Test
+    @DisplayName("Test retrieval of property")
+    void getPropertyTest() {
+        var property = ontologyConnector.getProperty(OBJECT_PROPERTY_LABEL);
+        Assertions.assertTrue(property.isPresent(), "Could not find expected property.");
+        Assertions.assertEquals(OBJECT_PROPERTY_URI, property.get().getURI(), "Found property has invalid URI.");
+
+    }
+
+    @Test
+    @DisplayName("Test retrieval of object property")
+    void getObjectPropertyTest() {
+        var property = ontologyConnector.getObjectProperty(OBJECT_PROPERTY_LABEL);
+        Assertions.assertTrue(property.isPresent(), "Could not find expected property.");
+        Assertions.assertEquals(OBJECT_PROPERTY_URI, property.get().getURI(), "Found property has invalid URI.");
+
+        // should not return a valid data property if asked for object property
+        property = ontologyConnector.getObjectProperty(DATA_PROPERTY_LABEL);
+        Assertions.assertTrue(property.isEmpty(), "Unexpectedly found property.");
+    }
+
+    @Test
+    @DisplayName("Test retrieval of object property")
+    void getDataPropertyTest() {
+        var property = ontologyConnector.getDataProperty(DATA_PROPERTY_LABEL);
+        Assertions.assertTrue(property.isPresent(), "Could not find expected property.");
+        Assertions.assertEquals(DATA_PROPERTY_URI, property.get().getURI(), "Found property has invalid URI.");
+
+        // should not return a valid data property if asked for object property
+        property = ontologyConnector.getDataProperty(OBJECT_PROPERTY_LABEL);
+        Assertions.assertTrue(property.isEmpty(), "Unexpectedly found property.");
     }
 
 }

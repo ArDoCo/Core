@@ -12,20 +12,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.Ontology;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.reasoner.ValidityReport;
 import org.apache.jena.reasoner.ValidityReport.Report;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
@@ -36,6 +40,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
 public class OntologyConnector {
+    private static final String LANG_EN = "en";
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
     private static final String DEFAULT_PREFIX = "";
 
@@ -213,7 +218,10 @@ public class OntologyConnector {
         return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
     }
 
+    /***********/
     /* CLASSES */
+    /***********/
+
     /**
      * Looks for an {@link OntClass} that contains the given name as either label or uses the name as (local) Iri.
      *
@@ -226,8 +234,7 @@ public class OntologyConnector {
         if (stmts.hasNext()) {
             var resource = stmts.next().getSubject();
             if (resource.canAs(OntClass.class)) {
-                var clazz = ontModel.createClass(resource.getURI());
-                return Optional.of(clazz);
+                return Optional.of(resource.as(OntClass.class));
             }
         }
 
@@ -425,16 +432,48 @@ public class OntologyConnector {
         return getClass(className, prefix).isPresent();
     }
 
+    /***************/
     /* INDIVIDUALS */
+    /***************/
+
+    /**
+     * Returns an {@link Optional} that contains a named individual with the given name. If no individual with that name
+     * exists, returns empty {@link Optional}.
+     *
+     * @param name name of the individual
+     * @return Optional with the individual if it exists. Otherwise, empty Optional.
+     */
+    public Optional<Individual> getIndividual(String name) {
+        // first look for usage of name as label
+        var stmts = ontModel.listStatements(null, RDFS.label, name, null);
+        if (stmts.hasNext()) {
+            var resource = stmts.next().getSubject();
+            if (resource.canAs(Individual.class)) {
+                return Optional.of(resource.as(Individual.class));
+            }
+        }
+
+        // if the name was not in a label, looks for usage of the name in the Iris
+        var prefixes = ontModel.getNsPrefixMap().keySet();
+        for (var prefix : prefixes) {
+            var uri = createUri(prefix, name);
+            var optClass = getIndividualByIri(uri);
+            if (optClass.isPresent()) {
+                return optClass;
+            }
+        }
+        return Optional.empty();
+    }
 
     /**
      * Returns an {@link Optional} that contains a named individual with the given uri. If no individual with that uri
      * exists, returns empty {@link Optional}.
      *
-     * @param uri uri of the individual
+     * @param iri iri of the individual
      * @return Optional with the individual if it exists. Otherwise, empty Optional.
      */
-    public Optional<Individual> getIndividualByUri(String uri) {
+    public Optional<Individual> getIndividualByIri(String iri) {
+        var uri = ontModel.expandPrefix(iri);
         return Optional.ofNullable(ontModel.getIndividual(uri));
     }
 
@@ -444,13 +483,13 @@ public class OntologyConnector {
      * @param className Name of the class
      * @return List of Individuals for the given class (name)
      */
-    public List<Individual> getInstancesOfClass(String className) {
+    public List<Individual> getIndividualsOfClass(String className) {
         Optional<OntClass> optClass = getClass(className);
         if (!optClass.isPresent()) {
             return Lists.mutable.empty();
         }
         OntClass clazz = optClass.get();
-        return getInstancesOfClass(clazz);
+        return getIndividualsOfClass(clazz);
     }
 
     /**
@@ -459,17 +498,17 @@ public class OntologyConnector {
      * @param clazz Class of the individuals that should be returned
      * @return List of individuals with the given class.
      */
-    public List<Individual> getInstancesOfClass(OntClass clazz) {
+    public List<Individual> getIndividualsOfClass(OntClass clazz) {
         return ontModel.listIndividuals(clazz).toList();
     }
 
     /**
-     * Similar to {@link #getInstancesOfClass(String)}, but also checks for inferred instances.
+     * Similar to {@link #getIndividualsOfClass(String)}, but also checks for inferred instances.
      *
      * @param className name of the class to retrieve individuals from
      * @return List of Individuals for the given class (name), including inferred ones
      */
-    public List<Individual> getInferredInstancesOfClass(String className) {
+    public List<Individual> getInferredIndividualsOfClass(String className) {
         Optional<OntClass> optClass = getClass(className);
         if (!optClass.isPresent()) {
             return Lists.mutable.empty();
@@ -493,19 +532,83 @@ public class OntologyConnector {
     }
 
     /**
-     * Adds an Individual to the given class
+     * Adds an individual with the given name to the default (prefix) namespace.
+     *
+     * @param name
+     * @return
+     */
+    public Individual addIndividual(String name) {
+        var uri = createUri(DEFAULT_PREFIX, name);
+        var individual = ontModel.getIndividual(uri);
+        if (individual == null) {
+            individual = ontModel.createIndividual(uri, OWL.Thing);
+            individual.addLabel(name, LANG_EN);
+        }
+
+        return individual;
+    }
+
+    /**
+     * Adds an Individual to the given class. If the Individual does not exist, creates the individual as well.
      *
      * @param name  name of the individual that should be added
      * @param clazz Class the individual should be added to
-     * @return the created individual
+     * @return the individual corresponding to the name. If it did not exist before, it is the newly created individual
      */
-    public Individual addInstanceToClass(String name, OntClass clazz) {
-        String uri = createUri(DEFAULT_PREFIX, name);
-        return ontModel.createIndividual(uri, clazz);
+    public Individual addIndividualToClass(String name, OntClass clazz) {
+        var individual = addIndividual(name);
+        individual.addOntClass(clazz);
+        individual.removeOntClass(OWL.Thing);
+        return individual;
     }
 
+    /**
+     * Sets the class of an Individual. If the Individual does not exist, creates the individual as well.
+     *
+     * @param name  name of the individual that should be added
+     * @param clazz Class the individual should be exclusively added to
+     * @return the individual corresponding to the name. If it did not exist before, it is the newly created individual
+     */
+    public Individual setIndividualClass(String name, OntClass clazz) {
+        var individual = addIndividual(name);
+        individual.setOntClass(clazz);
+        return individual;
+    }
+
+    /*********/
+    /* LISTS */
+    /*********/
+
+    // TODO check all of this!
+    /**
+     * Creates an empty {@link RDFList}.
+     *
+     * @return Empty {@link RDFList}
+     */
+    public RDFList createEmptyList() {
+        return ontModel.createList();
+    }
+
+    /**
+     * Creates a {@link RDFList} containing the provided {@link Individual}s.
+     *
+     * @param members {@link Individual}s that should be added to the list
+     * @return new {@link RDFList} populated with the provided members
+     */
+    public RDFList createList(List<Individual> members) {
+        var list = ontModel.createList(members.iterator());
+        return list;
+    }
+
+    public RDFList getList(String uri) {
+        // TODO check if this always works. What happens if the uri is wrong or no list?
+        return ontModel.getList(uri);
+    }
+
+    /**************/
     /* PROPERTIES */
-    // TODO check all!
+    /**************/
+
     /**
      * Returns an {@link Optional} containing a property with the given name. If no property is found, the
      * {@link Optional} is empty.
@@ -514,12 +617,20 @@ public class OntologyConnector {
      * @return {@link Optional} containing a property with the given name. If no such property is found, the
      *         {@link Optional} is empty.
      */
-    public Optional<Property> getProperty(String propertyName) {
+    public Optional<OntProperty> getProperty(String propertyName) {
+        var stmts = ontModel.listStatements(null, RDFS.label, propertyName, null);
+        if (stmts.hasNext()) {
+            var resource = stmts.next().getSubject();
+            if (resource.canAs(OntProperty.class)) {
+                return Optional.of(resource.as(OntProperty.class));
+            }
+        }
+
         var prefixes = ontModel.getNsPrefixMap().keySet();
         for (var prefix : prefixes) {
-            var optDP = getProperty(propertyName, prefix);
-            if (optDP.isPresent()) {
-                return optDP;
+            var optProperty = getProperty(propertyName, prefix);
+            if (optProperty.isPresent()) {
+                return optProperty;
             }
         }
         return Optional.empty();
@@ -533,7 +644,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing a property with the given name and prefix. If no such property is found, the
      *         {@link Optional} is empty.
      */
-    public Optional<Property> getProperty(String propertyName, String prefix) {
+    public Optional<OntProperty> getProperty(String propertyName, String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             prefix = DEFAULT_PREFIX;
         }
@@ -549,12 +660,101 @@ public class OntologyConnector {
      * @return {@link Optional} containing a property with the given uri. If no such property is found, the
      *         {@link Optional} is empty.
      */
-    public Optional<Property> getPropertyByUri(String propertyUri) {
-        var datatypeProperty = ontModel.getDatatypeProperty(propertyUri);
-        return Optional.ofNullable(datatypeProperty);
+    public Optional<OntProperty> getPropertyByUri(String propertyUri) {
+        var property = ontModel.getOntProperty(propertyUri);
+        return Optional.ofNullable(property);
     }
 
+    /**
+     * Same as {@link #getProperty(String)} but returns a (typed) {@link DatatypeProperty}.
+     *
+     * @param dataPropertyName name of the property to be returned
+     * @return {@link Optional} containing a {@link DatatypeProperty} with the given name. If no such property is found,
+     *         the {@link Optional} is empty.
+     */
+    public Optional<DatatypeProperty> getDataProperty(String dataPropertyName) {
+        var propertyOpt = getProperty(dataPropertyName);
+        return checkOptionalAndTransformIntoType(propertyOpt, DatatypeProperty.class);
+    }
+
+    /**
+     * Same as {@link #getProperty(String)} but returns a (typed) {@link ObjectProperty}.
+     *
+     * @param dataPropertyName name of the property to be returned
+     * @return {@link Optional} containing a {@link ObjectProperty} with the given name. If no such property is found,
+     *         the {@link Optional} is empty.
+     */
+    public Optional<ObjectProperty> getObjectProperty(String objectPropertyName) {
+        var propertyOpt = getProperty(objectPropertyName);
+        return checkOptionalAndTransformIntoType(propertyOpt, ObjectProperty.class);
+    }
+
+    /**
+     * Adds a {@link OntProperty} and returns the created {@link OntProperty}. If a {@link OntProperty} with that URI
+     * already existed, returns that one
+     *
+     * @param name Name of the property
+     * @return the created or pre-existing OntProperty
+     */
+    public OntProperty addProperty(String name) {
+        String uri = createUri(DEFAULT_PREFIX, name);
+        return ontModel.createOntProperty(uri);
+    }
+
+    /**
+     * Adds a {@link DatatypeProperty} and returns the created {@link DatatypeProperty}. If a {@link DatatypeProperty}
+     * with that URI already existed, returns that one
+     *
+     * @param name Name of the property
+     * @return the created or pre-existing DatatypeProperty
+     */
+    public DatatypeProperty addDataProperty(String name) {
+        String uri = createUri(DEFAULT_PREFIX, name);
+        return ontModel.createDatatypeProperty(uri);
+    }
+
+    /**
+     * Adds a {@link ObjectProperty} and returns the created {@link ObjectProperty}. If a {@link ObjectProperty} with
+     * that URI already existed, returns that one
+     *
+     * @param name Name of the property
+     * @return the created or pre-existing ObjectProperty
+     */
+    public ObjectProperty addObjectProperty(String name) {
+        String uri = createUri(DEFAULT_PREFIX, name);
+        return ontModel.createObjectProperty(uri);
+    }
+
+    /***********************/
     /* Convenience Methods */
+    /***********************/
+
+    /**
+     * Transforms a given Resource (that is a subtype of Resource) into the given target type. If it cannot be
+     * transformed, returns en empty Optional.
+     *
+     * @param <S>        source type, must extend Resource
+     * @param <T>        target type, must extend Resource
+     * @param from       resource that should be transformed
+     * @param targetType class of the target type
+     * @return Optional containing the transformed resource. If transformation was unsuccessful, the Optional is empty.
+     */
+    public <S extends Resource, T extends Resource> Optional<T> transformType(S from, Class<T> targetType) {
+        if (from.canAs(targetType)) {
+            return Optional.of(from.as(targetType));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private <T extends Resource, S extends Resource> Optional<S> checkOptionalAndTransformIntoType(Optional<T> optional, Class<S> classType) {
+        if (optional.isPresent()) {
+            var resource = optional.get();
+            return transformType(resource, classType);
+        }
+        return Optional.empty();
+    }
+
     private String generateRandomURI(String prefix) {
         var uuid = UuidUtil.getTimeBasedUuid().toString();
         return createUri(prefix, uuid);
