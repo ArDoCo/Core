@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
 class OntologyConnectorTest {
+
     private static Logger logger = LogManager.getLogger();
     private static String ontologyPath = "src/test/resources/mediastore.owl";
 
@@ -23,6 +24,7 @@ class OntologyConnectorTest {
     private static final String URI_NAMED_ELEMENT = "https://informalin.github.io/knowledgebases/informalin_base_pcm.owl#NamedElement";
     private static final String LABEL_SYSTEM = "defaultSystem";
     private static final String URI_SYSTEM = "https://informalin.github.io/knowledgebases/examples/mediastore.owl#System_oPwBYHDhEeSqnN80MQ2uGw";
+    private static final String BASIC_COMPONENT = "BasicComponent";
 
     private OntologyConnector ontologyConnector;
 
@@ -86,7 +88,7 @@ class OntologyConnectorTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Test getting class using Iris.")
     void getClassByIriTest() {
         var clazz = ontologyConnector.getClassByIri(URI_E_CLASS);
         Assertions.assertTrue(clazz.isPresent(), "Could not find class with Iri/Uri.");
@@ -96,6 +98,19 @@ class OntologyConnectorTest {
 
         clazz = ontologyConnector.getClassByIri(NONEXISTENT);
         Assertions.assertTrue(clazz.isEmpty(), "Found a class although it should be non-existent.");
+    }
+
+    @Test
+    @DisplayName("Test retrieval of individuals of a certain class")
+    void getInstancesOfClassTest() {
+        var instances = ontologyConnector.getInstancesOfClass(BASIC_COMPONENT);
+        var expectedNumberOfInstances = 14;
+        Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "Number of instances for BasicComponent differs");
+
+        instances = ontologyConnector.getInstancesOfClass("BooleanOperations");
+        expectedNumberOfInstances = 3;
+        Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "Number of instances for BooleanOperations differs");
+
     }
 
 }

@@ -35,9 +35,6 @@ import org.apache.logging.log4j.core.util.UuidUtil;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.Instance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
-
 public class OntologyConnector {
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
     private static final String DEFAULT_PREFIX = "";
@@ -214,25 +211,6 @@ public class OntologyConnector {
             logger.error(e.getMessage(), e);
         }
         return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
-    }
-
-    public List<IInstance> getInstancesOfType(String type) {
-        List<IInstance> instances = Lists.mutable.empty();
-        Optional<OntClass> optionalClass = getClass(type);
-        if (optionalClass.isEmpty()) {
-            return instances;
-        }
-        OntClass clazz = optionalClass.get();
-        var entityNameProperty = getEntityNameProperty();
-        var idProperty = getIdProperty();
-        for (Individual individual : getInstancesOfClass(clazz)) {
-            var name = individual.getProperty(entityNameProperty).getString();
-            var identifier = individual.getProperty(idProperty).getString();
-            var instance = new Instance(name, type, identifier);
-            instances.add(instance);
-        }
-        return instances;
-
     }
 
     /* CLASSES */
@@ -475,7 +453,13 @@ public class OntologyConnector {
         return getInstancesOfClass(clazz);
     }
 
-    private List<Individual> getInstancesOfClass(OntClass clazz) {
+    /**
+     * Returns List of individuals of the given class.
+     *
+     * @param clazz Class of the individuals that should be returned
+     * @return List of individuals with the given class.
+     */
+    public List<Individual> getInstancesOfClass(OntClass clazz) {
         return ontModel.listIndividuals(clazz).toList();
     }
 
@@ -521,10 +505,19 @@ public class OntologyConnector {
     }
 
     /* PROPERTIES */
-    public Optional<Property> getProperty(String dataPropertyLocalName) {
+    // TODO check all!
+    /**
+     * Returns an {@link Optional} containing a property with the given name. If no property is found, the
+     * {@link Optional} is empty.
+     *
+     * @param propertyName name of the property to be returned
+     * @return {@link Optional} containing a property with the given name. If no such property is found, the
+     *         {@link Optional} is empty.
+     */
+    public Optional<Property> getProperty(String propertyName) {
         var prefixes = ontModel.getNsPrefixMap().keySet();
         for (var prefix : prefixes) {
-            var optDP = getProperty(dataPropertyLocalName, prefix);
+            var optDP = getProperty(propertyName, prefix);
             if (optDP.isPresent()) {
                 return optDP;
             }
@@ -532,34 +525,33 @@ public class OntologyConnector {
         return Optional.empty();
     }
 
-    public Optional<Property> getProperty(String dataPropertyLocalName, String prefix) {
+    /**
+     * Same as {@link #getProperty(String)}, but the property has to be within the given prefix-namespace.
+     *
+     * @param propertyName name of the property to be returned
+     * @param prefix       Prefix (namespace) the property should be in
+     * @return {@link Optional} containing a property with the given name and prefix. If no such property is found, the
+     *         {@link Optional} is empty.
+     */
+    public Optional<Property> getProperty(String propertyName, String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             prefix = DEFAULT_PREFIX;
         }
-        var uri = createUri(prefix, dataPropertyLocalName);
+        var uri = createUri(prefix, propertyName);
         return getPropertyByUri(uri);
     }
 
-    public Optional<Property> getPropertyByUri(String dataPropertyUri) {
-        var datatypeProperty = ontModel.getDatatypeProperty(dataPropertyUri);
+    /**
+     * Returns an {@link Optional} containing a property with the given uri. If no such property is found, the
+     * {@link Optional} is empty.
+     *
+     * @param propertyUri Uri of the property
+     * @return {@link Optional} containing a property with the given uri. If no such property is found, the
+     *         {@link Optional} is empty.
+     */
+    public Optional<Property> getPropertyByUri(String propertyUri) {
+        var datatypeProperty = ontModel.getDatatypeProperty(propertyUri);
         return Optional.ofNullable(datatypeProperty);
-    }
-
-    // TODO move getIdProperty and getEntityName into model-provider-owl
-    private Property getIdProperty() {
-        Optional<Property> optionalProperty = getProperty("id_-_Identifier");
-        if (optionalProperty.isEmpty()) {
-            throw new IllegalStateException("Cannot find the \"id\" property!");
-        }
-        return optionalProperty.get();
-    }
-
-    private Property getEntityNameProperty() {
-        Optional<Property> optionalProperty = getProperty("entityName_-_NamedElement");
-        if (optionalProperty.isEmpty()) {
-            throw new IllegalStateException("Cannot find the \"entityName\" property!");
-        }
-        return optionalProperty.get();
     }
 
     /* Convenience Methods */

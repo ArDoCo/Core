@@ -1,12 +1,17 @@
 package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.rdf.model.Property;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.Instance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
@@ -14,6 +19,10 @@ import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelExceptio
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 
 public class PcmOntologyModelConnector implements IModelConnector {
+    private static final String ENTITY_NAME_PROPERTY = "entityName_-_NamedElement";
+
+    private static final String ID_PROPERTY = "id_-_Identifier";
+
     private static Logger logger = LogManager.getLogger(PcmOntologyModelConnector.class);
 
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
@@ -34,10 +43,45 @@ public class PcmOntologyModelConnector implements IModelConnector {
         MutableList<IInstance> instances = Lists.mutable.empty();
 
         for (String type : TYPES) {
-            instances.addAll(ontologyConnector.getInstancesOfType(type));
+            instances.addAll(getInstancesOfType(type));
         }
 
         return instances;
+    }
+
+    private List<IInstance> getInstancesOfType(String type) {
+        List<IInstance> instances = Lists.mutable.empty();
+        Optional<OntClass> optionalClass = ontologyConnector.getClass(type);
+        if (optionalClass.isEmpty()) {
+            return instances;
+        }
+        OntClass clazz = optionalClass.get();
+        var entityNameProperty = getEntityNameProperty();
+        var idProperty = getIdProperty();
+        for (Individual individual : ontologyConnector.getInstancesOfClass(clazz)) {
+            var name = individual.getProperty(entityNameProperty).getString();
+            var identifier = individual.getProperty(idProperty).getString();
+            var instance = new Instance(name, type, identifier);
+            instances.add(instance);
+        }
+        return instances;
+
+    }
+
+    private Property getIdProperty() {
+        Optional<Property> optionalProperty = ontologyConnector.getProperty(ID_PROPERTY);
+        if (optionalProperty.isEmpty()) {
+            throw new IllegalStateException("Cannot find the \"id\" property!");
+        }
+        return optionalProperty.get();
+    }
+
+    private Property getEntityNameProperty() {
+        Optional<Property> optionalProperty = ontologyConnector.getProperty(ENTITY_NAME_PROPERTY);
+        if (optionalProperty.isEmpty()) {
+            throw new IllegalStateException("Cannot find the \"entityName\" property!");
+        }
+        return optionalProperty.get();
     }
 
     @Override
