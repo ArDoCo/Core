@@ -58,7 +58,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         OntClass clazz = optionalClass.get();
         var entityNameProperty = getEntityNameProperty();
         var idProperty = getIdProperty();
-        for (Individual individual : ontologyConnector.getInstancesOfClass(clazz)) {
+        for (Individual individual : ontologyConnector.getIndividualsOfClass(clazz)) {
             var name = individual.getProperty(entityNameProperty).getString();
             var identifier = individual.getProperty(idProperty).getString();
             var instance = new Instance(name, type, identifier);
