@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
-import org.apache.jena.rdf.model.Property;
+import org.apache.jena.ontology.OntProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
@@ -68,16 +68,16 @@ public class PcmOntologyModelConnector implements IModelConnector {
 
     }
 
-    private Property getIdProperty() {
-        Optional<Property> optionalProperty = ontologyConnector.getProperty(ID_PROPERTY);
+    private OntProperty getIdProperty() {
+        Optional<OntProperty> optionalProperty = ontologyConnector.getProperty(ID_PROPERTY);
         if (optionalProperty.isEmpty()) {
             throw new IllegalStateException("Cannot find the \"id\" property!");
         }
         return optionalProperty.get();
     }
 
-    private Property getEntityNameProperty() {
-        Optional<Property> optionalProperty = ontologyConnector.getProperty(ENTITY_NAME_PROPERTY);
+    private OntProperty getEntityNameProperty() {
+        Optional<OntProperty> optionalProperty = ontologyConnector.getProperty(ENTITY_NAME_PROPERTY);
         if (optionalProperty.isEmpty()) {
             throw new IllegalStateException("Cannot find the \"entityName\" property!");
         }
