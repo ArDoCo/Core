@@ -12,6 +12,8 @@ public class GenericRecommendationConfig extends Configuration {
 
     public final List<String> recommendationExtractors;
 
+    public final List<String> dependencyExtractors;
+
     // NameTypeAnalyzer
     /**
      * The probability of the name type analyzer.
@@ -29,12 +31,14 @@ public class GenericRecommendationConfig extends Configuration {
         recommendationExtractors = config.getPropertyAsList("Recommendation_Extractors");
         nameTypeAnalyzerProbability = config.getPropertyAsDouble("NameTypeAnalyzer_Probability");
         separatedRelationSolverProbility = config.getPropertyAsDouble("SeparatedRelationsSolver_Probability");
+        dependencyExtractors = config.getPropertyAsList("Dependency_Extractors");
     }
 
     public GenericRecommendationConfig(Map<String, String> configs) {
         recommendationExtractors = getPropertyAsList("Recommendation_Extractors", configs);
         nameTypeAnalyzerProbability = getPropertyAsDouble("NameTypeAnalyzer_Probability", configs);
         separatedRelationSolverProbility = getPropertyAsDouble("SeparatedRelationsSolver_Probability", configs);
+        dependencyExtractors = getPropertyAsList("Dependency_Extractors", configs);
     }
 
     @Override
@@ -42,7 +46,8 @@ public class GenericRecommendationConfig extends Configuration {
         return Map.of(//
                 "Recommendation_Extractors", String.join(" ", recommendationExtractors), //
                 "NameTypeAnalyzer_Probability", String.valueOf(nameTypeAnalyzerProbability), //
-                "SeparatedRelationsSolver_Probability", String.valueOf(separatedRelationSolverProbility) //
+                "SeparatedRelationsSolver_Probability", String.valueOf(separatedRelationSolverProbility), //
+                "Dependency_Extractors", String.valueOf(dependencyExtractors)
         );
     }
 

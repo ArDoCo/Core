@@ -16,7 +16,8 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors
 public class RecommendationGenerator implements IAgentModule<AgentDatastructure> {
 
     private AgentDatastructure data;
-    private List<IAgent> agents = new ArrayList<>();
+    private List<IAgent> recommendationAgents = new ArrayList<>();
+    private List<IAgent> dependencyAgents = new ArrayList<>();
     private RecommendationGeneratorConfig config;
     private GenericRecommendationConfig agentConfig;
 
@@ -54,9 +55,15 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
             if (!myAgents.containsKey(recommendationAgent)) {
                 throw new IllegalArgumentException("RecommendationAgent " + recommendationAgent + " not found");
             }
-            agents.add(myAgents.get(recommendationAgent).create(data, agentConfig));
+            recommendationAgents.add(myAgents.get(recommendationAgent).create(data, agentConfig));
         }
 
+        for (String dependencyAgent : config.dependencyAgents) {
+            if (!myAgents.containsKey(dependencyAgent)) {
+                throw new IllegalArgumentException("RecommendationAgent " + dependencyAgent + " not found");
+            }
+            recommendationAgents.add(myAgents.get(dependencyAgent).create(data, agentConfig));
+        }
     }
 
     /**
@@ -64,7 +71,10 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
      */
     @Override
     public void runAgents() {
-        for (IAgent agent : agents) {
+        for (IAgent agent : recommendationAgents) {
+            agent.exec();
+        }
+        for (IAgent agent : dependencyAgents) {
             agent.exec();
         }
 
