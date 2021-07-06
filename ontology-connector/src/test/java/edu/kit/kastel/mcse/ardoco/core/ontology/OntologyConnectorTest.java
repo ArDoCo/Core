@@ -40,6 +40,7 @@ class OntologyConnectorTest {
     private static final String OBJECT_PROPERTY_LABEL = "basicComponent_ServiceEffectSpecification_-_ServiceEffectSpecification";
     private static final String DATA_PROPERTY_URI = "https://informalin.github.io/knowledgebases/informalin_base_pcm.owl#entityName_-_NamedElement";
     private static final String DATA_PROPERTY_LABEL = "entityName_-_NamedElement";
+    private static final String TEST_LIST_LABEL = "TestList";
 
     private OntologyConnector ontologyConnector;
 
@@ -150,22 +151,63 @@ class OntologyConnectorTest {
     }
 
     @Test
-    @DisplayName("Test creation of populated RDFList")
-    void createListTest() {
+    @DisplayName("Test creation of an empty ordered list")
+    void createEmptyListTest() {
         // TODO
+        var olo = ontologyConnector.addEmptyList("TestEmptyList");
+        Assertions.assertNotNull(olo);
+        Assertions.assertEquals(0, olo.size(), "Empty list should have size 0!");
+    }
+
+    @Test
+    @DisplayName("Test creation of an empty ordered list where then individuals are added")
+    void createEmptyListAndAddIndividualsTest() {
+        // TODO
+        var olo = ontologyConnector.addEmptyList("TestEmptyList");
+        Assertions.assertNotNull(olo);
+
+        List<Individual> individuals = getExampleIndividuals();
+        for (var individual : individuals) {
+            olo.add(individual);
+        }
+
+        Assertions.assertEquals(individuals.size(), olo.size());
+        // TODO
+        ontologyConnector.save("src/test/resources/test_mediastore.owl");
+        Assertions.assertIterableEquals(individuals, olo, "List individuals are not equal!");
+    }
+
+    @Test
+    @DisplayName("Test creation of a populated ordered list")
+    void createPopulatedListTest() {
+        // TODO
+        List<Individual> individuals = getExampleIndividuals();
+
+        // var list = ontologyConnector.createList(individuals);
+        // Assertions.assertEquals(2, list.size());
+        // TODO
+    }
+
+    private List<Individual> getExampleIndividuals() {
         List<Individual> individuals = new ArrayList<>();
         Individual system = ontologyConnector.getIndividual(LABEL_SYSTEM).get();
         individuals.add(system);
         Individual cache = ontologyConnector.getIndividual("Cache").get();
         individuals.add(cache);
+        return individuals;
+    }
 
-        var list = ontologyConnector.createList(individuals);
-        Assertions.assertEquals(2, list.size());
+    @Test
+    @DisplayName("Test retrieval of ordered list")
+    void getListTest() {
+        var oloOpt = ontologyConnector.getList(TEST_LIST_LABEL);
+        Assertions.assertTrue(oloOpt.isPresent(), "Could not find list in ontology");
 
-        var head = list.getHead();
-        Assertions.assertEquals(system, head, "Head did not match the expected head.");
-        var secondElement = list.get(1);
-        Assertions.assertEquals(cache, secondElement, "Element at position 1 did not match the expected element.");
+        var olo = oloOpt.get();
+        Assertions.assertEquals(3, olo.size());
+
+        var list = olo.toList();
+        Assertions.assertEquals(olo.size(), list.size(), "List in ontology and transformed list of individuals have inequal size!");
     }
 
     @Test
