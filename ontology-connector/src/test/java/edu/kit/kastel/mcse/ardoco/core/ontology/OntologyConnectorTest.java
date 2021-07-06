@@ -154,7 +154,6 @@ class OntologyConnectorTest {
     @Test
     @DisplayName("Test creation of an empty ordered list")
     void createEmptyListTest() {
-        // TODO
         var olo = ontologyConnector.addEmptyList("TestEmptyList");
         Assertions.assertNotNull(olo);
         Assertions.assertEquals(0, olo.size(), "Empty list should have size 0!");
@@ -163,7 +162,6 @@ class OntologyConnectorTest {
     @Test
     @DisplayName("Test creation of an empty ordered list")
     void createMultipleEmptyListTest() {
-        // TODO
         var olo = ontologyConnector.addEmptyList("TestEmptyList1");
         Assertions.assertNotNull(olo);
         Assertions.assertEquals(0, olo.size(), "Empty list should have size 0!");

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
+import java.util.Random;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -32,11 +33,11 @@ public class OrderedOntologyList implements List<Individual> {
     private static final String LIST_PROPERTY_INDEX = "index";
     private static final String LIST_PROPERTY_ITEM = "item";
 
-    private OntologyConnector oc;
-    private OntModel ontModel;
-    private Individual listIndividual;
+    private final OntologyConnector oc;
+    private final OntModel ontModel;
+    private final Individual listIndividual;
 
-    private String label;
+    private final String label;
 
     protected static class Factory {
         private OntologyConnector oc;
@@ -93,10 +94,13 @@ public class OrderedOntologyList implements List<Individual> {
 
     private OrderedOntologyList(OntologyConnector oc, Individual listIndividual) {
         this.oc = oc;
+        ontModel = oc.getOntModel();
         this.listIndividual = listIndividual;
-        label = listIndividual.getLabel(null);
-        if (label == null) {
+        var potLabel = listIndividual.getLabel(null);
+        if (potLabel == null) {
             label = listIndividual.getLocalName();
+        } else {
+            label = potLabel;
         }
     }
 
@@ -132,6 +136,18 @@ public class OrderedOntologyList implements List<Individual> {
         return collectListElements(headSlot.get());
     }
 
+    private Optional<Individual> getHead() {
+        var headSlotNode = listIndividual.getPropertyValue(getSlotProperty());
+        if (headSlotNode == null || !headSlotNode.canAs(Individual.class)) {
+            return Optional.empty();
+        }
+        return Optional.of(headSlotNode.as(Individual.class));
+    }
+
+    private void setHead(Individual individual) {
+        listIndividual.setPropertyValue(getSlotProperty(), individual);
+    }
+
     private List<Individual> collectListElements(Individual headSlot) {
         List<Individual> individuals = new ArrayList<>();
         var currSlot = headSlot;
@@ -150,23 +166,10 @@ public class OrderedOntologyList implements List<Individual> {
         return individuals;
     }
 
-    private Optional<Individual> getHead() {
-        var headSlotNode = listIndividual.getPropertyValue(getSlotProperty());
-        if (headSlotNode == null || !headSlotNode.canAs(Individual.class)) {
+    private Optional<Individual> extractItemOutOfSlot(Individual slot) {
+        if (slot == null) {
             return Optional.empty();
         }
-        return Optional.of(headSlotNode.as(Individual.class));
-    }
-
-    private void setHead(Individual individual) {
-        listIndividual.setPropertyValue(getSlotProperty(), individual);
-    }
-
-    private void setLength(int length) {
-        listIndividual.setPropertyValue(getLengthProperty(), ontModel.createTypedLiteral(length, XSD.nonNegativeInteger.toString()));
-    }
-
-    private Optional<Individual> extractItemOutOfSlot(Individual slot) {
         var itemNode = slot.getPropertyValue(getItemProperty());
         if (itemNode == null) {
             return Optional.empty();
@@ -174,8 +177,16 @@ public class OrderedOntologyList implements List<Individual> {
         return Optional.of(itemNode.as(Individual.class));
     }
 
+    private void setLength(int length) {
+        listIndividual.setPropertyValue(getLengthProperty(), ontModel.createTypedLiteral(length, XSD.nonNegativeInteger.toString()));
+    }
+
     private Individual getNext(Individual individual) {
-        var nextNode = individual.getPropertyValue(getNextProperty());
+        if (individual == null) {
+            return null;
+        }
+        var nextProperty = getNextProperty();
+        var nextNode = individual.getPropertyValue(nextProperty);
         if (nextNode != null && nextNode.canAs(Individual.class)) {
             return nextNode.as(Individual.class);
         } else {
@@ -199,41 +210,14 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public boolean add(Individual individual) {
-        // create slot
-        var currSize = size();
-        var slotName = label + "_slot_" + currSize;
-        var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
-        newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
-        newSlot.setPropertyValue(getItemProperty(), individual);
-
-        // add slot to list
-        Individual currSlot = null;
-        var nextSlot = getHead().orElse(null);
-        while (nextSlot != null) {
-            // get next slot until we are at the end
-            currSlot = nextSlot;
-            nextSlot = getNext(individual);
-        }
-        if (currSlot != null) {
-            setNext(currSlot, newSlot);
-            setPrevious(currSlot, newSlot);
-        } else {
-            // if currSlot is empty, then there was no head. Set the new individual as head
-            setHead(newSlot);
-        }
-
-        // set index
-        var index = currSize;
-        newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
-
-        // increase list size
-        setLength(index + 1);
-
+        add(size(), individual);
         return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends Individual> individuals) {
+        // TODO change to not use the normal add method as ass needs to iterate over the whole list over and over again
+        // TODO instead just get the last element and add them one after another
         var statusOK = true;
         for (var individual : individuals) {
             var successful = add(individual);
@@ -400,13 +384,23 @@ public class OrderedOntologyList implements List<Individual> {
             throw new IndexOutOfBoundsException();
         }
         var slot = getSlot(index);
-        // TODO
-        return null;
+        return extractItemOutOfSlot(slot).orElseThrow();
     }
 
     private Individual getSlot(int index) {
-        // TODO
-        return null;
+        if (index > size() || index < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+        var curr = getHead().orElse(null);
+        var i = 0;
+        while (i < index && curr != null) {
+            curr = getNext(curr);
+            i++;
+        }
+        if (i < index) {
+            throw new IllegalStateException("Could not traverse list far enough although the list should contain enough elements.");
+        }
+        return curr;
     }
 
     @Override
@@ -416,9 +410,42 @@ public class OrderedOntologyList implements List<Individual> {
     }
 
     @Override
-    public void add(int index, Individual element) {
-        // TODO Auto-generated method stub
+    public void add(int index, Individual individual) {
+        if (index > size() || index < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+        // create slot
+        var slotName = label + "_slot_" + new Random().nextInt(Integer.MAX_VALUE);
+        var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
+        newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
+        newSlot.setPropertyValue(getItemProperty(), individual);
+        newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
 
+        Individual prev = null;
+        var curr = getHead().orElse(null);
+        var i = 0;
+        while (i < index && curr != null) {
+            prev = curr;
+            curr = getNext(curr);
+            i++;
+        }
+        if (i < index) {
+            throw new IllegalStateException("Could not traverse list far enough although the list should contain enough elements.");
+        }
+
+        // add slot to list
+        if (prev != null) {
+            prev.setPropertyValue(getNextProperty(), newSlot);
+        } else {
+            setHead(newSlot);
+        }
+
+        if (curr != null) {
+            curr.setPropertyValue(getPreviousProperty(), newSlot);
+        }
+
+        updateList(curr, i);
+        setLength(i + 1);
     }
 
     @Override
