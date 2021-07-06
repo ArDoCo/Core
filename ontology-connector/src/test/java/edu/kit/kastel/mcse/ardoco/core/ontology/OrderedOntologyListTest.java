@@ -78,12 +78,8 @@ public class OrderedOntologyListTest {
             Assertions.assertEquals(expectedSize, olo.size());
         }
 
-        ontologyConnector.save(testOutputOntologyPath);
-
         var oloList = olo.toList();
-        System.out.println(oloList.size());
         for (var individual : individuals) {
-            System.out.println(individual);
             Assertions.assertTrue(oloList.contains(individual));
         }
     }
