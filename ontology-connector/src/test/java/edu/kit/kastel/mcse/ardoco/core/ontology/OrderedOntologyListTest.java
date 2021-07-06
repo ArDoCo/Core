@@ -84,4 +84,25 @@ public class OrderedOntologyListTest {
         }
     }
 
+    @Test
+    @DisplayName("Test adding elements to list using index")
+    void addIndexedTest() {
+        var olo = getTestList();
+        int expectedSize = 3;
+        Assertions.assertEquals(expectedSize, olo.size());
+
+        var individuals = getExampleIndividuals();
+        var i = 0;
+        for (var individual : individuals) {
+            olo.add(i, individual);
+            i += 2;
+            Assertions.assertEquals(++expectedSize, olo.size());
+        }
+
+        var oloList = olo.toList();
+        for (var j = 0; j < individuals.size(); j += 2) {
+            Assertions.assertEquals(individuals.get(j / 2), oloList.get(j));
+        }
+    }
+
 }
