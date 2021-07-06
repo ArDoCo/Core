@@ -430,8 +430,6 @@ public class OrderedOntologyList implements List<Individual> {
             i++;
         }
         if (i < index) {
-            System.out.println(i);
-            System.out.println(index);
             throw new IllegalStateException("Could not traverse list far enough although the list should contain enough elements.");
         }
 
