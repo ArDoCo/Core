@@ -430,22 +430,26 @@ public class OrderedOntologyList implements List<Individual> {
             i++;
         }
         if (i < index) {
+            System.out.println(i);
+            System.out.println(index);
             throw new IllegalStateException("Could not traverse list far enough although the list should contain enough elements.");
         }
 
         // add slot to list
         if (prev != null) {
-            prev.setPropertyValue(getNextProperty(), newSlot);
+            setNext(prev, newSlot);
+            setPrevious(prev, newSlot);
         } else {
             setHead(newSlot);
         }
 
         if (curr != null) {
-            curr.setPropertyValue(getPreviousProperty(), newSlot);
+            setNext(newSlot, curr);
+            setPrevious(newSlot, curr);
         }
 
         updateList(curr, i);
-        setLength(i + 1);
+        setLength(size() + 1);
     }
 
     @Override
