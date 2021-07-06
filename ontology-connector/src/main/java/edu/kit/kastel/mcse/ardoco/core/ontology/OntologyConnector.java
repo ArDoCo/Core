@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,6 @@ import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.Ontology;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.reasoner.ReasonerRegistry;
@@ -40,11 +41,25 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
 public class OntologyConnector {
-    private static final String LANG_EN = "en";
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
-    private static final String DEFAULT_PREFIX = "";
-
     private static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
+
+    private static final String DEFAULT_PREFIX = "";
+    private static final String LANG_EN = "en";
+
+    /* Ordered List related classes */
+    private static final String LIST_BASE_URI = "http://purl.org/ontology/olo/core#";
+    private static final String LIST_PREFIX = "olo";
+    private static final String LIST_CLASS = "OrderedList";
+    private static final String LIST_SLOT_CLASS = "Slot";
+    private static final String LIST_PROPERTY_ORDERED_LIST = "ordered_list";
+    private static final String LIST_PROPERTY_LENGTH = "length";
+    private static final String LIST_PROPERTY_SLOT = "slot";
+    private static final String LIST_PROPERTY_NEXT = "next";
+    private static final String LIST_PROPERTY_PREVIOUS = "previous";
+    private static final String LIST_PROPERTY_INDEX = "index";
+    private static final String LIST_PROPERTY_ITEM = "item";
+
     private final OntModel ontModel;
 
     private String pathToOntology;
@@ -65,7 +80,7 @@ public class OntologyConnector {
     /**
      * Creates an OntologyConnector based on no existing ontology, so creates an empty ontology.
      *
-     * @param defaultNameSpaceUri The defaul namespace URI
+     * @param defaultNameSpaceUri The default namespace URI
      * @return An OntologyConnector based on no existing ontology
      */
     public static OntologyConnector createWithEmptyOntology(String defaultNameSpaceUri) {
@@ -581,28 +596,65 @@ public class OntologyConnector {
 
     // TODO check all of this!
     /**
-     * Creates an empty {@link RDFList}.
+     * Adds an empty list.
      *
-     * @return Empty {@link RDFList}
+     * @param label
+     * @return
      */
-    public RDFList createEmptyList() {
-        return ontModel.createList();
-    }
-
-    /**
-     * Creates a {@link RDFList} containing the provided {@link Individual}s.
-     *
-     * @param members {@link Individual}s that should be added to the list
-     * @return new {@link RDFList} populated with the provided members
-     */
-    public RDFList createList(List<Individual> members) {
-        var list = ontModel.createList(members.iterator());
+    public OrderedOntologyList addEmptyList(String label) {
+        checkListImport();
+        var list = new OrderedOntologyList(label);
+        list.clear(); // TODO clear or not?
         return list;
     }
 
-    public RDFList getList(String uri) {
-        // TODO check if this always works. What happens if the uri is wrong or no list?
-        return ontModel.getList(uri);
+    public OrderedOntologyList addList(String label, List<Individual> members) {
+        checkListImport();
+        var list = new OrderedOntologyList(label);
+        list.addAll(members);
+        return list;
+    }
+
+    private void checkListImport() {
+        // check imports
+        var importedModels = ontModel.listImportedOntologyURIs();
+        if (!importedModels.contains(LIST_BASE_URI)) {
+            addOntologyImport(LIST_BASE_URI);
+        }
+
+        // check prefix map
+        var prefixMap = ontModel.getNsPrefixMap();
+        var olo = prefixMap.get(LIST_PREFIX);
+        if (olo == null) {
+            ontModel.setNsPrefix(LIST_PREFIX, LIST_BASE_URI);
+        }
+    }
+
+    public Optional<OrderedOntologyList> getList(String name) {
+        checkListImport();
+        var individualOpt = getIndividual(name);
+        if (individualOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        return getOrderedListOntologyFromIndividual(individualOpt.get());
+    }
+
+    public Optional<OrderedOntologyList> getListByIri(String uri) {
+        checkListImport();
+        var listIndividualOpt = getIndividualByIri(uri);
+        if (listIndividualOpt.isPresent()) {
+            return getOrderedListOntologyFromIndividual(listIndividualOpt.get());
+        }
+        return Optional.empty();
+    }
+
+    private Optional<OrderedOntologyList> getOrderedListOntologyFromIndividual(Individual listIndividual) {
+        var listClassUri = ontModel.expandPrefix(LIST_PREFIX + ":" + LIST_CLASS);
+        if (listIndividual.hasOntClass(listClassUri)) {
+            var olo = new OrderedOntologyList(listIndividual);
+            return Optional.of(olo);
+        }
+        return Optional.empty();
     }
 
     /**************/
@@ -758,5 +810,297 @@ public class OntologyConnector {
     private String generateRandomURI(String prefix) {
         var uuid = UuidUtil.getTimeBasedUuid().toString();
         return createUri(prefix, uuid);
+    }
+
+    /**
+     * TODO
+     *
+     * @author Jan Keim
+     *
+     */
+    public class OrderedOntologyList implements Collection<Individual> {
+
+        private Individual listIndividual;
+
+        private String label;
+
+        protected OrderedOntologyList(Individual listIndividual) {
+            this.listIndividual = listIndividual;
+            label = listIndividual.getLabel(null);
+            if (label == null) {
+                label = listIndividual.getLocalName();
+            }
+        }
+
+        /**
+         * Create a new {@link OrderedOntologyList} using the label for the label of the list individual. If the label
+         * already belongs to an individual, then gets the individual and uses it as list individual. Caution: if the
+         * label belongs to an existing individual that is no ordered list, an {@link IllegalArgumentException} is
+         * thrown.
+         *
+         * @param label Label of the list individual
+         */
+        public OrderedOntologyList(String label) {
+            this.label = label;
+            var listClassUri = ontModel.expandPrefix(LIST_PREFIX + ":" + LIST_CLASS);
+            var listOpt = getIndividual(label);
+            if (listOpt.isPresent()) {
+                listIndividual = listOpt.get();
+                if (!listIndividual.hasOntClass(listClassUri)) {
+                    throw new IllegalArgumentException("Provided a label of an invalid individual");
+                }
+            } else {
+                var listClass = getClassByIri(listClassUri).orElseThrow();
+                var list = addIndividualToClass(label, listClass);
+                list.addLiteral(getLengthProperty(), ontModel.createTypedLiteral(0, XSD.nonNegativeInteger.getURI()));
+                listIndividual = list;
+            }
+        }
+
+        public List<Individual> toList() {
+            return readElements();
+        }
+
+        private List<Individual> readElements() {
+            var headSlot = getHead();
+            if (headSlot.isEmpty()) {
+                return new ArrayList<>();
+            }
+            return collectListElements(headSlot.get());
+        }
+
+        private List<Individual> collectListElements(Individual headSlot) {
+            List<Individual> individuals = new ArrayList<>();
+            var currSlot = headSlot;
+            while (currSlot != null) {
+                var curr = extractItemOutOfSlot(currSlot);
+                if (curr.isPresent()) {
+                    individuals.add(curr.get());
+                }
+                var nextNode = currSlot.getPropertyValue(getNextProperty());
+                if (nextNode != null && nextNode.canAs(Individual.class)) {
+                    currSlot = nextNode.as(Individual.class);
+                } else {
+                    currSlot = null;
+                }
+            }
+            return individuals;
+        }
+
+        private Optional<Individual> getHead() {
+            var headSlotNode = listIndividual.getPropertyValue(getSlotProperty());
+            if (headSlotNode == null || !headSlotNode.canAs(Individual.class)) {
+                return Optional.empty();
+            }
+            return Optional.of(headSlotNode.as(Individual.class));
+        }
+
+        private void setHead(Individual individual) {
+            listIndividual.setPropertyValue(getSlotProperty(), individual);
+        }
+
+        private Optional<Individual> extractItemOutOfSlot(Individual slot) {
+            var itemNode = slot.getPropertyValue(getItemProperty());
+            if (itemNode == null) {
+                return Optional.empty();
+            }
+            return Optional.of(itemNode.as(Individual.class));
+        }
+
+        private Individual getNext(Individual individual) {
+            var nextNode = individual.getPropertyValue(getNextProperty());
+            if (nextNode != null && nextNode.canAs(Individual.class)) {
+                return nextNode.as(Individual.class);
+            } else {
+                return null;
+            }
+        }
+
+        private void setNext(Individual prev, Individual next) {
+            prev.setPropertyValue(getNextProperty(), next);
+        }
+
+        private void setPrevious(Individual prev, Individual next) {
+            next.setPropertyValue(getPreviousProperty(), prev);
+        }
+
+        @Override
+        public int size() {
+            var lengthValue = listIndividual.getPropertyValue(getLengthProperty());
+            return lengthValue.asLiteral().getInt();
+        }
+
+        @Override
+        public boolean add(Individual individual) {
+            // TODO CHECK!
+            // create slot
+            var currSize = size();
+            var slotName = label + "_slot_" + currSize;
+            var newSlot = addIndividualToClass(slotName, getSlotClass());
+            newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
+
+            // add slot to list
+            Individual currSlot = null;
+            var nextSlot = getHead().orElse(null);
+            while (nextSlot != null) {
+                // get next slot until we are at the end
+                currSlot = nextSlot;
+                nextSlot = getNext(individual);
+            }
+            if (currSlot != null) {
+                setNext(currSlot, newSlot);
+                setPrevious(currSlot, newSlot);
+            } else {
+                // if currSlot is empty, then there was no head. Set the new individual as head
+                setHead(newSlot);
+            }
+
+            // set index
+            var index = currSize;
+            newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
+
+            // increase list size
+            listIndividual.addLiteral(getLengthProperty(), ontModel.createTypedLiteral(index + 1, XSD.nonNegativeInteger.getURI()));
+
+            return true;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends Individual> individuals) {
+            var statusOK = true;
+            for (var individual : individuals) {
+                var successful = add(individual);
+                statusOK &= successful;
+            }
+            return statusOK;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return size() == 0;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return toList().contains(o);
+        }
+
+        @Override
+        public Iterator<Individual> iterator() {
+            return toList().iterator();
+        }
+
+        @Override
+        public Object[] toArray() {
+            return toList().toArray();
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return toList().toArray(a);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (!contains(o)) {
+                return false;
+            }
+            if (o instanceof Individual) {
+                Individual individual = (Individual) o;
+                return removeIndividual(individual);
+            }
+            return false;
+        }
+
+        private boolean removeIndividual(Individual individual) {
+            var headOpt = getHead();
+            if (headOpt.isEmpty()) {
+                return false;
+            }
+            var currSlot = headOpt.get();
+            while (currSlot != null) {
+                var curr = extractItemOutOfSlot(currSlot);
+                if (curr.isPresent()) {
+                    var currIndividual = curr.get();
+                    if (currIndividual.equals(individual)) {
+                        // TODO remove
+                        // TODO
+                    }
+                }
+
+                // get next
+                currSlot = getNext(currSlot);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            for (var item : c) {
+                if (!contains(item)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            var status = true;
+            for (var item : c) {
+                var successful = remove(item);
+                status &= successful;
+            }
+            return status;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void clear() {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s (%s)", listIndividual.toString(), listIndividual.getLabel(null));
+        }
+
+        private OntProperty getSlotProperty() {
+            return getProperty(LIST_PROPERTY_SLOT, LIST_PREFIX).orElseThrow();
+        }
+
+        private OntProperty getItemProperty() {
+            return getProperty(LIST_PROPERTY_ITEM, LIST_PREFIX).orElseThrow();
+        }
+
+        private OntProperty getNextProperty() {
+            return getProperty(LIST_PROPERTY_NEXT, LIST_PREFIX).orElseThrow();
+        }
+
+        private OntProperty getPreviousProperty() {
+            return getProperty(LIST_PROPERTY_PREVIOUS, LIST_PREFIX).orElseThrow();
+        }
+
+        private OntProperty getLengthProperty() {
+            return getProperty(LIST_PROPERTY_LENGTH, LIST_PREFIX).orElseThrow();
+        }
+
+        private OntProperty getIndexProperty() {
+            return getProperty(LIST_PROPERTY_INDEX, LIST_PREFIX).orElseThrow();
+        }
+
+        private OntProperty getOrderedListProperty() {
+            return getProperty(LIST_PROPERTY_ORDERED_LIST, LIST_PREFIX).orElseThrow();
+        }
+
+        private OntClass getSlotClass() {
+            return OntologyConnector.this.getClass(LIST_SLOT_CLASS, LIST_PREFIX).orElseThrow();
+        }
+
     }
 }
