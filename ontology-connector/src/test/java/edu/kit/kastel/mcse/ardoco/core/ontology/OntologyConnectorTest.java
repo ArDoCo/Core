@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.ontology;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntModel;
@@ -160,32 +161,42 @@ class OntologyConnectorTest {
     }
 
     @Test
+    @DisplayName("Test creation of an empty ordered list")
+    void createMultipleEmptyListTest() {
+        // TODO
+        var olo = ontologyConnector.addEmptyList("TestEmptyList1");
+        Assertions.assertNotNull(olo);
+        Assertions.assertEquals(0, olo.size(), "Empty list should have size 0!");
+        var olo2 = ontologyConnector.addEmptyList("TestEmptyList2");
+        Assertions.assertNotNull(olo2);
+        Assertions.assertEquals(0, olo2.size(), "Empty list should have size 0!");
+    }
+
+    @Test
     @DisplayName("Test creation of an empty ordered list where then individuals are added")
     void createEmptyListAndAddIndividualsTest() {
-        // TODO
-        var olo = ontologyConnector.addEmptyList("TestEmptyList");
+        var listLabel = "TestList" + new Random().nextInt(100);
+        var olo = ontologyConnector.addEmptyList(listLabel);
         Assertions.assertNotNull(olo);
 
         List<Individual> individuals = getExampleIndividuals();
         for (var individual : individuals) {
             olo.add(individual);
         }
-
         Assertions.assertEquals(individuals.size(), olo.size());
-        // TODO
-        ontologyConnector.save("src/test/resources/test_mediastore.owl");
         Assertions.assertIterableEquals(individuals, olo, "List individuals are not equal!");
     }
 
     @Test
     @DisplayName("Test creation of a populated ordered list")
     void createPopulatedListTest() {
-        // TODO
+        var listLabel = "TestList" + new Random().nextInt(100);
         List<Individual> individuals = getExampleIndividuals();
+        var olo = ontologyConnector.addList(listLabel, individuals);
 
-        // var list = ontologyConnector.createList(individuals);
-        // Assertions.assertEquals(2, list.size());
-        // TODO
+        Assertions.assertNotNull(olo);
+        Assertions.assertEquals(individuals.size(), olo.size());
+        Assertions.assertIterableEquals(individuals, olo, "List individuals are not equal!");
     }
 
     private List<Individual> getExampleIndividuals() {
