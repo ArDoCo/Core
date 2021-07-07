@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Random;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -15,7 +16,11 @@ import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
 
 /**
- * TODO
+ * This class represents an ordered list that is saved and backed in an ontology. Therefore, all operations read and/or
+ * write from/to the ontology.
+ *
+ * To create an {@link OrderedOntologyList}, use {@link OrderedOntologyList.Factory}. For this, you need an existing
+ * {@link OntologyConnector}.
  *
  * @author Jan Keim
  *
@@ -39,6 +44,13 @@ public class OrderedOntologyList implements List<Individual> {
 
     private final String label;
 
+    /**
+     * Factory to create {@link OrderedOntologyList}s that are backed by an ontology. Therefore, the {@link Factory}
+     * needs access to an existing {@link OntologyConnector} with an ontology
+     *
+     * @author Jan Keim
+     *
+     */
     protected static class Factory {
         private OntologyConnector oc;
 
@@ -144,6 +156,15 @@ public class OrderedOntologyList implements List<Individual> {
         return Optional.of(headSlotNode.as(Individual.class));
     }
 
+    private Optional<Individual> getLastSlot() {
+        var lastIndex = size() - 1;
+        if (lastIndex < 0) {
+            return Optional.empty();
+        }
+        var lastSlot = getSlot(lastIndex);
+        return Optional.ofNullable(lastSlot);
+    }
+
     private void setHead(Individual individual) {
         listIndividual.setPropertyValue(getSlotProperty(), individual);
     }
@@ -185,20 +206,39 @@ public class OrderedOntologyList implements List<Individual> {
         if (individual == null) {
             return null;
         }
-        var nextProperty = getNextProperty();
-        var nextNode = individual.getPropertyValue(nextProperty);
-        if (nextNode != null && nextNode.canAs(Individual.class)) {
-            return nextNode.as(Individual.class);
+        return getIndividualFromProperty(getNextProperty(), individual);
+    }
+
+    private Individual getPrevious(Individual individual) {
+        if (individual == null) {
+            return null;
+        }
+        return getIndividualFromProperty(getPreviousProperty(), individual);
+    }
+
+    private Individual getIndividualFromProperty(OntProperty property, Individual individual) {
+        if (property == null) {
+            return null;
+        }
+        var propertyNode = individual.getPropertyValue(property);
+        if (propertyNode != null && propertyNode.canAs(Individual.class)) {
+            return propertyNode.as(Individual.class);
         } else {
             return null;
         }
     }
 
     private void setNext(Individual prev, Individual next) {
+        if (prev == null || next == null) {
+            return;
+        }
         prev.setPropertyValue(getNextProperty(), next);
     }
 
     private void setPrevious(Individual prev, Individual next) {
+        if (prev == null || next == null) {
+            return;
+        }
         next.setPropertyValue(getPreviousProperty(), prev);
     }
 
@@ -209,31 +249,128 @@ public class OrderedOntologyList implements List<Individual> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    @Override
     public boolean add(Individual individual) {
         add(size(), individual);
         return true;
     }
 
     @Override
-    public boolean addAll(Collection<? extends Individual> individuals) {
-        // TODO change to not use the normal add method as ass needs to iterate over the whole list over and over again
-        // TODO instead just get the last element and add them one after another
-        var statusOK = true;
-        for (var individual : individuals) {
-            var successful = add(individual);
-            statusOK &= successful;
+    public void add(int index, Individual individual) {
+        if (index > size() || index < 0) {
+            throw new IndexOutOfBoundsException();
         }
-        return statusOK;
+        // create slot
+        var slotName = label + "_slot_" + new Random().nextInt(Integer.MAX_VALUE);
+        var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
+        newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
+        newSlot.setPropertyValue(getItemProperty(), individual);
+        newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
+
+        Individual prev = null;
+        var curr = getHead().orElse(null);
+        var i = 0;
+        while (i < index && curr != null) {
+            prev = curr;
+            curr = getNext(curr);
+            i++;
+        }
+        if (i < index) {
+            throw new IllegalStateException("Could not traverse list far enough although the list should contain enough elements.");
+        }
+
+        // add slot to list
+        if (prev != null) {
+            setNext(prev, newSlot);
+            setPrevious(prev, newSlot);
+        } else {
+            setHead(newSlot);
+        }
+
+        if (curr != null) {
+            setNext(newSlot, curr);
+            setPrevious(newSlot, curr);
+        }
+
+        updateList(curr, i);
+        setLength(size() + 1);
     }
 
     @Override
-    public boolean isEmpty() {
-        return size() == 0;
+    public boolean addAll(Collection<? extends Individual> individuals) {
+        var startSize = size();
+        var index = startSize - 1;
+        Individual lastSlot = null;
+        if (index >= 0) {
+            lastSlot = getSlot(index);
+        }
+
+        for (var individual : individuals) {
+            index++;
+            var slotName = label + "_slot_" + new Random().nextInt(Integer.MAX_VALUE);
+            var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
+            newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
+            newSlot.setPropertyValue(getItemProperty(), individual);
+            newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
+
+            if (index == 0) {
+                setHead(newSlot);
+            } else {
+                setNext(lastSlot, newSlot);
+                setPrevious(lastSlot, newSlot);
+            }
+            lastSlot = newSlot;
+        }
+
+        setLength(index + 1);
+
+        return true;
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends Individual> c) {
+        if (index > size() || index < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+        var currIndex = index;
+        for (var individual : c) {
+            add(currIndex++, individual);
+        }
+        return !c.isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return toList().contains(o);
+        if (o instanceof Individual) {
+            var individual = (Individual) o;
+            var slot = getSlotWhoseItemEquals(individual);
+            return slot.isPresent();
+        }
+        return false;
+    }
+
+    private Optional<Individual> getSlotWhoseItemEquals(Individual individual) {
+        var headOpt = getHead();
+        if (headOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        var currSlot = headOpt.get();
+        while (currSlot != null) {
+            var curr = extractItemOutOfSlot(currSlot);
+            if (curr.isPresent()) {
+                var currIndividual = curr.get();
+                if (currIndividual.equals(individual)) {
+                    return Optional.of(currSlot);
+                }
+            }
+
+            currSlot = getNext(currSlot);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -266,27 +403,10 @@ public class OrderedOntologyList implements List<Individual> {
         return false;
     }
 
-    private Optional<Individual> getSlotWhoseItemEquals(Individual individual) {
-        var headOpt = getHead();
-        if (headOpt.isEmpty()) {
-            return Optional.empty();
-        }
-        var currSlot = headOpt.get();
-        while (currSlot != null) {
-            var curr = extractItemOutOfSlot(currSlot);
-            if (curr.isPresent()) {
-                var currIndividual = curr.get();
-                if (currIndividual.equals(individual)) {
-                    return Optional.of(currSlot);
-                }
-            }
-
-            currSlot = getNext(currSlot);
-        }
-        return Optional.empty();
-    }
-
     private boolean removeSlot(Individual individual) {
+        if (individual == null) {
+            return false;
+        }
         var removedIndex = individual.getPropertyValue(getIndexProperty()).asLiteral().getInt();
         var prevNode = individual.getPropertyValue(getPreviousProperty());
         var nextNode = individual.getPropertyValue(getNextProperty());
@@ -363,19 +483,39 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        return false;
+        var changed = false;
+        if (c == null || c.isEmpty()) {
+            return changed;
+        }
+
+        var curr = getLastSlot().orElse(null);
+        while (curr != null) {
+            var item = extractItemOutOfSlot(curr);
+            if (c.contains(item)) {
+                curr = getNext(curr);
+            } else {
+                var toDelete = curr;
+                curr = getPrevious(curr);
+                removeSlot(toDelete);
+                changed = true;
+            }
+        }
+
+        return changed;
     }
 
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends Individual> c) {
-        // TODO Auto-generated method stub
-        return false;
+        var lastSlotOpt = getLastSlot();
+        if (lastSlotOpt.isEmpty()) {
+            return;
+        }
+        var currSlot = lastSlotOpt.get();
+        while (currSlot != null) {
+            var prev = getPrevious(currSlot);
+            removeSlot(currSlot);
+            currSlot = prev;
+        }
     }
 
     @Override
@@ -405,68 +545,71 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public Individual set(int index, Individual element) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void add(int index, Individual individual) {
-        if (index > size() || index < 0) {
-            throw new IndexOutOfBoundsException();
+        Individual old = null;
+        var slot = getSlot(index);
+        if (slot == null) {
+            return old;
         }
-        // create slot
-        var slotName = label + "_slot_" + new Random().nextInt(Integer.MAX_VALUE);
-        var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
-        newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
-        newSlot.setPropertyValue(getItemProperty(), individual);
-        newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
-
-        Individual prev = null;
-        var curr = getHead().orElse(null);
-        var i = 0;
-        while (i < index && curr != null) {
-            prev = curr;
-            curr = getNext(curr);
-            i++;
+        var itemPropertyStatement = slot.getProperty(getItemProperty());
+        if (itemPropertyStatement != null) {
+            var oldIndividual = itemPropertyStatement.getObject();
+            if (oldIndividual.canAs(Individual.class)) {
+                old = oldIndividual.as(Individual.class);
+            }
         }
-        if (i < index) {
-            throw new IllegalStateException("Could not traverse list far enough although the list should contain enough elements.");
-        }
-
-        // add slot to list
-        if (prev != null) {
-            setNext(prev, newSlot);
-            setPrevious(prev, newSlot);
-        } else {
-            setHead(newSlot);
-        }
-
-        if (curr != null) {
-            setNext(newSlot, curr);
-            setPrevious(newSlot, curr);
-        }
-
-        updateList(curr, i);
-        setLength(size() + 1);
+        slot.setPropertyValue(getItemProperty(), element);
+        return old;
     }
 
     @Override
     public Individual remove(int index) {
-
-        // TODO Auto-generated method stub
-        return null;
+        var slot = getSlot(index);
+        var individual = extractItemOutOfSlot(slot);
+        removeSlot(slot);
+        return individual.orElse(null);
     }
 
     @Override
     public int indexOf(Object o) {
-        // TODO Auto-generated method stub
-        return 0;
+        if (o instanceof Individual) {
+            var individual = (Individual) o;
+            var slotOpt = getSlotWhoseItemEquals(individual);
+            if (slotOpt.isPresent()) {
+                var slot = slotOpt.get();
+                return slot.getPropertyValue(getIndexProperty()).asLiteral().getInt();
+            }
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        // TODO Auto-generated method stub
-        return 0;
+        var index = -1;
+        if (!(o instanceof Individual)) {
+            return index;
+        }
+        var individual = (Individual) o;
+        var headOpt = getHead();
+        if (headOpt.isEmpty()) {
+            return index;
+        }
+
+        var currSlot = headOpt.get();
+        var counter = 0;
+        while (currSlot != null) {
+            var curr = extractItemOutOfSlot(currSlot);
+            if (curr.isPresent()) {
+                var currIndividual = curr.get();
+                if (currIndividual.equals(individual)) {
+                    index = counter;
+                }
+            }
+
+            currSlot = getNext(currSlot);
+            counter++;
+        }
+
+        return index;
     }
 
     @Override
@@ -481,8 +624,7 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public List<Individual> subList(int fromIndex, int toIndex) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new NotImplementedException("The OrderedOntologyList does not support subLists.");
     }
 
     @Override
