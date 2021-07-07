@@ -15,7 +15,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
-public class OrderedOntologyListTest {
+class OrderedOntologyListTest {
     private static Logger logger = LogManager.getLogger();
     private static String ontologyPath = "src/test/resources/mediastore.owl";
     private static String testOutputOntologyPath = "src/test/resources/test_mediastore.owl";
@@ -103,6 +103,159 @@ public class OrderedOntologyListTest {
         for (var j = 0; j < individuals.size(); j += 2) {
             Assertions.assertEquals(individuals.get(j / 2), oloList.get(j));
         }
+    }
+
+    @Test
+    @DisplayName("Test adding collection of elements to list")
+    void addAllTest() {
+        var olo = getTestList();
+        int expectedSize = 3;
+        Assertions.assertEquals(expectedSize, olo.size());
+
+        var individuals = getExampleIndividuals();
+        olo.addAll(individuals);
+
+        expectedSize += individuals.size();
+        Assertions.assertEquals(expectedSize, olo.size());
+
+        var oloList = olo.toList();
+        Assertions.assertEquals(expectedSize, oloList.size());
+
+        for (var individual : individuals) {
+            Assertions.assertTrue(oloList.contains(individual));
+        }
+    }
+
+    @Test
+    @DisplayName("Test adding collection of elements to a previously empty list")
+    void addAllToEmptyListTest() {
+        var olo = ontologyConnector.addEmptyList(TEST_LIST_LABEL + 2);
+        var individuals = getExampleIndividuals();
+
+        olo.addAll(individuals);
+        Assertions.assertEquals(individuals.size(), olo.size());
+
+        var oloList = olo.toList();
+        Assertions.assertEquals(individuals.size(), oloList.size());
+
+        for (var individual : individuals) {
+            Assertions.assertTrue(oloList.contains(individual));
+        }
+    }
+
+    @Test
+    @DisplayName("Test indexed adding of a collection of elements to list")
+    void addAllIndexedTest() {
+        var olo = getTestList();
+        int expectedSize = 3;
+        Assertions.assertEquals(expectedSize, olo.size());
+
+        var individuals = getExampleIndividuals();
+        olo.addAll(1, individuals);
+
+        expectedSize += individuals.size();
+        Assertions.assertEquals(expectedSize, olo.size());
+
+        var oloList = olo.toList();
+        Assertions.assertEquals(expectedSize, oloList.size());
+
+        for (var individual : individuals) {
+            Assertions.assertTrue(oloList.contains(individual));
+        }
+    }
+
+    @Test
+    @DisplayName("Test indexed adding of a collection of elements to previously empty list")
+    void addAllIndexedToEmptyListTest() {
+        var olo = ontologyConnector.addEmptyList(TEST_LIST_LABEL + 2);
+        var individuals = getExampleIndividuals();
+
+        olo.addAll(0, individuals);
+        Assertions.assertEquals(individuals.size(), olo.size());
+
+        var oloList = olo.toList();
+        Assertions.assertEquals(individuals.size(), oloList.size());
+
+        for (var individual : individuals) {
+            Assertions.assertTrue(oloList.contains(individual));
+        }
+    }
+
+    @Test
+    @DisplayName("Test retrieval of elements from ordered list")
+    void getTest() {
+        var olo = getTestList();
+        Assertions.assertEquals(3, olo.size());
+
+        Individual userdbadapter = ontologyConnector.getIndividual("UserDBAdapter").get();
+        Assertions.assertEquals(userdbadapter, olo.get(1));
+
+        var list = olo.toList();
+        Assertions.assertEquals(list.get(2), olo.get(2));
+    }
+
+    @Test
+    @DisplayName("Test contain method")
+    void containsTest() {
+        var olo = getTestList();
+
+        Individual userdbadapter = ontologyConnector.getIndividual("UserDBAdapter").get();
+        Assertions.assertTrue(olo.contains(userdbadapter));
+
+        Individual facade = ontologyConnector.getIndividual("Facade").get();
+        Assertions.assertFalse(olo.contains(facade));
+    }
+
+    @Test
+    @DisplayName("Test clear method")
+    void clearTest() {
+        var olo = getTestList();
+        olo.clear();
+
+        Assertions.assertEquals(0, olo.size());
+        Assertions.assertTrue(olo.isEmpty());
+
+        var oloList = olo.toList();
+        Assertions.assertTrue(oloList.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Test indexOf method")
+    void indexOfTest() {
+        var olo = getTestList();
+
+        Individual userdbadapter = ontologyConnector.getIndividual("UserDBAdapter").get();
+        Assertions.assertEquals(1, olo.indexOf(userdbadapter));
+
+        Individual facade = ontologyConnector.getIndividual("Facade").get();
+        Assertions.assertEquals(-1, olo.indexOf(facade));
+    }
+
+    @Test
+    @DisplayName("Test lastIndexOf method")
+    void lastIndexOfTest() {
+        var olo = getTestList();
+
+        Individual userdbadapter = ontologyConnector.getIndividual("UserDBAdapter").get();
+        Assertions.assertEquals(1, olo.lastIndexOf(userdbadapter));
+
+        Individual facade = ontologyConnector.getIndividual("Facade").get();
+        Assertions.assertEquals(-1, olo.lastIndexOf(facade));
+
+        var currSize = olo.size();
+        olo.add(userdbadapter);
+        Assertions.assertEquals(currSize, olo.lastIndexOf(userdbadapter));
+    }
+
+    @Test
+    @DisplayName("Test remove method")
+    void removeTest() {
+        var olo = getTestList();
+
+        Individual userdbadapter = ontologyConnector.getIndividual("UserDBAdapter").get();
+        Individual removedIndividual = olo.remove(1);
+        Assertions.assertEquals(userdbadapter, removedIndividual);
+        Assertions.assertEquals(2, olo.size(), "Size after removal does not match expected size");
     }
 
 }
