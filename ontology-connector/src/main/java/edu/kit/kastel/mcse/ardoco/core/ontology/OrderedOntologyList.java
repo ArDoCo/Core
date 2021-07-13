@@ -26,7 +26,7 @@ import org.apache.jena.vocabulary.XSD;
  *
  */
 public class OrderedOntologyList implements List<Individual> {
-    public static final String LIST_BASE_URI = "http://purl.org/ontology/olo/core#";
+    public static final String LIST_BASE_URI = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#";
     public static final String LIST_PREFIX = "olo";
     protected static final String LIST_CLASS = "OrderedList";
     private static final String LIST_SLOT_CLASS = "Slot";
