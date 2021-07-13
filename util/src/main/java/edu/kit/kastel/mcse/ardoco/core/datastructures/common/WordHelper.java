@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.PosTag;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 
 public final class WordHelper {
 
@@ -22,7 +22,7 @@ public final class WordHelper {
         }
 
         var prePosTag = preWord.getPosTag();
-        return PosTag.DT.equals(prePosTag);
+        return POSTag.DETERMINER.equals(prePosTag);
 
     }
 
