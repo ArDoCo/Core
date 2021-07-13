@@ -4,17 +4,18 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Scanner;
 
-import edu.kit.ipd.indirect.textSNLP.Stanford;
 import edu.kit.ipd.parse.luna.Luna;
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.ipd.pronat.change_watchdog.ChangeWatchdog;
-import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.PrePipelineData;
 
 /**
  * Simply invoke LUNA Framework.
+ *
+ * CAUTION: NOT TESTED! USE AT YOUR OWN RISK!
  *
  * @author Dominik Fuchss
  * @author Sophie Schulz
@@ -31,11 +32,6 @@ class LunaExecution implements IPARSEExecution {
         scanner.useDelimiter("\\A");
         String content = scanner.next();
         scanner.close();
-
-        Properties stanfordProps = ConfigManager.getConfiguration(Stanford.class);
-        stanfordProps.setProperty("LEMMAS",
-                "seconds/NNS/second;milliseconds/NNS/millisecond;hours/NNS/hour;minutes/NNS/minute;months/NNS/month;years/NNS/year");
-        stanfordProps.setProperty("TAGGER_MODEL", "/edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger");
 
         Properties changeWatchdogProps = ConfigManager.getConfiguration(ChangeWatchdog.class);
         // TODO Find a suitable time for termination. Currently 5s

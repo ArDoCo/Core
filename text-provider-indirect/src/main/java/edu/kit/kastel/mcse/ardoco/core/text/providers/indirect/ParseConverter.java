@@ -14,7 +14,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.PosTag;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 
 public class ParseConverter {
 
@@ -91,7 +91,7 @@ public class ParseConverter {
         private final int sentence;
         private final int position;
         private final String text;
-        private final PosTag posTag;
+        private final POSTag posTag;
         private final String lemma;
 
         private final Map<DependencyTag, List<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values())
@@ -109,12 +109,9 @@ public class ParseConverter {
             sentence = Integer.valueOf(String.valueOf(node.getAttributeValue("sentenceNumber")));
         }
 
-        private PosTag getPosTag(INode node) {
-
-            Map<String, PosTag> posTagMap = Arrays.stream(PosTag.values()).collect(Collectors.toMap(String::valueOf, d -> d));
-
-            return posTagMap.get(String.valueOf(node.getAttributeValue("pos")));
-
+        private POSTag getPosTag(INode node) {
+            var posTagValue = String.valueOf(node.getAttributeValue("pos"));
+            return POSTag.get(posTagValue);
         }
 
         @Override
@@ -128,7 +125,7 @@ public class ParseConverter {
         }
 
         @Override
-        public PosTag getPosTag() {
+        public POSTag getPosTag() {
             return posTag;
         }
 
