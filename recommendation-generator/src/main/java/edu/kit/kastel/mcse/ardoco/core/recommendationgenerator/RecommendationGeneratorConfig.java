@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -9,17 +8,20 @@ import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
 public class RecommendationGeneratorConfig extends Configuration {
 
+    private static final String RECOMMENDATION_AGENTS = "Recommendation_Agents";
+    private static final String DEPENDENCY_AGENTS = "Dependency_Agents";
     public static final RecommendationGeneratorConfig DEFAULT_CONFIG = new RecommendationGeneratorConfig();
 
     private RecommendationGeneratorConfig() {
-        SystemParameters config = new SystemParameters("/configs/RecommendationGenerator.properties", true);
-        recommendationAgents = config.getPropertyAsList("Recommendation_Agents");
-        dependencyAgents = config.getPropertyAsList("Dependency_Agents");
+
+        var config = new SystemParameters("/configs/RecommendationGenerator.properties", true);
+        recommendationAgents = config.getPropertyAsList(RECOMMENDATION_AGENTS);
+        dependencyAgents = config.getPropertyAsList(DEPENDENCY_AGENTS);
     }
 
     public RecommendationGeneratorConfig(Map<String, String> configs) {
-        recommendationAgents = getPropertyAsList("Recommendation_Agents", configs);
-        dependencyAgents = getPropertyAsList("Dependency_Agents", configs);
+        recommendationAgents = getPropertyAsList(RECOMMENDATION_AGENTS, configs);
+        dependencyAgents = getPropertyAsList(DEPENDENCY_AGENTS, configs);
     }
 
     /**
@@ -33,8 +35,8 @@ public class RecommendationGeneratorConfig extends Configuration {
 
     @Override
     protected Map<String, String> getAllProperties() {
-        return Map.of("Recommendation_Agents",
-                String.join(" ", recommendationAgents) + " " + String.join(" ", dependencyAgents));
+        return Map.of(RECOMMENDATION_AGENTS, String.join(" ", recommendationAgents),
+                DEPENDENCY_AGENTS, String.join(" ", dependencyAgents));
     }
 
 }

@@ -56,10 +56,10 @@ public class FilePrinter {
             return;
         }
 
-        try (FileWriter myWriter = new FileWriter(target)) {
-            int minSentenceNumber = 0;
+        try (var myWriter = new FileWriter(target)) {
+            var minSentenceNumber = 0;
             for (IWord node : graph.getWords()) {
-                int sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
+                var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
                 if (sentenceNumber + 1 > minSentenceNumber) {
                     myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
                     minSentenceNumber++;
@@ -77,7 +77,7 @@ public class FilePrinter {
     private static boolean createFileIfNonExistent(File file) {
         try {
             if (file.createNewFile()) {
-                logger.info("File created: " + file.getAbsolutePath());
+                logger.info("File created: {}", file.getAbsolutePath());
 
             } else {
                 logger.info("File already exists.");
@@ -228,7 +228,7 @@ public class FilePrinter {
             return;
         }
 
-        try (FileWriter myWriter = new FileWriter(resultFile)) {
+        try (var myWriter = new FileWriter(resultFile)) {
             writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState, duration);
 
         } catch (IOException e) {
@@ -281,9 +281,9 @@ public class FilePrinter {
 
                 MappingKind kind = mapping.getKind();
 
-                String nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
-                String typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
-                String nortProb = Double.toString(kind == MappingKind.NAME_OR_TYPE ? mapping.getProbability() : 0);
+                var nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
+                var typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
+                var nortProb = Double.toString(kind == MappingKind.NAME_OR_TYPE ? mapping.getProbability() : 0);
 
                 dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
 
@@ -295,9 +295,9 @@ public class FilePrinter {
 
             NounMappingWithDistribution eagleMapping = (NounMappingWithDistribution) mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
-            String nameProb = Double.toString(distribution.get(MappingKind.NAME));
-            String typeProb = Double.toString(distribution.get(MappingKind.TYPE));
-            String nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
+            var nameProb = Double.toString(distribution.get(MappingKind.NAME));
+            var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
+            var nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
 
             dataLines.add(new String[] { eagleMapping.getReference(), nameProb, typeProb, nortProb });
 
@@ -329,7 +329,7 @@ public class FilePrinter {
                 }
             }
 
-            String probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
+            var probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
 
             for (INounMapping nameMapping : instanceLinkWithBestConfidence.getTextualInstance().getNameMappings()) {
                 for (IWord word : nameMapping.getWords()) {
@@ -342,7 +342,7 @@ public class FilePrinter {
 
     public static void writeDataLinesInFile(File file, List<String[]> dataLines) {
 
-        try (FileWriter pw = new FileWriter(file)) {
+        try (var pw = new FileWriter(file)) {
             dataLines.stream().map(FilePrinter::convertToCSV).forEach(s -> {
                 try {
                     pw.append(s).append("\n");

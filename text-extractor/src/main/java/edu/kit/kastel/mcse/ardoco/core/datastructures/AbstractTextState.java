@@ -24,6 +24,7 @@ public abstract class AbstractTextState implements ITextState {
 
     protected abstract void addTerm(String reference, List<INounMapping> of, MappingKind kind, double probability);
 
+    // TODO: remove generic wildcard type!
     protected abstract Collection<? extends INounMapping> getReadableNounMappings();
 
     /***

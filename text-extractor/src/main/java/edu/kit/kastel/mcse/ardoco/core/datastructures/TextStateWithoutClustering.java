@@ -23,7 +23,7 @@ public class TextStateWithoutClustering extends AbstractTextState implements ITe
 
     @Override
     public ITextState createCopy() {
-        TextStateWithoutClustering textExtractionState = new TextStateWithoutClustering();
+        var textExtractionState = new TextStateWithoutClustering();
         textExtractionState.nounMappings = nounMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList());
         textExtractionState.relationMappings = relationMappings.stream().map(IRelationMapping::createCopy).collect(Collectors.toList());
         textExtractionState.terms = terms.stream().map(ITermMapping::createCopy).collect(Collectors.toList());

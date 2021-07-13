@@ -8,6 +8,11 @@ import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
 public class GenericRecommendationConfig extends Configuration {
 
+    private static final String SEPARATED_RELATIONS_SOLVER_PROBABILITY = "SeparatedRelationsSolver_Probability";
+    private static final String NAME_TYPE_ANALYZER_PROBABILITY = "NameTypeAnalyzer_Probability";
+    private static final String RECOMMENDATION_EXTRACTORS = "Recommendation_Extractors";
+    private static final String DEPENDENCY_EXTRACTORS = "Dependency_Extractors";
+
     public static final GenericRecommendationConfig DEFAULT_CONFIG = new GenericRecommendationConfig();
 
     public final List<String> recommendationExtractors;
@@ -27,27 +32,28 @@ public class GenericRecommendationConfig extends Configuration {
     public final double separatedRelationSolverProbility;
 
     public GenericRecommendationConfig() {
-        SystemParameters config = new SystemParameters("/configs/RecommendationAnalyzerSolverConfig.properties", true);
-        recommendationExtractors = config.getPropertyAsList("Recommendation_Extractors");
-        nameTypeAnalyzerProbability = config.getPropertyAsDouble("NameTypeAnalyzer_Probability");
-        separatedRelationSolverProbility = config.getPropertyAsDouble("SeparatedRelationsSolver_Probability");
-        dependencyExtractors = config.getPropertyAsList("Dependency_Extractors");
+        var config = new SystemParameters("/configs/RecommendationAnalyzerSolverConfig.properties", true);
+        recommendationExtractors = config.getPropertyAsList(RECOMMENDATION_EXTRACTORS);
+        nameTypeAnalyzerProbability = config.getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY);
+        separatedRelationSolverProbility = config.getPropertyAsDouble(SEPARATED_RELATIONS_SOLVER_PROBABILITY);
+        dependencyExtractors = config.getPropertyAsList(DEPENDENCY_EXTRACTORS);
+
     }
 
     public GenericRecommendationConfig(Map<String, String> configs) {
-        recommendationExtractors = getPropertyAsList("Recommendation_Extractors", configs);
-        nameTypeAnalyzerProbability = getPropertyAsDouble("NameTypeAnalyzer_Probability", configs);
-        separatedRelationSolverProbility = getPropertyAsDouble("SeparatedRelationsSolver_Probability", configs);
-        dependencyExtractors = getPropertyAsList("Dependency_Extractors", configs);
+        recommendationExtractors = getPropertyAsList(RECOMMENDATION_EXTRACTORS, configs);
+        nameTypeAnalyzerProbability = getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY, configs);
+        separatedRelationSolverProbility = getPropertyAsDouble(SEPARATED_RELATIONS_SOLVER_PROBABILITY, configs);
+        dependencyExtractors = getPropertyAsList(DEPENDENCY_EXTRACTORS, configs);
     }
 
     @Override
     protected Map<String, String> getAllProperties() {
         return Map.of(//
-                "Recommendation_Extractors", String.join(" ", recommendationExtractors), //
-                "NameTypeAnalyzer_Probability", String.valueOf(nameTypeAnalyzerProbability), //
-                "SeparatedRelationsSolver_Probability", String.valueOf(separatedRelationSolverProbility), //
-                "Dependency_Extractors", String.valueOf(dependencyExtractors)
+                RECOMMENDATION_EXTRACTORS, String.join(" ", recommendationExtractors), //
+                NAME_TYPE_ANALYZER_PROBABILITY, String.valueOf(nameTypeAnalyzerProbability), //
+                SEPARATED_RELATIONS_SOLVER_PROBABILITY, String.valueOf(separatedRelationSolverProbility), //
+                DEPENDENCY_EXTRACTORS, String.valueOf(dependencyExtractors)
         );
     }
 

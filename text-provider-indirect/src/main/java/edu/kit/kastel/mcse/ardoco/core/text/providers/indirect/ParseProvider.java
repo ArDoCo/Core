@@ -30,7 +30,7 @@ public class ParseProvider implements ITextConnector {
             logger.debug("Converting to IText");
         }
 
-        ParseConverter converter = new ParseConverter(graph);
+        var converter = new ParseConverter(graph);
         converter.convert();
 
         if (logger.isDebugEnabled()) {

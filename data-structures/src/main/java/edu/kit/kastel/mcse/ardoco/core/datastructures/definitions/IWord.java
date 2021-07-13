@@ -8,7 +8,7 @@ public interface IWord {
 
     String getText();
 
-    PosTag getPosTag();
+    POSTag getPosTag();
 
     IWord getPreWord();
 

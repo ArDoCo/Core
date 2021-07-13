@@ -14,178 +14,175 @@ import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.PosTag;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 
 public class ParseConverter {
 
-	private IText annotatedText;
-	private IGraph graph;
+    private IText annotatedText;
+    private IGraph graph;
 
-	private Map<INode, Word> instances;
-	private List<Word> orderedWords;
+    private Map<INode, Word> instances;
+    private List<Word> orderedWords;
 
-	public ParseConverter(IGraph graph) {
-		this.graph = graph;
-	}
+    public ParseConverter(IGraph graph) {
+        this.graph = graph;
+    }
 
-	public void convert() {
-		reset();
+    public void convert() {
+        reset();
 
-		createWords();
-		createDeps();
+        createWords();
+        createDeps();
 
-		createText();
-	}
+        createText();
+    }
 
-	public IText getAnnotatedText() {
-		return annotatedText;
-	}
+    public IText getAnnotatedText() {
+        return annotatedText;
+    }
 
-	private void createWords() {
-		instances = new HashMap<>();
-		orderedWords = new ArrayList<>();
+    private void createWords() {
+        instances = new HashMap<>();
+        orderedWords = new ArrayList<>();
 
-		List<INode> tokens = graph.getNodesOfType(graph.getNodeType("token"));
+        List<INode> tokens = graph.getNodesOfType(graph.getNodeType("token"));
 
-		for (INode token : tokens) {
-			Word word = new Word(token);
-			orderedWords.add(word);
-			instances.put(token, word);
-		}
-	}
+        for (INode token : tokens) {
+            var word = new Word(token);
+            orderedWords.add(word);
+            instances.put(token, word);
+        }
+    }
 
-	private void createDeps() {
-		// TODO: To Complete
+    private void createDeps() {
+        // TODO: To Complete
 
-		Map<String, DependencyTag> dependencyMap = Arrays.stream(DependencyTag.values())
-				.collect(Collectors.toMap(d -> String.valueOf(d).toLowerCase(), d -> d));
+        Map<String, DependencyTag> dependencyMap = Arrays.stream(DependencyTag.values())
+                .collect(Collectors.toMap(d -> String.valueOf(d).toLowerCase(), d -> d));
 
-		for (INode node : graph.getNodesOfType(graph.getNodeType("token"))) {
-			Word sourceWord = instances.get(node);
-			for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType("typedDependency"))) {
-				Word targetWord = instances.get(arc.getTargetNode());
+        for (INode node : graph.getNodesOfType(graph.getNodeType("token"))) {
+            var sourceWord = instances.get(node);
+            for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType("typedDependency"))) {
+                var targetWord = instances.get(arc.getTargetNode());
 
-				String arcAttributeValue = String.valueOf(arc.getAttributeValue("relationShort"));
-				if (dependencyMap.containsKey(arcAttributeValue)) {
-					DependencyTag depTag = dependencyMap.get(arcAttributeValue);
-					sourceWord.wordsThatAreDependenciesOfThis.get(depTag).add(targetWord);
-					targetWord.wordsThatAreDependentOnThis.get(depTag).add(sourceWord);
-				}
-			}
-		}
+                var arcAttributeValue = String.valueOf(arc.getAttributeValue("relationShort"));
+                if (dependencyMap.containsKey(arcAttributeValue)) {
+                    DependencyTag depTag = dependencyMap.get(arcAttributeValue);
+                    sourceWord.wordsThatAreDependenciesOfThis.get(depTag).add(targetWord);
+                    targetWord.wordsThatAreDependentOnThis.get(depTag).add(sourceWord);
+                }
+            }
+        }
 
-	}
+    }
 
-	private void createText() {
-		IText text = new Text(orderedWords);
-		annotatedText = text;
-	}
+    private void createText() {
+        IText text = new Text(orderedWords);
+        annotatedText = text;
+    }
 
-	private void reset() {
-		annotatedText = null;
-		instances = null;
-		orderedWords = null;
-	}
+    private void reset() {
+        annotatedText = null;
+        instances = null;
+        orderedWords = null;
+    }
 
-	private static final class Word implements IWord {
-		private final int sentence;
-		private final int position;
-		private final String text;
-		private final PosTag posTag;
-		private final String lemma;
+    private static final class Word implements IWord {
+        private final int sentence;
+        private final int position;
+        private final String text;
+        private final POSTag posTag;
+        private final String lemma;
 
-		private final Map<DependencyTag, List<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values())
-				.collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
-		private final Map<DependencyTag, List<IWord>> wordsThatAreDependentOnThis = Arrays.stream(DependencyTag.values())
-				.collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
+        private final Map<DependencyTag, List<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values())
+                .collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
+        private final Map<DependencyTag, List<IWord>> wordsThatAreDependentOnThis = Arrays.stream(DependencyTag.values())
+                .collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
 
-		private IText parent;
+        private IText parent;
 
-		Word(INode node) {
-			text = String.valueOf(node.getAttributeValue("value"));
-			position = Integer.valueOf(String.valueOf(node.getAttributeValue("position")));
-			lemma = String.valueOf(node.getAttributeValue("lemma"));
-			posTag = getPosTag(node);
-			sentence = Integer.valueOf(String.valueOf(node.getAttributeValue("sentenceNumber")));
-		}
+        Word(INode node) {
+            text = String.valueOf(node.getAttributeValue("value"));
+            position = Integer.valueOf(String.valueOf(node.getAttributeValue("position")));
+            lemma = String.valueOf(node.getAttributeValue("lemma"));
+            posTag = getPosTag(node);
+            sentence = Integer.valueOf(String.valueOf(node.getAttributeValue("sentenceNumber")));
+        }
 
-		private PosTag getPosTag(INode node) {
+        private POSTag getPosTag(INode node) {
+            var posTagValue = String.valueOf(node.getAttributeValue("pos"));
+            return POSTag.get(posTagValue);
+        }
 
-			Map<String, PosTag> posTagMap = Arrays.stream(PosTag.values()).collect(Collectors.toMap(String::valueOf, d -> d));
+        @Override
+        public int getSentenceNo() {
+            return sentence;
+        }
 
-			return posTagMap.get(String.valueOf(node.getAttributeValue("pos")));
+        @Override
+        public String getText() {
+            return text;
+        }
 
-		}
+        @Override
+        public POSTag getPosTag() {
+            return posTag;
+        }
 
-		@Override
-		public int getSentenceNo() {
-			return sentence;
-		}
+        @Override
+        public int getPosition() {
+            return position;
+        }
 
-		@Override
-		public String getText() {
-			return text;
-		}
+        @Override
+        public String getLemma() {
+            return lemma;
+        }
 
-		@Override
-		public PosTag getPosTag() {
-			return posTag;
-		}
+        @Override
+        public List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
+            return wordsThatAreDependenciesOfThis.get(dependencyTag);
+        }
 
-		@Override
-		public int getPosition() {
-			return position;
-		}
+        @Override
+        public List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+            return wordsThatAreDependentOnThis.get(dependencyTag);
+        }
 
-		@Override
-		public String getLemma() {
-			return lemma;
-		}
+        @Override
+        public IWord getPreWord() {
+            if (position == 0) {
+                return null;
+            }
+            return parent.getWords().get(position - 1);
+        }
 
-		@Override
-		public List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
-			return wordsThatAreDependenciesOfThis.get(dependencyTag);
-		}
+        @Override
+        public IWord getNextWord() {
+            if (position == parent.getLength() - 1) {
+                return null;
+            }
+            return parent.getWords().get(position + 1);
+        }
+    }
 
-		@Override
-		public List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
-			return wordsThatAreDependentOnThis.get(dependencyTag);
-		}
+    private static final class Text implements IText {
 
-		@Override
-		public IWord getPreWord() {
-			if (position == 0) {
-				return null;
-			}
-			return parent.getWords().get(position - 1);
-		}
+        private List<IWord> words;
 
-		@Override
-		public IWord getNextWord() {
-			if (position == parent.getLength() - 1) {
-				return null;
-			}
-			return parent.getWords().get(position + 1);
-		}
-	}
+        public Text(List<Word> orderedWords) {
+            orderedWords.stream().forEach(w -> w.parent = this);
+            words = Collections.unmodifiableList(orderedWords);
+        }
 
-	private static final class Text implements IText {
+        @Override
+        public IWord getStartNode() {
+            return words.isEmpty() ? null : words.get(0);
+        }
 
-		private List<IWord> words;
-
-		public Text(List<Word> orderedWords) {
-			orderedWords.stream().forEach(w -> w.parent = this);
-			words = Collections.unmodifiableList(orderedWords);
-		}
-
-		@Override
-		public IWord getStartNode() {
-			return words.isEmpty() ? null : words.get(0);
-		}
-
-		@Override
-		public List<IWord> getWords() {
-			return words;
-		}
-	}
+        @Override
+        public List<IWord> getWords() {
+            return words;
+        }
+    }
 }

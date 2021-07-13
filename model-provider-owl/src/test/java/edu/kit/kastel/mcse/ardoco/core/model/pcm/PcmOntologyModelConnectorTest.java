@@ -15,93 +15,98 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 
 @RunWith(JUnitPlatform.class)
 class PcmOntologyModelConnectorTest {
-	private static Logger logger = LogManager.getLogger();
+    private static Logger logger = LogManager.getLogger();
 
-	private static PcmOntologyModelConnector loadModel(String modelFile) {
-		File file = new File(modelFile);
+    private static PcmOntologyModelConnector loadModel(String modelFile) {
+        File file = new File(modelFile);
 
-		String absolutePath = file.getAbsolutePath();
-		return new PcmOntologyModelConnector(absolutePath);
-	}
+        String absolutePath = file.getAbsolutePath();
+        return new PcmOntologyModelConnector(absolutePath);
+    }
 
-	@Test
-	@DisplayName("Get all instances from MediaStore ontology")
-	void getInstancesFromMediaStoreTest() {
-		PcmOntologyModelConnector connectorMediaStore = loadModel("src/test/resources/mediastore.owl");
-		if (connectorMediaStore == null) {
-			logger.debug("connector is null");
-		}
-		List<IInstance> instances = connectorMediaStore.getInstances();
+    @Test
+    @DisplayName("Get all instances from MediaStore ontology")
+    void getInstancesFromMediaStoreTest() {
+        PcmOntologyModelConnector connectorMediaStore = loadModel("src/test/resources/mediastore.owl");
+        if (connectorMediaStore == null) {
+            logger.debug("connector is null");
+            Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
+        }
+        List<IInstance> instances = connectorMediaStore.getInstances();
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Listing MediaStore insances:");
-			for (IInstance instance : instances) {
-				String info = instance.toString();
-				logger.debug(info);
-				logger.debug(instance.getNames());
-			}
-			logger.debug("\n");
-		}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Listing MediaStore instances:");
+            for (IInstance instance : instances) {
+                String info = instance.toString();
+                logger.debug(info);
+                logger.debug(instance.getNames());
+            }
+            logger.debug("\n");
+        }
 
-		int expectedNumberOfInstances = 14;
-		Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "The number of expected and found instances differs!");
+        int expectedNumberOfInstances = 14;
+        Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "The number of expected and found instances differs!");
 
-		List<String> expectedInstancesNames = List.of("FileStorage", "Reencoding", "DB", "MediaAccess", "Facade", "TagWatermarking", "UserDBAdapter",
-				"AudioWatermarking", "UserManagement", "ParallelWatermarking", "MediaManagement", "Cache", "Packaging", "DownloadLoadBalancer");
+        List<String> expectedInstancesNames = List.of("FileStorage", "Reencoding", "DB", "MediaAccess", "Facade", "TagWatermarking", "UserDBAdapter",
+                "AudioWatermarking", "UserManagement", "ParallelWatermarking", "MediaManagement", "Cache", "Packaging", "DownloadLoadBalancer");
 
-		for (IInstance instance : instances) {
-			String name = instance.getLongestName();
-			Assertions.assertTrue(expectedInstancesNames.contains(name), "Found instance does not match one of the expected instances!");
-		}
+        for (IInstance instance : instances) {
+            String name = instance.getLongestName();
+            Assertions.assertTrue(expectedInstancesNames.contains(name), "Found instance does not match one of the expected instances!");
+        }
 
-		connectorMediaStore = null;
-	}
+        connectorMediaStore = null;
+    }
 
-	@Test
-	@DisplayName("Get all instances from TeaStore ontology")
-	void getInstancesFromTeaStoreTest() {
-		PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teastore.owl");
-		if (connectorTeaStore == null) {
-			logger.debug("connector is null");
-		}
-		List<IInstance> instances = connectorTeaStore.getInstances();
+    @Test
+    @DisplayName("Get all instances from TeaStore ontology")
+    void getInstancesFromTeaStoreTest() {
+        PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teastore.owl");
+        if (connectorTeaStore == null) {
+            logger.debug("connector is null");
+            Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
+        }
+        List<IInstance> instances = connectorTeaStore.getInstances();
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Listing TeaStore insances:");
-			for (IInstance instance : instances) {
-				String info = instance.toString();
-				logger.debug(info);
-				logger.debug(instance.getNames());
-			}
-			logger.debug("\n");
-		}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Listing TeaStore instances:");
+            for (IInstance instance : instances) {
+                String info = instance.toString();
+                logger.debug(info);
+                logger.debug(instance.getNames());
+            }
+            logger.debug("\n");
+        }
 
-		int expectedNumberOfInstances = 13;
-		Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "The number of expected and found instances differs!");
+        int expectedNumberOfInstances = 13;
+        Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "The number of expected and found instances differs!");
 
-		connectorTeaStore = null;
-	}
+        connectorTeaStore = null;
+    }
 
-	@Test
-	@DisplayName("Get all instances from TEAMMATES ontology")
-	void getInstancesFromTeammatesTest() {
-		PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teammates.owl");
-		if (connectorTeaStore == null) {
-			logger.debug("connector is null");
-		}
-		List<IInstance> instances = connectorTeaStore.getInstances();
+    @Test
+    @DisplayName("Get all instances from TEAMMATES ontology")
+    void getInstancesFromTeammatesTest() {
+        PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teammates.owl");
+        if (connectorTeaStore == null) {
+            logger.debug("connector is null");
+            Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
+        }
+        List<IInstance> instances = connectorTeaStore.getInstances();
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Listing TEAMMATES instances:");
-			for (IInstance instance : instances) {
-				String info = instance.toString();
-				logger.debug(info);
-				logger.debug(instance.getNames());
-			}
-			logger.debug("\n");
-		}
+        Assertions.assertFalse(instances.isEmpty(), "There need to be some instances contained in the model.");
 
-		connectorTeaStore = null;
-	}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Listing TEAMMATES instances:");
+            for (IInstance instance : instances) {
+                String info = instance.toString();
+                logger.debug(info);
+                logger.debug(instance.getNames());
+            }
+            logger.debug("\n");
+        }
+
+        connectorTeaStore = null;
+    }
 
 }
