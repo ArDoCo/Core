@@ -137,7 +137,8 @@ public class Pipeline {
             System.exit(1);
         }
 
-        IModelConnector pcmModel = new PcmOntologyModelConnector(inputModel.getAbsolutePath());
+        OntologyConnector ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
+        IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
         FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
 
         var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
@@ -147,6 +148,18 @@ public class Pipeline {
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         printResultsInFiles(outputDir, name, data, duration);
+
+        var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
+        ontoConnector.save(ontoSaveFile);
+    }
+
+    private static String getOntologyOutputFile(File outputDir, String name) {
+        var outName = name.replace(".owl", "_processed.owl");
+        if (!outName.endsWith(".owl")) {
+            outName = outName + "_processed.owl";
+        }
+        var outFile = Path.of(outputDir.getAbsolutePath(), outName).toFile();
+        return outFile.getAbsolutePath();
     }
 
     private static void printResultsInFiles(File outputDir, String name, AgentDatastructure data, Duration duration) {

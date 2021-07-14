@@ -11,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.apache.jena.ontology.AnnotationProperty;
 import org.apache.jena.ontology.DatatypeProperty;
@@ -36,7 +37,6 @@ import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.UuidUtil;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
@@ -53,6 +53,8 @@ public class OntologyConnector {
     private String pathToOntology;
     private Ontology ontology;
     private InfModel infModel;
+
+    private static Random random = new Random();
 
     public OntologyConnector(String ontologyUrl) {
         pathToOntology = ontologyUrl;
@@ -881,9 +883,21 @@ public class OntologyConnector {
         return Optional.empty();
     }
 
-    private String generateRandomURI(String prefix) {
-        var uuid = UuidUtil.getTimeBasedUuid().toString();
-        return createUri(prefix, uuid);
+    public String generateRandomURI() {
+        return generateRandomURI(DEFAULT_PREFIX);
+    }
+
+    public String generateRandomURI(String prefix) {
+        var leftLimit = 48; // numeral '0'
+        var rightLimit = 122; // letter 'z'
+        var targetStringLength = 10;
+
+        var randomString = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        return createUri(prefix, randomString);
     }
 
 }
