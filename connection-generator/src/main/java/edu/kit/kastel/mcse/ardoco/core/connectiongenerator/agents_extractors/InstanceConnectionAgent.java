@@ -26,52 +26,53 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 @MetaInfServices(ConnectionAgent.class)
 public class InstanceConnectionAgent extends ConnectionAgent {
 
-	private double probability;
-	private double probabilityWithoutType;
+    private double probability;
+    private double probabilityWithoutType;
 
-	// Required for the service loader
-	public InstanceConnectionAgent() {
-		super(GenericConnectionConfig.class);
-	}
+    /**
+     * Create the agent.
+     */
+    public InstanceConnectionAgent() {
+        super(GenericConnectionConfig.class);
+    }
 
-	private InstanceConnectionAgent(//
-			IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState,
-			GenericConnectionConfig config) {
-		super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericConnectionConfig.class, text, textState, modelState, recommendationState,
-				connectionState);
-		probability = config.instanceConnectionSolverProbability;
-		probabilityWithoutType = config.instanceConnectionSolverProbabilityWithoutType;
-	}
+    private InstanceConnectionAgent(//
+            IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState,
+            GenericConnectionConfig config) {
+        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericConnectionConfig.class, text, textState, modelState, recommendationState, connectionState);
+        probability = config.instanceConnectionSolverProbability;
+        probabilityWithoutType = config.instanceConnectionSolverProbabilityWithoutType;
+    }
 
-	@Override
-	public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-			IConnectionState connectionState, Configuration config) {
-		return new InstanceConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionConfig) config);
-	}
+    @Override
+    public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState, Configuration config) {
+        return new InstanceConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionConfig) config);
+    }
 
-	/**
-	 * Executes the connector.
-	 */
-	@Override
-	public void exec() {
-		findNamesOfModelInstancesInSupposedMappings();
-	}
+    /**
+     * Executes the connector.
+     */
+    @Override
+    public void exec() {
+        findNamesOfModelInstancesInSupposedMappings();
+    }
 
-	/**
-	 * Seaches in the recommended instances of the recommendation state for similar
-	 * names to extracted instances. If some are found the instance link is added to
-	 * the connection state.
-	 */
-	private void findNamesOfModelInstancesInSupposedMappings() {
-		List<IRecommendedInstance> ris = recommendationState.getRecommendedInstances();
-		for (IInstance i : modelState.getInstances()) {
-			List<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
+    /**
+     * Seaches in the recommended instances of the recommendation state for similar names to extracted instances. If
+     * some are found the instance link is added to the connection state.
+     */
+    private void findNamesOfModelInstancesInSupposedMappings() {
+        List<IRecommendedInstance> ris = recommendationState.getRecommendedInstances();
+        for (IInstance i : modelState.getInstances()) {
+            List<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
 
-			List<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.stream().filter(ri -> !ri.getTypeMappings().isEmpty())
-					.collect(Collectors.toList());
-			mostLikelyRiWithoutType.stream().forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
-			mostLikelyRi.stream().forEach(ml -> connectionState.addToLinks(ml, i, probability));
-		}
-	}
+            List<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.stream()
+                    .filter(ri -> !ri.getTypeMappings().isEmpty())
+                    .collect(Collectors.toList());
+            mostLikelyRiWithoutType.stream().forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
+            mostLikelyRi.stream().forEach(ml -> connectionState.addToLinks(ml, i, probability));
+        }
+    }
 
 }

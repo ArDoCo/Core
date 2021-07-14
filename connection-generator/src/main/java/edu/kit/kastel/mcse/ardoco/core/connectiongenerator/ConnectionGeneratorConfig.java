@@ -6,9 +6,17 @@ import java.util.Map;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
+/**
+ * The configuration for the connection generator module
+ *
+ * @author Dominik Fuchss
+ */
 public class ConnectionGeneratorConfig extends Configuration {
 
     private static final String CONNECTION_AGENTS = "Connection_Agents";
+    /**
+     * The default configuration of the module.
+     */
     public static final ConnectionGeneratorConfig DEFAULT_CONFIG = new ConnectionGeneratorConfig();
 
     private ConnectionGeneratorConfig() {
@@ -16,6 +24,11 @@ public class ConnectionGeneratorConfig extends Configuration {
         connectionAgents = config.getPropertyAsList(CONNECTION_AGENTS);
     }
 
+    /**
+     * Create the configuration based on the default config values.
+     *
+     * @param configs contains the keys that have to be overwritten
+     */
     public ConnectionGeneratorConfig(Map<String, String> configs) {
         connectionAgents = getPropertyAsList(CONNECTION_AGENTS, configs);
     }

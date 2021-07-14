@@ -32,6 +32,9 @@ public class ReferenceAgent extends ConnectionAgent {
     private double areNamesSimilarThreshold;
     private double proportionalDecrease;
 
+    /**
+     * Create the agent.
+     */
     public ReferenceAgent() {
         super(GenericConnectionConfig.class);
     }

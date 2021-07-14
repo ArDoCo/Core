@@ -35,6 +35,9 @@ public class RelationConnectionAgent extends ConnectionAgent {
 
     private double probability;
 
+    /**
+     * Create the agent.
+     */
     public RelationConnectionAgent() {
         super(GenericConnectionConfig.class);
     }

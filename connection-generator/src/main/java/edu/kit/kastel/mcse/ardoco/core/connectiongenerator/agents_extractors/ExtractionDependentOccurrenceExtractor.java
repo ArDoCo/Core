@@ -31,16 +31,25 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
     /**
      * Creates a new extraction dependent occurrence marker.
      *
-     * @param graph                the PARSE graph to run on
-     * @param textExtractionState  the text extraction state
-     * @param modelExtractionState the model extraction state to work with
-     * @param recommendationState  the state with the recommendations
+     * @param textExtractionState  the state that contains all information from the text
+     * @param modelExtractionState the state that contains all information from the architecture model
+     * @param recommendationState  the state that contains all recommended instances and relations
+     * @param connectionState      the state that contains all information on possible trace links
      */
     public ExtractionDependentOccurrenceExtractor(//
             ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState) {
         this(textExtractionState, modelExtractionState, recommendationState, connectionState, GenericConnectionConfig.DEFAULT_CONFIG);
     }
 
+    /**
+     * Creates a new extraction dependent occurrence marker.
+     *
+     * @param textExtractionState  the state that contains all information from the text
+     * @param modelExtractionState the state that contains all information from the architecture model
+     * @param recommendationState  the state that contains all recommended instances and relations
+     * @param connectionState      the state that contains all information on possible trace links
+     * @param config               the configuration to be used
+     */
     public ExtractionDependentOccurrenceExtractor(//
             ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState,
             GenericConnectionConfig config) {
@@ -48,6 +57,9 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
         probability = config.extractionDependentOccurrenceAnalyzerProbability;
     }
 
+    /**
+     * For deserialization
+     */
     public ExtractionDependentOccurrenceExtractor() {
         this(null, null, null, null);
     }
