@@ -1,6 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ontology;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
@@ -78,7 +79,15 @@ public class TextOntologyAdapter {
             wordIndividuals.add(wordIndividual);
         }
 
-        // then create the prev/next relations between words
+        createLinkingRelations(wordIndividuals);
+
+        // create the list that is used for the words property
+        var olo = ontologyConnector.addList("WordsOf" + name, wordIndividuals);
+        var listIndividual = olo.getListIndividual();
+        textIndividual.addProperty(wordsProperty, listIndividual);
+    }
+
+    private void createLinkingRelations(List<Individual> wordIndividuals) {
         for (var i = 0; i < wordIndividuals.size(); i++) {
             var curr = wordIndividuals.get(i);
 
@@ -88,14 +97,9 @@ public class TextOntologyAdapter {
             }
             if (i < wordIndividuals.size() - 1) {
                 var next = wordIndividuals.get(i + 1);
-                // ontologyConnector.addPropertyToIndividual(curr, nextProperty, next);
+                ontologyConnector.addPropertyToIndividual(curr, nextProperty, next);
             }
         }
-
-        // create the list that is used for the words property
-        var olo = ontologyConnector.addList("WordsOf" + name, wordIndividuals);
-        var listIndividual = olo.getListIndividual();
-        textIndividual.addProperty(wordsProperty, listIndividual);
     }
 
     private Individual addWord(IWord word) {
