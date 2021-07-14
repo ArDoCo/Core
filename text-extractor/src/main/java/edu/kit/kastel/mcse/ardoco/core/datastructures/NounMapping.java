@@ -12,13 +12,13 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMappingWi
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
 
-public class NounMappingWithDistribution extends AbstractNounMapping implements INounMappingWithDistribution {
+public class NounMapping extends AbstractNounMapping implements INounMappingWithDistribution {
 
     private MappingKind mostProbableKind;
     private Double highestProbability;
     private Map<MappingKind, Double> distribution;
 
-    public NounMappingWithDistribution(List<IWord> words, Map<MappingKind, Double> distribution, String reference, List<String> occurrences) {
+    public NounMapping(List<IWord> words, Map<MappingKind, Double> distribution, String reference, List<String> occurrences) {
         this.words = new ArrayList<>(words);
         initializeDistribution(distribution);
         this.reference = reference;
@@ -43,7 +43,7 @@ public class NounMappingWithDistribution extends AbstractNounMapping implements 
 
     }
 
-    public NounMappingWithDistribution(List<IWord> words, MappingKind kind, double probability, String reference, List<String> occurrences) {
+    public NounMapping(List<IWord> words, MappingKind kind, double probability, String reference, List<String> occurrences) {
         distribution = new EnumMap<>(MappingKind.class);
         distribution.put(kind, probability);
 
@@ -60,8 +60,8 @@ public class NounMappingWithDistribution extends AbstractNounMapping implements 
     }
 
     @Override
-    public NounMappingWithDistribution createCopy() {
-        return new NounMappingWithDistribution(words, distribution, reference, occurrences);
+    public NounMapping createCopy() {
+        return new NounMapping(words, distribution, reference, occurrences);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class NounMappingWithDistribution extends AbstractNounMapping implements 
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        NounMappingWithDistribution other = (NounMappingWithDistribution) obj;
+        NounMapping other = (NounMapping) obj;
         return Objects.equals(reference, other.reference);
     }
 

@@ -17,8 +17,8 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextStateWith
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
 
-public class TextStateWithClustering extends AbstractTextState implements ITextStateWithDistributions {
-    private Map<String, NounMappingWithDistribution> nounMappings;
+public class TextState extends AbstractTextState implements ITextStateWithDistributions {
+    private Map<String, NounMapping> nounMappings;
     private double similarityPercentage;
 
     @Override
@@ -28,7 +28,7 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
 
     @Override
     public ITextState createCopy() {
-        var textExtractionState = new TextStateWithClustering(similarityPercentage);
+        var textExtractionState = new TextState(similarityPercentage);
         textExtractionState.nounMappings = new HashMap<>(nounMappings);
         textExtractionState.relationMappings = relationMappings.stream().map(IRelationMapping::createCopy).collect(Collectors.toList());
         textExtractionState.terms = terms.stream().map(ITermMapping::createCopy).collect(Collectors.toList());
@@ -38,7 +38,7 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
     /**
      * Creates a new name type relation state
      */
-    public TextStateWithClustering(double similarityPercentage) {
+    public TextState(double similarityPercentage) {
         nounMappings = new HashMap<>();
         relationMappings = new ArrayList<>();
         terms = new ArrayList<>();
@@ -47,7 +47,7 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
 
     @Override
     public void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences) {
-        var mapping = new NounMappingWithDistribution(nodes, Map.of(kind, confidence), reference, occurrences);
+        var mapping = new NounMapping(nodes, Map.of(kind, confidence), reference, occurrences);
         nounMappings.put(mapping.getReference(), mapping);
     }
 
@@ -64,7 +64,7 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
 
         if (nounMappings.containsKey(reference)) {
             // extend existing nounMapping
-            NounMappingWithDistribution existingMapping = nounMappings.get(reference);
+            NounMapping existingMapping = nounMappings.get(reference);
             existingMapping.addKindWithProbability(kind, probability);
             existingMapping.addOccurrence(occurrences);
             existingMapping.addNode(word);
@@ -77,14 +77,14 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
                     .collect(Collectors.toList());
 
             for (String ref : similarRefs) {
-                NounMappingWithDistribution similarMapping = nounMappings.get(ref);
+                NounMapping similarMapping = nounMappings.get(ref);
                 similarMapping.addOccurrence(occurrences);
                 similarMapping.addNode(word);
                 similarMapping.addKindWithProbability(kind, probability);
             }
             if (similarRefs.isEmpty()) {
                 // create new nounMapping
-                var mapping = new NounMappingWithDistribution(List.of(word), kind, probability, reference, occurrences);
+                var mapping = new NounMapping(List.of(word), kind, probability, reference, occurrences);
                 nounMappings.put(reference, mapping);
             }
         }
@@ -125,11 +125,11 @@ public class TextStateWithClustering extends AbstractTextState implements ITextS
     public void addNort(IWord n, String ref, double probability, List<String> occurrences) {
         super.addNort(n, ref, probability, occurrences);
 
-        List<NounMappingWithDistribution> wordsWithSimilarNode = nounMappings.values()
+        List<NounMapping> wordsWithSimilarNode = nounMappings.values()
                 .stream()
                 .filter(mapping -> mapping.getWords().contains(n))
                 .collect(Collectors.toList());
-        for (NounMappingWithDistribution mapping : wordsWithSimilarNode) {
+        for (NounMapping mapping : wordsWithSimilarNode) {
             if (mapping.getProbabilityForName() == 0) {
                 mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
             }
