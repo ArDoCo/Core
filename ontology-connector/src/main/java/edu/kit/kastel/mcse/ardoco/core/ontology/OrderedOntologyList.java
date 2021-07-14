@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.ontology.Individual;
@@ -44,6 +43,8 @@ public class OrderedOntologyList implements List<Individual> {
     private final Individual listIndividual;
 
     private final String label;
+
+    private int slotIdCounter = 0;
 
     /**
      * Factory to create {@link OrderedOntologyList}s that are backed by an ontology. Therefore, the {@link Factory}
@@ -270,7 +271,7 @@ public class OrderedOntologyList implements List<Individual> {
             throw new IndexOutOfBoundsException();
         }
         // create slot
-        var slotName = label + "_slot_" + new Random().nextInt(Integer.MAX_VALUE);
+        var slotName = getSlotName();
         var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
         newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
         newSlot.setPropertyValue(getItemProperty(), individual);
@@ -319,7 +320,7 @@ public class OrderedOntologyList implements List<Individual> {
 
         for (var individual : individuals) {
             index++;
-            var slotName = label + "_slot_" + new Random().nextInt(Integer.MAX_VALUE);
+            var slotName = getSlotName();
             var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
             newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
             newSlot.setPropertyValue(getItemProperty(), individual);
@@ -337,6 +338,10 @@ public class OrderedOntologyList implements List<Individual> {
         setLength(index + 1);
 
         return true;
+    }
+
+    private String getSlotName() {
+        return label + "_slot_" + slotIdCounter++;
     }
 
     @Override

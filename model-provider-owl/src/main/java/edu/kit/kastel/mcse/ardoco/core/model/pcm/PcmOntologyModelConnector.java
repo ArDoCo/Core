@@ -28,14 +28,15 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
     private OntologyConnector ontologyConnector;
 
-    private String pathToOntology;
-
     /**
      * @param ontologyUrl Can be a local URL (path to the ontology) or a remote URL
      */
     public PcmOntologyModelConnector(String ontologyUrl) {
-        pathToOntology = ontologyUrl;
-        ontologyConnector = new OntologyConnector(pathToOntology);
+        ontologyConnector = new OntologyConnector(ontologyUrl);
+    }
+
+    public PcmOntologyModelConnector(OntologyConnector ontologyConnector) {
+        this.ontologyConnector = ontologyConnector;
     }
 
     @Override

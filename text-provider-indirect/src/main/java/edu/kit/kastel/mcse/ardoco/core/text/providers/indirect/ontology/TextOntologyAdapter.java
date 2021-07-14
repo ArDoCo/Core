@@ -6,9 +6,7 @@ import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.XSD;
-import org.apache.logging.log4j.core.util.UuidUtil;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -69,7 +67,7 @@ public class TextOntologyAdapter {
     public void addText(IText text) {
         // create text in ontology
         var uuid = generateUUID();
-        var name = "Text_" + uuid; // TODO should texts have a name? E.g. the filename etc.?
+        var name = getTextLabel();
         var textIndividual = ontologyConnector.addIndividualToClass(name, textClass);
         ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);
 
@@ -86,22 +84,21 @@ public class TextOntologyAdapter {
 
             if (i > 0) {
                 var prev = wordIndividuals.get(i - 1);
-                ontologyConnector.addPropertyToIndividual(curr, prevProperty, prev);
+                // ontologyConnector.addPropertyToIndividual(curr, prevProperty, prev);
             }
             if (i < wordIndividuals.size() - 1) {
                 var next = wordIndividuals.get(i + 1);
-                ontologyConnector.addPropertyToIndividual(curr, nextProperty, next);
+                // ontologyConnector.addPropertyToIndividual(curr, nextProperty, next);
             }
         }
 
         // create the list that is used for the words property
-        var olo = ontologyConnector.addList("Words of " + name, wordIndividuals);
+        var olo = ontologyConnector.addList("WordsOf" + name, wordIndividuals);
         var listIndividual = olo.getListIndividual();
         textIndividual.addProperty(wordsProperty, listIndividual);
     }
 
     private Individual addWord(IWord word) {
-        // create Individual
         var label = word.getText();
         var uuid = generateUUID();
         var wordIndividual = ontologyConnector.addIndividualToClass(label, wordClass);
@@ -117,11 +114,16 @@ public class TextOntologyAdapter {
     }
 
     private String generateUUID() {
-        return UuidUtil.getTimeBasedUuid().toString();
+        return ontologyConnector.generateRandomURI();
+    }
+
+    private String getTextLabel() {
+        // TODO should texts have a name? E.g. the filename etc.?
+        return "Text";
     }
 
     public void save(String path) {
-        ontologyConnector.save(path, Lang.NT);
+        ontologyConnector.save(path);
     }
 
 }
