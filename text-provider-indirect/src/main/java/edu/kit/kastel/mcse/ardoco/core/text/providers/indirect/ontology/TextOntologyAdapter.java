@@ -1,17 +1,127 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ontology;
 
+import java.util.ArrayList;
+
+import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.XSD;
+import org.apache.logging.log4j.core.util.UuidUtil;
+
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 
 public class TextOntologyAdapter {
-
+    private static final String TEXT_ONTOLOGY_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text.owl";
     private OntologyConnector ontologyConnector;
 
-    public TextOntologyAdapter(String ontologyPath) {
+    private OntClass textClass;
+    private OntClass wordClass;
+    private DatatypeProperty uuidProperty;
+    private DatatypeProperty textProperty;
+    private DatatypeProperty posProperty;
+    private DatatypeProperty lemmaProperty;
+    private DatatypeProperty positionProperty;
+    private DatatypeProperty sentenceProperty;
+    private ObjectProperty wordsProperty;
+    private ObjectProperty nextProperty;
+    private ObjectProperty prevProperty;
+
+    private TextOntologyAdapter(String ontologyPath) {
         ontologyConnector = new OntologyConnector(ontologyPath);
     }
 
-    public TextOntologyAdapter(OntologyConnector ontologyConnector) {
+    private TextOntologyAdapter(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
+    }
+
+    public static TextOntologyAdapter get(String ontologyPath) {
+        var toa = new TextOntologyAdapter(ontologyPath);
+        toa.init();
+        return toa;
+    }
+
+    public static TextOntologyAdapter get(OntologyConnector ontologyConnector) {
+        var toa = new TextOntologyAdapter(ontologyConnector);
+        toa.init();
+        return toa;
+    }
+
+    private void init() {
+        ontologyConnector.addOntologyImport(TEXT_ONTOLOGY_IRI);
+
+        textClass = ontologyConnector.getClass("TextDocument").orElseThrow();
+        wordClass = ontologyConnector.getClass("Word").orElseThrow();
+        uuidProperty = ontologyConnector.getDataProperty("uuid").orElseThrow();
+        textProperty = ontologyConnector.getDataProperty("has text").orElseThrow();
+        posProperty = ontologyConnector.getDataProperty("has POS").orElseThrow();
+        lemmaProperty = ontologyConnector.getDataProperty("has lemma").orElseThrow();
+        positionProperty = ontologyConnector.getDataProperty("has position").orElseThrow();
+        sentenceProperty = ontologyConnector.getDataProperty("contained in sentence").orElseThrow();
+        wordsProperty = ontologyConnector.getObjectProperty("has words").orElseThrow();
+        nextProperty = ontologyConnector.getObjectProperty("has next word").orElseThrow();
+        prevProperty = ontologyConnector.getObjectProperty("has previous word").orElseThrow();
+    }
+
+    public void addText(IText text) {
+        // create text in ontology
+        var uuid = generateUUID();
+        var name = "Text_" + uuid; // TODO should texts have a name? E.g. the filename etc.?
+        var textIndividual = ontologyConnector.addIndividualToClass(name, textClass);
+        ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);
+
+        // add word individuals
+        var wordIndividuals = new ArrayList<Individual>();
+        for (var word : text.getWords()) {
+            var wordIndividual = addWord(word);
+            wordIndividuals.add(wordIndividual);
+        }
+
+        // then create the prev/next relations between words
+        for (var i = 0; i < wordIndividuals.size(); i++) {
+            var curr = wordIndividuals.get(i);
+
+            if (i > 0) {
+                var prev = wordIndividuals.get(i - 1);
+                ontologyConnector.addPropertyToIndividual(curr, prevProperty, prev);
+            }
+            if (i < wordIndividuals.size() - 1) {
+                var next = wordIndividuals.get(i + 1);
+                ontologyConnector.addPropertyToIndividual(curr, nextProperty, next);
+            }
+        }
+
+        // create the list that is used for the words property
+        var olo = ontologyConnector.addList("Words of " + name, wordIndividuals);
+        var listIndividual = olo.getListIndividual();
+        textIndividual.addProperty(wordsProperty, listIndividual);
+    }
+
+    private Individual addWord(IWord word) {
+        // create Individual
+        var label = word.getText();
+        var uuid = generateUUID();
+        var wordIndividual = ontologyConnector.addIndividualToClass(label, wordClass);
+        ontologyConnector.addPropertyToIndividual(wordIndividual, uuidProperty, uuid);
+
+        ontologyConnector.addPropertyToIndividual(wordIndividual, textProperty, word.getText());
+        ontologyConnector.addPropertyToIndividual(wordIndividual, posProperty, word.getPosTag().getTag());
+        ontologyConnector.addPropertyToIndividual(wordIndividual, lemmaProperty, word.getLemma());
+        ontologyConnector.addPropertyToIndividual(wordIndividual, sentenceProperty, word.getSentenceNo(), XSD.nonNegativeInteger.toString());
+        ontologyConnector.addPropertyToIndividual(wordIndividual, positionProperty, word.getPosition(), XSD.nonNegativeInteger.toString());
+
+        return wordIndividual;
+    }
+
+    private String generateUUID() {
+        return UuidUtil.getTimeBasedUuid().toString();
+    }
+
+    public void save(String path) {
+        ontologyConnector.save(path, Lang.NT);
     }
 
 }
