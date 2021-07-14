@@ -888,16 +888,19 @@ public class OntologyConnector {
     }
 
     public String generateRandomURI(String prefix) {
+        return createUri(prefix, generateRandomUUID());
+    }
+
+    public static String generateRandomUUID() {
         var leftLimit = 48; // numeral '0'
         var rightLimit = 122; // letter 'z'
         var targetStringLength = 10;
 
-        var randomString = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-        return createUri(prefix, randomString);
     }
 
 }
