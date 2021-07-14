@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.TextStateWithClustering;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.TextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
@@ -42,7 +42,7 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
-        data.setTextState(new TextStateWithClustering(config.similarityPercentage));
+        data.setTextState(new TextState(config.similarityPercentage));
         initializeAgents();
     }
 

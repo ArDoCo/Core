@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMappingWithDistribution;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
@@ -276,7 +276,7 @@ public class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
 
-        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingWithDistribution)) {
+        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMapping)) {
             for (INounMapping mapping : textState.getAllMappings()) {
 
                 MappingKind kind = mapping.getKind();
@@ -293,7 +293,7 @@ public class FilePrinter {
 
         for (INounMapping mapping : textState.getAllMappings()) {
 
-            NounMappingWithDistribution eagleMapping = (NounMappingWithDistribution) mapping;
+            NounMapping eagleMapping = (NounMapping) mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME));
             var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
