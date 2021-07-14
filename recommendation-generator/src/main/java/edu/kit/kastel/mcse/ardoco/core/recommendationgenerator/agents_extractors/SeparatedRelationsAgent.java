@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -37,7 +36,7 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
 
     private SeparatedRelationsAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             GenericRecommendationConfig config) {
-        super(DependencyType.RECOMMENDATION, GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
+        super(GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
         probability = config.separatedRelationSolverProbility;
     }
 

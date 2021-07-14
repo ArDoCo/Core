@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.extractors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
@@ -27,9 +26,7 @@ public abstract class ConnectionExtractor extends Extractor {
     public abstract ConnectionExtractor create(ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, Configuration config);
 
-    protected ConnectionExtractor(DependencyType dependencyType, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState) {
-        super(dependencyType);
+    protected ConnectionExtractor(ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState) {
         this.textState = textState;
         this.modelState = modelState;
         this.recommendationState = recommendationState;

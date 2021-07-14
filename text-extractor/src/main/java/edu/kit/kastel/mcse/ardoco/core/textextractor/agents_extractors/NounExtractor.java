@@ -5,7 +5,6 @@ import java.util.List;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
@@ -39,7 +38,7 @@ public class NounExtractor extends TextExtractor {
      * @param config              the module configuration
      */
     public NounExtractor(ITextState textExtractionState, GenericTextConfig config) {
-        super(DependencyType.TEXT, textExtractionState);
+        super(textExtractionState);
         probability = config.nounAnalyzerProbability;
     }
 

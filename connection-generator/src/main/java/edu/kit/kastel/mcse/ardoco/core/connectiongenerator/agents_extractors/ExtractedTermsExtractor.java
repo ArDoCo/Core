@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -56,7 +55,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
      */
     public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState, GenericConnectionConfig config) {
-        super(DependencyType.TEXT_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState, connectionState);
+        super(textExtractionState, modelExtractionState, recommendationState, connectionState);
         probabilityAdjacentTerm = config.extractedTermsAnalyzerProbabilityAdjacentTerm;
         probabilityJustName = config.extractedTermsAnalyzerProbabilityJustName;
         probabilityJustAdjacentNoun = config.extractedTermsAnalyzerProbabilityAdjacentNoun;
