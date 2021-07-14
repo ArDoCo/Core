@@ -1,39 +1,48 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.Extractor;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.DependencyExtractor;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.RecommendationExtractor;
+import org.kohsuke.MetaInfServices;
 
 import java.util.List;
 
-public class SpecificDependencyExtractor extends Extractor {
+@MetaInfServices(DependencyExtractor.class)
+public class SpecificDependencyExtractor extends DependencyExtractor {
+
+    public SpecificDependencyExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
+        this(textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
+    }
 
     public SpecificDependencyExtractor() {
-        super(DependencyType.RECOMMENDATION);
+        this(null, null, null);
     }
 
-    public SpecificDependencyExtractor(DependencyType dependencyType) {
-        super(dependencyType);
+    public SpecificDependencyExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+                             GenericRecommendationConfig config) {
+        super(DependencyType.TEXT_MODEL_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState);
     }
 
-    public SpecificDependencyExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
-                                              Configuration config) {
+    @Override
+    public DependencyExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState, Configuration config) {
         return new SpecificDependencyExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
     }
 
     @Override
-    public Extractor create(AgentDatastructure data, Configuration config) {
-        return null;
+    public void exec(IWord word) {
+        System.out.println(word.getText());
     }
 
     @Override
-    public void exec(IWord word) {
+    public void exec(INounMapping mapping) {
+        System.out.println(mapping.getReference());
+    }
 
+    @Override
+    public void exec(IRecommendedInstance rec) {
+        System.out.println(rec.toString());
     }
 
     @Override

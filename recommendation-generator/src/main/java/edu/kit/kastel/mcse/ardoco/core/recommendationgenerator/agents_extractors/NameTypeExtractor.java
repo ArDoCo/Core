@@ -34,7 +34,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
 	/**
 	 * Creates a new NameTypeAnalyzer.
 	 *
-	 * @param graph                the PARSE graph
 	 * @param textExtractionState  the text extraction state
 	 * @param modelExtractionState the model extraction state
 	 * @param recommendationState  the recommendation state

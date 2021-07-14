@@ -13,7 +13,7 @@ public abstract class Extractor implements IExtractor {
     /**
      * Creates a new agent of the specified type.
      *
-     * @param type the agent type
+     * @param dependencyType the agent type
      */
     protected Extractor(DependencyType dependencyType) {
         this.dependencyType = dependencyType;

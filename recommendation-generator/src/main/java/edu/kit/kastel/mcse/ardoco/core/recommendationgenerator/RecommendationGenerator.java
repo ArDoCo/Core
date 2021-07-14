@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.*;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors.GenericRecommendationConfig;
@@ -49,20 +46,21 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
      */
     private void initializeAgents() {
 
-        Map<String, RecommendationAgent> myAgents = Loader.loadLoadable(RecommendationAgent.class);
+        Map<String, RecommendationAgent> recommendationAgentsList = Loader.loadLoadable(RecommendationAgent.class);
 
         for (String recommendationAgent : config.recommendationAgents) {
-            if (!myAgents.containsKey(recommendationAgent)) {
+            if (!recommendationAgentsList.containsKey(recommendationAgent)) {
                 throw new IllegalArgumentException("RecommendationAgent " + recommendationAgent + " not found");
             }
-            recommendationAgents.add(myAgents.get(recommendationAgent).create(data, agentConfig));
+            recommendationAgents.add(recommendationAgentsList.get(recommendationAgent).create(data, agentConfig));
         }
 
+        Map<String, DependencyAgent> dependencyAgentsList = Loader.loadLoadable(DependencyAgent.class);
         for (String dependencyAgent : config.dependencyAgents) {
-            if (!myAgents.containsKey(dependencyAgent)) {
-                throw new IllegalArgumentException("RecommendationAgent " + dependencyAgent + " not found");
+            if (!dependencyAgentsList.containsKey(dependencyAgent)) {
+                throw new IllegalArgumentException("DependencyAgent " + dependencyAgent + " not found");
             }
-            recommendationAgents.add(myAgents.get(dependencyAgent).create(data, agentConfig));
+            dependencyAgents.add(dependencyAgentsList.get(dependencyAgent).create(data, agentConfig));
         }
     }
 

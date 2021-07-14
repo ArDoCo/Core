@@ -18,7 +18,7 @@ public abstract class Agent implements IAgent {
 	/**
 	 * Creates a new agent of the specified type.
 	 *
-	 * @param type the agent type
+	 * @param dependencyType the agent type
 	 */
 	protected Agent(DependencyType dependencyType, Class<? extends Configuration> configType) {
 		this.dependencyType = dependencyType;
