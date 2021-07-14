@@ -67,7 +67,7 @@ public class TextOntologyAdapter {
     public void addText(IText text) {
         // create text in ontology
         var uuid = generateUUID();
-        var name = getTextLabel();
+        var name = "Text_" + uuid; // TODO should texts have a name? E.g. the filename etc.?
         var textIndividual = ontologyConnector.addIndividualToClass(name, textClass);
         ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);
 
@@ -113,13 +113,8 @@ public class TextOntologyAdapter {
         return wordIndividual;
     }
 
-    private String generateUUID() {
-        return ontologyConnector.generateRandomURI();
-    }
-
-    private String getTextLabel() {
-        // TODO should texts have a name? E.g. the filename etc.?
-        return "Text";
+    private static String generateUUID() {
+        return OntologyConnector.generateRandomUUID();
     }
 
     public void save(String path) {
