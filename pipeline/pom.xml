@@ -23,7 +23,7 @@
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
-			<artifactId>text-provider-indirect</artifactId>
+			<artifactId>text-provider-stanford</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
