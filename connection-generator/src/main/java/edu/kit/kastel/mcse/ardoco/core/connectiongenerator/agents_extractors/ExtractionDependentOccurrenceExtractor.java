@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
@@ -53,7 +52,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
     public ExtractionDependentOccurrenceExtractor(//
             ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState, IConnectionState connectionState,
             GenericConnectionConfig config) {
-        super(DependencyType.TEXT_MODEL, textExtractionState, modelExtractionState, recommendationState, connectionState);
+        super(textExtractionState, modelExtractionState, recommendationState, connectionState);
         probability = config.extractionDependentOccurrenceAnalyzerProbability;
     }
 
