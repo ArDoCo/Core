@@ -9,7 +9,6 @@ import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
@@ -45,8 +44,7 @@ public class RelationConnectionAgent extends ConnectionAgent {
     private RelationConnectionAgent(//
             IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState, GenericConnectionConfig config) {
-        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, GenericConnectionConfig.class, text, textExtractionState, modelExtractionState,
-                recommendationState, connectionState);
+        super(GenericConnectionConfig.class, text, textExtractionState, modelExtractionState, recommendationState, connectionState);
         probability = config.relationConnectionSolverProbability;
     }
 

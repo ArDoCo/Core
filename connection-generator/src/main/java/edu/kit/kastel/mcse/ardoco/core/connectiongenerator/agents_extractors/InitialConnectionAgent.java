@@ -8,7 +8,6 @@ import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -36,7 +35,7 @@ public class InitialConnectionAgent extends ConnectionAgent {
 
     private InitialConnectionAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, GenericConnectionConfig config) {
-        super(DependencyType.TEXT_MODEL_RECOMMENDATION, GenericConnectionConfig.class, text, textState, modelState, recommendationState, connectionState);
+        super(GenericConnectionConfig.class, text, textState, modelState, recommendationState, connectionState);
         initializeAgents(config.connectionExtractors, config);
     }
 

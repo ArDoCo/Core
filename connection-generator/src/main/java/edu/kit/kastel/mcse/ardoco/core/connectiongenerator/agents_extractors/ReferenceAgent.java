@@ -8,7 +8,6 @@ import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
@@ -41,8 +40,7 @@ public class ReferenceAgent extends ConnectionAgent {
 
     private ReferenceAgent(IText text, ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState, GenericConnectionConfig config) {
-        super(DependencyType.TEXT_MODEL_RECOMMENDATION, GenericConnectionConfig.class, text, textExtractionState, modelExtractionState, recommendationState,
-                connectionState);
+        super(GenericConnectionConfig.class, text, textExtractionState, modelExtractionState, recommendationState, connectionState);
         probability = config.referenceSolverProbability;
         areNamesSimilarThreshold = config.referenceSolverAreNamesSimilarThreshold;
         proportionalDecrease = config.referenceSolverProportionalDecrease;
