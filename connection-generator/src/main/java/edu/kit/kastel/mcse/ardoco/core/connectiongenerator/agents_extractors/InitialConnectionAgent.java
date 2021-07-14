@@ -19,11 +19,17 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.ConnectionExtractor;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.IExtractor;
 
+/**
+ * The agent that executes the extractors of this stage.
+ */
 @MetaInfServices(ConnectionAgent.class)
 public class InitialConnectionAgent extends ConnectionAgent {
 
     private List<IExtractor> extractors = new ArrayList<>();
 
+    /**
+     * Create the agent.
+     */
     public InitialConnectionAgent() {
         super(GenericConnectionConfig.class);
     }

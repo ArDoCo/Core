@@ -35,16 +35,25 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     /**
      * Instantiates a new extracted terms analyzer
      *
-     * @param graph                the PARSE graph to work with
-     * @param textExtractionState  the text extraction state to work with
-     * @param modelExtractionState the model extraction state to work with
-     * @param recommendationState  the recommendation state to write the results and read existing recommendations from
+     * @param textExtractionState  the state that contains all information from the text
+     * @param modelExtractionState the state that contains all information from the architecture model
+     * @param recommendationState  the state that contains all recommended instances and relations
+     * @param connectionState      the state that contains all information on possible trace links
      */
     public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState) {
         this(textExtractionState, modelExtractionState, recommendationState, connectionState, GenericConnectionConfig.DEFAULT_CONFIG);
     }
 
+    /**
+     * Instantiates a new extracted terms analyzer
+     *
+     * @param textExtractionState  the state that contains all information from the text
+     * @param modelExtractionState the state that contains all information from the architecture model
+     * @param recommendationState  the state that contains all recommended instances and relations
+     * @param connectionState      the state that contains all information on possible trace links
+     * @param config               the configuration to be used
+     */
     public ExtractedTermsExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState, GenericConnectionConfig config) {
         super(DependencyType.TEXT_RECOMMENDATION, textExtractionState, modelExtractionState, recommendationState, connectionState);
@@ -53,6 +62,9 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         probabilityJustAdjacentNoun = config.extractedTermsAnalyzerProbabilityAdjacentNoun;
     }
 
+    /**
+     * For deserialization.
+     */
     public ExtractedTermsExtractor() {
         this(null, null, null, null);
     }

@@ -7,6 +7,12 @@ import java.util.Map;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
+/**
+ * The configuration for the agents and extractors of the connection generator.
+ *
+ * @author Dominik Fuchss
+ *
+ */
 public class GenericConnectionConfig extends Configuration {
 
     private static final String INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE = "InstanceConnectionSolver_ProbabilityWithoutType";
@@ -20,9 +26,14 @@ public class GenericConnectionConfig extends Configuration {
     private static final String EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN = "ExtractedTermsAnalyzer_ProbabilityAdjacentNoun";
     private static final String EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY = "ExtractionDependentOccurrenceAnalyzer_Probability";
     private static final String CONNECTION_EXTRACTORS = "Connection_Extractors";
-
+    /**
+     * The default configuration to use.
+     */
     public static final GenericConnectionConfig DEFAULT_CONFIG = new GenericConnectionConfig();
 
+    /**
+     * All extractor names of extractors to be used.
+     */
     public final List<String> connectionExtractors;
 
     // ExtractionDependendOccurrenceAnalyzer
@@ -90,6 +101,11 @@ public class GenericConnectionConfig extends Configuration {
         instanceConnectionSolverProbabilityWithoutType = config.getPropertyAsDouble(INSTANCE_CONNECTION_SOLVER_PROBABILITY_WITHOUT_TYPE);
     }
 
+    /**
+     * Create the configuration based on the default config values.
+     *
+     * @param configs contains the keys that have to be overwritten
+     */
     public GenericConnectionConfig(Map<String, String> configs) {
         connectionExtractors = getPropertyAsList(CONNECTION_EXTRACTORS, configs);
         extractionDependentOccurrenceAnalyzerProbability = getPropertyAsDouble(EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY, configs);
