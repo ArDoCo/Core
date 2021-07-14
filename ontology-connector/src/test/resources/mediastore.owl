@@ -3,12 +3,12 @@
      xml:base="https://informalin.github.io/knowledgebases/examples/mediastore.owl"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:ns="http://www.w3.org/2003/06/sw-vocab-status/ns#"
+     xmlns:olo="https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:pcm="https://informalin.github.io/knowledgebases/informalin_base_pcm.owl#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:core="https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:skos="http://www.w3.org/2004/02/skos/core#"
      xmlns:vann="http://purl.org/vocab/vann/"
@@ -10301,11 +10301,11 @@
 
     <owl:NamedIndividual rdf:about="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7891a396_d885_4b82_8ac6_8dd1df1c4824">
         <rdf:type rdf:resource="https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#Slot"/>
-        <core:next rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7d27ed65_e8e5_4229_bbf8_02dc5b0f0e59"/>
-        <core:ordered_list rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_93fcec3f_2393_4e28_b39a_52b0470335b8"/>
-        <core:index rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</core:index>
-        <core:item rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#BasicComponent_j5vZQLhEEeSNPorBlo7x9g"/>
+        <olo:next rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7d27ed65_e8e5_4229_bbf8_02dc5b0f0e59"/>
+        <olo:ordered_list rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_93fcec3f_2393_4e28_b39a_52b0470335b8"/>
+        <olo:index rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</olo:index>
         <rdfs:label xml:lang="en">TestSlot1</rdfs:label>
+        <olo:item rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#BasicComponent_j5vZQLhEEeSNPorBlo7x9g"/>
     </owl:NamedIndividual>
     
 
@@ -10314,12 +10314,12 @@
 
     <owl:NamedIndividual rdf:about="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7d27ed65_e8e5_4229_bbf8_02dc5b0f0e59">
         <rdf:type rdf:resource="https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#Slot"/>
-        <core:next rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_a7614bab_e670_4f78_9889_742773220745"/>
-        <core:ordered_list rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_93fcec3f_2393_4e28_b39a_52b0470335b8"/>
-        <core:previous rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7891a396_d885_4b82_8ac6_8dd1df1c4824"/>
-        <core:index rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</core:index>
-        <core:item rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#BasicComponent_tBjC0HDpEeSqnN80MQ2uGw"/>
+        <olo:next rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_a7614bab_e670_4f78_9889_742773220745"/>
+        <olo:ordered_list rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_93fcec3f_2393_4e28_b39a_52b0470335b8"/>
+        <olo:previous rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7891a396_d885_4b82_8ac6_8dd1df1c4824"/>
+        <olo:index rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</olo:index>
         <rdfs:label xml:lang="en">TestSlot2</rdfs:label>
+        <olo:item rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#BasicComponent_tBjC0HDpEeSqnN80MQ2uGw"/>
     </owl:NamedIndividual>
     
 
@@ -10328,8 +10328,8 @@
 
     <owl:NamedIndividual rdf:about="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_93fcec3f_2393_4e28_b39a_52b0470335b8">
         <rdf:type rdf:resource="https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#OrderedList"/>
-        <core:slot rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7891a396_d885_4b82_8ac6_8dd1df1c4824"/>
-        <core:length rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">3</core:length>
+        <olo:slot rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7891a396_d885_4b82_8ac6_8dd1df1c4824"/>
+        <olo:length rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">3</olo:length>
         <rdfs:label xml:lang="en">TestList</rdfs:label>
     </owl:NamedIndividual>
     
@@ -10339,11 +10339,11 @@
 
     <owl:NamedIndividual rdf:about="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_a7614bab_e670_4f78_9889_742773220745">
         <rdf:type rdf:resource="https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#Slot"/>
-        <core:ordered_list rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_93fcec3f_2393_4e28_b39a_52b0470335b8"/>
-        <core:previous rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7d27ed65_e8e5_4229_bbf8_02dc5b0f0e59"/>
-        <core:index rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">2</core:index>
-        <core:item rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#BasicComponent_ahv3gL0YEeSAHuL4ItXOLQ"/>
+        <olo:ordered_list rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_93fcec3f_2393_4e28_b39a_52b0470335b8"/>
+        <olo:previous rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#OWLNamedIndividual_7d27ed65_e8e5_4229_bbf8_02dc5b0f0e59"/>
+        <olo:index rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">2</olo:index>
         <rdfs:label xml:lang="en">TestSlot3</rdfs:label>
+        <olo:item rdf:resource="https://informalin.github.io/knowledgebases/examples/mediastore.owl#BasicComponent_ahv3gL0YEeSAHuL4ItXOLQ"/>
     </owl:NamedIndividual>
     
 

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -134,6 +135,10 @@ public class OrderedOntologyList implements List<Individual> {
             setLength(0);
         }
 
+    }
+
+    public Individual getListIndividual() {
+        return listIndividual;
     }
 
     public List<Individual> toList() {
@@ -302,6 +307,9 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public boolean addAll(Collection<? extends Individual> individuals) {
+        if (Objects.isNull(individuals)) {
+            return false;
+        }
         var startSize = size();
         var index = startSize - 1;
         Individual lastSlot = null;
