@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
@@ -226,6 +228,17 @@ class OntologyConnectorTest {
         Assertions.assertTrue(property.isPresent(), "Could not find expected property.");
         Assertions.assertEquals(OBJECT_PROPERTY_URI, property.get().getURI(), "Found property has invalid URI.");
 
+        // test retrieval of property with prefix notation
+        String indexUri = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#index";
+        property = ontologyConnector.getPropertyByIri("olo:index");
+        Assertions.assertTrue(property.isPresent(), "Could not find expected property.");
+        Assertions.assertEquals("index", property.get().getLocalName(), "Found property has invalid URI.");
+        Assertions.assertEquals(indexUri, property.get().getURI(), "Found property has invalid URI.");
+
+        // test retrieval of property with spaces in its label
+        property = ontologyConnector.getProperty("has index");
+        Assertions.assertTrue(property.isPresent(), "Could not find expected property.");
+        Assertions.assertEquals(indexUri, property.get().getURI(), "Found property has invalid URI.");
     }
 
     @Test
@@ -250,6 +263,43 @@ class OntologyConnectorTest {
         // should not return a valid data property if asked for object property
         property = ontologyConnector.getDataProperty(OBJECT_PROPERTY_LABEL);
         Assertions.assertTrue(property.isEmpty(), "Unexpectedly found property.");
+    }
+
+    // TODO tests for adding properties
+    @Test
+    @DisplayName("Test retrieval of object property")
+    void getPropertyValueTest() {
+        OntProperty property = ontologyConnector.getDataProperty(DATA_PROPERTY_LABEL).orElseThrow();
+        var individual = ontologyConnector.getIndividual(LABEL_SYSTEM).orElseThrow();
+
+        // test data property of string
+        var valueNode = ontologyConnector.getPropertyValue(individual, property);
+        Assertions.assertNotNull(valueNode);
+        Assertions.assertTrue(valueNode.canAs(Literal.class));
+        var valueLiteral = valueNode.asLiteral();
+        var name = valueLiteral.getString();
+        Assertions.assertEquals(LABEL_SYSTEM, name);
+
+        // test data property of int
+        individual = ontologyConnector.getIndividual("TestSlot1").orElseThrow();
+        property = ontologyConnector.getPropertyByIri("olo:index").orElseThrow();
+        valueNode = ontologyConnector.getPropertyValue(individual, property);
+        Assertions.assertNotNull(valueNode);
+        Assertions.assertTrue(valueNode.canAs(Literal.class));
+        valueLiteral = valueNode.asLiteral();
+        var index = valueLiteral.getInt();
+        Assertions.assertEquals(0, index);
+
+        // test object property
+        property = ontologyConnector.getPropertyByIri("olo:next").orElseThrow();
+        valueNode = ontologyConnector.getPropertyValue(individual, property);
+        Assertions.assertNotNull(valueNode);
+
+        Assertions.assertTrue(valueNode.canAs(Individual.class));
+        var expected = ontologyConnector.getIndividual("TestSlot2").orElseThrow();
+        var actual = valueNode.as(Individual.class);
+        Assertions.assertEquals(expected, actual);
+
     }
 
 }

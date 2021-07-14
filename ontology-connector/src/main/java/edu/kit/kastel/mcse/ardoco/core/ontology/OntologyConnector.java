@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.jena.ontology.AnnotationProperty;
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
@@ -22,6 +23,7 @@ import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.Ontology;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.reasoner.ReasonerRegistry;
@@ -172,6 +174,9 @@ public class OntologyConnector {
      * @param importIRI the IRI of the ontology that should be imported
      */
     public void addOntologyImport(String importIRI) {
+        if (ontModel.hasLoadedImport(importIRI)) {
+            return;
+        }
         var importResource = ontModel.createResource(importIRI);
         ontology.addImport(importResource);
         ontModel.loadImports();
@@ -541,7 +546,7 @@ public class OntologyConnector {
      * @return
      */
     public Individual addIndividual(String name) {
-        var uri = createUri(DEFAULT_PREFIX, name);
+        var uri = generateRandomURI(DEFAULT_PREFIX);
         var individual = ontModel.getIndividual(uri);
         if (individual == null) {
             individual = ontModel.createIndividual(uri, OWL.Thing);
@@ -686,19 +691,20 @@ public class OntologyConnector {
             prefix = DEFAULT_PREFIX;
         }
         var uri = createUri(prefix, propertyName);
-        return getPropertyByUri(uri);
+        return getPropertyByIri(uri);
     }
 
     /**
      * Returns an {@link Optional} containing a property with the given uri. If no such property is found, the
      * {@link Optional} is empty.
      *
-     * @param propertyUri Uri of the property
-     * @return {@link Optional} containing a property with the given uri. If no such property is found, the
+     * @param propertyIri Iri of the property
+     * @return {@link Optional} containing a property with the given iri. If no such property is found, the
      *         {@link Optional} is empty.
      */
-    public Optional<OntProperty> getPropertyByUri(String propertyUri) {
-        var property = ontModel.getOntProperty(propertyUri);
+    public Optional<OntProperty> getPropertyByIri(String propertyIri) {
+        var expandedUri = ontModel.expandPrefix(propertyIri);
+        var property = ontModel.getOntProperty(expandedUri);
         return Optional.ofNullable(property);
     }
 
@@ -724,6 +730,18 @@ public class OntologyConnector {
     public Optional<ObjectProperty> getObjectProperty(String objectPropertyName) {
         var propertyOpt = getProperty(objectPropertyName);
         return checkOptionalAndTransformIntoType(propertyOpt, ObjectProperty.class);
+    }
+
+    /**
+     * Same as {@link #getProperty(String)} but returns a (typed) {@link AnnotationProperty}.
+     *
+     * @param dataPropertyName name of the property to be returned
+     * @return {@link Optional} containing a {@link AnnotationProperty} with the given name. If no such property is
+     *         found, the {@link Optional} is empty.
+     */
+    public Optional<AnnotationProperty> getAnnotationProperty(String annotationPropertyName) {
+        var propertyOpt = getProperty(annotationPropertyName);
+        return checkOptionalAndTransformIntoType(propertyOpt, AnnotationProperty.class);
     }
 
     /**
@@ -760,6 +778,77 @@ public class OntologyConnector {
     public ObjectProperty addObjectProperty(String name) {
         String uri = createUri(DEFAULT_PREFIX, name);
         return ontModel.createObjectProperty(uri);
+    }
+
+    /**
+     * Adds a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be added to
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     */
+    public void addPropertyToIndividual(Individual individual, OntProperty property, String value) {
+        individual.addProperty(property, value);
+    }
+
+    /**
+     * Adds a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be added to
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     * @param language   language of the property value
+     */
+    public void addPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
+        individual.addProperty(property, value, language);
+    }
+
+    /**
+     * Adds a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be added to
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     */
+    public void addPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
+        individual.addProperty(property, value);
+    }
+
+    /**
+     * Adds a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be added to
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     */
+    public void addPropertyToIndividual(Individual individual, OntProperty property, int value) {
+        addPropertyToIndividual(individual, property, value, XSD.integer.toString());
+    }
+
+    /**
+     * Adds a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be added to
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     * @param type       Type of the value
+     */
+    public void addPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
+        var valueLiteral = ontModel.createTypedLiteral(value, type);
+        individual.addProperty(property, valueLiteral);
+    }
+
+    /**
+     * Returns a {@link RDFNode} that represents the value of the given {@link OntProperty} for the given
+     * {@link Individual}. The {@link RDFNode} can be used to probe and transform into a corresponding (expected)
+     * value-type.
+     *
+     * @param individual Individual that has the property
+     * @param property   Property of which the value should be retrieved
+     * @return Value of the given Property for the given Individual
+     */
+    public RDFNode getPropertyValue(Individual individual, OntProperty property) {
+        return individual.getPropertyValue(property);
     }
 
     /***********************/
