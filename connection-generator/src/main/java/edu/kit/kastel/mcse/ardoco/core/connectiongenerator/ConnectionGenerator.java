@@ -14,9 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
 
 /**
- * The ModelConnectionAgent runs different analyzers and solvers. This agent
- * creates recommendations as well as matchings between text and model. The
- * order is important: All connections should run after the recommendations have
+ * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as
+ * matchings between text and model. The order is important: All connections should run after the recommendations have
  * been made.
  *
  * @author Sophie
@@ -24,72 +23,81 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
  */
 public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
 
-	private AgentDatastructure data;
+    private AgentDatastructure data;
 
-	private List<IAgent> agents = new ArrayList<>();
+    private List<IAgent> agents = new ArrayList<>();
 
-	private ConnectionGeneratorConfig config;
-	private GenericConnectionConfig agentConfig;
+    private ConnectionGeneratorConfig config;
+    private GenericConnectionConfig agentConfig;
 
-	public ConnectionGenerator() {
-	}
+    /**
+     * Create the module.
+     */
+    public ConnectionGenerator() {
+    }
 
-	/**
-	 * Creates a new model connection agent with the given extraction states.
-	 */
-	public ConnectionGenerator(AgentDatastructure data) {
-		this(data, ConnectionGeneratorConfig.DEFAULT_CONFIG, GenericConnectionConfig.DEFAULT_CONFIG);
-	}
+    /**
+     * Creates a new model connection agent with the given extraction states.
+     *
+     * @param data the blackboard with all the data
+     */
+    public ConnectionGenerator(AgentDatastructure data) {
+        this(data, ConnectionGeneratorConfig.DEFAULT_CONFIG, GenericConnectionConfig.DEFAULT_CONFIG);
+    }
 
-	/**
-	 * Creates a new model connection agent with the given extraction states.
-	 */
-	public ConnectionGenerator(AgentDatastructure data, ConnectionGeneratorConfig config, GenericConnectionConfig agentConfig) {
-		this.data = data;
-		this.config = config;
-		this.agentConfig = agentConfig;
-		data.setConnectionState(new ConnectionState());
-		initializeAgents();
-	}
+    /**
+     * Creates a new model connection agent with the given extraction states.
+     *
+     * @param data        the blackboard with all the data
+     * @param config      the configuration of the module
+     * @param agentConfig the configuration of the agents
+     */
+    public ConnectionGenerator(AgentDatastructure data, ConnectionGeneratorConfig config, GenericConnectionConfig agentConfig) {
+        this.data = data;
+        this.config = config;
+        this.agentConfig = agentConfig;
+        data.setConnectionState(new ConnectionState());
+        initializeAgents();
+    }
 
-	@Override
-	public void exec() {
-		runAgents();
-	}
+    @Override
+    public void exec() {
+        runAgents();
+    }
 
-	/**
-	 * Initializes graph dependent analyzers.
-	 */
-	private void initializeAgents() {
+    /**
+     * Initializes graph dependent analyzers.
+     */
+    private void initializeAgents() {
 
-		Map<String, ConnectionAgent> myAgents = Loader.loadLoadable(ConnectionAgent.class);
+        Map<String, ConnectionAgent> myAgents = Loader.loadLoadable(ConnectionAgent.class);
 
-		for (String connectionAnalyzer : config.connectionAgents) {
-			if (!myAgents.containsKey(connectionAnalyzer)) {
-				throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
-			}
-			agents.add(myAgents.get(connectionAnalyzer).create(data, agentConfig));
-		}
+        for (String connectionAnalyzer : config.connectionAgents) {
+            if (!myAgents.containsKey(connectionAnalyzer)) {
+                throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
+            }
+            agents.add(myAgents.get(connectionAnalyzer).create(data, agentConfig));
+        }
 
-	}
+    }
 
-	/**
-	 * Runs solvers, that connect model extraction State and Recommendation State.
-	 */
-	@Override
-	public void runAgents() {
-		for (IAgent agent : agents) {
-			agent.exec();
-		}
-	}
+    /**
+     * Runs solvers, that connect model extraction State and Recommendation State.
+     */
+    @Override
+    public void runAgents() {
+        for (IAgent agent : agents) {
+            agent.exec();
+        }
+    }
 
-	@Override
-	public AgentDatastructure getState() {
-		return data;
-	}
+    @Override
+    public AgentDatastructure getState() {
+        return data;
+    }
 
-	@Override
-	public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
-		return new ConnectionGenerator(data, new ConnectionGeneratorConfig(configs), new GenericConnectionConfig(configs));
-	}
+    @Override
+    public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
+        return new ConnectionGenerator(data, new ConnectionGeneratorConfig(configs), new GenericConnectionConfig(configs));
+    }
 }
