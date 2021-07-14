@@ -15,12 +15,10 @@ public class ParseProvider implements ITextConnector {
 
     private static final Logger logger = LogManager.getLogger(ParseProvider.class);
 
-    private static boolean useLUNA = false;
-
     private IText annotatedText;
 
     public ParseProvider(InputStream text) throws LunaRunException, LunaInitException {
-        IPARSEExecution parse = useLUNA ? new LunaExecution() : new SingleExecution();
+        IPARSEExecution parse = new SingleExecution();
         IGraph graph = parse.calculatePARSEGraph(text);
         annotatedText = convertParseGraphToAnnotatedText(graph);
     }
