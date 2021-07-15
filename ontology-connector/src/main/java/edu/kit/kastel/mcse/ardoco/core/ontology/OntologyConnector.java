@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.ontology.OntResource;
 import org.apache.jena.ontology.Ontology;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
@@ -651,6 +653,17 @@ public class OntologyConnector {
         return Optional.empty();
     }
 
+    /**
+     * Transforms the given individual into an {@link OrderedOntologyList}. If the given individual has an invalid class
+     * or the list cannot be created for any other reason, returns an empty {@link Optional}.
+     *
+     * @param individual Individual that should be transformed into an {@link OrderedOntologyList}
+     * @return Optional containing the list or empty Optional in case anything went wrong.
+     */
+    public Optional<OrderedOntologyList> transformIntoOrderedOntologyList(Individual individual) {
+        return listFactory.getOrderedListOntologyFromIndividual(individual);
+    }
+
     /**************/
     /* PROPERTIES */
     /**************/
@@ -900,6 +913,88 @@ public class OntologyConnector {
 
         }
         return Optional.empty();
+    }
+
+    /**
+     * List statements that have the given {@link OntProperty} as property and the given {@link RDFNode} as object.
+     * Returns the first non-null subject of the found statements.
+     *
+     * @param property Property used to look for
+     * @param object   object that should be contained
+     * @return Optional containing the first non-null subject. Empty Optional, if none is found
+     */
+    public Optional<Resource> getFirstSubjectOf(OntProperty property, RDFNode object) {
+        var stmtIterator = ontModel.listStatements(null, property, object);
+        while (stmtIterator.hasNext()) {
+            var stmt = stmtIterator.next();
+            var subject = stmt.getSubject();
+            if (subject != null) {
+                return Optional.of(subject);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * List statements that have the given {@link OntProperty} as property and the given {@link RDFNode} as object.
+     * Returns the extracted subjects of the statements.
+     *
+     * @param property Property used to look for
+     * @param object   object that should be contained
+     * @return List of extracted subjects
+     */
+    public List<Resource> getSubjectsOf(OntProperty property, RDFNode object) {
+        var stmtIterator = ontModel.listStatements(null, property, object);
+        var resList = new ArrayList<Resource>();
+        while (stmtIterator.hasNext()) {
+            var stmt = stmtIterator.next();
+            var subject = stmt.getSubject();
+            if (subject != null) {
+                resList.add(subject);
+            }
+        }
+        return resList;
+    }
+
+    /**
+     * List statements that have the given {@link OntProperty} as property and the given {@link OntResource} as subject.
+     * Returns the first non-null subject of the found statements.
+     *
+     * @param subject  Subject that should be contained
+     * @param property Property used to look for
+     * @return Optional containing the first non-null object. Empty Optional, if none is found
+     */
+    public Optional<RDFNode> getFirstObjectOf(OntResource subject, OntProperty property) {
+        var stmtIterator = ontModel.listStatements(subject, property, (RDFNode) null);
+        while (stmtIterator.hasNext()) {
+            var stmt = stmtIterator.next();
+            var object = stmt.getObject();
+            if (object != null) {
+                return Optional.of(object);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * List statements that have the given {@link OntProperty} as property and the given {@link OntResource} as subject.
+     * Returns the extracted objects of the statements.
+     *
+     * @param subject  Subject that should be contained
+     * @param property Property used to look for
+     * @return List of extracted objects
+     */
+    public List<RDFNode> getObjectsOf(OntResource subject, OntProperty property) {
+        var stmtIterator = ontModel.listStatements(subject, property, (RDFNode) null);
+        var resList = new ArrayList<RDFNode>();
+        while (stmtIterator.hasNext()) {
+            var stmt = stmtIterator.next();
+            var object = stmt.getObject();
+            if (object != null) {
+                resList.add(object);
+            }
+        }
+        return resList;
     }
 
     /***********************/
