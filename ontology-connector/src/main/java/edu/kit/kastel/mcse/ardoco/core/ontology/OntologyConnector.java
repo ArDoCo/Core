@@ -908,7 +908,7 @@ public class OntologyConnector {
 
     /**
      * Transforms a given Resource (that is a subtype of Resource) into the given target type. If it cannot be
-     * transformed, returns en empty Optional.
+     * transformed, returns an empty Optional.
      *
      * @param <S>        source type, must extend Resource
      * @param <T>        target type, must extend Resource
@@ -932,15 +932,31 @@ public class OntologyConnector {
         return Optional.empty();
     }
 
+    /**
+     * Generates a random URI using the default prefix
+     *
+     * @return random URI
+     */
     public String generateRandomURI() {
         return generateRandomURI(DEFAULT_PREFIX);
     }
 
+    /**
+     * Generates a random URI using the given prefix.
+     *
+     * @param prefix Prefix that should be used for namespace
+     * @return random URI with the given prefix
+     */
     public String generateRandomURI(String prefix) {
-        return createUri(prefix, generateRandomUUID());
+        return createUri(prefix, generateRandomID());
     }
 
-    public static String generateRandomUUID() {
+    /**
+     * Generates a random ID
+     *
+     * @return String containing a random ID
+     */
+    public static String generateRandomID() {
         var leftLimit = 48; // numeral '0'
         var rightLimit = 122; // letter 'z'
         var targetStringLength = 10;

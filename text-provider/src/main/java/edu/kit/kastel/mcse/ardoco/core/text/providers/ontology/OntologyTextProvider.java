@@ -126,7 +126,7 @@ public class OntologyTextProvider implements ITextConnector {
     }
 
     private static String generateUUID() {
-        return OntologyConnector.generateRandomUUID();
+        return OntologyConnector.generateRandomID();
     }
 
     public void save(String path) {
