@@ -88,6 +88,11 @@ public class TextOntologyAdapter {
     }
 
     private void createLinkingRelations(List<Individual> wordIndividuals) {
+        // TODO FIXME: Something is broken here when serialising/writing out the ontology
+        // I think it has to do with long strings/names/uris, but I also have no real clue
+        // Currently, setting the prev relation fails
+        // Idea: scrap the next/prev relation, do that over the OLO next/prev relations instead (at later stage, when
+        // needed)
         for (var i = 0; i < wordIndividuals.size(); i++) {
             var curr = wordIndividuals.get(i);
 
