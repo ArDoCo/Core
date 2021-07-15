@@ -4,15 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import org.apache.jena.graph.Node.NotLiteral;
 import org.apache.jena.ontology.AnnotationProperty;
@@ -57,8 +54,6 @@ public class OntologyConnector {
     private String pathToOntology;
     private Ontology ontology;
     private InfModel infModel;
-
-    private static Random random = new Random();
 
     public OntologyConnector(String ontologyUrl) {
         pathToOntology = ontologyUrl;
@@ -223,13 +218,7 @@ public class OntologyConnector {
     }
 
     private String createUri(String prefix, String suffix) {
-        String encodedSuffix = suffix;
-        try {
-            encodedSuffix = URLEncoder.encode(suffix, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
+        return OntologyUtil.createUri(this, prefix, suffix);
     }
 
     /***********/
@@ -1043,24 +1032,7 @@ public class OntologyConnector {
      * @return random URI with the given prefix
      */
     public String generateRandomURI(String prefix) {
-        return createUri(prefix, generateRandomID());
-    }
-
-    /**
-     * Generates a random ID
-     *
-     * @return String containing a random ID
-     */
-    public static String generateRandomID() {
-        var leftLimit = 48; // numeral '0'
-        var rightLimit = 122; // letter 'z'
-        var targetStringLength = 10;
-
-        return random.ints(leftLimit, rightLimit + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+        return createUri(prefix, OntologyUtil.generateRandomID());
     }
 
 }

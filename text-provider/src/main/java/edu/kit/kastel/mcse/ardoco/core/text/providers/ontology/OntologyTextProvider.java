@@ -11,6 +11,7 @@ import org.apache.jena.vocabulary.XSD;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyUtil;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
 public class OntologyTextProvider implements ITextConnector {
@@ -65,7 +66,7 @@ public class OntologyTextProvider implements ITextConnector {
 
     public void addText(IText text) {
         // create text in ontology
-        var uuid = generateUUID();
+        var uuid = OntologyUtil.generateRandomID();
         var name = "Text_" + uuid; // TODO should texts have a name? E.g. the filename etc.?
         var textIndividual = ontologyConnector.addIndividualToClass(name, textClass);
         ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);
@@ -85,7 +86,7 @@ public class OntologyTextProvider implements ITextConnector {
 
     private Individual addWord(IWord word) {
         var label = word.getText();
-        var uuid = generateUUID();
+        var uuid = OntologyUtil.generateRandomID();
         var wordIndividual = ontologyConnector.addIndividualToClass(label, wordClass);
         ontologyConnector.addPropertyToIndividual(wordIndividual, uuidProperty, uuid);
 
@@ -96,10 +97,6 @@ public class OntologyTextProvider implements ITextConnector {
         ontologyConnector.addPropertyToIndividual(wordIndividual, positionProperty, word.getPosition(), XSD.nonNegativeInteger.toString());
 
         return wordIndividual;
-    }
-
-    private static String generateUUID() {
-        return OntologyConnector.generateRandomID();
     }
 
     @Override
