@@ -142,6 +142,9 @@ public class Pipeline {
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
+        // add OntologyTextProvider
+        var ontologyTextProvider = OntologyTextProvider.get(ontoConnector);
+        ontologyTextProvider.addText(annotatedText);
 
         logger.info("Processing model input");
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
