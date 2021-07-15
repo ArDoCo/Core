@@ -158,7 +158,7 @@ public class Pipeline {
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
 
-        logger.info("Finished in {}ms. Writing output.", duration);
+        logger.info("Finished in {}s. Writing output.", duration.getSeconds());
         printResultsInFiles(outputDir, name, data, duration);
         var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
         ontoConnector.save(ontoSaveFile);
