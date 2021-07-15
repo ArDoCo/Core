@@ -1,5 +1,8 @@
 testout
 
+### ignore log files
+*.log
+
 ###
 catalog-v001.xml
 
