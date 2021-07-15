@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
@@ -29,8 +28,6 @@ public class OntologyTextProvider implements ITextConnector {
     private DatatypeProperty positionProperty;
     private DatatypeProperty sentenceProperty;
     private ObjectProperty wordsProperty;
-    private ObjectProperty nextProperty;
-    private ObjectProperty prevProperty;
 
     private OntologyTextProvider(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
@@ -64,8 +61,6 @@ public class OntologyTextProvider implements ITextConnector {
         positionProperty = ontologyConnector.getDataProperty("has position").orElseThrow();
         sentenceProperty = ontologyConnector.getDataProperty("contained in sentence").orElseThrow();
         wordsProperty = ontologyConnector.getObjectProperty("has words").orElseThrow();
-        nextProperty = ontologyConnector.getObjectProperty("has next word").orElseThrow();
-        prevProperty = ontologyConnector.getObjectProperty("has previous word").orElseThrow();
     }
 
     public void addText(IText text) {
@@ -82,32 +77,10 @@ public class OntologyTextProvider implements ITextConnector {
             wordIndividuals.add(wordIndividual);
         }
 
-        createLinkingRelations(wordIndividuals);
-
         // create the list that is used for the words property
         var olo = ontologyConnector.addList("WordsOf" + name, wordIndividuals);
         var listIndividual = olo.getListIndividual();
         textIndividual.addProperty(wordsProperty, listIndividual);
-    }
-
-    private void createLinkingRelations(List<Individual> wordIndividuals) {
-        // TODO FIXME: Something is broken here when serialising/writing out the ontology
-        // I think it has to do with long strings/names/uris, but I also have no real clue
-        // Currently, setting the prev relation fails
-        // Idea: scrap the next/prev relation, do that over the OLO next/prev relations instead (at later stage, when
-        // needed)
-        for (var i = 0; i < wordIndividuals.size(); i++) {
-            var curr = wordIndividuals.get(i);
-
-            if (i > 0) {
-                var prev = wordIndividuals.get(i - 1);
-                // ontologyConnector.addPropertyToIndividual(curr, prevProperty, prev);
-            }
-            if (i < wordIndividuals.size() - 1) {
-                var next = wordIndividuals.get(i + 1);
-                ontologyConnector.addPropertyToIndividual(curr, nextProperty, next);
-            }
-        }
     }
 
     private Individual addWord(IWord word) {
@@ -127,10 +100,6 @@ public class OntologyTextProvider implements ITextConnector {
 
     private static String generateUUID() {
         return OntologyConnector.generateRandomID();
-    }
-
-    public void save(String path) {
-        ontologyConnector.save(path);
     }
 
     @Override
