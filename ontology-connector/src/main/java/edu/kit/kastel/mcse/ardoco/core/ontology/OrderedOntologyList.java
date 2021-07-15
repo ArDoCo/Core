@@ -57,6 +57,7 @@ public class OrderedOntologyList implements List<Individual> {
         private OntologyConnector oc;
 
         protected static Factory get(OntologyConnector oc) {
+            oc.getOntModel().setNsPrefix(OrderedOntologyList.LIST_PREFIX, OrderedOntologyList.LIST_BASE_URI);
             return new Factory(oc);
         }
 
