@@ -11,5 +11,10 @@
   		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
   		<artifactId>data-structures</artifactId>
   	</dependency>
+  	<dependency>
+		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+		<artifactId>ontology-connector</artifactId>
+	</dependency>
   </dependencies>
+
 </project>

@@ -38,7 +38,7 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGen
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ontology.TextOntologyAdapter;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractorConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors.GenericTextConfig;
@@ -131,6 +131,7 @@ public class Pipeline {
 
         IText annotatedText = null;
 
+        logger.info("Preparing and processing text input.");
         try {
             ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
             annotatedText = textConnector.getAnnotatedText();
@@ -139,18 +140,23 @@ public class Pipeline {
             System.exit(1);
         }
 
-        OntologyConnector ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
+        var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
+
+
+        logger.info("Processing model input");
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
         FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
 
+        logger.info("Starting process to generate Trace Links");
         var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
         data.overwrite(runTextExtractor(data, additionalConfigs));
         data.overwrite(runRecommendationGenerator(data, additionalConfigs));
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        printResultsInFiles(outputDir, name, data, duration);
 
+        logger.info("Finished in {}ms. Writing output.", duration);
+        printResultsInFiles(outputDir, name, data, duration);
         var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
         ontoConnector.save(ontoSaveFile);
     }
