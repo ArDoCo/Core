@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import org.apache.jena.graph.Node.NotLiteral;
 import org.apache.jena.ontology.AnnotationProperty;
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
@@ -23,6 +24,7 @@ import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.Ontology;
 import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -851,6 +853,53 @@ public class OntologyConnector {
      */
     public RDFNode getPropertyValue(Individual individual, OntProperty property) {
         return individual.getPropertyValue(property);
+    }
+
+    /**
+     * Returns an {@link Optional} that contains the value of the given {@link OntProperty} for the given
+     * {@link Individual}. The returned {@link Optional} is empty, if the there could not be returned a string for the
+     * given property.
+     *
+     * @param individual Individual that has the property
+     * @param property   Property of which the value should be retrieved
+     * @return {@link Optional} containing the String value. Empty, if no String value could be retrieved
+     */
+    public Optional<String> getPropertyStringValue(Individual individual, OntProperty property) {
+        var node = getPropertyValue(individual, property);
+        if (node.canAs(Literal.class)) {
+            var literal = node.asLiteral();
+            String literalString;
+            try {
+                literalString = literal.getString();
+            } catch (NotLiteral e) {
+                literalString = null;
+            }
+            return Optional.ofNullable(literalString);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Returns an {@link Optional} that contains the value of the given {@link OntProperty} for the given
+     * {@link Individual}. The returned {@link Optional} is empty, if the there could not be returned a string for the
+     * given property.
+     *
+     * @param individual Individual that has the property
+     * @param property   Property of which the value should be retrieved
+     * @return {@link Optional} containing the Integer value. Empty, if no Integer value could be retrieved
+     */
+    public Optional<Integer> getPropertyIntValue(Individual individual, OntProperty property) {
+        var node = getPropertyValue(individual, property);
+        if (node.canAs(Literal.class)) {
+            var literal = node.asLiteral();
+            try {
+                return Optional.of(literal.getInt());
+            } catch (NotLiteral e) {
+                return Optional.empty();
+            }
+
+        }
+        return Optional.empty();
     }
 
     /***********************/
