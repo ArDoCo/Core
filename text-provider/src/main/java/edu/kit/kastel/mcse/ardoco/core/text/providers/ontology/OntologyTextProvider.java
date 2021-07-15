@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ontology;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,12 @@ import org.apache.jena.vocabulary.XSD;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
-public class TextOntologyAdapter {
+public class OntologyTextProvider implements ITextConnector {
+    private static final String TEXT = "TextDocument";
     private static final String TEXT_ONTOLOGY_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text.owl";
+
     private OntologyConnector ontologyConnector;
 
     private OntClass textClass;
@@ -29,30 +32,30 @@ public class TextOntologyAdapter {
     private ObjectProperty nextProperty;
     private ObjectProperty prevProperty;
 
-    private TextOntologyAdapter(String ontologyPath) {
-        ontologyConnector = new OntologyConnector(ontologyPath);
-    }
-
-    private TextOntologyAdapter(OntologyConnector ontologyConnector) {
+    private OntologyTextProvider(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
     }
 
-    public static TextOntologyAdapter get(String ontologyPath) {
-        var toa = new TextOntologyAdapter(ontologyPath);
-        toa.init();
-        return toa;
+    private OntologyTextProvider(String ontologyPath) {
+        ontologyConnector = new OntologyConnector(ontologyPath);
     }
 
-    public static TextOntologyAdapter get(OntologyConnector ontologyConnector) {
-        var toa = new TextOntologyAdapter(ontologyConnector);
-        toa.init();
-        return toa;
+    public static OntologyTextProvider get(String ontologyPath) {
+        var otp = new OntologyTextProvider(ontologyPath);
+        otp.init();
+        return otp;
+    }
+
+    public static OntologyTextProvider get(OntologyConnector ontologyConnector) {
+        var otp = new OntologyTextProvider(ontologyConnector);
+        otp.init();
+        return otp;
     }
 
     private void init() {
         ontologyConnector.addOntologyImport(TEXT_ONTOLOGY_IRI);
 
-        textClass = ontologyConnector.getClass("TextDocument").orElseThrow();
+        textClass = ontologyConnector.getClass(TEXT).orElseThrow();
         wordClass = ontologyConnector.getClass("Word").orElseThrow();
         uuidProperty = ontologyConnector.getDataProperty("uuid").orElseThrow();
         textProperty = ontologyConnector.getDataProperty("has text").orElseThrow();
@@ -128,6 +131,11 @@ public class TextOntologyAdapter {
 
     public void save(String path) {
         ontologyConnector.save(path);
+    }
+
+    @Override
+    public IText getAnnotatedText() {
+        return OntologyText.get(ontologyConnector);
     }
 
 }
