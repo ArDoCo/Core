@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -22,7 +23,7 @@ public class OntologyWord implements IWord {
     private DatatypeProperty lemmaProperty;
     private DatatypeProperty positionProperty;
     private DatatypeProperty sentenceProperty;
-    private ObjectProperty hasItem;
+    private OntProperty hasItem;
     private ObjectProperty hasNext;
     private ObjectProperty hasPrevious;
 
@@ -46,7 +47,7 @@ public class OntologyWord implements IWord {
         lemmaProperty = ontologyConnector.getDataProperty("has lemma").orElseThrow();
         positionProperty = ontologyConnector.getDataProperty("has position").orElseThrow();
         sentenceProperty = ontologyConnector.getDataProperty("contained in sentence").orElseThrow();
-        hasItem = ontologyConnector.getObjectProperty("has item").orElseThrow();
+        hasItem = ontologyConnector.getProperty("has item").orElseThrow();
         hasNext = ontologyConnector.getObjectProperty("has next").orElseThrow();
         hasPrevious = ontologyConnector.getObjectProperty("has previous").orElseThrow();
     }
@@ -145,6 +146,47 @@ public class OntologyWord implements IWord {
             return optString.get();
         }
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + getPosition();
+        result = prime * result + getSentenceNo();
+        var text = getText();
+        result = prime * result + ((text == null) ? 0 : text.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        OntologyWord other = (OntologyWord) obj;
+        if (getPosition() != other.getPosition()) {
+            return false;
+        }
+        if (getSentenceNo() != other.getSentenceNo()) {
+            return false;
+        }
+        var text = getText();
+        var otherText = other.getText();
+        if (text == null) {
+            if (otherText != null) {
+                return false;
+            }
+        } else if (!text.equals(otherText)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
