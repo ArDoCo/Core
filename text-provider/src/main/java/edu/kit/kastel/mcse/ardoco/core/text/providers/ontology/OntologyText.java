@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
-import org.apache.jena.rdf.model.Property;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -19,6 +18,7 @@ public class OntologyText implements IText {
 
     private DatatypeProperty uuidProperty;
     private ObjectProperty wordsProperty;
+    private ObjectProperty slotProperty;
 
     private OntologyText(OntologyConnector ontologyConnector, Individual textIndividual) {
         this.ontologyConnector = ontologyConnector;
@@ -54,35 +54,58 @@ public class OntologyText implements IText {
     private void init() {
         uuidProperty = ontologyConnector.getDataProperty("uuid").orElseThrow();
         wordsProperty = ontologyConnector.getObjectProperty("has words").orElseThrow();
+        slotProperty = ontologyConnector.getObjectProperty("has slot").orElseThrow();
     }
 
     @Override
     public IWord getStartNode() {
-        // TODO Auto-generated method stub
-        return null;
+        var textListIndividualNode = textIndividual.getPropertyValue(wordsProperty);
+        if (textListIndividualNode == null || !textListIndividualNode.canAs(Individual.class)) {
+            throw new IllegalStateException("Cannot find a text in the ontology.");
+        }
+        var textListIndividual = textListIndividualNode.as(Individual.class);
+        var textOloOpt = ontologyConnector.transformIntoOrderedOntologyList(textListIndividual);
+        if (textOloOpt.isEmpty()) {
+            return null;
+        }
+
+        var wordIndividualList = textOloOpt.get();
+        return OntologyWord.get(null, wordIndividualList.get(0));
+    }
+
+    @Override
+    public int getLength() {
+        var textListIndividualNode = textIndividual.getPropertyValue(wordsProperty);
+        if (!textListIndividualNode.canAs(Individual.class)) {
+            throw new IllegalStateException("Cannot find a text in the ontology.");
+        }
+        var textListIndividual = textListIndividualNode.as(Individual.class);
+        var textOloOpt = ontologyConnector.transformIntoOrderedOntologyList(textListIndividual);
+        if (textOloOpt.isEmpty()) {
+            throw new IllegalStateException("Could not find list of words in the ontology.");
+        }
+        return textOloOpt.get().size();
     }
 
     @Override
     public List<IWord> getWords() {
         var words = new ArrayList<IWord>();
-        var textListIndividualNode = textIndividual.getPropertyValue(getWordsProperty());
+        var textListIndividualNode = textIndividual.getPropertyValue(wordsProperty);
         if (!textListIndividualNode.canAs(Individual.class)) {
             throw new IllegalStateException("Cannot find a text in the ontology.");
         }
         var textListIndividual = textListIndividualNode.as(Individual.class);
-        var wordIndividualListOpt = ontologyConnector.getListByIri(textListIndividual.getURI());
-        if (wordIndividualListOpt.isEmpty()) {
-            return words;
+        var textOloOpt = ontologyConnector.transformIntoOrderedOntologyList(textListIndividual);
+        if (textOloOpt.isEmpty()) {
+            throw new IllegalStateException("Could not find list of words in the ontology.");
         }
-        var wordIndividualList = wordIndividualListOpt.get().toList();
+
+        var wordIndividualList = textOloOpt.get().toList();
         for (var wordIndividual : wordIndividualList) {
-            // TODO
-
+            var word = OntologyWord.get(ontologyConnector, wordIndividual);
+            words.add(word);
         }
-    }
-
-    private Property getWordsProperty() {
-        return ontologyConnector.getProperty("has words").orElseThrow();
+        return words;
     }
 
 }
