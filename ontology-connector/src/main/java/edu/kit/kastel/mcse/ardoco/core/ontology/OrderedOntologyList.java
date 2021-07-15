@@ -57,12 +57,12 @@ public class OrderedOntologyList implements List<Individual> {
         private OntologyConnector oc;
 
         protected static Factory get(OntologyConnector oc) {
-            oc.getOntModel().setNsPrefix(OrderedOntologyList.LIST_PREFIX, OrderedOntologyList.LIST_BASE_URI);
             return new Factory(oc);
         }
 
         private Factory(OntologyConnector oc) {
             this.oc = oc;
+            oc.getOntModel().setNsPrefix(OrderedOntologyList.LIST_PREFIX, OrderedOntologyList.LIST_BASE_URI);
         }
 
         public OrderedOntologyList createFromListIndividual(Individual listIndividual) {
@@ -82,10 +82,11 @@ public class OrderedOntologyList implements List<Individual> {
         }
 
         protected Optional<OrderedOntologyList> getOrderedListOntologyFromIndividual(Individual listIndividual) {
+            oc.getOntModel().setNsPrefix(OrderedOntologyList.LIST_PREFIX, OrderedOntologyList.LIST_BASE_URI);
+
             var listClassUri = oc.getOntModel().expandPrefix(OrderedOntologyList.LIST_PREFIX + ":" + OrderedOntologyList.LIST_CLASS);
             if (listIndividual.hasOntClass(listClassUri)) {
-                var olo = createFromListIndividual(listIndividual);
-                return Optional.of(olo);
+                return Optional.of(createFromListIndividual(listIndividual));
             }
             return Optional.empty();
         }
