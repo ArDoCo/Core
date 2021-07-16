@@ -90,6 +90,7 @@ public class OntologyTextProvider implements ITextConnector {
             wordIndividuals.add(wordIndividual);
             wordsToIndividuals.put(word, wordIndividual);
         }
+
         // add dependencies to words.
         // We only add outgoing dependencies as ingoing are the same (but viewed from another perspective)
         for (var word : text.getWords()) {

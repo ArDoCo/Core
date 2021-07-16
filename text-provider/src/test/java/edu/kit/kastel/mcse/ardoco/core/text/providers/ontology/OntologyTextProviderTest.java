@@ -30,5 +30,4 @@ class OntologyTextProviderTest {
         var text = ontologyTextProvider.getAnnotatedText();
         Assertions.assertNotNull(text);
     }
-
 }
