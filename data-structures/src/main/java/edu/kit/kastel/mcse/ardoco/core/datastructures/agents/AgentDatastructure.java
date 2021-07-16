@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
-import java.util.logging.Logger;
-
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
@@ -14,8 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
  */
 public final class AgentDatastructure {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
-
     private IText text;
     private ITextState textState;
     private IModelState modelState;
@@ -25,7 +21,7 @@ public final class AgentDatastructure {
     /**
      * Create an empty data structure.
      */
-    public AgentDatastructure() {
+    private AgentDatastructure() {
     }
 
     /**
@@ -62,92 +58,98 @@ public final class AgentDatastructure {
         this.connectionState = connectionState;
     }
 
+    /**
+     * Get the text information.
+     *
+     * @return the text
+     */
     public IText getText() {
         return text;
     }
 
-    public void setText(IText text) {
-        this.text = text;
-    }
-
+    /**
+     * Get the stored text state.
+     *
+     * @return the text state
+     */
     public ITextState getTextState() {
         return textState;
     }
 
+    /**
+     * Set the internal text state.
+     *
+     * @param textState the text state
+     */
     public void setTextState(ITextState textState) {
         this.textState = textState;
     }
 
+    /**
+     * Get the internal model state.
+     *
+     * @return the model state
+     */
     public IModelState getModelState() {
         return modelState;
     }
 
+    /**
+     * Sets the internal model state.
+     *
+     * @param modelState the new model state
+     */
     public void setModelState(IModelState modelState) {
         this.modelState = modelState;
     }
 
+    /**
+     * Gets the internal recommendation state.
+     *
+     * @return the recommendation state
+     */
     public IRecommendationState getRecommendationState() {
         return recommendationState;
     }
 
+    /**
+     * Sets the internal recommendation state.
+     *
+     * @param recommendationState the new recommendation state
+     */
     public void setRecommendationState(IRecommendationState recommendationState) {
         this.recommendationState = recommendationState;
     }
 
+    /**
+     * Gets the internal connection state.
+     *
+     * @return the connection state
+     */
     public IConnectionState getConnectionState() {
         return connectionState;
     }
 
+    /**
+     * Sets the connection state.
+     *
+     * @param connectionState the new connection state
+     */
     public void setConnectionState(IConnectionState connectionState) {
         this.connectionState = connectionState;
     }
 
+    /**
+     * Override the internal data with data from another data structure.
+     *
+     * @param newData the new data
+     */
     public void overwrite(AgentDatastructure newData) {
         text = newData.text;
         textState = newData.textState;
         modelState = newData.modelState;
         recommendationState = newData.recommendationState;
         connectionState = newData.connectionState;
-    }
-
-    public void extend(IModelState modelState) {
-        if (null != this.modelState) {
-            logger.warning("ModelState was overwritten.");
-        } else {
-            this.modelState = modelState;
-        }
-    }
-
-    public void extend(IText text) {
-        if (null != this.text) {
-            logger.warning("Text was overwritten.");
-        } else {
-            this.text = text;
-        }
-    }
-
-    public void extend(ITextState textState) {
-        if (null != this.textState) {
-            logger.warning("TextState was overwritten.");
-        } else {
-            this.textState = textState;
-        }
-    }
-
-    public void extend(IRecommendationState recommendationState) {
-        if (null != this.recommendationState) {
-            logger.warning("RecommendationState was overwritten.");
-        } else {
-            this.recommendationState = recommendationState;
-        }
-    }
-
-    public void extend(IConnectionState connectionState) {
-        if (null != this.connectionState) {
-            logger.warning("ConnectionState was overwritten.");
-        } else {
-            this.connectionState = connectionState;
-        }
     }
 
 }

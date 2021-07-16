@@ -24,10 +24,12 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.Instance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelException;
 
+/**
+ * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.
+ */
 public class PcmOntologyModelConnector implements IModelConnector {
-    private static Logger logger = LogManager.getLogger(PcmOntologyModelConnector.class);
+    private static final Logger logger = LogManager.getLogger(PcmOntologyModelConnector.class);
 
     private static final String DEFAULT_PREFIX = "";
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
@@ -38,6 +40,8 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private String pathToOntology;
 
     /**
+     * Instantiates a new pcm ontology model connector.
+     *
      * @param ontologyUrl Can be a local URL (path to the ontology) or a remote URL
      */
     public PcmOntologyModelConnector(String ontologyUrl) {
@@ -56,7 +60,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return instances;
     }
 
-    public List<IInstance> getInstancesOfType(String type) {
+    private List<IInstance> getInstancesOfType(String type) {
         List<IInstance> instances = Lists.mutable.empty();
         Optional<OntClass> optionalClass = getClass(type);
         if (optionalClass.isEmpty()) {
@@ -92,7 +96,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     @Override
-    public List<IRelation> getRelations(List<IInstance> instances) throws InconsistentModelException {
+    public List<IRelation> getRelations() {
         logger.warn("This method is not yet implemented and will return an empty list!");
         return Lists.mutable.empty();
     }
@@ -134,7 +138,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
     }
 
-    public Optional<OntClass> getClass(String className) {
+    private Optional<OntClass> getClass(String className) {
         var prefixes = ontModel.getNsPrefixMap().keySet();
         for (var prefix : prefixes) {
             var optClass = getClass(className, prefix);
@@ -145,7 +149,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return Optional.empty();
     }
 
-    public Optional<OntClass> getClass(String className, String prefix) {
+    private Optional<OntClass> getClass(String className, String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             prefix = DEFAULT_PREFIX;
         }
@@ -153,7 +157,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return getClassByIri(uri);
     }
 
-    public Optional<OntClass> getClassByIri(String iri) {
+    private Optional<OntClass> getClassByIri(String iri) {
         String uri = ontModel.expandPrefix(iri);
         var clazz = ontModel.getOntClass(uri);
 
@@ -164,7 +168,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return createMutableListFromIterator(ontModel.listIndividuals(clazz));
     }
 
-    public Optional<Property> getProperty(String dataPropertyLocalName) {
+    private Optional<Property> getProperty(String dataPropertyLocalName) {
         var prefixes = ontModel.getNsPrefixMap().keySet();
         for (var prefix : prefixes) {
             var optDP = getProperty(dataPropertyLocalName, prefix);
@@ -175,7 +179,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return Optional.empty();
     }
 
-    public Optional<Property> getProperty(String dataPropertyLocalName, String prefix) {
+    private Optional<Property> getProperty(String dataPropertyLocalName, String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             prefix = DEFAULT_PREFIX;
         }
@@ -183,7 +187,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return getPropertyByUri(uri);
     }
 
-    public Optional<Property> getPropertyByUri(String dataPropertyUri) {
+    private Optional<Property> getPropertyByUri(String dataPropertyUri) {
         var datatypeProperty = ontModel.getDatatypeProperty(dataPropertyUri);
         return Optional.ofNullable(datatypeProperty);
     }

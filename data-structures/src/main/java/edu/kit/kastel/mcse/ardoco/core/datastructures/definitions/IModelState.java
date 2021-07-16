@@ -5,10 +5,10 @@ import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
-public interface IModelState extends IState {
-
-    IModelState createCopy();
-
+/**
+ * The Interface IModelState defines the information directly extracted from the models.
+ */
+public interface IModelState extends IState<IModelState> {
     /**
      * Returns the instances of a specific type.
      *
@@ -60,6 +60,11 @@ public interface IModelState extends IState {
      */
     List<IRelation> getRelations();
 
+    /**
+     * To string.
+     *
+     * @return the string
+     */
     @Override
     String toString();
 

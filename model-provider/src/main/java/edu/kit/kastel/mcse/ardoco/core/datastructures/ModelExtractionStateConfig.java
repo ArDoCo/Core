@@ -2,7 +2,10 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
 import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
-public class ModelExtractionStateConfig {
+/**
+ * The Class ModelExtractionStateConfig defines the configuration to be used for the model extraction.
+ */
+public final class ModelExtractionStateConfig {
 
     private ModelExtractionStateConfig() {
         throw new IllegalAccessError();
