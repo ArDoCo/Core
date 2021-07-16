@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 
 /**
  * This state contains all from the model extracted information. This are the extracted instances and relations. For
@@ -21,17 +21,17 @@ public class ModelExtractionState implements IModelState {
     private Set<String> instanceTypes;
     private Set<String> relationTypes;
     private Set<String> names;
-    private List<IInstance> instances;
-    private List<IRelation> relations;
+    private List<IModelInstance> instances;
+    private List<IModelRelation> relations;
 
     @Override
     public IModelState createCopy() {
-        return new ModelExtractionState(instanceTypes, relationTypes, names, instances.stream().map(IInstance::createCopy).collect(Collectors.toList()),
-                relations.stream().map(IRelation::createCopy).collect(Collectors.toList()));
+        return new ModelExtractionState(instanceTypes, relationTypes, names, instances.stream().map(IModelInstance::createCopy).collect(Collectors.toList()),
+                relations.stream().map(IModelRelation::createCopy).collect(Collectors.toList()));
     }
 
-    private ModelExtractionState(Set<String> instanceTypes, Set<String> relationTypes, Set<String> names, List<IInstance> instances,
-            List<IRelation> relations) {
+    private ModelExtractionState(Set<String> instanceTypes, Set<String> relationTypes, Set<String> names, List<IModelInstance> instances,
+            List<IModelRelation> relations) {
         this.instanceTypes = instanceTypes;
         this.relationTypes = relationTypes;
         this.relations = relations;
@@ -46,7 +46,7 @@ public class ModelExtractionState implements IModelState {
      * @param instances instances of this model extraction state
      * @param relations relations of this model extraction state
      */
-    public ModelExtractionState(List<IInstance> instances, List<IRelation> relations) {
+    public ModelExtractionState(List<IModelInstance> instances, List<IModelRelation> relations) {
         this.instances = instances;
         this.relations = relations;
         instanceTypes = new HashSet<>();
@@ -60,14 +60,14 @@ public class ModelExtractionState implements IModelState {
      * are stored in types.
      */
     private void collectTypesAndNames() {
-        for (IRelation r : relations) {
+        for (IModelRelation r : relations) {
             relationTypes.add(r.getType());
             List<String> typeParts = List.of(r.getType().split(" "));
             if (typeParts.size() >= ModelExtractionStateConfig.EXTRACTION_STATE_MIN_TYPE_PARTS) {
                 relationTypes.addAll(typeParts);
             }
         }
-        for (IInstance i : instances) {
+        for (IModelInstance i : instances) {
             instanceTypes.addAll(i.getTypes());
             names.addAll(i.getNames());
         }
@@ -80,7 +80,7 @@ public class ModelExtractionState implements IModelState {
      * @return all instances that are from that type
      */
     @Override
-    public List<IInstance> getInstancesOfType(String type) {
+    public List<IModelInstance> getInstancesOfType(String type) {
         return instances.stream().filter(i -> i.getTypes().contains(type)).collect(Collectors.toList());
     }
 
@@ -91,7 +91,7 @@ public class ModelExtractionState implements IModelState {
      * @return all relations that are from that type
      */
     @Override
-    public List<IRelation> getRelationsOfType(String type) {
+    public List<IModelRelation> getRelationsOfType(String type) {
         return relations.stream().filter(r -> r.getType().equals(type)).collect(Collectors.toList());
     }
 
@@ -131,7 +131,7 @@ public class ModelExtractionState implements IModelState {
      * @return all instances of this state
      */
     @Override
-    public List<IInstance> getInstances() {
+    public List<IModelInstance> getInstances() {
         return instances;
     }
 
@@ -141,18 +141,18 @@ public class ModelExtractionState implements IModelState {
      * @return all relations of this state
      */
     @Override
-    public List<IRelation> getRelations() {
+    public List<IModelRelation> getRelations() {
         return relations;
     }
 
     @Override
     public String toString() {
         var output = new StringBuilder("Instances:\n");
-        for (IInstance i : instances) {
+        for (IModelInstance i : instances) {
             output.append(i.toString() + "\n");
         }
         output.append("Relations:\n");
-        for (IRelation r : relations) {
+        for (IModelRelation r : relations) {
             output.append(r.toString() + "\n");
         }
         return output.toString();

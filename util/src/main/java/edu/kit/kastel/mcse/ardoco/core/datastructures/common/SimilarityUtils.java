@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 
@@ -132,7 +132,7 @@ public final class SimilarityUtils {
      * @param recommendedInstances recommended instances to check for similarity
      * @return a list of the most similar recommended instances (to the instance names)
      */
-    public static List<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IInstance instance,
+    public static List<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
             List<IRecommendedInstance> recommendedInstances) {
         List<String> instanceNames = instance.getNames();
         List<IRecommendedInstance> selection = recommendedInstances.stream()

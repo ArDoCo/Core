@@ -12,7 +12,7 @@ public abstract class TextExtractor extends Extractor {
     public TextExtractor create(AgentDatastructure data, Configuration config) {
 
         if (null == data.getTextState()) {
-            throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
+            throw new IllegalArgumentException("An input of the agent" + getId() + " was null!");
         }
         return create(data.getTextState(), config);
     }

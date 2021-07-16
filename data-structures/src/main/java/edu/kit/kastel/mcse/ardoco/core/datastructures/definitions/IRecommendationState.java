@@ -4,9 +4,10 @@ import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
-public interface IRecommendationState extends IState {
-
-    IRecommendationState createCopy();
+/**
+ * The Interface IRecommendationState defines the state for recommendations.
+ */
+public interface IRecommendationState extends IState<IRecommendationState> {
 
     /**
      * Returns all recommended instances.
@@ -26,10 +27,10 @@ public interface IRecommendationState extends IState {
      * Adds a new recommended relation.
      *
      * @param name           name of that recommended relation
-     * @param probability    probability of being in the model
      * @param ri1            first end point of the relation as recommended instance
      * @param ri2            second end point of the relation as recommended instance
      * @param otherInstances other involved recommended instances
+     * @param probability    probability of being in the model
      * @param occurrences    nodes representing the relation
      */
     void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, List<IRecommendedInstance> otherInstances, double probability,

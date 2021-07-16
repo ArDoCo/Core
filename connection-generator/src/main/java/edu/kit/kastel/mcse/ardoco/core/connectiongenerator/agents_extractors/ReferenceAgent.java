@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
@@ -67,7 +67,7 @@ public class ReferenceAgent extends ConnectionAgent {
      */
     private void solveReferencesOfNames() {
 
-        for (IInstance instance : modelState.getInstances()) {
+        for (IModelInstance instance : modelState.getInstances()) {
             // ntrNodes mit Lemma ca. Name eines Modelelements
 
             List<INounMapping> similarToInstanceMappings = //
@@ -99,7 +99,7 @@ public class ReferenceAgent extends ConnectionAgent {
      *
      * @param instance the current instance to find as noun mapping
      */
-    private void solveReferenceOfNamesIfSimilarNameIsEmpty(IInstance instance) {
+    private void solveReferenceOfNamesIfSimilarNameIsEmpty(IModelInstance instance) {
         List<INounMapping> similarLongestNameMappings = textState.getNames()
                 .stream()
                 .filter(//
@@ -119,7 +119,7 @@ public class ReferenceAgent extends ConnectionAgent {
      *
      * @param instance the current instance to find as noun mapping
      */
-    private void solveReferenceOfNamesIfNoSimilarLongNamesCouldBeFound(IInstance instance) {
+    private void solveReferenceOfNamesIfNoSimilarLongNamesCouldBeFound(IModelInstance instance) {
         List<INounMapping> similarNameMappings = new ArrayList<>();
         for (String name : instance.getNames()) {
             similarNameMappings = textState.getNames()

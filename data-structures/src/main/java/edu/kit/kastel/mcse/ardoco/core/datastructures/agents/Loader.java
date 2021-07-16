@@ -34,63 +34,64 @@ public final class Loader {
     /**
      * Load loadable of a specific class (and subclasses).
      *
-     * @param <A>    the generic type
-     * @param classA the class A
-     * @return the map
+     * @param <A>   the generic type of the class
+     * @param clazz the class to load
+     * @return the loaded classes (id - instance)
      */
-    public static <A extends ILoadable> Map<String, A> loadLoadable(Class<A> classA) {
-        return USE_REFLECTION ? loadLoadableViaReflect(classA) : loadLoadableViaServiceLoader(classA);
+    public static <A extends ILoadable> Map<String, A> loadLoadable(Class<A> clazz) {
+        return USE_REFLECTION ? loadLoadableViaReflect(clazz) : loadLoadableViaServiceLoader(clazz);
     }
 
     /**
      * Load loadable via service loader.
      *
-     * @param <A>    the class type to load
-     * @param classA the class to load
-     * @return a map from name (see {@link ILoadable#getName()}) to instance
+     * @param <A>   the class type to load
+     * @param clazz the class to load
+     * @return a map from name (see {@link ILoadable#getId()}) to instance
      */
-    public static <A extends ILoadable> Map<String, A> loadLoadableViaServiceLoader(Class<A> classA) {
-        ServiceLoader<A> loader = ServiceLoader.load(classA);
+    public static <A extends ILoadable> Map<String, A> loadLoadableViaServiceLoader(Class<A> clazz) {
+        ServiceLoader<A> loader = ServiceLoader.load(clazz);
         Map<String, A> loads = new HashMap<>();
 
         for (A a : loader) {
-            loads.put(a.getName(), a);
+            loads.put(a.getId(), a);
         }
 
         return loads;
     }
 
     /**
-     * Load loadable via reflection.
+     * Load loadable via reflection. <b>Classes have to be located in/below {@link edu.kit.kastel.mcse.ardoco}</b>
      *
-     * @param <A>    the class type to load
-     * @param classA the class to load
-     * @return a map from name (see {@link ILoadable#getName()}) to instance
+     * @param <A>   the class type to load
+     * @param clazz the class to load
+     * @return a map from name (see {@link ILoadable#getId()}) to instance
+     *
      */
-    public static <A extends ILoadable> Map<String, A> loadLoadableViaReflect(Class<A> classA) {
+    public static <A extends ILoadable> Map<String, A> loadLoadableViaReflect(Class<A> clazz) {
         Map<String, A> loads = new HashMap<>();
 
         synchronized (CACHE) {
-            if (CACHE.containsKey(classA)) {
-                Set<A> loaded = load(CACHE.get(classA));
+            if (CACHE.containsKey(clazz)) {
+                Set<A> loaded = load(CACHE.get(clazz));
                 for (A a : loaded) {
-                    loads.put(a.getName(), a);
+                    loads.put(a.getId(), a);
                 }
                 return loads;
             }
         }
 
         var reflect = new Reflections("edu.kit.kastel.mcse.ardoco");
-        Set<Class<?>> subtypes = new HashSet<>(reflect.getSubTypesOf(classA));
+        Set<Class<?>> subtypes = new HashSet<>(reflect.getSubTypesOf(clazz));
         subtypes.removeIf(Loader::hasNoPublicConstructor);
 
         synchronized (CACHE) {
-            CACHE.put(classA, new ArrayList<>(subtypes));
+            CACHE.put(clazz, new ArrayList<>(subtypes));
         }
 
         Set<A> loaded = load(subtypes);
         for (A a : loaded) {
-            loads.put(a.getName(), a);
+            loads.put(a.getId(), a);
         }
         return loads;
     }

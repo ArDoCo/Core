@@ -10,7 +10,7 @@ import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
@@ -60,9 +60,9 @@ public class NameTypeExtractor extends RecommendationExtractor {
     @Override
     public void setProbability(List<Double> probabilities) {
         if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
         } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
         } else {
             probability = probabilities.get(0);
         }
@@ -93,7 +93,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addType(n, similarTypes.get(0), probability);
-            IInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
+            IModelInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
 
             List<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
             List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
@@ -119,7 +119,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
         List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
-            IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
+            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
             List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
             List<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
@@ -147,7 +147,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
 
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
-            IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
+            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
 
             List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
             List<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
@@ -167,7 +167,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param typeMappings        the type mappings
      */
     private void addRecommendedInstanceIfNodeNotNull(//
-            IWord currentNode, ITextState textExtractionState, IInstance instance, List<INounMapping> nameMappings, List<INounMapping> typeMappings) {
+            IWord currentNode, ITextState textExtractionState, IModelInstance instance, List<INounMapping> nameMappings, List<INounMapping> typeMappings) {
         if (textExtractionState.getNounMappingsByNode(currentNode) != null && instance != null) {
             List<INounMapping> nmappings = textExtractionState.getNounMappingsByNode(currentNode);
             for (INounMapping nmapping : nmappings) {
@@ -192,7 +192,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
         List<String> sameLemmaTypes = identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, n.getText())).collect(Collectors.toList());
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(n, sameLemmaTypes.get(0), probability);
-            IInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
+            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
             List<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(n);
             List<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
@@ -210,8 +210,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param n                    the node for name identification
      * @return the unique matching instance
      */
-    private IInstance tryToIdentify(ITextState textExtractioinState, List<String> similarTypes, IWord n) {
-        List<IInstance> matchingInstances = new ArrayList<>();
+    private IModelInstance tryToIdentify(ITextState textExtractioinState, List<String> similarTypes, IWord n) {
+        List<IModelInstance> matchingInstances = new ArrayList<>();
 
         for (String type : similarTypes) {
             matchingInstances.addAll(modelState.getInstancesOfType(type));

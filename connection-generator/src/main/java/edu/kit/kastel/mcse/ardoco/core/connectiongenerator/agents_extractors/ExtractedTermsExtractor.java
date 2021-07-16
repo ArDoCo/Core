@@ -77,9 +77,9 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     @Override
     public void setProbability(List<Double> probabilities) {
         if (probabilities.size() > 3) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
         } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
         } else {
             probabilityAdjacentTerm = probabilities.get(0);
             probabilityJustName = probabilities.get(1);

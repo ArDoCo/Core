@@ -5,10 +5,13 @@ import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
+/**
+ * The Interface ITextState.
+ */
 public interface ITextState extends IState<ITextState> {
 
-    /***
-     * Adds a name mapping to the state
+    /**
+     * * Adds a name mapping to the state.
      *
      * @param n           node of the mapping
      * @param name        reference of the mapping
@@ -17,8 +20,8 @@ public interface ITextState extends IState<ITextState> {
      */
     void addName(IWord n, String name, double probability, List<String> occurrences);
 
-    /***
-     * Adds a name mapping to the state
+    /**
+     * * Adds a name mapping to the state.
      *
      * @param word        word of the mapping
      * @param name        reference of the mapping
@@ -26,8 +29,8 @@ public interface ITextState extends IState<ITextState> {
      */
     void addName(IWord word, String name, double probability);
 
-    /***
-     * Adds a name or type mapping to the state
+    /**
+     * * Adds a name or type mapping to the state.
      *
      * @param n           node of the mapping
      * @param ref         reference of the mapping
@@ -35,8 +38,8 @@ public interface ITextState extends IState<ITextState> {
      */
     void addNort(IWord n, String ref, double probability);
 
-    /***
-     * Adds a name or type mapping to the state
+    /**
+     * * Adds a name or type mapping to the state.
      *
      * @param n           node of the mapping
      * @param ref         reference of the mapping
@@ -45,8 +48,8 @@ public interface ITextState extends IState<ITextState> {
      */
     void addNort(IWord n, String ref, double probability, List<String> occurrences);
 
-    /***
-     * Adds a type mapping to the state
+    /**
+     * * Adds a type mapping to the state.
      *
      * @param n           node of the mapping
      * @param type        reference of the mapping
@@ -54,8 +57,8 @@ public interface ITextState extends IState<ITextState> {
      */
     void addType(IWord n, String type, double probability);
 
-    /***
-     * Adds a type mapping to the state
+    /**
+     * * Adds a type mapping to the state.
      *
      * @param n           node of the mapping
      * @param type        reference of the mapping
@@ -245,21 +248,21 @@ public interface ITextState extends IState<ITextState> {
     List<String> getTypeTermList();
 
     /**
-     * Returns all name mappings
+     * Returns all name mappings.
      *
      * @return a list of all name mappings
      */
     List<INounMapping> getNames();
 
     /**
-     * Returns all name term mappings
+     * Returns all name term mappings.
      *
      * @return a list of all name term mappings
      */
     List<ITermMapping> getNameTerms();
 
     /**
-     * Returns all name or type mappings
+     * Returns all name or type mappings.
      *
      * @return a list of all name or type mappings
      */
@@ -354,23 +357,49 @@ public interface ITextState extends IState<ITextState> {
     boolean isNodeContainedByTypeNodes(IWord node);
 
     /**
-     * Prints the name type relation state: The noun mappings as well as the relation mappings.
+     * Gets the all noun mappings.
+     *
+     * @return the all mappings
      */
-    @Override
-    String toString();
+    List<INounMapping> getNounMappings();
 
-    List<INounMapping> getAllMappings();
-
+    /**
+     * Adds the noun mapping.
+     *
+     * @param nodes       the nodes
+     * @param reference   the reference
+     * @param kind        the kind
+     * @param confidence  the confidence
+     * @param occurrences the occurrences
+     */
     void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences);
 
+    /**
+     * Gets the mappings that could be A type.
+     *
+     * @param word the word
+     * @return the mappings that could be A type
+     */
     default List<INounMapping> getMappingsThatCouldBeAType(IWord word) {
         return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForType() > 0).collect(Collectors.toList());
     }
 
+    /**
+     * Gets the mappings that could be A name.
+     *
+     * @param word the word
+     * @return the mappings that could be A name
+     */
     default List<INounMapping> getMappingsThatCouldBeAName(IWord word) {
         return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForName() > 0).collect(Collectors.toList());
     }
 
+    /**
+     * Gets the mappings that could be A nort.
+     *
+     * @param word the word
+     * @return the mappings that could be A nort
+     */
     default List<INounMapping> getMappingsThatCouldBeANort(IWord word) {
         return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForNort() > 0).collect(Collectors.toList());
     }

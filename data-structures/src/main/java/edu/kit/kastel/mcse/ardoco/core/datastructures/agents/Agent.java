@@ -49,7 +49,7 @@ public abstract class Agent implements IAgent {
     protected abstract Agent createInternal(AgentDatastructure data, Configuration config);
 
     @Override
-    public String getName() {
+    public String getId() {
         return this.getClass().getSimpleName();
     }
 

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class represents all valid pos tags
+ * This class represents all valid pos tags.
  *
  * @author Sebastian Weigelt
  * @author Markus Kocybik
@@ -87,10 +87,22 @@ public enum POSTag {
         return getTag();
     }
 
+    /**
+     * Gets the tag information.
+     *
+     * @return the tag
+     */
     public String getTag() {
         return tag;
     }
 
+    /**
+     * Gets the {@link POSTag} by value.
+     *
+     * @param value the value
+     * @return the POS tag
+     * @throws IllegalArgumentException iff value was not found
+     */
     public static POSTag get(String value) {
         for (POSTag v : values()) {
             if (value.equals(v.getTag())) {
@@ -101,6 +113,11 @@ public enum POSTag {
         throw new IllegalArgumentException("Unknown part of speech: " + value + ".");
     }
 
+    /**
+     * Checks if this is a verb.
+     *
+     * @return true, if this is a verb
+     */
     public boolean isVerb() {
         return getTag().startsWith("VB");
     }

@@ -5,13 +5,14 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
  *
  * @see Loader
  */
+@FunctionalInterface
 public interface ILoadable {
 
     /**
-     * Gets the name of the loadable.
+     * Gets the identifier of the loadable.
      *
-     * @return the name
+     * @return the id
      */
-    String getName();
+    String getId();
 
 }

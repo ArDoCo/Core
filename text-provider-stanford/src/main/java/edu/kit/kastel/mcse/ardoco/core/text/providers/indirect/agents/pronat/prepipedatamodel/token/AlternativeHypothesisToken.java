@@ -15,10 +15,6 @@ public class AlternativeHypothesisToken extends AbstractHypothesisToken {
         this(word, position, confidence, type, 0.0d, 0.0d);
     }
 
-    public AlternativeHypothesisToken(String word, int position) {
-        this(word, position, 1.0d, HypothesisTokenType.MISC);
-    }
-
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);

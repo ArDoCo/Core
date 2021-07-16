@@ -2,8 +2,8 @@ package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 
 /**
  * The Interface IModelConnector defines the connection to a computational model.
@@ -15,13 +15,13 @@ public interface IModelConnector {
      *
      * @return the instances
      */
-    List<IInstance> getInstances();
+    List<IModelInstance> getInstances();
 
     /**
      * Gets the relations from the model.
      *
      * @return the relations
      */
-    List<IRelation> getRelations();
+    List<IModelRelation> getRelations();
 
 }

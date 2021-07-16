@@ -32,10 +32,10 @@ public class TermMapping implements ITermMapping {
     /**
      * Instantiates a new term mapping.
      *
-     * @param reference the reference
-     * @param mappings the mappings
+     * @param reference   the reference
+     * @param mappings    the mappings
      * @param probability the probability
-     * @param kind the kind
+     * @param kind        the kind
      */
     public TermMapping(String reference, List<INounMapping> mappings, double probability, MappingKind kind) {
         this.reference = reference;
@@ -141,16 +141,6 @@ public class TermMapping implements ITermMapping {
             probability += probability2;
             probability = probability * 0.5;
         }
-    }
-
-    /**
-     * Sets the probability of the mapping
-     *
-     * @param probability probability to set on
-     */
-    @Override
-    public void hardSetProbability(double probability) {
-        this.probability = probability;
     }
 
 }

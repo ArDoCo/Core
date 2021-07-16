@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
@@ -261,7 +261,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "UID", "Name", "Type" });
 
-        for (IInstance instance : modelState.getInstances()) {
+        for (IModelInstance instance : modelState.getInstances()) {
 
             dataLines.add(new String[] { instance.getUid(), instance.getLongestName(), instance.getLongestType() });
 
@@ -299,8 +299,8 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
 
-        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMapping)) {
-            for (INounMapping mapping : textState.getAllMappings()) {
+        if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMapping)) {
+            for (INounMapping mapping : textState.getNounMappings()) {
 
                 MappingKind kind = mapping.getKind();
 
@@ -314,7 +314,7 @@ public final class FilePrinter {
             return dataLines;
         }
 
-        for (INounMapping mapping : textState.getAllMappings()) {
+        for (INounMapping mapping : textState.getNounMappings()) {
 
             NounMapping eagleMapping = (NounMapping) mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
