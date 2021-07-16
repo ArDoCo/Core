@@ -176,7 +176,7 @@ public class ParseConverter {
         }
 
         @Override
-        public IWord getStartNode() {
+        public IWord getFirstWord() {
             return words.isEmpty() ? null : words.get(0);
         }
 

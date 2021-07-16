@@ -8,7 +8,7 @@ public abstract class Extractor implements IExtractor {
     public abstract Extractor create(AgentDatastructure data, Configuration config);
 
     @Override
-    public String getName() {
+    public String getId() {
         return this.getClass().getSimpleName();
     }
 

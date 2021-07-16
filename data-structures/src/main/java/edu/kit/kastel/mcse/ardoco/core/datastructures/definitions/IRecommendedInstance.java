@@ -2,9 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
 import java.util.List;
 
-public interface IRecommendedInstance {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRecommendedInstance createCopy();
+/**
+ * The Interface IRecommendedInstance defines the aggregation of noun mappings to one recommendation.
+ */
+public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
 
     /**
      * Returns the involved name mappings.

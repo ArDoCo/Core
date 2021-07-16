@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures;
 import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelationLink;
 
 /**
@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelationLink;
 public class RelationLink implements IRelationLink {
 
 	private IRecommendedRelation textualRelation;
-	private IRelation modelRelation;
+	private IModelRelation modelRelation;
 	private double probability;
 
 	@Override
@@ -31,7 +31,7 @@ public class RelationLink implements IRelationLink {
 	 * @param modelRelation relation from the model extraction state
 	 * @param probability   probability for similarity
 	 */
-	public RelationLink(IRecommendedRelation textRelation, IRelation modelRelation, double probability) {
+	public RelationLink(IRecommendedRelation textRelation, IModelRelation modelRelation, double probability) {
 		textualRelation = textRelation;
 		this.modelRelation = modelRelation;
 		this.probability = probability;
@@ -90,7 +90,7 @@ public class RelationLink implements IRelationLink {
 	 * @return the relation of the model
 	 */
 	@Override
-	public IRelation getModelRelation() {
+	public IModelRelation getModelRelation() {
 		return modelRelation;
 	}
 

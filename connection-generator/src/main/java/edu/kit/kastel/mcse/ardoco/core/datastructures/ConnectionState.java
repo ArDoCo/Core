@@ -8,12 +8,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelationLink;
 
 /**
@@ -105,7 +105,7 @@ public class ConnectionState implements IConnectionState {
      * @param probability              the probability of the link
      */
     @Override
-    public void addToLinks(IRecommendedInstance recommendedModelInstance, IInstance instance, double probability) {
+    public void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, double probability) {
 
         IInstanceLink instancelink = new InstanceLink(recommendedModelInstance, instance, probability);
         if (!isContainedByInstanceLinks(instancelink)) {
@@ -148,7 +148,7 @@ public class ConnectionState implements IConnectionState {
      * @param instance the given instance
      */
     @Override
-    public void removeAllInstanceLinksWith(IInstance instance) {
+    public void removeAllInstanceLinksWith(IModelInstance instance) {
         instanceLinks.removeIf(mapping -> mapping.getModelInstance().equals(instance));
     }
 
@@ -190,7 +190,7 @@ public class ConnectionState implements IConnectionState {
      * @param probability              the probability of the link
      */
     @Override
-    public void addToLinks(IRecommendedRelation recommendedModelRelation, IRelation relation, double probability) {
+    public void addToLinks(IRecommendedRelation recommendedModelRelation, IModelRelation relation, double probability) {
         IRelationLink rel = new RelationLink(recommendedModelRelation, relation, probability);
         if (!isContainedByRelationLinks(rel)) {
             relationLinks.add(rel);
@@ -241,7 +241,7 @@ public class ConnectionState implements IConnectionState {
      * @param relation the relation to search for
      */
     @Override
-    public void removeAllMappingsWith(IRelation relation) {
+    public void removeAllMappingsWith(IModelRelation relation) {
         relationLinks.removeIf(mapping -> mapping.getModelRelation().equals(relation));
     }
 

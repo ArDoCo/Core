@@ -39,7 +39,7 @@ public abstract class TextAgent extends Agent {
     @Override
     protected final TextAgent createInternal(AgentDatastructure data, Configuration config) {
         if (data.getText() == null || data.getTextState() == null) {
-            throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
+            throw new IllegalArgumentException("An input of the agent" + getId() + " was null!");
         }
         return create(data.getText(), data.getTextState(), config);
     }

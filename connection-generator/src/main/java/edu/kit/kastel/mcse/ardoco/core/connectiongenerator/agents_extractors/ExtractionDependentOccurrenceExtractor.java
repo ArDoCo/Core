@@ -8,7 +8,7 @@ import org.kohsuke.MetaInfServices;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
@@ -73,9 +73,9 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
     @Override
     public void setProbability(List<Double> probabilities) {
         if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
         } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
         } else {
             probability = probabilities.get(0);
         }
@@ -96,7 +96,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param n the node to check
      */
     private void searchForName(IWord n) {
-        List<IInstance> instances = modelState.getInstances()
+        List<IModelInstance> instances = modelState.getInstances()
                 .stream()
                 .filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), List.of(n.getText())))
                 .collect(Collectors.toList());
@@ -116,7 +116,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param n the node to check
      */
     private void searchForType(IWord n) {
-        List<IInstance> instances = modelState.getInstances()
+        List<IModelInstance> instances = modelState.getInstances()
                 .stream()
                 .filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), List.of(n.getText())))
                 .collect(Collectors.toList());

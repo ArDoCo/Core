@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 
 /**
  * This class represents an instance extracted from a model. The name of an instance (as well as the type) are splitted
@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
  * @author Sophie
  *
  */
-public class Instance implements IInstance {
+public class Instance implements IModelInstance {
 
     private String longestName;
     private String longestType;
@@ -26,7 +26,7 @@ public class Instance implements IInstance {
     private String uid;
 
     @Override
-    public IInstance createCopy() {
+    public IModelInstance createCopy() {
         return new Instance(longestName, longestType, new ArrayList<>(names), new ArrayList<>(types), uid);
 
     }

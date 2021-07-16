@@ -9,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
@@ -63,7 +63,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
      */
     private void findNamesOfModelInstancesInSupposedMappings() {
         List<IRecommendedInstance> ris = recommendationState.getRecommendedInstances();
-        for (IInstance i : modelState.getInstances()) {
+        for (IModelInstance i : modelState.getInstances()) {
             List<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
 
             List<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.stream()
