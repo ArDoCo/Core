@@ -14,7 +14,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.INodeType;
 import edu.kit.ipd.parse.luna.graph.ParseGraph;
 
-public class ParseUtil {
+public final class ParseUtil {
     private static final Logger logger = LoggerFactory.getLogger(ParseUtil.class);
 
     private static final String TOKEN_NODE_TYPE = "token";
@@ -55,7 +55,7 @@ public class ParseUtil {
             }
             for (IArc arc : node.getOutgoingArcsOfType(arcType)) {
                 Object value = arc.getAttributeValue(VALUE);
-                if (value.equals(ARC_TYPE_VALUE)) {
+                if (ARC_TYPE_VALUE.equals(value)) {
                     node = arc.getTargetNode();
                     break;
                 }
@@ -72,9 +72,9 @@ public class ParseUtil {
             String word = (String) node.getAttributeValue(VALUE);
             String pos = (String) node.getAttributeValue(TOKEN_POS_ATTRIBUTE_NAME);
 
-            if (word.equals("-LRB-")) {
+            if ("-LRB-".equals(word)) {
                 textBuilder.append("(");
-            } else if (word.equals("-RRB-")) {
+            } else if ("-RRB-".equals(word)) {
                 textBuilder.append(")");
             } else {
                 textBuilder.append(word);

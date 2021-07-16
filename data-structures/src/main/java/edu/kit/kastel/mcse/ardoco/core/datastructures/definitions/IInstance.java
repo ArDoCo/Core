@@ -2,8 +2,15 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
 import java.util.List;
 
+/**
+ * The Interface IInstance defines instances from models.
+ */
 public interface IInstance {
-
+    /**
+     * Create a deep copy of the instance.
+     *
+     * @return a copy of the instance
+     */
     IInstance createCopy();
 
     /**

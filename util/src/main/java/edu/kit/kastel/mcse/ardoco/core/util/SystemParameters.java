@@ -14,7 +14,7 @@ import org.eclipse.collections.impl.factory.Lists;
 public class SystemParameters {
 
     private final Properties prop = new Properties();
-    private static final Logger LOGGER = LogManager.getLogger(SystemParameters.class);
+    private static final Logger logger = LogManager.getLogger(SystemParameters.class);
 
     public SystemParameters(String filepath, boolean isResource) {
 
@@ -26,13 +26,13 @@ public class SystemParameters {
             try (var inputStream = loader.getClass().getResourceAsStream(filepath)) {
                 prop.load(inputStream);
             } catch (IOException e) {
-                LOGGER.debug(e.getMessage(), e.getCause());
+                logger.debug(e.getMessage(), e.getCause());
             }
         } else {
             try (var inputStream = new FileInputStream(filepath)) {
                 prop.load(inputStream);
             } catch (IOException e) {
-                LOGGER.debug(e.getMessage(), e.getCause());
+                logger.debug(e.getMessage(), e.getCause());
             }
         }
     }
@@ -57,7 +57,7 @@ public class SystemParameters {
         try {
             return Double.parseDouble(prop.getProperty(key));
         } catch (NumberFormatException n) {
-            LOGGER.debug(n.getMessage(), n.getCause());
+            logger.debug(n.getMessage(), n.getCause());
             return -1;
         }
     }
@@ -72,7 +72,7 @@ public class SystemParameters {
         try {
             return Integer.parseInt(prop.getProperty(key));
         } catch (NumberFormatException n) {
-            LOGGER.debug(n.getMessage(), n.getCause());
+            logger.debug(n.getMessage(), n.getCause());
             return -1;
         }
     }

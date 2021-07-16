@@ -109,32 +109,15 @@ public final class SimilarityUtils {
 
     /**
      * Extracts mappings out of a list, containing mappings, by similarity to an instance. This check is not
-     * bidirectional! This method uses the {@link #areWordsOfListsSimilar(List, List)} with the names of the instance as
-     * original and the reference of the mappings as test strings.
-     *
-     * @param instance the model instance
-     * @param mapping  list of mappings
-     * @return list of mappings which are similar to the instance.
-     */
-    public static List<INounMapping> getAllSimilarNMappingToInstanceByReferences(IInstance instance, List<INounMapping> mapping) {
-        List<String> instanceNames = instance.getNames();
-        return mapping.stream().filter(n -> SimilarityUtils.areWordsOfListsSimilar(instanceNames, List.of(n.getReference()))).collect(Collectors.toList());
-
-    }
-
-    /**
-     * Extracts mappings out of a list, containing mappings, by similarity to an instance. This check is not
      * bidirectional! This method uses the {@link #areWordsOfListsSimilar(List, List)} with the ref as original and the
      * reference of the mappings as test strings.
      *
-     * @param ref           the given ref to search for
-     * @param INounMappings the mappings to filter
+     * @param ref          the given ref to search for
+     * @param nounMappings the mappings to filter
      * @return list of mappings which are similar to the given ref.
      */
-    public static List<INounMapping> getAllSimilarNMappingsByReference(String ref, List<INounMapping> nounMappings) {
-
+    private static List<INounMapping> getAllSimilarNMappingsByReference(String ref, List<INounMapping> nounMappings) {
         return nounMappings.stream().filter(n -> SimilarityUtils.areWordsSimilar(n.getReference(), ref)).collect(Collectors.toList());
-
     }
 
     /**
@@ -223,19 +206,6 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Extracts most similar mappings from a given recommended model instance. This method uses
-     * {@link #getMostLikelyNMappingsByReference(String, List)}.
-     *
-     * @param ri recommended instance under investigation
-     * @return most similar mappings
-     */
-    public static List<INounMapping> getMostLikelyNNMappingsByName(IRecommendedInstance ri) {
-
-        return getMostLikelyNMappingsByReference(ri.getName(), ri.getNameMappings());
-
-    }
-
-    /**
      * Counts the longest common substring of two strings. Source:
      * https://www.programcreek.com/2015/04/longest-common-substring-java/
      *
@@ -243,7 +213,7 @@ public final class SimilarityUtils {
      * @param b second String
      * @return size of the longest common substring
      */
-    public static int getLongestCommonSubstring(String a, String b) {
+    private static int getLongestCommonSubstring(String a, String b) {
         int m = a.length();
         int n = b.length();
 
@@ -290,7 +260,7 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks if a string contains any separators
+     * Checks if a string contains any separators.
      *
      * @param reference string to check
      * @return true, if a separator is contained or false, if not

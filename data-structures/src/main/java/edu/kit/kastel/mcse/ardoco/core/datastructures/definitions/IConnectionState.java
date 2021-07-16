@@ -4,9 +4,10 @@ import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
-public interface IConnectionState extends IState {
-
-    IConnectionState createCopy();
+/**
+ * The Interface IConnectionState.
+ */
+public interface IConnectionState extends IState<IConnectionState> {
 
     /**
      * Returns all instance links.
@@ -31,13 +32,19 @@ public interface IConnectionState extends IState {
      */
     List<IInstanceLink> getInstanceLinksByType(String type);
 
+    /**
+     * Returns all instance links with a model instance containing the given recommended instance.
+     *
+     * @param recommendedInstance the recommended instance to consider
+     * @return all instance links found
+     */
     List<IInstanceLink> getInstanceLinksByRecommendedInstance(IRecommendedInstance recommendedInstance);
 
     /**
      * Returns all instance links with a model instance containing the given name and type.
      *
-     * @param type the type of a model instance
      * @param name the name of a model instance
+     * @param type the type of a model instance
      * @return all instance links with a model instance containing the given name and type as list
      */
     List<IInstanceLink> getInstanceLinks(String name, String type);
@@ -61,21 +68,21 @@ public interface IConnectionState extends IState {
     boolean isContainedByInstanceLinks(IInstanceLink instanceLink);
 
     /**
-     * Removes an instance link from the state
+     * Removes an instance link from the state.
      *
      * @param instanceMapping the instance link to remove
      */
     void removeFromMappings(IInstanceLink instanceMapping);
 
     /**
-     * Removes all instance links containing the given instance
+     * Removes all instance links containing the given instance.
      *
      * @param instance the given instance
      */
     void removeAllInstanceLinksWith(IInstance instance);
 
     /**
-     * Removes all instance links containing the given recommended instance
+     * Removes all instance links containing the given recommended instance.
      *
      * @param instance the given recommended instance
      */
@@ -114,7 +121,7 @@ public interface IConnectionState extends IState {
     /**
      * Checks if a relation link is already contained by the state.
      *
-     * @param relationMapping
+     * @param relationMapping the relation mapping
      * @return true, if the relation link is already contained. False if not.
      */
     boolean isContainedByRelationLinks(IRelationLink relationMapping);

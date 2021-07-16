@@ -16,9 +16,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 
+/**
+ * This helper class can load {@link ILoadable ILoadables}.
+ */
 public final class Loader {
     // Just for local debugging, as this method finds all necessary classes
-    public static final boolean USE_REFLECTION = true;
+    private static final boolean USE_REFLECTION = true;
 
     private static final Map<Class<?>, List<Class<?>>> CACHE = new HashMap<>();
 
@@ -28,10 +31,24 @@ public final class Loader {
         throw new IllegalAccessError();
     }
 
+    /**
+     * Load loadable of a specific class (and subclasses).
+     *
+     * @param <A>    the generic type
+     * @param classA the class A
+     * @return the map
+     */
     public static <A extends ILoadable> Map<String, A> loadLoadable(Class<A> classA) {
         return USE_REFLECTION ? loadLoadableViaReflect(classA) : loadLoadableViaServiceLoader(classA);
     }
 
+    /**
+     * Load loadable via service loader.
+     *
+     * @param <A>    the class type to load
+     * @param classA the class to load
+     * @return a map from name (see {@link ILoadable#getName()}) to instance
+     */
     public static <A extends ILoadable> Map<String, A> loadLoadableViaServiceLoader(Class<A> classA) {
         ServiceLoader<A> loader = ServiceLoader.load(classA);
         Map<String, A> loads = new HashMap<>();
@@ -43,6 +60,13 @@ public final class Loader {
         return loads;
     }
 
+    /**
+     * Load loadable via reflection.
+     *
+     * @param <A>    the class type to load
+     * @param classA the class to load
+     * @return a map from name (see {@link ILoadable#getName()}) to instance
+     */
     public static <A extends ILoadable> Map<String, A> loadLoadableViaReflect(Class<A> classA) {
         Map<String, A> loads = new HashMap<>();
 
