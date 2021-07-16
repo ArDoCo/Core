@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 class OntologyWordTest {
     private static String ontologyPath = "src/test/resources/teastore_w_text.owl";
 
-    private static String testWordUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#EPJzvY1ka2";
+    private static String testWordUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#wjH9KUsDJY";
 
     private OntologyConnector ontologyConnector;
     private OntologyWord ontologyWord;
@@ -85,9 +85,9 @@ class OntologyWordTest {
     @Test
     @DisplayName("Test retrieval of previous word")
     void getPreviousTest() {
-        var nextWord = ontologyWord.getPreWord();
+        var prevWord = ontologyWord.getPreWord();
         var expectedText = "a";
-        Assertions.assertEquals(expectedText, nextWord.getText());
-        Assertions.assertEquals(737, nextWord.getPosition());
+        Assertions.assertEquals(expectedText, prevWord.getText());
+        Assertions.assertEquals(737, prevWord.getPosition());
     }
 }

@@ -21,20 +21,28 @@ public class OntologyUtil {
     }
 
     /**
-     * Generates a random ID
+     * Generates a random ID with target length 10.
      *
      * @return String containing a random ID
      */
     public static String generateRandomID() {
+        return generateRandomID(10);
+    }
+
+    /**
+     * Generates a random ID with the given target length
+     *
+     * @return String containing a random ID
+     */
+    public static String generateRandomID(int targetStringLength) {
         var leftLimit = 48; // numeral '0'
         var rightLimit = 122; // letter 'z'
-        var targetStringLength = 10;
-
         var id = "";
         do {
-            id = random.ints(leftLimit, rightLimit + 1)
+            var startLetter = Character.toString((char) (random.nextInt(26) + 'a'));
+            id = startLetter + random.ints(leftLimit, rightLimit + 1)
                     .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                    .limit(targetStringLength)
+                    .limit(targetStringLength - 1L)
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString();
         } while (!assignedIDs.add(id));

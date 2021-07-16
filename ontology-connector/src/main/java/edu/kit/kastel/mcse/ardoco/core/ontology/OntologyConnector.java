@@ -793,8 +793,8 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
-    public void addPropertyToIndividual(Individual individual, OntProperty property, String value) {
-        individual.addProperty(property, value);
+    public Resource addPropertyToIndividual(Individual individual, OntProperty property, String value) {
+        return individual.addProperty(property, value);
     }
 
     /**
@@ -805,8 +805,8 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      * @param language   language of the property value
      */
-    public void addPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
-        individual.addProperty(property, value, language);
+    public Resource addPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
+        return individual.addProperty(property, value, language);
     }
 
     /**
@@ -816,8 +816,8 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
-    public void addPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
-        individual.addProperty(property, value);
+    public Resource addPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
+        return individual.addProperty(property, value);
     }
 
     /**
@@ -827,8 +827,8 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
-    public void addPropertyToIndividual(Individual individual, OntProperty property, int value) {
-        addPropertyToIndividual(individual, property, value, XSD.integer.toString());
+    public Resource addPropertyToIndividual(Individual individual, OntProperty property, int value) {
+        return addPropertyToIndividual(individual, property, value, XSD.integer.toString());
     }
 
     /**
@@ -839,9 +839,9 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      * @param type       Type of the value
      */
-    public void addPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
+    public Resource addPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
         var valueLiteral = ontModel.createTypedLiteral(value, type);
-        individual.addProperty(property, valueLiteral);
+        return individual.addProperty(property, valueLiteral);
     }
 
     /**
