@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.jena.ontology.AnnotationProperty;
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.rdf.model.Resource;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -26,6 +28,9 @@ public class OntologyWord implements IWord {
     private OntProperty hasItem;
     private ObjectProperty hasNext;
     private ObjectProperty hasPrevious;
+    private ObjectProperty dependencySourceProperty;
+    private ObjectProperty dependencyTargetProperty;
+    private AnnotationProperty dependencyTypeProperty;
 
     private OntologyWord(OntologyConnector ontologyConnector, Individual wordIndividual) {
         this.ontologyConnector = ontologyConnector;
@@ -50,6 +55,9 @@ public class OntologyWord implements IWord {
         hasItem = ontologyConnector.getProperty("has item").orElseThrow();
         hasNext = ontologyConnector.getObjectProperty("has next").orElseThrow();
         hasPrevious = ontologyConnector.getObjectProperty("has previous").orElseThrow();
+        dependencySourceProperty = ontologyConnector.getObjectProperty("has source").orElseThrow();
+        dependencyTargetProperty = ontologyConnector.getObjectProperty("has target").orElseThrow();
+        dependencyTypeProperty = ontologyConnector.getAnnotationProperty("dependencyType").orElseThrow();
     }
 
     @Override
@@ -150,8 +158,8 @@ public class OntologyWord implements IWord {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
+        final var prime = 31;
+        var result = 1;
         result = prime * result + getPosition();
         result = prime * result + getSentenceNo();
         var text = getText();
@@ -189,16 +197,66 @@ public class OntologyWord implements IWord {
         return true;
     }
 
+    /**
+     * Outgoing dependencies
+     */
     @Override
     public List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
-        // TODO Auto-generated method stub
-        return new ArrayList<>();
+        if (dependencyTag == null) {
+            return new ArrayList<>();
+        }
+        List<Resource> dependencies = ontologyConnector.getSubjectsOf(dependencySourceProperty, wordIndividual);
+        var filteredDependencies = filterDependencyResourcesByType(dependencyTag, dependencies);
+        var targets = extractIndividualsInRelation(filteredDependencies, dependencyTargetProperty);
+        return createWordsFromIndividuals(targets);
     }
 
+    /**
+     * Incoming dependencies
+     */
     @Override
     public List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
-        // TODO Auto-generated method stub
-        return new ArrayList<>();
+        if (dependencyTag == null) {
+            return new ArrayList<>();
+        }
+        List<Resource> dependencies = ontologyConnector.getSubjectsOf(dependencyTargetProperty, wordIndividual);
+        var filteredDependencies = filterDependencyResourcesByType(dependencyTag, dependencies);
+        var targets = extractIndividualsInRelation(filteredDependencies, dependencySourceProperty);
+        return createWordsFromIndividuals(targets);
+    }
+
+    private List<IWord> createWordsFromIndividuals(List<Individual> individuals) {
+        var words = new ArrayList<IWord>();
+        for (var individual : individuals) {
+            words.add(OntologyWord.get(ontologyConnector, individual));
+        }
+        return words;
+    }
+
+    private List<Individual> extractIndividualsInRelation(List<Individual> filteredDependencies, OntProperty property) {
+        var targets = new ArrayList<Individual>();
+        for (var dependency : filteredDependencies) {
+            var targetNode = ontologyConnector.getPropertyValue(dependency, property);
+            if (targetNode.canAs(Individual.class)) {
+                targets.add(targetNode.as(Individual.class));
+            }
+        }
+        return targets;
+    }
+
+    private List<Individual> filterDependencyResourcesByType(DependencyTag dependencyTag, List<Resource> dependencies) {
+        var filteredDependencies = new ArrayList<Individual>();
+        for (var dependency : dependencies) {
+            if (!dependency.canAs(Individual.class)) {
+                continue;
+            }
+            var depIndividual = dependency.as(Individual.class);
+            var depType = ontologyConnector.getPropertyStringValue(depIndividual, dependencyTypeProperty);
+            if (depType.isPresent() && dependencyTag.name().equalsIgnoreCase(depType.get())) {
+                filteredDependencies.add(depIndividual);
+            }
+        }
+        return filteredDependencies;
     }
 
 }

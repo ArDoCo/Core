@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 
@@ -15,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 class OntologyWordTest {
     private static String ontologyPath = "src/test/resources/teastore_w_text.owl";
 
-    private static String testWordUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#wjH9KUsDJY";
+    private static final String testWordUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#wjH9KUsDJY";
 
     private OntologyConnector ontologyConnector;
     private OntologyWord ontologyWord;
@@ -89,5 +92,36 @@ class OntologyWordTest {
         var expectedText = "a";
         Assertions.assertEquals(expectedText, prevWord.getText());
         Assertions.assertEquals(737, prevWord.getPosition());
+    }
+
+    @Test
+    @DisplayName("Test retrieval of incoming dependencies")
+    void getIncomingDependenciesTest() {
+        var targetUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#sUAn9rYoLC";
+
+        var testWordTargetIndividual = ontologyConnector.getIndividualByIri(targetUri).orElseThrow();
+        ontologyWord = OntologyWord.get(ontologyConnector, testWordTargetIndividual);
+
+        var deps = ontologyWord.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ);
+        Assertions.assertEquals(1, deps.size());
+
+        var depText = deps.get(0).getText();
+        Assertions.assertEquals("provides", depText);
+    }
+
+    @Test
+    @DisplayName("Test retrieval of outgoing dependencies")
+    void getOutgoingDependenciesTest() {
+        var dependencyWordSourceUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#nX2CNoSy17";
+        var testWordSourceIndividual = ontologyConnector.getIndividualByIri(dependencyWordSourceUri).orElseThrow();
+        ontologyWord = OntologyWord.get(ontologyConnector, testWordSourceIndividual);
+
+        var deps = ontologyWord.getWordsThatAreDependencyOfThis(DependencyTag.NMOD);
+        Assertions.assertEquals(2, deps.size());
+
+        var depTextList = deps.stream().map(d -> d.getText()).collect(Collectors.toList());
+        Assertions.assertTrue(depTextList.contains("go"));
+        Assertions.assertTrue(depTextList.contains("user"));
+
     }
 }

@@ -932,7 +932,7 @@ public class OntologyConnector {
      * @param object   object that should be contained
      * @return List of extracted subjects
      */
-    public List<Resource> getSubjectsOf(OntProperty property, RDFNode object) {
+    public List<Resource> getSubjectsOf(OntProperty property, OntResource object) {
         var stmtIterator = ontModel.listStatements(null, property, object);
         var resList = new ArrayList<Resource>();
         while (stmtIterator.hasNext()) {
