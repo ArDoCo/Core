@@ -9,11 +9,10 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors.GenericRecommendationConfig;
 
-public class RecommendationGenerator implements IAgentModule<AgentDatastructure> {
+public class RecommendationGenerator implements IModule<AgentDatastructure> {
 
     private AgentDatastructure data;
     private List<IAgent> agents = new ArrayList<>();
@@ -40,7 +39,9 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
 
     @Override
     public void exec() {
-        runAgents();
+        for (IAgent agent : agents) {
+            agent.exec();
+        }
     }
 
     /**
@@ -55,17 +56,6 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
                 throw new IllegalArgumentException("RecommendationAgent " + recommendationAgent + " not found");
             }
             agents.add(myAgents.get(recommendationAgent).create(data, agentConfig));
-        }
-
-    }
-
-    /**
-     * Runs solvers, that create recommendations.
-     */
-    @Override
-    public void runAgents() {
-        for (IAgent agent : agents) {
-            agent.exec();
         }
 
     }

@@ -5,9 +5,7 @@ import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
-public interface ITextState extends IState {
-
-    ITextState createCopy();
+public interface ITextState extends IState<ITextState> {
 
     /***
      * Adds a name mapping to the state

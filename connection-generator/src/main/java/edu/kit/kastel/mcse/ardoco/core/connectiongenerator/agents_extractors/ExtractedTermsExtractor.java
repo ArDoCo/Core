@@ -101,24 +101,18 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
         if (termMappings.isEmpty()) {
             return;
-
         }
-        for (ITermMapping term : termMappings) {
 
+        for (ITermMapping term : termMappings) {
             List<INounMapping> adjacentNounMappings = getTermAdjacentNounMappings(node, term);
             if (adjacentNounMappings.isEmpty() && term.getKind().equals(MappingKind.NAME)) {
-
                 recommendationState.addRecommendedInstanceJustName(term.getReference(), probabilityJustName, term.getMappings());
-
             } else {
                 createRecommendedInstancesForSurroundingNounMappings(term, adjacentNounMappings);
-
                 List<ITermMapping> adjacentTermMappings = new ArrayList<>();
-
                 for (INounMapping surroundingMapping : adjacentNounMappings) {
                     adjacentTermMappings.addAll(textState.getTermsByContainedMapping(surroundingMapping));
                 }
-
                 createRecommendedInstancesForAdjacentTermMappings(node, term, adjacentTermMappings);
             }
         }
@@ -139,9 +133,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
                 int position = termNounMappings.indexOf(wordMapping);
 
-                if (//
-                !arePreviousWordsEqualToReferences(termNounMappings, n, position) && //
-                        !areNextWordsEqualToReferences(termNounMappings, n, position)) {
+                if (!arePreviousWordsEqualToReferences(termNounMappings, n, position) && !areNextWordsEqualToReferences(termNounMappings, n, position)) {
                     possibleOccuredTermMappings.add(term);
                     break;
                     // TODO: poss. rework -> assumption: There is only one corresponding term
