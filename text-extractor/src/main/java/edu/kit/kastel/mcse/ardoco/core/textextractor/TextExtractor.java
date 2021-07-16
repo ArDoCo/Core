@@ -9,10 +9,13 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors.GenericTextConfig;
 
-public class TextExtractor implements IModule<AgentDatastructure> {
+/**
+ * The Class TextExtractor.
+ */
+public class TextExtractor implements IExecutionStage {
 
     private AgentDatastructure data;
     private List<IAgent> agents = new ArrayList<>();
@@ -22,21 +25,28 @@ public class TextExtractor implements IModule<AgentDatastructure> {
     /**
      * Creates a new model connection agent with the given extraction states.
      *
-     * @param graph                the PARSE graph
-     * @param modelExtractionState the model extraction state
-     * @param textExtractionState  the text extraction state
-     * @param recommendationState  the state with the recommendations
+     * @param data the data for the stage
      */
     public TextExtractor(AgentDatastructure data) {
         this(data, TextExtractorConfig.DEFAULT_CONFIG, GenericTextConfig.DEFAULT_CONFIG);
     }
 
+    /**
+     * Instantiates a new text extractor.
+     */
     public TextExtractor() {
         config = null;
         agentConfig = null;
 
     }
 
+    /**
+     * Instantiates a new text extractor.
+     *
+     * @param data the data
+     * @param config the config
+     * @param agentConfig the agent config
+     */
     public TextExtractor(AgentDatastructure data, TextExtractorConfig config, GenericTextConfig agentConfig) {
         this.data = data;
         this.config = config;
@@ -46,8 +56,7 @@ public class TextExtractor implements IModule<AgentDatastructure> {
     }
 
     @Override
-    public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
-
+    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
         return new TextExtractor(data, new TextExtractorConfig(configs), new GenericTextConfig(configs));
     }
 

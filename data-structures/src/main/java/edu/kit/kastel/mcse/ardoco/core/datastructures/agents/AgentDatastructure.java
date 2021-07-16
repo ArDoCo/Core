@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
@@ -10,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 /**
  * The data structure (blackboard) for the {@link Agent Agents}.
  */
-public final class AgentDatastructure {
+public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
 
     private IText text;
     private ITextState textState;
@@ -30,6 +31,7 @@ public final class AgentDatastructure {
      * @return the copy of the data structure
      * @see IState#createCopy()
      */
+    @Override
     public AgentDatastructure createCopy() {
         AgentDatastructure data = new AgentDatastructure();
         data.text = text;

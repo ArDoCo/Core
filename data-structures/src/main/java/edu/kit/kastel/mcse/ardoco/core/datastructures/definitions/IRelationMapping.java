@@ -2,9 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
 import java.util.List;
 
-public interface IRelationMapping {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRelationMapping createCopy();
+/**
+ * The Interface IRelationMapping defines a marker in the text that represents a possible relation.
+ */
+public interface IRelationMapping extends ICopyable<IRelationMapping> {
 
     /**
      * Adds more NounMappings to the relation.

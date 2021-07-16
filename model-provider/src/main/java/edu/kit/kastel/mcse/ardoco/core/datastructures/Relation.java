@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 
 /**
  * Represents a relation extracted from a model. A relation must have at least
@@ -15,18 +15,18 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
  * @author Sophie
  *
  */
-public class Relation implements IRelation {
+public class Relation implements IModelRelation {
 
-	private List<IInstance> instances;
+	private List<IModelInstance> instances;
 	private String type;
 	private String uid;
 
 	@Override
-	public IRelation createCopy() {
+	public IModelRelation createCopy() {
 		return new Relation(new ArrayList<>(instances), type, uid);
 	}
 
-	private Relation(List<IInstance> instances, String type, String uid) {
+	private Relation(List<IModelInstance> instances, String type, String uid) {
 
 		this.instances = instances;
 		this.type = type;
@@ -42,7 +42,7 @@ public class Relation implements IRelation {
 	 * @param type      title of relation
 	 * @param uid       unique identifier for trace linking
 	 */
-	public Relation(IInstance instance1, IInstance instance2, String type, String uid) {
+	public Relation(IModelInstance instance1, IModelInstance instance2, String type, String uid) {
 		instances = new ArrayList<>();
 		instances.add(instance1);
 		instances.add(instance2);
@@ -57,8 +57,8 @@ public class Relation implements IRelation {
 	 * @param others list of other end points of this relation
 	 */
 	@Override
-	public void addOtherInstances(List<? extends IInstance> others) {
-		for (IInstance o : others) {
+	public void addOtherInstances(List<? extends IModelInstance> others) {
+		for (IModelInstance o : others) {
 			if (!instances.contains(o)) {
 				instances.add(o);
 			}
@@ -71,7 +71,7 @@ public class Relation implements IRelation {
 	 * @return list of connected instances by this relation
 	 */
 	@Override
-	public List<? extends IInstance> getInstances() {
+	public List<? extends IModelInstance> getInstances() {
 		return instances;
 	}
 
@@ -98,7 +98,7 @@ public class Relation implements IRelation {
 	@Override
 	public String toString() {
 
-		List<String> instanceNames = instances.stream().map(IInstance::getLongestName).collect(Collectors.toList());
+		List<String> instanceNames = instances.stream().map(IModelInstance::getLongestName).collect(Collectors.toList());
 
 		return "Relation: [" + " name=" + type + ", instances= " + String.join(", ", instanceNames) + "]";
 	}

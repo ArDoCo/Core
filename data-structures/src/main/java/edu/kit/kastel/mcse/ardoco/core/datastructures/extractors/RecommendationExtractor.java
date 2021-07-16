@@ -16,7 +16,7 @@ public abstract class RecommendationExtractor extends Extractor {
     public RecommendationExtractor create(AgentDatastructure data, Configuration config) {
 
         if (null == data.getTextState() || null == data.getModelState() || null == data.getRecommendationState()) {
-            throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
+            throw new IllegalArgumentException("An input of the agent" + getId() + " was null!");
         }
         return create(data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
     }

@@ -2,16 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
+
 /**
- * The Interface IInstance defines instances from models.
+ * The Interface IModelInstance defines instances from models.
  */
-public interface IInstance {
-    /**
-     * Create a deep copy of the instance.
-     *
-     * @return a copy of the instance
-     */
-    IInstance createCopy();
+public interface IModelInstance extends ICopyable<IModelInstance> {
 
     /**
      * Returns the longest name of the instance.

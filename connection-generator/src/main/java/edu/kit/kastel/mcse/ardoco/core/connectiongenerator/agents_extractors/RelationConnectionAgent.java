@@ -11,13 +11,13 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 
@@ -66,7 +66,7 @@ public class RelationConnectionAgent extends ConnectionAgent {
      */
     private void solveReferencesOfRelations() {
 
-        for (IRelation relation : modelState.getRelations()) {
+        for (IModelRelation relation : modelState.getRelations()) {
             List<IRecommendedRelation> similarRecommendedRelations = new ArrayList<>();
 
             for (IRecommendedRelation recommendedRelation : recommendationState.getRecommendedRelations()) {
@@ -97,11 +97,11 @@ public class RelationConnectionAgent extends ConnectionAgent {
 
     }
 
-    private List<List<IRecommendedInstance>> getPossibilitesBackwards(IRelation relation, IRecommendedRelation recommendedRelation) {
+    private List<List<IRecommendedInstance>> getPossibilitesBackwards(IModelRelation relation, IRecommendedRelation recommendedRelation) {
         List<List<IRecommendedInstance>> possibilities = new ArrayList<>();
         int relationSize = relation.getInstances().size();
         for (var i = 0; i < relationSize; i++) {
-            IInstance relationInstance = relation.getInstances().get(i);
+            IModelInstance relationInstance = relation.getInstances().get(i);
             int indexForRecommendedRelation = relationSize - 1 - i;
             IRecommendedInstance recommendedRelationInstance = recommendedRelation.getRelationInstances().get(indexForRecommendedRelation);
             List<IRecommendedInstance> possibility = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(relationInstance,
@@ -118,11 +118,11 @@ public class RelationConnectionAgent extends ConnectionAgent {
         return possibilities;
     }
 
-    private List<List<IRecommendedInstance>> getPossibilities(IRelation relation, IRecommendedRelation recommendedRelation) {
+    private List<List<IRecommendedInstance>> getPossibilities(IModelRelation relation, IRecommendedRelation recommendedRelation) {
         List<List<IRecommendedInstance>> possibilities = new ArrayList<>();
         int relationSize = relation.getInstances().size();
         for (var i = 0; i < relationSize; i++) {
-            IInstance relationInstance = relation.getInstances().get(i);
+            IModelInstance relationInstance = relation.getInstances().get(i);
             IRecommendedInstance recommendedRelationInstance = recommendedRelation.getRelationInstances().get(i);
             List<IRecommendedInstance> possibility = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(relationInstance,
                     List.of(recommendedRelationInstance));
@@ -136,7 +136,7 @@ public class RelationConnectionAgent extends ConnectionAgent {
         return possibilities;
     }
 
-    private void addRelationIfInstanceInConnectionState(List<IRecommendedRelation> similarRecommendedRelations, IRelation relation) {
+    private void addRelationIfInstanceInConnectionState(List<IRecommendedRelation> similarRecommendedRelations, IModelRelation relation) {
 
         Predicate<? super IRecommendedRelation> filterPredicate = similarRecommendedInstance -> similarRecommendedInstance.getRelationInstances()
                 .stream()

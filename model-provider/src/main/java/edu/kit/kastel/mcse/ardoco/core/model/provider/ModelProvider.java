@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 
 /**
@@ -17,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
  * @author Sophie
  *
  */
-public final class ModelProvider implements IModule<IModelState> {
+public final class ModelProvider implements IExecutionStage {
 
     private IModelState modelExtractionState;
     private IModelConnector modelConnector;
@@ -32,21 +33,22 @@ public final class ModelProvider implements IModule<IModelState> {
     }
 
     @Override
-    public IModelState getState() {
-        return modelExtractionState;
+    public AgentDatastructure getState() {
+        return new AgentDatastructure(null, null, modelExtractionState, null, null);
     }
 
     @Override
     public void exec() {
-        List<IInstance> instances = modelConnector.getInstances();
-        List<IRelation> relations = modelConnector.getRelations();
+        List<IModelInstance> instances = modelConnector.getInstances();
+        List<IModelRelation> relations = modelConnector.getRelations();
 
         modelExtractionState = new ModelExtractionState(instances, relations);
 
     }
 
     @Override
-    public IModule<IModelState> create(IModelState data, Map<String, String> configs) {
+    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
+        // TODO Sophie: Check whether it is ok that we do not use the data :)
         return new ModelProvider(modelConnector);
     }
 

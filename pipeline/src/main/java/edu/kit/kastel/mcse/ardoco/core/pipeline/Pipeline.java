@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
@@ -169,13 +169,13 @@ public final class Pipeline {
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
-        IModule<IModelState> hardCodedModelExtractor = new ModelProvider(modelConnector);
+        IExecutionStage hardCodedModelExtractor = new ModelProvider(modelConnector);
         hardCodedModelExtractor.exec();
-        return hardCodedModelExtractor.getState();
+        return hardCodedModelExtractor.getState().getModelState();
     }
 
     private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {
-        IModule<AgentDatastructure> textModule = new TextExtractor(data);
+        IExecutionStage textModule = new TextExtractor(data);
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();
             Configuration.mergeConfigToMap(configs, TextExtractorConfig.DEFAULT_CONFIG);
@@ -189,7 +189,7 @@ public final class Pipeline {
     }
 
     private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data, File additionalConfigs) {
-        IModule<AgentDatastructure> recommendationModule = new RecommendationGenerator(data);
+        IExecutionStage recommendationModule = new RecommendationGenerator(data);
 
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();
@@ -204,7 +204,7 @@ public final class Pipeline {
     }
 
     private static AgentDatastructure runConnectionGenerator(AgentDatastructure data, File additionalConfigs) {
-        IModule<AgentDatastructure> connectionGenerator = new ConnectionGenerator(data);
+        IExecutionStage connectionGenerator = new ConnectionGenerator(data);
 
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();

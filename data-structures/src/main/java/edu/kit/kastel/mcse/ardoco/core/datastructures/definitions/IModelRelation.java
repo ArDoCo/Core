@@ -2,26 +2,29 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
 import java.util.List;
 
-public interface IRelation {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRelation createCopy();
+/**
+ * The Interface IModelRelation defines a relation extracted from the model.
+ */
+public interface IModelRelation extends ICopyable<IModelRelation> {
 
     /**
      * Adds more end points to the relation. Checks if the instance is already contained.
      *
      * @param others list of other end points of this relation
      */
-    void addOtherInstances(List<? extends IInstance> others);
+    void addOtherInstances(List<? extends IModelInstance> others);
 
     /**
      * Returns the end points of this relation as instances.
      *
      * @return list of connected instances by this relation
      */
-    List<? extends IInstance> getInstances();
+    List<? extends IModelInstance> getInstances();
 
     /**
-     * Returns the determiner of the relation
+     * Returns the determiner of the relation.
      *
      * @return the type of relation
      */

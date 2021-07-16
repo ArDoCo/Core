@@ -57,7 +57,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param instance                 the model instance
      * @param probability              the probability of the link
      */
-    void addToLinks(IRecommendedInstance recommendedModelInstance, IInstance instance, double probability);
+    void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, double probability);
 
     /**
      * Checks if an instance link is already contained by the state.
@@ -79,7 +79,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      *
      * @param instance the given instance
      */
-    void removeAllInstanceLinksWith(IInstance instance);
+    void removeAllInstanceLinksWith(IModelInstance instance);
 
     /**
      * Removes all instance links containing the given recommended instance.
@@ -109,7 +109,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param relation                 the model relation
      * @param probability              the probability of the link
      */
-    void addToLinks(IRecommendedRelation recommendedModelRelation, IRelation relation, double probability);
+    void addToLinks(IRecommendedRelation recommendedModelRelation, IModelRelation relation, double probability);
 
     /**
      * Adds a relation link to the state.
@@ -145,6 +145,6 @@ public interface IConnectionState extends IState<IConnectionState> {
      *
      * @param relation the relation to search for
      */
-    void removeAllMappingsWith(IRelation relation);
+    void removeAllMappingsWith(IModelRelation relation);
 
 }

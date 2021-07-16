@@ -21,8 +21,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.Instance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 
 /**
@@ -50,8 +50,8 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     @Override
-    public List<IInstance> getInstances() {
-        MutableList<IInstance> instances = Lists.mutable.empty();
+    public List<IModelInstance> getInstances() {
+        MutableList<IModelInstance> instances = Lists.mutable.empty();
 
         for (String type : TYPES) {
             instances.addAll(getInstancesOfType(type));
@@ -60,8 +60,8 @@ public class PcmOntologyModelConnector implements IModelConnector {
         return instances;
     }
 
-    private List<IInstance> getInstancesOfType(String type) {
-        List<IInstance> instances = Lists.mutable.empty();
+    private List<IModelInstance> getInstancesOfType(String type) {
+        List<IModelInstance> instances = Lists.mutable.empty();
         Optional<OntClass> optionalClass = getClass(type);
         if (optionalClass.isEmpty()) {
             return instances;
@@ -96,7 +96,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     @Override
-    public List<IRelation> getRelations() {
+    public List<IModelRelation> getRelations() {
         logger.warn("This method is not yet implemented and will return an empty list!");
         return Lists.mutable.empty();
     }

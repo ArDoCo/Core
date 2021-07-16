@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 
 /**
  * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as
@@ -20,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
  * @author Sophie
  *
  */
-public class ConnectionGenerator implements IModule<AgentDatastructure> {
+public class ConnectionGenerator implements IExecutionStage {
 
     private AgentDatastructure data;
 
@@ -85,7 +85,7 @@ public class ConnectionGenerator implements IModule<AgentDatastructure> {
     }
 
     @Override
-    public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
+    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
         return new ConnectionGenerator(data, new ConnectionGeneratorConfig(configs), new GenericConnectionConfig(configs));
     }
 }

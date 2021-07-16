@@ -45,9 +45,9 @@ public class SeparatedNamesExtractor extends TextExtractor {
     @Override
     public void setProbability(List<Double> probabilities) {
         if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are more than needed!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
         } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getName() + ": The given probabilities are empty!");
+            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
         } else {
             probability = probabilities.get(0);
         }

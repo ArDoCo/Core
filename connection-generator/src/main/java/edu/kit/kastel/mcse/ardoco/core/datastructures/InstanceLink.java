@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedIn
 public class InstanceLink implements IInstanceLink {
 
 	private IRecommendedInstance textualInstance;
-	private IInstance modelInstance;
+	private IModelInstance modelInstance;
 	private double probability;
 
 	@Override
@@ -37,7 +37,7 @@ public class InstanceLink implements IInstanceLink {
 	 * @param modelInstance   the extracted instance
 	 * @param probability     the probability of this link
 	 */
-	public InstanceLink(IRecommendedInstance textualInstance, IInstance modelInstance, double probability) {
+	public InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance, double probability) {
 		this.textualInstance = textualInstance;
 		this.modelInstance = modelInstance;
 		this.probability = probability;
@@ -79,7 +79,7 @@ public class InstanceLink implements IInstanceLink {
 	 * @return the extracted instance
 	 */
 	@Override
-	public IInstance getModelInstance() {
+	public IModelInstance getModelInstance() {
 		return modelInstance;
 	}
 

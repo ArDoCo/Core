@@ -15,7 +15,7 @@ public interface IModelState extends IState<IModelState> {
      * @param type the type to search for
      * @return all instances that are from that type
      */
-    List<IInstance> getInstancesOfType(String type);
+    List<IModelInstance> getInstancesOfType(String type);
 
     /**
      * Returns the relations of a specific type.
@@ -23,7 +23,7 @@ public interface IModelState extends IState<IModelState> {
      * @param type the type to search for
      * @return all relations that are from that type
      */
-    List<IRelation> getRelationsOfType(String type);
+    List<IModelRelation> getRelationsOfType(String type);
 
     /**
      * Returns all types that are contained by instances of this state.
@@ -51,21 +51,13 @@ public interface IModelState extends IState<IModelState> {
      *
      * @return all instances of this state
      */
-    List<IInstance> getInstances();
+    List<IModelInstance> getInstances();
 
     /**
      * Returns all relations that are contained by this state.
      *
      * @return all relations of this state
      */
-    List<IRelation> getRelations();
-
-    /**
-     * To string.
-     *
-     * @return the string
-     */
-    @Override
-    String toString();
+    List<IModelRelation> getRelations();
 
 }

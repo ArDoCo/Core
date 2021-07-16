@@ -2,9 +2,13 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
 import java.util.List;
 
-public interface IRecommendedRelation {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRecommendedRelation createCopy();
+/**
+ * The Interface IRecommendedRelation defines the recommendations of connections between words and
+ * {@link IRecommendedInstance}.
+ */
+public interface IRecommendedRelation extends ICopyable<IRecommendedRelation> {
 
     /**
      * Returns the nodes representing the relation.
