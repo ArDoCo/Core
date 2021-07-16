@@ -9,11 +9,10 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors.GenericTextConfig;
 
-public class TextExtractor implements IAgentModule<AgentDatastructure> {
+public class TextExtractor implements IModule<AgentDatastructure> {
 
     private AgentDatastructure data;
     private List<IAgent> agents = new ArrayList<>();
@@ -54,7 +53,9 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
 
     @Override
     public void exec() {
-        runAgents();
+        for (IAgent agent : agents) {
+            agent.exec();
+        }
     }
 
     /**
@@ -70,13 +71,6 @@ public class TextExtractor implements IAgentModule<AgentDatastructure> {
                 throw new IllegalArgumentException("TextAgent " + agent + " not found");
             }
             agents.add(myAgents.get(agent).create(data, agentConfig));
-        }
-    }
-
-    @Override
-    public void runAgents() {
-        for (IAgent agent : agents) {
-            agent.exec();
         }
     }
 

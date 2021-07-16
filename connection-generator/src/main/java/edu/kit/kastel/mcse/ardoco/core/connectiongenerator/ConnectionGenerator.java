@@ -10,7 +10,6 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
 
 /**
@@ -21,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
  * @author Sophie
  *
  */
-public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
+public class ConnectionGenerator implements IModule<AgentDatastructure> {
 
     private AgentDatastructure data;
 
@@ -62,32 +61,21 @@ public class ConnectionGenerator implements IAgentModule<AgentDatastructure> {
 
     @Override
     public void exec() {
-        runAgents();
+        for (IAgent agent : agents) {
+            agent.exec();
+        }
     }
 
     /**
      * Initializes graph dependent analyzers.
      */
     private void initializeAgents() {
-
         Map<String, ConnectionAgent> myAgents = Loader.loadLoadable(ConnectionAgent.class);
-
         for (String connectionAnalyzer : config.connectionAgents) {
             if (!myAgents.containsKey(connectionAnalyzer)) {
                 throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
             }
             agents.add(myAgents.get(connectionAnalyzer).create(data, agentConfig));
-        }
-
-    }
-
-    /**
-     * Runs solvers, that connect model extraction State and Recommendation State.
-     */
-    @Override
-    public void runAgents() {
-        for (IAgent agent : agents) {
-            agent.exec();
         }
     }
 
