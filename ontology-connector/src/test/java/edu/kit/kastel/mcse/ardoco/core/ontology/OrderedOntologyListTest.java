@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.ontology.Individual;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +14,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
 class OrderedOntologyListTest {
-    private static Logger logger = LogManager.getLogger();
     private static String ontologyPath = "src/test/resources/mediastore.owl";
-    private static String testOutputOntologyPath = "src/test/resources/test_mediastore.owl";
 
     private static final String TEST_LIST_LABEL = "TestList";
 

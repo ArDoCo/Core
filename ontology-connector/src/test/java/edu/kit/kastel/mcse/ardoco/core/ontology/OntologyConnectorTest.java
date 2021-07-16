@@ -8,8 +8,6 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.rdf.model.Literal;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +26,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(JUnitPlatform.class)
 class OntologyConnectorTest {
-    private static Logger logger = LogManager.getLogger();
     private static String ontologyPath = "src/test/resources/mediastore.owl";
 
     private static final String NONEXISTENT = "><$NONEXISTENT!><";
