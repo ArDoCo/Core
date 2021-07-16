@@ -28,7 +28,6 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelException;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
@@ -41,7 +40,10 @@ import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractorConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors.GenericTextConfig;
 
-public class Pipeline {
+/**
+ * The Pipeline defines a simple CLI for execution of the agents.
+ */
+public final class Pipeline {
 
     private Pipeline() {
         throw new IllegalAccessError();
@@ -56,6 +58,11 @@ public class Pipeline {
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
     public static void main(String[] args) {
         // Parameters:
         // -h : Help
@@ -161,7 +168,7 @@ public class Pipeline {
                 data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
     }
 
-    private static IModelState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
+    private static IModelState runModelExtractor(IModelConnector modelConnector) {
         IModule<IModelState> hardCodedModelExtractor = new ModelProvider(modelConnector);
         hardCodedModelExtractor.exec();
         return hardCodedModelExtractor.getState();

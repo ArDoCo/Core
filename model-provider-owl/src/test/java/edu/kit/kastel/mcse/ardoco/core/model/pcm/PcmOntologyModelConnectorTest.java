@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
 
 @RunWith(JUnitPlatform.class)
 class PcmOntologyModelConnectorTest {
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static PcmOntologyModelConnector loadModel(String modelFile) {
         File file = new File(modelFile);

@@ -1,23 +1,24 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
 
+/**
+ * The TextExtractionStateConfig for {@link TextExtractor}.
+ */
 public final class TextExtractionStateConfig {
 
-	private TextExtractionStateConfig() {
-		throw new IllegalAccessError();
-	}
+    private TextExtractionStateConfig() {
+        throw new IllegalAccessError();
+    }
 
-	private static final SystemParameters CONFIG = loadParameters("/configs/TextExtractionState.properties");
-	/**
-	 * The probability of the hardAdd method in the text extraction state.
-	 */
-	public static final double HARD_ADD_PROBABILITY = CONFIG.getPropertyAsDouble("hardAddProbability");
+    private static final SystemParameters CONFIG = loadParameters("/configs/TextExtractionState.properties");
 
-	public static final double NORT_PROBABILITY_FOR_NAME_AND_TYPE = CONFIG.getPropertyAsDouble("nortProbabilityForNameAndType");
+    /** The Constant NORT_PROBABILITY_FOR_NAME_AND_TYPE. */
+    public static final double NORT_PROBABILITY_FOR_NAME_AND_TYPE = CONFIG.getPropertyAsDouble("nortProbabilityForNameAndType");
 
-	private static SystemParameters loadParameters(String filePath) {
-		return new SystemParameters(filePath, true);
-	}
+    private static SystemParameters loadParameters(String filePath) {
+        return new SystemParameters(filePath, true);
+    }
 
 }

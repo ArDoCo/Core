@@ -32,7 +32,10 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
 
-public class FilePrinter {
+/**
+ * The Class FilePrinter contains some helpers for stats.
+ */
+public final class FilePrinter {
     private static final Logger logger = LogManager.getLogger(FilePrinter.class);
 
     private static final String GENERIC_ERROR = "An error occurred.";
@@ -48,9 +51,10 @@ public class FilePrinter {
     /**
      * Writes the sentences as they are stored in the PARSE graph into a file.
      *
-     * @param graph the graph to read from.
+     * @param target the target file
+     * @param text   the text to use.
      */
-    public static void writeSentencesInFile(File target, IText graph) {
+    public static void writeSentencesInFile(File target, IText text) {
         boolean fileCreated = createFileIfNonExistent(target);
         if (!fileCreated) {
             return;
@@ -58,7 +62,7 @@ public class FilePrinter {
 
         try (var myWriter = new FileWriter(target)) {
             var minSentenceNumber = 0;
-            for (IWord node : graph.getWords()) {
+            for (IWord node : text.getWords()) {
                 var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
                 if (sentenceNumber + 1 > minSentenceNumber) {
                     myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
@@ -209,8 +213,8 @@ public class FilePrinter {
         logger.info(SUCCESS_WRITE);
     }
 
-    /***
-     * Writes the states into a file
+    /**
+     * * Writes the states into a file.
      *
      * @param resultFile          the result file
      * @param extractionState     the extraction state, containing the extracted elements of the model
@@ -238,6 +242,13 @@ public class FilePrinter {
 
     }
 
+    /**
+     * Write model instances in csv file.
+     *
+     * @param destination the destination
+     * @param modelState  the model state
+     * @param name        the name
+     */
     public static void writeModelInstancesInCsvFile(File destination, IModelState modelState, String name) {
         List<String[]> dataLines = getInstancesFromModelState(modelState, name);
         writeDataLinesInFile(destination, dataLines);
@@ -259,11 +270,23 @@ public class FilePrinter {
         return dataLines;
     }
 
+    /**
+     * Write trace links in csv file.
+     *
+     * @param resultFile      the result file
+     * @param connectionState the connection state
+     */
     public static void writeTraceLinksInCsvFile(File resultFile, IConnectionState connectionState) {
         List<String[]> dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
         writeDataLinesInFile(resultFile, dataLines);
     }
 
+    /**
+     * Write noun mappings in csv file.
+     *
+     * @param resultFile the result file
+     * @param textState  the text state
+     */
     public static void writeNounMappingsInCsvFile(File resultFile, ITextState textState) {
         List<String[]> dataLines = getMappingsAsDataLinesOfTextState(textState);
         writeDataLinesInFile(resultFile, dataLines);
@@ -340,6 +363,12 @@ public class FilePrinter {
         return dataLines;
     }
 
+    /**
+     * Write data lines in file.
+     *
+     * @param file      the file
+     * @param dataLines the data lines
+     */
     public static void writeDataLinesInFile(File file, List<String[]> dataLines) {
 
         try (var pw = new FileWriter(file)) {
@@ -361,7 +390,8 @@ public class FilePrinter {
         return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(","));
     }
 
-    private static String escapeSpecialCharacters(String data) {
+    private static String escapeSpecialCharacters(String in) {
+        String data = in;
         String escapedData = data.replaceAll("\\R", " ");
         if (data.contains(",") || data.contains("\"") || data.contains("'")) {
             data = data.replace("\"", "\"\"");

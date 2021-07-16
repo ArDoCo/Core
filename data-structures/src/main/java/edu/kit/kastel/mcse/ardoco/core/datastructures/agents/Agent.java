@@ -1,13 +1,17 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
 import java.util.Objects;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Defines the base class of all agents.
  */
 public abstract class Agent implements IAgent {
-    protected final Logger logger = Logger.getLogger(getName());
+    
+    /** The logger. */
+    protected final Logger logger = LogManager.getLogger(this.getClass());
     private final Class<? extends Configuration> configType;
 
     /**
