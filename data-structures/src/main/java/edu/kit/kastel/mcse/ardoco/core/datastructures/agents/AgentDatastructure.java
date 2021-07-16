@@ -7,10 +7,14 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
-public class AgentDatastructure {
+/**
+ * The data structure (blackboard) for the {@link Agent Agents}.
+ */
+public final class AgentDatastructure {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private IText text;
     private ITextState textState;
@@ -18,11 +22,20 @@ public class AgentDatastructure {
     private IRecommendationState recommendationState;
     private IConnectionState connectionState;
 
+    /**
+     * Create an empty data structure.
+     */
     public AgentDatastructure() {
     }
 
+    /**
+     * Create a deep copy of the data structure.
+     *
+     * @return the copy of the data structure
+     * @see IState#createCopy()
+     */
     public AgentDatastructure createCopy() {
-        var data = new AgentDatastructure();
+        AgentDatastructure data = new AgentDatastructure();
         data.text = text;
         data.textState = textState == null ? null : textState.createCopy();
         data.modelState = modelState == null ? null : modelState.createCopy();
@@ -31,6 +44,15 @@ public class AgentDatastructure {
         return data;
     }
 
+    /**
+     * Create a new data structure based on states.
+     *
+     * @param text                the input text
+     * @param textState           the text state
+     * @param modelState          the model state
+     * @param recommendationState the recommendation state
+     * @param connectionState     the connection state
+     */
     public AgentDatastructure(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState) {
         this.text = text;

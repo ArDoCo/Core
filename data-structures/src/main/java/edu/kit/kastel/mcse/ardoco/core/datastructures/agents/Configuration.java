@@ -10,13 +10,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.impl.factory.Lists;
 
+/**
+ *
+ * The base class for configurations of agents and extractors
+ *
+ */
 public abstract class Configuration {
     private static final Logger logger = LogManager.getLogger(Configuration.class);
 
     /**
      * Returns the specified property of the config file as a list of strings.
      *
-     * @param key name of the specified property
+     * @param key     name of the specified property
+     * @param configs the configuration values
      * @return value of the property as a list of strings
      * @throws Exception if the key is not found in the configuration file.
      */
@@ -39,13 +45,19 @@ public abstract class Configuration {
     /**
      * Returns the specified property of the config file as a double.
      *
-     * @param key name of the specified property
+     * @param key     name of the specified property
+     * @param configs the configuration map
      * @return value of the property as a double
      */
     protected static double getPropertyAsDouble(String key, Map<String, String> configs) {
         return Double.parseDouble(configs.get(key));
     }
 
+    /**
+     * Get all properties and raw values of a configuration
+     *
+     * @return all properties with their raw values
+     */
     protected abstract Map<String, String> getAllProperties();
 
     /**
