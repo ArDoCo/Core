@@ -1,8 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
@@ -17,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 public class RecommendationGenerator implements IExecutionStage {
 
     private AgentDatastructure data;
-    private List<IAgent> agents = new ArrayList<>();
+    private MutableList<IAgent> agents = Lists.mutable.empty();
     private RecommendationGeneratorConfig config;
     private GenericRecommendationConfig agentConfig;
 

@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
@@ -15,13 +15,13 @@ public interface IModelConnector {
      *
      * @return the instances
      */
-    List<IModelInstance> getInstances();
+    ImmutableList<IModelInstance> getInstances();
 
     /**
      * Gets the relations from the model.
      *
      * @return the relations
      */
-    List<IModelRelation> getRelations();
+    ImmutableList<IModelRelation> getRelations();
 
 }

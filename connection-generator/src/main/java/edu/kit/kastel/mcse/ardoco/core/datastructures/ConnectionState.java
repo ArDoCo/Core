@@ -1,19 +1,20 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelationLink;
 
 /**
@@ -50,8 +51,8 @@ public class ConnectionState implements IConnectionState {
      * @return all instance links
      */
     @Override
-    public List<IInstanceLink> getInstanceLinks() {
-        return new ArrayList<>(instanceLinks);
+    public ImmutableList<IInstanceLink> getInstanceLinks() {
+        return Lists.immutable.withAll(instanceLinks);
     }
 
     /**
@@ -61,8 +62,8 @@ public class ConnectionState implements IConnectionState {
      * @return all instance links with a model instance containing the given name as list
      */
     @Override
-    public List<IInstanceLink> getInstanceLinksByName(String name) {
-        return instanceLinks.stream().filter(imapping -> imapping.getModelInstance().getNames().contains(name)).collect(Collectors.toList());
+    public ImmutableList<IInstanceLink> getInstanceLinksByName(String name) {
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(imapping -> imapping.getModelInstance().getNames().contains(name)));
     }
 
     /**
@@ -72,13 +73,13 @@ public class ConnectionState implements IConnectionState {
      * @return all instance links with a model instance containing the given type as list
      */
     @Override
-    public List<IInstanceLink> getInstanceLinksByType(String type) {
-        return instanceLinks.stream().filter(ilink -> ilink.getModelInstance().getTypes().contains(type)).collect(Collectors.toList());
+    public ImmutableList<IInstanceLink> getInstanceLinksByType(String type) {
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(ilink -> ilink.getModelInstance().getTypes().contains(type)));
     }
 
     @Override
-    public List<IInstanceLink> getInstanceLinksByRecommendedInstance(IRecommendedInstance recommendedInstance) {
-        return instanceLinks.stream().filter(il -> il.getTextualInstance().equals(recommendedInstance)).collect(Collectors.toList());
+    public ImmutableList<IInstanceLink> getInstanceLinksByRecommendedInstance(IRecommendedInstance recommendedInstance) {
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(il -> il.getTextualInstance().equals(recommendedInstance)));
     }
 
     /**
@@ -89,11 +90,10 @@ public class ConnectionState implements IConnectionState {
      * @return all instance links with a model instance containing the given name and type as list
      */
     @Override
-    public List<IInstanceLink> getInstanceLinks(String name, String type) {
-        return instanceLinks.stream()
+    public ImmutableList<IInstanceLink> getInstanceLinks(String name, String type) {
+        return Lists.immutable.fromStream(instanceLinks.stream()
                 .filter(imapping -> imapping.getModelInstance().getNames().contains(name))//
-                .filter(imapping -> imapping.getModelInstance().getTypes().contains(type))
-                .collect(Collectors.toList());
+                .filter(imapping -> imapping.getModelInstance().getTypes().contains(type)));
     }
 
     /**
@@ -114,8 +114,8 @@ public class ConnectionState implements IConnectionState {
             Optional<IInstanceLink> optionalInstanceLink = instanceLinks.stream().filter(il -> il.equals(instancelink)).findFirst();
             if (optionalInstanceLink.isPresent()) {
                 IInstanceLink instanceLink = optionalInstanceLink.get();
-                List<INounMapping> nameMappings = instancelink.getTextualInstance().getNameMappings();
-                List<INounMapping> typeMappings = instancelink.getTextualInstance().getTypeMappings();
+                ImmutableList<INounMapping> nameMappings = instancelink.getTextualInstance().getNameMappings();
+                ImmutableList<INounMapping> typeMappings = instancelink.getTextualInstance().getTypeMappings();
                 instanceLink.getTextualInstance().addMappings(nameMappings, typeMappings);
             }
         }
@@ -178,8 +178,8 @@ public class ConnectionState implements IConnectionState {
      * @return all relation links of this state as list
      */
     @Override
-    public List<IRelationLink> getRelationLinks() {
-        return new ArrayList<>(relationLinks);
+    public ImmutableList<IRelationLink> getRelationLinks() {
+        return Lists.immutable.withAll(relationLinks);
     }
 
     /**

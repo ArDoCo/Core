@@ -1,8 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.common;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -51,8 +50,8 @@ public final class WordHelper {
      * @param word the word
      * @return the incoming dependency tags
      */
-    public static List<DependencyTag> getIncomingDependencyTags(IWord word) {
-        return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependentOnThis(d).isEmpty()).collect(Collectors.toList());
+    public static ImmutableList<DependencyTag> getIncomingDependencyTags(IWord word) {
+        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getWordsThatAreDependentOnThis(d).isEmpty());
     }
 
     /**
@@ -61,7 +60,7 @@ public final class WordHelper {
      * @param word the word
      * @return the outgoing dependency tags
      */
-    public static List<DependencyTag> getOutgoingDependencyTags(IWord word) {
-        return Arrays.stream(DependencyTag.values()).filter(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty()).collect(Collectors.toList());
+    public static ImmutableList<DependencyTag> getOutgoingDependencyTags(IWord word) {
+        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty());
     }
 }

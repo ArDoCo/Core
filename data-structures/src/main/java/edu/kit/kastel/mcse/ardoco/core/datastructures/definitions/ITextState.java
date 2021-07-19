@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
@@ -18,7 +17,7 @@ public interface ITextState extends IState<ITextState> {
      * @param probability probability to be a name mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addName(IWord n, String name, double probability, List<String> occurrences);
+    void addName(IWord n, String name, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a name mapping to the state.
@@ -46,7 +45,7 @@ public interface ITextState extends IState<ITextState> {
      * @param probability probability to be a name or type mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addNort(IWord n, String ref, double probability, List<String> occurrences);
+    void addNort(IWord n, String ref, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a type mapping to the state.
@@ -65,7 +64,7 @@ public interface ITextState extends IState<ITextState> {
      * @param probability probability to be a type mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addType(IWord n, String type, double probability, List<String> occurrences);
+    void addType(IWord n, String type, double probability, ImmutableList<String> occurrences);
 
     /**
      * Creates a new relation mapping and adds it to the state. More end points, as well as a preposition can be added
@@ -106,7 +105,8 @@ public interface ITextState extends IState<ITextState> {
      * @param kind          the kind of the term
      * @param probability   the probability that this term is from that kind
      */
-    void addTerm(String reference, INounMapping mapping1, INounMapping mapping2, List<INounMapping> otherMappings, MappingKind kind, double probability);
+    void addTerm(String reference, INounMapping mapping1, INounMapping mapping2, ImmutableList<INounMapping> otherMappings, MappingKind kind,
+            double probability);
 
     /**
      * Adds a term as a name to the state.
@@ -155,7 +155,7 @@ public interface ITextState extends IState<ITextState> {
      *
      * @return the list of found terms
      */
-    List<ITermMapping> getTerms();
+    ImmutableList<ITermMapping> getTerms();
 
     /**
      * Getter for the terms of this state, that have exactly the same nounMappings.
@@ -163,7 +163,7 @@ public interface ITextState extends IState<ITextState> {
      * @param nounMappings the nounMappings to search for
      * @return a list of terms with that nounMappings
      */
-    List<ITermMapping> getTermsByMappings(List<INounMapping> nounMappings);
+    ImmutableList<ITermMapping> getTermsByMappings(ImmutableList<INounMapping> nounMappings);
 
     /**
      * Getter for the terms of this state, that have a similar reference.
@@ -171,7 +171,7 @@ public interface ITextState extends IState<ITextState> {
      * @param reference the given reference
      * @return a list of terms with a reference that is similar to the given
      */
-    List<ITermMapping> getTermsBySimilarReference(String reference);
+    ImmutableList<ITermMapping> getTermsBySimilarReference(String reference);
 
     /**
      * Getter for the terms of this state, that have exactly the same nounMappings and the same kind.
@@ -180,21 +180,21 @@ public interface ITextState extends IState<ITextState> {
      * @param kind         the kind of the term mappings to search for
      * @return a list of terms with that nounMappings and the same kind
      */
-    List<ITermMapping> getTermsByMappingsAndKind(List<INounMapping> nounMappings, MappingKind kind);
+    ImmutableList<ITermMapping> getTermsByMappingsAndKind(ImmutableList<INounMapping> nounMappings, MappingKind kind);
 
     /**
      * Returns all type mappings.
      *
      * @return all type mappings as list
      */
-    List<INounMapping> getTypes();
+    ImmutableList<INounMapping> getTypes();
 
     /**
      * Returns all type term mappings.
      *
      * @return all type term mappings as list
      */
-    List<ITermMapping> getTypeTerms();
+    ImmutableList<ITermMapping> getTypeTerms();
 
     /**
      * Returns all mappings containing the given node.
@@ -202,7 +202,7 @@ public interface ITextState extends IState<ITextState> {
      * @param n the given node
      * @return all mappings containing the given node as list
      */
-    List<INounMapping> getNounMappingsByNode(IWord n);
+    ImmutableList<INounMapping> getNounMappingsByNode(IWord n);
 
     /**
      * Returns all mappings with the exact same reference as given.
@@ -210,63 +210,63 @@ public interface ITextState extends IState<ITextState> {
      * @param ref the reference to search for
      * @return a list of noun mappings with the given reference.
      */
-    List<INounMapping> getNounMappingsWithSameReference(String ref);
+    ImmutableList<INounMapping> getNounMappingsWithSameReference(String ref);
 
     /**
      * Returns a list of all references of name mappings.
      *
      * @return all references of name mappings as list.
      */
-    List<String> getNameList();
+    ImmutableList<String> getNameList();
 
     /**
      * Returns a list of all references of name term mappings.
      *
      * @return all references of name term mappings as list.
      */
-    List<String> getNameTermList();
+    ImmutableList<String> getNameTermList();
 
     /**
      * Returns a list of all references of name or type mappings.
      *
      * @return all references of name or type mappings as list.
      */
-    List<String> getNortList();
+    ImmutableList<String> getNortList();
 
     /**
      * Returns a list of all references of type mappings.
      *
      * @return all references of type mappings as list.
      */
-    List<String> getTypeList();
+    ImmutableList<String> getTypeList();
 
     /**
      * Returns a list of all references of type term mappings.
      *
      * @return all references of type term mappings as list.
      */
-    List<String> getTypeTermList();
+    ImmutableList<String> getTypeTermList();
 
     /**
      * Returns all name mappings.
      *
      * @return a list of all name mappings
      */
-    List<INounMapping> getNames();
+    ImmutableList<INounMapping> getNames();
 
     /**
      * Returns all name term mappings.
      *
      * @return a list of all name term mappings
      */
-    List<ITermMapping> getNameTerms();
+    ImmutableList<ITermMapping> getNameTerms();
 
     /**
      * Returns all name or type mappings.
      *
      * @return a list of all name or type mappings
      */
-    List<INounMapping> getNameOrTypeMappings();
+    ImmutableList<INounMapping> getNameOrTypeMappings();
 
     /**
      * Returns alltype mappings containing the given node.
@@ -274,7 +274,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to filter for
      * @return a list of alltype mappings containing the given node
      */
-    List<INounMapping> getTypeNodesByNode(IWord node);
+    ImmutableList<INounMapping> getTypeNodesByNode(IWord node);
 
     /**
      * Returns all name mappings containing the given node.
@@ -282,7 +282,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to filter for
      * @return a list of all name mappings containing the given node
      */
-    List<INounMapping> getNameNodesByNode(IWord node);
+    ImmutableList<INounMapping> getNameNodesByNode(IWord node);
 
     /**
      * Returns all name or type mappings containing the given node.
@@ -290,14 +290,14 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to filter for
      * @return a list of all name or type mappings containing the given node
      */
-    List<INounMapping> getNortNodesByNode(IWord node);
+    ImmutableList<INounMapping> getNortNodesByNode(IWord node);
 
     /**
      * Returns all relation mappings.
      *
      * @return relation mappings as list
      */
-    List<IRelationMapping> getRelations();
+    ImmutableList<IRelationMapping> getRelations();
 
     /**
      * Returns all term mappings that contain the given noun mapping.
@@ -305,7 +305,7 @@ public interface ITextState extends IState<ITextState> {
      * @param nounMapping the noun mapping that should be contained.
      * @return all term mappings that contain the noun mapping.
      */
-    List<ITermMapping> getTermsByContainedMapping(INounMapping nounMapping);
+    ImmutableList<ITermMapping> getTermsByContainedMapping(INounMapping nounMapping);
 
     // --- isContained section --->
     /**
@@ -338,7 +338,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node the node to search for
      * @return a list of term mappings that contain that node.
      */
-    List<ITermMapping> getTermMappingsByNode(IWord node);
+    ImmutableList<ITermMapping> getTermMappingsByNode(IWord node);
 
     /**
      * Returns if a node is contained by the mappings.
@@ -361,7 +361,7 @@ public interface ITextState extends IState<ITextState> {
      *
      * @return the all mappings
      */
-    List<INounMapping> getNounMappings();
+    ImmutableList<INounMapping> getNounMappings();
 
     /**
      * Adds the noun mapping.
@@ -372,7 +372,7 @@ public interface ITextState extends IState<ITextState> {
      * @param confidence  the confidence
      * @param occurrences the occurrences
      */
-    void addNounMapping(List<IWord> nodes, String reference, MappingKind kind, double confidence, List<String> occurrences);
+    void addNounMapping(ImmutableList<IWord> nodes, String reference, MappingKind kind, double confidence, ImmutableList<String> occurrences);
 
     /**
      * Gets the mappings that could be A type.
@@ -380,8 +380,8 @@ public interface ITextState extends IState<ITextState> {
      * @param word the word
      * @return the mappings that could be A type
      */
-    default List<INounMapping> getMappingsThatCouldBeAType(IWord word) {
-        return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForType() > 0).collect(Collectors.toList());
+    default ImmutableList<INounMapping> getMappingsThatCouldBeAType(IWord word) {
+        return getNounMappingsByNode(word).select(mapping -> mapping.getProbabilityForType() > 0);
     }
 
     /**
@@ -390,8 +390,8 @@ public interface ITextState extends IState<ITextState> {
      * @param word the word
      * @return the mappings that could be A name
      */
-    default List<INounMapping> getMappingsThatCouldBeAName(IWord word) {
-        return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForName() > 0).collect(Collectors.toList());
+    default ImmutableList<INounMapping> getMappingsThatCouldBeAName(IWord word) {
+        return getNounMappingsByNode(word).select(mapping -> mapping.getProbabilityForName() > 0);
     }
 
     /**
@@ -400,8 +400,8 @@ public interface ITextState extends IState<ITextState> {
      * @param word the word
      * @return the mappings that could be A nort
      */
-    default List<INounMapping> getMappingsThatCouldBeANort(IWord word) {
-        return getNounMappingsByNode(word).stream().filter(mapping -> mapping.getProbabilityForNort() > 0).collect(Collectors.toList());
+    default ImmutableList<INounMapping> getMappingsThatCouldBeANort(IWord word) {
+        return getNounMappingsByNode(word).select(mapping -> mapping.getProbabilityForNort() > 0);
     }
 
 }

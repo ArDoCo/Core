@@ -1,7 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
 import java.util.Set;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
@@ -15,7 +16,7 @@ public interface IModelState extends IState<IModelState> {
      * @param type the type to search for
      * @return all instances that are from that type
      */
-    List<IModelInstance> getInstancesOfType(String type);
+    ImmutableList<IModelInstance> getInstancesOfType(String type);
 
     /**
      * Returns the relations of a specific type.
@@ -23,7 +24,7 @@ public interface IModelState extends IState<IModelState> {
      * @param type the type to search for
      * @return all relations that are from that type
      */
-    List<IModelRelation> getRelationsOfType(String type);
+    ImmutableList<IModelRelation> getRelationsOfType(String type);
 
     /**
      * Returns all types that are contained by instances of this state.
@@ -51,13 +52,13 @@ public interface IModelState extends IState<IModelState> {
      *
      * @return all instances of this state
      */
-    List<IModelInstance> getInstances();
+    ImmutableList<IModelInstance> getInstances();
 
     /**
      * Returns all relations that are contained by this state.
      *
      * @return all relations of this state
      */
-    List<IModelRelation> getRelations();
+    ImmutableList<IModelRelation> getRelations();
 
 }

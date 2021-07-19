@@ -1,7 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
@@ -36,7 +37,7 @@ public class ConnectionGeneratorConfig extends Configuration {
     /**
      * The list of solver types that should work on the connection state.
      */
-    public final List<String> connectionAgents;
+    public final ImmutableList<String> connectionAgents;
 
     @Override
     protected Map<String, String> getAllProperties() {

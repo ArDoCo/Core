@@ -1,7 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
@@ -16,7 +17,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @return all parts of occurrences (splitted at their spaces) that are similar to the reference.
      */
-    List<String> getRepresentativeComparables();
+    ImmutableList<String> getRepresentativeComparables();
 
     /**
      * Sets the probability of the mapping.
@@ -30,21 +31,21 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @return all appearances of the mapping
      */
-    List<String> getOccurrences();
+    ImmutableList<String> getOccurrences();
 
     /**
      * Returns all nodes contained by the mapping.
      *
      * @return all mapping nodes
      */
-    List<IWord> getWords();
+    ImmutableList<IWord> getWords();
 
     /**
      * Adds nodes to the mapping, if they are not already contained.
      *
      * @param nodes graph nodes to add to the mapping
      */
-    void addNodes(List<IWord> nodes);
+    void addNodes(ImmutableList<IWord> nodes);
 
     /**
      * Adds a node to the mapping, it its not already contained.
@@ -88,7 +89,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @return sentence numbers of the occurrences of this mapping.
      */
-    List<Integer> getMappingSentenceNo();
+    ImmutableList<Integer> getMappingSentenceNo();
 
     /**
      * Updates the reference if the probability is high enough.
@@ -103,7 +104,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @param occurrences occurrences to add
      */
-    void addOccurrence(List<String> occurrences);
+    void addOccurrence(ImmutableList<String> occurrences);
 
     /**
      * Copies all nodes and occurrences matching the occurrence to another mapping.

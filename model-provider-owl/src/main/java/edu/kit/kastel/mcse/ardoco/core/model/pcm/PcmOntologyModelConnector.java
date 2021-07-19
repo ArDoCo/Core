@@ -18,6 +18,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.Instance;
@@ -50,14 +51,14 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     @Override
-    public List<IModelInstance> getInstances() {
+    public ImmutableList<IModelInstance> getInstances() {
         MutableList<IModelInstance> instances = Lists.mutable.empty();
 
         for (String type : TYPES) {
             instances.addAll(getInstancesOfType(type));
         }
 
-        return instances;
+        return instances.toImmutable();
     }
 
     private List<IModelInstance> getInstancesOfType(String type) {
@@ -96,9 +97,9 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     @Override
-    public List<IModelRelation> getRelations() {
+    public ImmutableList<IModelRelation> getRelations() {
         logger.warn("This method is not yet implemented and will return an empty list!");
-        return Lists.mutable.empty();
+        return Lists.immutable.empty();
     }
 
     private static OntModel loadOntology(String ontologyUrl) {

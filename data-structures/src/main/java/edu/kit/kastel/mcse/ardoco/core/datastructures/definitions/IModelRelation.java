@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
@@ -14,14 +14,14 @@ public interface IModelRelation extends ICopyable<IModelRelation> {
      *
      * @param others list of other end points of this relation
      */
-    void addOtherInstances(List<? extends IModelInstance> others);
+    void addOtherInstances(ImmutableList<IModelInstance> others);
 
     /**
      * Returns the end points of this relation as instances.
      *
      * @return list of connected instances by this relation
      */
-    List<? extends IModelInstance> getInstances();
+    ImmutableList<IModelInstance> getInstances();
 
     /**
      * Returns the determiner of the relation.

@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -91,20 +90,20 @@ public final class ResourceAccessor {
      * @param key name of the specified property
      * @return value of the property as a list of strings
      */
-    public List<String> getPropertyAsList(String key) {
-        List<String> values = Lists.mutable.empty();
+    public ImmutableList<String> getPropertyAsList(String key) {
+        MutableList<String> values = Lists.mutable.empty();
         String value = prop.getProperty(key);
         if (value == null) {
             throw new IllegalArgumentException("Key: " + key + " not found in config");
         }
 
         if (value.isBlank()) {
-            return values;
+            return values.toImmutable();
         }
 
-        values.addAll(List.of(value.split(" ")));
+        values.addAll(Lists.immutable.with(value.split(" ")).castToCollection());
         values.removeIf(String::isBlank);
-        return values;
+        return values.toImmutable();
     }
 
     /**
@@ -118,7 +117,7 @@ public final class ResourceAccessor {
     public <T extends Enum<T>> ImmutableList<T> getPropertyAsListOfEnumTypes(String data, Class<T> clazz) {
         MutableList<T> selectedValues = Lists.mutable.empty();
         T[] values = clazz.getEnumConstants();
-        List<String> valueList = getPropertyAsList(data);
+        ImmutableList<String> valueList = getPropertyAsList(data);
 
         for (T val : values) {
             if (valueList.contains(val.name())) {

@@ -1,9 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
@@ -71,12 +69,10 @@ public class ReferenceAgent extends ConnectionAgent {
         for (IModelInstance instance : modelState.getInstances()) {
             // ntrNodes mit Lemma ca. Name eines Modelelements
 
-            List<INounMapping> similarToInstanceMappings = //
+            ImmutableList<INounMapping> similarToInstanceMappings = //
                     textState.getNames()
-                            .stream()
-                            .filter(n -> SimilarityUtils.areWordsOfListsSimilar(//
-                                    instance.getNames(), List.of(n.getReference()), areNamesSimilarThreshold))
-                            .collect(Collectors.toList());
+                            .select(n -> SimilarityUtils.areWordsOfListsSimilar(//
+                                    instance.getNames(), Lists.immutable.with(n.getReference()), areNamesSimilarThreshold));
 
             if (similarToInstanceMappings.isEmpty()) {
 
@@ -101,11 +97,8 @@ public class ReferenceAgent extends ConnectionAgent {
      * @param instance the current instance to find as noun mapping
      */
     private void solveReferenceOfNamesIfSimilarNameIsEmpty(IModelInstance instance) {
-        List<INounMapping> similarLongestNameMappings = textState.getNames()
-                .stream()
-                .filter(//
-                        nm -> SimilarityUtils.areWordsSimilar(instance.getLongestName(), nm.getReference()))
-                .collect(Collectors.toList());
+        ImmutableList<INounMapping> similarLongestNameMappings = textState.getNames()
+                .select(nm -> SimilarityUtils.areWordsSimilar(instance.getLongestName(), nm.getReference()));
 
         if (similarLongestNameMappings.isEmpty()) {
             solveReferenceOfNamesIfNoSimilarLongNamesCouldBeFound(instance);
@@ -121,12 +114,11 @@ public class ReferenceAgent extends ConnectionAgent {
      * @param instance the current instance to find as noun mapping
      */
     private void solveReferenceOfNamesIfNoSimilarLongNamesCouldBeFound(IModelInstance instance) {
-        List<INounMapping> similarNameMappings = new ArrayList<>();
+        ImmutableList<INounMapping> similarNameMappings = Lists.immutable.with();
+        // TODO @Sophie: This code seems to be strange .. because similarNameMappings will be overridden in the for loop
+        // again and again ..
         for (String name : instance.getNames()) {
-            similarNameMappings = textState.getNames()
-                    .stream()
-                    .filter(nm -> SimilarityUtils.areWordsSimilar(name, nm.getReference()))
-                    .collect(Collectors.toList());
+            similarNameMappings = textState.getNames().select(nm -> SimilarityUtils.areWordsSimilar(name, nm.getReference()));
         }
 
         double prob = probability;

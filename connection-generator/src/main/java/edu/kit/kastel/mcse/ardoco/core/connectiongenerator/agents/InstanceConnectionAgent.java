@@ -1,8 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
@@ -63,15 +61,13 @@ public class InstanceConnectionAgent extends ConnectionAgent {
      * some are found the instance link is added to the connection state.
      */
     private void findNamesOfModelInstancesInSupposedMappings() {
-        List<IRecommendedInstance> ris = recommendationState.getRecommendedInstances();
+        ImmutableList<IRecommendedInstance> ris = recommendationState.getRecommendedInstances();
         for (IModelInstance i : modelState.getInstances()) {
-            List<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
+            ImmutableList<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
 
-            List<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.stream()
-                    .filter(ri -> !ri.getTypeMappings().isEmpty())
-                    .collect(Collectors.toList());
-            mostLikelyRiWithoutType.stream().forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
-            mostLikelyRi.stream().forEach(ml -> connectionState.addToLinks(ml, i, probability));
+            ImmutableList<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.select(ri -> !ri.getTypeMappings().isEmpty());
+            mostLikelyRiWithoutType.forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
+            mostLikelyRi.forEach(ml -> connectionState.addToLinks(ml, i, probability));
         }
     }
 
