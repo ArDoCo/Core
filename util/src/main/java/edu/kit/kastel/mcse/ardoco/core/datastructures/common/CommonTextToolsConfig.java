@@ -2,15 +2,18 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.common;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
+import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
-public class CommonTextToolsConfig {
+/**
+ * The Class CommonTextToolsConfig defines the configuration for the common text tools.
+ */
+public final class CommonTextToolsConfig {
 
     private CommonTextToolsConfig() {
         throw new IllegalAccessError();
     }
 
-    private static final SystemParameters CONFIG = loadParameters("/configs/CommonTextToolsConfig.properties");
+    private static final ResourceAccessor CONFIG = loadParameters("/configs/CommonTextToolsConfig.properties");
     // SimilarityUtils:
     /**
      * List of separators used for containing by a word in SimilarityUtils.
@@ -62,8 +65,8 @@ public class CommonTextToolsConfig {
      */
     public static final double GET_MOST_LIKELY_MP_BY_REFERENCE_INCREASE = CONFIG.getPropertyAsDouble("getMostLikelyMpBReference_Increase");
 
-    private static SystemParameters loadParameters(String filePath) {
-        return new SystemParameters(filePath, true);
+    private static ResourceAccessor loadParameters(String filePath) {
+        return new ResourceAccessor(filePath, true);
     }
 
 }

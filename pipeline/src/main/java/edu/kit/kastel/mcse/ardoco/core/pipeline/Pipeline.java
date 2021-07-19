@@ -171,7 +171,7 @@ public final class Pipeline {
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
         IExecutionStage hardCodedModelExtractor = new ModelProvider(modelConnector);
         hardCodedModelExtractor.exec();
-        return hardCodedModelExtractor.getState().getModelState();
+        return hardCodedModelExtractor.getBlackboard().getModelState();
     }
 
     private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {
@@ -185,7 +185,7 @@ public final class Pipeline {
         }
 
         textModule.exec();
-        return textModule.getState();
+        return textModule.getBlackboard();
     }
 
     private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data, File additionalConfigs) {
@@ -200,7 +200,7 @@ public final class Pipeline {
         }
 
         recommendationModule.exec();
-        return recommendationModule.getState();
+        return recommendationModule.getBlackboard();
     }
 
     private static AgentDatastructure runConnectionGenerator(AgentDatastructure data, File additionalConfigs) {
@@ -215,7 +215,7 @@ public final class Pipeline {
         }
 
         connectionGenerator.exec();
-        return connectionGenerator.getState();
+        return connectionGenerator.getBlackboard();
     }
 
     /**

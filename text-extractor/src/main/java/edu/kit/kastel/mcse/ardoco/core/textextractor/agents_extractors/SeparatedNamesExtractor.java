@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors;
 
-import java.util.List;
-
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -23,10 +21,18 @@ public class SeparatedNamesExtractor extends TextExtractor {
 
     private double probability;
 
+    /**
+     * Prototype constructor.
+     */
     public SeparatedNamesExtractor() {
         this(null);
     }
 
+    /**
+     * Instantiates a new separated names extractor.
+     *
+     * @param textExtractionState the text extraction state
+     */
     public SeparatedNamesExtractor(ITextState textExtractionState) {
         this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
     }
@@ -40,17 +46,6 @@ public class SeparatedNamesExtractor extends TextExtractor {
     public SeparatedNamesExtractor(ITextState textExtractionState, GenericTextConfig config) {
         super(textExtractionState);
         probability = config.separatedNamesAnalyzerProbability;
-    }
-
-    @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
     }
 
     @Override

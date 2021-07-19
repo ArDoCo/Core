@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
+import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
+/**
+ * The Class GenericTextConfig defines the configuration for this stage.
+ */
 public class GenericTextConfig extends Configuration {
 
     private static final String SEPARATED_NAMES_ANALYZER_PROBABILITY = "SeparatedNamesAnalyzer_Probability";
@@ -16,8 +19,10 @@ public class GenericTextConfig extends Configuration {
     private static final String ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY = "ArticleTypeNameAnalyzer_Probability";
     private static final String EXTRACTORS = "Extractors";
 
+    /** The DEFAULT_CONFIG. */
     public static final GenericTextConfig DEFAULT_CONFIG = new GenericTextConfig();
 
+    /** The text extractors to be loaded. */
     public final List<String> textExtractors;
 
     // ArticleTypeNameAnalyzer
@@ -57,7 +62,7 @@ public class GenericTextConfig extends Configuration {
     public final double separatedNamesAnalyzerProbability;
 
     private GenericTextConfig() {
-        var config = new SystemParameters("/configs/TextAnalyzerSolverConfig.properties", true);
+        var config = new ResourceAccessor("/configs/TextAnalyzerSolverConfig.properties", true);
         textExtractors = config.getPropertyAsList(EXTRACTORS);
         articleTypeNameAnalyzerProbability = config.getPropertyAsDouble(ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY);
         inDepArcsAnalyzerProbability = config.getPropertyAsDouble(IN_DEP_ARCS_ANALYZER_PROBABILITY);
@@ -67,6 +72,11 @@ public class GenericTextConfig extends Configuration {
         separatedNamesAnalyzerProbability = config.getPropertyAsDouble(SEPARATED_NAMES_ANALYZER_PROBABILITY);
     }
 
+    /**
+     * Instantiates a new generic text config.
+     *
+     * @param configs the configs
+     */
     public GenericTextConfig(Map<String, String> configs) {
         textExtractors = getPropertyAsList(EXTRACTORS, configs);
         articleTypeNameAnalyzerProbability = getPropertyAsDouble(ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY, configs);

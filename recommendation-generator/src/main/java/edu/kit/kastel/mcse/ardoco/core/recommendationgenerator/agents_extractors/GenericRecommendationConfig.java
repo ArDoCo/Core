@@ -4,16 +4,21 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
+import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
+/**
+ * The Class GenericRecommendationConfig defines the configuration of the agents of this stage.
+ */
 public class GenericRecommendationConfig extends Configuration {
 
     private static final String SEPARATED_RELATIONS_SOLVER_PROBABILITY = "SeparatedRelationsSolver_Probability";
     private static final String NAME_TYPE_ANALYZER_PROBABILITY = "NameTypeAnalyzer_Probability";
     private static final String RECOMMENDATION_EXTRACTORS = "Recommendation_Extractors";
 
+    /** The DEFAULT_CONFIG. */
     public static final GenericRecommendationConfig DEFAULT_CONFIG = new GenericRecommendationConfig();
 
+    /** The recommendation extractors to be loaded. */
     public final List<String> recommendationExtractors;
 
     // NameTypeAnalyzer
@@ -28,13 +33,21 @@ public class GenericRecommendationConfig extends Configuration {
      */
     public final double separatedRelationSolverProbility;
 
+    /**
+     * Instantiates a new generic recommendation config.
+     */
     public GenericRecommendationConfig() {
-        var config = new SystemParameters("/configs/RecommendationAnalyzerSolverConfig.properties", true);
+        var config = new ResourceAccessor("/configs/RecommendationAnalyzerSolverConfig.properties", true);
         recommendationExtractors = config.getPropertyAsList(RECOMMENDATION_EXTRACTORS);
         nameTypeAnalyzerProbability = config.getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY);
         separatedRelationSolverProbility = config.getPropertyAsDouble(SEPARATED_RELATIONS_SOLVER_PROBABILITY);
     }
 
+    /**
+     * Instantiates a new generic recommendation config.
+     *
+     * @param configs the configs
+     */
     public GenericRecommendationConfig(Map<String, String> configs) {
         recommendationExtractors = getPropertyAsList(RECOMMENDATION_EXTRACTORS, configs);
         nameTypeAnalyzerProbability = getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY, configs);

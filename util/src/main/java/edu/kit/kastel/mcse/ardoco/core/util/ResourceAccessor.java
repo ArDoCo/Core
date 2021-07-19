@@ -11,15 +11,23 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 
-public class SystemParameters {
+/**
+ * The Class ResourceAccessor defines an accessor to configuration resources.
+ */
+public final class ResourceAccessor {
 
     private final Properties prop = new Properties();
-    private static final Logger logger = LogManager.getLogger(SystemParameters.class);
+    private static final Logger logger = LogManager.getLogger(ResourceAccessor.class);
 
-    public SystemParameters(String filepath, boolean isResource) {
+    /**
+     * Instantiates a new resource accessor.
+     *
+     * @param filepath    the filepath
+     * @param isClasspath indicator whether the file path is a classpath path
+     */
+    public ResourceAccessor(String filepath, boolean isClasspath) {
 
-        if (isResource) {
-
+        if (isClasspath) {
             Object loader = new Object() {
             };
 
@@ -82,7 +90,6 @@ public class SystemParameters {
      *
      * @param key name of the specified property
      * @return value of the property as a list of strings
-     * @throws Exception if the key is not found in the configuration file.
      */
     public List<String> getPropertyAsList(String key) {
         List<String> values = Lists.mutable.empty();
@@ -91,7 +98,7 @@ public class SystemParameters {
             throw new IllegalArgumentException("Key: " + key + " not found in config");
         }
 
-        if (value.strip().length() == 0) {
+        if (value.isBlank()) {
             return values;
         }
 

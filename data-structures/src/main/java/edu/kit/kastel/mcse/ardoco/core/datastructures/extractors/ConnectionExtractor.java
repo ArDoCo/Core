@@ -42,7 +42,7 @@ public abstract class ConnectionExtractor extends Extractor {
     }
 
     @Override
-    public ConnectionExtractor create(AgentDatastructure data, Configuration config) {
+    public final ConnectionExtractor create(AgentDatastructure data, Configuration config) {
         Objects.requireNonNull(data.getTextState());
         Objects.requireNonNull(data.getModelState());
         Objects.requireNonNull(data.getRecommendationState());
