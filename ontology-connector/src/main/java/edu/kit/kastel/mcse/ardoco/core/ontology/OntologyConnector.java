@@ -43,6 +43,17 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
+/**
+ * Adapter that connects your code to an ontology. Provides various methods to decorate the usage of Apache Jena.
+ * Although many methods in this class return the objects that are of some type from Apache Jena, you should not
+ * directly operate on these classes. The {@link OntologyConnector} also acts as a access controller to make sure that
+ * concurrent access does not create invalid states.
+ *
+ * TODO: concurrent access control is not yet implemented
+ *
+ * @author Jan Keim
+ *
+ */
 public class OntologyConnector {
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
     private static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
