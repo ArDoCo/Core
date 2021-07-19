@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextractor.extractors;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 
 /**
  * The analyzer examines the outgoing arcs of the current node.
