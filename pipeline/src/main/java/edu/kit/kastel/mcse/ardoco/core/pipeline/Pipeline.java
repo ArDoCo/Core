@@ -21,7 +21,7 @@ import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGeneratorConfig;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors.GenericConnectionConfig;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -31,14 +31,14 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGeneratorConfig;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
+import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractorConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors.GenericTextConfig;
 
 /**
  * The Pipeline defines a simple CLI for execution of the agents.

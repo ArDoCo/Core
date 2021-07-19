@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.List;
 import java.util.Map;

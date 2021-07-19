@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendatio
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
 
 /**

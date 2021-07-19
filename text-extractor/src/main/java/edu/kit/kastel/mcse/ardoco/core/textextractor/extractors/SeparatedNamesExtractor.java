@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextractor.extractors;
 
 import org.kohsuke.MetaInfServices;
 
@@ -7,6 +7,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 
 /**
  * This analyzer classifies all nodes, containing separators, as names and adds them as mappings to the current text

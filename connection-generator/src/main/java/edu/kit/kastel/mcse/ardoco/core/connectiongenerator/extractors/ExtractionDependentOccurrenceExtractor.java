@@ -1,10 +1,11 @@
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kohsuke.MetaInfServices;
 
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
