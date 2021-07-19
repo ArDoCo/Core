@@ -119,8 +119,8 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
             return;
         }
 
-        List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(),
-                recommendedParticipants.collect(ImmutableList::castToList).castToList());
+        List<List<IRecommendedInstance>> raw = recommendedParticipants.toList().collect(ImmutableList::toList);
+        List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(), raw);
 
         for (List<IRecommendedInstance> possibility : allRelationProbabilities) {
 
