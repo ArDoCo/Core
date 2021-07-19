@@ -35,7 +35,7 @@ public interface IRelationMapping extends ICopyable<IRelationMapping> {
      *
      * @return a list of all ends points of the relation
      */
-    ImmutableList<? extends INounMapping> getOccurrenceNodes();
+    ImmutableList<INounMapping> getOccurrenceNodes();
 
     /**
      * Returns the preposition of the relation.
