@@ -76,7 +76,7 @@ public class RecommendationGenerator implements IExecutionStage {
     }
 
     @Override
-    public AgentDatastructure getState() {
+    public AgentDatastructure getBlackboard() {
         return data;
     }
 

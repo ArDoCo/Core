@@ -32,7 +32,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     private double probabilityJustAdjacentNoun;
 
     /**
-     * Instantiates a new extracted terms analyzer
+     * Instantiates a new extracted terms analyzer.
      *
      * @param textExtractionState  the state that contains all information from the text
      * @param modelExtractionState the state that contains all information from the architecture model
@@ -45,7 +45,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     }
 
     /**
-     * Instantiates a new extracted terms analyzer
+     * Instantiates a new extracted terms analyzer.
      *
      * @param textExtractionState  the state that contains all information from the text
      * @param modelExtractionState the state that contains all information from the architecture model
@@ -75,21 +75,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     }
 
     @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 3) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
-        } else {
-            probabilityAdjacentTerm = probabilities.get(0);
-            probabilityJustName = probabilities.get(1);
-            probabilityJustAdjacentNoun = probabilities.get(2);
-        }
-    }
-
-    @Override
     public void exec(IWord n) {
-
         createRecommendedInstancesForTerm(n);
     }
 
@@ -105,7 +91,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
         for (ITermMapping term : termMappings) {
             List<INounMapping> adjacentNounMappings = getTermAdjacentNounMappings(node, term);
-            if (adjacentNounMappings.isEmpty() && term.getKind().equals(MappingKind.NAME)) {
+            if (adjacentNounMappings.isEmpty() && MappingKind.NAME.equals(term.getKind())) {
                 recommendationState.addRecommendedInstanceJustName(term.getReference(), probabilityJustName, term.getMappings());
             } else {
                 createRecommendedInstancesForSurroundingNounMappings(term, adjacentNounMappings);
@@ -284,21 +270,19 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
             List<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByNode(afterTermNode);
             possibleMappings.addAll(nounMappingsOfAfterTermNode);
         }
-        possibleMappings = possibleMappings.stream().filter(nounMapping -> !nounMapping.getKind().equals(kind)).collect(Collectors.toList());
-
-        return possibleMappings;
+        return possibleMappings.stream().filter(nounMapping -> !nounMapping.getKind().equals(kind)).collect(Collectors.toList());
     }
 
     private void createRecommendedInstancesOfAdjacentTerms(ITermMapping term, List<ITermMapping> adjacentTerms) {
         MappingKind kind = term.getKind();
 
-        if (kind.equals(MappingKind.NAME) && !adjacentTerms.isEmpty()) {
+        if (MappingKind.NAME.equals(kind) && !adjacentTerms.isEmpty()) {
             for (ITermMapping adjTerm : adjacentTerms) {
                 recommendationState.addRecommendedInstance(term.getReference(), adjTerm.getReference(), probabilityAdjacentTerm, term.getMappings(),
                         adjTerm.getMappings());
 
             }
-        } else if (kind.equals(MappingKind.TYPE) && !adjacentTerms.isEmpty()) {
+        } else if (MappingKind.TYPE.equals(kind) && !adjacentTerms.isEmpty()) {
             for (ITermMapping adjTerm : adjacentTerms) {
                 recommendationState.addRecommendedInstance(adjTerm.getReference(), term.getReference(), probabilityAdjacentTerm, adjTerm.getMappings(),
                         term.getMappings());
@@ -310,13 +294,13 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     private void createRecommendedInstancesForSurroundingNounMappings(ITermMapping term, List<INounMapping> surroundingNounMappings) {
         MappingKind kind = term.getKind();
 
-        if (kind.equals(MappingKind.NAME) && !surroundingNounMappings.isEmpty()) {
+        if (MappingKind.NAME.equals(kind) && !surroundingNounMappings.isEmpty()) {
             for (INounMapping nounMapping : surroundingNounMappings) {
 
                 recommendationState.addRecommendedInstance(term.getReference(), nounMapping.getReference(), probabilityJustAdjacentNoun, term.getMappings(),
                         List.of(nounMapping));
             }
-        } else if (kind.equals(MappingKind.TYPE) && !surroundingNounMappings.isEmpty()) {
+        } else if (MappingKind.TYPE.equals(kind) && !surroundingNounMappings.isEmpty()) {
             for (INounMapping nounMapping : surroundingNounMappings) {
 
                 recommendationState.addRecommendedInstance(nounMapping.getReference(), term.getReference(), probabilityJustAdjacentNoun, List.of(nounMapping),

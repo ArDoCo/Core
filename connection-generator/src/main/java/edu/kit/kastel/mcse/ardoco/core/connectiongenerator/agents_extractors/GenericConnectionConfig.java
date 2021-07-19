@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
+import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
 /**
  * The configuration for the agents and extractors of the connection generator.
@@ -87,7 +87,7 @@ public class GenericConnectionConfig extends Configuration {
     public final double instanceConnectionSolverProbabilityWithoutType;
 
     private GenericConnectionConfig() {
-        var config = new SystemParameters("/configs/ConnectionAnalyzerSolverConfig.properties", true);
+        var config = new ResourceAccessor("/configs/ConnectionAnalyzerSolverConfig.properties", true);
         connectionExtractors = config.getPropertyAsList(CONNECTION_EXTRACTORS);
         extractionDependentOccurrenceAnalyzerProbability = config.getPropertyAsDouble(EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY);
         extractedTermsAnalyzerProbabilityAdjacentNoun = config.getPropertyAsDouble(EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN);

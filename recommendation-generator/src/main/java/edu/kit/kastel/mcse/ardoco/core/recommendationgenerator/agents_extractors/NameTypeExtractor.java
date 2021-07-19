@@ -32,7 +32,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
     /**
      * Creates a new NameTypeAnalyzer.
      *
-     * @param graph                the PARSE graph
      * @param textExtractionState  the text extraction state
      * @param modelExtractionState the model extraction state
      * @param recommendationState  the recommendation state
@@ -41,12 +40,23 @@ public class NameTypeExtractor extends RecommendationExtractor {
         this(textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
     }
 
+    /**
+     * Instantiates a new name type extractor.
+     *
+     * @param textExtractionState  the text extraction state
+     * @param modelExtractionState the model extraction state
+     * @param recommendationState  the recommendation state
+     * @param config               the config
+     */
     public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             GenericRecommendationConfig config) {
         super(textExtractionState, modelExtractionState, recommendationState);
         probability = config.nameTypeAnalyzerProbability;
     }
 
+    /**
+     * Prototype constructor.
+     */
     public NameTypeExtractor() {
         this(null, null, null);
     }
@@ -55,17 +65,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
     public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
             Configuration config) {
         return new NameTypeExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
-    }
-
-    @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
     }
 
     @Override

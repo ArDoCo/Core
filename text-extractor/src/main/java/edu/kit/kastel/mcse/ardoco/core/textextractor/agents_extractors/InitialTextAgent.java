@@ -15,11 +15,17 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.IExtractor;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
 
+/**
+ * The Class InitialTextAgent defines the agent that executes the extractors for the text stage.
+ */
 @MetaInfServices(TextAgent.class)
 public class InitialTextAgent extends TextAgent {
 
     private List<IExtractor> extractors = new ArrayList<>();
 
+    /**
+     * Instantiates a new initial text agent.
+     */
     public InitialTextAgent() {
         super(GenericTextConfig.class);
     }

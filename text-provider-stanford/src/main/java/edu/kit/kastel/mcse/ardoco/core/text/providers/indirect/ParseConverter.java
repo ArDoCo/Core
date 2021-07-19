@@ -16,6 +16,9 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 
+/**
+ * The Class ParseConverter converts an {@link IGraph} to an {@link IText}.
+ */
 public class ParseConverter {
 
     private IText annotatedText;
@@ -24,10 +27,18 @@ public class ParseConverter {
     private Map<INode, Word> instances;
     private List<Word> orderedWords;
 
+    /**
+     * Instantiates a new parses the converter.
+     *
+     * @param graph the graph
+     */
     public ParseConverter(IGraph graph) {
         this.graph = graph;
     }
 
+    /**
+     * Converts the graph.
+     */
     public void convert() {
         reset();
 
@@ -37,6 +48,11 @@ public class ParseConverter {
         createText();
     }
 
+    /**
+     * Gets the annotated text.
+     *
+     * @return the annotated text
+     */
     public IText getAnnotatedText() {
         return annotatedText;
     }
@@ -170,7 +186,7 @@ public class ParseConverter {
 
         private List<IWord> words;
 
-        public Text(List<Word> orderedWords) {
+        private Text(List<Word> orderedWords) {
             orderedWords.stream().forEach(w -> w.parent = this);
             words = Collections.unmodifiableList(orderedWords);
         }

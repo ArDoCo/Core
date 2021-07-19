@@ -23,16 +23,24 @@ public class OutDepArcsExtractor extends TextExtractor {
 
     private double probability;
 
+    /**
+     * Prototype constructor.
+     */
     public OutDepArcsExtractor() {
         this(null);
     }
 
+    /**
+     * Instantiates a new out dep arcs extractor.
+     *
+     * @param textExtractionState the text extraction state
+     */
     public OutDepArcsExtractor(ITextState textExtractionState) {
         this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
     }
 
     /**
-     * Creates a new OutDepArcsAnalyzer
+     * Creates a new OutDepArcsAnalyzer.
      *
      * @param textExtractionState the text extraction state
      * @param config              the module configuration
@@ -40,17 +48,6 @@ public class OutDepArcsExtractor extends TextExtractor {
     public OutDepArcsExtractor(ITextState textExtractionState, GenericTextConfig config) {
         super(textExtractionState);
         probability = config.outDepArcsAnalyzerProbability;
-    }
-
-    @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
     }
 
     @Override
@@ -79,16 +76,16 @@ public class OutDepArcsExtractor extends TextExtractor {
 
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 
-            if (shortDepTag.equals(DependencyTag.AGENT)) {
+            if (DependencyTag.AGENT.equals(shortDepTag)) {
                 textState.addNort(n, n.getText(), probability);
 
-            } else if (shortDepTag.equals(DependencyTag.NUM)) {
+            } else if (DependencyTag.NUM.equals(shortDepTag)) {
                 textState.addType(n, n.getText(), probability);
 
-            } else if (shortDepTag.equals(DependencyTag.PREDET)) {
+            } else if (DependencyTag.PREDET.equals(shortDepTag)) {
                 textState.addType(n, n.getText(), probability);
 
-            } else if (shortDepTag.equals(DependencyTag.RCMOD)) {
+            } else if (DependencyTag.RCMOD.equals(shortDepTag)) {
                 textState.addNort(n, n.getText(), probability);
             }
         }

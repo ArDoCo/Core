@@ -11,12 +11,22 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
+/**
+ * The Class ParseProvider defines an {@link ITextConnector} for that uses PARSE.
+ */
 public class ParseProvider implements ITextConnector {
 
     private static final Logger logger = LogManager.getLogger(ParseProvider.class);
 
     private IText annotatedText;
 
+    /**
+     * Instantiates a new parses the provider.
+     *
+     * @param text the text
+     * @throws LunaRunException  the luna run exception
+     * @throws LunaInitException the luna init exception
+     */
     public ParseProvider(InputStream text) throws LunaRunException, LunaInitException {
         IPARSEExecution parse = new SingleExecution();
         IGraph graph = parse.calculatePARSEGraph(text);

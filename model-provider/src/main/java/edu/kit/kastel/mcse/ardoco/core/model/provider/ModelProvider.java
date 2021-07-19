@@ -33,7 +33,7 @@ public final class ModelProvider implements IExecutionStage {
     }
 
     @Override
-    public AgentDatastructure getState() {
+    public AgentDatastructure getBlackboard() {
         return new AgentDatastructure(null, null, modelExtractionState, null, null);
     }
 
