@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
-import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
 
@@ -39,7 +38,6 @@ public class OrderedOntologyList implements List<Individual> {
     private static final String LIST_PROPERTY_ITEM = "item";
 
     private final OntologyConnector oc;
-    private final OntModel ontModel;
     private final Individual listIndividual;
 
     private final String label;
@@ -82,10 +80,9 @@ public class OrderedOntologyList implements List<Individual> {
         }
 
         protected Optional<OrderedOntologyList> getOrderedListOntologyFromIndividual(Individual listIndividual) {
-            oc.getOntModel().setNsPrefix(OrderedOntologyList.LIST_PREFIX, OrderedOntologyList.LIST_BASE_URI);
+            oc.setNsPrefix(LIST_PREFIX, LIST_BASE_URI);
 
-            var listClassUri = oc.getOntModel().expandPrefix(OrderedOntologyList.LIST_PREFIX + ":" + OrderedOntologyList.LIST_CLASS);
-            if (listIndividual.hasOntClass(listClassUri)) {
+            if (oc.hasOntClass(listIndividual, LIST_PREFIX, LIST_CLASS)) {
                 return Optional.of(createFromListIndividual(listIndividual));
             }
             return Optional.empty();
@@ -93,28 +90,22 @@ public class OrderedOntologyList implements List<Individual> {
 
         protected void checkListImport() {
             // check imports
-            var importedModels = oc.getOntModel().listImportedOntologyURIs();
-            if (!importedModels.contains(OrderedOntologyList.LIST_BASE_URI)) {
-                oc.addOntologyImport(OrderedOntologyList.LIST_BASE_URI);
+            if (!oc.hasImport(LIST_BASE_URI)) {
+                oc.addOntologyImport(LIST_BASE_URI);
             }
 
-            // check prefix map
-            var prefixMap = oc.getOntModel().getNsPrefixMap();
-            var olo = prefixMap.get(OrderedOntologyList.LIST_PREFIX);
-            if (olo == null) {
-                oc.getOntModel().setNsPrefix(OrderedOntologyList.LIST_PREFIX, OrderedOntologyList.LIST_BASE_URI);
-            }
+            // set prefix map
+            oc.setNsPrefix(LIST_PREFIX, LIST_BASE_URI);
         }
 
     }
 
     private OrderedOntologyList(OntologyConnector oc, Individual listIndividual) {
         this.oc = oc;
-        ontModel = oc.getOntModel();
         this.listIndividual = listIndividual;
-        var potLabel = listIndividual.getLabel(null);
+        var potLabel = oc.getLabel(listIndividual);
         if (potLabel == null) {
-            label = listIndividual.getLocalName();
+            label = oc.getLocalName(listIndividual);
         } else {
             label = potLabel;
         }
@@ -123,12 +114,11 @@ public class OrderedOntologyList implements List<Individual> {
     private OrderedOntologyList(OntologyConnector oc, String label) {
         this.oc = oc;
         this.label = label;
-        ontModel = oc.getOntModel();
-        var listClassUri = ontModel.expandPrefix(LIST_PREFIX + ":" + LIST_CLASS);
+        var listClassUri = oc.createUri(LIST_PREFIX, LIST_CLASS);
         var listOpt = oc.getIndividual(label);
         if (listOpt.isPresent()) {
             listIndividual = listOpt.get();
-            if (!listIndividual.hasOntClass(listClassUri)) {
+            if (!oc.hasOntClass(listIndividual, listClassUri)) {
                 throw new IllegalArgumentException("Provided a label of an invalid individual");
             }
         } else {
@@ -157,11 +147,8 @@ public class OrderedOntologyList implements List<Individual> {
     }
 
     private Optional<Individual> getHead() {
-        var headSlotNode = listIndividual.getPropertyValue(getSlotProperty());
-        if (headSlotNode == null || !headSlotNode.canAs(Individual.class)) {
-            return Optional.empty();
-        }
-        return Optional.of(headSlotNode.as(Individual.class));
+        var headSlotNode = oc.getPropertyValue(listIndividual, getSlotProperty());
+        return oc.transformIntoIndividual(headSlotNode);
     }
 
     private Optional<Individual> getLastSlot() {
@@ -207,7 +194,7 @@ public class OrderedOntologyList implements List<Individual> {
     }
 
     private void setLength(int length) {
-        listIndividual.setPropertyValue(getLengthProperty(), ontModel.createTypedLiteral(length, XSD.nonNegativeInteger.toString()));
+        oc.setPropertyToIndividual(listIndividual, getLengthProperty(), length, XSD.nonNegativeInteger.toString());
     }
 
     private Individual getNext(Individual individual) {
@@ -252,8 +239,7 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public int size() {
-        var lengthValue = listIndividual.getPropertyValue(getLengthProperty());
-        return lengthValue.asLiteral().getInt();
+        return oc.getPropertyIntValue(listIndividual, getLengthProperty()).orElse(-1);
     }
 
     @Override
@@ -275,9 +261,9 @@ public class OrderedOntologyList implements List<Individual> {
         // create slot
         var slotName = getSlotName();
         var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
-        newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
-        newSlot.setPropertyValue(getItemProperty(), individual);
-        newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
+        oc.setPropertyToIndividual(newSlot, getOrderedListProperty(), listIndividual);
+        oc.setPropertyToIndividual(newSlot, getItemProperty(), individual);
+        oc.setPropertyToIndividual(newSlot, getIndexProperty(), index, XSD.positiveInteger.getURI());
 
         Individual prev = null;
         var curr = getHead().orElse(null);
@@ -324,9 +310,9 @@ public class OrderedOntologyList implements List<Individual> {
             index++;
             var slotName = getSlotName();
             var newSlot = oc.addIndividualToClass(slotName, getSlotClass());
-            newSlot.setPropertyValue(getOrderedListProperty(), listIndividual);
-            newSlot.setPropertyValue(getItemProperty(), individual);
-            newSlot.setPropertyValue(getIndexProperty(), ontModel.createTypedLiteral(index, XSD.positiveInteger.getURI()));
+            oc.setPropertyToIndividual(newSlot, getOrderedListProperty(), listIndividual);
+            oc.setPropertyToIndividual(newSlot, getItemProperty(), individual);
+            oc.setPropertyToIndividual(newSlot, getIndexProperty(), XSD.positiveInteger.getURI());
 
             if (index == 0) {
                 setHead(newSlot);
@@ -422,45 +408,38 @@ public class OrderedOntologyList implements List<Individual> {
         if (individual == null) {
             return false;
         }
-        var removedIndex = individual.getPropertyValue(getIndexProperty()).asLiteral().getInt();
-        var prevNode = individual.getPropertyValue(getPreviousProperty());
-        var nextNode = individual.getPropertyValue(getNextProperty());
+        var removedIndex = oc.getPropertyIntValue(individual, getIndexProperty()).orElse(-1);
+        var prevNode = oc.getPropertyValue(individual, getPreviousProperty());
+        var nextNode = oc.getPropertyValue(individual, getNextProperty());
 
-        Individual prev = null;
-        if (prevNode != null && prevNode.canAs(Individual.class)) {
-            prev = prevNode.as(Individual.class);
-        }
-        Individual next = null;
-        if (nextNode != null && nextNode.canAs(Individual.class)) {
-            next = nextNode.as(Individual.class);
-        }
+        var prev = oc.transformIntoIndividual(prevNode);
+        var next = oc.transformIntoIndividual(nextNode);
 
         // set the next of previous node
-        if (prev != null) {
-            if (next == null) {
-                prev.removeAll(getNextProperty());
+        if (prev.isPresent()) {
+            if (next.isEmpty()) {
+                oc.removeAllOfProperty(prev.get(), getNextProperty());
             } else {
-                prev.setPropertyValue(getNextProperty(), next);
+                oc.setPropertyToIndividual(prev.get(), getNextProperty(), next.get());
             }
         }
 
         // set the previous of next node
-        if (next != null) {
-            if (prev == null) {
-                next.removeAll(getPreviousProperty());
+        if (next.isPresent()) {
+            if (prev.isEmpty()) {
+                oc.removeAllOfProperty(next.get(), getPreviousProperty());
             } else {
-                next.setPropertyValue(getPreviousProperty(), next);
+                oc.setPropertyToIndividual(next.get(), getPreviousProperty(), prev.get());
             }
         }
 
-        updateList(next, removedIndex);
-        individual.remove();
+        updateList(next.orElse(null), removedIndex);
+        oc.removeIndividual(individual);
         return true;
     }
 
     private void setSlotIndex(Individual slot, int index) {
-        var literal = ontModel.createTypedLiteral(index, XSD.nonNegativeInteger.toString());
-        slot.setPropertyValue(getIndexProperty(), literal);
+        oc.setPropertyToIndividual(slot, getIndexProperty(), index, XSD.nonNegativeInteger.toString());
     }
 
     private void updateList(Individual start, int startIndex) {
@@ -472,7 +451,6 @@ public class OrderedOntologyList implements List<Individual> {
             index++;
             curr = getNext(curr);
         }
-
         setLength(index);
     }
 
@@ -560,20 +538,17 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public Individual set(int index, Individual element) {
-        Individual old = null;
+
         var slot = getSlot(index);
         if (slot == null) {
-            return old;
+            return null;
         }
-        var itemPropertyStatement = slot.getProperty(getItemProperty());
-        if (itemPropertyStatement != null) {
-            var oldIndividual = itemPropertyStatement.getObject();
-            if (oldIndividual.canAs(Individual.class)) {
-                old = oldIndividual.as(Individual.class);
-            }
-        }
-        slot.setPropertyValue(getItemProperty(), element);
-        return old;
+
+        var oldItemPropertyValue = oc.getPropertyValue(slot, getItemProperty());
+        var oldItemIndividual = oc.transformIntoIndividual(oldItemPropertyValue);
+
+        oc.setPropertyToIndividual(slot, getItemProperty(), element);
+        return oldItemIndividual.orElse(null);
     }
 
     @Override
@@ -591,7 +566,7 @@ public class OrderedOntologyList implements List<Individual> {
             var slotOpt = getSlotWhoseItemEquals(individual);
             if (slotOpt.isPresent()) {
                 var slot = slotOpt.get();
-                return slot.getPropertyValue(getIndexProperty()).asLiteral().getInt();
+                return oc.getPropertyIntValue(slot, getIndexProperty()).orElse(-1);
             }
         }
         return -1;

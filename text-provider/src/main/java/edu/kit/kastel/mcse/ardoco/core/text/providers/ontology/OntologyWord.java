@@ -91,10 +91,10 @@ public class OntologyWord implements IWord {
     @Override
     public IWord getPreWord() {
         Individual slot = getSlot();
-        var prevSlotNode = slot.getPropertyValue(hasPrevious);
-        if (prevSlotNode.canAs(Individual.class)) {
-            Individual prevSlot = prevSlotNode.as(Individual.class);
-            var prevIndividual = extractItemOutOfSlot(prevSlot);
+        var prevSlotNode = ontologyConnector.getPropertyValue(slot, hasPrevious);
+        var prevSlotIndividual = ontologyConnector.transformIntoIndividual(prevSlotNode);
+        if (prevSlotIndividual.isPresent()) {
+            var prevIndividual = extractItemOutOfSlot(prevSlotIndividual.get());
             if (prevIndividual.isPresent()) {
                 return get(ontologyConnector, prevIndividual.get());
             }
@@ -105,10 +105,10 @@ public class OntologyWord implements IWord {
     @Override
     public IWord getNextWord() {
         Individual slot = getSlot();
-        var nextSlotNode = slot.getPropertyValue(hasNext);
-        if (nextSlotNode.canAs(Individual.class)) {
-            Individual nextSlot = nextSlotNode.as(Individual.class);
-            var nextIndividual = extractItemOutOfSlot(nextSlot);
+        var nextSlotNode = ontologyConnector.getPropertyValue(slot, hasNext);
+        var nextSlotIndividual = ontologyConnector.transformIntoIndividual(nextSlotNode);
+        if (nextSlotIndividual.isPresent()) {
+            var nextIndividual = extractItemOutOfSlot(nextSlotIndividual.get());
             if (nextIndividual.isPresent()) {
                 return get(ontologyConnector, nextIndividual.get());
             }
@@ -120,20 +120,15 @@ public class OntologyWord implements IWord {
         if (slot == null) {
             return Optional.empty();
         }
-        var itemNode = slot.getPropertyValue(hasItem);
-        if (itemNode == null) {
-            return Optional.empty();
-        }
-        return Optional.of(itemNode.as(Individual.class));
+        var itemNode = ontologyConnector.getPropertyValue(slot, hasItem);
+        return ontologyConnector.transformType(itemNode, Individual.class);
     }
 
     private Individual getSlot() {
         var optSlot = ontologyConnector.getFirstSubjectOf(hasItem, wordIndividual);
         if (optSlot.isPresent()) {
             var slot = optSlot.get();
-            if (slot.canAs(Individual.class)) {
-                return slot.as(Individual.class);
-            }
+            return ontologyConnector.transformIntoIndividual(slot).orElse(null);
         }
         throw new IllegalStateException("Word should be contained in a slot of a word list, but could not find the corresponding slot.");
     }
@@ -237,8 +232,9 @@ public class OntologyWord implements IWord {
         var targets = new ArrayList<Individual>();
         for (var dependency : filteredDependencies) {
             var targetNode = ontologyConnector.getPropertyValue(dependency, property);
-            if (targetNode.canAs(Individual.class)) {
-                targets.add(targetNode.as(Individual.class));
+            var target = ontologyConnector.transformIntoIndividual(targetNode);
+            if (target.isPresent()) {
+                targets.add(target.get());
             }
         }
         return targets;
@@ -247,13 +243,14 @@ public class OntologyWord implements IWord {
     private List<Individual> filterDependencyResourcesByType(DependencyTag dependencyTag, List<Resource> dependencies) {
         var filteredDependencies = new ArrayList<Individual>();
         for (var dependency : dependencies) {
-            if (!dependency.canAs(Individual.class)) {
+            var depIndividual = ontologyConnector.transformIntoIndividual(dependency);
+            if (depIndividual.isEmpty()) {
                 continue;
             }
-            var depIndividual = dependency.as(Individual.class);
-            var depType = ontologyConnector.getPropertyStringValue(depIndividual, dependencyTypeProperty);
+            Individual dependencyIndividual = depIndividual.get();
+            var depType = ontologyConnector.getPropertyStringValue(dependencyIndividual, dependencyTypeProperty);
             if (depType.isPresent() && dependencyTag.name().equalsIgnoreCase(depType.get())) {
-                filteredDependencies.add(depIndividual);
+                filteredDependencies.add(dependencyIndividual);
             }
         }
         return filteredDependencies;

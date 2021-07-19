@@ -1,17 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.core.ontology;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.jena.ontology.OntModel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class OntologyUtil {
-    private static Logger logger = LogManager.getLogger(OntologyUtil.class);
     private static Random random = new Random();
 
     private static Set<String> assignedIDs = new HashSet<>();
@@ -55,30 +48,8 @@ public class OntologyUtil {
      * @param prefix Prefix that should be used for namespace
      * @return random URI with the given prefix
      */
-    public static String generateRandomURI(OntModel ontModel, String prefix) {
-        return createUri(ontModel, prefix, OntologyUtil.generateRandomID());
-    }
-
-    private static String createUri(OntModel ontModel, String prefix, String suffix) {
-        String encodedSuffix = suffix;
-        try {
-            encodedSuffix = URLEncoder.encode(suffix, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
-    }
-
-    /**
-     * Creates a uri for the given {@link OntologyConnector} based on the prefix and suffix
-     *
-     * @param ontologyConnector {@link OntologyConnector} that the URI will be made for
-     * @param prefix            prefix that should be used
-     * @param suffix            suffix that should be used
-     * @return URI
-     */
-    public static String createUri(OntologyConnector ontologyConnector, String prefix, String suffix) {
-        return createUri(ontologyConnector.getOntModel(), prefix, suffix);
+    public static String generateRandomURI(OntologyConnector oc, String prefix) {
+        return oc.createUri(prefix, OntologyUtil.generateRandomID());
     }
 
 }

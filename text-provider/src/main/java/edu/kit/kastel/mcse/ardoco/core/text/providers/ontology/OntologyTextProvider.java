@@ -79,7 +79,7 @@ public class OntologyTextProvider implements ITextConnector {
         // create text in ontology
         var name = "Text"; // TODO should texts have a name? E.g. the filename etc.?
         var textIndividual = ontologyConnector.addIndividualToClass(name, textClass);
-        var uuid = textIndividual.getLocalName();
+        var uuid = ontologyConnector.getLocalName(textIndividual);
         ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);
 
         // add word individuals
@@ -107,13 +107,13 @@ public class OntologyTextProvider implements ITextConnector {
         // create the list that is used for the words property
         var olo = ontologyConnector.addList("WordsOf" + name, wordIndividuals);
         var listIndividual = olo.getListIndividual();
-        textIndividual.addProperty(wordsProperty, listIndividual);
+        ontologyConnector.addPropertyToIndividual(textIndividual, wordsProperty, listIndividual);
     }
 
     private Individual addWord(IWord word) {
         var label = word.getText();
         var wordIndividual = ontologyConnector.addIndividualToClass(label, wordClass);
-        var uuid = wordIndividual.getLocalName();
+        var uuid = ontologyConnector.getLocalName(wordIndividual);
         ontologyConnector.addPropertyToIndividual(wordIndividual, uuidProperty, uuid);
 
         ontologyConnector.addPropertyToIndividual(wordIndividual, textProperty, word.getText());
@@ -130,12 +130,12 @@ public class OntologyTextProvider implements ITextConnector {
             return;
         }
 
-        var sourceName = source.getLabel(null);
-        var targetName = target.getLabel(null);
+        var sourceName = ontologyConnector.getLabel(source);
+        var targetName = ontologyConnector.getLabel(target);
         var depName = depType.name();
         var dependencyLabel = sourceName + "-" + depName + "->" + targetName;
         var dependencyIndividual = ontologyConnector.addIndividualToClass(dependencyLabel, dependencyClass);
-        var uid = dependencyIndividual.getLocalName();
+        var uid = ontologyConnector.getLocalName(dependencyIndividual);
 
         ontologyConnector.addPropertyToIndividual(dependencyIndividual, dependencySourceProperty, source);
         ontologyConnector.addPropertyToIndividual(dependencyIndividual, dependencyTargetProperty, target);
