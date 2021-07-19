@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor.agents;
 
-import java.util.List;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
@@ -88,9 +86,9 @@ public class MultiplePartAgent extends TextAgent {
         ImmutableList<INounMapping> preMappings = textState.getNounMappingsByNode(pre);
         ImmutableList<INounMapping> nMappings = textState.getNounMappingsByNode(n);
 
-        List<List<INounMapping>> cartesianProduct = Utilis.cartesianProduct(preMappings.toList(), List.of(nMappings.toList()));
+        ImmutableList<ImmutableList<INounMapping>> cartesianProduct = Utilis.cartesianProduct(preMappings, Lists.immutable.with(nMappings));
 
-        for (List<INounMapping> possibleCombination : cartesianProduct) {
+        for (ImmutableList<INounMapping> possibleCombination : cartesianProduct) {
             textState.addTerm(ref, possibleCombination.get(0), possibleCombination.get(1), kind, probability);
         }
 
