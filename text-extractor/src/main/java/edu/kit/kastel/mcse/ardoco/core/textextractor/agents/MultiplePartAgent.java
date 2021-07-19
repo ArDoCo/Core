@@ -88,7 +88,7 @@ public class MultiplePartAgent extends TextAgent {
         ImmutableList<INounMapping> preMappings = textState.getNounMappingsByNode(pre);
         ImmutableList<INounMapping> nMappings = textState.getNounMappingsByNode(n);
 
-        List<List<INounMapping>> cartesianProduct = Utilis.cartesianProduct(preMappings.castToList(), List.of(nMappings.castToList()));
+        List<List<INounMapping>> cartesianProduct = Utilis.cartesianProduct(preMappings.toList(), List.of(nMappings.toList()));
 
         for (List<INounMapping> possibleCombination : cartesianProduct) {
             textState.addTerm(ref, possibleCombination.get(0), possibleCombination.get(1), kind, probability);
