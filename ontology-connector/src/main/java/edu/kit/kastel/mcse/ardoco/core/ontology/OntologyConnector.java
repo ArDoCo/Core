@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -102,12 +104,12 @@ public class OntologyConnector {
     }
 
     /**
-     * Add a namespace prefix
+     * Adds/Sets a namespace prefix
      *
      * @param prefix the new prefix that should be able to use
      * @param uri    the URI that the prefix should be resolved to
      */
-    public void addNsPrefix(String prefix, String uri) {
+    public void setNsPrefix(String prefix, String uri) {
         ontModel.setNsPrefix(prefix, uri);
     }
 
@@ -184,6 +186,17 @@ public class OntologyConnector {
     }
 
     /**
+     * Check if the given iri is imported into the ontology model.
+     *
+     * @param importIri Iri that should be checked
+     * @return True if imported, else False
+     */
+    public boolean hasImport(String importIri) {
+        var importedModels = ontModel.listImportedOntologyURIs();
+        return importedModels.contains(importIri);
+    }
+
+    /**
      * Returns the first {@link Ontology} that is not an imported ontology in the {@link OntModel}. This is assumed to
      * be the base ontology.
      *
@@ -217,8 +230,21 @@ public class OntologyConnector {
         return infModel;
     }
 
-    private String createUri(String prefix, String suffix) {
-        return OntologyUtil.createUri(this, prefix, suffix);
+    /**
+     * Creates the uri out of a given prefix and suffix by concatenating them and expanding the prefix.
+     *
+     * @param prefix prefix that should be used
+     * @param suffix suffix that should be used
+     * @return uri after expansion.
+     */
+    public String createUri(String prefix, String suffix) {
+        String encodedSuffix = suffix;
+        try {
+            encodedSuffix = URLEncoder.encode(suffix, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
     }
 
     /***********/
@@ -440,6 +466,25 @@ public class OntologyConnector {
     /***************/
 
     /**
+     * See {@link Individual#hasOntClass(String)}.
+     *
+     * @param individual Individual to check
+     * @param uri        Uri to check
+     * @return True if this individual has the given class as one of its types.
+     */
+    public boolean hasOntClass(Individual individual, String uri) {
+        return individual.hasOntClass(uri);
+    }
+
+    public boolean hasOntClass(Individual individual, String prefix, String localname) {
+        if (prefix == null || prefix.isBlank()) {
+            prefix = DEFAULT_PREFIX;
+        }
+        var uri = createUri(prefix, localname);
+        return individual.hasOntClass(uri);
+    }
+
+    /**
      * Returns an {@link Optional} that contains a named individual with the given name. If no individual with that name
      * exists, returns empty {@link Optional}.
      *
@@ -537,8 +582,8 @@ public class OntologyConnector {
     /**
      * Adds an individual with the given name to the default (prefix) namespace.
      *
-     * @param name
-     * @return
+     * @param name Name of the individual
+     * @return the Individual with the given name
      */
     public Individual addIndividual(String name) {
         var uri = generateRandomURI(DEFAULT_PREFIX);
@@ -549,6 +594,39 @@ public class OntologyConnector {
         }
 
         return individual;
+    }
+
+    /**
+     * Removes an individual with the given name in the default (prefix) namespace from the ontology.
+     *
+     * @param name Name of the individual
+     */
+    public void removeIndividual(String name) {
+        var optIndividual = getIndividual(name);
+        if (optIndividual.isPresent()) {
+            optIndividual.get().remove();
+        }
+    }
+
+    /**
+     * Removes an individual with the given uri from the ontology.
+     *
+     * @param name Name of the individual
+     */
+    public void removeIndividualByUri(String uri) {
+        var optIndividual = getIndividualByIri(uri);
+        if (optIndividual.isPresent()) {
+            optIndividual.get().remove();
+        }
+    }
+
+    /**
+     * Removes a given individual from the ontology.
+     *
+     * @param individual the individual
+     */
+    public void removeIndividual(Individual individual) {
+        individual.remove();
     }
 
     /**
@@ -798,6 +876,17 @@ public class OntologyConnector {
     }
 
     /**
+     * Sets a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be set
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     */
+    public void setPropertyToIndividual(Individual individual, OntProperty property, String value) {
+        individual.setPropertyValue(property, ontModel.createLiteral(value));
+    }
+
+    /**
      * Adds a Property with a value to a given Individual.
      *
      * @param individual Individual the property should be added to
@@ -807,6 +896,18 @@ public class OntologyConnector {
      */
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
         return individual.addProperty(property, value, language);
+    }
+
+    /**
+     * Sets a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be set
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     * @param language   language of the property value
+     */
+    public void setPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
+        individual.addProperty(property, value, language);
     }
 
     /**
@@ -821,6 +922,17 @@ public class OntologyConnector {
     }
 
     /**
+     * Sets a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be set
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     */
+    public void setPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
+        individual.setPropertyValue(property, value);
+    }
+
+    /**
      * Adds a Property with a value to a given Individual.
      *
      * @param individual Individual the property should be added to
@@ -829,6 +941,17 @@ public class OntologyConnector {
      */
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, int value) {
         return addPropertyToIndividual(individual, property, value, XSD.integer.toString());
+    }
+
+    /**
+     * Sets a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be set
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     */
+    public void setPropertyToIndividual(Individual individual, OntProperty property, int value) {
+        addPropertyToIndividual(individual, property, value, XSD.integer.toString());
     }
 
     /**
@@ -842,6 +965,19 @@ public class OntologyConnector {
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
         var valueLiteral = ontModel.createTypedLiteral(value, type);
         return individual.addProperty(property, valueLiteral);
+    }
+
+    /**
+     * Sets a Property with a value to a given Individual.
+     *
+     * @param individual Individual the property should be set
+     * @param property   Property that should be added
+     * @param value      Value that should be set for that property
+     * @param type       Type of the value
+     */
+    public void setPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
+        var valueLiteral = ontModel.createTypedLiteral(value, type);
+        individual.setPropertyValue(property, valueLiteral);
     }
 
     /**
@@ -902,6 +1038,16 @@ public class OntologyConnector {
 
         }
         return Optional.empty();
+    }
+
+    /**
+     * Removes all statements that have the given resource and property.
+     *
+     * @param resource Resource
+     * @param property property
+     */
+    public void removeAllOfProperty(Resource resource, OntProperty property) {
+        resource.removeAll(property);
     }
 
     /**
@@ -986,13 +1132,18 @@ public class OntologyConnector {
         return resList;
     }
 
+    /************/
+    /* Literals */
+    /************/
+    // TODO
+
     /***********************/
     /* Convenience Methods */
     /***********************/
 
     /**
-     * Transforms a given Resource (that is a subtype of Resource) into the given target type. If it cannot be
-     * transformed, returns an empty Optional.
+     * Transforms a given Node (that is a subtype of RDFNode) into the given target type. If it cannot be transformed,
+     * returns an empty Optional.
      *
      * @param <S>        source type, must extend Resource
      * @param <T>        target type, must extend Resource
@@ -1000,12 +1151,36 @@ public class OntologyConnector {
      * @param targetType class of the target type
      * @return Optional containing the transformed resource. If transformation was unsuccessful, the Optional is empty.
      */
-    public <S extends Resource, T extends Resource> Optional<T> transformType(S from, Class<T> targetType) {
-        if (from.canAs(targetType)) {
-            return Optional.of(from.as(targetType));
-        } else {
-            return Optional.empty();
+    public <S extends RDFNode, T extends Resource> Optional<T> transformType(S from, Class<T> targetType) {
+        return Optional.ofNullable(transformTypeNullable(from, targetType));
+    }
+
+    /**
+     * Transforms a given Node (that is a subtype of RDFNode) into the given target type. If it cannot be transformed,
+     * returns <code>null</code>.
+     *
+     * @param <S>        source type, must extend Resource
+     * @param <T>        target type, must extend Resource
+     * @param from       resource that should be transformed
+     * @param targetType class of the target type
+     * @return The transformed resource. If transformation was unsuccessful, returns null.
+     */
+    public <S extends RDFNode, T extends Resource> T transformTypeNullable(S from, Class<T> targetType) {
+        if (from != null && from.canAs(targetType)) {
+            return from.as(targetType);
         }
+        return null;
+    }
+
+    /**
+     * Transforms a given Node (that is a subtype of RDFNode) into an {@link Individual}. If it cannot be transformed,
+     * returns <code>null</code>.
+     *
+     * @param node Node that should be transformed
+     * @return The transformed Individual. If transformation was unsuccessful, returns null.
+     */
+    public Optional<Individual> transformIntoIndividual(RDFNode node) {
+        return transformType(node, Individual.class);
     }
 
     private <T extends Resource, S extends Resource> Optional<S> checkOptionalAndTransformIntoType(Optional<T> optional, Class<S> classType) {
@@ -1014,6 +1189,38 @@ public class OntologyConnector {
             return transformType(resource, classType);
         }
         return Optional.empty();
+    }
+
+    /**
+     * See {@link OntResource#getLocalName()}
+     *
+     * @param resource Resource
+     * @return The localname of this property within its namespace.
+     */
+    public String getLocalName(OntResource resource) {
+        return resource.getLocalName();
+    }
+
+    /**
+     * Returns a label for the given resource. For more details, see {@link OntResource#getLabel(String)}. The provided
+     * language is set to <code>null</code>
+     *
+     * @param resource the resource
+     * @return a label for the given resource or null if none is found
+     */
+    public String getLabel(OntResource resource) {
+        return getLabel(resource, null);
+    }
+
+    /**
+     * See {@link OntResource#getLabel(String)}
+     *
+     * @param resource the resource
+     * @param lang     the language attribute
+     * @return a label for the given resource or null if none is found
+     */
+    public String getLabel(OntResource resource, String lang) {
+        return resource.getLabel(lang);
     }
 
     /**
