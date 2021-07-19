@@ -17,11 +17,17 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.IExtractor;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.RecommendationExtractor;
 
+/**
+ * The Class InitialRecommendationAgent runs all extractors of this stage.
+ */
 @MetaInfServices(RecommendationAgent.class)
 public class InitialRecommendationAgent extends RecommendationAgent {
 
     private List<IExtractor> extractors = new ArrayList<>();
 
+    /**
+     * Prototype constructor.
+     */
     public InitialRecommendationAgent() {
         super(GenericRecommendationConfig.class);
     }
@@ -52,7 +58,6 @@ public class InitialRecommendationAgent extends RecommendationAgent {
 
     @Override
     public void exec() {
-
         for (IExtractor extractor : extractors) {
             for (IWord word : text.getWords()) {
                 extractor.exec(word);

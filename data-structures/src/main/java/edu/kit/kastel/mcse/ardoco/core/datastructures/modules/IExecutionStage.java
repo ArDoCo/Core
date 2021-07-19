@@ -9,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
  */
 public interface IExecutionStage {
     /**
-     * Runs the agent with its analyzers and finders.
+     * Runs the agent with its analyzers and extractors.
      */
     void exec();
 
@@ -18,7 +18,7 @@ public interface IExecutionStage {
      *
      * @return current data structure
      */
-    AgentDatastructure getState();
+    AgentDatastructure getBlackboard();
 
     /**
      * Creates the module.

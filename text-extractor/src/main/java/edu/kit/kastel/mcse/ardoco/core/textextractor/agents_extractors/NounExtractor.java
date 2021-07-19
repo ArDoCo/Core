@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors;
 
-import java.util.List;
-
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -22,18 +20,25 @@ public class NounExtractor extends TextExtractor {
 
     private double probability;
 
+    /**
+     * Prototype constructor.
+     */
     public NounExtractor() {
         this(null);
     }
 
+    /**
+     * Instantiates a new noun extractor.
+     *
+     * @param textExtractionState the text extraction state
+     */
     public NounExtractor(ITextState textExtractionState) {
         this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
     }
 
     /**
-     * Creates a new NounAnalyzer
+     * Creates a new NounAnalyzer.
      *
-     * @param graph               PARSE graph to run on
      * @param textExtractionState the text extraction state
      * @param config              the module configuration
      */
@@ -43,21 +48,15 @@ public class NounExtractor extends TextExtractor {
     }
 
     @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
-    }
-
-    @Override
     public TextExtractor create(ITextState textExtractionState, Configuration config) {
         return new NounExtractor(textExtractionState, (GenericTextConfig) config);
     }
 
+    /**
+     * Exec.
+     *
+     * @param n the n
+     */
     @Override
     public void exec(IWord n) {
 

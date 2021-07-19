@@ -15,17 +15,19 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
 
 /**
- * WORK IN PROGRESS
+ * WORK IN PROGRESS.
  *
  * @author Sophie
- *
  */
-
+// TODO @Sophie create a desc
 @MetaInfServices(TextAgent.class)
 public class MultiplePartAgent extends TextAgent {
 
     private double probability;
 
+    /**
+     * Prototype constructor.
+     */
     public MultiplePartAgent() {
         super(GenericTextConfig.class);
     }

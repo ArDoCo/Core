@@ -57,7 +57,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
     }
 
     /**
-     * For deserialization
+     * For deserialization.
      */
     public ExtractionDependentOccurrenceExtractor() {
         this(null, null, null, null);
@@ -71,19 +71,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
     }
 
     @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
-    }
-
-    @Override
     public void exec(IWord n) {
-
         searchForName(n);
         searchForType(n);
     }

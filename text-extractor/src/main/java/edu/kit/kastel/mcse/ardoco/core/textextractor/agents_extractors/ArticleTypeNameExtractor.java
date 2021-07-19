@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors;
 
-import java.util.List;
-
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -26,21 +24,18 @@ public class ArticleTypeNameExtractor extends TextExtractor {
         return new ArticleTypeNameExtractor(textState, (GenericTextConfig) config);
     }
 
-    @Override
-    public void setProbability(List<Double> probabilities) {
-        if (probabilities.size() > 1) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are more than needed!");
-        } else if (probabilities.isEmpty()) {
-            throw new IllegalArgumentException(getId() + ": The given probabilities are empty!");
-        } else {
-            probability = probabilities.get(0);
-        }
-    }
-
+    /**
+     * Prototype constructor.
+     */
     public ArticleTypeNameExtractor() {
         this(null);
     }
 
+    /**
+     * Instantiates a new article type name extractor.
+     *
+     * @param textState the text state
+     */
     public ArticleTypeNameExtractor(ITextState textState) {
         this(textState, GenericTextConfig.DEFAULT_CONFIG);
     }

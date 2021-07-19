@@ -30,6 +30,9 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
     private double probability;
     private String relName = "separated";
 
+    /**
+     * Prototype constructor.
+     */
     public SeparatedRelationsAgent() {
         super(GenericRecommendationConfig.class);
     }

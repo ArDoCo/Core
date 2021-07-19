@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
+import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
 /**
  * The configuration for the connection generator module
@@ -20,7 +20,7 @@ public class ConnectionGeneratorConfig extends Configuration {
     public static final ConnectionGeneratorConfig DEFAULT_CONFIG = new ConnectionGeneratorConfig();
 
     private ConnectionGeneratorConfig() {
-        var config = new SystemParameters("/configs/ConnectionGenerator.properties", true);
+        var config = new ResourceAccessor("/configs/ConnectionGenerator.properties", true);
         connectionAgents = config.getPropertyAsList(CONNECTION_AGENTS);
     }
 
