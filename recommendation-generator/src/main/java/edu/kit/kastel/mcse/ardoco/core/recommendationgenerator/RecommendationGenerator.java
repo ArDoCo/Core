@@ -10,7 +10,6 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors.GenericRecommendationConfig;
 
 /**
  * The Class RecommendationGenerator defines the recommendation stage.

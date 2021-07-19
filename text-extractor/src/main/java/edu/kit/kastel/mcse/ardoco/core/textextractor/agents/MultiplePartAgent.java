@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextractor.agents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
 
 /**
