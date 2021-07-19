@@ -9,9 +9,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.jena.graph.Node.NotLiteral;
 import org.apache.jena.ontology.AnnotationProperty;
@@ -34,6 +36,7 @@ import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.reasoner.ValidityReport;
 import org.apache.jena.reasoner.ValidityReport.Report;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.shared.Lock;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -49,7 +52,6 @@ import org.eclipse.collections.api.list.MutableList;
  * directly operate on these classes. The {@link OntologyConnector} also acts as a access controller to make sure that
  * concurrent access does not create invalid states.
  *
- * TODO: concurrent access control is not yet implemented
  *
  * @author Jan Keim
  *
@@ -121,7 +123,12 @@ public class OntologyConnector {
      * @param uri    the URI that the prefix should be resolved to
      */
     public void setNsPrefix(String prefix, String uri) {
-        ontModel.setNsPrefix(prefix, uri);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            ontModel.setNsPrefix(prefix, uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -154,7 +161,12 @@ public class OntologyConnector {
             return false;
         }
 
-        ontModel.write(out, language.getName());
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            ontModel.write(out, language.getName());
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
         return true;
     }
 
@@ -188,12 +200,28 @@ public class OntologyConnector {
      * @param importIRI the IRI of the ontology that should be imported
      */
     public void addOntologyImport(String importIRI) {
-        if (ontModel.hasLoadedImport(importIRI)) {
+        var hasOntologyLoaded = false;
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            if (ontModel.hasLoadedImport(importIRI)) {
+                hasOntologyLoaded = true;
+            }
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
+        if (hasOntologyLoaded) {
             return;
         }
-        var importResource = ontModel.createResource(importIRI);
-        ontology.addImport(importResource);
-        ontModel.loadImports();
+
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            var importResource = ontModel.createResource(importIRI);
+            ontology.addImport(importResource);
+            ontModel.loadImports();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -203,7 +231,14 @@ public class OntologyConnector {
      * @return True if imported, else False
      */
     public boolean hasImport(String importIri) {
-        var importedModels = ontModel.listImportedOntologyURIs();
+        Set<String> importedModels = new HashSet<>();
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            importedModels = ontModel.listImportedOntologyURIs();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         return importedModels.contains(importIri);
     }
 
@@ -214,7 +249,13 @@ public class OntologyConnector {
      * @return the first {@link Ontology} that is not an imported ontology in the {@link OntModel}
      */
     protected Optional<Ontology> getBaseOntology() {
-        var importedOntologies = ontModel.listImportedOntologyURIs();
+        Set<String> importedOntologies = new HashSet<>();
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            importedOntologies = ontModel.listImportedOntologyURIs();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
         for (var onto : ontModel.listOntologies().toSet()) {
             var ontologyUri = onto.getURI();
             if (!importedOntologies.contains(ontologyUri)) {
@@ -222,10 +263,6 @@ public class OntologyConnector {
             }
         }
         return Optional.empty();
-    }
-
-    protected OntModel getOntModel() {
-        return ontModel;
     }
 
     /**
@@ -255,7 +292,13 @@ public class OntologyConnector {
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage(), e);
         }
-        return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return ontModel.expandPrefix(prefix + ":" + encodedSuffix);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /***********/
@@ -270,16 +313,28 @@ public class OntologyConnector {
      */
     public Optional<OntClass> getClass(String className) {
         // first look for usage of className as label
-        var stmts = ontModel.listStatements(null, RDFS.label, className, null);
-        if (stmts.hasNext()) {
-            var resource = stmts.next().getSubject();
-            if (resource.canAs(OntClass.class)) {
-                return Optional.of(resource.as(OntClass.class));
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var stmts = ontModel.listStatements(null, RDFS.label, className, null);
+            if (stmts.hasNext()) {
+                var resource = stmts.next().getSubject();
+                if (resource.canAs(OntClass.class)) {
+                    return Optional.of(resource.as(OntClass.class));
+                }
             }
+        } finally {
+            ontModel.leaveCriticalSection();
         }
 
         // if the className was not a label, looks for usage of the className in the Iris
-        var prefixes = ontModel.getNsPrefixMap().keySet();
+        Set<String> prefixes = new HashSet<>();
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            prefixes = ontModel.getNsPrefixMap().keySet();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
         for (var prefix : prefixes) {
             var uri = createUri(prefix, className);
             var optClass = getClassByIri(uri);
@@ -302,7 +357,13 @@ public class OntologyConnector {
         if (prefix == null || prefix.isEmpty()) {
             prefix = DEFAULT_PREFIX;
         }
-        var prefixUri = ontModel.getNsPrefixURI(prefix);
+        String prefixUri = null;
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            prefixUri = ontModel.getNsPrefixURI(prefix);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
         if (prefixUri == null) {
             return Optional.empty();
         }
@@ -312,13 +373,19 @@ public class OntologyConnector {
         if (clazz.isPresent()) {
             return clazz;
         }
-        var stmts = ontModel.listStatements(null, RDFS.label, className, null);
-        while (stmts.hasNext()) {
-            var resource = stmts.next().getSubject();
-            var namespace = resource.getNameSpace();
-            if (prefixUri.equals(namespace)) {
-                return Optional.ofNullable(ontModel.createClass(resource.getURI()));
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var stmts = ontModel.listStatements(null, RDFS.label, className, null);
+            while (stmts.hasNext()) {
+                var resource = stmts.next().getSubject();
+                var namespace = resource.getNameSpace();
+                if (prefixUri.equals(namespace)) {
+                    return Optional.ofNullable(ontModel.createClass(resource.getURI()));
+                }
             }
+        } finally {
+            ontModel.leaveCriticalSection();
         }
         return Optional.empty();
     }
@@ -332,8 +399,13 @@ public class OntologyConnector {
      *         class exists.
      */
     public Optional<OntClass> getClassByIri(String iri) {
-        var expandedUri = ontModel.expandPrefix(iri);
-        return Optional.ofNullable(ontModel.getOntClass(expandedUri));
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var expandedUri = ontModel.expandPrefix(iri);
+            return Optional.ofNullable(ontModel.getOntClass(expandedUri));
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -349,9 +421,14 @@ public class OntologyConnector {
         }
 
         var uri = generateRandomURI(DEFAULT_PREFIX);
-        var clazz = ontModel.createClass(uri);
-        clazz.addProperty(RDFS.label, className);
-        return clazz;
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            var clazz = ontModel.createClass(uri);
+            clazz.addProperty(RDFS.label, className);
+            return clazz;
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -366,8 +443,20 @@ public class OntologyConnector {
         if (clazz.isPresent()) {
             return clazz.get();
         }
-        String uri = ontModel.expandPrefix(iri);
-        return ontModel.createClass(uri);
+        String uri = null;
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            uri = ontModel.expandPrefix(iri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            return ontModel.createClass(uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -377,7 +466,12 @@ public class OntologyConnector {
      * @param superClass class/resource that should be superclass of the other given class
      */
     public void addSuperClass(OntClass subClass, Resource superClass) {
-        subClass.addSuperClass(superClass);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            subClass.addSuperClass(superClass);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -387,7 +481,12 @@ public class OntologyConnector {
      * @param superClass class/resource that should be superclass of the other given class
      */
     public void addSuperClassExclusive(OntClass subClass, Resource superClass) {
-        subClass.setSuperClass(superClass);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            subClass.setSuperClass(superClass);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -414,7 +513,12 @@ public class OntologyConnector {
      */
     public OntClass addSubClass(String className, OntClass superClass) {
         OntClass clazz = addClass(className);
-        superClass.addSubClass(clazz);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            superClass.addSubClass(clazz);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
         return clazz;
     }
 
@@ -425,7 +529,12 @@ public class OntologyConnector {
      * @param superClass class that should be superclass of the other given class
      */
     public void addSubClass(OntClass subClass, OntClass superClass) {
-        superClass.addSubClass(subClass);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            superClass.addSubClass(subClass);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -436,7 +545,12 @@ public class OntologyConnector {
      * @return True if sub-class and super-class are related correspondingly
      */
     public boolean classIsSubClassOf(OntClass clazz, OntClass superClass) {
-        return clazz.hasSuperClass(superClass) && superClass.hasSubClass(clazz);
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return clazz.hasSuperClass(superClass) && superClass.hasSubClass(clazz);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -446,8 +560,13 @@ public class OntologyConnector {
      * @param superClass previous super-class
      */
     public void removeSubClassing(OntClass clazz, OntClass superClass) {
-        clazz.removeSuperClass(superClass);
-        superClass.removeSubClass(clazz);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            clazz.removeSuperClass(superClass);
+            superClass.removeSubClass(clazz);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -484,7 +603,12 @@ public class OntologyConnector {
      * @return True if this individual has the given class as one of its types.
      */
     public boolean hasOntClass(Individual individual, String uri) {
-        return individual.hasOntClass(uri);
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return individual.hasOntClass(uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     public boolean hasOntClass(Individual individual, String prefix, String localname) {
@@ -492,7 +616,12 @@ public class OntologyConnector {
             prefix = DEFAULT_PREFIX;
         }
         var uri = createUri(prefix, localname);
-        return individual.hasOntClass(uri);
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return individual.hasOntClass(uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -504,16 +633,27 @@ public class OntologyConnector {
      */
     public Optional<Individual> getIndividual(String name) {
         // first look for usage of name as label
-        var stmts = ontModel.listStatements(null, RDFS.label, name, null);
-        if (stmts.hasNext()) {
-            var resource = stmts.next().getSubject();
-            if (resource.canAs(Individual.class)) {
-                return Optional.of(resource.as(Individual.class));
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var stmts = ontModel.listStatements(null, RDFS.label, name, null);
+            if (stmts.hasNext()) {
+                var resource = stmts.next().getSubject();
+                if (resource.canAs(Individual.class)) {
+                    return Optional.of(resource.as(Individual.class));
+                }
             }
+        } finally {
+            ontModel.leaveCriticalSection();
         }
 
         // if the name was not in a label, looks for usage of the name in the Iris
-        var prefixes = ontModel.getNsPrefixMap().keySet();
+        Set<String> prefixes = new HashSet<>();
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            prefixes = ontModel.getNsPrefixMap().keySet();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
         for (var prefix : prefixes) {
             var uri = createUri(prefix, name);
             var optClass = getIndividualByIri(uri);
@@ -532,8 +672,13 @@ public class OntologyConnector {
      * @return Optional with the individual if it exists. Otherwise, empty Optional.
      */
     public Optional<Individual> getIndividualByIri(String iri) {
-        var uri = ontModel.expandPrefix(iri);
-        return Optional.ofNullable(ontModel.getIndividual(uri));
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var uri = ontModel.expandPrefix(iri);
+            return Optional.ofNullable(ontModel.getIndividual(uri));
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -558,7 +703,12 @@ public class OntologyConnector {
      * @return List of individuals with the given class.
      */
     public List<Individual> getIndividualsOfClass(OntClass clazz) {
-        return ontModel.listIndividuals(clazz).toList();
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return ontModel.listIndividuals(clazz).toList();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -574,18 +724,33 @@ public class OntologyConnector {
         }
         OntClass clazz = optClass.get();
 
-        StmtIterator stmts = getInfModel().listStatements(null, RDF.type, clazz);
+        StmtIterator stmts = null;
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            stmts = getInfModel().listStatements(null, RDF.type, clazz);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
         return createMutableIndividualListFromStatementIterator(stmts);
     }
 
     private MutableList<Individual> createMutableIndividualListFromStatementIterator(StmtIterator stmts) {
         MutableList<Individual> individuals = Lists.mutable.empty();
-        while (stmts.hasNext()) {
-            var stmt = stmts.nextStatement();
-            var res = stmt.getSubject();
-            if (res.canAs(Individual.class)) {
-                individuals.add(res.as(Individual.class));
+        if (stmts == null) {
+            return individuals;
+        }
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            while (stmts.hasNext()) {
+                var stmt = stmts.nextStatement();
+                var res = stmt.getSubject();
+                if (res.canAs(Individual.class)) {
+                    individuals.add(res.as(Individual.class));
+                }
             }
+        } finally {
+            ontModel.leaveCriticalSection();
         }
         return individuals;
     }
@@ -598,10 +763,23 @@ public class OntologyConnector {
      */
     public Individual addIndividual(String name) {
         var uri = generateRandomURI(DEFAULT_PREFIX);
-        var individual = ontModel.getIndividual(uri);
+
+        Individual individual = null;
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            individual = ontModel.getIndividual(uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         if (individual == null) {
-            individual = ontModel.createIndividual(uri, OWL.Thing);
-            individual.addLabel(name, LANG_EN);
+            ontModel.enterCriticalSection(Lock.WRITE);
+            try {
+                individual = ontModel.createIndividual(uri, OWL.Thing);
+                individual.addLabel(name, LANG_EN);
+            } finally {
+                ontModel.leaveCriticalSection();
+            }
         }
 
         return individual;
@@ -615,7 +793,12 @@ public class OntologyConnector {
     public void removeIndividual(String name) {
         var optIndividual = getIndividual(name);
         if (optIndividual.isPresent()) {
-            optIndividual.get().remove();
+            ontModel.enterCriticalSection(Lock.WRITE);
+            try {
+                optIndividual.get().remove();
+            } finally {
+                ontModel.leaveCriticalSection();
+            }
         }
     }
 
@@ -627,7 +810,12 @@ public class OntologyConnector {
     public void removeIndividualByUri(String uri) {
         var optIndividual = getIndividualByIri(uri);
         if (optIndividual.isPresent()) {
-            optIndividual.get().remove();
+            ontModel.enterCriticalSection(Lock.WRITE);
+            try {
+                optIndividual.get().remove();
+            } finally {
+                ontModel.leaveCriticalSection();
+            }
         }
     }
 
@@ -637,7 +825,12 @@ public class OntologyConnector {
      * @param individual the individual
      */
     public void removeIndividual(Individual individual) {
-        individual.remove();
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            individual.remove();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -649,8 +842,15 @@ public class OntologyConnector {
      */
     public Individual addIndividualToClass(String name, OntClass clazz) {
         var individual = addIndividual(name);
-        individual.addOntClass(clazz);
-        individual.removeOntClass(OWL.Thing);
+
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            individual.addOntClass(clazz);
+            individual.removeOntClass(OWL.Thing);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         return individual;
     }
 
@@ -663,7 +863,14 @@ public class OntologyConnector {
      */
     public Individual setIndividualClass(String name, OntClass clazz) {
         var individual = addIndividual(name);
-        individual.setOntClass(clazz);
+
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            individual.setOntClass(clazz);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         return individual;
     }
 
@@ -755,15 +962,27 @@ public class OntologyConnector {
      *         {@link Optional} is empty.
      */
     public Optional<OntProperty> getProperty(String propertyName) {
-        var stmts = ontModel.listStatements(null, RDFS.label, propertyName, null);
-        if (stmts.hasNext()) {
-            var resource = stmts.next().getSubject();
-            if (resource.canAs(OntProperty.class)) {
-                return Optional.of(resource.as(OntProperty.class));
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var stmts = ontModel.listStatements(null, RDFS.label, propertyName, null);
+            if (stmts.hasNext()) {
+                var resource = stmts.next().getSubject();
+                if (resource.canAs(OntProperty.class)) {
+                    return Optional.of(resource.as(OntProperty.class));
+                }
             }
+        } finally {
+            ontModel.leaveCriticalSection();
         }
 
-        var prefixes = ontModel.getNsPrefixMap().keySet();
+        Set<String> prefixes = new HashSet<>();
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            prefixes = ontModel.getNsPrefixMap().keySet();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         for (var prefix : prefixes) {
             var optProperty = getProperty(propertyName, prefix);
             if (optProperty.isPresent()) {
@@ -798,9 +1017,14 @@ public class OntologyConnector {
      *         {@link Optional} is empty.
      */
     public Optional<OntProperty> getPropertyByIri(String propertyIri) {
-        var expandedUri = ontModel.expandPrefix(propertyIri);
-        var property = ontModel.getOntProperty(expandedUri);
-        return Optional.ofNullable(property);
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var expandedUri = ontModel.expandPrefix(propertyIri);
+            var property = ontModel.getOntProperty(expandedUri);
+            return Optional.ofNullable(property);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -848,7 +1072,13 @@ public class OntologyConnector {
      */
     public OntProperty addProperty(String name) {
         String uri = createUri(DEFAULT_PREFIX, name);
-        return ontModel.createOntProperty(uri);
+
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            return ontModel.createOntProperty(uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -860,7 +1090,12 @@ public class OntologyConnector {
      */
     public DatatypeProperty addDataProperty(String name) {
         String uri = createUri(DEFAULT_PREFIX, name);
-        return ontModel.createDatatypeProperty(uri);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            return ontModel.createDatatypeProperty(uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -872,7 +1107,12 @@ public class OntologyConnector {
      */
     public ObjectProperty addObjectProperty(String name) {
         String uri = createUri(DEFAULT_PREFIX, name);
-        return ontModel.createObjectProperty(uri);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            return ontModel.createObjectProperty(uri);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -883,7 +1123,12 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      */
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, String value) {
-        return individual.addProperty(property, value);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            return individual.addProperty(property, value);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -894,7 +1139,12 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      */
     public void setPropertyToIndividual(Individual individual, OntProperty property, String value) {
-        individual.setPropertyValue(property, ontModel.createLiteral(value));
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            individual.setPropertyValue(property, ontModel.createLiteral(value));
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -906,7 +1156,12 @@ public class OntologyConnector {
      * @param language   language of the property value
      */
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
-        return individual.addProperty(property, value, language);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            return individual.addProperty(property, value, language);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -918,7 +1173,12 @@ public class OntologyConnector {
      * @param language   language of the property value
      */
     public void setPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
-        individual.addProperty(property, value, language);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            individual.addProperty(property, value, language);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -929,7 +1189,12 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      */
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
-        return individual.addProperty(property, value);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            return individual.addProperty(property, value);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -940,7 +1205,12 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      */
     public void setPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
-        individual.setPropertyValue(property, value);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            individual.setPropertyValue(property, value);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -974,8 +1244,13 @@ public class OntologyConnector {
      * @param type       Type of the value
      */
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
-        var valueLiteral = ontModel.createTypedLiteral(value, type);
-        return individual.addProperty(property, valueLiteral);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            var valueLiteral = ontModel.createTypedLiteral(value, type);
+            return individual.addProperty(property, valueLiteral);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -987,8 +1262,13 @@ public class OntologyConnector {
      * @param type       Type of the value
      */
     public void setPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
-        var valueLiteral = ontModel.createTypedLiteral(value, type);
-        individual.setPropertyValue(property, valueLiteral);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            var valueLiteral = ontModel.createTypedLiteral(value, type);
+            individual.setPropertyValue(property, valueLiteral);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -1001,7 +1281,12 @@ public class OntologyConnector {
      * @return Value of the given Property for the given Individual
      */
     public RDFNode getPropertyValue(Individual individual, OntProperty property) {
-        return individual.getPropertyValue(property);
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return individual.getPropertyValue(property);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -1015,16 +1300,23 @@ public class OntologyConnector {
      */
     public Optional<String> getPropertyStringValue(Individual individual, OntProperty property) {
         var node = getPropertyValue(individual, property);
-        if (node.canAs(Literal.class)) {
-            var literal = node.asLiteral();
-            String literalString;
-            try {
-                literalString = literal.getString();
-            } catch (NotLiteral e) {
-                literalString = null;
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            if (node.canAs(Literal.class)) {
+                var literal = node.asLiteral();
+                String literalString;
+                try {
+                    literalString = literal.getString();
+                } catch (NotLiteral e) {
+                    literalString = null;
+                }
+                return Optional.ofNullable(literalString);
             }
-            return Optional.ofNullable(literalString);
+        } finally {
+            ontModel.leaveCriticalSection();
         }
+
         return Optional.empty();
     }
 
@@ -1039,15 +1331,22 @@ public class OntologyConnector {
      */
     public Optional<Integer> getPropertyIntValue(Individual individual, OntProperty property) {
         var node = getPropertyValue(individual, property);
-        if (node.canAs(Literal.class)) {
-            var literal = node.asLiteral();
-            try {
-                return Optional.of(literal.getInt());
-            } catch (NotLiteral e) {
-                return Optional.empty();
-            }
 
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            if (node.canAs(Literal.class)) {
+                var literal = node.asLiteral();
+                try {
+                    return Optional.of(literal.getInt());
+                } catch (NotLiteral e) {
+                    return Optional.empty();
+                }
+
+            }
+        } finally {
+            ontModel.leaveCriticalSection();
         }
+
         return Optional.empty();
     }
 
@@ -1058,7 +1357,12 @@ public class OntologyConnector {
      * @param property property
      */
     public void removeAllOfProperty(Resource resource, OntProperty property) {
-        resource.removeAll(property);
+        ontModel.enterCriticalSection(Lock.WRITE);
+        try {
+            resource.removeAll(property);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -1070,10 +1374,25 @@ public class OntologyConnector {
      * @return Optional containing the first non-null subject. Empty Optional, if none is found
      */
     public Optional<Resource> getFirstSubjectOf(OntProperty property, RDFNode object) {
-        var stmtIterator = ontModel.listStatements(null, property, object);
-        while (stmtIterator.hasNext()) {
-            var stmt = stmtIterator.next();
-            var subject = stmt.getSubject();
+        StmtIterator stmtIterator = null;
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            stmtIterator = ontModel.listStatements(null, property, object);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
+        while (stmtIterator != null && stmtIterator.hasNext()) {
+            Resource subject = null;
+
+            ontModel.enterCriticalSection(Lock.READ);
+            try {
+                var stmt = stmtIterator.next();
+                subject = stmt.getSubject();
+            } finally {
+                ontModel.leaveCriticalSection();
+            }
+
             if (subject != null) {
                 return Optional.of(subject);
             }
@@ -1090,11 +1409,27 @@ public class OntologyConnector {
      * @return List of extracted subjects
      */
     public List<Resource> getSubjectsOf(OntProperty property, OntResource object) {
-        var stmtIterator = ontModel.listStatements(null, property, object);
+        StmtIterator stmtIterator = null;
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            stmtIterator = ontModel.listStatements(null, property, object);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         var resList = new ArrayList<Resource>();
-        while (stmtIterator.hasNext()) {
-            var stmt = stmtIterator.next();
-            var subject = stmt.getSubject();
+        while (stmtIterator != null && stmtIterator.hasNext()) {
+            Resource subject = null;
+
+            ontModel.enterCriticalSection(Lock.READ);
+            try {
+                var stmt = stmtIterator.next();
+                subject = stmt.getSubject();
+            } finally {
+                ontModel.leaveCriticalSection();
+            }
+
             if (subject != null) {
                 resList.add(subject);
             }
@@ -1111,10 +1446,25 @@ public class OntologyConnector {
      * @return Optional containing the first non-null object. Empty Optional, if none is found
      */
     public Optional<RDFNode> getFirstObjectOf(OntResource subject, OntProperty property) {
-        var stmtIterator = ontModel.listStatements(subject, property, (RDFNode) null);
-        while (stmtIterator.hasNext()) {
-            var stmt = stmtIterator.next();
-            var object = stmt.getObject();
+        StmtIterator stmtIterator = null;
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            stmtIterator = ontModel.listStatements(subject, property, (RDFNode) null);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
+        while (stmtIterator != null && stmtIterator.hasNext()) {
+            RDFNode object = null;
+
+            ontModel.enterCriticalSection(Lock.READ);
+            try {
+                var stmt = stmtIterator.next();
+                object = stmt.getObject();
+            } finally {
+                ontModel.leaveCriticalSection();
+            }
             if (object != null) {
                 return Optional.of(object);
             }
@@ -1131,22 +1481,32 @@ public class OntologyConnector {
      * @return List of extracted objects
      */
     public List<RDFNode> getObjectsOf(OntResource subject, OntProperty property) {
-        var stmtIterator = ontModel.listStatements(subject, property, (RDFNode) null);
+        StmtIterator stmtIterator = null;
+
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            stmtIterator = ontModel.listStatements(subject, property, (RDFNode) null);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         var resList = new ArrayList<RDFNode>();
-        while (stmtIterator.hasNext()) {
-            var stmt = stmtIterator.next();
-            var object = stmt.getObject();
+        while (stmtIterator != null && stmtIterator.hasNext()) {
+            RDFNode object = null;
+
+            ontModel.enterCriticalSection(Lock.READ);
+            try {
+                var stmt = stmtIterator.next();
+                object = stmt.getObject();
+            } finally {
+                ontModel.leaveCriticalSection();
+            }
             if (object != null) {
                 resList.add(object);
             }
         }
         return resList;
     }
-
-    /************/
-    /* Literals */
-    /************/
-    // TODO
 
     /***********************/
     /* Convenience Methods */
@@ -1177,8 +1537,13 @@ public class OntologyConnector {
      * @return The transformed resource. If transformation was unsuccessful, returns null.
      */
     public <S extends RDFNode, T extends Resource> T transformTypeNullable(S from, Class<T> targetType) {
-        if (from != null && from.canAs(targetType)) {
-            return from.as(targetType);
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            if (from != null && from.canAs(targetType)) {
+                return from.as(targetType);
+            }
+        } finally {
+            ontModel.leaveCriticalSection();
         }
         return null;
     }
@@ -1209,7 +1574,12 @@ public class OntologyConnector {
      * @return The localname of this property within its namespace.
      */
     public String getLocalName(OntResource resource) {
-        return resource.getLocalName();
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return resource.getLocalName();
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**
@@ -1231,7 +1601,12 @@ public class OntologyConnector {
      * @return a label for the given resource or null if none is found
      */
     public String getLabel(OntResource resource, String lang) {
-        return resource.getLabel(lang);
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            return resource.getLabel(lang);
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
     }
 
     /**

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.jena.ontology.Individual;
-import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.rdf.model.Literal;
 import org.junit.jupiter.api.AfterEach;
@@ -61,11 +60,6 @@ class OntologyConnectorTest {
     @Test
     @DisplayName("Simply load ontology and check if loading was successful")
     void loadOntologyTest() {
-
-        OntModel om = ontologyConnector.getOntModel();
-        var ontologies = om.listOntologies().toList();
-        Assertions.assertTrue(!ontologies.isEmpty());
-
         var baseOntologyOpt = ontologyConnector.getBaseOntology();
         Assertions.assertTrue(baseOntologyOpt.isPresent());
         var baseOntology = baseOntologyOpt.get();

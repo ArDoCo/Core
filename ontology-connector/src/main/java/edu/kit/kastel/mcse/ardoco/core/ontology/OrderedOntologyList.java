@@ -60,7 +60,7 @@ public class OrderedOntologyList implements List<Individual> {
 
         private Factory(OntologyConnector oc) {
             this.oc = oc;
-            oc.getOntModel().setNsPrefix(OrderedOntologyList.LIST_PREFIX, OrderedOntologyList.LIST_BASE_URI);
+            oc.setNsPrefix(LIST_PREFIX, LIST_BASE_URI);
         }
 
         public OrderedOntologyList createFromListIndividual(Individual listIndividual) {
