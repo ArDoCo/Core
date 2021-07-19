@@ -1,9 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
@@ -82,7 +81,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     private void createRecommendedInstancesForTerm(IWord node) {
 
-        List<ITermMapping> termMappings = textState.getTermMappingsByNode(node);
+        ImmutableList<ITermMapping> termMappings = textState.getTermMappingsByNode(node);
 
         termMappings = getPossibleOccurredTermMappingsToThisSpot(termMappings, node);
 
@@ -91,30 +90,30 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         }
 
         for (ITermMapping term : termMappings) {
-            List<INounMapping> adjacentNounMappings = getTermAdjacentNounMappings(node, term);
+            ImmutableList<INounMapping> adjacentNounMappings = getTermAdjacentNounMappings(node, term);
             if (adjacentNounMappings.isEmpty() && MappingKind.NAME.equals(term.getKind())) {
                 recommendationState.addRecommendedInstanceJustName(term.getReference(), probabilityJustName, term.getMappings());
             } else {
                 createRecommendedInstancesForSurroundingNounMappings(term, adjacentNounMappings);
-                List<ITermMapping> adjacentTermMappings = new ArrayList<>();
+                MutableList<ITermMapping> adjacentTermMappings = Lists.mutable.empty();
                 for (INounMapping surroundingMapping : adjacentNounMappings) {
-                    adjacentTermMappings.addAll(textState.getTermsByContainedMapping(surroundingMapping));
+                    adjacentTermMappings.addAll(textState.getTermsByContainedMapping(surroundingMapping).castToCollection());
                 }
-                createRecommendedInstancesForAdjacentTermMappings(node, term, adjacentTermMappings);
+                createRecommendedInstancesForAdjacentTermMappings(node, term, adjacentTermMappings.toImmutable());
             }
         }
 
     }
 
-    private List<ITermMapping> getPossibleOccurredTermMappingsToThisSpot(List<ITermMapping> termMappings, IWord n) {
+    private ImmutableList<ITermMapping> getPossibleOccurredTermMappingsToThisSpot(ImmutableList<ITermMapping> termMappings, IWord n) {
 
-        List<ITermMapping> possibleOccuredTermMappings = new ArrayList<>();
+        MutableList<ITermMapping> possibleOccuredTermMappings = Lists.mutable.empty();
         String word = n.getText();
 
         for (ITermMapping term : termMappings) {
-            List<INounMapping> termNounMappings = new ArrayList<>(term.getMappings());
+            ImmutableList<INounMapping> termNounMappings = Lists.immutable.withAll(term.getMappings());
 
-            List<INounMapping> wordMappings = SimilarityUtils.getMostLikelyNMappingsByReference(word, termNounMappings);
+            ImmutableList<INounMapping> wordMappings = SimilarityUtils.getMostLikelyNMappingsByReference(word, termNounMappings);
 
             for (INounMapping wordMapping : wordMappings) {
 
@@ -130,11 +129,11 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
             }
 
         }
-        return possibleOccuredTermMappings;
+        return possibleOccuredTermMappings.toImmutable();
 
     }
 
-    private boolean areNextWordsEqualToReferences(List<INounMapping> references, IWord currentWord, int currentPosition) {
+    private boolean areNextWordsEqualToReferences(ImmutableList<INounMapping> references, IWord currentWord, int currentPosition) {
         var stop = false;
 
         for (int i = currentPosition + 1; i < references.size() && !stop; i++) {
@@ -149,7 +148,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         return stop;
     }
 
-    private boolean arePreviousWordsEqualToReferences(List<INounMapping> references, IWord currentWord, int currentPosition) {
+    private boolean arePreviousWordsEqualToReferences(ImmutableList<INounMapping> references, IWord currentWord, int currentPosition) {
         var stop = false;
 
         for (int i = currentPosition - 1; i >= 0 && !stop; i--) {
@@ -163,26 +162,26 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         return stop;
     }
 
-    private void createRecommendedInstancesForAdjacentTermMappings(IWord termStartNode, ITermMapping term, List<ITermMapping> adjacentTermMappings) {
+    private void createRecommendedInstancesForAdjacentTermMappings(IWord termStartNode, ITermMapping term, ImmutableList<ITermMapping> adjacentTermMappings) {
 
-        List<ITermMapping> adjCompleteTermMappings = new ArrayList<>(getCompletePreAdjTermMappings(adjacentTermMappings, termStartNode));
-        adjCompleteTermMappings.addAll(getCompleteAfterAdjTermMappings(adjacentTermMappings, termStartNode, term));
+        MutableList<ITermMapping> adjCompleteTermMappings = Lists.mutable.withAll(getCompletePreAdjTermMappings(adjacentTermMappings, termStartNode));
+        adjCompleteTermMappings.addAll(getCompleteAfterAdjTermMappings(adjacentTermMappings, termStartNode, term).castToCollection());
 
-        createRecommendedInstancesOfAdjacentTerms(term, adjCompleteTermMappings);
+        createRecommendedInstancesOfAdjacentTerms(term, adjCompleteTermMappings.toImmutable());
     }
 
-    private List<ITermMapping> getCompletePreAdjTermMappings(List<ITermMapping> possibleTermMappings, IWord termStartNode) {
+    private ImmutableList<ITermMapping> getCompletePreAdjTermMappings(ImmutableList<ITermMapping> possibleTermMappings, IWord termStartNode) {
         int sentence = termStartNode.getSentenceNo();
         IWord preTermNode = termStartNode.getPreWord();
 
-        List<ITermMapping> adjCompleteTermMappings = new ArrayList<>();
+        MutableList<ITermMapping> adjCompleteTermMappings = Lists.mutable.empty();
 
         for (ITermMapping adjTerm : possibleTermMappings) {
 
-            List<INounMapping> nounMappings = new ArrayList<>(adjTerm.getMappings());
+            MutableList<INounMapping> nounMappings = Lists.mutable.withAll(adjTerm.getMappings());
 
             while (!nounMappings.isEmpty()) {
-                INounMapping resultOfPreMatch = matchNode(nounMappings, preTermNode);
+                INounMapping resultOfPreMatch = matchNode(nounMappings.toImmutable(), preTermNode);
 
                 if (sentence == preTermNode.getSentenceNo() || resultOfPreMatch == null) {
                     break;
@@ -197,26 +196,27 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
             }
         }
 
-        return adjCompleteTermMappings;
+        return adjCompleteTermMappings.toImmutable();
     }
 
-    private List<ITermMapping> getCompleteAfterAdjTermMappings(List<ITermMapping> possibleTermMappings, IWord termStartNode, ITermMapping term) {
+    private ImmutableList<ITermMapping> getCompleteAfterAdjTermMappings(ImmutableList<ITermMapping> possibleTermMappings, IWord termStartNode,
+            ITermMapping term) {
 
         int sentence = termStartNode.getSentenceNo();
         IWord afterTermNode = getAfterTermNode(termStartNode, term);
 
-        List<ITermMapping> adjCompleteTermMappings = new ArrayList<>();
+        MutableList<ITermMapping> adjCompleteTermMappings = Lists.mutable.empty();
 
         if (afterTermNode == null) {
-            return adjCompleteTermMappings;
+            return adjCompleteTermMappings.toImmutable();
         }
 
         for (ITermMapping adjTerm : possibleTermMappings) {
 
-            List<INounMapping> nounMappings = new ArrayList<>(adjTerm.getMappings());
+            MutableList<INounMapping> nounMappings = Lists.mutable.withAll(adjTerm.getMappings());
 
             while (!nounMappings.isEmpty()) {
-                INounMapping resultOfPostMatch = matchNode(nounMappings, afterTermNode);
+                INounMapping resultOfPostMatch = matchNode(nounMappings.toImmutable(), afterTermNode);
 
                 if (sentence == afterTermNode.getSentenceNo() || resultOfPostMatch == null) {
                     break;
@@ -231,11 +231,11 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
         }
 
-        return adjCompleteTermMappings;
+        return adjCompleteTermMappings.toImmutable();
 
     }
 
-    private INounMapping matchNode(List<INounMapping> nounMappings, IWord node) {
+    private INounMapping matchNode(ImmutableList<INounMapping> nounMappings, IWord node) {
         for (INounMapping mapping : nounMappings) {
             if (mapping.getWords().contains(node)) {
                 return mapping;
@@ -253,28 +253,28 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         return afterTermNode;
     }
 
-    private List<INounMapping> getTermAdjacentNounMappings(IWord node, ITermMapping term) {
+    private ImmutableList<INounMapping> getTermAdjacentNounMappings(IWord node, ITermMapping term) {
 
         MappingKind kind = term.getKind();
         IWord preTermNode = node.getPreWord();
         IWord afterTermNode = getAfterTermNode(node, term);
         int sentence = node.getSentenceNo();
 
-        List<INounMapping> possibleMappings = new ArrayList<>();
+        MutableList<INounMapping> possibleMappings = Lists.mutable.empty();
 
         if (preTermNode != null && sentence == preTermNode.getSentenceNo()) {
 
-            List<INounMapping> nounMappingsOfPreTermNode = textState.getNounMappingsByNode(preTermNode);
-            possibleMappings.addAll(nounMappingsOfPreTermNode);
+            ImmutableList<INounMapping> nounMappingsOfPreTermNode = textState.getNounMappingsByNode(preTermNode);
+            possibleMappings.addAll(nounMappingsOfPreTermNode.castToCollection());
         }
         if (afterTermNode != null && sentence == afterTermNode.getSentenceNo()) {
-            List<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByNode(afterTermNode);
-            possibleMappings.addAll(nounMappingsOfAfterTermNode);
+            ImmutableList<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByNode(afterTermNode);
+            possibleMappings.addAll(nounMappingsOfAfterTermNode.castToCollection());
         }
-        return possibleMappings.stream().filter(nounMapping -> !nounMapping.getKind().equals(kind)).collect(Collectors.toList());
+        return possibleMappings.select(nounMapping -> !nounMapping.getKind().equals(kind)).toImmutable();
     }
 
-    private void createRecommendedInstancesOfAdjacentTerms(ITermMapping term, List<ITermMapping> adjacentTerms) {
+    private void createRecommendedInstancesOfAdjacentTerms(ITermMapping term, ImmutableList<ITermMapping> adjacentTerms) {
         MappingKind kind = term.getKind();
 
         if (MappingKind.NAME.equals(kind) && !adjacentTerms.isEmpty()) {
@@ -292,20 +292,20 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         }
     }
 
-    private void createRecommendedInstancesForSurroundingNounMappings(ITermMapping term, List<INounMapping> surroundingNounMappings) {
+    private void createRecommendedInstancesForSurroundingNounMappings(ITermMapping term, ImmutableList<INounMapping> surroundingNounMappings) {
         MappingKind kind = term.getKind();
 
         if (MappingKind.NAME.equals(kind) && !surroundingNounMappings.isEmpty()) {
             for (INounMapping nounMapping : surroundingNounMappings) {
 
                 recommendationState.addRecommendedInstance(term.getReference(), nounMapping.getReference(), probabilityJustAdjacentNoun, term.getMappings(),
-                        List.of(nounMapping));
+                        Lists.immutable.with(nounMapping));
             }
         } else if (MappingKind.TYPE.equals(kind) && !surroundingNounMappings.isEmpty()) {
             for (INounMapping nounMapping : surroundingNounMappings) {
 
-                recommendationState.addRecommendedInstance(nounMapping.getReference(), term.getReference(), probabilityJustAdjacentNoun, List.of(nounMapping),
-                        term.getMappings());
+                recommendationState.addRecommendedInstance(nounMapping.getReference(), term.getReference(), probabilityJustAdjacentNoun,
+                        Lists.immutable.with(nounMapping), term.getMappings());
             }
         }
 

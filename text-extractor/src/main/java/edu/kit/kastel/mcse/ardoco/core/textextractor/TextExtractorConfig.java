@@ -1,7 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor;
 
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
@@ -22,7 +23,7 @@ public class TextExtractorConfig extends Configuration {
     /**
      * The list of text extraction agent types that should run.
      */
-    public final List<String> textAgents;
+    public final ImmutableList<String> textAgents;
 
     // TODO @Sophie details
     /** The similarity percentage in the state. */

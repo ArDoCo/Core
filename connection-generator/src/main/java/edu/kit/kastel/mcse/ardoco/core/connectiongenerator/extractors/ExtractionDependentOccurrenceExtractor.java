@@ -1,8 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
@@ -85,10 +84,8 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param n the node to check
      */
     private void searchForName(IWord n) {
-        List<IModelInstance> instances = modelState.getInstances()
-                .stream()
-                .filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), List.of(n.getText())))
-                .collect(Collectors.toList());
+        ImmutableList<IModelInstance> instances = modelState.getInstances()
+                .select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(n.getText())));
         if (instances.size() == 1) {
             textState.addName(n, instances.get(0).getLongestName(), probability);
 
@@ -105,10 +102,8 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param n the node to check
      */
     private void searchForType(IWord n) {
-        List<IModelInstance> instances = modelState.getInstances()
-                .stream()
-                .filter(i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), List.of(n.getText())))
-                .collect(Collectors.toList());
+        ImmutableList<IModelInstance> instances = modelState.getInstances()
+                .select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), Lists.immutable.with(n.getText())));
         if (instances.size() == 1) {
             textState.addType(n, instances.get(0).getLongestType(), probability);
 

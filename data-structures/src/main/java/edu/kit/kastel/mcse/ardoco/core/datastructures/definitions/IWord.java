@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IWord defines a word in a text.
@@ -62,7 +62,7 @@ public interface IWord {
      * @param dependencyTag the dependency tag
      * @return the words that are dependency of this
      */
-    List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag);
+    ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag);
 
     /**
      * Gets the words that are dependent on this.
@@ -70,6 +70,6 @@ public interface IWord {
      * @param dependencyTag the dependency tag
      * @return the words that are dependent on this
      */
-    List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag);
+    ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag);
 
 }

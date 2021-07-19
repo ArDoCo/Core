@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.common;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
@@ -18,11 +18,11 @@ public final class CommonTextToolsConfig {
     /**
      * List of separators used for containing by a word in SimilarityUtils.
      */
-    protected static final List<String> SEPARATORS_TO_CONTAIN = CONFIG.getPropertyAsList("separators_ToContain");
+    protected static final ImmutableList<String> SEPARATORS_TO_CONTAIN = CONFIG.getPropertyAsList("separators_ToContain");
     /**
      * List of separators used for splitting a word in SimilarityUtils.
      */
-    protected static final List<String> SEPARATORS_TO_SPLIT = CONFIG.getPropertyAsList("separators_ToSplit");
+    protected static final ImmutableList<String> SEPARATORS_TO_SPLIT = CONFIG.getPropertyAsList("separators_ToSplit");
 
     /**
      * Int for the minimal length of word similarity for methods in SimilarityUtils.

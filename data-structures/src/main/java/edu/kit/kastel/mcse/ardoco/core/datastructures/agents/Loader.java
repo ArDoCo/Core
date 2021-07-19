@@ -3,17 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.reflections.Reflections;
 
 /**
@@ -23,7 +22,7 @@ public final class Loader {
     // Just for local debugging, as this method finds all necessary classes
     private static final boolean USE_REFLECTION = true;
 
-    private static final Map<Class<?>, List<Class<?>>> CACHE = new HashMap<>();
+    private static final Map<Class<?>, ImmutableList<Class<?>>> CACHE = new HashMap<>();
 
     private static final Logger logger = LogManager.getLogger(Loader.class);
 
@@ -86,7 +85,7 @@ public final class Loader {
         subtypes.removeIf(Loader::hasNoPublicConstructor);
 
         synchronized (CACHE) {
-            CACHE.put(clazz, new ArrayList<>(subtypes));
+            CACHE.put(clazz, Lists.immutable.withAll(subtypes));
         }
 
         Set<A> loaded = load(subtypes);
@@ -112,7 +111,7 @@ public final class Loader {
 
     }
 
-    private static <A extends ILoadable> Set<A> load(Collection<Class<?>> clazzes) {
+    private static <A extends ILoadable> Set<A> load(Iterable<Class<?>> clazzes) {
         Set<A> instances = new HashSet<>();
         for (Class<?> clazz : clazzes) {
             @SuppressWarnings("unchecked")

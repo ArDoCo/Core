@@ -1,8 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.TextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
@@ -17,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 public class TextExtractor implements IExecutionStage {
 
     private AgentDatastructure data;
-    private List<IAgent> agents = new ArrayList<>();
+    private MutableList<IAgent> agents = Lists.mutable.empty();
     private final TextExtractorConfig config;
     private final GenericTextConfig agentConfig;
 
@@ -42,8 +43,8 @@ public class TextExtractor implements IExecutionStage {
     /**
      * Instantiates a new text extractor.
      *
-     * @param data the data
-     * @param config the config
+     * @param data        the data
+     * @param config      the config
      * @param agentConfig the agent config
      */
     public TextExtractor(AgentDatastructure data, TextExtractorConfig config, GenericTextConfig agentConfig) {

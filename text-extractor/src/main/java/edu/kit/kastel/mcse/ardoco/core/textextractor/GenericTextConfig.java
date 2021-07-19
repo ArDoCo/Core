@@ -1,7 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor;
 
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
@@ -23,7 +24,7 @@ public class GenericTextConfig extends Configuration {
     public static final GenericTextConfig DEFAULT_CONFIG = new GenericTextConfig();
 
     /** The text extractors to be loaded. */
-    public final List<String> textExtractors;
+    public final ImmutableList<String> textExtractors;
 
     // ArticleTypeNameAnalyzer
     /**

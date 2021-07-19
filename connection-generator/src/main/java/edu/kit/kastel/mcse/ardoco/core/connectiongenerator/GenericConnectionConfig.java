@@ -1,8 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
@@ -34,7 +35,7 @@ public class GenericConnectionConfig extends Configuration {
     /**
      * All extractor names of extractors to be used.
      */
-    public final List<String> connectionExtractors;
+    public final ImmutableList<String> connectionExtractors;
 
     // ExtractionDependendOccurrenceAnalyzer
     /**

@@ -1,13 +1,14 @@
 package edu.kit.kastel.mcse.ardoco.core.model.provider;
 
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 
@@ -39,11 +40,10 @@ public final class ModelProvider implements IExecutionStage {
 
     @Override
     public void exec() {
-        List<IModelInstance> instances = modelConnector.getInstances();
-        List<IModelRelation> relations = modelConnector.getRelations();
+        ImmutableList<IModelInstance> instances = modelConnector.getInstances();
+        ImmutableList<IModelRelation> relations = modelConnector.getRelations();
 
         modelExtractionState = new ModelExtractionState(instances, relations);
-
     }
 
     @Override

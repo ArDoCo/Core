@@ -1,9 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor.extractors;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -22,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 @MetaInfServices(TextAgent.class)
 public class InitialTextAgent extends TextAgent {
 
-    private List<IExtractor> extractors = new ArrayList<>();
+    private MutableList<IExtractor> extractors = Lists.mutable.empty();
 
     /**
      * Instantiates a new initial text agent.
@@ -50,7 +51,7 @@ public class InitialTextAgent extends TextAgent {
         }
     }
 
-    private void initializeAgents(List<String> extractorList, GenericTextConfig config) {
+    private void initializeAgents(ImmutableList<String> extractorList, GenericTextConfig config) {
         Map<String, TextExtractor> loadedExtractors = Loader.loadLoadable(TextExtractor.class);
 
         for (String textExtractor : extractorList) {
