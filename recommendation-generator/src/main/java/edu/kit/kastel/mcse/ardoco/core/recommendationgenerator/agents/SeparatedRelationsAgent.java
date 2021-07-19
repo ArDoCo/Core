@@ -1,8 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -119,11 +116,10 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
             return;
         }
 
-        List<List<IRecommendedInstance>> raw = recommendedParticipants.toList().collect(ImmutableList::toList);
-        List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(), raw);
+        ImmutableList<ImmutableList<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(Lists.immutable.empty(), recommendedParticipants);
 
-        for (List<IRecommendedInstance> possibility : allRelationProbabilities) {
-
+        for (ImmutableList<IRecommendedInstance> p : allRelationProbabilities) {
+            MutableList<IRecommendedInstance> possibility = p.toList();
             IRecommendedInstance r1 = possibility.get(0);
             IRecommendedInstance r2 = possibility.get(1);
             possibility.remove(r1);
