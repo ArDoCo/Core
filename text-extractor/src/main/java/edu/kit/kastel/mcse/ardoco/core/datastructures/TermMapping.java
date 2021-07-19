@@ -1,9 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITermMapping;
@@ -18,14 +19,14 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
 public class TermMapping implements ITermMapping {
 
     private String reference;
-    private List<INounMapping> mappings;
+    private MutableList<INounMapping> mappings;
     private double probability;
     private MappingKind kind;
 
     @Override
     public ITermMapping createCopy() {
 
-        return new TermMapping(reference, mappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()), probability, kind);
+        return new TermMapping(reference, mappings.collect(INounMapping::createCopy).toImmutable(), probability, kind);
 
     }
 
@@ -37,11 +38,11 @@ public class TermMapping implements ITermMapping {
      * @param probability the probability
      * @param kind        the kind
      */
-    public TermMapping(String reference, List<INounMapping> mappings, double probability, MappingKind kind) {
+    public TermMapping(String reference, ImmutableList<INounMapping> mappings, double probability, MappingKind kind) {
         this.reference = reference;
         this.kind = kind;
         this.probability = probability;
-        this.mappings = mappings;
+        this.mappings = mappings.toList();
     }
 
     /**
@@ -54,12 +55,13 @@ public class TermMapping implements ITermMapping {
      * @param kind          the kind of the term
      * @param probability   the probability that these words build a term of that kind
      */
-    public TermMapping(String reference, INounMapping iNounMapping, INounMapping iNounMapping2, List<INounMapping> list, MappingKind kind, double probability) {
+    public TermMapping(String reference, INounMapping iNounMapping, INounMapping iNounMapping2, ImmutableList<INounMapping> list, MappingKind kind,
+            double probability) {
         this.reference = reference;
-        mappings = new ArrayList<>();
+        mappings = Lists.mutable.empty();
         mappings.add(iNounMapping);
         mappings.add(iNounMapping2);
-        mappings.addAll(list);
+        mappings.addAll(list.castToCollection());
         this.probability = probability;
         this.kind = kind;
 
@@ -71,8 +73,8 @@ public class TermMapping implements ITermMapping {
      * @return a list of mappings of the term.
      */
     @Override
-    public List<INounMapping> getMappings() {
-        return mappings;
+    public ImmutableList<INounMapping> getMappings() {
+        return mappings.toImmutable();
     }
 
     /**

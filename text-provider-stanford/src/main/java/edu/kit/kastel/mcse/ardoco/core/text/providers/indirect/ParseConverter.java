@@ -1,12 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IGraph;
@@ -25,7 +26,7 @@ public class ParseConverter {
     private IGraph graph;
 
     private Map<INode, Word> instances;
-    private List<Word> orderedWords;
+    private MutableList<Word> orderedWords;
 
     /**
      * Instantiates a new parses the converter.
@@ -59,9 +60,9 @@ public class ParseConverter {
 
     private void createWords() {
         instances = new HashMap<>();
-        orderedWords = new ArrayList<>();
+        orderedWords = Lists.mutable.empty();
 
-        List<INode> tokens = graph.getNodesOfType(graph.getNodeType("token"));
+        ImmutableList<INode> tokens = Lists.immutable.withAll(graph.getNodesOfType(graph.getNodeType("token")));
 
         for (INode token : tokens) {
             var word = new Word(token);
@@ -93,7 +94,7 @@ public class ParseConverter {
     }
 
     private void createText() {
-        IText text = new Text(orderedWords);
+        IText text = new Text(orderedWords.toImmutable());
         annotatedText = text;
     }
 
@@ -110,10 +111,10 @@ public class ParseConverter {
         private final POSTag posTag;
         private final String lemma;
 
-        private final Map<DependencyTag, List<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values())
-                .collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
-        private final Map<DependencyTag, List<IWord>> wordsThatAreDependentOnThis = Arrays.stream(DependencyTag.values())
-                .collect(Collectors.toMap(t -> t, v -> new ArrayList<>()));
+        private final Map<DependencyTag, MutableList<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values())
+                .collect(Collectors.toMap(t -> t, v -> Lists.mutable.empty()));
+        private final Map<DependencyTag, MutableList<IWord>> wordsThatAreDependentOnThis = Arrays.stream(DependencyTag.values())
+                .collect(Collectors.toMap(t -> t, v -> Lists.mutable.empty()));
 
         private IText parent;
 
@@ -156,13 +157,13 @@ public class ParseConverter {
         }
 
         @Override
-        public List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
-            return wordsThatAreDependenciesOfThis.get(dependencyTag);
+        public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
+            return wordsThatAreDependenciesOfThis.get(dependencyTag).toImmutable();
         }
 
         @Override
-        public List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
-            return wordsThatAreDependentOnThis.get(dependencyTag);
+        public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+            return wordsThatAreDependentOnThis.get(dependencyTag).toImmutable();
         }
 
         @Override
@@ -184,11 +185,11 @@ public class ParseConverter {
 
     private static final class Text implements IText {
 
-        private List<IWord> words;
+        private ImmutableList<IWord> words;
 
-        private Text(List<Word> orderedWords) {
+        private Text(ImmutableList<Word> orderedWords) {
             orderedWords.stream().forEach(w -> w.parent = this);
-            words = Collections.unmodifiableList(orderedWords);
+            words = orderedWords.collect(w -> w);
         }
 
         @Override
@@ -197,7 +198,7 @@ public class ParseConverter {
         }
 
         @Override
-        public List<IWord> getWords() {
+        public ImmutableList<IWord> getWords() {
             return words;
         }
     }

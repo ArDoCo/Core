@@ -1,8 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor.agents;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -58,7 +59,7 @@ public class MultiplePartAgent extends TextAgent {
 
     private void searchForName() {
         for (INounMapping nameMap : textState.getNames()) {
-            List<IWord> nameNodes = new ArrayList<>(nameMap.getWords());
+            ImmutableList<IWord> nameNodes = Lists.immutable.withAll(nameMap.getWords());
             for (IWord n : nameNodes) {
                 IWord pre = n.getPreWord();
                 if (pre != null && textState.isNodeContainedByNounMappings(pre) && !textState.isNodeContainedByTypeNodes(pre)) {
@@ -71,7 +72,7 @@ public class MultiplePartAgent extends TextAgent {
 
     private void searchForType() {
         for (INounMapping typeMap : textState.getTypes()) {
-            List<IWord> typeNodes = new ArrayList<>(typeMap.getWords());
+            ImmutableList<IWord> typeNodes = Lists.immutable.withAll(typeMap.getWords());
             for (IWord n : typeNodes) {
                 IWord pre = n.getPreWord();
                 if (pre != null && textState.isNodeContainedByNounMappings(pre) && !textState.isNodeContainedByNameNodes(pre)) {
@@ -84,10 +85,10 @@ public class MultiplePartAgent extends TextAgent {
 
     private void addTerm(String ref, IWord pre, IWord n, MappingKind kind) {
 
-        List<INounMapping> preMappings = textState.getNounMappingsByNode(pre);
-        List<INounMapping> nMappings = textState.getNounMappingsByNode(n);
+        ImmutableList<INounMapping> preMappings = textState.getNounMappingsByNode(pre);
+        ImmutableList<INounMapping> nMappings = textState.getNounMappingsByNode(n);
 
-        List<List<INounMapping>> cartesianProduct = Utilis.cartesianProduct(preMappings, List.of(nMappings));
+        List<List<INounMapping>> cartesianProduct = Utilis.cartesianProduct(preMappings.castToList(), List.of(nMappings.castToList()));
 
         for (List<INounMapping> possibleCombination : cartesianProduct) {
             textState.addTerm(ref, possibleCombination.get(0), possibleCombination.get(1), kind, probability);

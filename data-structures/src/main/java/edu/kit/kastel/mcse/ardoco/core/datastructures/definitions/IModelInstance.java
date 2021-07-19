@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
@@ -28,14 +28,14 @@ public interface IModelInstance extends ICopyable<IModelInstance> {
      *
      * @return all name parts of the instance as list
      */
-    List<String> getNames();
+    ImmutableList<String> getNames();
 
     /**
      * Returns all type parts of the instance.
      *
      * @return all type parts of the instance as list
      */
-    List<String> getTypes();
+    ImmutableList<String> getTypes();
 
     /**
      * Returns the unique identifier of the instance.

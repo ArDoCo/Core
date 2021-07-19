@@ -1,12 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
@@ -18,9 +19,9 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
  */
 public class NounMapping implements INounMapping {
 
-    private List<IWord> words;
+    private MutableList<IWord> words;
     private String reference;
-    private List<String> occurrences;
+    private MutableList<String> occurrences;
 
     private MappingKind mostProbableKind;
     private Double highestProbability;
@@ -34,11 +35,11 @@ public class NounMapping implements INounMapping {
      * @param reference    the reference
      * @param occurrences  the occurrences
      */
-    public NounMapping(List<IWord> words, Map<MappingKind, Double> distribution, String reference, List<String> occurrences) {
-        this.words = new ArrayList<>(words);
+    public NounMapping(ImmutableList<IWord> words, Map<MappingKind, Double> distribution, String reference, ImmutableList<String> occurrences) {
+        this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.reference = reference;
-        this.occurrences = new ArrayList<>(occurrences);
+        this.occurrences = Lists.mutable.withAll(occurrences);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
     }
@@ -68,14 +69,14 @@ public class NounMapping implements INounMapping {
      * @param reference   the reference
      * @param occurrences the occurrences
      */
-    public NounMapping(List<IWord> words, MappingKind kind, double probability, String reference, List<String> occurrences) {
+    public NounMapping(ImmutableList<IWord> words, MappingKind kind, double probability, String reference, ImmutableList<String> occurrences) {
         distribution = new EnumMap<>(MappingKind.class);
         distribution.put(kind, probability);
 
-        this.words = new ArrayList<>(words);
+        this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.reference = reference;
-        this.occurrences = new ArrayList<>(occurrences);
+        this.occurrences = Lists.mutable.withAll(occurrences);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
     }
@@ -86,8 +87,8 @@ public class NounMapping implements INounMapping {
      * @return all appearances of the mapping
      */
     @Override
-    public final List<String> getOccurrences() {
-        return new ArrayList<>(occurrences);
+    public final ImmutableList<String> getOccurrences() {
+        return Lists.immutable.withAll(occurrences);
     }
 
     /**
@@ -96,8 +97,8 @@ public class NounMapping implements INounMapping {
      * @return all mapping nodes
      */
     @Override
-    public final List<IWord> getWords() {
-        return new ArrayList<>(words);
+    public final ImmutableList<IWord> getWords() {
+        return Lists.immutable.withAll(words);
     }
 
     /**
@@ -106,7 +107,7 @@ public class NounMapping implements INounMapping {
      * @param nodes graph nodes to add to the mapping
      */
     @Override
-    public final void addNodes(List<IWord> nodes) {
+    public final void addNodes(ImmutableList<IWord> nodes) {
         for (IWord n : nodes) {
             addNode(n);
         }
@@ -140,13 +141,12 @@ public class NounMapping implements INounMapping {
      * @return sentence numbers of the occurrences of this mapping.
      */
     @Override
-    public final List<Integer> getMappingSentenceNo() {
-        List<Integer> positions = new ArrayList<>();
+    public final ImmutableList<Integer> getMappingSentenceNo() {
+        MutableList<Integer> positions = Lists.mutable.empty();
         for (IWord n : words) {
             positions.add(n.getSentenceNo() + 1);
         }
-        Collections.sort(positions);
-        return positions;
+        return positions.toSortedList().toImmutable();
     }
 
     /**
@@ -155,7 +155,7 @@ public class NounMapping implements INounMapping {
      * @param newOccurances occurrences to add
      */
     @Override
-    public final void addOccurrence(List<String> newOccurances) {
+    public final void addOccurrence(ImmutableList<String> newOccurances) {
         for (String o : newOccurances) {
             if (!occurrences.contains(o)) {
                 occurrences.add(o);
@@ -171,9 +171,9 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public final void copyOccurrencesAndNodesTo(String occurrence, INounMapping createdMapping) {
-        List<IWord> occNodes = words.stream().filter(n -> n.getText().equals(occurrence)).collect(Collectors.toList());
+        ImmutableList<IWord> occNodes = words.select(n -> n.getText().equals(occurrence)).toImmutable();
         createdMapping.addNodes(occNodes);
-        createdMapping.addOccurrence(List.of(occurrence));
+        createdMapping.addOccurrence(Lists.immutable.with(occurrence));
     }
 
     /**
@@ -181,8 +181,8 @@ public class NounMapping implements INounMapping {
      *
      * @return list of containing node lemmas
      */
-    public final List<String> getMappingLemmas() {
-        return words.stream().map(IWord::getLemma).collect(Collectors.toList());
+    public final ImmutableList<String> getMappingLemmas() {
+        return words.collect(IWord::getLemma).toImmutable();
     }
 
     /**
@@ -197,7 +197,7 @@ public class NounMapping implements INounMapping {
 
     @Override
     public NounMapping createCopy() {
-        return new NounMapping(words, distribution, reference, occurrences);
+        return new NounMapping(words.toImmutable(), distribution, reference, occurrences.toImmutable());
     }
 
     @Override
@@ -212,11 +212,11 @@ public class NounMapping implements INounMapping {
      * @return all parts of occurrences (splitted at their spaces) that are similar to the reference.
      */
     @Override
-    public List<String> getRepresentativeComparables() {
-        List<String> comparables = new ArrayList<>();
+    public ImmutableList<String> getRepresentativeComparables() {
+        MutableList<String> comparables = Lists.mutable.empty();
         for (String occ : occurrences) {
             if (SimilarityUtils.containsSeparator(occ)) {
-                List<String> parts = SimilarityUtils.splitAtSeparators(occ);
+                ImmutableList<String> parts = SimilarityUtils.splitAtSeparators(occ);
                 for (String part : parts) {
                     if (SimilarityUtils.areWordsSimilar(reference, part)) {
                         comparables.add(part);
@@ -227,7 +227,7 @@ public class NounMapping implements INounMapping {
                 comparables.add(occ);
             }
         }
-        return comparables;
+        return comparables.toImmutable();
     }
 
     /**
@@ -308,7 +308,7 @@ public class NounMapping implements INounMapping {
                 + distribution.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + //
                 ", reference=" + reference + //
                 ", node=" + String.join(", ", occurrences) + //
-                ", position=" + String.join(", ", words.stream().map(word -> String.valueOf(word.getPosition())).collect(Collectors.toList())) + //
+                ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
                 ", probability=" + highestProbability + "]";
     }
 

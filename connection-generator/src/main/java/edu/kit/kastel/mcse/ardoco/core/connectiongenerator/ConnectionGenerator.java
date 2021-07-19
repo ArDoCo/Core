@@ -1,8 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
@@ -23,7 +24,7 @@ public class ConnectionGenerator implements IExecutionStage {
 
     private AgentDatastructure data;
 
-    private List<IAgent> agents = new ArrayList<>();
+    private MutableList<IAgent> agents = Lists.mutable.empty();
 
     private ConnectionGeneratorConfig config;
     private GenericConnectionConfig agentConfig;

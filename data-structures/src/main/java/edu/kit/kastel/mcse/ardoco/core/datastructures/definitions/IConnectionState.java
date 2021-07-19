@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
@@ -14,7 +14,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      *
      * @return all instance links
      */
-    List<IInstanceLink> getInstanceLinks();
+    ImmutableList<IInstanceLink> getInstanceLinks();
 
     /**
      * Returns all instance links with a model instance containing the given name.
@@ -22,7 +22,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param name the name of a model instance
      * @return all instance links with a model instance containing the given name as list
      */
-    List<IInstanceLink> getInstanceLinksByName(String name);
+    ImmutableList<IInstanceLink> getInstanceLinksByName(String name);
 
     /**
      * Returns all instance links with a model instance containing the given type.
@@ -30,7 +30,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param type the type of a model instance
      * @return all instance links with a model instance containing the given type as list
      */
-    List<IInstanceLink> getInstanceLinksByType(String type);
+    ImmutableList<IInstanceLink> getInstanceLinksByType(String type);
 
     /**
      * Returns all instance links with a model instance containing the given recommended instance.
@@ -38,7 +38,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param recommendedInstance the recommended instance to consider
      * @return all instance links found
      */
-    List<IInstanceLink> getInstanceLinksByRecommendedInstance(IRecommendedInstance recommendedInstance);
+    ImmutableList<IInstanceLink> getInstanceLinksByRecommendedInstance(IRecommendedInstance recommendedInstance);
 
     /**
      * Returns all instance links with a model instance containing the given name and type.
@@ -47,7 +47,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param type the type of a model instance
      * @return all instance links with a model instance containing the given name and type as list
      */
-    List<IInstanceLink> getInstanceLinks(String name, String type);
+    ImmutableList<IInstanceLink> getInstanceLinks(String name, String type);
 
     /**
      * Adds the connection of a recommended instance and a model instance to the state. If the model instance is already
@@ -100,7 +100,7 @@ public interface IConnectionState extends IState<IConnectionState> {
      *
      * @return all relation links of this state as list
      */
-    List<IRelationLink> getRelationLinks();
+    ImmutableList<IRelationLink> getRelationLinks();
 
     /**
      * Adds the connection of a recommended relation and a model relation to the state if it is not already contained.

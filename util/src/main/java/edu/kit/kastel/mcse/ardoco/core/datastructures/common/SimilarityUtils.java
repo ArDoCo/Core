@@ -1,10 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.common;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
@@ -77,7 +78,7 @@ public final class SimilarityUtils {
      * @param minProportion threshold for proportional similarity between the lists
      * @return true if the list are similar, false if not
      */
-    public static boolean areWordsOfListsSimilar(List<String> originals, List<String> words2test, double minProportion) {
+    public static boolean areWordsOfListsSimilar(ImmutableList<String> originals, ImmutableList<String> words2test, double minProportion) {
 
         if (areWordsSimilar(String.join(" ", originals), String.join(" ", words2test), minProportion)) {
             return true;
@@ -103,7 +104,7 @@ public final class SimilarityUtils {
      * @param words2test list of test strings
      * @return true if the list are similar, false if not
      */
-    public static boolean areWordsOfListsSimilar(List<String> originals, List<String> words2test) {
+    public static boolean areWordsOfListsSimilar(ImmutableList<String> originals, ImmutableList<String> words2test) {
         return areWordsOfListsSimilar(originals, words2test, CommonTextToolsConfig.ARE_WORDS_OF_LISTS_SIMILAR_DEFAULT_THRESHOLD);
     }
 
@@ -116,8 +117,8 @@ public final class SimilarityUtils {
      * @param nounMappings the mappings to filter
      * @return list of mappings which are similar to the given ref.
      */
-    private static List<INounMapping> getAllSimilarNMappingsByReference(String ref, List<INounMapping> nounMappings) {
-        return nounMappings.stream().filter(n -> SimilarityUtils.areWordsSimilar(n.getReference(), ref)).collect(Collectors.toList());
+    private static ImmutableList<INounMapping> getAllSimilarNMappingsByReference(String ref, ImmutableList<INounMapping> nounMappings) {
+        return nounMappings.select(n -> SimilarityUtils.areWordsSimilar(n.getReference(), ref));
     }
 
     /**
@@ -132,38 +133,36 @@ public final class SimilarityUtils {
      * @param recommendedInstances recommended instances to check for similarity
      * @return a list of the most similar recommended instances (to the instance names)
      */
-    public static List<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
-            List<IRecommendedInstance> recommendedInstances) {
-        List<String> instanceNames = instance.getNames();
-        List<IRecommendedInstance> selection = recommendedInstances.stream()
-                .filter(//
-                        ri -> (SimilarityUtils.areWordsOfListsSimilar(instanceNames, List.of(ri.getName()))
-                                || SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName())))
-                .collect(Collectors.toList());
+    public static ImmutableList<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
+            ImmutableList<IRecommendedInstance> recommendedInstances) {
+        ImmutableList<String> instanceNames = instance.getNames();
+        ImmutableList<IRecommendedInstance> selection = recommendedInstances.select(//
+                ri -> (SimilarityUtils.areWordsOfListsSimilar(instanceNames, Lists.immutable.with(ri.getName()))
+                        || SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName())));
 
         double getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
         double getMostRecommendedIByRefIncrease = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_INCREASE;
 
-        List<IRecommendedInstance> whileSelection = new ArrayList<>(selection);
+        MutableList<IRecommendedInstance> whileSelection = Lists.mutable.withAll(selection);
         var allListsSimilar = 0;
 
         while (whileSelection.size() > 1 && getMostRecommendedIByRefMinProportion <= 1) {
-            selection = new ArrayList<>(whileSelection);
+            selection = Lists.immutable.withAll(whileSelection);
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
-            List<IRecommendedInstance> risToRemove = new ArrayList<>();
+            MutableList<IRecommendedInstance> risToRemove = Lists.mutable.empty();
             for (IRecommendedInstance ri : whileSelection) {
 
                 if (areWordsSimilar(String.join(" ", instanceNames), String.join(" ", ri.getName()), 1 - getMostRecommendedIByRefIncrease)) {
                     allListsSimilar++;
                 }
 
-                if (!SimilarityUtils.areWordsOfListsSimilar(instanceNames, List.of(ri.getName()), getMostRecommendedIByRefMinProportion)) {
+                if (!SimilarityUtils.areWordsOfListsSimilar(instanceNames, Lists.immutable.with(ri.getName()), getMostRecommendedIByRefMinProportion)) {
                     risToRemove.add(ri);
                 }
             }
             whileSelection.removeAll(risToRemove);
             if (allListsSimilar == whileSelection.size()) {
-                return whileSelection;
+                return whileSelection.toImmutable();
             } else {
                 allListsSimilar = 0;
             }
@@ -171,7 +170,7 @@ public final class SimilarityUtils {
         if (whileSelection.isEmpty()) {
             return selection;
         }
-        return whileSelection;
+        return whileSelection.toImmutable();
 
     }
 
@@ -184,17 +183,17 @@ public final class SimilarityUtils {
      * @param nounMappings the noun mappings to filter
      * @return the most similar noun mapping(s)
      */
-    public static List<INounMapping> getMostLikelyNMappingsByReference(String ref, List<INounMapping> nounMappings) {
+    public static ImmutableList<INounMapping> getMostLikelyNMappingsByReference(String ref, ImmutableList<INounMapping> nounMappings) {
 
         double threshold = CommonTextToolsConfig.GET_MOST_LIKELY_MP_BY_REFERENCE_THRESHOLD;
-        List<INounMapping> selection = new ArrayList<>(SimilarityUtils.getAllSimilarNMappingsByReference(ref, nounMappings));
-        List<INounMapping> whileSelection = new ArrayList<>(selection);
+        ImmutableList<INounMapping> selection = Lists.immutable.withAll(SimilarityUtils.getAllSimilarNMappingsByReference(ref, nounMappings));
+        ImmutableList<INounMapping> whileSelection = Lists.immutable.withAll(selection);
 
         while (whileSelection.size() > 1 && threshold < 1) {
-            selection = new ArrayList<>(whileSelection);
+            selection = Lists.immutable.withAll(whileSelection);
             threshold += CommonTextToolsConfig.GET_MOST_LIKELY_MP_BY_REFERENCE_INCREASE;
             final double wTh = threshold;
-            whileSelection = whileSelection.stream().filter(nnm -> SimilarityUtils.areWordsSimilar(ref, nnm.getReference(), wTh)).collect(Collectors.toList());
+            whileSelection = whileSelection.select(nnm -> SimilarityUtils.areWordsSimilar(ref, nnm.getReference(), wTh));
 
         }
         if (whileSelection.isEmpty()) {
@@ -251,12 +250,12 @@ public final class SimilarityUtils {
      * @param reference given string
      * @return reference with whitespaces instead of separators
      */
-    public static List<String> splitAtSeparators(String reference) {
+    public static ImmutableList<String> splitAtSeparators(String reference) {
         String ref = reference;
         for (String sep : CommonTextToolsConfig.SEPARATORS_TO_SPLIT) {
             ref = ref.replaceAll(sep, " ");
         }
-        return new ArrayList<>(List.of(ref.split(" ")));
+        return Lists.immutable.withAll(Lists.immutable.with(ref.split(" ")));
     }
 
     /**

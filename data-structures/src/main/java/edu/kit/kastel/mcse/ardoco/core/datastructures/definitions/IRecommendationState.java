@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
@@ -14,14 +14,14 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      *
      * @return all recommended instances as list
      */
-    List<IRecommendedInstance> getRecommendedInstances();
+    ImmutableList<IRecommendedInstance> getRecommendedInstances();
 
     /**
      * Returns all recommended relations.
      *
      * @return all recommended relations as list
      */
-    List<IRecommendedRelation> getRecommendedRelations();
+    ImmutableList<IRecommendedRelation> getRecommendedRelations();
 
     /**
      * Adds a new recommended relation.
@@ -33,8 +33,8 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param probability    probability of being in the model
      * @param occurrences    nodes representing the relation
      */
-    void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, List<IRecommendedInstance> otherInstances, double probability,
-            List<IWord> occurrences);
+    void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, ImmutableList<IRecommendedInstance> otherInstances,
+            double probability, ImmutableList<IWord> occurrences);
 
     /**
      * Adds a recommended instance without a type.
@@ -43,7 +43,7 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param probability  probability of being in the model
      * @param nameMappings name mappings representing that recommended instance
      */
-    void addRecommendedInstanceJustName(String name, double probability, List<INounMapping> nameMappings);
+    void addRecommendedInstanceJustName(String name, double probability, ImmutableList<INounMapping> nameMappings);
 
     /**
      * Adds a recommended instance.
@@ -55,7 +55,8 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param typeMappings type mappings representing the type of the recommended instance
      * @return the added recommended instance
      */
-    IRecommendedInstance addRecommendedInstance(String name, String type, double probability, List<INounMapping> nameMappings, List<INounMapping> typeMappings);
+    IRecommendedInstance addRecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameMappings,
+            ImmutableList<INounMapping> typeMappings);
 
     /**
      * Returns all recommended instances that contain a given mapping as type.
@@ -63,7 +64,7 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param mapping given mapping to search for in types
      * @return the list of recommended instances with the mapping as type.
      */
-    List<IRecommendedInstance> getRecommendedInstancesByTypeMapping(INounMapping mapping);
+    ImmutableList<IRecommendedInstance> getRecommendedInstancesByTypeMapping(INounMapping mapping);
 
     /**
      * Returns all recommended instances that contain a given mapping.
@@ -71,7 +72,7 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param mapping given mapping to search for
      * @return the list of recommended instances with the mapping.
      */
-    List<IRecommendedInstance> getAnyRecommendedInstancesByMapping(INounMapping mapping);
+    ImmutableList<IRecommendedInstance> getAnyRecommendedInstancesByMapping(INounMapping mapping);
 
     /**
      * Returns all recommended instances that contain a given name.
@@ -79,7 +80,7 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param name given name to search for in names
      * @return the list of recommended instances with that name.
      */
-    List<IRecommendedInstance> getRecommendedInstancesByName(String name);
+    ImmutableList<IRecommendedInstance> getRecommendedInstancesByName(String name);
 
     /**
      * Returns all recommended instances that contain a similar name.
@@ -87,7 +88,7 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param name given name to search for in names
      * @return the list of recommended instances with a similar name.
      */
-    List<IRecommendedInstance> getRecommendedInstancesBySimilarName(String name);
+    ImmutableList<IRecommendedInstance> getRecommendedInstancesBySimilarName(String name);
 
     /**
      * Returns all recommended instances that contain a given name and type.
@@ -95,7 +96,7 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param type given type to search for in types
      * @return the list of recommended instances with that name and type
      */
-    List<IRecommendedInstance> getRecommendedInstancesByType(String type);
+    ImmutableList<IRecommendedInstance> getRecommendedInstancesByType(String type);
 
     /**
      * Returns all recommended instances that contain a similar type.
@@ -103,6 +104,6 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param type given type to search for in types
      * @return the list of recommended instances with a similar type.
      */
-    List<IRecommendedInstance> getRecommendedInstancesBySimilarType(String type);
+    ImmutableList<IRecommendedInstance> getRecommendedInstancesBySimilarType(String type);
 
 }

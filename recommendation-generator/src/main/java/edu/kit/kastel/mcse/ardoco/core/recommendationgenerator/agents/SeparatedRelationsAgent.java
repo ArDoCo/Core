@@ -2,8 +2,10 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -67,7 +69,7 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
     private void addRelationsForAllRecommendedInstances() {
         for (IRecommendedInstance recommendedInstance : recommendationState.getRecommendedInstances()) {
 
-            List<String> occurrencesWithSeparator = collectOccurrencesWithSeparators(recommendedInstance);
+            ImmutableList<String> occurrencesWithSeparator = collectOccurrencesWithSeparators(recommendedInstance);
 
             for (String occurrence : occurrencesWithSeparator) {
                 buildRelation(getAllCorrespondingRecommendationsForParticipants(recommendedInstance, occurrence));
@@ -76,47 +78,49 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
         }
     }
 
-    private List<String> collectOccurrencesWithSeparators(IRecommendedInstance recommendedInstance) {
-        List<String> occs = collectOccurrencesAsStrings(recommendedInstance);
-        return occs.stream().filter(SimilarityUtils::containsSeparator).collect(Collectors.toList());
+    private ImmutableList<String> collectOccurrencesWithSeparators(IRecommendedInstance recommendedInstance) {
+        ImmutableList<String> occs = collectOccurrencesAsStrings(recommendedInstance);
+        return occs.select(SimilarityUtils::containsSeparator);
 
     }
 
-    private List<String> collectOccurrencesAsStrings(IRecommendedInstance recInstance) {
-        List<String> occurrences = new ArrayList<>();
+    private ImmutableList<String> collectOccurrencesAsStrings(IRecommendedInstance recInstance) {
+        MutableList<String> occurrences = Lists.mutable.empty();
         for (INounMapping nnm : recInstance.getNameMappings()) {
-            occurrences.addAll(nnm.getOccurrences());
+            occurrences.addAll(nnm.getOccurrences().castToCollection());
         }
-        return occurrences;
+        return occurrences.toImmutable();
     }
 
-    private List<List<IRecommendedInstance>> getAllCorrespondingRecommendationsForParticipants(IRecommendedInstance recInstance, String occurrence) {
+    private ImmutableList<ImmutableList<IRecommendedInstance>> getAllCorrespondingRecommendationsForParticipants(IRecommendedInstance recInstance,
+            String occurrence) {
         String recInstanceName = recInstance.getName();
 
-        List<String> relationParticipants = SimilarityUtils.splitAtSeparators(occurrence);
+        ImmutableList<String> relationParticipants = SimilarityUtils.splitAtSeparators(occurrence);
 
-        List<List<IRecommendedInstance>> participatingRecInstances = new ArrayList<>();
+        MutableList<MutableList<IRecommendedInstance>> participatingRecInstances = Lists.mutable.empty();
 
         for (var i = 0; i < relationParticipants.size(); i++) {
             String participant = relationParticipants.get(i);
-            participatingRecInstances.add(new ArrayList<>());
+            participatingRecInstances.add(Lists.mutable.empty());
 
             if (SimilarityUtils.areWordsSimilar(recInstanceName, participant)) {
                 participatingRecInstances.get(i).add(recInstance);
                 continue;
             }
 
-            participatingRecInstances.get(i).addAll(recommendationState.getRecommendedInstancesBySimilarName(participant));
+            participatingRecInstances.get(i).addAll(recommendationState.getRecommendedInstancesBySimilarName(participant).castToCollection());
         }
-        return participatingRecInstances;
+        return participatingRecInstances.collect(MutableList::toImmutable).toImmutable();
     }
 
-    private void buildRelation(List<List<IRecommendedInstance>> recommendedParticipants) {
+    private void buildRelation(ImmutableList<ImmutableList<IRecommendedInstance>> recommendedParticipants) {
         if (recommendedParticipants.size() < 2) {
             return;
         }
 
-        List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(), recommendedParticipants);
+        List<List<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(new ArrayList<>(),
+                recommendedParticipants.collect(ImmutableList::castToList).castToList());
 
         for (List<IRecommendedInstance> possibility : allRelationProbabilities) {
 
@@ -125,8 +129,7 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
             possibility.remove(r1);
             possibility.remove(r2);
 
-            recommendationState.addRecommendedRelation(relName, r1, r2, possibility, probability, new ArrayList<>());
-
+            recommendationState.addRecommendedRelation(relName, r1, r2, Lists.immutable.withAll(possibility), probability, Lists.immutable.empty());
         }
 
     }

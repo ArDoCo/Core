@@ -1,7 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
@@ -32,7 +33,7 @@ public class RecommendationGeneratorConfig extends Configuration {
     /**
      * The list of analyzer types that should work on the recommendation state.
      */
-    public final List<String> recommendationAgents;
+    public final ImmutableList<String> recommendationAgents;
 
     @Override
     protected Map<String, String> getAllProperties() {

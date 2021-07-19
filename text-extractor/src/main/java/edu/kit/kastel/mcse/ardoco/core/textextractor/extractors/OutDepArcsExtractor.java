@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextractor.extractors;
 
-import java.util.List;
-
+import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -73,7 +72,7 @@ public class OutDepArcsExtractor extends TextExtractor {
      */
     private void examineOutgoingDepArcs(IWord n) {
 
-        List<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(n);
+        ImmutableList<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(n);
 
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 

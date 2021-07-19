@@ -1,11 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 
@@ -21,21 +21,21 @@ public class Instance implements IModelInstance {
 
     private String longestName;
     private String longestType;
-    private List<String> names;
-    private List<String> types;
+    private MutableList<String> names;
+    private MutableList<String> types;
     private String uid;
 
     @Override
     public IModelInstance createCopy() {
-        return new Instance(longestName, longestType, new ArrayList<>(names), new ArrayList<>(types), uid);
+        return new Instance(longestName, longestType, Lists.immutable.withAll(names), Lists.immutable.withAll(types), uid);
 
     }
 
-    private Instance(String longestName, String longestType, List<String> names, List<String> types, String uid) {
+    private Instance(String longestName, String longestType, ImmutableList<String> names, ImmutableList<String> types, String uid) {
         this.longestName = longestName;
         this.longestType = longestType;
-        this.names = names;
-        this.types = types;
+        this.names = names.toList();
+        this.types = types.toList();
         this.uid = uid;
     }
 
@@ -50,13 +50,13 @@ public class Instance implements IModelInstance {
 
         String splitName = splitSnakeAndKebabCase(name);
         splitName = splitCamelCase(splitName);
-        names = Arrays.stream(splitName.split(" ")).collect(Collectors.toList());
+        names = Lists.mutable.with(splitName.split(" "));
         if (names.size() > 1) {
             names.add(name);
         }
 
         String splitType = splitCamelCase(type);
-        types = Arrays.stream(splitType.split(" ")).collect(Collectors.toList());
+        types = Lists.mutable.with(splitType.split(" "));
         if (types.size() > 1) {
             types.add(type);
         }
@@ -107,8 +107,8 @@ public class Instance implements IModelInstance {
      * @return all name parts of the instance as list
      */
     @Override
-    public List<String> getNames() {
-        return names;
+    public ImmutableList<String> getNames() {
+        return names.toImmutable();
     }
 
     /**
@@ -117,8 +117,8 @@ public class Instance implements IModelInstance {
      * @return all type parts of the instance as list
      */
     @Override
-    public List<String> getTypes() {
-        return types;
+    public ImmutableList<String> getTypes() {
+        return types.toImmutable();
     }
 
     /**

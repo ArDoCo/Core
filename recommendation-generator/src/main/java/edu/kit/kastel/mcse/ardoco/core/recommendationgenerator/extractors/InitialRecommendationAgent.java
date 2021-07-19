@@ -1,9 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -24,7 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommenda
 @MetaInfServices(RecommendationAgent.class)
 public class InitialRecommendationAgent extends RecommendationAgent {
 
-    private List<IExtractor> extractors = new ArrayList<>();
+    private MutableList<IExtractor> extractors = Lists.mutable.empty();
 
     /**
      * Prototype constructor.
@@ -39,7 +40,7 @@ public class InitialRecommendationAgent extends RecommendationAgent {
         initializeAgents(config.recommendationExtractors, config);
     }
 
-    private void initializeAgents(List<String> extractorList, GenericRecommendationConfig config) {
+    private void initializeAgents(ImmutableList<String> extractorList, GenericRecommendationConfig config) {
         Map<String, RecommendationExtractor> loadedExtractors = Loader.loadLoadable(RecommendationExtractor.class);
 
         for (String recommendationExtractor : extractorList) {

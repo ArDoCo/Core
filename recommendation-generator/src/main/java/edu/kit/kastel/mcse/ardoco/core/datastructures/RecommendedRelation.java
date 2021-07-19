@@ -1,11 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
@@ -22,21 +24,21 @@ public class RecommendedRelation implements IRecommendedRelation {
 
     private Set<IRecommendedInstance> relationInstances;
     private double probability;
-    private List<IWord> nodes;
+    private MutableList<IWord> nodes;
     private String name;
 
     @Override
     public IRecommendedRelation createCopy() {
 
         return new RecommendedRelation(relationInstances.stream().map(IRecommendedInstance::createCopy).collect(Collectors.toSet()), probability,
-                new ArrayList<>(nodes), name);
+                Lists.immutable.withAll(nodes), name);
 
     }
 
-    private RecommendedRelation(Set<IRecommendedInstance> relationInstances, double probability, List<IWord> nodes, String name) {
+    private RecommendedRelation(Set<IRecommendedInstance> relationInstances, double probability, ImmutableList<IWord> nodes, String name) {
         this.relationInstances = relationInstances;
         this.probability = probability;
-        this.nodes = nodes;
+        this.nodes = nodes.toList();
         this.name = name;
 
     }
@@ -51,14 +53,14 @@ public class RecommendedRelation implements IRecommendedRelation {
      * @param probability    the probability that this is a relation
      * @param nodes          the nodes representing this relation. These are not the end points of the instances!
      */
-    public RecommendedRelation(String name, IRecommendedInstance instance0, IRecommendedInstance instance1, List<IRecommendedInstance> otherInstances,
-            double probability, List<IWord> nodes) {
+    public RecommendedRelation(String name, IRecommendedInstance instance0, IRecommendedInstance instance1, ImmutableList<IRecommendedInstance> otherInstances,
+            double probability, ImmutableList<IWord> nodes) {
         relationInstances = new HashSet<>();
         relationInstances.add(instance0);
         relationInstances.add(instance1);
-        relationInstances.addAll(otherInstances);
+        relationInstances.addAll(otherInstances.castToCollection());
         this.probability = probability;
-        this.nodes = new ArrayList<>(nodes);
+        this.nodes = Lists.mutable.withAll(nodes);
         this.name = name;
     }
 
@@ -68,8 +70,8 @@ public class RecommendedRelation implements IRecommendedRelation {
      * @return nodes representing the relation
      */
     @Override
-    public List<IWord> getNodes() {
-        return nodes;
+    public ImmutableList<IWord> getNodes() {
+        return nodes.toImmutable();
     }
 
     /**
@@ -78,7 +80,7 @@ public class RecommendedRelation implements IRecommendedRelation {
      * @param occs list of nodes; every node represents the relation
      */
     @Override
-    public void addOccurrences(List<IWord> occs) {
+    public void addOccurrences(ImmutableList<IWord> occs) {
         for (IWord occ : occs) {
             if (!nodes.contains(occ)) {
                 nodes.add(occ);
@@ -142,8 +144,8 @@ public class RecommendedRelation implements IRecommendedRelation {
      * @return the involved recommended instances of the relation as list
      */
     @Override
-    public List<IRecommendedInstance> getRelationInstances() {
-        return new ArrayList<>(relationInstances);
+    public ImmutableList<IRecommendedInstance> getRelationInstances() {
+        return Lists.immutable.withAll(relationInstances);
     }
 
     private String getInstanceNameTypePairs() {

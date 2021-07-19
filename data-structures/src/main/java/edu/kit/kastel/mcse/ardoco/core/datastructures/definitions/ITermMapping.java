@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
@@ -14,7 +14,7 @@ public interface ITermMapping extends ICopyable<ITermMapping> {
      *
      * @return a list of mappings of the term.
      */
-    List<INounMapping> getMappings();
+    ImmutableList<INounMapping> getMappings();
 
     /**
      * Returns the probability that this mapping is a term of the given kind (multi type).

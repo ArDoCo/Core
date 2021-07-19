@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IText defines the representation of a text.
@@ -28,5 +28,5 @@ public interface IText {
      *
      * @return the words
      */
-    List<IWord> getWords();
+    ImmutableList<IWord> getWords();
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class PcmOntologyModelConnectorTest {
             logger.debug("connector is null");
             Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
         }
-        List<IModelInstance> instances = connectorMediaStore.getInstances();
+        ImmutableList<IModelInstance> instances = connectorMediaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing MediaStore instances:");
@@ -66,7 +67,7 @@ class PcmOntologyModelConnectorTest {
             logger.debug("connector is null");
             Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
         }
-        List<IModelInstance> instances = connectorTeaStore.getInstances();
+        ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing TeaStore instances:");
@@ -92,7 +93,7 @@ class PcmOntologyModelConnectorTest {
             logger.debug("connector is null");
             Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
         }
-        List<IModelInstance> instances = connectorTeaStore.getInstances();
+        ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
 
         Assertions.assertFalse(instances.isEmpty(), "There need to be some instances contained in the model.");
 

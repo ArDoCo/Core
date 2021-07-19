@@ -1,9 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
@@ -25,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.IExtractor;
 @MetaInfServices(ConnectionAgent.class)
 public class InitialConnectionAgent extends ConnectionAgent {
 
-    private List<IExtractor> extractors = new ArrayList<>();
+    private MutableList<IExtractor> extractors = Lists.mutable.empty();
 
     /**
      * Create the agent.
@@ -40,7 +41,7 @@ public class InitialConnectionAgent extends ConnectionAgent {
         initializeAgents(config.connectionExtractors, config);
     }
 
-    private void initializeAgents(List<String> extractorList, GenericConnectionConfig config) {
+    private void initializeAgents(ImmutableList<String> extractorList, GenericConnectionConfig config) {
         Map<String, ConnectionExtractor> loadedExtractors = Loader.loadLoadable(ConnectionExtractor.class);
 
         for (String connectionExtractor : extractorList) {
