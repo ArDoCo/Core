@@ -9,6 +9,10 @@
 	</parent>
 	<artifactId>text-provider-indirect</artifactId>
 
+	<properties>
+	  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+
 	<repositories>
 		<repository>
 			<id>ipdNexus-public-all</id>

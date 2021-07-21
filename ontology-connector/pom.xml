@@ -6,6 +6,10 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
   <artifactId>ontology-connector</artifactId>
+ 
+ 	<properties>
+	  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
   
   <dependencies>
 	<dependency>

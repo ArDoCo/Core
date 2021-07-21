@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.pipeline;
+package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +14,7 @@ import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
@@ -52,7 +53,6 @@ class PipelineIT {
 
         var ontologyText = ontologyTextProvider.getAnnotatedText();
 
-        // TODO compare
         var indirectWords = indirectText.getWords();
         var ontologyWords = ontologyText.getWords();
         Assertions.assertEquals(indirectWords.size(), ontologyWords.size());
