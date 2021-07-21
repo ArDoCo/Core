@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +43,8 @@ import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 /**
@@ -61,7 +62,6 @@ public class OntologyConnector {
     private static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
 
     private static final String DEFAULT_PREFIX = "";
-    private static final String LANG_EN = "en";
 
     private final OntModel ontModel;
     private OrderedOntologyList.Factory listFactory;
@@ -231,7 +231,7 @@ public class OntologyConnector {
      * @return True if imported, else False
      */
     public boolean hasImport(String importIri) {
-        Set<String> importedModels = new HashSet<>();
+        Set<String> importedModels = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
             importedModels = ontModel.listImportedOntologyURIs();
@@ -249,7 +249,7 @@ public class OntologyConnector {
      * @return the first {@link Ontology} that is not an imported ontology in the {@link OntModel}
      */
     protected Optional<Ontology> getBaseOntology() {
-        Set<String> importedOntologies = new HashSet<>();
+        Set<String> importedOntologies = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
             importedOntologies = ontModel.listImportedOntologyURIs();
@@ -328,7 +328,7 @@ public class OntologyConnector {
         }
 
         // if the className was not a label, looks for usage of the className in the Iris
-        Set<String> prefixes = new HashSet<>();
+        Set<String> prefixes = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
             prefixes = ontModel.getNsPrefixMap().keySet();
@@ -647,7 +647,7 @@ public class OntologyConnector {
         }
 
         // if the name was not in a label, looks for usage of the name in the Iris
-        Set<String> prefixes = new HashSet<>();
+        Set<String> prefixes = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
             prefixes = ontModel.getNsPrefixMap().keySet();
@@ -717,10 +717,10 @@ public class OntologyConnector {
      * @param className name of the class to retrieve individuals from
      * @return List of Individuals for the given class (name), including inferred ones
      */
-    public List<Individual> getInferredIndividualsOfClass(String className) {
+    public ImmutableList<Individual> getInferredIndividualsOfClass(String className) {
         Optional<OntClass> optClass = getClass(className);
         if (!optClass.isPresent()) {
-            return Lists.mutable.empty();
+            return Lists.immutable.empty();
         }
         OntClass clazz = optClass.get();
 
@@ -731,15 +731,15 @@ public class OntologyConnector {
         } finally {
             ontModel.leaveCriticalSection();
         }
-        return createMutableIndividualListFromStatementIterator(stmts);
+        return createImmutableIndividualListFromStatementIterator(stmts);
     }
 
-    private MutableList<Individual> createMutableIndividualListFromStatementIterator(StmtIterator stmts) {
-        MutableList<Individual> individuals = Lists.mutable.empty();
+    private ImmutableList<Individual> createImmutableIndividualListFromStatementIterator(StmtIterator stmts) {
         if (stmts == null) {
-            return individuals;
+            return Lists.immutable.empty();
         }
 
+        MutableList<Individual> individuals = Lists.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
             while (stmts.hasNext()) {
@@ -752,7 +752,7 @@ public class OntologyConnector {
         } finally {
             ontModel.leaveCriticalSection();
         }
-        return individuals;
+        return individuals.toImmutable();
     }
 
     /**
@@ -776,7 +776,7 @@ public class OntologyConnector {
             ontModel.enterCriticalSection(Lock.WRITE);
             try {
                 individual = ontModel.createIndividual(uri, OWL.Thing);
-                individual.addLabel(name, LANG_EN);
+                individual.addLabel(name, null);
             } finally {
                 ontModel.leaveCriticalSection();
             }
@@ -943,7 +943,7 @@ public class OntologyConnector {
      * or the list cannot be created for any other reason, returns an empty {@link Optional}.
      *
      * @param individual Individual that should be transformed into an {@link OrderedOntologyList}
-     * @return Optional containing the list or empty Optional in case anything went wrong.
+     * @return Optional containing the list; empty Optional in case anything went wrong.
      */
     public Optional<OrderedOntologyList> transformIntoOrderedOntologyList(Individual individual) {
         return listFactory.getOrderedListOntologyFromIndividual(individual);
@@ -975,7 +975,7 @@ public class OntologyConnector {
             ontModel.leaveCriticalSection();
         }
 
-        Set<String> prefixes = new HashSet<>();
+        Set<String> prefixes = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
             prefixes = ontModel.getNsPrefixMap().keySet();
@@ -1480,7 +1480,7 @@ public class OntologyConnector {
      * @param property Property used to look for
      * @return List of extracted objects
      */
-    public List<RDFNode> getObjectsOf(OntResource subject, OntProperty property) {
+    public ImmutableList<RDFNode> getObjectsOf(OntResource subject, OntProperty property) {
         StmtIterator stmtIterator = null;
 
         ontModel.enterCriticalSection(Lock.READ);
@@ -1490,7 +1490,7 @@ public class OntologyConnector {
             ontModel.leaveCriticalSection();
         }
 
-        var resList = new ArrayList<RDFNode>();
+        MutableList<RDFNode> resList = Lists.mutable.empty();
         while (stmtIterator != null && stmtIterator.hasNext()) {
             RDFNode object = null;
 
@@ -1505,7 +1505,7 @@ public class OntologyConnector {
                 resList.add(object);
             }
         }
-        return resList;
+        return resList.toImmutable();
     }
 
     /***********************/
