@@ -8,7 +8,11 @@
 		<version>0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>data-structures</artifactId>
-
+	
+	<properties>
+	  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.reflections</groupId>
