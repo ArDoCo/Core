@@ -1,13 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.core.ontology;
 
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class OntologyUtil {
     private static Random random = new Random();
 
-    private static Set<String> assignedIDs = new HashSet<>();
+    private static Set<String> assignedIDs = ConcurrentHashMap.newKeySet();
 
     private OntologyUtil() {
         throw new IllegalAccessError("This constructor should not be called!");
