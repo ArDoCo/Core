@@ -1,11 +1,12 @@
 package edu.kit.kastel.mcse.ardoco.core.ontology;
 
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class OntologyUtil {
-    private static Random random = new Random();
+    private static Random random = new SecureRandom();
 
     private static Set<String> assignedIDs = ConcurrentHashMap.newKeySet();
 
