@@ -13,6 +13,7 @@
 		<sonar.organization>ardoco</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+		<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
 	</properties>
 
 	<repositories>
@@ -148,9 +149,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.0.0-M5</version>
-					<configuration>
-						<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
-					</configuration>
 				</plugin>
 				<plugin>
 			        <groupId>org.apache.maven.plugins</groupId>
@@ -165,9 +163,7 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
 					<version>3.0.0-M5</version>
-					<configuration>
-						<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
-					</configuration>
+					<configuration></configuration>
 					<executions>
 	                    <execution>
 	                        <phase>integration-test</phase>
