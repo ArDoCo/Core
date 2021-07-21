@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 @RunWith(JUnitPlatform.class)
-class PipelineTest {
+class PipelineIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String TEXT = "src/test/resources/teastore.txt";
@@ -28,7 +28,7 @@ class PipelineTest {
 
     @Test
     @DisplayName("Integration Test")
-    void integrationTest() {
+    void pipelineIT() {
         String[] args = { "-n", NAME, "-m", MODEL, "-t", TEXT, "-o", OUTPUT };
         Assertions.assertNotNull(args);
         Pipeline.main(args);
@@ -36,7 +36,7 @@ class PipelineTest {
 
     @Test
     @DisplayName("Compare INDIRECT and Ontology providers")
-    void compareTest() {
+    void compareIT() {
         var inputText = new File(TEXT);
         IText indirectText = null;
         try {
