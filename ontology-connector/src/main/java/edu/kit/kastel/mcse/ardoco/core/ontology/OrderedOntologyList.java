@@ -346,8 +346,7 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public boolean contains(Object o) {
-        if (o instanceof Individual) {
-            var individual = (Individual) o;
+        if (o instanceof Individual individual) {
             var slot = getSlotWhoseItemEquals(individual);
             return slot.isPresent();
         }
@@ -394,8 +393,7 @@ public class OrderedOntologyList implements List<Individual> {
         if (!contains(o)) {
             return false;
         }
-        if (o instanceof Individual) {
-            var individual = (Individual) o;
+        if (o instanceof Individual individual) {
             var slot = getSlotWhoseItemEquals(individual);
             if (slot.isPresent()) {
                 return removeSlot(slot.get());
@@ -561,8 +559,7 @@ public class OrderedOntologyList implements List<Individual> {
 
     @Override
     public int indexOf(Object o) {
-        if (o instanceof Individual) {
-            var individual = (Individual) o;
+        if (o instanceof Individual individual) {
             var slotOpt = getSlotWhoseItemEquals(individual);
             if (slotOpt.isPresent()) {
                 var slot = slotOpt.get();
