@@ -33,7 +33,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      */
     @Override
     public AgentDatastructure createCopy() {
-        AgentDatastructure data = new AgentDatastructure();
+        var data = new AgentDatastructure();
         data.text = text;
         data.textState = textState == null ? null : textState.createCopy();
         data.modelState = modelState == null ? null : modelState.createCopy();
