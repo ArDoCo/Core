@@ -51,6 +51,11 @@ public interface IConnectionState extends IState<IConnectionState> {
      */
     ImmutableList<IInstanceLink> getInstanceLinks(String name, String type);
 
+    /**
+     * Returns a list of tracelinks that are contained within this connection state.
+     *
+     * @return list of tracelinks within this connection state
+     */
     default ImmutableList<Tracelink> getTraceLinks() {
         MutableList<Tracelink> tracelinks = Lists.mutable.empty();
         for (var instanceLink : getInstanceLinks()) {
