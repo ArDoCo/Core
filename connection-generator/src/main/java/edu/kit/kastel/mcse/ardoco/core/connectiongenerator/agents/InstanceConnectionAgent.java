@@ -57,7 +57,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
     }
 
     /**
-     * Seaches in the recommended instances of the recommendation state for similar names to extracted instances. If
+     * Searches in the recommended instances of the recommendation state for similar names to extracted instances. If
      * some are found the instance link is added to the connection state.
      */
     private void findNamesOfModelInstancesInSupposedMappings() {

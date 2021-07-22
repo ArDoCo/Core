@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.time.Duration;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.Tracelink;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
@@ -328,29 +330,20 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        Set<String> modelElementUids = connectionState.getInstanceLinks()
-                .stream()
-                .map(instanceLink -> instanceLink.getModelInstance().getUid())
-                .collect(Collectors.toSet());
-        for (String modelElementUid : modelElementUids) {
-            ImmutableList<IInstanceLink> instanceLinksForUid = connectionState.getInstanceLinks()
-                    .select(instanceLink -> instanceLink.getModelInstance().getUid().equals(modelElementUid));
+        // TODO previously, there was a selection of InstanceLinks with highest confidence for a modelElementUid
+        // Have to check, what that actually did and what the difference is
+        // Previously: multiple tracelinks for a single modelElement in a single sentence possible
+        // Now: Only one tracelink for one ModelElement(Id) in one sentence. Can be adapted by not using a set
 
-            IInstanceLink instanceLinkWithBestConfidence = instanceLinksForUid.get(0);
-            for (IInstanceLink instanceLink : instanceLinksForUid) {
-                if (instanceLink.getProbability() > instanceLinkWithBestConfidence.getProbability()) {
-                    instanceLinkWithBestConfidence = instanceLink;
-                }
-            }
-
-            var probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
-
-            for (INounMapping nameMapping : instanceLinkWithBestConfidence.getTextualInstance().getNameMappings()) {
-                for (IWord word : nameMapping.getWords()) {
-                    dataLines.add(new String[] { modelElementUid, Integer.toString(word.getSentenceNo() + 1), probability });
-                }
-            }
+        Set<Tracelink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
+        for (var tracelink : tracelinks) {
+            var modelElementUid = tracelink.getModelElementUid();
+            // sentence offset is 1 because real sentences are 1-indexed
+            var sentenceNumber = Integer.toString(tracelink.getSentenceNumber() + 1);
+            var probability = Double.toString(tracelink.getProbability());
+            dataLines.add(new String[] { modelElementUid, sentenceNumber, probability });
         }
+
         return dataLines.toImmutable();
     }
 

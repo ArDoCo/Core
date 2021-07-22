@@ -1,6 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
@@ -48,6 +50,19 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @return all instance links with a model instance containing the given name and type as list
      */
     ImmutableList<IInstanceLink> getInstanceLinks(String name, String type);
+
+    default ImmutableList<Tracelink> getTraceLinks() {
+        MutableList<Tracelink> tracelinks = Lists.mutable.empty();
+        for (var instanceLink : getInstanceLinks()) {
+            for (var nm : instanceLink.getTextualInstance().getNameMappings()) {
+                for (var word : nm.getWords()) {
+                    var tracelink = new Tracelink(instanceLink, instanceLink.getModelInstance(), word);
+                    tracelinks.add(tracelink);
+                }
+            }
+        }
+        return tracelinks.toImmutable();
+    }
 
     /**
      * Adds the connection of a recommended instance and a model instance to the state. If the model instance is already
