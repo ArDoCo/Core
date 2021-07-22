@@ -59,9 +59,6 @@ public class Pipeline {
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
 
-    private static final int EXIT_CODE_CMD = 1;
-    private static final int EXIT_CODE_IO = 2;
-
     public static void main(String[] args) {
         // Parameters:
         // -h : Help
@@ -77,7 +74,7 @@ public class Pipeline {
         } catch (IllegalArgumentException | ParseException e) {
             logger.error(e.getMessage());
             printUsage();
-            System.exit(EXIT_CODE_CMD);
+            return;
         }
 
         if (cmd.hasOption(CMD_HELP)) {
@@ -93,7 +90,7 @@ public class Pipeline {
         boolean providedTextOntology = cmd.hasOption(CMD_PROVIDED);
         if (!providedTextOntology && !cmd.hasOption(CMD_TEXT)) {
             printUsage();
-            System.exit(EXIT_CODE_CMD);
+            return;
         }
 
         try {
@@ -108,14 +105,14 @@ public class Pipeline {
             outputDir = ensureDir(cmd.getOptionValue(CMD_OUT_DIR), true);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-            System.exit(EXIT_CODE_IO);
+            return;
         }
 
         String name = cmd.getOptionValue(CMD_NAME);
 
         if (!name.matches("[A-Za-z0-9_]+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
-            System.exit(EXIT_CODE_CMD);
+            return;
         }
 
         run(name, inputText, inputModel, additionalConfigs, outputDir, providedTextOntology);
@@ -180,7 +177,7 @@ public class Pipeline {
                 annotatedText = textConnector.getAnnotatedText();
             } catch (IOException | LunaRunException | LunaInitException e) {
                 logger.error(e.getMessage(), e);
-                System.exit(EXIT_CODE_IO);
+                return null;
             }
 
             ontologyTextProvider.addText(annotatedText);

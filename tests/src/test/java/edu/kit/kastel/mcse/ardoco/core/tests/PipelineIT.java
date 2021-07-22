@@ -53,6 +53,22 @@ class PipelineIT {
         Pipeline.main(args);
     }
 
+    @Test
+    @DisplayName("Integration Test with wrong text")
+    void pipelineWithNonexistentTextIT() {
+        String[] args = { "-n", NAME, "-m", MODEL, "-t", "NONEXISTENT", "-o", OUTPUT };
+        Assertions.assertNotNull(args);
+        Pipeline.main(args);
+    }
+
+    @Test
+    @DisplayName("Integration Test with wrong text")
+    void pipelineWithNonexistentModelIT() {
+        String[] args = { "-n", NAME, "-m", "NONEXISTENT", "-t", TEXT, "-o", OUTPUT };
+        Assertions.assertNotNull(args);
+        Pipeline.main(args);
+    }
+
     @Disabled("Disabled for now. Enable, if you need to check if the Ontology provider and INDIRECT are returning the same")
     @Test
     @DisplayName("Compare INDIRECT and Ontology providers")
