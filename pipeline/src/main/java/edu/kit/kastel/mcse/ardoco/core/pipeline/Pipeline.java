@@ -55,8 +55,12 @@ public class Pipeline {
     private static final String CMD_NAME = "n";
     private static final String CMD_MODEL = "m";
     private static final String CMD_TEXT = "t";
+    private static final String CMD_PROVIDED = "p";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
+
+    private static final int EXIT_CODE_CMD = 1;
+    private static final int EXIT_CODE_IO = 2;
 
     public static void main(String[] args) {
         // Parameters:
@@ -73,7 +77,7 @@ public class Pipeline {
         } catch (IllegalArgumentException | ParseException e) {
             logger.error(e.getMessage());
             printUsage();
-            System.exit(1);
+            System.exit(EXIT_CODE_CMD);
         }
 
         if (cmd.hasOption(CMD_HELP)) {
@@ -86,8 +90,16 @@ public class Pipeline {
         File additionalConfigs = null;
         File outputDir = null;
 
+        boolean providedTextOntology = cmd.hasOption(CMD_PROVIDED);
+        if (!providedTextOntology && !cmd.hasOption(CMD_TEXT)) {
+            printUsage();
+            System.exit(EXIT_CODE_CMD);
+        }
+
         try {
-            inputText = ensureFile(cmd.getOptionValue(CMD_TEXT), false);
+            if (!providedTextOntology) {
+                inputText = ensureFile(cmd.getOptionValue(CMD_TEXT), false);
+            }
             inputModel = ensureFile(cmd.getOptionValue(CMD_MODEL), false);
             if (cmd.hasOption(CMD_CONF)) {
                 additionalConfigs = ensureFile(cmd.getOptionValue(CMD_CONF), false);
@@ -96,55 +108,48 @@ public class Pipeline {
             outputDir = ensureDir(cmd.getOptionValue(CMD_OUT_DIR), true);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-            System.exit(2);
+            System.exit(EXIT_CODE_IO);
         }
 
         String name = cmd.getOptionValue(CMD_NAME);
 
         if (!name.matches("[A-Za-z0-9_]+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
-            System.exit(1);
+            System.exit(EXIT_CODE_CMD);
         }
 
-        run(name, inputText, inputModel, additionalConfigs, outputDir);
+        run(name, inputText, inputModel, additionalConfigs, outputDir, providedTextOntology);
     }
 
     private static void printUsage() {
         logger.info(
                 """
                         Usage: java -jar ardoco-core-pipeline.jar
-
                         -n NAME_OF_THE_PROJECT (will be stored in the results)
-                        -m PATH_TO_THE_PCM_MODEL_AS_OWL (use Ecore2OWL to obtain PCM models as ontology)
-                        -t PATH_TO_PLAIN_TEXT
+                        -m PATH_TO_THE_OWL_ONTOLOGY (use Ecore2OWL to obtain PCM models as ontology)
                         -o PATH_TO_OUTPUT_FOLDER
 
-                        Optional Parameters:
+                        Text input parameters (one of them has to be provided):
+                        -t PATH_TO_PLAIN_TEXT
+                        -p (provided ontology contains the preprocessed text that should be used instead of the text)
 
+                        Optional Parameters:
                         -c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
 
                         """);
     }
 
-    private static void run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir) {
+    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean providedTextOntology) {
         long startTime = System.currentTimeMillis();
-
-        IText annotatedText = null;
-
-        logger.info("Preparing and processing text input.");
-        try {
-            ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
-            annotatedText = textConnector.getAnnotatedText();
-        } catch (IOException | LunaRunException | LunaInitException e) {
-            logger.error(e.getMessage(), e);
-            System.exit(1);
-        }
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
-        // add OntologyTextProvider
-        var ontologyTextProvider = OntologyTextProvider.get(ontoConnector);
-        ontologyTextProvider.addText(annotatedText);
+        logger.info("Preparing and processing text input.");
+        IText annotatedText = getAnnotatedText(inputText, providedTextOntology, ontoConnector);
+        if (annotatedText == null) {
+            logger.info("Could not preprocess or receive annotated text. Exiting.");
+            return null;
+        }
 
         logger.info("Processing model input");
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
@@ -162,6 +167,33 @@ public class Pipeline {
         printResultsInFiles(outputDir, name, data, duration);
         var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
         ontoConnector.save(ontoSaveFile);
+        return data;
+    }
+
+    private static IText getAnnotatedText(File inputText, boolean providedTextOntology, OntologyConnector ontoConnector) {
+        var ontologyTextProvider = OntologyTextProvider.get(ontoConnector);
+
+        IText annotatedText = null;
+        if (!providedTextOntology) {
+            try {
+                ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
+                annotatedText = textConnector.getAnnotatedText();
+            } catch (IOException | LunaRunException | LunaInitException e) {
+                logger.error(e.getMessage(), e);
+                System.exit(EXIT_CODE_IO);
+            }
+
+            ontologyTextProvider.addText(annotatedText);
+        } else {
+            try {
+                annotatedText = ontologyTextProvider.getAnnotatedText();
+            } catch (IllegalStateException e) {
+                logger.warn(e.getMessage());
+                return null;
+            }
+
+        }
+        return annotatedText;
     }
 
     private static String getOntologyOutputFile(File outputDir, String name) {
@@ -297,8 +329,13 @@ public class Pipeline {
         options.addOption(opt);
 
         opt = new Option(CMD_TEXT, "text", true, "path to the text file");
-        opt.setRequired(true);
+        opt.setRequired(false);
         opt.setType(String.class);
+        options.addOption(opt);
+
+        opt = new Option(CMD_PROVIDED, "provided", false, "flag to show that ontology has text already provided");
+        opt.setRequired(false);
+        opt.setType(Boolean.class);
         options.addOption(opt);
 
         opt = new Option(CMD_CONF, "conf", true, "path to the additional config file");

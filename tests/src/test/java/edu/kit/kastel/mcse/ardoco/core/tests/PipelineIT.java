@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -25,16 +26,34 @@ class PipelineIT {
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String TEXT = "src/test/resources/teastore.txt";
     private static final String MODEL = "src/test/resources/teastore.owl";
+    private static final String MODEL_W_TEXT = "src/test/resources/teastore_w_text.owl";
     private static final String NAME = "test_teastore";
 
     @Test
-    @DisplayName("Integration Test")
-    void pipelineIT() {
+    @DisplayName("Integration Test with provided text file")
+    void pipelineWithTextIT() {
         String[] args = { "-n", NAME, "-m", MODEL, "-t", TEXT, "-o", OUTPUT };
         Assertions.assertNotNull(args);
         Pipeline.main(args);
     }
 
+    @Test
+    @DisplayName("Integration Test without provided text file but with text in the ontology")
+    void pipelineWithProvidedTextOntologyIT() {
+        String[] args = { "-n", NAME, "-m", MODEL_W_TEXT, "-p", "-o", OUTPUT };
+        Assertions.assertNotNull(args);
+        Pipeline.main(args);
+    }
+
+    @Test
+    @DisplayName("Integration Test without provided text file and with wrong ontology")
+    void pipelineWithProvidedWrongTextOntologyIT() {
+        String[] args = { "-n", NAME, "-m", MODEL, "-p", "-o", OUTPUT };
+        Assertions.assertNotNull(args);
+        Pipeline.main(args);
+    }
+
+    @Disabled("Disabled for now. Enable, if you need to check if the Ontology provider and INDIRECT are returning the same")
     @Test
     @DisplayName("Compare INDIRECT and Ontology providers")
     void compareIT() {
@@ -68,7 +87,6 @@ class PipelineIT {
             Assertions.assertEquals(indirectWord.getLemma(), ontologyWord.getLemma());
             Assertions.assertEquals(indirectWord.getPosTag(), ontologyWord.getPosTag());
         }
-
     }
 
 }
