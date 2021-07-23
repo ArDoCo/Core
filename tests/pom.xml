@@ -6,11 +6,12 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
   <artifactId>tests</artifactId>
-  
+
   <properties>
     <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
-  
+
   <dependencies>
   			<dependency>
 				<groupId>${project.groupId}</groupId>
@@ -68,8 +69,8 @@
 				<version>${project.version}</version>
 			</dependency>
   </dependencies>
-  
-  
+
+
   <build>
     <plugins>
       <plugin>
@@ -91,6 +92,6 @@
 	  </plugin>
     </plugins>
   </build>
-  
-  
+
+
 </project>
