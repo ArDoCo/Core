@@ -19,8 +19,11 @@ java -jar ardoco-core-pipeline \
 	
 	-n NAME_OF_THE_PROJECT (will be stored in the results)
 	-m PATH_TO_THE_PCM_MODEL_AS_OWL (use Ecore2OWL to obtain PCM models as ontology)
-	-t PATH_TO_PLAIN_TEXT
 	-o PATH_TO_OUTPUT_FOLDER
+
+	Text input parameters (one of them has to be provided):
+    -t PATH_TO_PLAIN_TEXT
+    -p (provided ontology contains the preprocessed text that should be used instead of the text)
 	
 	Optional Parameters:
 	
