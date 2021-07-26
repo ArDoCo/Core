@@ -1,10 +1,15 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import java.util.Map;
 
-public interface INounMapping {
+import org.eclipse.collections.api.list.ImmutableList;
 
-    INounMapping createCopy();
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
+
+/**
+ * The Interface INounMapping defines the mapping .
+ */
+public interface INounMapping extends ICopyable<INounMapping> {
 
     /**
      * Splits all occurrences with a whitespace in it at their spaces and returns all parts that are similar to the
@@ -12,10 +17,10 @@ public interface INounMapping {
      *
      * @return all parts of occurrences (splitted at their spaces) that are similar to the reference.
      */
-    List<String> getRepresentativeComparables();
+    ImmutableList<String> getRepresentativeComparables();
 
     /**
-     * Sets the probability of the mapping
+     * Sets the probability of the mapping.
      *
      * @param probability probability to set on
      */
@@ -26,21 +31,21 @@ public interface INounMapping {
      *
      * @return all appearances of the mapping
      */
-    List<String> getOccurrences();
+    ImmutableList<String> getOccurrences();
 
     /**
-     * Returns all nodes contained by the mapping
+     * Returns all nodes contained by the mapping.
      *
      * @return all mapping nodes
      */
-    List<IWord> getWords();
+    ImmutableList<IWord> getWords();
 
     /**
      * Adds nodes to the mapping, if they are not already contained.
      *
      * @param nodes graph nodes to add to the mapping
      */
-    void addNodes(List<IWord> nodes);
+    void addNodes(ImmutableList<IWord> nodes);
 
     /**
      * Adds a node to the mapping, it its not already contained.
@@ -84,7 +89,7 @@ public interface INounMapping {
      *
      * @return sentence numbers of the occurrences of this mapping.
      */
-    List<Integer> getMappingSentenceNo();
+    ImmutableList<Integer> getMappingSentenceNo();
 
     /**
      * Updates the reference if the probability is high enough.
@@ -95,14 +100,14 @@ public interface INounMapping {
     void updateReference(String ref, double probability);
 
     /**
-     * Adds occurrences to the mapping
+     * Adds occurrences to the mapping.
      *
-     * @param occurrences2 occurrences to add
+     * @param occurrences occurrences to add
      */
-    void addOccurrence(List<String> occurrences2);
+    void addOccurrence(ImmutableList<String> occurrences);
 
     /**
-     * Copies all nodes and occurrences matching the occurrence to another mapping
+     * Copies all nodes and occurrences matching the occurrence to another mapping.
      *
      * @param occurrence     the occurrence to copy
      * @param createdMapping the other mapping
@@ -110,15 +115,37 @@ public interface INounMapping {
     void copyOccurrencesAndNodesTo(String occurrence, INounMapping createdMapping);
 
     /**
-     * Updates the probability
+     * Updates the probability.
      *
      * @param newProbability the probability to update with.
      */
     void updateProbability(double newProbability);
 
+    /**
+     * Gets the probability for name.
+     *
+     * @return the probability for name
+     */
     double getProbabilityForName();
 
+    /**
+     * Gets the probability for type.
+     *
+     * @return the probability for type
+     */
     double getProbabilityForType();
 
+    /**
+     * Gets the probability for nort.
+     *
+     * @return the probability for nort
+     */
     double getProbabilityForNort();
+
+    /**
+     * Gets the distribution of all mapping kinds.
+     *
+     * @return the distribution
+     */
+    Map<MappingKind, Double> getDistribution();
 }

@@ -1,17 +1,27 @@
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
-import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelException;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 
+/**
+ * The Interface IModelConnector defines the connection to a computational model.
+ */
 public interface IModelConnector {
 
-	// TODO: Model as Input?
+    /**
+     * Gets the instances of the model.
+     *
+     * @return the instances
+     */
+    ImmutableList<IModelInstance> getInstances();
 
-	List<IInstance> getInstances();
-
-	List<IRelation> getRelations(List<IInstance> instances) throws InconsistentModelException;
+    /**
+     * Gets the relations from the model.
+     *
+     * @return the relations
+     */
+    ImmutableList<IModelRelation> getRelations();
 
 }

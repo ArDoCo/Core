@@ -1,51 +1,55 @@
 package edu.kit.kastel.mcse.ardoco.core.model.provider;
 
-import java.util.List;
 import java.util.Map;
 
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelException;
 
 /**
- * The model extractor extracts the instances and relations via an connector.
- * The extracted items are stored in a model extraction state.
+ * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
+ * extraction state.
  *
  * @author Sophie
  *
  */
-public class ModelProvider implements IModule<IModelState> {
+public final class ModelProvider implements IExecutionStage {
 
-	protected IModelState modelExtractionState;
-	private IModelConnector modelConnector;
+    private IModelState modelExtractionState;
+    private IModelConnector modelConnector;
 
-	public ModelProvider(IModelConnector modelConnector) throws InconsistentModelException {
-		this.modelConnector = modelConnector;
-	}
+    /**
+     * Instantiates a new model provider.
+     *
+     * @param modelConnector the model connector
+     */
+    public ModelProvider(IModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
+    }
 
-	@Override
-	public IModelState getState() throws InconsistentModelException {
-		return modelExtractionState;
-	}
+    @Override
+    public AgentDatastructure getBlackboard() {
+        return new AgentDatastructure(null, null, modelExtractionState, null, null);
+    }
 
-	// TODO: poss. enabling multiple models as input
-	@Override
-	public void exec() {
+    @Override
+    public void exec() {
+        ImmutableList<IModelInstance> instances = modelConnector.getInstances();
+        ImmutableList<IModelRelation> relations = modelConnector.getRelations();
 
-		List<IInstance> instances = modelConnector.getInstances();
-		List<IRelation> relations = modelConnector.getRelations(instances);
+        modelExtractionState = new ModelExtractionState(instances, relations);
+    }
 
-		modelExtractionState = new ModelExtractionState(instances, relations);
-
-	}
-
-	@Override
-	public IModule<IModelState> create(IModelState data, Map<String, String> configs) {
-		return new ModelProvider(modelConnector);
-	}
+    @Override
+    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
+        // TODO Sophie: Check whether it is ok that we do not use the data :)
+        return new ModelProvider(modelConnector);
+    }
 
 }

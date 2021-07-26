@@ -1,24 +1,27 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
-public interface IRecommendedInstance {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRecommendedInstance createCopy();
+/**
+ * The Interface IRecommendedInstance defines the aggregation of noun mappings to one recommendation.
+ */
+public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
 
     /**
      * Returns the involved name mappings.
      *
      * @return the name mappings of this recommended instance
      */
-    List<INounMapping> getNameMappings();
+    ImmutableList<INounMapping> getNameMappings();
 
     /**
      * Returns the involved type mappings.
      *
      * @return the type mappings of this recommended instance
      */
-    List<INounMapping> getTypeMappings();
+    ImmutableList<INounMapping> getTypeMappings();
 
     /**
      * Returns the probability being an instance of the model.
@@ -32,7 +35,7 @@ public interface IRecommendedInstance {
      *
      * @param nameMappings the name mappings to remove
      */
-    void removeNounNodeMappingsFromName(List<INounMapping> nameMappings);
+    void removeNounNodeMappingsFromName(ImmutableList<INounMapping> nameMappings);
 
     /**
      * Adds a name and type mapping to this recommended instance.
@@ -48,7 +51,7 @@ public interface IRecommendedInstance {
      * @param nameMapping the name mappings to add
      * @param typeMapping the type mappings to add
      */
-    void addMappings(List<INounMapping> nameMapping, List<INounMapping> typeMapping);
+    void addMappings(ImmutableList<INounMapping> nameMapping, ImmutableList<INounMapping> typeMapping);
 
     /**
      * Adds a name mapping to this recommended instance.

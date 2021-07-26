@@ -1,8 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-public interface IInstanceLink {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IInstanceLink createCopy();
+/**
+ * The Interface IInstanceLink defines a link between an {@link IRecommendedInstance} and an {@link IModelInstance}.
+ */
+public interface IInstanceLink extends ICopyable<IInstanceLink> {
 
     /**
      * Returns the probability of the correctness of this link.
@@ -30,7 +33,7 @@ public interface IInstanceLink {
      *
      * @return the extracted instance
      */
-    IInstance getModelInstance();
+    IModelInstance getModelInstance();
 
     /**
      * Returns all occurrences of all recommended instance names as string.

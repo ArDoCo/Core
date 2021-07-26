@@ -1,17 +1,20 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
-public interface IRelationMapping {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRelationMapping createCopy();
+/**
+ * The Interface IRelationMapping defines a marker in the text that represents a possible relation.
+ */
+public interface IRelationMapping extends ICopyable<IRelationMapping> {
 
     /**
      * Adds more NounMappings to the relation.
      *
      * @param mappings more noun mappings to add.
      */
-    void addMappingsToRelation(List<? extends INounMapping> mappings);
+    void addMappingsToRelation(ImmutableList<INounMapping> mappings);
 
     /**
      * Sets the preposition of the node.
@@ -32,7 +35,7 @@ public interface IRelationMapping {
      *
      * @return a list of all ends points of the relation
      */
-    List<? extends INounMapping> getOccurrenceNodes();
+    ImmutableList<INounMapping> getOccurrenceNodes();
 
     /**
      * Returns the preposition of the relation.

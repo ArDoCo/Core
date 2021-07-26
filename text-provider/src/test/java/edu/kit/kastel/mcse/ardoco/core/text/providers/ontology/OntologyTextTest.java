@@ -49,8 +49,8 @@ class OntologyTextTest {
 
     @Test
     @DisplayName("Test retrieval of start node")
-    void getStartNodeTest() {
-        var startNode = ontologyText.getStartNode();
+    void getFirstWordTest() {
+        var startNode = ontologyText.getFirstWord();
         Assertions.assertNotNull(startNode);
 
         var startNodeText = startNode.getText();

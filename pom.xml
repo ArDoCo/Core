@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>core</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>ArDoCo (Core) - The Consistency Analyzer</name>
 
@@ -96,7 +96,7 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>text-provider-indirect</artifactId>
+				<artifactId>text-provider-stanford</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -211,7 +211,7 @@
 	<modules>
 		<module>text-extractor</module>
 		<module>text-provider</module>
-		<module>text-provider-indirect</module>
+		<module>text-provider-stanford</module>
 		<module>recommendation-generator</module>
 		<module>data-structures</module>
 		<module>pipeline</module>

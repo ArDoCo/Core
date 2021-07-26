@@ -9,15 +9,18 @@ import org.apache.jena.ontology.OntProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.Instance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelException;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 
+/**
+ * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.
+ */
 public class PcmOntologyModelConnector implements IModelConnector {
     private static final String ENTITY_NAME_PROPERTY = "entityName_-_NamedElement";
 
@@ -29,6 +32,8 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private OntologyConnector ontologyConnector;
 
     /**
+     * Instantiates a new pcm ontology model connector.
+     *
      * @param ontologyUrl Can be a local URL (path to the ontology) or a remote URL
      */
     public PcmOntologyModelConnector(String ontologyUrl) {
@@ -40,18 +45,18 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     @Override
-    public List<IInstance> getInstances() {
-        MutableList<IInstance> instances = Lists.mutable.empty();
+    public ImmutableList<IModelInstance> getInstances() {
+        MutableList<IModelInstance> instances = Lists.mutable.empty();
 
         for (String type : TYPES) {
             instances.addAll(getInstancesOfType(type));
         }
 
-        return instances;
+        return instances.toImmutable();
     }
 
-    private List<IInstance> getInstancesOfType(String type) {
-        List<IInstance> instances = Lists.mutable.empty();
+    private List<IModelInstance> getInstancesOfType(String type) {
+        List<IModelInstance> instances = Lists.mutable.empty();
         Optional<OntClass> optionalClass = ontologyConnector.getClass(type);
         if (optionalClass.isEmpty()) {
             return instances;
@@ -86,9 +91,9 @@ public class PcmOntologyModelConnector implements IModelConnector {
     }
 
     @Override
-    public List<IRelation> getRelations(List<IInstance> instances) throws InconsistentModelException {
+    public ImmutableList<IModelRelation> getRelations() {
         logger.warn("This method is not yet implemented and will return an empty list!");
-        return Lists.mutable.empty();
+        return Lists.immutable.empty();
     }
 
 }

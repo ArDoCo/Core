@@ -91,7 +91,7 @@ class PipelineIT {
         var indirectWords = indirectText.getWords();
         var ontologyWords = ontologyText.getWords();
         Assertions.assertEquals(indirectWords.size(), ontologyWords.size());
-        Assertions.assertEquals(indirectText.getStartNode().getText(), ontologyText.getStartNode().getText());
+        Assertions.assertEquals(indirectText.getFirstWord().getText(), ontologyText.getFirstWord().getText());
 
         for (var i = 0; i < indirectWords.size(); i++) {
             var indirectWord = indirectWords.get(i);
