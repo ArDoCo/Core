@@ -37,6 +37,7 @@ class PipelineIT {
         Pipeline.main(args);
     }
 
+    @Disabled("Same integration test is done within TracelinkIT")
     @Test
     @DisplayName("Integration Test without provided text file but with text in the ontology")
     void pipelineWithProvidedTextOntologyIT() {

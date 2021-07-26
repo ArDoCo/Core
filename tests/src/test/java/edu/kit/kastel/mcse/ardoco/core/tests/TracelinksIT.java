@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
 @RunWith(JUnitPlatform.class)
 class TracelinksIT {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String MODEL_W_TEXT = "src/test/resources/teastore_w_text.owl";
