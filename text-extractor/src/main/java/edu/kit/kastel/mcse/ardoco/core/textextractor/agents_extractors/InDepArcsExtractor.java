@@ -82,7 +82,7 @@ public class InDepArcsExtractor extends TextExtractor {
 
 			if (DependencyTag.APPOS.equals(depTag) || DependencyTag.NSUBJ.equals(depTag) || DependencyTag.POSS.equals(depTag)) {
 				textState.addNort(n, n.getText(), probability);
-			} else if (DependencyTag.DOBJ.equals(depTag) || DependencyTag.IOBJ.equals(depTag) || DependencyTag.NMOD.equals(depTag)
+			} else if (DependencyTag.OBJ.equals(depTag) || DependencyTag.IOBJ.equals(depTag) || DependencyTag.NMOD.equals(depTag)
 					|| DependencyTag.NSUBJPASS.equals(depTag) || DependencyTag.POBJ.equals(depTag)) {
 				if (WordHelper.hasIndirectDeterminerAsPreWord(n)) {
 					textState.addType(n, n.getText(), probability);

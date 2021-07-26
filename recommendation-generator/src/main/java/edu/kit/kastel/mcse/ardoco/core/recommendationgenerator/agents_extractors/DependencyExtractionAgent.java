@@ -43,17 +43,80 @@ public class DependencyExtractionAgent extends DependencyAgent {
 
     @Override
     public void exec() {
-        DependencyType dt = super.getDependencyType();
-        logger.info("HELLO Dependency " + dt.name() + " - DependencyExtractionAgent");
-        for (IWord word : text.getWords()) {
-            System.out.print(word.getText() + " ");
-        }
-        System.out.println();
-
-        for (DependencyExtractor extractor : extractors) {
-            for (IRecommendedInstance rec : recommendationState.getRecommendedInstances()) {
-                extractor.exec(rec);
+//        DependencyType dt = super.getDependencyType();
+//        logger.info("HELLO Dependency " + dt.name() + " - DependencyExtractionAgent");
+//        for (IWord word : text.getWords()) {
+//            System.out.print(word.getText() + " ");
+//        }
+//        System.out.println();
+//
+//        for (DependencyExtractor extractor : extractors) {
+//            for (IRecommendedInstance rec : recommendationState.getRecommendedInstances()) {
+//                extractor.exec(rec);
+//            }
+//        }
+        List<IWord> subs;
+        List<IWord> obs;
+        List<IWord> verbs;
+        List<IWord> deps;
+        for (IWord word : this.text.getWords()) {
+            String words = "";
+            for (DependencyTag tag : DependencyTag.values()) {
+                deps = word.getWordsThatAreDependencyOfThis(tag);
+                if (deps.size() > 0) {
+                    words += tag.name() + "OF ";
+                    for (IWord depOfWord : deps) {
+                        words += depOfWord.getText() + " ";
+                    }
+                }
+                deps = word.getWordsThatAreDependentOnThis(tag);
+                if (deps.size() > 0) {
+                    words += tag.name() + "ON ";
+                    for (IWord depOnWord : deps) {
+                        words += depOnWord + " ";
+                    }
+                }
             }
+            System.out.println("Deps on word " + word.getText() + ":\n" + words);
+//            if (word.isNoun()) {
+//
+//            }
+//            if (word.isVerb()) {
+//                verbs = getVerb(word);
+//                //subs = getSubject(word);
+//                //obs = getObject(word);
+//                if (verbs.size() > 0) {
+//                    System.out.println("Got relation");
+//                    String out = word.getText() + " " + listToString(verbs);
+//                    System.out.println(out);
+//                }  
+//            }
         }
+    }
+
+    private List<IWord> getSubject(IWord verb) {
+        List<IWord> subjects = verb.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ);
+        subjects.addAll(verb.getWordsThatAreDependencyOfThis(DependencyTag.NSUBJ));
+
+        return subjects;
+    }
+
+    private List<IWord> getObject(IWord verb) {
+        List<IWord> objects = verb.getWordsThatAreDependentOnThis(DependencyTag.OBJ);
+        objects.addAll(verb.getWordsThatAreDependencyOfThis(DependencyTag.OBJ));
+
+        return objects;
+    }
+
+    private List<IWord> getVerb(IWord noun) {
+        return noun.getWordsThatAreDependentOnThis(DependencyTag.AGENT);
+    }
+
+    private String listToString(List<IWord> text) {
+        StringBuilder str = new StringBuilder();
+        for (IWord word : text) {
+            str.append(word.getText()).append(" ");
+        }
+        return str.toString();
     }
 }

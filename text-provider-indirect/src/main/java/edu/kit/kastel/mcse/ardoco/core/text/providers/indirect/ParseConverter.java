@@ -164,6 +164,28 @@ public class ParseConverter {
             }
             return parent.getWords().get(position + 1);
         }
+
+        public boolean isVerb() {
+            return posTag.getTag().startsWith("VB") ||
+                    posTag.getTag().startsWith("MD");
+        }
+
+        public boolean isAdjective() {
+            return posTag.getTag().startsWith("JJ");
+        }
+
+        public boolean isAdverb() {
+            return posTag.getTag().startsWith("RB");
+        }
+
+        public boolean isNoun() {
+            return posTag.getTag().startsWith("NN");
+        }
+
+        public boolean isPronoun() {
+            return posTag.getTag().startsWith("PR") ||
+                    posTag.getTag().startsWith("WP");
+        }
     }
 
     private static final class Text implements IText {

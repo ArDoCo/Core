@@ -20,15 +20,14 @@ public enum DependencyTag {
 
     /**
      * The possession modifier relation holds between the head of an NP and its possessive determiner,
-     * or agenitive ’s complement.
+     * or agenitive's complement.
      */
     POSS,
 
     /**
      * The direct object of a VP is the noun phrase which is the (accusative) object of the verb.
      */
-    DOBJ,
-
+    OBJ,
     /**
      * The indirect object of a VP is the noun phrase which is the (dative) object of the verb.
      */

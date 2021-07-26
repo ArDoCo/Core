@@ -22,4 +22,13 @@ public interface IWord {
 
     List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag);
 
+    public boolean isVerb();
+
+    public boolean isAdjective();
+
+    public boolean isAdverb();
+
+    public boolean isNoun();
+
+    public boolean isPronoun();
 }
