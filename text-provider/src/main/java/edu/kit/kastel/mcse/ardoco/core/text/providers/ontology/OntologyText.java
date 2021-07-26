@@ -1,11 +1,12 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -57,7 +58,7 @@ public class OntologyText implements IText {
     }
 
     @Override
-    public IWord getStartNode() {
+    public IWord getFirstWord() {
         var wordIndividualList = getOrderedOntologyListOfText();
         return OntologyWord.get(ontologyConnector, wordIndividualList.get(0));
     }
@@ -68,8 +69,8 @@ public class OntologyText implements IText {
     }
 
     @Override
-    public List<IWord> getWords() {
-        var words = new ArrayList<IWord>();
+    public ImmutableList<IWord> getWords() {
+        MutableList<IWord> words = Lists.mutable.empty();
         var textOlo = getOrderedOntologyListOfText();
 
         var wordIndividualList = textOlo.toList();
@@ -77,7 +78,7 @@ public class OntologyText implements IText {
             var word = OntologyWord.get(ontologyConnector, wordIndividual);
             words.add(word);
         }
-        return words;
+        return words.toImmutable();
     }
 
     private OrderedOntologyList getOrderedOntologyListOfText() {

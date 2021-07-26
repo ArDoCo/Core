@@ -1,10 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
@@ -22,14 +23,14 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
  */
 public class RecommendationState implements IRecommendationState {
 
-    private List<IRecommendedInstance> recommendedInstances;
-    private List<IRecommendedRelation> recommendedRelations;
+    private MutableList<IRecommendedInstance> recommendedInstances;
+    private MutableList<IRecommendedRelation> recommendedRelations;
 
     @Override
     public IRecommendationState createCopy() {
         var recommendationState = new RecommendationState();
-        recommendationState.recommendedInstances = recommendedInstances.stream().map(IRecommendedInstance::createCopy).collect(Collectors.toList());
-        recommendationState.recommendedRelations = recommendedRelations.stream().map(IRecommendedRelation::createCopy).collect(Collectors.toList());
+        recommendationState.recommendedInstances = recommendedInstances.collect(IRecommendedInstance::createCopy);
+        recommendationState.recommendedRelations = recommendedRelations.collect(IRecommendedRelation::createCopy);
         return recommendationState;
     }
 
@@ -37,8 +38,8 @@ public class RecommendationState implements IRecommendationState {
      * Creates a new recommendation state.
      */
     public RecommendationState() {
-        recommendedInstances = new ArrayList<>();
-        recommendedRelations = new ArrayList<>();
+        recommendedInstances = Lists.mutable.empty();
+        recommendedRelations = Lists.mutable.empty();
     }
 
     /**
@@ -47,8 +48,8 @@ public class RecommendationState implements IRecommendationState {
      * @return all recommended instances as list
      */
     @Override
-    public List<IRecommendedInstance> getRecommendedInstances() {
-        return new ArrayList<>(recommendedInstances);
+    public ImmutableList<IRecommendedInstance> getRecommendedInstances() {
+        return Lists.immutable.withAll(recommendedInstances);
     }
 
     /**
@@ -57,8 +58,8 @@ public class RecommendationState implements IRecommendationState {
      * @return all recommended relations as list
      */
     @Override
-    public List<IRecommendedRelation> getRecommendedRelations() {
-        return recommendedRelations;
+    public ImmutableList<IRecommendedRelation> getRecommendedRelations() {
+        return recommendedRelations.toImmutable();
     }
 
     /**
@@ -72,15 +73,15 @@ public class RecommendationState implements IRecommendationState {
      * @param occurrences    nodes representing the relation
      */
     @Override
-    public void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, List<IRecommendedInstance> otherInstances,
-            double probability, List<IWord> occurrences) {
+    public void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, ImmutableList<IRecommendedInstance> otherInstances,
+            double probability, ImmutableList<IWord> occurrences) {
 
         IRecommendedRelation rrel = new RecommendedRelation(name, ri1, ri2, otherInstances, probability, occurrences);
-        List<IRecommendedInstance> ris = new ArrayList<>(List.of(ri1, ri2));
-        ris.addAll(otherInstances);
+        MutableList<IRecommendedInstance> ris = Lists.mutable.with(ri1, ri2);
+        ris.addAll(otherInstances.castToCollection());
         Optional<IRecommendedRelation> recr = recommendedRelations.stream()
                 .filter(//
-                        r -> r.getRelationInstances().containsAll(ris) && ris.containsAll(r.getRelationInstances()))
+                        r -> r.getRelationInstances().containsAll(ris) && ris.containsAll(r.getRelationInstances().castToCollection()))
                 .findAny();
 
         if (recr.isPresent()) {
@@ -90,7 +91,7 @@ public class RecommendationState implements IRecommendationState {
         }
     }
 
-    private void updateRecommendedRelation(IRecommendedRelation recr, List<IWord> occurrences, double probability) {
+    private void updateRecommendedRelation(IRecommendedRelation recr, ImmutableList<IWord> occurrences, double probability) {
         recr.addOccurrences(occurrences);
         recr.updateProbability(probability);
     }
@@ -103,9 +104,9 @@ public class RecommendationState implements IRecommendationState {
      * @param nameMappings name mappings representing that recommended instance
      */
     @Override
-    public void addRecommendedInstanceJustName(String name, double probability, List<INounMapping> nameMappings) {
+    public void addRecommendedInstanceJustName(String name, double probability, ImmutableList<INounMapping> nameMappings) {
 
-        this.addRecommendedInstance(name, "", probability, nameMappings, new ArrayList<>());
+        this.addRecommendedInstance(name, "", probability, nameMappings, Lists.immutable.empty());
 
     }
 
@@ -120,11 +121,12 @@ public class RecommendationState implements IRecommendationState {
      * @return the added recommended instance
      */
     @Override
-    public IRecommendedInstance addRecommendedInstance(String name, String type, double probability, List<INounMapping> nameMappings,
-            List<INounMapping> typeMappings) {
+    public IRecommendedInstance addRecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameMappings,
+            ImmutableList<INounMapping> typeMappings) {
 
-        var recommendedInstance = new RecommendedInstance(name, type, probability, new ArrayList<>(new HashSet<>(nameMappings)),
-                new ArrayList<>(new HashSet<>(typeMappings)));
+        var recommendedInstance = new RecommendedInstance(name, type, probability, //
+                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),
+                Lists.immutable.withAll(new HashSet<>(typeMappings.castToCollection())));
         this.addRecommendedInstance(recommendedInstance);
 
         return recommendedInstance;
@@ -139,12 +141,8 @@ public class RecommendationState implements IRecommendationState {
      */
     private void addRecommendedInstance(IRecommendedInstance ri) {
 
-        List<IRecommendedInstance> risWithExactName = recommendedInstances.stream()
-                .filter(r -> r.getName().contentEquals(ri.getName()))
-                .collect(Collectors.toList());
-        List<IRecommendedInstance> risWithExactNameAndType = risWithExactName.stream()
-                .filter(r -> r.getType().contentEquals(ri.getType()))
-                .collect(Collectors.toList());
+        ImmutableList<IRecommendedInstance> risWithExactName = recommendedInstances.select(r -> r.getName().contentEquals(ri.getName())).toImmutable();
+        ImmutableList<IRecommendedInstance> risWithExactNameAndType = risWithExactName.select(r -> r.getType().contentEquals(ri.getType()));
 
         if (recommendedInstances.contains(ri)) {
             return;
@@ -159,7 +157,7 @@ public class RecommendationState implements IRecommendationState {
 
     }
 
-    private void processRecommendedInstancesWithNoExactNameAndType(IRecommendedInstance ri, List<IRecommendedInstance> risWithExactName) {
+    private void processRecommendedInstancesWithNoExactNameAndType(IRecommendedInstance ri, ImmutableList<IRecommendedInstance> risWithExactName) {
         if (risWithExactName.isEmpty()) {
             recommendedInstances.add(ri);
         } else {
@@ -193,8 +191,8 @@ public class RecommendationState implements IRecommendationState {
      * @return the list of recommended instances with the mapping as type.
      */
     @Override
-    public List<IRecommendedInstance> getRecommendedInstancesByTypeMapping(INounMapping mapping) {
-        return recommendedInstances.stream().filter(sinstance -> sinstance.getTypeMappings().contains(mapping)).collect(Collectors.toList());
+    public ImmutableList<IRecommendedInstance> getRecommendedInstancesByTypeMapping(INounMapping mapping) {
+        return recommendedInstances.select(sinstance -> sinstance.getTypeMappings().contains(mapping)).toImmutable();
     }
 
     /**
@@ -204,10 +202,10 @@ public class RecommendationState implements IRecommendationState {
      * @return the list of recommended instances with the mapping.
      */
     @Override
-    public List<IRecommendedInstance> getAnyRecommendedInstancesByMapping(INounMapping mapping) {
-        return recommendedInstances.stream()
-                .filter(sinstance -> sinstance.getTypeMappings().contains(mapping) || sinstance.getNameMappings().contains(mapping))
-                .collect(Collectors.toList());
+    public ImmutableList<IRecommendedInstance> getAnyRecommendedInstancesByMapping(INounMapping mapping) {
+        return recommendedInstances //
+                .select(sinstance -> sinstance.getTypeMappings().contains(mapping) || sinstance.getNameMappings().contains(mapping))
+                .toImmutable();
     }
 
     /**
@@ -217,8 +215,8 @@ public class RecommendationState implements IRecommendationState {
      * @return the list of recommended instances with that name.
      */
     @Override
-    public List<IRecommendedInstance> getRecommendedInstancesByName(String name) {
-        return recommendedInstances.stream().filter(ri -> ri.getName().toLowerCase().contentEquals(name.toLowerCase())).collect(Collectors.toList());
+    public ImmutableList<IRecommendedInstance> getRecommendedInstancesByName(String name) {
+        return recommendedInstances.select(ri -> ri.getName().toLowerCase().contentEquals(name.toLowerCase())).toImmutable();
     }
 
     /**
@@ -228,15 +226,15 @@ public class RecommendationState implements IRecommendationState {
      * @return the list of recommended instances with a similar name.
      */
     @Override
-    public List<IRecommendedInstance> getRecommendedInstancesBySimilarName(String name) {
-        List<IRecommendedInstance> ris = new ArrayList<>();
+    public ImmutableList<IRecommendedInstance> getRecommendedInstancesBySimilarName(String name) {
+        MutableList<IRecommendedInstance> ris = Lists.mutable.empty();
         for (IRecommendedInstance ri : recommendedInstances) {
             if (SimilarityUtils.areWordsSimilar(ri.getName(), name)) {
                 ris.add(ri);
             }
         }
 
-        return ris;
+        return ris.toImmutable();
     }
 
     /**
@@ -246,8 +244,8 @@ public class RecommendationState implements IRecommendationState {
      * @return the list of recommended instances with that name and type
      */
     @Override
-    public List<IRecommendedInstance> getRecommendedInstancesByType(String type) {
-        return recommendedInstances.stream().filter(ri -> ri.getType().toLowerCase().contentEquals(type.toLowerCase())).collect(Collectors.toList());
+    public ImmutableList<IRecommendedInstance> getRecommendedInstancesByType(String type) {
+        return recommendedInstances.select(ri -> ri.getType().toLowerCase().contentEquals(type.toLowerCase())).toImmutable();
     }
 
     /**
@@ -257,8 +255,8 @@ public class RecommendationState implements IRecommendationState {
      * @return the list of recommended instances with a similar type.
      */
     @Override
-    public List<IRecommendedInstance> getRecommendedInstancesBySimilarType(String type) {
-        return recommendedInstances.stream().filter(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).collect(Collectors.toList());
+    public ImmutableList<IRecommendedInstance> getRecommendedInstancesBySimilarType(String type) {
+        return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutable();
     }
 
 }

@@ -10,6 +10,9 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.rdf.model.Resource;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -196,9 +199,9 @@ public class OntologyWord implements IWord {
      * Outgoing dependencies
      */
     @Override
-    public List<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
+    public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
         if (dependencyTag == null) {
-            return new ArrayList<>();
+            return Lists.immutable.empty();
         }
         List<Resource> dependencies = ontologyConnector.getSubjectsOf(dependencySourceProperty, wordIndividual);
         var filteredDependencies = filterDependencyResourcesByType(dependencyTag, dependencies);
@@ -210,9 +213,9 @@ public class OntologyWord implements IWord {
      * Incoming dependencies
      */
     @Override
-    public List<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+    public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
         if (dependencyTag == null) {
-            return new ArrayList<>();
+            return Lists.immutable.empty();
         }
         List<Resource> dependencies = ontologyConnector.getSubjectsOf(dependencyTargetProperty, wordIndividual);
         var filteredDependencies = filterDependencyResourcesByType(dependencyTag, dependencies);
@@ -220,12 +223,12 @@ public class OntologyWord implements IWord {
         return createWordsFromIndividuals(targets);
     }
 
-    private List<IWord> createWordsFromIndividuals(List<Individual> individuals) {
-        var words = new ArrayList<IWord>();
+    private ImmutableList<IWord> createWordsFromIndividuals(List<Individual> individuals) {
+        MutableList<IWord> words = Lists.mutable.empty();
         for (var individual : individuals) {
             words.add(OntologyWord.get(ontologyConnector, individual));
         }
-        return words;
+        return words.toImmutable();
     }
 
     private List<Individual> extractIndividualsInRelation(List<Individual> filteredDependencies, OntProperty property) {

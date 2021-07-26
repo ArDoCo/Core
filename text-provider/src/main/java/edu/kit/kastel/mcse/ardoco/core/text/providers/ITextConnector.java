@@ -2,7 +2,16 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 
+/**
+ * The Interface ITextConnector defines a provider for annotated texts.
+ */
+@FunctionalInterface
 public interface ITextConnector {
 
-	IText getAnnotatedText();
+    /**
+     * Gets the annotated text.
+     *
+     * @return the annotated text
+     */
+    IText getAnnotatedText();
 }

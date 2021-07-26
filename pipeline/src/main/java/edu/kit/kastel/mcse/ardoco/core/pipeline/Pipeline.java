@@ -21,29 +21,31 @@ import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGeneratorConfig;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents_extractors.GenericConnectionConfig;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.exception.InconsistentModelException;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGeneratorConfig;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
+import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractorConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.agents_extractors.GenericTextConfig;
 
-public class Pipeline {
+/**
+ * The Pipeline defines a simple CLI for execution of the agents.
+ */
+public final class Pipeline {
 
     private Pipeline() {
         throw new IllegalAccessError();
@@ -59,6 +61,11 @@ public class Pipeline {
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
     public static void main(String[] args) {
         // Parameters:
         // -h : Help
@@ -104,7 +111,7 @@ public class Pipeline {
 
             outputDir = ensureDir(cmd.getOptionValue(CMD_OUT_DIR), true);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage());
             return;
         }
 
@@ -214,14 +221,14 @@ public class Pipeline {
                 data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
     }
 
-    private static IModelState runModelExtractor(IModelConnector modelConnector) throws InconsistentModelException {
-        IModule<IModelState> hardCodedModelExtractor = new ModelProvider(modelConnector);
+    private static IModelState runModelExtractor(IModelConnector modelConnector) {
+        IExecutionStage hardCodedModelExtractor = new ModelProvider(modelConnector);
         hardCodedModelExtractor.exec();
-        return hardCodedModelExtractor.getState();
+        return hardCodedModelExtractor.getBlackboard().getModelState();
     }
 
     private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {
-        IModule<AgentDatastructure> textModule = new TextExtractor(data);
+        IExecutionStage textModule = new TextExtractor(data);
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();
             Configuration.mergeConfigToMap(configs, TextExtractorConfig.DEFAULT_CONFIG);
@@ -231,11 +238,11 @@ public class Pipeline {
         }
 
         textModule.exec();
-        return textModule.getState();
+        return textModule.getBlackboard();
     }
 
     private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data, File additionalConfigs) {
-        IModule<AgentDatastructure> recommendationModule = new RecommendationGenerator(data);
+        IExecutionStage recommendationModule = new RecommendationGenerator(data);
 
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();
@@ -246,11 +253,11 @@ public class Pipeline {
         }
 
         recommendationModule.exec();
-        return recommendationModule.getState();
+        return recommendationModule.getBlackboard();
     }
 
     private static AgentDatastructure runConnectionGenerator(AgentDatastructure data, File additionalConfigs) {
-        IModule<AgentDatastructure> connectionGenerator = new ConnectionGenerator(data);
+        IExecutionStage connectionGenerator = new ConnectionGenerator(data);
 
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();
@@ -261,7 +268,7 @@ public class Pipeline {
         }
 
         connectionGenerator.exec();
-        return connectionGenerator.getState();
+        return connectionGenerator.getBlackboard();
     }
 
     /**

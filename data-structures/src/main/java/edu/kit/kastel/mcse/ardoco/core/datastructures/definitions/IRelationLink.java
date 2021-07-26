@@ -1,8 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-public interface IRelationLink {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRelationLink createCopy();
+/**
+ * The Interface IRelationLink defines a link between a model relation and a texual element.
+ */
+public interface IRelationLink extends ICopyable<IRelationLink> {
 
     /**
      * Returns the probability of the correctness of this link.
@@ -30,6 +33,6 @@ public interface IRelationLink {
      *
      * @return the relation of the model
      */
-    IRelation getModelRelation();
+    IModelRelation getModelRelation();
 
 }

@@ -1,9 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelationMapping;
@@ -18,17 +19,17 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
  */
 public class RelationMapping implements IRelationMapping {
 
-    private List<INounMapping> relationNodes;
+    private MutableList<INounMapping> relationNodes;
     private double probability;
     private IWord preposition;
 
     @Override
     public IRelationMapping createCopy() {
-        return new RelationMapping(relationNodes.stream().map(INounMapping::createCopy).collect(Collectors.toList()), probability, preposition);
+        return new RelationMapping(relationNodes.collect(INounMapping::createCopy).toImmutable(), probability, preposition);
     }
 
-    private RelationMapping(List<INounMapping> relationNodes, double probability, IWord preposition) {
-        this.relationNodes = relationNodes;
+    private RelationMapping(ImmutableList<INounMapping> relationNodes, double probability, IWord preposition) {
+        this.relationNodes = relationNodes.toList();
         this.preposition = preposition;
         this.probability = probability;
     }
@@ -41,9 +42,7 @@ public class RelationMapping implements IRelationMapping {
      * @param prob  probability for being a relation
      */
     public RelationMapping(INounMapping node1, INounMapping node2, double prob) {
-        relationNodes = new ArrayList<>();
-        relationNodes.add(node1);
-        relationNodes.add(node2);
+        relationNodes = Lists.mutable.with(node1, node2);
         probability = prob;
     }
 
@@ -53,7 +52,7 @@ public class RelationMapping implements IRelationMapping {
      * @param mappings more noun mappings to add.
      */
     @Override
-    public void addMappingsToRelation(List<? extends INounMapping> mappings) {
+    public void addMappingsToRelation(ImmutableList<INounMapping> mappings) {
         for (INounMapping n : mappings) {
             if (!relationNodes.contains(n)) {
                 relationNodes.add(n);
@@ -87,8 +86,8 @@ public class RelationMapping implements IRelationMapping {
      * @return a list of all ends points of the relation
      */
     @Override
-    public List<? extends INounMapping> getOccurrenceNodes() {
-        return relationNodes;
+    public ImmutableList<INounMapping> getOccurrenceNodes() {
+        return relationNodes.toImmutable();
     }
 
     /**

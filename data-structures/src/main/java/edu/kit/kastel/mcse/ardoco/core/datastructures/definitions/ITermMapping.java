@@ -1,17 +1,20 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
-public interface ITermMapping {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    ITermMapping createCopy();
+/**
+ * The Interface ITermMapping defines multiple noun mappings for the same term.
+ */
+public interface ITermMapping extends ICopyable<ITermMapping> {
 
     /**
      * Returns the mappings, of the term.
      *
      * @return a list of mappings of the term.
      */
-    List<INounMapping> getMappings();
+    ImmutableList<INounMapping> getMappings();
 
     /**
      * Returns the probability that this mapping is a term of the given kind (multi type).
@@ -35,17 +38,10 @@ public interface ITermMapping {
     MappingKind getKind();
 
     /**
-     * Updates the probability
+     * Updates the probability.
      *
-     * @param probability2 the probability to update with.
+     * @param probability the probability to update with.
      */
-    void updateProbability(double probability2);
-
-    /**
-     * Sets the probability of the mapping
-     *
-     * @param probability probability to set on
-     */
-    void hardSetProbability(double probability);
+    void updateProbability(double probability);
 
 }

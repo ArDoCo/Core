@@ -1,46 +1,85 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
+import java.util.Objects;
+
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 
+/**
+ * The base class for connection agents.
+ */
 public abstract class ConnectionAgent extends Agent {
 
-	protected IText text;
-	protected ITextState textState;
-	protected IModelState modelState;
-	protected IRecommendationState recommendationState;
-	protected IConnectionState connectionState;
+    /** The text internal text. */
+    protected IText text;
 
-	/**
-	 * Prototype Constructor
-	 */
-	protected ConnectionAgent(Class<? extends Configuration> configType) {
-		super(configType);
-	}
+    /** The internal text state. */
+    protected ITextState textState;
 
-	protected ConnectionAgent(DependencyType dependencyType, Class<? extends Configuration> configType, IText text, ITextState textState,
-			IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState) {
-		super(dependencyType, configType);
-		this.text = text;
-		this.textState = textState;
-		this.modelState = modelState;
-		this.recommendationState = recommendationState;
-		this.connectionState = connectionState;
-	}
+    /** The internal model state. */
+    protected IModelState modelState;
 
-	@Override
-	protected final ConnectionAgent createInternal(AgentDatastructure data, Configuration config) {
-		if (data.getText() == null || data.getTextState() == null || data.getModelState() == null || data.getRecommendationState() == null
-				|| data.getConnectionState() == null) {
-			throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
-		}
-		return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(), config);
-	}
+    /** The internal recommendation state. */
+    protected IRecommendationState recommendationState;
 
-	public abstract ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-			IConnectionState connectionState, Configuration config);
+    /** The internal connection state. */
+    protected IConnectionState connectionState;
+
+    /**
+     * Prototype Constructor.
+     *
+     * @param configType the type of configuration for this agent type
+     */
+    protected ConnectionAgent(Class<? extends Configuration> configType) {
+        super(configType);
+    }
+
+    /**
+     * Instantiates a new connection agent.
+     *
+     * @param configType          the config type
+     * @param text                the text
+     * @param textState           the text state
+     * @param modelState          the model state
+     * @param recommendationState the recommendation state
+     * @param connectionState     the connection state
+     */
+    protected ConnectionAgent(Class<? extends Configuration> configType, IText text, ITextState textState, IModelState modelState,
+            IRecommendationState recommendationState, IConnectionState connectionState) {
+        super(configType);
+        this.text = text;
+        this.textState = textState;
+        this.modelState = modelState;
+        this.recommendationState = recommendationState;
+        this.connectionState = connectionState;
+    }
+
+    @Override
+    protected final ConnectionAgent createInternal(AgentDatastructure data, Configuration config) {
+        Objects.requireNonNull(data.getText());
+        Objects.requireNonNull(data.getTextState());
+        Objects.requireNonNull(data.getModelState());
+        Objects.requireNonNull(data.getRecommendationState());
+        Objects.requireNonNull(data.getConnectionState());
+
+        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(), config);
+    }
+
+    /**
+     * Creates the agent.
+     *
+     * @param text                the text to use
+     * @param textState           the text state to use
+     * @param modelState          the model state to use
+     * @param recommendationState the recommendation state to use
+     * @param connectionState     the connection state to use
+     * @param config              the config to use
+     * @return the connection agent
+     */
+    public abstract ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState, Configuration config);
 
 }
