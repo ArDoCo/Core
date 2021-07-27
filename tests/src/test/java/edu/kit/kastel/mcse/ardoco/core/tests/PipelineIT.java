@@ -24,9 +24,9 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvi
 class PipelineIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
-    private static final String TEXT = "src/test/resources/teastore.txt";
-    private static final String MODEL = "src/test/resources/teastore.owl";
-    private static final String MODEL_W_TEXT = "src/test/resources/teastore_w_text.owl";
+    private static final String TEXT = "src/test/resources/teastore/teastore.txt";
+    private static final String MODEL = "src/test/resources/teastore/teastore.owl";
+    private static final String MODEL_W_TEXT = "src/test/resources/teastore/teastore_w_text.owl";
     private static final String NAME = "test_teastore";
 
     @Test
