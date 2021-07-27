@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,16 +12,19 @@ class EvalUtil {
     }
 
     protected static EvaluationResults compare(List<String> traceLinks, List<String> goldStandard) {
+        Set<String> distinctTraceLinks = new HashSet<>(traceLinks);
+        Set<String> distinctgoldStandard = new HashSet<>(goldStandard);
+
         // True Positives are the trace links that are contained on both lists
-        Set<String> truePositives = traceLinks.stream().distinct().filter(goldStandard::contains).collect(Collectors.toSet());
+        Set<String> truePositives = distinctTraceLinks.stream().distinct().filter(distinctgoldStandard::contains).collect(Collectors.toSet());
         double tp = truePositives.size();
 
         // False Positives are the trace links that are only contained in the result set
-        Set<String> falsePositives = traceLinks.stream().distinct().filter(tl -> !goldStandard.contains(tl)).collect(Collectors.toSet());
+        Set<String> falsePositives = distinctTraceLinks.stream().distinct().filter(tl -> !distinctgoldStandard.contains(tl)).collect(Collectors.toSet());
         double fp = falsePositives.size();
 
         // False Negatives are the trace links that are only contained in the gold standard
-        Set<String> falseNegatives = goldStandard.stream().distinct().filter(tl -> !traceLinks.contains(tl)).collect(Collectors.toSet());
+        Set<String> falseNegatives = distinctgoldStandard.stream().distinct().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         double fn = falseNegatives.size();
 
         double precision = tp / (tp + fp);
