@@ -144,6 +144,11 @@ public final class Pipeline {
     }
 
     public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean providedTextOntology) {
+        return run(name, inputText, inputModel, additionalConfigs, outputDir, providedTextOntology, true);
+    }
+
+    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean providedTextOntology,
+            boolean saveOutput) {
         long startTime = System.currentTimeMillis();
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
@@ -167,10 +172,13 @@ public final class Pipeline {
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
 
-        logger.info("Finished in {}s. Writing output.", duration.getSeconds());
-        printResultsInFiles(outputDir, name, data, duration);
-        var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
-        ontoConnector.save(ontoSaveFile);
+        logger.info("Finished in {}s.", duration.getSeconds());
+        if (saveOutput) {
+            logger.info("Writing output.");
+            printResultsInFiles(outputDir, name, data, duration);
+            var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
+            ontoConnector.save(ontoSaveFile);
+        }
         return data;
     }
 
