@@ -1,5 +1,7 @@
 testout
 
+tests/src/test/resources/config.properties
+
 ### ignore log files
 *.log
 
