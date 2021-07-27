@@ -150,6 +150,7 @@ public final class Pipeline {
     public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean providedTextOntology,
             boolean saveOutput) {
         long startTime = System.currentTimeMillis();
+        long prevStartTime = System.currentTimeMillis();
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
@@ -164,16 +165,24 @@ public final class Pipeline {
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
         FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
 
+        logTiming(prevStartTime, "Text- and Model-Loading");
+
         logger.info("Starting process to generate Trace Links");
-        logTiming(startTime, "Text- and Model-Loading");
+        prevStartTime = System.currentTimeMillis();
         var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
-        logTiming(startTime, "Model-Extractor");
+        logTiming(prevStartTime, "Model-Extractor");
+
+        prevStartTime = System.currentTimeMillis();
         data.overwrite(runTextExtractor(data, additionalConfigs));
-        logTiming(startTime, "Text-Extractor");
+        logTiming(prevStartTime, "Text-Extractor");
+
+        prevStartTime = System.currentTimeMillis();
         data.overwrite(runRecommendationGenerator(data, additionalConfigs));
-        logTiming(startTime, "Recommendation-Generator");
+        logTiming(prevStartTime, "Recommendation-Generator");
+
+        prevStartTime = System.currentTimeMillis();
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
-        logTiming(startTime, "Connection-Generator");
+        logTiming(prevStartTime, "Connection-Generator");
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         logger.info("Finished in {}s.", duration.getSeconds());
@@ -189,7 +198,7 @@ public final class Pipeline {
 
     private static void logTiming(long startTime, String step) {
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        logger.info("Finished step {} after {}s of starting the whole processing.", step, duration.getSeconds());
+        logger.info("Finished step {} in {}s.", step, duration.getSeconds());
     }
 
     private static IText getAnnotatedText(File inputText, boolean providedTextOntology, OntologyConnector ontoConnector) {
