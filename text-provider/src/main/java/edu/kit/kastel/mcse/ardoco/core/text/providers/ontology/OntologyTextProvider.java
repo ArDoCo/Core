@@ -147,7 +147,7 @@ public class OntologyTextProvider implements ITextConnector {
 
     @Override
     public IText getAnnotatedText() {
-        return OntologyText.get(ontologyConnector);
+        return CachedOntologyText.get(ontologyConnector);
     }
 
 }

@@ -165,21 +165,31 @@ public final class Pipeline {
         FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
 
         logger.info("Starting process to generate Trace Links");
+        logTiming(startTime, "Text- and Model-Loading");
         var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
+        logTiming(startTime, "Model-Extractor");
         data.overwrite(runTextExtractor(data, additionalConfigs));
+        logTiming(startTime, "Text-Extractor");
         data.overwrite(runRecommendationGenerator(data, additionalConfigs));
+        logTiming(startTime, "Recommendation-Generator");
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
+        logTiming(startTime, "Connection-Generator");
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-
         logger.info("Finished in {}s.", duration.getSeconds());
         if (saveOutput) {
             logger.info("Writing output.");
             printResultsInFiles(outputDir, name, data, duration);
             var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
             ontoConnector.save(ontoSaveFile);
+            logTiming(startTime, "Saving");
         }
         return data;
+    }
+
+    private static void logTiming(long startTime, String step) {
+        var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
+        logger.info("Finished step {} after {}s of starting the whole processing.", step, duration.getSeconds());
     }
 
     private static IText getAnnotatedText(File inputText, boolean providedTextOntology, OntologyConnector ontoConnector) {

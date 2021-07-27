@@ -22,7 +22,7 @@ public class OntologyText implements IText {
 
     private ObjectProperty wordsProperty;
 
-    private OntologyText(OntologyConnector ontologyConnector, Individual textIndividual) {
+    protected OntologyText(OntologyConnector ontologyConnector, Individual textIndividual) {
         this.ontologyConnector = ontologyConnector;
         this.textIndividual = textIndividual;
     }
@@ -81,7 +81,7 @@ public class OntologyText implements IText {
         return words.toImmutable();
     }
 
-    private OrderedOntologyList getOrderedOntologyListOfText() {
+    protected OrderedOntologyList getOrderedOntologyListOfText() {
         var textListIndividualNode = ontologyConnector.getPropertyValue(textIndividual, wordsProperty);
         if (!textListIndividualNode.canAs(Individual.class)) {
             throw new IllegalStateException(ERR_NO_TEXT_FOUND);
