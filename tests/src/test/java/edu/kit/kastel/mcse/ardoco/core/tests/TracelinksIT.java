@@ -28,6 +28,11 @@ class TracelinksIT {
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = "src/test/resources/config.properties";
 
+    private File inputText;
+    private File inputModel;
+    private File additionalConfigs = new File(ADDITIONAL_CONFIG);
+    private File outputDir = new File(OUTPUT);
+
     @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check results!")
     @Test
     @DisplayName("Evaluate Teastore")
@@ -37,7 +42,7 @@ class TracelinksIT {
         var minRecall = 0.87d;
         var minF1 = 0.73d;
 
-        compare("teastore", similarity, minPrecision, minRecall, minF1);
+        compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check results!")
@@ -45,11 +50,11 @@ class TracelinksIT {
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
         var similarity = 80;
-        var minPrecision = 0.67d;
+        var minPrecision = 0.60d;
         var minRecall = 0.88d;
-        var minF1 = 0.76d;
+        var minF1 = 0.74d;
 
-        compare("teammates", similarity, minPrecision, minRecall, minF1);
+        compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check results!")
@@ -61,20 +66,31 @@ class TracelinksIT {
         var minRecall = 0.59d;
         var minF1 = 0.52d;
 
-        compare("mediastore", similarity, minPrecision, minRecall, minF1);
+        compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
 
     }
 
-    private void compare(String name, int similarity, double minPrecision, double minRecall, double minF1) {
+    private void compareOntologyBased(String name, int similarity, double minPrecision, double minRecall, double minF1) {
+        inputText = null;
+        var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
+        inputModel = new File(inputFilePath);
+
+        compare(name, true, similarity, minPrecision, minRecall, minF1);
+    }
+
+    private void compareTextBased(String name, int similarity, double minPrecision, double minRecall, double minF1) {
+        var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
+        inputText = new File(inputTextPath);
+        var inputFilePath = String.format("src/test/resources/%s/%s.owl", name, name);
+        inputModel = new File(inputFilePath);
+
+        compare(name, false, similarity, minPrecision, minRecall, minF1);
+    }
+
+    private void compare(String name, boolean useTextOntology, int similarity, double minPrecision, double minRecall, double minF1) {
         prepareConfig(similarity);
 
-        File inputText = null;
-        var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
-        File inputModel = new File(inputFilePath);
-        File additionalConfigs = new File(ADDITIONAL_CONFIG);
-        File outputDir = new File(OUTPUT);
-
-        var data = Pipeline.run("test_" + name, inputText, inputModel, additionalConfigs, outputDir, true, false);
+        var data = Pipeline.run("test_" + name, inputText, inputModel, additionalConfigs, outputDir, useTextOntology, false);
         Assertions.assertNotNull(data);
 
         var connectionState = data.getConnectionState();
@@ -97,18 +113,8 @@ class TracelinksIT {
     }
 
     private List<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
-        List<String> traceLinks = Lists.mutable.empty();
         var formatString = "%s,%d";
-        for (var tracelink : connectionState.getInstanceLinks()) {
-            var modelUid = tracelink.getModelInstance().getUid();
-            for (var nm : tracelink.getTextualInstance().getNameMappings()) {
-                for (var word : nm.getWords()) {
-                    var tracelinkString = String.format(formatString, modelUid, word.getSentenceNo() + 1);
-                    traceLinks.add(tracelinkString);
-                }
-            }
-        }
-        return traceLinks;
+        return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToList();
     }
 
     private void prepareConfig(int similarity) {
