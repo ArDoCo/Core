@@ -62,12 +62,11 @@ class TracelinksIT {
     @DisplayName("Evaluate Mediastore")
     void compareTracelinksMediastoreIT() {
         var similarity = 100;
-        var minPrecision = 0.46d;
-        var minRecall = 0.59d;
-        var minF1 = 0.52d;
+        var minPrecision = 0.42d;
+        var minRecall = 0.25d;
+        var minF1 = 0.42d;
 
         compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
-
     }
 
     private void compareOntologyBased(String name, int similarity, double minPrecision, double minRecall, double minF1) {
