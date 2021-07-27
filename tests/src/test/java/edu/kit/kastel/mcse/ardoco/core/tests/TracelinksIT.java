@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -33,11 +34,17 @@ class TracelinksIT {
     private File additionalConfigs = new File(ADDITIONAL_CONFIG);
     private File outputDir = new File(OUTPUT);
 
+    @AfterEach
+    void afterEach() {
+        File config = new File(ADDITIONAL_CONFIG);
+        config.delete();
+    }
+
     @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check results!")
     @Test
     @DisplayName("Evaluate Teastore")
     void compareTracelinksTeastoreIT() {
-        var similarity = 100;
+        var similarity = 1.0;
         var minPrecision = 0.62d;
         var minRecall = 0.87d;
         var minF1 = 0.73d;
@@ -49,7 +56,7 @@ class TracelinksIT {
     @Test
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
-        var similarity = 80;
+        var similarity = 0.80;
         var minPrecision = 0.60d;
         var minRecall = 0.88d;
         var minF1 = 0.74d;
@@ -57,19 +64,20 @@ class TracelinksIT {
         compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
-    @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check results!")
+    // @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check
+    // results!")
     @Test
     @DisplayName("Evaluate Mediastore")
     void compareTracelinksMediastoreIT() {
-        var similarity = 100;
-        var minPrecision = 0.42d;
-        var minRecall = 0.25d;
-        var minF1 = 0.42d;
+        var similarity = 1.00;
+        var minPrecision = 0.46d;
+        var minRecall = 0.6d;
+        var minF1 = 0.52d;
 
         compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
     }
 
-    private void compareOntologyBased(String name, int similarity, double minPrecision, double minRecall, double minF1) {
+    private void compareOntologyBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         inputText = null;
         var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
         inputModel = new File(inputFilePath);
@@ -77,7 +85,7 @@ class TracelinksIT {
         compare(name, true, similarity, minPrecision, minRecall, minF1);
     }
 
-    private void compareTextBased(String name, int similarity, double minPrecision, double minRecall, double minF1) {
+    private void compareTextBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
         inputText = new File(inputTextPath);
         var inputFilePath = String.format("src/test/resources/%s/%s.owl", name, name);
@@ -86,7 +94,7 @@ class TracelinksIT {
         compare(name, false, similarity, minPrecision, minRecall, minF1);
     }
 
-    private void compare(String name, boolean useTextOntology, int similarity, double minPrecision, double minRecall, double minF1) {
+    private void compare(String name, boolean useTextOntology, double similarity, double minPrecision, double minRecall, double minF1) {
         prepareConfig(similarity);
 
         var data = Pipeline.run("test_" + name, inputText, inputModel, additionalConfigs, outputDir, useTextOntology, false);
@@ -106,9 +114,9 @@ class TracelinksIT {
             logger.info("\n{} with similarity {}:\n\tPrecision: {}\n\tRecall: {}\n\tF1: {}", name, similarity, precision, recall, f1);
         }
 
-        Assertions.assertTrue(precision > minPrecision, "Precision " + precision + " is below the expected minimum value " + minPrecision);
-        Assertions.assertTrue(recall > minRecall, "Recall " + recall + " is below the expected minimum value " + minRecall);
-        Assertions.assertTrue(f1 > minF1, "F1 " + f1 + " is below the expected minimum value " + minF1);
+        Assertions.assertTrue(precision >= minPrecision, "Precision " + precision + " is below the expected minimum value " + minPrecision);
+        Assertions.assertTrue(recall >= minRecall, "Recall " + recall + " is below the expected minimum value " + minRecall);
+        Assertions.assertTrue(f1 >= minF1, "F1 " + f1 + " is below the expected minimum value " + minF1);
     }
 
     private List<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
@@ -116,7 +124,7 @@ class TracelinksIT {
         return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToList();
     }
 
-    private void prepareConfig(int similarity) {
+    private void prepareConfig(double similarity) {
         File configFile = new File(ADDITIONAL_CONFIG);
 
         var settings = "similarityPercentage=" + similarity;
