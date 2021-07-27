@@ -40,7 +40,6 @@ class TracelinksIT {
         config.delete();
     }
 
-    @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check results!")
     @Test
     @DisplayName("Evaluate Teastore")
     void compareTracelinksTeastoreIT() {
@@ -64,8 +63,6 @@ class TracelinksIT {
         compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
-    // @Disabled("Disabled to not take up too much time during building. Enable and manually check to get/check
-    // results!")
     @Test
     @DisplayName("Evaluate Mediastore")
     void compareTracelinksMediastoreIT() {
