@@ -36,4 +36,9 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         return String.format(REASON_FORMAT_STRING, confidence, name, occurenceJoiner.toString());
     }
 
+    @Override
+    public IInconsistency createCopy() {
+        return new MissingModelInstanceInconsistency(textualInstance.createCopy());
+    }
+
 }

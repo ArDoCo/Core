@@ -3,8 +3,10 @@
  */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
@@ -15,7 +17,11 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency
  */
 public class InconsistencyState implements IInconsistencyState {
 
-    private List<IInconsistency> inconsistencies = new ArrayList<>();
+    private MutableList<IInconsistency> inconsistencies;
+
+    public InconsistencyState() {
+        inconsistencies = Lists.mutable.empty();
+    }
 
     /**
      * Add an Inconsistency to this state
@@ -36,6 +42,13 @@ public class InconsistencyState implements IInconsistencyState {
     @Override
     public List<IInconsistency> getInconsistencies() {
         return inconsistencies;
+    }
+
+    @Override
+    public InconsistencyState createCopy() {
+        var newInconsistencyState = new InconsistencyState();
+        newInconsistencyState.inconsistencies = inconsistencies.collect(IInconsistency::createCopy);
+        return newInconsistencyState;
     }
 
 }
