@@ -1,6 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-public interface IInconsistency {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
+
+public interface IInconsistency extends ICopyable<IInconsistency> {
 
     /**
      * Returns the reason why there is an inconsistency

@@ -4,7 +4,6 @@ import org.eclipse.collections.api.factory.Lists;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.InconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
@@ -25,8 +24,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     private MissingModelElementInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, InconsistencyConfig inconsistencyConfig) {
-        super(DependencyType.MODEL_RECOMMENDATION_CONNECTION, InconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState,
-                inconsistencyState);
+        super(InconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
         threshold = inconsistencyConfig.getMissingModelInstanceInconsistencyThreshold();
     }
 
