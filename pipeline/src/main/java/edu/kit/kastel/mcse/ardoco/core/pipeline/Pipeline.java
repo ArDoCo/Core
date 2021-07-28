@@ -27,7 +27,6 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
@@ -172,7 +171,7 @@ public final class Pipeline {
 
         logger.info("Starting process to generate Trace Links");
         prevStartTime = System.currentTimeMillis();
-        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
+        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
         logTiming(prevStartTime, "Model-Extractor");
 
         prevStartTime = System.currentTimeMillis();
@@ -186,11 +185,11 @@ public final class Pipeline {
         prevStartTime = System.currentTimeMillis();
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
         logTiming(prevStartTime, "Connection-Generator");
-        
-        data.overwrite(runInconsistencyChecker(data));
 
-        Duration duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        printResultsInFiles(outputDir, name, data, duration);
+        prevStartTime = System.currentTimeMillis();
+        data.overwrite(runInconsistencyChecker(data));
+        logTiming(prevStartTime, "Inconsistency-Checker");
+
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
         if (saveOutput) {
@@ -305,21 +304,14 @@ public final class Pipeline {
         }
 
         connectionGenerator.exec();
-    }
-
-    private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
         return connectionGenerator.getBlackboard();
     }
 
     private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
-        IModule<AgentDatastructure> inconsistencyChecker = new InconsistencyChecker(data);
+        IExecutionStage inconsistencyChecker = new InconsistencyChecker(data);
 
         inconsistencyChecker.exec();
-        return inconsistencyChecker.getState();
-        IModule<AgentDatastructure> inconsistencyChecker = new InconsistencyChecker(data);
-
-        inconsistencyChecker.exec();
-        return inconsistencyChecker.getState();
+        return inconsistencyChecker.getBlackboard();
     }
 
     /**

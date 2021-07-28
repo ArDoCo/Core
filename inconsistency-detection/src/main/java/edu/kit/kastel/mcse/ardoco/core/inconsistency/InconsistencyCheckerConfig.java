@@ -1,10 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
-import java.util.List;
 import java.util.Map;
 
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
+import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
 public class InconsistencyCheckerConfig extends Configuration {
 
@@ -13,12 +14,12 @@ public class InconsistencyCheckerConfig extends Configuration {
     /**
      * The list of analyzer types that should work on the recommendation state.
      */
-    public final List<String> inconsistencyAgents;
+    public final ImmutableList<String> inconsistencyAgents;
 
     public static final InconsistencyCheckerConfig DEFAULT_CONFIG = new InconsistencyCheckerConfig();
 
     private InconsistencyCheckerConfig() {
-        SystemParameters config = new SystemParameters("/configs/InconsistencyChecker.properties", true);
+        var config = new ResourceAccessor("/configs/InconsistencyChecker.properties", true);
         inconsistencyAgents = config.getPropertyAsList(INCONSISTENCY_AGENTS_PROPERTY);
     }
 

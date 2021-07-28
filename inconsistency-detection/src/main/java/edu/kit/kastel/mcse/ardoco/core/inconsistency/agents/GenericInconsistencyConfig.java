@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.SystemParameters;
+import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
 public class GenericInconsistencyConfig extends Configuration {
 
@@ -11,7 +11,7 @@ public class GenericInconsistencyConfig extends Configuration {
 
     public GenericInconsistencyConfig() {
         super();
-        SystemParameters config = new SystemParameters("/configs/InconsistencyCheckerConfig.properties", true);
+        var config = new ResourceAccessor("/configs/InconsistencyCheckerConfig.properties", true);
         // TODO
     }
 
