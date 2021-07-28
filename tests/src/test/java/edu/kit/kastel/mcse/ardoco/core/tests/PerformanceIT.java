@@ -52,6 +52,18 @@ class PerformanceIT {
         Assertions.assertTrue(duration.toSeconds() < 110);
     }
 
+    @Disabled("Only for individual testing, not for CI")
+    @Test
+    @DisplayName("Time Teastore Ontology")
+    void timeTeastoreOntologyIT() {
+        name = "teastore";
+        prepareOntology();
+
+        var duration = measureExecution();
+
+        Assertions.assertTrue(duration.toSeconds() < 60);
+    }
+
     private Duration measureExecution() {
         Instant start = Instant.now();
         Pipeline.run("test_time_" + name, inputText, inputModel, additionalConfigs, outputDir, useOntology, false);
