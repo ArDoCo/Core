@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
-import java.util.ArrayList;
-
+import org.eclipse.collections.api.factory.Lists;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -40,7 +39,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     @Override
     public void exec() {
-        var recommendedInstances = new ArrayList<>(recommendationState.getRecommendedInstances());
+        var recommendedInstances = Lists.mutable.ofAll(recommendationState.getRecommendedInstances());
 
         // remove all recommended instances that were used in an instanceLink (trace link)
         for (var tracelink : connectionState.getInstanceLinks()) {
