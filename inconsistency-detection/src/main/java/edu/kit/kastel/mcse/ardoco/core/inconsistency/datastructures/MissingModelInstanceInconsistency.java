@@ -24,7 +24,7 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         var name = textualInstance.getName();
         SortedSet<Integer> occurences = new TreeSet<>();
         for (var nameMapping : textualInstance.getNameMappings()) {
-            occurences.addAll(nameMapping.getMappingSentenceNo());
+            occurences.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
 
         var occurenceJoiner = new StringJoiner(",");

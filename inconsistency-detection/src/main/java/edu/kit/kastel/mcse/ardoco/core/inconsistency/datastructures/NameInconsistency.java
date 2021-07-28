@@ -1,17 +1,17 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 
 public class NameInconsistency implements IInconsistency {
 
     private static final String REASON_FORMAT_STRING = "Inconsistent naming in trace link between textual occurence \"%s\" (sentence %d) and model element \"%s\" (%s)";
 
-    private IInstance modelInstance;
+    private IModelInstance modelInstance;
     private IWord word;
 
-    public NameInconsistency(IInstance modelInstance, IWord word) {
+    public NameInconsistency(IModelInstance modelInstance, IWord word) {
         this.modelInstance = modelInstance;
         this.word = word;
     }
