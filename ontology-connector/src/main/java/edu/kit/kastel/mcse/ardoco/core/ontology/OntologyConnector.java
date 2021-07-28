@@ -59,7 +59,7 @@ import org.eclipse.collections.api.list.MutableList;
  */
 public class OntologyConnector {
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
-    private static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
+    private static OntModelSpec modelSpec = OntModelSpec.OWL_MEM;
 
     private static final String DEFAULT_PREFIX = "";
 
