@@ -25,4 +25,9 @@ public class NameInconsistency implements IInconsistency {
         return String.format(REASON_FORMAT_STRING, textOccurence, sentenceNo, modelOccurence, uid);
     }
 
+    @Override
+    public IInconsistency createCopy() {
+        return new NameInconsistency(modelInstance.createCopy(), word);
+    }
+
 }
