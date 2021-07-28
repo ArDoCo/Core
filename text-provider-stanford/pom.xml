@@ -9,6 +9,10 @@
 	</parent>
 	<artifactId>text-provider-stanford</artifactId>
 
+	<properties>
+	  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+
 	<repositories>
 		<repository>
 			<id>ipdNexus-public-all</id>
@@ -40,6 +44,7 @@
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>parseBios</artifactId>
 		</dependency>
+		
 		<!-- Stanford -->
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>

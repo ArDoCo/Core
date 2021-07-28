@@ -12,6 +12,8 @@
 		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
 		<sonar.organization>ardoco</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+		<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
 	</properties>
 
 	<repositories>
@@ -63,6 +65,11 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.14.1</version>
+		</dependency>
+		<!-- Apache Commons Lang -->
+		<dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-lang3</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -127,6 +134,11 @@
 				<artifactId>util</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>ontology-connector</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -136,13 +148,65 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<argLine>--illegal-access=permit</argLine>
-					</configuration>
+					<version>3.0.0-M5</version>
+				</plugin>
+				<plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-compiler-plugin</artifactId>
+			        <configuration>
+				          <fork>true</fork>
+				          <meminitial>128m</meminitial>
+				          <maxmem>512m</maxmem>
+			        </configuration>
+			     </plugin>
+			     <plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>3.0.0-M5</version>
+					<configuration></configuration>
+					<executions>
+	                    <execution>
+	                        <phase>integration-test</phase>
+	                        <goals>
+	                            <goal>integration-test</goal>
+	                            <goal>verify</goal>
+	                        </goals>
+	                    </execution>
+                	</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.7</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	<profiles>
+	   <profile>
+	     <id>coverage</id>
+	     <activation>
+	       <activeByDefault>true</activeByDefault>
+	     </activation>
+	     <build>
+	       <plugins>
+	         <plugin>
+	           <groupId>org.jacoco</groupId>
+	           <artifactId>jacoco-maven-plugin</artifactId>
+	           <executions>
+	             <execution>
+	               <id>prepare-agent</id>
+	               <goals>
+	                 <goal>prepare-agent</goal>
+	               </goals>
+	             </execution>
+	           </executions>
+	         </plugin>
+	       </plugins>
+	     </build>
+	   </profile>
+	</profiles>
 
 	<modules>
 		<module>text-extractor</module>
@@ -155,5 +219,7 @@
 		<module>model-provider</module>
 		<module>model-provider-owl</module>
 		<module>util</module>
+		<module>ontology-connector</module>
+		<module>tests</module>
 	</modules>
 </project>
