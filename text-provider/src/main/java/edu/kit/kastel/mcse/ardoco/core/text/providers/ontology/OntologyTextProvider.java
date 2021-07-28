@@ -19,6 +19,8 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 public class OntologyTextProvider implements ITextConnector {
     private static final String TEXT_ONTOLOGY_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text.owl";
 
+    private static final boolean USE_CACHED = true;
+
     private OntologyConnector ontologyConnector;
 
     private OntClass textClass;
@@ -147,7 +149,11 @@ public class OntologyTextProvider implements ITextConnector {
 
     @Override
     public IText getAnnotatedText() {
-        return CachedOntologyText.get(ontologyConnector);
+        if (USE_CACHED) {
+            return CachedOntologyText.get(ontologyConnector);
+        } else {
+            return OntologyText.get(ontologyConnector);
+        }
     }
 
 }
