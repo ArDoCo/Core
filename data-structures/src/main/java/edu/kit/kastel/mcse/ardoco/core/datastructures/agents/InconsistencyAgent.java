@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
+import java.util.Objects;
+
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -18,15 +20,27 @@ public abstract class InconsistencyAgent extends Agent {
 
     /**
      * Prototype Constructor
+     *
+     * @param configType the configuration type to be used by the agent
      */
     protected InconsistencyAgent(Class<? extends Configuration> configType) {
         super(configType);
     }
 
-    protected InconsistencyAgent(//
-            DependencyType dependencyType, Class<? extends Configuration> configType, IText text, ITextState textState, IModelState modelState,
+    /**
+     * Instantiates a new inconsistency agent.
+     *
+     * @param configType          the config type
+     * @param text                the text
+     * @param textState           the text state
+     * @param modelState          the model state
+     * @param recommendationState the recommendation state
+     * @param connectionState     the connection state
+     * @param inconsistencyState  the inconsistency state
+     */
+    protected InconsistencyAgent(Class<? extends Configuration> configType, IText text, ITextState textState, IModelState modelState,
             IRecommendationState recommendationState, IConnectionState connectionState, IInconsistencyState inconsistencyState) {
-        super(dependencyType, configType);
+        super(configType);
         this.text = text;
         this.textState = textState;
         this.modelState = modelState;
@@ -37,10 +51,13 @@ public abstract class InconsistencyAgent extends Agent {
 
     @Override
     protected final InconsistencyAgent createInternal(AgentDatastructure data, Configuration config) {
-        if (data.getText() == null || data.getTextState() == null || data.getModelState() == null || data.getRecommendationState() == null
-                || data.getConnectionState() == null || data.getInconsistencyState() == null) {
-            throw new IllegalArgumentException("An input of the agent" + getId() + " was null!");
-        }
+        Objects.requireNonNull(data.getText());
+        Objects.requireNonNull(data.getTextState());
+        Objects.requireNonNull(data.getModelState());
+        Objects.requireNonNull(data.getRecommendationState());
+        Objects.requireNonNull(data.getConnectionState());
+        Objects.requireNonNull(data.getInconsistencyState());
+
         return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(),
                 data.getInconsistencyState(), config);
     }
