@@ -19,12 +19,12 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     private double threshold = 0.7d;
 
     public MissingModelElementInconsistencyAgent() {
-        super(InconsistencyConfig.class);
+        super(GenericInconsistencyConfig.class);
     }
 
     private MissingModelElementInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, InconsistencyConfig inconsistencyConfig) {
-        super(InconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
+            IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
+        super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
         threshold = inconsistencyConfig.getMissingModelInstanceInconsistencyThreshold();
     }
 
@@ -32,7 +32,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
         return new MissingModelElementInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState,
-                (InconsistencyConfig) config);
+                (GenericInconsistencyConfig) config);
     }
 
     @Override
