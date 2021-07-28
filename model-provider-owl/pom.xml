@@ -8,10 +8,19 @@
 		<version>0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>model-provider-owl</artifactId>
+	
+	<properties>
+	  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 			<artifactId>model-provider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+			<artifactId>ontology-connector</artifactId>
 		</dependency>
 
 		<dependency>
