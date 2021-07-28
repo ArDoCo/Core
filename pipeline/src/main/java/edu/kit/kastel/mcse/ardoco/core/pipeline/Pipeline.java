@@ -185,7 +185,7 @@ public final class Pipeline {
         logTiming(prevStartTime, "Connection-Generator");
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        logger.info("Finished in {}s.", duration.getSeconds());
+        logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
         if (saveOutput) {
             logger.info("Writing output.");
             printResultsInFiles(outputDir, name, data, duration);
@@ -198,7 +198,8 @@ public final class Pipeline {
 
     private static void logTiming(long startTime, String step) {
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        logger.info("Finished step {} in {}s.", step, duration.getSeconds());
+
+        logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
     private static IText getAnnotatedText(File inputText, boolean providedTextOntology, OntologyConnector ontoConnector) {
