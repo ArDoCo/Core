@@ -8,12 +8,11 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.InconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.GenericInconsistencyConfig;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.InconsistencyState;
 
-public class InconsistencyChecker implements IAgentModule<AgentDatastructure> {
+public class InconsistencyChecker implements IExecutionStage {
 
     private AgentDatastructure data;
     private List<IAgent> agents = new ArrayList<>();
@@ -49,17 +48,16 @@ public class InconsistencyChecker implements IAgentModule<AgentDatastructure> {
     }
 
     @Override
-    public AgentDatastructure getState() {
+    public AgentDatastructure getBlackboard() {
         return data;
     }
 
     @Override
-    public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
+    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
         return new InconsistencyChecker(data, new InconsistencyCheckerConfig(configs), new GenericInconsistencyConfig(configs));
     }
 
-    @Override
-    public void runAgents() {
+    private void runAgents() {
         for (IAgent agent : agents) {
             agent.exec();
         }

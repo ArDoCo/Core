@@ -39,7 +39,7 @@ public abstract class InconsistencyAgent extends Agent {
     protected final InconsistencyAgent createInternal(AgentDatastructure data, Configuration config) {
         if (data.getText() == null || data.getTextState() == null || data.getModelState() == null || data.getRecommendationState() == null
                 || data.getConnectionState() == null || data.getInconsistencyState() == null) {
-            throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
+            throw new IllegalArgumentException("An input of the agent" + getId() + " was null!");
         }
         return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(),
                 data.getInconsistencyState(), config);
