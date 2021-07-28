@@ -71,7 +71,8 @@ public final class Pipeline {
         // -h : Help
         // -n : Name of the Run
         // -m : Model Path
-        // -t : Text Path
+        // -t : Text Path (either this or -p)
+        // -p : Flag to make use of provided ontology to load preprocessed text
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
 
