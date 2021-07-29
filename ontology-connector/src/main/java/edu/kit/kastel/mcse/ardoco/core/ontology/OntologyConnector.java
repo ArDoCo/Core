@@ -25,12 +25,6 @@ import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.ontology.Ontology;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -68,8 +62,6 @@ public class OntologyConnector {
     private static OntModelSpec modelSpec = OntModelSpec.OWL_MEM;
 
     private static final String DEFAULT_PREFIX = "";
-
-    private static final String SPARQL_SELECT_BY_LABEL = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> %nSELECT ?x WHERE { ?x rdfs:label \"%s\" } ";
 
     private final OntModel ontModel;
     private OrderedOntologyList.Factory listFactory;
@@ -642,9 +634,12 @@ public class OntologyConnector {
         // first look for usage of name as label
         ontModel.enterCriticalSection(Lock.READ);
         try {
-            var optIndividual = getIndividualWithSPARQL(name);
-            if (optIndividual.isPresent()) {
-                return optIndividual;
+            var stmts = ontModel.listStatements(null, RDFS.label, name, null);
+            if (stmts.hasNext()) {
+                var resource = stmts.next().getSubject();
+                if (resource.canAs(Individual.class)) {
+                    return Optional.of(resource.as(Individual.class));
+                }
             }
         } finally {
             ontModel.leaveCriticalSection();
@@ -663,24 +658,6 @@ public class OntologyConnector {
             var optIndividual = getIndividualByIri(uri);
             if (optIndividual.isPresent()) {
                 return optIndividual;
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<Individual> getIndividualWithSPARQL(String name) {
-        var queryString = String.format(SPARQL_SELECT_BY_LABEL, name);
-        Query query = QueryFactory.create(queryString);
-        try (QueryExecution qexec = QueryExecutionFactory.create(query, ontModel)) {
-            ResultSet results = qexec.execSelect();
-            while (results.hasNext()) {
-                QuerySolution soln = results.nextSolution();
-                RDFNode indNode = soln.get("x");
-                if (indNode.canAs(OntResource.class)) {
-                    var ontRes = indNode.as(OntResource.class);
-                    var individual = ontModel.getIndividual(ontRes.getURI());
-                    return Optional.ofNullable(individual);
-                }
             }
         }
         return Optional.empty();
