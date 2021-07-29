@@ -59,7 +59,9 @@ import org.eclipse.collections.api.list.MutableList;
  */
 public class OntologyConnector {
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
-    private static OntModelSpec modelSpec = OntModelSpec.OWL_MEM;
+
+    // Needs to be DL! Otherwise, classes are seen as individual as well, which might have negative affects
+    private static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
 
     private static final String DEFAULT_PREFIX = "";
 
@@ -634,12 +636,10 @@ public class OntologyConnector {
         // first look for usage of name as label
         ontModel.enterCriticalSection(Lock.READ);
         try {
-            var stmts = ontModel.listStatements(null, RDFS.label, name, null);
-            if (stmts.hasNext()) {
-                var resource = stmts.next().getSubject();
-                if (resource.canAs(Individual.class)) {
-                    return Optional.of(resource.as(Individual.class));
-                }
+            var optIndividual = getIndividualWithStatement(name);
+            if (optIndividual.isPresent()) {
+                System.out.println(name);
+                return optIndividual;
             }
         } finally {
             ontModel.leaveCriticalSection();
@@ -663,7 +663,6 @@ public class OntologyConnector {
         return Optional.empty();
     }
 
-    @SuppressWarnings("unused")
     private Optional<Individual> getIndividualWithStatement(String name) {
         var stmts = ontModel.listStatements(null, RDFS.label, name, null);
         if (stmts.hasNext()) {
