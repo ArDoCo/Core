@@ -1,16 +1,17 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendedRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.DependencyExtractor;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.IExtractor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DependencyExtractionAgent extends DependencyAgent {
     private List<DependencyExtractor> extractors = new ArrayList<>();
@@ -43,6 +44,61 @@ public class DependencyExtractionAgent extends DependencyAgent {
 
     @Override
     public void exec() {
+        getRelations();
+    }
+
+    private List<RecommendedRelation> getRelations() {
+        List<RecommendedRelation> relations = new ArrayList<>();
+
+        for (IRecommendedInstance instance : recommendationState.getRecommendedInstances()) {
+            for (INounMapping mapping : instance.getNameMappings()) {
+                for (IWord word : mapping.getWords()) {
+                    List<IWord> verbsOn = this.getVerbsOn(word);
+                    for (IWord verbOn : verbsOn) {
+                        System.out.println("Got verb ON " + verbOn.getText() + " from " + word.getText() + " at " + word.getPosition());
+                        for (IWord secondDep : this.getVerbDepOn(verbOn)) {
+                            System.out.println(secondDep.getText());
+                        }
+                    }
+                    List<IWord> verbsOf = this.getVerbsOf(word);
+                    for (IWord verbOf : verbsOf) {
+                        System.out.println("Got verb OF " + verbOf.getText() + " from " + word.getText() + " at " + word.getPosition());
+                    }
+                }
+            }
+        }
+
+        return relations;
+    }
+
+    private List<IWord> getVerbDepOn(IWord word) {
+        List<IWord> dependencies = word.getWordsThatAreDependencyOfThis(DependencyTag.AGENT);
+        return dependencies;
+    }
+
+    private List<IWord> getVerbsOn(IWord word) {
+        return this.getNounDepOn(word).stream().filter(IWord::isVerb).collect(Collectors.toList());
+    }
+
+    private List<IWord> getNounDepOn(IWord word) {
+        List<IWord> dependencies = word.getWordsThatAreDependentOnThis(DependencyTag.OBJ);
+        dependencies.addAll(word.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ));
+        return dependencies;
+    }
+
+    private List<IWord> getVerbsOf(IWord word) {
+
+        return this.getNounDepOf(word).stream().filter(IWord::isVerb).collect(Collectors.toList());
+    }
+
+    private List<IWord> getNounDepOf(IWord word) {
+        List<IWord> dependencies = word.getWordsThatAreDependencyOfThis(DependencyTag.OBJ);
+        dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.NSUBJ));
+        return dependencies;
+    }
+
+    private void doStuff() {
+
 //        DependencyType dt = super.getDependencyType();
 //        logger.info("HELLO Dependency " + dt.name() + " - DependencyExtractionAgent");
 //        for (IWord word : text.getWords()) {
@@ -64,16 +120,16 @@ public class DependencyExtractionAgent extends DependencyAgent {
             for (DependencyTag tag : DependencyTag.values()) {
                 deps = word.getWordsThatAreDependencyOfThis(tag);
                 if (deps.size() > 0) {
-                    words += tag.name() + "OF ";
+                    words += tag.name() + " OF ";
                     for (IWord depOfWord : deps) {
                         words += depOfWord.getText() + " ";
                     }
                 }
                 deps = word.getWordsThatAreDependentOnThis(tag);
                 if (deps.size() > 0) {
-                    words += tag.name() + "ON ";
+                    words += tag.name() + " ON ";
                     for (IWord depOnWord : deps) {
-                        words += depOnWord + " ";
+                        words += depOnWord.getText() + " ";
                     }
                 }
             }
@@ -89,7 +145,7 @@ public class DependencyExtractionAgent extends DependencyAgent {
 //                    System.out.println("Got relation");
 //                    String out = word.getText() + " " + listToString(verbs);
 //                    System.out.println(out);
-//                }  
+//                }
 //            }
         }
     }
