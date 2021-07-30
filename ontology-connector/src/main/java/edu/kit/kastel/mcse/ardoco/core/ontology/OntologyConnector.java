@@ -638,7 +638,6 @@ public class OntologyConnector {
         try {
             var optIndividual = getIndividualWithStatement(name);
             if (optIndividual.isPresent()) {
-                System.out.println(name);
                 return optIndividual;
             }
         } finally {
