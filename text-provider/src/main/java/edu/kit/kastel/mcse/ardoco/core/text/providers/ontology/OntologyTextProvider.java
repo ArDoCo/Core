@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 public class OntologyTextProvider implements ITextConnector {
     private static final String TEXT_ONTOLOGY_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text.owl";
 
-    private static final boolean USE_CACHED = true;
+    private static final boolean USE_CACHED = false;
 
     private OntologyConnector ontologyConnector;
 
