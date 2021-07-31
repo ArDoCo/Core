@@ -23,17 +23,17 @@ public class OntologyWord implements IWord {
     private OntologyConnector ontologyConnector;
     private Individual wordIndividual;
 
-    private static DatatypeProperty textProperty = null;
-    private static DatatypeProperty posProperty = null;
-    private static DatatypeProperty lemmaProperty = null;
-    private static DatatypeProperty positionProperty = null;
-    private static DatatypeProperty sentenceProperty = null;
-    private static OntProperty hasItem = null;
-    private static ObjectProperty hasNext = null;
-    private static ObjectProperty hasPrevious = null;
-    private static ObjectProperty dependencySourceProperty = null;
-    private static ObjectProperty dependencyTargetProperty = null;
-    private static AnnotationProperty dependencyTypeProperty = null;
+    private DatatypeProperty textProperty = null;
+    private DatatypeProperty posProperty = null;
+    private DatatypeProperty lemmaProperty = null;
+    private DatatypeProperty positionProperty = null;
+    private DatatypeProperty sentenceProperty = null;
+    private OntProperty hasItem = null;
+    private ObjectProperty hasNext = null;
+    private ObjectProperty hasPrevious = null;
+    private ObjectProperty dependencySourceProperty = null;
+    private ObjectProperty dependencyTargetProperty = null;
+    private AnnotationProperty dependencyTypeProperty = null;
 
     private OntologyWord(OntologyConnector ontologyConnector, Individual wordIndividual) {
         this.ontologyConnector = ontologyConnector;
@@ -44,14 +44,12 @@ public class OntologyWord implements IWord {
         if (ontologyConnector == null || wordIndividual == null) {
             return null;
         }
-        if (textProperty == null) {
-            // if textProperty is null, we assume we need to initialize the static variables
-            init(ontologyConnector);
-        }
-        return new OntologyWord(ontologyConnector, wordIndividual);
+        var ontoWord = new OntologyWord(ontologyConnector, wordIndividual);
+        ontoWord.init(ontologyConnector);
+        return ontoWord;
     }
 
-    private static void init(OntologyConnector ontologyConnector) {
+    private void init(OntologyConnector ontologyConnector) {
         textProperty = ontologyConnector.getDataProperty("has text").orElseThrow();
         posProperty = ontologyConnector.getDataProperty("has POS").orElseThrow();
         lemmaProperty = ontologyConnector.getDataProperty("has lemma").orElseThrow();
