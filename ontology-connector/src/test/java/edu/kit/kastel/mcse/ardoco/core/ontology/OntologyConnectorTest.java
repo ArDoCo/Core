@@ -44,7 +44,7 @@ class OntologyConnectorTest {
     private OntologyConnector ontologyConnector;
 
     private static OntologyConnector createOntologyConnector(String ontologyPath) {
-        return new SparqlOntologyConnector(ontologyPath);
+        return new OntologyConnector(ontologyPath);
     }
 
     @BeforeEach

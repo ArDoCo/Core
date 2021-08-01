@@ -31,7 +31,6 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.ontology.SparqlOntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
@@ -154,7 +153,7 @@ public final class Pipeline {
         long startTime = System.currentTimeMillis();
         long prevStartTime = System.currentTimeMillis();
 
-        var ontoConnector = new SparqlOntologyConnector(inputModel.getAbsolutePath());
+        var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
         logger.info("Preparing and processing text input.");
         IText annotatedText = getAnnotatedText(inputText, providedTextOntology, ontoConnector);
