@@ -251,9 +251,9 @@ public final class Pipeline {
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
-        IExecutionStage hardCodedModelExtractor = new ModelProvider(modelConnector);
-        hardCodedModelExtractor.exec();
-        return hardCodedModelExtractor.getBlackboard().getModelState();
+        IExecutionStage modelExtractor = new ModelProvider(modelConnector);
+        modelExtractor.exec();
+        return modelExtractor.getBlackboard().getModelState();
     }
 
     private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {
