@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyInterface;
 public class OntologyWord implements IWord {
     private static Logger logger = LogManager.getLogger(OntologyWord.class);
 
-    private static OntologyConnector ontologyConnector;
+    private static OntologyConnector ontologyConnector = null;
 
     private static String textPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_2abdbab4_07a1_44e4_86b4_1dd2db60d093";
     private static String posPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_4a42b4d3_f585_4d3a_ac8d_12efcd2f41ed";
