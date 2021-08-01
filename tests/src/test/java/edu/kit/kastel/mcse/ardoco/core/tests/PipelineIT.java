@@ -63,7 +63,7 @@ class PipelineIT {
     }
 
     @Test
-    @DisplayName("Integration Test with wrong text")
+    @DisplayName("Integration Test with wrong model")
     void pipelineWithNonexistentModelIT() {
         String[] args = { "-n", NAME, "-m", "NONEXISTENT", "-t", TEXT, "-o", OUTPUT };
         Assertions.assertNotNull(args);
