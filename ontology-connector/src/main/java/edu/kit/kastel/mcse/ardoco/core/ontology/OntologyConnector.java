@@ -57,7 +57,7 @@ import org.eclipse.collections.api.list.MutableList;
  * @author Jan Keim
  *
  */
-public class OntologyConnector {
+public class OntologyConnector implements OntologyInterface {
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
 
     // Needs to be DL! Otherwise, classes are seen as individual as well, which might have negative affects
@@ -91,7 +91,7 @@ public class OntologyConnector {
      * @param defaultNameSpaceUri The default namespace URI
      * @return An OntologyConnector based on no existing ontology
      */
-    public static OntologyConnector createWithEmptyOntology(String defaultNameSpaceUri) {
+    public static OntologyInterface createWithEmptyOntology(String defaultNameSpaceUri) {
         var ontologyConnector = new OntologyConnector();
         ontologyConnector.ontology = ontologyConnector.ontModel.createOntology(defaultNameSpaceUri);
         ontologyConnector.ontModel.setNsPrefix("", defaultNameSpaceUri);
@@ -105,6 +105,7 @@ public class OntologyConnector {
      * @return <code>true</code> if the ontology is valid and has no conflicts, <code>false</code> if there are
      *         conflicts
      */
+    @Override
     public boolean validateOntology() {
         var validationInfModel = ModelFactory.createRDFSModel(ontModel);
         ValidityReport validity = validationInfModel.validate();
@@ -124,6 +125,7 @@ public class OntologyConnector {
      * @param prefix the new prefix that should be able to use
      * @param uri    the URI that the prefix should be resolved to
      */
+    @Override
     public void setNsPrefix(String prefix, String uri) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -139,6 +141,7 @@ public class OntologyConnector {
      * @param file String containing the path of the file the ontology should be saved to
      * @return true if saving was successful, otherwise false is returned
      */
+    @Override
     public boolean save(String file) {
         return save(file, Lang.RDFXML);
     }
@@ -150,6 +153,7 @@ public class OntologyConnector {
      * @param language The language the file should be written in
      * @return true if saving was successful, otherwise false is returned
      */
+    @Override
     public boolean save(String file, Lang language) {
         if (file == null || file.isEmpty()) {
             return false;
@@ -201,6 +205,7 @@ public class OntologyConnector {
      *
      * @param importIRI the IRI of the ontology that should be imported
      */
+    @Override
     public void addOntologyImport(String importIRI) {
         var hasOntologyLoaded = false;
         ontModel.enterCriticalSection(Lock.READ);
@@ -232,6 +237,7 @@ public class OntologyConnector {
      * @param importIri Iri that should be checked
      * @return True if imported, else False
      */
+    @Override
     public boolean hasImport(String importIri) {
         Set<String> importedModels = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
@@ -287,6 +293,7 @@ public class OntologyConnector {
      * @param suffix suffix that should be used
      * @return uri after expansion.
      */
+    @Override
     public String createUri(String prefix, String suffix) {
         String encodedSuffix = suffix;
         try {
@@ -313,6 +320,7 @@ public class OntologyConnector {
      * @param className Label or Iri of the wanted class
      * @return Optional containing the given class. Returns an empty optional, if the class could not be found
      */
+    @Override
     public Optional<OntClass> getClass(String className) {
         // first look for usage of className as label
         ontModel.enterCriticalSection(Lock.READ);
@@ -354,6 +362,7 @@ public class OntologyConnector {
      * @param prefix    Prefix of the namespace the class should be contained in.
      * @return {@link Optional} containing the wanted class if it was found. Else, returns an empty {@link Optional}
      */
+    @Override
     public Optional<OntClass> getClass(String className, String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             prefix = DEFAULT_PREFIX;
@@ -399,6 +408,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing the {@link OntClass} that corresponds to the given iri. Empty Optional if no
      *         class exists.
      */
+    @Override
     public Optional<OntClass> getClassByIri(String iri) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -415,6 +425,7 @@ public class OntologyConnector {
      * @param className Name of the class that should be created
      * @return created class
      */
+    @Override
     public OntClass addClass(String className) {
         Optional<OntClass> clazzOpt = getClass(className);
         if (clazzOpt.isPresent()) {
@@ -439,6 +450,7 @@ public class OntologyConnector {
      * @param iri Iri of the class that should be added
      * @return {@link OntClass} with the given Iri
      */
+    @Override
     public OntClass addClassByIri(String iri) {
         Optional<OntClass> clazz = getClassByIri(iri);
         if (clazz.isPresent()) {
@@ -466,6 +478,7 @@ public class OntologyConnector {
      * @param subClass   class that should be subclass of the other given class/resource
      * @param superClass class/resource that should be superclass of the other given class
      */
+    @Override
     public void addSuperClass(OntClass subClass, Resource superClass) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -481,6 +494,7 @@ public class OntologyConnector {
      * @param subClass   class that should be subclass of the other given class/resource
      * @param superClass class/resource that should be superclass of the other given class
      */
+    @Override
     public void addSuperClassExclusive(OntClass subClass, Resource superClass) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -496,6 +510,7 @@ public class OntologyConnector {
      * @param className      name of the class that should be subclass of the other given class/resource
      * @param superClassName name of the class that should be superclass of the other given class
      */
+    @Override
     public OntClass addSuperClass(String className, String superClassName) {
         Optional<OntClass> superClassOpt = getClass(superClassName);
         if (superClassOpt.isPresent()) {
@@ -512,6 +527,7 @@ public class OntologyConnector {
      * @param className  name of the class that should be subclass of the other given class/resource
      * @param superClass class that should be superclass of the other given class
      */
+    @Override
     public OntClass addSubClass(String className, OntClass superClass) {
         OntClass clazz = addClass(className);
         ontModel.enterCriticalSection(Lock.WRITE);
@@ -529,6 +545,7 @@ public class OntologyConnector {
      * @param subClass   class that should be subclass of the other given class/resource
      * @param superClass class that should be superclass of the other given class
      */
+    @Override
     public void addSubClass(OntClass subClass, OntClass superClass) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -545,6 +562,7 @@ public class OntologyConnector {
      * @param superClass super-class
      * @return True if sub-class and super-class are related correspondingly
      */
+    @Override
     public boolean classIsSubClassOf(OntClass clazz, OntClass superClass) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -560,6 +578,7 @@ public class OntologyConnector {
      * @param clazz      previous sub-class
      * @param superClass previous super-class
      */
+    @Override
     public void removeSubClassing(OntClass clazz, OntClass superClass) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -576,6 +595,7 @@ public class OntologyConnector {
      * @param className class to look for
      * @return True if there is a class with the given name. Else, False
      */
+    @Override
     public boolean containsClass(String className) {
         return getClass(className).isPresent();
     }
@@ -588,6 +608,7 @@ public class OntologyConnector {
      * @param prefix    prefix of the class
      * @return True if there is a class with the given name and prefix. Else, False
      */
+    @Override
     public boolean containsClass(String className, String prefix) {
         return getClass(className, prefix).isPresent();
     }
@@ -603,6 +624,7 @@ public class OntologyConnector {
      * @param uri        Uri to check
      * @return True if this individual has the given class as one of its types.
      */
+    @Override
     public boolean hasOntClass(Individual individual, String uri) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -612,6 +634,7 @@ public class OntologyConnector {
         }
     }
 
+    @Override
     public boolean hasOntClass(Individual individual, String prefix, String localname) {
         if (prefix == null || prefix.isBlank()) {
             prefix = DEFAULT_PREFIX;
@@ -632,6 +655,7 @@ public class OntologyConnector {
      * @param name name of the individual
      * @return Optional with the individual if it exists. Otherwise, empty Optional.
      */
+    @Override
     public Optional<Individual> getIndividual(String name) {
         // first look for usage of name as label
         ontModel.enterCriticalSection(Lock.READ);
@@ -680,6 +704,7 @@ public class OntologyConnector {
      * @param iri iri of the individual
      * @return Optional with the individual if it exists. Otherwise, empty Optional.
      */
+    @Override
     public Optional<Individual> getIndividualByIri(String iri) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -696,6 +721,7 @@ public class OntologyConnector {
      * @param className Name of the class
      * @return List of Individuals for the given class (name)
      */
+    @Override
     public List<Individual> getIndividualsOfClass(String className) {
         Optional<OntClass> optClass = getClass(className);
         if (!optClass.isPresent()) {
@@ -711,6 +737,7 @@ public class OntologyConnector {
      * @param clazz Class of the individuals that should be returned
      * @return List of individuals with the given class.
      */
+    @Override
     public List<Individual> getIndividualsOfClass(OntClass clazz) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -726,6 +753,7 @@ public class OntologyConnector {
      * @param className name of the class to retrieve individuals from
      * @return List of Individuals for the given class (name), including inferred ones
      */
+    @Override
     public ImmutableList<Individual> getInferredIndividualsOfClass(String className) {
         Optional<OntClass> optClass = getClass(className);
         if (!optClass.isPresent()) {
@@ -770,6 +798,7 @@ public class OntologyConnector {
      * @param name Name of the individual
      * @return the Individual with the given name
      */
+    @Override
     public Individual addIndividual(String name) {
         var uri = generateRandomURI(DEFAULT_PREFIX);
 
@@ -799,6 +828,7 @@ public class OntologyConnector {
      *
      * @param name Name of the individual
      */
+    @Override
     public void removeIndividual(String name) {
         var optIndividual = getIndividual(name);
         if (optIndividual.isPresent()) {
@@ -816,6 +846,7 @@ public class OntologyConnector {
      *
      * @param name Name of the individual
      */
+    @Override
     public void removeIndividualByUri(String uri) {
         var optIndividual = getIndividualByIri(uri);
         if (optIndividual.isPresent()) {
@@ -833,6 +864,7 @@ public class OntologyConnector {
      *
      * @param individual the individual
      */
+    @Override
     public void removeIndividual(Individual individual) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -849,6 +881,7 @@ public class OntologyConnector {
      * @param clazz Class the individual should be added to
      * @return the individual corresponding to the name. If it did not exist before, it is the newly created individual
      */
+    @Override
     public Individual addIndividualToClass(String name, OntClass clazz) {
         var individual = addIndividual(name);
 
@@ -870,6 +903,7 @@ public class OntologyConnector {
      * @param clazz Class the individual should be exclusively added to
      * @return the individual corresponding to the name. If it did not exist before, it is the newly created individual
      */
+    @Override
     public Individual setIndividualClass(String name, OntClass clazz) {
         var individual = addIndividual(name);
 
@@ -893,6 +927,7 @@ public class OntologyConnector {
      * @param label Label of the list that should be added
      * @return List that is empty having the specified label. Overwrites/deletes preexisting lists with same label.
      */
+    @Override
     public OrderedOntologyList addEmptyList(String label) {
         listFactory.checkListImport();
         var list = listFactory.createFromLabel(label);
@@ -909,6 +944,7 @@ public class OntologyConnector {
      * @return List that contains the provided members and that has the specified label. Overwrites/deletes preexisting
      *         lists with same label.
      */
+    @Override
     public OrderedOntologyList addList(String label, List<Individual> members) {
         listFactory.checkListImport();
         var list = addEmptyList(label);
@@ -923,6 +959,7 @@ public class OntologyConnector {
      * @param name Name/label of the list
      * @return Optional containing the list. Empty Optional, if no list with that name was found.
      */
+    @Override
     public Optional<OrderedOntologyList> getList(String name) {
         listFactory.checkListImport();
         var individualOpt = getIndividual(name);
@@ -938,6 +975,7 @@ public class OntologyConnector {
      * @param uri Uri/Iri of the List
      * @return Optional containing the list with that uri. Empty Optional, if no list with that uri was found.
      */
+    @Override
     public Optional<OrderedOntologyList> getListByIri(String uri) {
         listFactory.checkListImport();
         var listIndividualOpt = getIndividualByIri(uri);
@@ -954,6 +992,7 @@ public class OntologyConnector {
      * @param individual Individual that should be transformed into an {@link OrderedOntologyList}
      * @return Optional containing the list; empty Optional in case anything went wrong.
      */
+    @Override
     public Optional<OrderedOntologyList> transformIntoOrderedOntologyList(Individual individual) {
         return listFactory.getOrderedListOntologyFromIndividual(individual);
     }
@@ -970,6 +1009,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing a property with the given name. If no such property is found, the
      *         {@link Optional} is empty.
      */
+    @Override
     public Optional<OntProperty> getProperty(String propertyName) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -1010,6 +1050,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing a property with the given name and prefix. If no such property is found, the
      *         {@link Optional} is empty.
      */
+    @Override
     public Optional<OntProperty> getProperty(String propertyName, String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             prefix = DEFAULT_PREFIX;
@@ -1026,6 +1067,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing a property with the given iri. If no such property is found, the
      *         {@link Optional} is empty.
      */
+    @Override
     public Optional<OntProperty> getPropertyByIri(String propertyIri) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -1044,6 +1086,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing a {@link DatatypeProperty} with the given name. If no such property is found,
      *         the {@link Optional} is empty.
      */
+    @Override
     public Optional<DatatypeProperty> getDataProperty(String dataPropertyName) {
         var propertyOpt = getProperty(dataPropertyName);
         return checkOptionalAndTransformIntoType(propertyOpt, DatatypeProperty.class);
@@ -1056,6 +1099,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing a {@link ObjectProperty} with the given name. If no such property is found,
      *         the {@link Optional} is empty.
      */
+    @Override
     public Optional<ObjectProperty> getObjectProperty(String objectPropertyName) {
         var propertyOpt = getProperty(objectPropertyName);
         return checkOptionalAndTransformIntoType(propertyOpt, ObjectProperty.class);
@@ -1068,6 +1112,7 @@ public class OntologyConnector {
      * @return {@link Optional} containing a {@link AnnotationProperty} with the given name. If no such property is
      *         found, the {@link Optional} is empty.
      */
+    @Override
     public Optional<AnnotationProperty> getAnnotationProperty(String annotationPropertyName) {
         var propertyOpt = getProperty(annotationPropertyName);
         return checkOptionalAndTransformIntoType(propertyOpt, AnnotationProperty.class);
@@ -1080,6 +1125,7 @@ public class OntologyConnector {
      * @param name Name of the property
      * @return the created or pre-existing OntProperty
      */
+    @Override
     public OntProperty addProperty(String name) {
         String uri = createUri(DEFAULT_PREFIX, name);
 
@@ -1098,6 +1144,7 @@ public class OntologyConnector {
      * @param name Name of the property
      * @return the created or pre-existing DatatypeProperty
      */
+    @Override
     public DatatypeProperty addDataProperty(String name) {
         String uri = createUri(DEFAULT_PREFIX, name);
         ontModel.enterCriticalSection(Lock.WRITE);
@@ -1115,6 +1162,7 @@ public class OntologyConnector {
      * @param name Name of the property
      * @return the created or pre-existing ObjectProperty
      */
+    @Override
     public ObjectProperty addObjectProperty(String name) {
         String uri = createUri(DEFAULT_PREFIX, name);
         ontModel.enterCriticalSection(Lock.WRITE);
@@ -1132,6 +1180,7 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
+    @Override
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, String value) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1148,6 +1197,7 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
+    @Override
     public void setPropertyToIndividual(Individual individual, OntProperty property, String value) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1165,6 +1215,7 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      * @param language   language of the property value
      */
+    @Override
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1182,6 +1233,7 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      * @param language   language of the property value
      */
+    @Override
     public void setPropertyToIndividual(Individual individual, OntProperty property, String value, String language) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1198,6 +1250,7 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
+    @Override
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1214,6 +1267,7 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
+    @Override
     public void setPropertyToIndividual(Individual individual, OntProperty property, RDFNode value) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1230,6 +1284,7 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
+    @Override
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, int value) {
         return addPropertyToIndividual(individual, property, value, XSD.integer.toString());
     }
@@ -1241,6 +1296,7 @@ public class OntologyConnector {
      * @param property   Property that should be added
      * @param value      Value that should be set for that property
      */
+    @Override
     public void setPropertyToIndividual(Individual individual, OntProperty property, int value) {
         addPropertyToIndividual(individual, property, value, XSD.integer.toString());
     }
@@ -1253,6 +1309,7 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      * @param type       Type of the value
      */
+    @Override
     public Resource addPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1271,6 +1328,7 @@ public class OntologyConnector {
      * @param value      Value that should be set for that property
      * @param type       Type of the value
      */
+    @Override
     public void setPropertyToIndividual(Individual individual, OntProperty property, Object value, String type) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1290,6 +1348,7 @@ public class OntologyConnector {
      * @param property   Property of which the value should be retrieved
      * @return Value of the given Property for the given Individual
      */
+    @Override
     public RDFNode getPropertyValue(Individual individual, OntProperty property) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -1308,6 +1367,7 @@ public class OntologyConnector {
      * @param property   Property of which the value should be retrieved
      * @return {@link Optional} containing the String value. Empty, if no String value could be retrieved
      */
+    @Override
     public Optional<String> getPropertyStringValue(Individual individual, OntProperty property) {
         var node = getPropertyValue(individual, property);
 
@@ -1339,6 +1399,7 @@ public class OntologyConnector {
      * @param property   Property of which the value should be retrieved
      * @return {@link Optional} containing the Integer value. Empty, if no Integer value could be retrieved
      */
+    @Override
     public Optional<Integer> getPropertyIntValue(Individual individual, OntProperty property) {
         var node = getPropertyValue(individual, property);
 
@@ -1366,6 +1427,7 @@ public class OntologyConnector {
      * @param resource Resource
      * @param property property
      */
+    @Override
     public void removeAllOfProperty(Resource resource, OntProperty property) {
         ontModel.enterCriticalSection(Lock.WRITE);
         try {
@@ -1383,6 +1445,7 @@ public class OntologyConnector {
      * @param object   object that should be contained
      * @return Optional containing the first non-null subject. Empty Optional, if none is found
      */
+    @Override
     public Optional<Resource> getFirstSubjectOf(OntProperty property, RDFNode object) {
         StmtIterator stmtIterator = null;
         ontModel.enterCriticalSection(Lock.READ);
@@ -1418,6 +1481,7 @@ public class OntologyConnector {
      * @param object   object that should be contained
      * @return List of extracted subjects
      */
+    @Override
     public List<Resource> getSubjectsOf(OntProperty property, OntResource object) {
         StmtIterator stmtIterator = null;
 
@@ -1455,6 +1519,7 @@ public class OntologyConnector {
      * @param property Property used to look for
      * @return Optional containing the first non-null object. Empty Optional, if none is found
      */
+    @Override
     public Optional<RDFNode> getFirstObjectOf(OntResource subject, OntProperty property) {
         StmtIterator stmtIterator = null;
 
@@ -1490,6 +1555,7 @@ public class OntologyConnector {
      * @param property Property used to look for
      * @return List of extracted objects
      */
+    @Override
     public ImmutableList<RDFNode> getObjectsOf(OntResource subject, OntProperty property) {
         StmtIterator stmtIterator = null;
 
@@ -1532,6 +1598,7 @@ public class OntologyConnector {
      * @param targetType class of the target type
      * @return Optional containing the transformed resource. If transformation was unsuccessful, the Optional is empty.
      */
+    @Override
     public <S extends RDFNode, T extends Resource> Optional<T> transformType(S from, Class<T> targetType) {
         return Optional.ofNullable(transformTypeNullable(from, targetType));
     }
@@ -1546,6 +1613,7 @@ public class OntologyConnector {
      * @param targetType class of the target type
      * @return The transformed resource. If transformation was unsuccessful, returns null.
      */
+    @Override
     public <S extends RDFNode, T extends Resource> T transformTypeNullable(S from, Class<T> targetType) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -1565,6 +1633,7 @@ public class OntologyConnector {
      * @param node Node that should be transformed
      * @return The transformed Individual. If transformation was unsuccessful, returns null.
      */
+    @Override
     public Optional<Individual> transformIntoIndividual(RDFNode node) {
         return transformType(node, Individual.class);
     }
@@ -1583,6 +1652,7 @@ public class OntologyConnector {
      * @param resource Resource
      * @return The localname of this property within its namespace.
      */
+    @Override
     public String getLocalName(OntResource resource) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -1599,6 +1669,7 @@ public class OntologyConnector {
      * @param resource the resource
      * @return a label for the given resource or null if none is found
      */
+    @Override
     public String getLabel(OntResource resource) {
         return getLabel(resource, null);
     }
@@ -1610,6 +1681,7 @@ public class OntologyConnector {
      * @param lang     the language attribute
      * @return a label for the given resource or null if none is found
      */
+    @Override
     public String getLabel(OntResource resource, String lang) {
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -1624,6 +1696,7 @@ public class OntologyConnector {
      *
      * @return random URI
      */
+    @Override
     public String generateRandomURI() {
         return generateRandomURI(DEFAULT_PREFIX);
     }
@@ -1634,6 +1707,7 @@ public class OntologyConnector {
      * @param prefix Prefix that should be used for namespace
      * @return random URI with the given prefix
      */
+    @Override
     public String generateRandomURI(String prefix) {
         return createUri(prefix, OntologyUtil.generateRandomID());
     }
