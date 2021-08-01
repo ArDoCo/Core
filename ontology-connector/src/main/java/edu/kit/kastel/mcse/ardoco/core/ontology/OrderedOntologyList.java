@@ -37,7 +37,7 @@ public class OrderedOntologyList implements List<Individual> {
     private static final String LIST_PROPERTY_INDEX = "index";
     private static final String LIST_PROPERTY_ITEM = "item";
 
-    private final OntologyConnector oc;
+    private final OntologyInterface oc;
     private final Individual listIndividual;
 
     private final String label;
@@ -52,13 +52,13 @@ public class OrderedOntologyList implements List<Individual> {
      *
      */
     protected static class Factory {
-        private OntologyConnector oc;
+        private OntologyInterface oc;
 
-        protected static Factory get(OntologyConnector oc) {
+        protected static Factory get(OntologyInterface oc) {
             return new Factory(oc);
         }
 
-        private Factory(OntologyConnector oc) {
+        private Factory(OntologyInterface oc) {
             this.oc = oc;
             oc.setNsPrefix(LIST_PREFIX, LIST_BASE_URI);
         }
@@ -100,7 +100,7 @@ public class OrderedOntologyList implements List<Individual> {
 
     }
 
-    private OrderedOntologyList(OntologyConnector oc, Individual listIndividual) {
+    private OrderedOntologyList(OntologyInterface oc, Individual listIndividual) {
         this.oc = oc;
         this.listIndividual = listIndividual;
         var potLabel = oc.getLabel(listIndividual);
@@ -111,7 +111,7 @@ public class OrderedOntologyList implements List<Individual> {
         }
     }
 
-    private OrderedOntologyList(OntologyConnector oc, String label) {
+    private OrderedOntologyList(OntologyInterface oc, String label) {
         this.oc = oc;
         this.label = label;
         var listClassUri = oc.createUri(LIST_PREFIX, LIST_CLASS);

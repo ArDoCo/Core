@@ -49,7 +49,7 @@ public class OntologyUtil {
      * @param prefix Prefix that should be used for namespace
      * @return random URI with the given prefix
      */
-    public static String generateRandomURI(OntologyConnector oc, String prefix) {
+    public static String generateRandomURI(OntologyInterface oc, String prefix) {
         return oc.createUri(prefix, OntologyUtil.generateRandomID());
     }
 

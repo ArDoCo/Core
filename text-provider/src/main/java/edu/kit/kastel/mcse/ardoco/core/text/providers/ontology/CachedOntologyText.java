@@ -10,6 +10,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyInterface;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OrderedOntologyList;
 
 public class CachedOntologyText implements IText {
@@ -33,7 +34,7 @@ public class CachedOntologyText implements IText {
         return new CachedOntologyText(ontologyText);
     }
 
-    protected static Optional<Individual> getTextIndividual(OntologyConnector ontologyConnector) {
+    protected static Optional<Individual> getTextIndividual(OntologyInterface ontologyConnector) {
         var textIndividuals = ontologyConnector.getIndividualsOfClass("TextDocument");
         if (textIndividuals.isEmpty()) {
             return Optional.empty();

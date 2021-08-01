@@ -18,9 +18,9 @@ class OrderedOntologyListTest {
 
     private static final String TEST_LIST_LABEL = "TestList";
 
-    private OntologyConnector ontologyConnector;
+    private OntologyInterface ontologyConnector;
 
-    private static OntologyConnector createOntologyConnector(String ontologyPath) {
+    private static OntologyInterface createOntologyConnector(String ontologyPath) {
         return new OntologyConnector(ontologyPath);
     }
 
