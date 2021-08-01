@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyInterface;
 
 public class OntologyWord implements IWord {
     private OntologyConnector ontologyConnector;
@@ -49,7 +50,7 @@ public class OntologyWord implements IWord {
         return ontoWord;
     }
 
-    private void init(OntologyConnector ontologyConnector) {
+    private void init(OntologyInterface ontologyConnector) {
         textProperty = ontologyConnector.getDataProperty("has text").orElseThrow();
         posProperty = ontologyConnector.getDataProperty("has POS").orElseThrow();
         lemmaProperty = ontologyConnector.getDataProperty("has lemma").orElseThrow();

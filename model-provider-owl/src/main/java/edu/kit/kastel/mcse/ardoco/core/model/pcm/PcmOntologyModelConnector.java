@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyInterface;
 
 /**
  * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.
@@ -29,7 +30,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private static Logger logger = LogManager.getLogger(PcmOntologyModelConnector.class);
 
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
-    private OntologyConnector ontologyConnector;
+    private OntologyInterface ontologyConnector;
 
     /**
      * Instantiates a new pcm ontology model connector.
@@ -40,7 +41,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
         ontologyConnector = new OntologyConnector(ontologyUrl);
     }
 
-    public PcmOntologyModelConnector(OntologyConnector ontologyConnector) {
+    public PcmOntologyModelConnector(OntologyInterface ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
     }
 
