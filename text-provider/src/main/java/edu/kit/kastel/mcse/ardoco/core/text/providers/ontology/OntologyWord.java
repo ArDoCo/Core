@@ -24,6 +24,18 @@ public class OntologyWord implements IWord {
     private OntologyConnector ontologyConnector;
     private Individual wordIndividual;
 
+    private static String textPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_2abdbab4_07a1_44e4_86b4_1dd2db60d093";
+    private static String posPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_4a42b4d3_f585_4d3a_ac8d_12efcd2f41ed";
+    private static String lemmaPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_8641228e_89c1_4094_8770_d6db4cff934d";
+    private static String positionPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_24a1fab1_8d82_4a64_a569_26181935ae92";
+    private static String sentencePropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_cca1bf08_930a_4c38_b1b4_4b127db235a3";
+    private static String hasItemPropertyUri = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#item";
+    private static String hasNextPropertyUri = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#next";
+    private static String hasPreviousPropertyUri = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#previous";
+    private static String depSourcePropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_338dfb91_e78b_4145_bf8c_a952e927b6e9";
+    private static String depTargetPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_82e64c17_5998_4d50_941f_a2b859c1a95b";
+    private static String depTypePropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLAnnotationProperty_79e191d9_7e85_461e_ae42_62df5078719b";
+
     private DatatypeProperty textProperty = null;
     private DatatypeProperty posProperty = null;
     private DatatypeProperty lemmaProperty = null;
@@ -51,17 +63,17 @@ public class OntologyWord implements IWord {
     }
 
     private void init(OntologyInterface ontologyConnector) {
-        textProperty = ontologyConnector.getDataProperty("has text").orElseThrow();
-        posProperty = ontologyConnector.getDataProperty("has POS").orElseThrow();
-        lemmaProperty = ontologyConnector.getDataProperty("has lemma").orElseThrow();
-        positionProperty = ontologyConnector.getDataProperty("has position").orElseThrow();
-        sentenceProperty = ontologyConnector.getDataProperty("contained in sentence").orElseThrow();
-        hasItem = ontologyConnector.getProperty("has item").orElseThrow();
-        hasNext = ontologyConnector.getObjectProperty("has next").orElseThrow();
-        hasPrevious = ontologyConnector.getObjectProperty("has previous").orElseThrow();
-        dependencySourceProperty = ontologyConnector.getObjectProperty("has source").orElseThrow();
-        dependencyTargetProperty = ontologyConnector.getObjectProperty("has target").orElseThrow();
-        dependencyTypeProperty = ontologyConnector.getAnnotationProperty("dependencyType").orElseThrow();
+        textProperty = ontologyConnector.getPropertyByIri(textPropertyUri).orElseThrow().asDatatypeProperty();
+        posProperty = ontologyConnector.getPropertyByIri(posPropertyUri).orElseThrow().asDatatypeProperty();
+        lemmaProperty = ontologyConnector.getPropertyByIri(lemmaPropertyUri).orElseThrow().asDatatypeProperty();
+        positionProperty = ontologyConnector.getPropertyByIri(positionPropertyUri).orElseThrow().asDatatypeProperty();
+        sentenceProperty = ontologyConnector.getPropertyByIri(sentencePropertyUri).orElseThrow().asDatatypeProperty();
+        hasItem = ontologyConnector.getPropertyByIri(hasItemPropertyUri).orElseThrow();
+        hasNext = ontologyConnector.getPropertyByIri(hasNextPropertyUri).orElseThrow().asObjectProperty();
+        hasPrevious = ontologyConnector.getPropertyByIri(hasPreviousPropertyUri).orElseThrow().asObjectProperty();
+        dependencySourceProperty = ontologyConnector.getPropertyByIri(depSourcePropertyUri).orElseThrow().asObjectProperty();
+        dependencyTargetProperty = ontologyConnector.getPropertyByIri(depTargetPropertyUri).orElseThrow().asObjectProperty();
+        dependencyTypeProperty = ontologyConnector.getPropertyByIri(depTypePropertyUri).orElseThrow().asAnnotationProperty();
     }
 
     @Override
