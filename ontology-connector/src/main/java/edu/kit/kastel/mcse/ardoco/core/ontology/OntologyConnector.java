@@ -11,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -1710,6 +1711,23 @@ public class OntologyConnector implements OntologyInterface {
     @Override
     public String generateRandomURI(String prefix) {
         return createUri(prefix, OntologyUtil.generateRandomID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pathToOntology);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof OntologyConnector)) {
+            return false;
+        }
+        OntologyConnector other = (OntologyConnector) obj;
+        return Objects.equals(pathToOntology, other.pathToOntology);
     }
 
 }
