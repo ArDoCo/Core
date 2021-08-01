@@ -44,7 +44,7 @@ class OntologyConnectorTest {
     private OntologyConnector ontologyConnector;
 
     private static OntologyConnector createOntologyConnector(String ontologyPath) {
-        return new OntologyConnector(ontologyPath);
+        return new SparqlOntologyConnector(ontologyPath);
     }
 
     @BeforeEach
@@ -245,7 +245,7 @@ class OntologyConnectorTest {
     }
 
     @Test
-    @DisplayName("Test retrieval of object property")
+    @DisplayName("Test retrieval of data property")
     void getDataPropertyTest() {
         var property = ontologyConnector.getDataProperty(DATA_PROPERTY_LABEL);
         Assertions.assertTrue(property.isPresent(), "Could not find expected property.");

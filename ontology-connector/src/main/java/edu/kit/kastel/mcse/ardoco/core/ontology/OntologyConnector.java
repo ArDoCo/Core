@@ -61,16 +61,16 @@ public class OntologyConnector implements OntologyInterface {
     private static Logger logger = LogManager.getLogger(OntologyConnector.class);
 
     // Needs to be DL! Otherwise, classes are seen as individual as well, which might have negative affects
-    private static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
+    protected static OntModelSpec modelSpec = OntModelSpec.OWL_DL_MEM;
 
-    private static final String DEFAULT_PREFIX = "";
+    protected static final String DEFAULT_PREFIX = "";
 
-    private final OntModel ontModel;
-    private OrderedOntologyList.Factory listFactory;
+    protected final OntModel ontModel;
+    protected OrderedOntologyList.Factory listFactory;
 
-    private String pathToOntology;
-    private Ontology ontology;
-    private InfModel infModel;
+    protected String pathToOntology;
+    protected Ontology ontology;
+    protected InfModel infModel;
 
     public OntologyConnector(String ontologyUrl) {
         pathToOntology = ontologyUrl;
@@ -176,7 +176,7 @@ public class OntologyConnector implements OntologyInterface {
         return true;
     }
 
-    private static OntModel loadOntology(String ontologyUrl) {
+    protected static OntModel loadOntology(String ontologyUrl) {
         if (!ontologyUrl.startsWith("file") && !ontologyUrl.startsWith("https")) {
             var file = new File(ontologyUrl);
             if (!file.exists()) {
