@@ -76,7 +76,6 @@ public class OntologyConnector implements OntologyInterface {
 
     protected String pathToOntology;
     protected Ontology ontology;
-    protected InfModel infModel;
 
     public OntologyConnector(String ontologyUrl) {
         pathToOntology = ontologyUrl;
@@ -285,11 +284,8 @@ public class OntologyConnector implements OntologyInterface {
      * @return The InfModel for the ontology
      */
     private synchronized InfModel getInfModel() {
-        if (infModel == null) {
-            var reasoner = ReasonerRegistry.getOWLReasoner();
-            infModel = ModelFactory.createInfModel(reasoner, ontModel);
-        }
-        return infModel;
+        var reasoner = ReasonerRegistry.getOWLReasoner();
+        return ModelFactory.createInfModel(reasoner, ontModel);
     }
 
     /**
@@ -1728,7 +1724,7 @@ public class OntologyConnector implements OntologyInterface {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof OntologyConnector)) {
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         OntologyConnector other = (OntologyConnector) obj;
