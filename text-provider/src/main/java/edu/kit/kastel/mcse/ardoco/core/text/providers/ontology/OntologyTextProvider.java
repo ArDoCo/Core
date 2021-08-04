@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 public class OntologyTextProvider implements ITextConnector {
     private static final String TEXT_ONTOLOGY_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text.owl";
 
-    private static final boolean USE_CACHED = false;
+    private static boolean useCache = true;
 
     private OntologyConnector ontologyConnector;
 
@@ -58,6 +58,16 @@ public class OntologyTextProvider implements ITextConnector {
         return otp;
     }
 
+    /**
+     * Sets whether there should be caching used for the annotated text. Does not change the caching for previously
+     * returned annotated texts, only for future ones!
+     *
+     * @param useCache if caching should be used for the annotated text
+     */
+    public static void enableCache(boolean useCache) {
+        OntologyTextProvider.useCache = useCache;
+    }
+
     private void init() {
         ontologyConnector.addOntologyImport(TEXT_ONTOLOGY_IRI);
 
@@ -74,7 +84,6 @@ public class OntologyTextProvider implements ITextConnector {
         dependencySourceProperty = ontologyConnector.getObjectProperty("has source").orElseThrow();
         dependencyTargetProperty = ontologyConnector.getObjectProperty("has target").orElseThrow();
         dependencyTypeProperty = ontologyConnector.getAnnotationProperty("dependencyType").orElseThrow();
-
     }
 
     public void addText(IText text) {
@@ -149,7 +158,7 @@ public class OntologyTextProvider implements ITextConnector {
 
     @Override
     public IText getAnnotatedText() {
-        if (USE_CACHED) {
+        if (useCache) {
             return CachedOntologyText.get(ontologyConnector);
         } else {
             return OntologyText.get(ontologyConnector);
