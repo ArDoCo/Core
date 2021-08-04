@@ -324,21 +324,7 @@ public class OntologyConnector implements OntologyInterface {
      */
     @Override
     public Optional<OntClass> getClass(String className) {
-        // first look for usage of className as label
-        ontModel.enterCriticalSection(Lock.READ);
-        try {
-            var stmts = ontModel.listStatements(null, RDFS.label, className, null);
-            if (stmts.hasNext()) {
-                var resource = stmts.next().getSubject();
-                if (resource.canAs(OntClass.class)) {
-                    return Optional.of(resource.as(OntClass.class));
-                }
-            }
-        } finally {
-            ontModel.leaveCriticalSection();
-        }
-
-        // if the className was not a label, looks for usage of the className in the Iris
+        // look for usage of the className in the Iris
         Set<String> prefixes = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -353,6 +339,21 @@ public class OntologyConnector implements OntologyInterface {
                 return optClass;
             }
         }
+
+        // look for usage of className as label
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var stmts = ontModel.listStatements(null, RDFS.label, className, null);
+            if (stmts.hasNext()) {
+                var resource = stmts.next().getSubject();
+                if (resource.canAs(OntClass.class)) {
+                    return Optional.of(resource.as(OntClass.class));
+                }
+            }
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         return Optional.empty();
     }
 
@@ -659,18 +660,7 @@ public class OntologyConnector implements OntologyInterface {
      */
     @Override
     public Optional<Individual> getIndividual(String name) {
-        // first look for usage of name as label
-        ontModel.enterCriticalSection(Lock.READ);
-        try {
-            var optIndividual = getIndividualWithStatement(name);
-            if (optIndividual.isPresent()) {
-                return optIndividual;
-            }
-        } finally {
-            ontModel.leaveCriticalSection();
-        }
-
-        // if the name was not in a label, looks for usage of the name in the Iris
+        // look for usage of the name in the Iris
         Set<String> prefixes = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -685,6 +675,18 @@ public class OntologyConnector implements OntologyInterface {
                 return optIndividual;
             }
         }
+
+        // look for usage of name as label
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var optIndividual = getIndividualWithStatement(name);
+            if (optIndividual.isPresent()) {
+                return optIndividual;
+            }
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         return Optional.empty();
     }
 
@@ -1013,20 +1015,7 @@ public class OntologyConnector implements OntologyInterface {
      */
     @Override
     public Optional<OntProperty> getProperty(String propertyName) {
-        ontModel.enterCriticalSection(Lock.READ);
-        try {
-            var stmts = ontModel.listStatements(null, RDFS.label, propertyName, null);
-            if (stmts.hasNext()) {
-                var resource = stmts.next().getSubject();
-                if (resource.canAs(OntProperty.class)) {
-                    return Optional.of(resource.as(OntProperty.class));
-                }
-            }
-
-        } finally {
-            ontModel.leaveCriticalSection();
-        }
-
+        // look in localnames
         Set<String> prefixes = Sets.mutable.empty();
         ontModel.enterCriticalSection(Lock.READ);
         try {
@@ -1041,6 +1030,22 @@ public class OntologyConnector implements OntologyInterface {
                 return optProperty;
             }
         }
+
+        // look in labels
+        ontModel.enterCriticalSection(Lock.READ);
+        try {
+            var stmts = ontModel.listStatements(null, RDFS.label, propertyName, null);
+            if (stmts.hasNext()) {
+                var resource = stmts.next().getSubject();
+                if (resource.canAs(OntProperty.class)) {
+                    return Optional.of(resource.as(OntProperty.class));
+                }
+            }
+
+        } finally {
+            ontModel.leaveCriticalSection();
+        }
+
         return Optional.empty();
     }
 
