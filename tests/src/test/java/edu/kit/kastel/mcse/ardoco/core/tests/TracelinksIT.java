@@ -15,13 +15,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
-@RunWith(JUnitPlatform.class)
 class TracelinksIT {
     private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
 

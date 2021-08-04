@@ -75,10 +75,9 @@ public class InDepArcsExtractor extends TextExtractor {
 
         for (DependencyTag depTag : incomingDepArcs) {
 
-            if (DependencyTag.APPOS.equals(depTag) || DependencyTag.NSUBJ.equals(depTag) || DependencyTag.POSS.equals(depTag)) {
+            if (hasNortDependencies(depTag)) {
                 textState.addNort(n, n.getText(), probability);
-            } else if (DependencyTag.OBJ.equals(depTag) || DependencyTag.IOBJ.equals(depTag) || DependencyTag.NMOD.equals(depTag)
-                    || DependencyTag.NSUBJPASS.equals(depTag) || DependencyTag.POBJ.equals(depTag)) {
+            } else if (hasTypeOrNortDependencies(depTag)) {
                 if (WordHelper.hasIndirectDeterminerAsPreWord(n)) {
                     textState.addType(n, n.getText(), probability);
                 }
@@ -87,6 +86,15 @@ public class InDepArcsExtractor extends TextExtractor {
             }
         }
 
+    }
+
+    private boolean hasTypeOrNortDependencies(DependencyTag depTag) {
+        return DependencyTag.OBJ == depTag || DependencyTag.IOBJ == depTag || DependencyTag.NMOD == depTag || DependencyTag.NSUBJPASS == depTag
+                || DependencyTag.POBJ == depTag;
+    }
+
+    private boolean hasNortDependencies(DependencyTag depTag) {
+        return DependencyTag.APPOS == depTag || DependencyTag.NSUBJ == depTag || DependencyTag.POSS == depTag;
     }
 
 }

@@ -2,33 +2,32 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>core</artifactId>
-	<version>0.2-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>ArDoCo (Core) - The Consistency Analyzer</name>
-
-	<properties>
-		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
-		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-		<sonar.organization>ardoco</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
-		<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
-	</properties>
-
-	<repositories>
-		<repository>
-			<id>github</id>
-			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
-		</repository>
-	</repositories>
 
 	<parent>
 		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.1.5-SNAPSHOT</version>
 	</parent>
+
+	<artifactId>core</artifactId>
+	<version>0.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>ArDoCo (Core) - The Consistency Analyzer</name>
+
+	<modules>
+		<module>text-extractor</module>
+		<module>text-provider</module>
+		<module>text-provider-stanford</module>
+		<module>recommendation-generator</module>
+		<module>data-structures</module>
+		<module>pipeline</module>
+		<module>connection-generator</module>
+		<module>model-provider</module>
+		<module>model-provider-owl</module>
+		<module>util</module>
+		<module>ontology-connector</module>
+		<module>tests</module>
+	</modules>
 
 	<distributionManagement>
 		<repository>
@@ -43,47 +42,23 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<dependencies>
-		<!-- Eclipse collections -->
-		<dependency>
-			<groupId>org.eclipse.collections</groupId>
-			<artifactId>eclipse-collections-api</artifactId>
-			<version>10.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.collections</groupId>
-			<artifactId>eclipse-collections</artifactId>
-			<version>10.4.0</version>
-		</dependency>
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<!-- Apache Commons Lang -->
-		<dependency>
-		  <groupId>org.apache.commons</groupId>
-		  <artifactId>commons-lang3</artifactId>
-		</dependency>
-	</dependencies>
-
+	<properties>
+		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
+		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+		<sonar.organization>ardoco</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+		<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-
 			<dependency>
 				<groupId>org.kohsuke.metainf-services</groupId>
 				<artifactId>metainf-services</artifactId>
 				<version>1.8</version>
 				<optional>true</optional>
 			</dependency>
-
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>text-extractor</artifactId>
@@ -142,6 +117,44 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<dependencies>
+		<!-- Eclipse collections -->
+		<dependency>
+			<groupId>org.eclipse.collections</groupId>
+			<artifactId>eclipse-collections-api</artifactId>
+			<version>10.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.collections</groupId>
+			<artifactId>eclipse-collections</artifactId>
+			<version>10.4.0</version>
+		</dependency>
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.14.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.14.1</version>
+		</dependency>
+		<!-- Apache Commons Lang -->
+		<dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-lang3</artifactId>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>github</id>
+			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -182,7 +195,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<profiles>
 	   <profile>
 	     <id>coverage</id>
@@ -207,19 +220,4 @@
 	     </build>
 	   </profile>
 	</profiles>
-
-	<modules>
-		<module>text-extractor</module>
-		<module>text-provider</module>
-		<module>text-provider-stanford</module>
-		<module>recommendation-generator</module>
-		<module>data-structures</module>
-		<module>pipeline</module>
-		<module>connection-generator</module>
-		<module>model-provider</module>
-		<module>model-provider-owl</module>
-		<module>util</module>
-		<module>ontology-connector</module>
-		<module>tests</module>
-	</modules>
 </project>
