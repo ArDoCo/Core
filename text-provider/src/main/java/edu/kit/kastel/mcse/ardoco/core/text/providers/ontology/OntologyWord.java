@@ -36,17 +36,17 @@ public class OntologyWord implements IWord {
     private static String depTargetPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_82e64c17_5998_4d50_941f_a2b859c1a95b";
     private static String depTypePropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLAnnotationProperty_79e191d9_7e85_461e_ae42_62df5078719b";
 
-    private static OntProperty textProperty = null;
-    private static OntProperty posProperty = null;
-    private static OntProperty lemmaProperty = null;
-    private static OntProperty positionProperty = null;
-    private static OntProperty sentenceProperty = null;
-    private static OntProperty hasItem = null;
-    private static OntProperty hasNext = null;
-    private static OntProperty hasPrevious = null;
-    private static OntProperty dependencySourceProperty = null;
-    private static OntProperty dependencyTargetProperty = null;
-    private static OntProperty dependencyTypeProperty = null;
+    private OntProperty textProperty = null;
+    private OntProperty posProperty = null;
+    private OntProperty lemmaProperty = null;
+    private OntProperty positionProperty = null;
+    private OntProperty sentenceProperty = null;
+    private OntProperty hasItem = null;
+    private OntProperty hasNext = null;
+    private OntProperty hasPrevious = null;
+    private OntProperty dependencySourceProperty = null;
+    private OntProperty dependencyTargetProperty = null;
+    private OntProperty dependencyTypeProperty = null;
 
     private Individual wordIndividual;
 
@@ -64,16 +64,14 @@ public class OntologyWord implements IWord {
         if (!OntologyWord.ontologyConnector.equals(ontologyConnector)) {
             logger.warn("There is a change in the OntologyConnector. This might cause illegal states!");
             OntologyWord.ontologyConnector = ontologyConnector;
-            textProperty = null; // to renew the init below
         }
-        if (textProperty == null) {
-            // if textProperty is null, we assume we need to initialize the static variables
-            init(ontologyConnector);
-        }
-        return new OntologyWord(wordIndividual);
+
+        var ow = new OntologyWord(wordIndividual);
+        ow.init(ontologyConnector);
+        return ow;
     }
 
-    private static void init(OntologyInterface ontologyConnector) {
+    private void init(OntologyInterface ontologyConnector) {
         textProperty = ontologyConnector.getPropertyByIri(textPropertyUri).orElseThrow();
         posProperty = ontologyConnector.getPropertyByIri(posPropertyUri).orElseThrow();
         lemmaProperty = ontologyConnector.getPropertyByIri(lemmaPropertyUri).orElseThrow();
