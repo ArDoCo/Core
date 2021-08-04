@@ -3,11 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.jena.ontology.AnnotationProperty;
-import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
-import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
@@ -16,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
-public class OntologyTextProvider implements ITextConnector {
+public final class OntologyTextProvider implements ITextConnector {
     private static final String TEXT_ONTOLOGY_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text.owl";
 
     private static boolean useCache = true;
@@ -27,16 +25,16 @@ public class OntologyTextProvider implements ITextConnector {
     private OntClass wordClass;
     private OntClass dependencyClass;
 
-    private DatatypeProperty uuidProperty;
-    private DatatypeProperty textProperty;
-    private DatatypeProperty posProperty;
-    private DatatypeProperty lemmaProperty;
-    private DatatypeProperty positionProperty;
-    private DatatypeProperty sentenceProperty;
-    private ObjectProperty wordsProperty;
-    private ObjectProperty dependencySourceProperty;
-    private ObjectProperty dependencyTargetProperty;
-    private AnnotationProperty dependencyTypeProperty;
+    private OntProperty uuidProperty;
+    private OntProperty textProperty;
+    private OntProperty posProperty;
+    private OntProperty lemmaProperty;
+    private OntProperty positionProperty;
+    private OntProperty sentenceProperty;
+    private OntProperty wordsProperty;
+    private OntProperty dependencySourceProperty;
+    private OntProperty dependencyTargetProperty;
+    private OntProperty dependencyTypeProperty;
 
     private OntologyTextProvider(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
@@ -71,19 +69,19 @@ public class OntologyTextProvider implements ITextConnector {
     private void init() {
         ontologyConnector.addOntologyImport(TEXT_ONTOLOGY_IRI);
 
-        textClass = ontologyConnector.getClass("TextDocument").orElseThrow();
-        wordClass = ontologyConnector.getClass("Word").orElseThrow();
-        dependencyClass = ontologyConnector.getClass("WordDependency").orElseThrow();
-        uuidProperty = ontologyConnector.getDataProperty("uuid").orElseThrow();
-        textProperty = ontologyConnector.getDataProperty("has text").orElseThrow();
-        posProperty = ontologyConnector.getDataProperty("has POS").orElseThrow();
-        lemmaProperty = ontologyConnector.getDataProperty("has lemma").orElseThrow();
-        positionProperty = ontologyConnector.getDataProperty("has position").orElseThrow();
-        sentenceProperty = ontologyConnector.getDataProperty("contained in sentence").orElseThrow();
-        wordsProperty = ontologyConnector.getObjectProperty("has words").orElseThrow();
-        dependencySourceProperty = ontologyConnector.getObjectProperty("has source").orElseThrow();
-        dependencyTargetProperty = ontologyConnector.getObjectProperty("has target").orElseThrow();
-        dependencyTypeProperty = ontologyConnector.getAnnotationProperty("dependencyType").orElseThrow();
+        textClass = ontologyConnector.getClassByIri(CommonOntologyUris.TEXT_DOCUMENT_CLASS.getUri()).orElseThrow();
+        wordClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_CLASS.getUri()).orElseThrow();
+        dependencyClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_DEPENDENCY_CLASS.getUri()).orElseThrow();
+        uuidProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.UUID_PROPERTY.getUri()).orElseThrow();
+        textProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.TEXT_PROPERTY.getUri()).orElseThrow();
+        posProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POS_PROPERTY.getUri()).orElseThrow();
+        lemmaProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.LEMMA_PROPERTY.getUri()).orElseThrow();
+        positionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POSITION_PROPERTY.getUri()).orElseThrow();
+        sentenceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.SENTENCE_PROPERTY.getUri()).orElseThrow();
+        wordsProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_WORDS_PROPERTY.getUri()).orElseThrow();
+        dependencySourceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_SOURCE_PROPERTY.getUri()).orElseThrow();
+        dependencyTargetProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TARGET_PROPERTY.getUri()).orElseThrow();
+        dependencyTypeProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TYPE_PROPERTY.getUri()).orElseThrow();
     }
 
     public void addText(IText text) {
