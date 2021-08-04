@@ -18,8 +18,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
@@ -86,7 +84,7 @@ class TracelinksIT {
     // @Disabled
     @DisplayName("Compare cached and non-cached evaluation")
     @ParameterizedTest
-    @ValueSource(strings = { "teammates" })
+    @ValueSource(strings = { "mediastore", "teastore", "teammates" })
     void compareCachingResultsIT(String name) {
         // set up
         var similarity = 1.0;
@@ -102,19 +100,19 @@ class TracelinksIT {
 
         // run cached
         OntologyTextProvider.enableCache(true);
-        var dataCached = Pipeline.run(runName + "_cached", inputText, inputModel, additionalConfigs, outputDir, true, false);
+        var dataCached = Pipeline.runAndSave(runName + "_cached", inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(dataCached);
         var resultsCached = calculateResults(name, dataCached);
         logger.info("Cached results for {}:\n{}", name, resultsCached.toPrettyString());
 
         // run not cached
         OntologyTextProvider.enableCache(false);
-        var dataNonCached = Pipeline.run(runName, inputText, inputModel, additionalConfigs, outputDir, true, false);
+        var dataNonCached = Pipeline.runAndSave(runName, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(dataNonCached);
         var resultsNonCached = calculateResults(name, dataNonCached);
         logger.info("Non-cached results for {}:\n{}", name, resultsNonCached.toPrettyString());
 
-        Assertions.assertEquals(resultsCached, resultsNonCached, "Results for cached and non-cached run are not equal");
+        Assertions.assertEquals(resultsNonCached, resultsCached, "Results for cached and non-cached run are not equal");
 
     }
 
@@ -123,22 +121,23 @@ class TracelinksIT {
         var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
         inputModel = new File(inputFilePath);
 
-        compare(name, true, similarity, minPrecision, minRecall, minF1);
+        compare(name, similarity, minPrecision, minRecall, minF1);
     }
 
+    @SuppressWarnings("unused")
     private void compareTextBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
         inputText = new File(inputTextPath);
         var inputFilePath = String.format("src/test/resources/%s/%s.owl", name, name);
         inputModel = new File(inputFilePath);
 
-        compare(name, false, similarity, minPrecision, minRecall, minF1);
+        compare(name, similarity, minPrecision, minRecall, minF1);
     }
 
-    private void compare(String name, boolean useTextOntology, double similarity, double minPrecision, double minRecall, double minF1) {
+    private void compare(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         prepareConfig(similarity);
 
-        var data = Pipeline.run("test_" + name, inputText, inputModel, additionalConfigs, outputDir, useTextOntology, false);
+        var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
 
         var results = calculateResults(name, data);
