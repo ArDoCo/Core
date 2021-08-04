@@ -54,6 +54,11 @@ import org.eclipse.collections.api.list.MutableList;
  * directly operate on these classes. The {@link OntologyConnector} also acts as a access controller to make sure that
  * concurrent access does not create invalid states.
  *
+ * Regarding performance, there are some pitfalls here: If possible, do not try to get classes, individuals, or
+ * properties by label or localname as this is rather imperformant. You should rather make use of URIs/IRIs and the
+ * corresponding methods {@link #getClassByIri(String)}, {@link #getPropertyByIri(String)}, and
+ * {@link #getIndividualByIri(String)}. This has much higher performance compared to searching in the whole ontology for
+ * fitting labels or localnames.
  *
  * @author Jan Keim
  *
