@@ -143,7 +143,7 @@ public class OntologyWord implements IWord {
         return null;
     }
 
-    private Optional<Individual> extractItemOutOfSlot(Individual slot) {
+    private static Optional<Individual> extractItemOutOfSlot(Individual slot) {
         if (slot == null) {
             return Optional.empty();
         }
@@ -247,7 +247,7 @@ public class OntologyWord implements IWord {
         return createWordsFromIndividuals(targets);
     }
 
-    private ImmutableList<IWord> createWordsFromIndividuals(List<Individual> individuals) {
+    private static ImmutableList<IWord> createWordsFromIndividuals(List<Individual> individuals) {
         MutableList<IWord> words = Lists.mutable.empty();
         for (var individual : individuals) {
             words.add(OntologyWord.get(ontologyConnector, individual));
@@ -255,7 +255,7 @@ public class OntologyWord implements IWord {
         return words.toImmutable();
     }
 
-    private List<Individual> extractIndividualsInRelation(List<Individual> filteredDependencies, OntProperty property) {
+    private static List<Individual> extractIndividualsInRelation(List<Individual> filteredDependencies, OntProperty property) {
         var targets = new ArrayList<Individual>();
         for (var dependency : filteredDependencies) {
             var targetNode = ontologyConnector.getPropertyValue(dependency, property);
@@ -267,7 +267,7 @@ public class OntologyWord implements IWord {
         return targets;
     }
 
-    private List<Individual> filterDependencyResourcesByType(DependencyTag dependencyTag, List<Resource> dependencies) {
+    private static List<Individual> filterDependencyResourcesByType(DependencyTag dependencyTag, List<Resource> dependencies) {
         var filteredDependencies = new ArrayList<Individual>();
         for (var dependency : dependencies) {
             var depIndividual = ontologyConnector.transformIntoIndividual(dependency);
