@@ -3,7 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 import java.util.Optional;
 
 import org.apache.jena.ontology.Individual;
-import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntProperty;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -21,7 +22,8 @@ public class OntologyText implements IText {
     private OntologyConnector ontologyConnector;
     private Individual textIndividual;
 
-    private ObjectProperty wordsProperty;
+    private OntProperty wordsProperty;
+    private static OntClass textDocumentClass = null;
 
     protected OntologyText(OntologyConnector ontologyConnector, Individual textIndividual) {
         this.ontologyConnector = ontologyConnector;
@@ -35,6 +37,10 @@ public class OntologyText implements IText {
     }
 
     protected static OntologyText get(OntologyConnector ontologyConnector) {
+        if (textDocumentClass == null) {
+            textDocumentClass = ontologyConnector.getClassByIri(CommonOntologyUris.TEXT_DOCUMENT_CLASS.getUri()).orElseThrow();
+        }
+
         var optText = getTextIndividual(ontologyConnector);
         if (optText.isEmpty()) {
             throw new IllegalStateException(ERR_NO_TEXT_FOUND);
@@ -45,7 +51,7 @@ public class OntologyText implements IText {
     }
 
     protected static Optional<Individual> getTextIndividual(OntologyInterface ontologyConnector) {
-        var textIndividuals = ontologyConnector.getIndividualsOfClass("TextDocument");
+        var textIndividuals = ontologyConnector.getIndividualsOfClass(textDocumentClass);
         if (textIndividuals.isEmpty()) {
             return Optional.empty();
         } else {
@@ -55,7 +61,7 @@ public class OntologyText implements IText {
     }
 
     private void init() {
-        wordsProperty = ontologyConnector.getObjectProperty("has words").orElseThrow();
+        wordsProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_WORDS_PROPERTY.getUri()).orElseThrow();
     }
 
     @Override

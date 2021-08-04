@@ -8,8 +8,6 @@ import java.util.Optional;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -18,24 +16,9 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyInterface;
 
-public class OntologyWord implements IWord {
-    private static Logger logger = LogManager.getLogger(OntologyWord.class);
-
-    private static OntologyConnector ontologyConnector = null;
-
-    private static String textPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_2abdbab4_07a1_44e4_86b4_1dd2db60d093";
-    private static String posPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_4a42b4d3_f585_4d3a_ac8d_12efcd2f41ed";
-    private static String lemmaPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_8641228e_89c1_4094_8770_d6db4cff934d";
-    private static String positionPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_24a1fab1_8d82_4a64_a569_26181935ae92";
-    private static String sentencePropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_cca1bf08_930a_4c38_b1b4_4b127db235a3";
-    private static String hasItemPropertyUri = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#item";
-    private static String hasNextPropertyUri = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#next";
-    private static String hasPreviousPropertyUri = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#previous";
-    private static String depSourcePropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_338dfb91_e78b_4145_bf8c_a952e927b6e9";
-    private static String depTargetPropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_82e64c17_5998_4d50_941f_a2b859c1a95b";
-    private static String depTypePropertyUri = "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLAnnotationProperty_79e191d9_7e85_461e_ae42_62df5078719b";
+public final class OntologyWord implements IWord {
+    private OntologyConnector ontologyConnector = null;
 
     private OntProperty textProperty = null;
     private OntProperty posProperty = null;
@@ -51,39 +34,33 @@ public class OntologyWord implements IWord {
 
     private Individual wordIndividual;
 
-    private OntologyWord(Individual wordIndividual) {
+    private OntologyWord(OntologyConnector ontologyConnector, Individual wordIndividual) {
         this.wordIndividual = wordIndividual;
+        this.ontologyConnector = ontologyConnector;
     }
 
-    protected static OntologyWord get(OntologyConnector ontologyConnector, Individual wordIndividual) {
+    static OntologyWord get(OntologyConnector ontologyConnector, Individual wordIndividual) {
         if (ontologyConnector == null || wordIndividual == null) {
             return null;
         }
-        if (OntologyWord.ontologyConnector == null) {
-            OntologyWord.ontologyConnector = ontologyConnector;
-        }
-        if (!OntologyWord.ontologyConnector.equals(ontologyConnector)) {
-            logger.warn("There is a change in the OntologyConnector. This might cause illegal states!");
-            OntologyWord.ontologyConnector = ontologyConnector;
-        }
 
-        var ow = new OntologyWord(wordIndividual);
-        ow.init(ontologyConnector);
+        var ow = new OntologyWord(ontologyConnector, wordIndividual);
+        ow.init();
         return ow;
     }
 
-    private void init(OntologyInterface ontologyConnector) {
-        textProperty = ontologyConnector.getPropertyByIri(textPropertyUri).orElseThrow();
-        posProperty = ontologyConnector.getPropertyByIri(posPropertyUri).orElseThrow();
-        lemmaProperty = ontologyConnector.getPropertyByIri(lemmaPropertyUri).orElseThrow();
-        positionProperty = ontologyConnector.getPropertyByIri(positionPropertyUri).orElseThrow();
-        sentenceProperty = ontologyConnector.getPropertyByIri(sentencePropertyUri).orElseThrow();
-        hasItem = ontologyConnector.getPropertyByIri(hasItemPropertyUri).orElseThrow();
-        hasNext = ontologyConnector.getPropertyByIri(hasNextPropertyUri).orElseThrow();
-        hasPrevious = ontologyConnector.getPropertyByIri(hasPreviousPropertyUri).orElseThrow();
-        dependencySourceProperty = ontologyConnector.getPropertyByIri(depSourcePropertyUri).orElseThrow();
-        dependencyTargetProperty = ontologyConnector.getPropertyByIri(depTargetPropertyUri).orElseThrow();
-        dependencyTypeProperty = ontologyConnector.getPropertyByIri(depTypePropertyUri).orElseThrow();
+    private void init() {
+        textProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.TEXT_PROPERTY.getUri()).orElseThrow();
+        posProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POS_PROPERTY.getUri()).orElseThrow();
+        lemmaProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.LEMMA_PROPERTY.getUri()).orElseThrow();
+        positionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POSITION_PROPERTY.getUri()).orElseThrow();
+        sentenceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.SENTENCE_PROPERTY.getUri()).orElseThrow();
+        hasItem = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_ITEM_PROPERTY.getUri()).orElseThrow();
+        hasNext = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_NEXT_PROPERTY.getUri()).orElseThrow();
+        hasPrevious = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_PREVIOUS_PROPERTY.getUri()).orElseThrow();
+        dependencySourceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_SOURCE_PROPERTY.getUri()).orElseThrow();
+        dependencyTargetProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TARGET_PROPERTY.getUri()).orElseThrow();
+        dependencyTypeProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TYPE_PROPERTY.getUri()).orElseThrow();
     }
 
     @Override
@@ -142,7 +119,7 @@ public class OntologyWord implements IWord {
         return null;
     }
 
-    private static Optional<Individual> extractItemOutOfSlot(Individual slot) {
+    private Optional<Individual> extractItemOutOfSlot(Individual slot) {
         if (slot == null) {
             return Optional.empty();
         }
@@ -222,7 +199,7 @@ public class OntologyWord implements IWord {
         return createWordsFromIndividuals(targets);
     }
 
-    private static ImmutableList<IWord> createWordsFromIndividuals(List<Individual> individuals) {
+    private ImmutableList<IWord> createWordsFromIndividuals(List<Individual> individuals) {
         MutableList<IWord> words = Lists.mutable.empty();
         for (var individual : individuals) {
             words.add(OntologyWord.get(ontologyConnector, individual));
@@ -230,7 +207,7 @@ public class OntologyWord implements IWord {
         return words.toImmutable();
     }
 
-    private static List<Individual> extractIndividualsInRelation(List<Individual> filteredDependencies, OntProperty property) {
+    private List<Individual> extractIndividualsInRelation(List<Individual> filteredDependencies, OntProperty property) {
         var targets = new ArrayList<Individual>();
         for (var dependency : filteredDependencies) {
             var targetNode = ontologyConnector.getPropertyValue(dependency, property);
@@ -242,7 +219,7 @@ public class OntologyWord implements IWord {
         return targets;
     }
 
-    private static List<Individual> filterDependencyResourcesByType(DependencyTag dependencyTag, List<Resource> dependencies) {
+    private List<Individual> filterDependencyResourcesByType(DependencyTag dependencyTag, List<Resource> dependencies) {
         var filteredDependencies = new ArrayList<Individual>();
         for (var dependency : dependencies) {
             var depIndividual = ontologyConnector.transformIntoIndividual(dependency);
