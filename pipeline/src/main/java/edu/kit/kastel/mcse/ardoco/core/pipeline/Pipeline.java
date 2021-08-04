@@ -211,10 +211,11 @@ public final class Pipeline {
 
         if (outputDir != null) {
             logger.info("Writing output.");
+            prevStartTime = System.currentTimeMillis();
             printResultsInFiles(outputDir, name, data, duration);
             var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
             ontoConnector.save(ontoSaveFile);
-            logTiming(startTime, "Saving");
+            logTiming(prevStartTime, "Saving");
         }
 
         return data;
