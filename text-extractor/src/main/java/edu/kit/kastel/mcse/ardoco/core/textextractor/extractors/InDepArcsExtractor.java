@@ -88,12 +88,12 @@ public class InDepArcsExtractor extends TextExtractor {
 
     }
 
-    private boolean hasTypeOrNortDependencies(DependencyTag depTag) {
-        return DependencyTag.OBJ == depTag || DependencyTag.IOBJ == depTag || DependencyTag.NMOD == depTag || DependencyTag.NSUBJPASS == depTag
-                || DependencyTag.POBJ == depTag;
+    private static boolean hasTypeOrNortDependencies(DependencyTag depTag) {
+        var hasObjectDependencies = DependencyTag.OBJ == depTag || DependencyTag.IOBJ == depTag || DependencyTag.POBJ == depTag;
+        return hasObjectDependencies || DependencyTag.NMOD == depTag || DependencyTag.NSUBJPASS == depTag;
     }
 
-    private boolean hasNortDependencies(DependencyTag depTag) {
+    private static boolean hasNortDependencies(DependencyTag depTag) {
         return DependencyTag.APPOS == depTag || DependencyTag.NSUBJ == depTag || DependencyTag.POSS == depTag;
     }
 
