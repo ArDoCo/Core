@@ -22,8 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
  * The Class TextState defines the basic implementation of a {@link ITextState}.
  */
 public class TextState implements ITextState {
-    private static final double DELTA = 0.0001;
-
     private double similarityPercentage;
 
     private Map<String, NounMapping> nounMappings;
