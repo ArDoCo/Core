@@ -47,7 +47,7 @@ public class CachedOntologyText implements IText {
 
     @Override
     public IWord getFirstWord() {
-        return new CachedOntologyWord(ontologyText.getFirstWord());
+        return CachedOntologyWord.get(ontologyText.getFirstWord());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CachedOntologyText implements IText {
         MutableList<IWord> newWords = Lists.mutable.empty();
         for (var word : ontoWords) {
             if (word instanceof OntologyWord ontoWord) {
-                var cachedWord = new CachedOntologyWord(ontoWord);
+                var cachedWord = CachedOntologyWord.get(ontoWord);
                 newWords.add(cachedWord);
             }
         }

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,13 @@ class TracelinksIT {
     private File inputModel;
     private File additionalConfigs = new File(ADDITIONAL_CONFIG);
     private File outputDir = new File(OUTPUT);
+
+    @BeforeEach
+    void beforeEach() {
+        // set the cache to true (default setting)
+        // if another tests does not want to have a cache they can manipulate themselves
+        OntologyTextProvider.enableCache(true);
+    }
 
     @AfterEach
     void afterEach() {
