@@ -23,7 +23,6 @@ class PerformanceIT {
     private File additionalConfigs = null;
     private File outputDir = new File(OUTPUT);
     private String name = "teammates";
-    private boolean useOntology = true;
 
     @Disabled("Only for individual testing, not for CI")
     @Test
@@ -63,7 +62,7 @@ class PerformanceIT {
 
     private Duration measureExecution() {
         Instant start = Instant.now();
-        Pipeline.run("test_time_" + name, inputText, inputModel, additionalConfigs, outputDir, useOntology, false);
+        Pipeline.runAndSave("test_time_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Instant end = Instant.now();
 
         var duration = Duration.between(start, end);
@@ -75,7 +74,6 @@ class PerformanceIT {
         inputText = null;
         var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
         inputModel = new File(inputFilePath);
-        useOntology = true;
     }
 
     private void prepareText() {
@@ -83,8 +81,6 @@ class PerformanceIT {
         inputText = new File(inputTextPath);
         var inputFilePath = String.format("src/test/resources/%s/%s.owl", name, name);
         inputModel = new File(inputFilePath);
-
-        useOntology = false;
     }
 
 }

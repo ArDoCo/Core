@@ -13,11 +13,16 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TracelinksIT {
     private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
@@ -47,10 +52,6 @@ class TracelinksIT {
         compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
 
-    // TODO weird phenomenon: When using caching, the recall drops but the precision increases to overall better F1
-    // w/o caching: 0.6827, 0.8875, 0.7717
-    // w caching: 0.8250, 0.8250, 0.8250
-    // Note: There is the warning that there is a change in the OntologyConnector (for OntologyWord)
     @Test
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
@@ -73,46 +74,87 @@ class TracelinksIT {
         compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
     }
 
+    @Disabled("Disabled for CI. Only enable this locally if you want to test the cache.")
+    @DisplayName("Compare cached and non-cached evaluation")
+    @ParameterizedTest
+    @ValueSource(strings = { "mediastore", "teastore", "teammates" })
+    void compareCachingResultsIT(String name) {
+        // set up
+        var similarity = 1.0;
+        if (name.equals("teammates")) {
+            similarity = 0.8;
+        }
+        prepareConfig(similarity);
+
+        var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
+        inputModel = new File(inputFilePath);
+
+        var runName = "test_" + name;
+
+        // run cached
+        OntologyTextProvider.enableCache(true);
+        var dataCached = Pipeline.runAndSave(runName + "_cached", inputText, inputModel, additionalConfigs, outputDir);
+        Assertions.assertNotNull(dataCached);
+        var resultsCached = calculateResults(name, dataCached);
+        logger.info("Cached results for {}:\n{}", name, resultsCached.toPrettyString());
+
+        // run not cached
+        OntologyTextProvider.enableCache(false);
+        var dataNonCached = Pipeline.runAndSave(runName, inputText, inputModel, additionalConfigs, outputDir);
+        Assertions.assertNotNull(dataNonCached);
+        var resultsNonCached = calculateResults(name, dataNonCached);
+        logger.info("Non-cached results for {}:\n{}", name, resultsNonCached.toPrettyString());
+
+        Assertions.assertEquals(resultsNonCached, resultsCached, "Results for cached and non-cached run are not equal");
+
+    }
+
     private void compareOntologyBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         inputText = null;
         var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
         inputModel = new File(inputFilePath);
 
-        compare(name, true, similarity, minPrecision, minRecall, minF1);
+        compare(name, similarity, minPrecision, minRecall, minF1);
     }
 
+    @SuppressWarnings("unused")
     private void compareTextBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
         inputText = new File(inputTextPath);
         var inputFilePath = String.format("src/test/resources/%s/%s.owl", name, name);
         inputModel = new File(inputFilePath);
 
-        compare(name, false, similarity, minPrecision, minRecall, minF1);
+        compare(name, similarity, minPrecision, minRecall, minF1);
     }
 
-    private void compare(String name, boolean useTextOntology, double similarity, double minPrecision, double minRecall, double minF1) {
+    private void compare(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         prepareConfig(similarity);
 
-        var data = Pipeline.run("test_" + name, inputText, inputModel, additionalConfigs, outputDir, useTextOntology, false);
+        var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
 
+        var results = calculateResults(name, data);
+        double precision = results.getPrecision();
+        double recall = results.getRecall();
+        double f1 = results.getF1();
+
+        if (logger.isInfoEnabled()) {
+            logger.info("\n{} with similarity {}:\n{}", name, similarity, results.toPrettyString());
+        }
+
+        Assertions.assertTrue(precision >= minPrecision, "Precision " + precision + " is below the expected minimum value " + minPrecision);
+        Assertions.assertTrue(recall >= minRecall, "Recall " + recall + " is below the expected minimum value " + minRecall);
+        Assertions.assertTrue(f1 >= minF1, "F1 " + f1 + " is below the expected minimum value " + minF1);
+    }
+
+    private EvaluationResults calculateResults(String name, AgentDatastructure data) {
         var connectionState = data.getConnectionState();
         List<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
 
         var goldStandard = getGoldStandard(name);
 
         var results = EvalUtil.compare(traceLinks, goldStandard);
-        double precision = results.getPrecision();
-        double recall = results.getRecall();
-        double f1 = results.getF1();
-
-        if (logger.isInfoEnabled()) {
-            logger.info("\n{} with similarity {}:\n\tPrecision: {}\n\tRecall: {}\n\tF1: {}", name, similarity, precision, recall, f1);
-        }
-
-        Assertions.assertTrue(precision >= minPrecision, "Precision " + precision + " is below the expected minimum value " + minPrecision);
-        Assertions.assertTrue(recall >= minRecall, "Recall " + recall + " is below the expected minimum value " + minRecall);
-        Assertions.assertTrue(f1 >= minF1, "F1 " + f1 + " is below the expected minimum value " + minF1);
+        return results;
     }
 
     private List<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {

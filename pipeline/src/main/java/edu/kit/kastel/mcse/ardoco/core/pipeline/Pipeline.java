@@ -123,7 +123,7 @@ public final class Pipeline {
             return;
         }
 
-        run(name, inputText, inputModel, additionalConfigs, outputDir, providedTextOntology);
+        runAndSave(name, inputText, inputModel, additionalConfigs, outputDir);
     }
 
     private static void printUsage() {
@@ -144,19 +144,38 @@ public final class Pipeline {
                         """);
     }
 
-    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean providedTextOntology) {
-        return run(name, inputText, inputModel, additionalConfigs, outputDir, providedTextOntology, true);
+    /**
+     * Run the approach equally to {@link #runAndSave(String, File, File, File, File, boolean)} but without saving the
+     * output to the file system.
+     *
+     * @param name              Name of the run
+     * @param inputText         File of the input text. Can
+     * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
+     * @param additionalConfigs File with the additional or overwriting config parameters that should be used
+     * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
+     */
+    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs) {
+        return runAndSave(name, inputText, inputModel, additionalConfigs, null);
     }
 
-    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean providedTextOntology,
-            boolean saveOutput) {
+    /**
+     * Run the approach with the given parameters and save the output to the file system.
+     *
+     * @param name              Name of the run
+     * @param inputText         File of the input text. Can
+     * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
+     * @param additionalConfigs File with the additional or overwriting config parameters that should be used
+     * @param outputDir         File that represents the output directory where the results should be written to
+     * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
+     */
+    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir) {
         long startTime = System.currentTimeMillis();
         long prevStartTime = System.currentTimeMillis();
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
         logger.info("Preparing and processing text input.");
-        IText annotatedText = getAnnotatedText(inputText, providedTextOntology, ontoConnector);
+        IText annotatedText = getAnnotatedText(inputText, ontoConnector);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
@@ -164,7 +183,9 @@ public final class Pipeline {
 
         logger.info("Processing model input");
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
-        FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
+        if (outputDir != null) {
+            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
+        }
 
         logTiming(prevStartTime, "Text- and Model-Loading");
 
@@ -187,13 +208,16 @@ public final class Pipeline {
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
-        if (saveOutput) {
+
+        if (outputDir != null) {
             logger.info("Writing output.");
+            prevStartTime = System.currentTimeMillis();
             printResultsInFiles(outputDir, name, data, duration);
             var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
             ontoConnector.save(ontoSaveFile);
-            logTiming(startTime, "Saving");
+            logTiming(prevStartTime, "Saving");
         }
+
         return data;
     }
 
@@ -203,11 +227,11 @@ public final class Pipeline {
         logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
-    private static IText getAnnotatedText(File inputText, boolean providedTextOntology, OntologyConnector ontoConnector) {
+    private static IText getAnnotatedText(File inputText, OntologyConnector ontoConnector) {
         var ontologyTextProvider = OntologyTextProvider.get(ontoConnector);
 
         IText annotatedText = null;
-        if (!providedTextOntology) {
+        if (inputText != null) {
             try {
                 ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
                 annotatedText = textConnector.getAnnotatedText();

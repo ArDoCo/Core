@@ -49,16 +49,9 @@ public class NounMapping implements INounMapping {
 
         this.distribution = new EnumMap<>(distribution);
 
-        if (!distribution.containsKey(MappingKind.NAME)) {
-            this.distribution.put(MappingKind.NAME, 0.0);
-        }
-        if (!distribution.containsKey(MappingKind.TYPE)) {
-            this.distribution.put(MappingKind.TYPE, 0.0);
-        }
-        if (!distribution.containsKey(MappingKind.NAME_OR_TYPE)) {
-            this.distribution.put(MappingKind.NAME_OR_TYPE, 0.0);
-        }
-
+        this.distribution.putIfAbsent(MappingKind.NAME, 0.0);
+        this.distribution.putIfAbsent(MappingKind.TYPE, 0.0);
+        this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, 0.0);
     }
 
     /**
@@ -345,8 +338,8 @@ public class NounMapping implements INounMapping {
             highestProbability = newProbability;
             distribution.put(mostProbableKind, newProbability);
         } else if (highestProbability >= newProbability) {
-            double porbabilityToSet = highestProbability + newProbability * (1 - highestProbability);
-            recalculateProbability(mostProbableKind, porbabilityToSet);
+            double probabilityToSet = highestProbability + newProbability * (1 - highestProbability);
+            recalculateProbability(mostProbableKind, probabilityToSet);
         } else {
             double porbabilityToSet = (highestProbability + newProbability) * 0.5;
             recalculateProbability(mostProbableKind, porbabilityToSet);

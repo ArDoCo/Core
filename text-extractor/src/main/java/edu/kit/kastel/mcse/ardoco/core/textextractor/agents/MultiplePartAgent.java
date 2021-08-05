@@ -60,7 +60,9 @@ public class MultiplePartAgent extends TextAgent {
             ImmutableList<IWord> nameNodes = Lists.immutable.withAll(nameMap.getWords());
             for (IWord n : nameNodes) {
                 IWord pre = n.getPreWord();
-                if (pre != null && textState.isNodeContainedByNounMappings(pre) && !textState.isNodeContainedByTypeNodes(pre)) {
+                boolean nodeIsContainedByNounMappings = textState.isNodeContainedByNounMappings(pre);
+                boolean nodeIsContainedByTypeNodes = textState.isNodeContainedByTypeNodes(pre);
+                if (pre != null && nodeIsContainedByNounMappings && !nodeIsContainedByTypeNodes) {
                     String ref = pre.getText() + " " + n.getText();
                     addTerm(ref, pre, n, MappingKind.NAME);
                 }
@@ -73,7 +75,9 @@ public class MultiplePartAgent extends TextAgent {
             ImmutableList<IWord> typeNodes = Lists.immutable.withAll(typeMap.getWords());
             for (IWord n : typeNodes) {
                 IWord pre = n.getPreWord();
-                if (pre != null && textState.isNodeContainedByNounMappings(pre) && !textState.isNodeContainedByNameNodes(pre)) {
+                boolean nodeIsContainedByNounMappings = textState.isNodeContainedByNounMappings(pre);
+                boolean nodeIsContainedByNameNodes = textState.isNodeContainedByNameNodes(pre);
+                if (pre != null && nodeIsContainedByNounMappings && !nodeIsContainedByNameNodes) {
                     String ref = pre.getText() + " " + n.getText();
                     addTerm(ref, pre, n, MappingKind.TYPE);
                 }
@@ -82,7 +86,6 @@ public class MultiplePartAgent extends TextAgent {
     }
 
     private void addTerm(String ref, IWord pre, IWord n, MappingKind kind) {
-
         ImmutableList<INounMapping> preMappings = textState.getNounMappingsByNode(pre);
         ImmutableList<INounMapping> nMappings = textState.getNounMappingsByNode(n);
 
