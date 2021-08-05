@@ -230,7 +230,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<ITermMapping> getTypeTerms() {
-        return terms.select(n -> MappingKind.TYPE.equals(n.getKind())).toImmutable();
+        return terms.select(n -> MappingKind.TYPE == n.getKind()).toImmutable();
     }
 
     /**

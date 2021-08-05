@@ -1,6 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -103,6 +104,26 @@ public class CachedOntologyWord implements IWord {
         lemma = null;
         outDependencies = Maps.mutable.empty();
         inDependencies = Maps.mutable.empty();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPosition(), getSentenceNo(), getText());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        CachedOntologyWord other = (CachedOntologyWord) obj;
+        return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
     }
 
 }
