@@ -13,6 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
 
 /**
  * The Class NounMapping is a basic realization of {@link INounMapping}.
@@ -336,11 +337,11 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public void updateProbability(double newProbability) {
-        if (highestProbability == 1.0) {
+        if (Utilis.valueEqual(highestProbability, 1.0)) {
             return;
         }
 
-        if (newProbability == 1.0) {
+        if (Utilis.valueEqual(newProbability, 1.0)) {
             highestProbability = newProbability;
             distribution.put(mostProbableKind, newProbability);
         } else if (highestProbability >= newProbability) {

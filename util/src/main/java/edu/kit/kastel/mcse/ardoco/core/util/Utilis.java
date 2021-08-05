@@ -19,6 +19,17 @@ public final class Utilis {
     }
 
     /**
+     * Compare two double values.
+     *
+     * @param d1 value 1
+     * @param d2 value 2
+     * @return <code>true</code> iff similar enough to be equal
+     */
+    public static boolean valueEqual(double d1, double d2) {
+        return Math.abs(d1 - d2) < 1E-8;
+    }
+
+    /**
      * Creates a cartesian product out of the current list and the parts.
      *
      * @param <T>         generic type of list elements

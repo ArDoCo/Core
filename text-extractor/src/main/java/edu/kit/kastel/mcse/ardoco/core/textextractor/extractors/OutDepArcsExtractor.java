@@ -76,16 +76,16 @@ public class OutDepArcsExtractor extends TextExtractor {
 
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 
-            if (DependencyTag.AGENT.equals(shortDepTag)) {
+            if (DependencyTag.AGENT == shortDepTag) {
                 textState.addNort(n, n.getText(), probability);
 
-            } else if (DependencyTag.NUM.equals(shortDepTag)) {
+            } else if (DependencyTag.NUM == shortDepTag) {
                 textState.addType(n, n.getText(), probability);
 
-            } else if (DependencyTag.PREDET.equals(shortDepTag)) {
+            } else if (DependencyTag.PREDET == shortDepTag) {
                 textState.addType(n, n.getText(), probability);
 
-            } else if (DependencyTag.RCMOD.equals(shortDepTag)) {
+            } else if (DependencyTag.RCMOD == shortDepTag) {
                 textState.addNort(n, n.getText(), probability);
             }
         }

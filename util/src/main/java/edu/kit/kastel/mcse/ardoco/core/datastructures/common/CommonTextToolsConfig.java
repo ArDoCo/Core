@@ -18,11 +18,11 @@ public final class CommonTextToolsConfig {
     /**
      * List of separators used for containing by a word in SimilarityUtils.
      */
-    protected static final ImmutableList<String> SEPARATORS_TO_CONTAIN = CONFIG.getPropertyAsList("separators_ToContain");
+    public static final ImmutableList<String> SEPARATORS_TO_CONTAIN = CONFIG.getPropertyAsList("separators_ToContain");
     /**
      * List of separators used for splitting a word in SimilarityUtils.
      */
-    protected static final ImmutableList<String> SEPARATORS_TO_SPLIT = CONFIG.getPropertyAsList("separators_ToSplit");
+    public static final ImmutableList<String> SEPARATORS_TO_SPLIT = CONFIG.getPropertyAsList("separators_ToSplit");
 
     /**
      * Int for the minimal length of word similarity for methods in SimilarityUtils.

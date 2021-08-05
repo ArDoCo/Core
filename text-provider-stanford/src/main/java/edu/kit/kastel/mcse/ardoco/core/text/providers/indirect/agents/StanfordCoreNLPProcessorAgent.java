@@ -91,12 +91,12 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     static final String DEPENDENCY_ARC_TYPE = "typedDependency";
 
     private WordsToSentencesAnnotator ssplit = null;
-    private AnnotatorPool annotatorPool;
+    private AnnotatorPool annotatorPool = null;
 
-    private Class<? extends CoreAnnotation<SemanticGraph>> chosenAnnType;
+    private Class<? extends CoreAnnotation<SemanticGraph>> chosenAnnType = null;
     private INodeType corefClusterNodeType = null;
     private IArcType corefArcType = null;
-    private IArcType dependencyArcType;
+    private IArcType dependencyArcType = null;
 
     @Override
     public void init() {
@@ -111,7 +111,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         super.setId(ID);
     }
 
-    private Properties getStanfordProperties(Properties properties) {
+    private static Properties getStanfordProperties(Properties properties) {
         var allStanfordProperties = new Properties(properties);
 
         if (!allStanfordProperties.contains("parse.type")) {
@@ -325,7 +325,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         }
     }
 
-    private int addNERToGraph(List<INode> textNodes, int startIndex, List<CoreLabel> tokens) {
+    private static int addNERToGraph(List<INode> textNodes, int startIndex, List<CoreLabel> tokens) {
         int index = startIndex;
         for (CoreLabel token : tokens) {
             INode node = textNodes.get(index);
@@ -372,7 +372,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         }
     }
 
-    private Map<Integer, List<INode>> createSentencesMap(List<INode> text) {
+    private static Map<Integer, List<INode>> createSentencesMap(List<INode> text) {
         Map<Integer, List<INode>> sentences = new HashMap<>();
 
         for (INode node : text) {

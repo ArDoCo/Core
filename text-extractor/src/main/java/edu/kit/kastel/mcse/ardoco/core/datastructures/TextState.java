@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITermMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
 
 /**
  * The Class TextState defines the basic implementation of a {@link ITextState}.
@@ -220,7 +221,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getTypes() {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.TYPE.equals(n.getKind())));
+        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.TYPE == n.getKind()));
     }
 
     /**
@@ -230,7 +231,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<ITermMapping> getTypeTerms() {
-        return terms.select(n -> MappingKind.TYPE.equals(n.getKind())).toImmutable();
+        return terms.select(n -> MappingKind.TYPE == n.getKind()).toImmutable();
     }
 
     /**
@@ -337,7 +338,7 @@ public class TextState implements ITextState {
     @Override
     public final ImmutableList<ITermMapping> getTermsByMappingsAndKind(ImmutableList<INounMapping> nounMappings, MappingKind kind) {
         ImmutableList<ITermMapping> termsByMapping = getTermsByMappings(nounMappings);
-        return termsByMapping.select(t -> t.getKind().equals(kind));
+        return termsByMapping.select(t -> t.getKind() == kind);
     }
 
     /**
@@ -363,7 +364,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNames() {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.NAME.equals(n.getKind())));
+        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.NAME == n.getKind()));
     }
 
     /**
@@ -373,7 +374,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<ITermMapping> getNameTerms() {
-        return terms.select(n -> MappingKind.NAME.equals(n.getKind())).toImmutable();
+        return terms.select(n -> MappingKind.NAME == n.getKind()).toImmutable();
     }
 
     /**
@@ -383,7 +384,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNameOrTypeMappings() {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.NAME_OR_TYPE.equals(n.getKind())));
+        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.NAME_OR_TYPE == n.getKind()));
     }
 
     /**
@@ -459,7 +460,7 @@ public class TextState implements ITextState {
     public final boolean isNodeContainedByNameOrTypeNodes(IWord node) {
         return !nounMappings.values()
                 .stream()
-                .filter(n -> MappingKind.NAME_OR_TYPE.equals(n.getKind()))
+                .filter(n -> MappingKind.NAME_OR_TYPE == n.getKind())
                 .filter(n -> n.getWords().contains(node))
                 .findAny()
                 .isEmpty();
@@ -473,7 +474,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isNodeContainedByNameNodes(IWord node) {
-        return !nounMappings.values().stream().filter(n -> MappingKind.NAME.equals(n.getKind())).filter(n -> n.getWords().contains(node)).findAny().isEmpty();
+        return !nounMappings.values().stream().filter(n -> MappingKind.NAME == n.getKind()).filter(n -> n.getWords().contains(node)).findAny().isEmpty();
     }
 
     /**
@@ -523,7 +524,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isNodeContainedByTypeNodes(IWord node) {
-        return !nounMappings.values().stream().filter(n -> MappingKind.TYPE.equals(n.getKind())).filter(n -> n.getWords().contains(node)).findAny().isEmpty();
+        return !nounMappings.values().stream().filter(n -> MappingKind.TYPE == n.getKind()).filter(n -> n.getWords().contains(node)).findAny().isEmpty();
     }
 
     @Override
@@ -614,10 +615,10 @@ public class TextState implements ITextState {
         ImmutableList<NounMapping> wordsWithSimilarNode = Lists.immutable
                 .fromStream(nounMappings.values().stream().filter(mapping -> mapping.getWords().contains(n)));
         for (NounMapping mapping : wordsWithSimilarNode) {
-            if (mapping.getProbabilityForName() == 0) {
+            if (Utilis.valueEqual(mapping.getProbabilityForName(), 0)) {
                 mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
             }
-            if (mapping.getProbabilityForType() == 0) {
+            if (Utilis.valueEqual(mapping.getProbabilityForType(), 0)) {
                 mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
             }
         }
