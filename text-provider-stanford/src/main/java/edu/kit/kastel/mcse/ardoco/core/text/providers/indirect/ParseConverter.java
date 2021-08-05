@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -126,7 +127,7 @@ public class ParseConverter {
             sentence = Integer.valueOf(String.valueOf(node.getAttributeValue("sentenceNumber")));
         }
 
-        private POSTag getPosTag(INode node) {
+        private static POSTag getPosTag(INode node) {
             var posTagValue = String.valueOf(node.getAttributeValue("pos"));
             return POSTag.get(posTagValue);
         }
@@ -180,6 +181,26 @@ public class ParseConverter {
                 return null;
             }
             return parent.getWords().get(position + 1);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(position, sentence, text);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            Word other = (Word) obj;
+            return position == other.position && sentence == other.sentence && Objects.equals(text, other.text);
         }
     }
 

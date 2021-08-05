@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.jena.ontology.Individual;
@@ -82,5 +83,25 @@ public class CachedOntologyText implements IText {
     public void setDirty() {
         textList = null;
         words = null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ontologyText);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        CachedOntologyText other = (CachedOntologyText) obj;
+        return Objects.equals(ontologyText, other.ontologyText);
     }
 }
