@@ -5,17 +5,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 
-@RunWith(JUnitPlatform.class)
 class OntologyTextTest {
-    private static String ontologyPath = "src/test/resources/teastore_w_text.owl";
+    protected static String ontologyPath = "src/test/resources/teastore_w_text.owl";
 
-    private OntologyConnector ontologyConnector;
-    private OntologyText ontologyText;
+    protected OntologyConnector ontologyConnector;
+    protected IText ontologyText;
 
     @BeforeEach
     void beforeEach() {
