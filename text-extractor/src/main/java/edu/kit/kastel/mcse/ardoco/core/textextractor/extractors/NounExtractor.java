@@ -77,13 +77,10 @@ public class NounExtractor extends TextExtractor {
      */
     private void findSingleNouns(IWord n) {
         POSTag pos = n.getPosTag();
-        if (POSTag.NOUN_PROPER_SINGULAR.equals(pos) || //
-                POSTag.NOUN.equals(pos) || //
-                POSTag.NOUN_PROPER_PLURAL.equals(pos)) {
-
+        if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
             textState.addNort(n, n.getText(), probability);
         }
-        if (POSTag.NOUN_PLURAL.equals(pos)) {
+        if (POSTag.NOUN_PLURAL == pos) {
             textState.addType(n, n.getText(), probability);
         }
 

@@ -91,7 +91,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
         for (ITermMapping term : termMappings) {
             ImmutableList<INounMapping> adjacentNounMappings = getTermAdjacentNounMappings(node, term);
-            if (adjacentNounMappings.isEmpty() && MappingKind.NAME.equals(term.getKind())) {
+            if (adjacentNounMappings.isEmpty() && MappingKind.NAME == term.getKind()) {
                 recommendationState.addRecommendedInstanceJustName(term.getReference(), probabilityJustName, term.getMappings());
             } else {
                 createRecommendedInstancesForSurroundingNounMappings(term, adjacentNounMappings);
@@ -271,19 +271,19 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
             ImmutableList<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByNode(afterTermNode);
             possibleMappings.addAll(nounMappingsOfAfterTermNode.castToCollection());
         }
-        return possibleMappings.select(nounMapping -> !nounMapping.getKind().equals(kind)).toImmutable();
+        return possibleMappings.select(nounMapping -> nounMapping.getKind() != kind).toImmutable();
     }
 
     private void createRecommendedInstancesOfAdjacentTerms(ITermMapping term, ImmutableList<ITermMapping> adjacentTerms) {
         MappingKind kind = term.getKind();
 
-        if (MappingKind.NAME.equals(kind) && !adjacentTerms.isEmpty()) {
+        if (MappingKind.NAME == kind && !adjacentTerms.isEmpty()) {
             for (ITermMapping adjTerm : adjacentTerms) {
                 recommendationState.addRecommendedInstance(term.getReference(), adjTerm.getReference(), probabilityAdjacentTerm, term.getMappings(),
                         adjTerm.getMappings());
 
             }
-        } else if (MappingKind.TYPE.equals(kind) && !adjacentTerms.isEmpty()) {
+        } else if (MappingKind.TYPE == kind && !adjacentTerms.isEmpty()) {
             for (ITermMapping adjTerm : adjacentTerms) {
                 recommendationState.addRecommendedInstance(adjTerm.getReference(), term.getReference(), probabilityAdjacentTerm, adjTerm.getMappings(),
                         term.getMappings());
@@ -295,13 +295,13 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     private void createRecommendedInstancesForSurroundingNounMappings(ITermMapping term, ImmutableList<INounMapping> surroundingNounMappings) {
         MappingKind kind = term.getKind();
 
-        if (MappingKind.NAME.equals(kind) && !surroundingNounMappings.isEmpty()) {
+        if (MappingKind.NAME == kind && !surroundingNounMappings.isEmpty()) {
             for (INounMapping nounMapping : surroundingNounMappings) {
 
                 recommendationState.addRecommendedInstance(term.getReference(), nounMapping.getReference(), probabilityJustAdjacentNoun, term.getMappings(),
                         Lists.immutable.with(nounMapping));
             }
-        } else if (MappingKind.TYPE.equals(kind) && !surroundingNounMappings.isEmpty()) {
+        } else if (MappingKind.TYPE == kind && !surroundingNounMappings.isEmpty()) {
             for (INounMapping nounMapping : surroundingNounMappings) {
 
                 recommendationState.addRecommendedInstance(nounMapping.getReference(), term.getReference(), probabilityJustAdjacentNoun,
