@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -373,30 +374,13 @@ public final class FilePrinter {
 
     }
 
-        try (var pw = new FileWriter(file)) {
-                try {
-                    pw.append(s).append("\n");
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            });
-        } catch (IOException e) {
-            logger.error(GENERIC_ERROR);
-            logger.debug(e.getMessage(), e);
-        }
-    }
+    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).toList();
 
-    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
-    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
-        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
-        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).collect(Collectors.toList());
+        try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
             inconsistencyReasons.stream().forEach(s -> {
-                logger.info("Found Inconsistency: {}", s);
-        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
-        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).collect(Collectors.toList());
-        try (var pw = new FileWriter(file)) {
-            inconsistencyReasons.stream().forEach(s -> {
-                logger.info("Found Inconsistency: {}", s);
+                logger.debug("Found Inconsistency: {}", s);
                 try {
                     pw.append(s).append("\n");
                 } catch (IOException e) {

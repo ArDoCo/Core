@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures;
 
+import java.util.Locale;
 import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.TreeSet;
@@ -33,7 +34,7 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         }
 
         var confidence = textualInstance.getProbability();
-        return String.format(REASON_FORMAT_STRING, confidence, name, occurenceJoiner.toString());
+        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, occurenceJoiner.toString());
     }
 
     @Override
