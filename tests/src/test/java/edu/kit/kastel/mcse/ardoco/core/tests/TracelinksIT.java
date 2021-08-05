@@ -41,7 +41,6 @@ class TracelinksIT {
         config.delete();
     }
 
-    @Disabled("Disabled for now")
     @Test
     @DisplayName("Evaluate Teastore")
     void compareTracelinksTeastoreIT() {
@@ -53,7 +52,6 @@ class TracelinksIT {
         compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
 
-    @Disabled("Disabled for now")
     @Test
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
@@ -65,7 +63,6 @@ class TracelinksIT {
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
-    @Disabled("Disabled for now")
     @Test
     @DisplayName("Evaluate Mediastore")
     void compareTracelinksMediastoreIT() {
@@ -77,11 +74,7 @@ class TracelinksIT {
         compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
     }
 
-    // TODO weird phenomenon: When using caching, for teammates, the recall drops but the precision increases to overall
-    // better F1
-    // w/o caching: 0.6827, 0.8875, 0.7717
-    // w caching: 0.8250, 0.8250, 0.8250
-    // @Disabled
+    @Disabled("Disabled for CI. Only enable this locally if you want to test the cache.")
     @DisplayName("Compare cached and non-cached evaluation")
     @ParameterizedTest
     @ValueSource(strings = { "mediastore", "teastore", "teammates" })
