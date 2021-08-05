@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures;
 
+import java.util.Locale;
+
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -22,7 +24,7 @@ public class NameInconsistency implements IInconsistency {
         String textOccurence = word.getText();
         String modelOccurence = modelInstance.getLongestName();
         String uid = modelInstance.getUid();
-        return String.format(REASON_FORMAT_STRING, textOccurence, sentenceNo, modelOccurence, uid);
+        return String.format(Locale.US, REASON_FORMAT_STRING, textOccurence, sentenceNo, modelOccurence, uid);
     }
 
     @Override
