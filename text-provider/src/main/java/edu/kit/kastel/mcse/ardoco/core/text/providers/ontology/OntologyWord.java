@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.jena.ontology.Individual;
@@ -180,13 +181,7 @@ public class OntologyWord implements IWord {
 
     @Override
     public int hashCode() {
-        final var prime = 31;
-        var result = 1;
-        result = prime * result + getPosition();
-        result = prime * result + getSentenceNo();
-        var text = getText();
-        result = prime * result + ((text == null) ? 0 : text.hashCode());
-        return result;
+        return Objects.hash(getPosition(), getSentenceNo(), getText());
     }
 
     @Override
@@ -194,29 +189,11 @@ public class OntologyWord implements IWord {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         OntologyWord other = (OntologyWord) obj;
-        if (getPosition() != other.getPosition()) {
-            return false;
-        }
-        if (getSentenceNo() != other.getSentenceNo()) {
-            return false;
-        }
-        var text = getText();
-        var otherText = other.getText();
-        if (text == null) {
-            if (otherText != null) {
-                return false;
-            }
-        } else if (!text.equals(otherText)) {
-            return false;
-        }
-        return true;
+        return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
     }
 
     /**
