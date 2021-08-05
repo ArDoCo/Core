@@ -13,7 +13,7 @@
 		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
-		<root>
+	<root>
 		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>
