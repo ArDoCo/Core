@@ -12,7 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 
 public class CachedOntologyWord implements IWord {
 
-    private OntologyWord ontologyWord;
+    private IWord ontologyWord;
 
     private int sentenceNo = -1;
     private String text = null;
@@ -24,7 +24,10 @@ public class CachedOntologyWord implements IWord {
     private Map<DependencyTag, ImmutableList<IWord>> outDependencies = Maps.mutable.empty();
     private Map<DependencyTag, ImmutableList<IWord>> inDependencies = Maps.mutable.empty();
 
-    protected CachedOntologyWord(OntologyWord ontologyWord) {
+    protected CachedOntologyWord(IWord ontologyWord) {
+        if (ontologyWord == null) {
+            throw new IllegalArgumentException("Word cannot be null");
+        }
         this.ontologyWord = ontologyWord;
     }
 
@@ -55,7 +58,11 @@ public class CachedOntologyWord implements IWord {
     @Override
     public synchronized IWord getPreWord() {
         if (preWord == null) {
-            preWord = ontologyWord.getPreWord();
+            var newPreWord = ontologyWord.getPreWord();
+            if (newPreWord == null) {
+                return null;
+            }
+            preWord = new CachedOntologyWord(newPreWord);
         }
         return preWord;
     }
@@ -63,7 +70,11 @@ public class CachedOntologyWord implements IWord {
     @Override
     public synchronized IWord getNextWord() {
         if (nextWord == null) {
-            nextWord = ontologyWord.getNextWord();
+            var newNextWord = ontologyWord.getNextWord();
+            if (newNextWord == null) {
+                return null;
+            }
+            nextWord = new CachedOntologyWord(newNextWord);
         }
         return nextWord;
     }
@@ -86,12 +97,12 @@ public class CachedOntologyWord implements IWord {
 
     @Override
     public synchronized ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
-        return inDependencies.computeIfAbsent(dependencyTag, dt -> ontologyWord.getWordsThatAreDependencyOfThis(dt));
+        return inDependencies.computeIfAbsent(dependencyTag, dt -> ontologyWord.getWordsThatAreDependencyOfThis(dt).collect(CachedOntologyWord::new));
     }
 
     @Override
     public synchronized ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
-        return outDependencies.computeIfAbsent(dependencyTag, dt -> ontologyWord.getWordsThatAreDependentOnThis(dt));
+        return outDependencies.computeIfAbsent(dependencyTag, dt -> ontologyWord.getWordsThatAreDependentOnThis(dt).collect(CachedOntologyWord::new));
     }
 
     public void setDirty() {
@@ -116,10 +127,7 @@ public class CachedOntologyWord implements IWord {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         CachedOntologyWord other = (CachedOntologyWord) obj;

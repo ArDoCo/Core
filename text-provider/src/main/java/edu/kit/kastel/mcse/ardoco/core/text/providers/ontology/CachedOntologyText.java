@@ -47,7 +47,7 @@ public class CachedOntologyText implements IText {
 
     @Override
     public IWord getFirstWord() {
-        return ontologyText.getFirstWord();
+        return new CachedOntologyWord(ontologyText.getFirstWord());
     }
 
     @Override

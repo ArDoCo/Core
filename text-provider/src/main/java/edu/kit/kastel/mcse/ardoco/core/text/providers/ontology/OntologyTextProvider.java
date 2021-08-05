@@ -7,6 +7,7 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
@@ -91,10 +92,12 @@ public final class OntologyTextProvider implements ITextConnector {
         var uuid = ontologyConnector.getLocalName(textIndividual);
         ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);
 
-        // add word individuals
+        ImmutableList<IWord> words = text.getWords();
+
+        // first add all word individuals
         var wordIndividuals = new ArrayList<Individual>();
         var wordsToIndividuals = new HashMap<IWord, Individual>();
-        for (var word : text.getWords()) {
+        for (var word : words) {
             var wordIndividual = addWord(word);
             wordIndividuals.add(wordIndividual);
             wordsToIndividuals.put(word, wordIndividual);
@@ -102,7 +105,7 @@ public final class OntologyTextProvider implements ITextConnector {
 
         // add dependencies to words.
         // We only add outgoing dependencies as ingoing are the same (but viewed from another perspective)
-        for (var word : text.getWords()) {
+        for (var word : words) {
             var wordIndividual = wordsToIndividuals.get(word);
             for (var dependencyType : DependencyTag.values()) {
                 var outDependencies = word.getWordsThatAreDependencyOfThis(dependencyType);
