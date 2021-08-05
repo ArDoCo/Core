@@ -513,7 +513,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isNodeContainedByNounMappings(IWord node) {
-        return !nounMappings.values().stream().filter(n -> n.getWords().contains(node)).findAny().isEmpty();
+        return nounMappings.values().stream().anyMatch(n -> n.getWords().contains(node));
     }
 
     /**
@@ -524,7 +524,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isNodeContainedByTypeNodes(IWord node) {
-        return !nounMappings.values().stream().filter(n -> MappingKind.TYPE == n.getKind()).filter(n -> n.getWords().contains(node)).findAny().isEmpty();
+        return nounMappings.values().stream().anyMatch(n -> MappingKind.TYPE == n.getKind() && n.getWords().contains(node));
     }
 
     @Override
