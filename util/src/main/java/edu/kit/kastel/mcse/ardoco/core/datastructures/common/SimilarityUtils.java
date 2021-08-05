@@ -37,13 +37,18 @@ public final class SimilarityUtils {
      * @return true, if the test string is similar to the original; false if not.
      */
     public static boolean areWordsSimilar(String original, String word2test, Double threshold) {
-        if (original.toLowerCase().split(" ").length != word2test.toLowerCase().split(" ").length) {
+        if (original == null || word2test == null) {
+            return false;
+        }
+        String originalLowerCase = original.toLowerCase();
+        String word2TestLowerCase = word2test.toLowerCase();
+        if (originalLowerCase.split(" ").length != word2TestLowerCase.split(" ").length) {
             return false;
         }
         int areWordsSimilarMinLength = CommonTextToolsConfig.ARE_WORDS_SIMILAR_MIN_LENGTH;
         int areWordsSimilarMaxLdist = CommonTextToolsConfig.ARE_WORDS_SIMILAR_MAX_L_DIST;
-        int ldist = ldistance.apply(original.toLowerCase(), word2test.toLowerCase());
-        int lcscount = getLongestCommonSubstring(original.toLowerCase(), word2test.toLowerCase());
+        int ldist = ldistance.apply(originalLowerCase, word2TestLowerCase);
+        int lcscount = getLongestCommonSubstring(originalLowerCase, word2TestLowerCase);
         if (original.length() <= areWordsSimilarMinLength) {
             if (ldist <= areWordsSimilarMaxLdist && lcscount == original.length()) {
                 return true;

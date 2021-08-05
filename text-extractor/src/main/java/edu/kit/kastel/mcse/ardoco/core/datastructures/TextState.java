@@ -22,6 +22,8 @@ import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
  * The Class TextState defines the basic implementation of a {@link ITextState}.
  */
 public class TextState implements ITextState {
+    private static final double DELTA = 0.0001;
+
     private double similarityPercentage;
 
     private Map<String, NounMapping> nounMappings;
@@ -513,7 +515,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isNodeContainedByNounMappings(IWord node) {
-        return !nounMappings.values().stream().filter(n -> n.getWords().contains(node)).findAny().isEmpty();
+        return nounMappings.values().stream().anyMatch(n -> n.getWords().contains(node));
     }
 
     /**
@@ -524,7 +526,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isNodeContainedByTypeNodes(IWord node) {
-        return !nounMappings.values().stream().filter(n -> MappingKind.TYPE == n.getKind()).filter(n -> n.getWords().contains(node)).findAny().isEmpty();
+        return nounMappings.values().stream().anyMatch(n -> MappingKind.TYPE == n.getKind() && n.getWords().contains(node));
     }
 
     @Override
