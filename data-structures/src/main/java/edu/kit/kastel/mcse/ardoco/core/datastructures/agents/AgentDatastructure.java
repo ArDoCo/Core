@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
@@ -18,6 +19,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
     private IModelState modelState;
     private IRecommendationState recommendationState;
     private IConnectionState connectionState;
+    private IInconsistencyState inconsistencyState;
 
     /**
      * Create an empty data structure.
@@ -52,12 +54,13 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      * @param connectionState     the connection state
      */
     public AgentDatastructure(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState) {
+            IConnectionState connectionState, IInconsistencyState inconsistencyState) {
         this.text = text;
         this.textState = textState;
         this.modelState = modelState;
         this.recommendationState = recommendationState;
         this.connectionState = connectionState;
+        this.inconsistencyState = inconsistencyState;
     }
 
     /**
@@ -141,6 +144,14 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         this.connectionState = connectionState;
     }
 
+    public IInconsistencyState getInconsistencyState() {
+        return inconsistencyState;
+    }
+
+    public void setInconsistencyState(IInconsistencyState inconsistencyState) {
+        this.inconsistencyState = inconsistencyState;
+    }
+
     /**
      * Override the internal data with data from another data structure.
      *
@@ -152,6 +163,6 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         modelState = newData.modelState;
         recommendationState = newData.recommendationState;
         connectionState = newData.connectionState;
+        inconsistencyState = newData.inconsistencyState;
     }
-
 }

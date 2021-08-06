@@ -28,6 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
@@ -191,7 +192,7 @@ public final class Pipeline {
 
         logger.info("Starting process to generate Trace Links");
         prevStartTime = System.currentTimeMillis();
-        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null);
+        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
         logTiming(prevStartTime, "Model-Extractor");
 
         prevStartTime = System.currentTimeMillis();
@@ -205,6 +206,10 @@ public final class Pipeline {
         prevStartTime = System.currentTimeMillis();
         data.overwrite(runConnectionGenerator(data, additionalConfigs));
         logTiming(prevStartTime, "Connection-Generator");
+
+        prevStartTime = System.currentTimeMillis();
+        data.overwrite(runInconsistencyChecker(data));
+        logTiming(prevStartTime, "Inconsistency-Checker");
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
@@ -272,6 +277,8 @@ public final class Pipeline {
 
         FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states.csv").toFile(), //
                 data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
+
+        FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(), data.getInconsistencyState());
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
@@ -322,6 +329,13 @@ public final class Pipeline {
 
         connectionGenerator.exec();
         return connectionGenerator.getBlackboard();
+    }
+
+    private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
+        IExecutionStage inconsistencyChecker = new InconsistencyChecker(data);
+
+        inconsistencyChecker.exec();
+        return inconsistencyChecker.getBlackboard();
     }
 
     /**
