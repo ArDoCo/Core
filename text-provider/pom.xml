@@ -12,7 +12,7 @@
   		<artifactId>data-structures</artifactId>
   	</dependency>
   	<dependency>
-		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+		<groupId>edu.kit.kastel.informalin</groupId>
 		<artifactId>ontology-connector</artifactId>
 	</dependency>
 	

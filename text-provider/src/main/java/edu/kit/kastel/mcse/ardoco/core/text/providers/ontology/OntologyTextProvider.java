@@ -9,10 +9,10 @@ import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
 public final class OntologyTextProvider implements ITextConnector {
