@@ -10,9 +10,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
+@RunWith(JUnitPlatform.class)
 class PerformanceIT {
     private static final Logger logger = LogManager.getLogger(PerformanceIT.class);
 
