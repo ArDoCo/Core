@@ -12,10 +12,10 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 
 public final class OntologyWord implements IWord {
     private OntologyConnector ontologyConnector = null;

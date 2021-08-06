@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
 
 public class CachedOntologyTextTest extends OntologyTextTest {
 

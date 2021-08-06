@@ -40,7 +40,7 @@ jobs:
         uses: whelk-io/maven-settings-xml-action@v18
         with:
           repositories: '[{ "id": "github", "url": "https://maven.pkg.github.com/${GITHUB_REPOSITORY}"}]'
-          servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
+          servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }, { "id": "github-informalin", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

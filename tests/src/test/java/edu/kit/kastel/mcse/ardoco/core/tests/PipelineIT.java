@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
