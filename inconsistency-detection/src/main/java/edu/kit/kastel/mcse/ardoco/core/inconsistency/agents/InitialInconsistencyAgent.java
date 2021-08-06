@@ -32,8 +32,8 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
 
     @Override
     public void exec() {
-        // TODO Auto-generated method stub
-        System.out.println("Executing InitialInconsistencyAgent");
+        // TODO
+        logger.debug("Executing InitialInconsistencyAgent");
     }
 
 }

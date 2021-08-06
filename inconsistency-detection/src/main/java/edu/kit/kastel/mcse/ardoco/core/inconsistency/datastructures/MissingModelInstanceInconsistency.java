@@ -20,8 +20,6 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
 
     @Override
     public String getReason() {
-        // TODO How to output sentences more properly?
-
         var name = textualInstance.getName();
         SortedSet<Integer> occurences = new TreeSet<>();
         for (var nameMapping : textualInstance.getNameMappings()) {

@@ -8,7 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
  * @author Jan Keim
  *
  */
-public interface IInconsistencyState extends IState {
+public interface IInconsistencyState extends IState<IInconsistencyState> {
 
     /**
      * Returns a list of inconsistencies held by this state
