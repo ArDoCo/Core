@@ -22,6 +22,7 @@
 		<module>data-structures</module>
 		<module>pipeline</module>
 		<module>connection-generator</module>
+		<module>inconsistency-detection</module>
 		<module>model-provider</module>
 		<module>model-provider-owl</module>
 		<module>util</module>
@@ -101,6 +102,11 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>model-provider-owl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>inconsistency-detection</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
