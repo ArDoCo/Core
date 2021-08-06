@@ -9,12 +9,9 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 
-@RunWith(JUnitPlatform.class)
 class PcmOntologyModelConnectorTest {
     private static final Logger logger = LogManager.getLogger();
 
