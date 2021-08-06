@@ -12,12 +12,12 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.Instance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.ontology.OntologyInterface;
 
 /**
  * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.
