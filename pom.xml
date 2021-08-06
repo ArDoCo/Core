@@ -26,7 +26,6 @@
 		<module>model-provider</module>
 		<module>model-provider-owl</module>
 		<module>util</module>
-		<module>ontology-connector</module>
 		<module>tests</module>
 	</modules>
 
@@ -115,10 +114,12 @@
 				<artifactId>util</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+
+			<!-- TODO Move to Parent ? -->
 			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>edu.kit.kastel.informalin</groupId>
 				<artifactId>ontology-connector</artifactId>
-				<version>${project.version}</version>
+				<version>0.1-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -148,8 +149,8 @@
 		</dependency>
 		<!-- Apache Commons Lang -->
 		<dependency>
-		  <groupId>org.apache.commons</groupId>
-		  <artifactId>commons-lang3</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -158,6 +159,11 @@
 			<id>github</id>
 			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
+		</repository>
+		<repository>
+			<id>github-informalin</id>
+			<name>GitHub Informalin Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/InFormALin/Ontology-Connector</url>
 		</repository>
 	</repositories>
 
@@ -170,28 +176,28 @@
 					<version>3.0.0-M5</version>
 				</plugin>
 				<plugin>
-			        <groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-compiler-plugin</artifactId>
-			        <configuration>
-				          <fork>true</fork>
-				          <meminitial>128m</meminitial>
-				          <maxmem>512m</maxmem>
-			        </configuration>
-			     </plugin>
-			     <plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<fork>true</fork>
+						<meminitial>128m</meminitial>
+						<maxmem>512m</maxmem>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
 					<version>3.0.0-M5</version>
 					<configuration></configuration>
 					<executions>
-	                    <execution>
-	                        <phase>integration-test</phase>
-	                        <goals>
-	                            <goal>integration-test</goal>
-	                            <goal>verify</goal>
-	                        </goals>
-	                    </execution>
-                	</executions>
+						<execution>
+							<phase>integration-test</phase>
+							<goals>
+								<goal>integration-test</goal>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.jacoco</groupId>
@@ -203,27 +209,27 @@
 	</build>
 
 	<profiles>
-	   <profile>
-	     <id>coverage</id>
-	     <activation>
-	       <activeByDefault>true</activeByDefault>
-	     </activation>
-	     <build>
-	       <plugins>
-	         <plugin>
-	           <groupId>org.jacoco</groupId>
-	           <artifactId>jacoco-maven-plugin</artifactId>
-	           <executions>
-	             <execution>
-	               <id>prepare-agent</id>
-	               <goals>
-	                 <goal>prepare-agent</goal>
-	               </goals>
-	             </execution>
-	           </executions>
-	         </plugin>
-	       </plugins>
-	     </build>
-	   </profile>
+		<profile>
+			<id>coverage</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
