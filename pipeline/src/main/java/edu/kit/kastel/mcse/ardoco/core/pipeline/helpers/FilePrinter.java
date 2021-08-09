@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,7 +65,7 @@ public final class FilePrinter {
             return;
         }
 
-        try (var myWriter = new FileWriter(target)) {
+        try (var myWriter = new FileWriter(target, StandardCharsets.UTF_8)) {
             var minSentenceNumber = 0;
             for (IWord node : text.getWords()) {
                 var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
@@ -231,7 +230,7 @@ public final class FilePrinter {
             return;
         }
 
-        try (var myWriter = new FileWriter(resultFile)) {
+        try (var myWriter = new FileWriter(resultFile, StandardCharsets.UTF_8)) {
             writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState, duration);
 
         } catch (IOException e) {
@@ -334,11 +333,6 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        // TODO previously, there was a selection of InstanceLinks with highest confidence for a modelElementUid
-        // Have to check, what that actually did and what the difference is
-        // Previously: multiple tracelinks for a single modelElement in a single sentence possible
-        // Now: Only one tracelink for one ModelElement(Id) in one sentence. Can be adapted by not using a set
-
         Set<Tracelink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
         for (var tracelink : tracelinks) {
             var modelElementUid = tracelink.getModelElementUid();
@@ -359,7 +353,7 @@ public final class FilePrinter {
      */
     public static void writeDataLinesInFile(File file, ImmutableList<String[]> dataLines) {
 
-        try (var pw = new FileWriter(file)) {
+        try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
             dataLines.collect(FilePrinter::convertToCSV).forEach(s -> {
                 try {
                     pw.append(s).append("\n");
@@ -375,12 +369,14 @@ public final class FilePrinter {
     }
 
     public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
-        List<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
-        List<String> inconsistencyReasons = inconsistencies.stream().map(IInconsistency::getReason).toList();
+        ImmutableList<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+
+        if (logger.isDebugEnabled()) {
+            inconsistencies.stream().forEach(i -> logger.debug("Found Inconsistency: {}", i.getReason()));
+        }
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
-            inconsistencyReasons.stream().forEach(s -> {
-                logger.debug("Found Inconsistency: {}", s);
+            inconsistencies.flatCollect(IInconsistency::toFileOutput).collect(FilePrinter::convertToCSV).forEach(s -> {
                 try {
                     pw.append(s).append("\n");
                 } catch (IOException e) {

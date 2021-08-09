@@ -3,9 +3,8 @@
  */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures;
 
-import java.util.List;
-
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
@@ -40,8 +39,8 @@ public class InconsistencyState implements IInconsistencyState {
      * @return list of inconsistencies
      */
     @Override
-    public List<IInconsistency> getInconsistencies() {
-        return inconsistencies;
+    public ImmutableList<IInconsistency> getInconsistencies() {
+        return inconsistencies.toImmutable();
     }
 
     @Override
