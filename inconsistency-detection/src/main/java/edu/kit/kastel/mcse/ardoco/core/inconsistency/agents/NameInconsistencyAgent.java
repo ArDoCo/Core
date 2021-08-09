@@ -12,7 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
@@ -27,14 +26,14 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
     }
 
     private NameInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
+            IConnectionState connectionState, IInconsistencyState inconsistencyState) {
         super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
     }
 
     @Override
     public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
-        return new NameInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState, (GenericInconsistencyConfig) config);
+        return new NameInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState);
 
     }
 
@@ -71,7 +70,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
      * @param word          the word
      * @return <code>true</code>, if there is a match, otherwise <code>false</code>
      */
-    private boolean equalTextOrLemma(IModelInstance modelInstance, IWord word) {
+    private static boolean equalTextOrLemma(IModelInstance modelInstance, IWord word) {
         String modelName = modelInstance.getLongestName();
         String text = word.getText();
         String lemma = word.getLemma();
@@ -80,7 +79,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
         return modelName.equalsIgnoreCase(text) && modelName.equalsIgnoreCase(lemma);
     }
 
-    private boolean partOfDividerEqualsModelInstance(IModelInstance modelInstance, IWord word) {
+    private static boolean partOfDividerEqualsModelInstance(IModelInstance modelInstance, IWord word) {
         String text = word.getText();
         String modelName = modelInstance.getLongestName();
         for (String part : text.split(REGEX_DIVIDER)) {
