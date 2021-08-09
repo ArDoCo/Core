@@ -60,6 +60,18 @@ class TracelinksIT {
         compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
 
+    @Disabled("Disabled for CI. Enable for local test only!")
+    @Test
+    @DisplayName("Evaluate Teastore")
+    void compareTracelinksTeastoreTextIT() {
+        var similarity = 1.0;
+        var minPrecision = 0.62d;
+        var minRecall = 0.87d;
+        var minF1 = 0.73d;
+
+        compareTextBased("teastore", similarity, minPrecision, minRecall, minF1);
+    }
+
     @Test
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
@@ -71,6 +83,18 @@ class TracelinksIT {
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
+    // @Disabled("Disabled for CI. Enable for local test only!")
+    @Test
+    @DisplayName("Evaluate Teammates")
+    void compareTracelinksTeammatesTextIT() {
+        var similarity = 0.80;
+        var minPrecision = 0.60d;
+        var minRecall = 0.82d;
+        var minF1 = 0.74d;
+
+        compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
+    }
+
     @Test
     @DisplayName("Evaluate Mediastore")
     void compareTracelinksMediastoreIT() {
@@ -80,6 +104,18 @@ class TracelinksIT {
         var minF1 = 0.52d;
 
         compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
+    }
+
+    @Disabled("Disabled for CI. Enable for local test only!")
+    @Test
+    @DisplayName("Evaluate Mediastore")
+    void compareTracelinksMediastoreTextIT() {
+        var similarity = 1.00;
+        var minPrecision = 0.46d;
+        var minRecall = 0.6d;
+        var minF1 = 0.52d;
+
+        compareTextBased("mediastore", similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled for CI. Only enable this locally if you want to test the cache.")
@@ -125,7 +161,6 @@ class TracelinksIT {
         compare(name, similarity, minPrecision, minRecall, minF1);
     }
 
-    @SuppressWarnings("unused")
     private void compareTextBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
         inputText = new File(inputTextPath);
