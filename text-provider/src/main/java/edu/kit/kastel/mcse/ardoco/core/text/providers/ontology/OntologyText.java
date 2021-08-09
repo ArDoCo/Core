@@ -129,6 +129,7 @@ public class OntologyText implements IText {
 
     @Override
     public ImmutableList<ICorefCluster> getCorefClusters() {
+        // TODO
         throw new NotImplementedException("Will be implemented soon");
     }
 
