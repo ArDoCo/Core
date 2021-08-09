@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
@@ -13,6 +14,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ICorefCluster;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 
@@ -123,6 +125,11 @@ public class OntologyText implements IText {
         }
         OntologyText other = (OntologyText) obj;
         return Objects.equals(textIndividual.getURI(), other.textIndividual.getURI());
+    }
+
+    @Override
+    public ImmutableList<ICorefCluster> getCorefClusters() {
+        throw new NotImplementedException("Will be implemented soon");
     }
 
 }

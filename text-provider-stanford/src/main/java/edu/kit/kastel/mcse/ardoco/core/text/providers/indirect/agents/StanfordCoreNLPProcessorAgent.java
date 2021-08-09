@@ -399,10 +399,6 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
                 INode node = sentences.get(sentenceNumber - STANFORD_OFFSET).get(i - STANFORD_OFFSET);
                 createCorefClusterArc(node, corefClusterNode);
             }
-            if (logger.isInfoEnabled()) {
-                String logText = "\tMention: " + mention.mentionSpan;
-                logger.info(logText);
-            }
         }
     }
 
@@ -411,10 +407,6 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     }
 
     private INode createCorefClusterNode(int chainId, String representativeMentionSpan) {
-        if (logger.isInfoEnabled()) {
-            String logText = "Cluster with ID " + chainId + " and Representative Mention \"" + representativeMentionSpan + "\"";
-            logger.info(logText);
-        }
 
         INodeType nodeType = getCorefClusterNodeType();
         INode clusterNode = graph.createNode(nodeType);

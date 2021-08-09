@@ -33,7 +33,7 @@ public class ParseProvider implements ITextConnector {
         annotatedText = convertParseGraphToAnnotatedText(graph);
     }
 
-    private IText convertParseGraphToAnnotatedText(IGraph graph) {
+    private static IText convertParseGraphToAnnotatedText(IGraph graph) {
         if (logger.isDebugEnabled()) {
             logger.debug("Converting to IText");
         }

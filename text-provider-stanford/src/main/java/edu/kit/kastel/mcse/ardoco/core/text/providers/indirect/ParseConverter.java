@@ -14,6 +14,7 @@ import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ICorefCluster;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
@@ -47,7 +48,9 @@ public class ParseConverter {
         createWords();
         createDeps();
 
-        createText();
+        var corefClusters = getCorefClusters();
+
+        annotatedText = new Text(orderedWords.toImmutable(), corefClusters);
     }
 
     /**
@@ -91,12 +94,35 @@ public class ParseConverter {
                 }
             }
         }
-
     }
 
-    private void createText() {
-        IText text = new Text(orderedWords.toImmutable());
-        annotatedText = text;
+    private ImmutableList<ICorefCluster> getCorefClusters() {
+        MutableList<ICorefCluster> clusters = Lists.mutable.empty();
+
+        for (var corefClusterNode : graph.getNodesOfType(graph.getNodeType("CorefCluster"))) {
+            MutableList<ImmutableList<IWord>> mentions = Lists.mutable.empty();
+            var id = (int) corefClusterNode.getAttributeValue("clusterId");
+            var representativeMention = (String) corefClusterNode.getAttributeValue("representativeMention");
+
+            MutableList<IWord> currMention = Lists.mutable.empty();
+            var lastPosition = -1;
+            for (var arc : corefClusterNode.getIncomingArcsOfType(graph.getArcType("coreference"))) {
+                var wordNode = arc.getSourceNode();
+                var word = instances.get(wordNode);
+                var wordPosition = word.getPosition();
+                if (lastPosition != -1 && lastPosition + 1 != wordPosition) {
+                    mentions.add(currMention.toImmutable());
+                    currMention = Lists.mutable.empty();
+                }
+                lastPosition = wordPosition;
+                currMention.add(word);
+            }
+
+            var corefCluster = new CorefCluster(id, representativeMention, mentions.toImmutable());
+            clusters.add(corefCluster);
+        }
+
+        return clusters.toImmutable();
     }
 
     private void reset() {
@@ -207,10 +233,12 @@ public class ParseConverter {
     private static final class Text implements IText {
 
         private ImmutableList<IWord> words;
+        private ImmutableList<ICorefCluster> corefClusters;
 
-        private Text(ImmutableList<Word> orderedWords) {
+        private Text(ImmutableList<Word> orderedWords, ImmutableList<ICorefCluster> corefClusters) {
             orderedWords.stream().forEach(w -> w.parent = this);
             words = orderedWords.collect(w -> w);
+            this.corefClusters = corefClusters;
         }
 
         @Override
@@ -222,5 +250,39 @@ public class ParseConverter {
         public ImmutableList<IWord> getWords() {
             return words;
         }
+
+        @Override
+        public ImmutableList<ICorefCluster> getCorefClusters() {
+            return corefClusters;
+        }
+
+    }
+
+    private static final class CorefCluster implements ICorefCluster {
+        private int id;
+        private ImmutableList<ImmutableList<IWord>> mentions;
+        private String representativeMention;
+
+        private CorefCluster(int id, String representativeMention, ImmutableList<ImmutableList<IWord>> mentions) {
+            this.mentions = mentions;
+            this.representativeMention = representativeMention;
+            this.id = id;
+        }
+
+        @Override
+        public String getRepresentativeMention() {
+            return representativeMention;
+        }
+
+        @Override
+        public ImmutableList<ImmutableList<IWord>> getMentions() {
+            return mentions;
+        }
+
+        @Override
+        public int getId() {
+            return id;
+        }
+
     }
 }
