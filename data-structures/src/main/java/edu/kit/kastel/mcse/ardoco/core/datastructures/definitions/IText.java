@@ -29,4 +29,11 @@ public interface IText {
      * @return the words
      */
     ImmutableList<IWord> getWords();
+
+    /**
+     * Get all Coreference Clusters that the text has
+     *
+     * @return the coreference clusters
+     */
+    ImmutableList<ICorefCluster> getCorefClusters();
 }
