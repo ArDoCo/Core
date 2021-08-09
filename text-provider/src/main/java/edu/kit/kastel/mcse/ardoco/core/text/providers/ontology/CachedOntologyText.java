@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.ontology.Individual;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -20,6 +19,7 @@ public class CachedOntologyText implements IText {
 
     private OrderedOntologyList textList = null;
     private ImmutableList<IWord> words = null;
+    private ImmutableList<ICorefCluster> corefClusters = null;
 
     private OntologyText ontologyText;
 
@@ -84,7 +84,10 @@ public class CachedOntologyText implements IText {
 
     @Override
     public ImmutableList<ICorefCluster> getCorefClusters() {
-        throw new NotImplementedException("Will be implemented soon");
+        if (corefClusters == null) {
+            corefClusters = ontologyText.getCorefClusters().collect(CachedOntologyCorefCluster::get);
+        }
+        return corefClusters;
     }
 
     public void setDirty() {
