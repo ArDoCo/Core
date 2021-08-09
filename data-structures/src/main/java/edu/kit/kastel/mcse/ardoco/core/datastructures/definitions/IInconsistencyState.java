@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
@@ -15,7 +15,7 @@ public interface IInconsistencyState extends IState<IInconsistencyState> {
      *
      * @return list of inconsistencies
      */
-    List<IInconsistency> getInconsistencies();
+    ImmutableList<IInconsistency> getInconsistencies();
 
     /**
      * Add an Inconsistency to this state
