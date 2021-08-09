@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.textextractor.extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextractor.agents;
 
 import java.util.Map;
 
