@@ -35,6 +35,13 @@ class OntologyTextTest {
 
         var expectedWords = 763;
         Assertions.assertEquals(expectedWords, words.size());
+
+        // test order
+        for (int i = 0; i < words.size(); i++) {
+            var word = words.get(i);
+            var position = word.getPosition();
+            Assertions.assertEquals(i, position);
+        }
     }
 
     @Test

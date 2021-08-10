@@ -170,6 +170,7 @@ public final class Pipeline {
      * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
      */
     public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir) {
+        logger.info("Starting {}", name);
         long startTime = System.currentTimeMillis();
         long prevStartTime = System.currentTimeMillis();
 

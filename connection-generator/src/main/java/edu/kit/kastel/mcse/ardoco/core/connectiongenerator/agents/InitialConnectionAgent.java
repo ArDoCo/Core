@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
 import java.util.Map;
 

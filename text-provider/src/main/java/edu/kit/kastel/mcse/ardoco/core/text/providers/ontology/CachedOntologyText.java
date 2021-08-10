@@ -4,9 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.jena.ontology.Individual;
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
@@ -63,14 +61,7 @@ public class CachedOntologyText implements IText {
             return words;
         }
         var ontoWords = ontologyText.getWords();
-        MutableList<IWord> newWords = Lists.mutable.empty();
-        for (var word : ontoWords) {
-            if (word instanceof OntologyWord ontoWord) {
-                var cachedWord = CachedOntologyWord.get(ontoWord);
-                newWords.add(cachedWord);
-            }
-        }
-        words = newWords.toImmutable();
+        words = ontoWords.collect(CachedOntologyWord::get);
         return words;
     }
 
@@ -83,7 +74,7 @@ public class CachedOntologyText implements IText {
     }
 
     @Override
-    public ImmutableList<ICorefCluster> getCorefClusters() {
+    public synchronized ImmutableList<ICorefCluster> getCorefClusters() {
         if (corefClusters == null) {
             corefClusters = ontologyText.getCorefClusters().collect(CachedOntologyCorefCluster::get);
         }

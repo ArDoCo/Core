@@ -195,7 +195,7 @@ public class ParseConverter {
 
         @Override
         public IWord getPreWord() {
-            if (position == 0) {
+            if (position <= 0) {
                 return null;
             }
             return parent.getWords().get(position - 1);
@@ -203,7 +203,7 @@ public class ParseConverter {
 
         @Override
         public IWord getNextWord() {
-            if (position == parent.getLength() - 1) {
+            if (position >= parent.getLength() - 1) {
                 return null;
             }
             return parent.getWords().get(position + 1);
