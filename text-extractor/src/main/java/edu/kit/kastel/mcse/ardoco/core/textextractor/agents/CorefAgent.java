@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextractor.agents;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ICorefCluster;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
@@ -37,14 +38,8 @@ public class CorefAgent extends TextAgent {
                 logger.debug("Coref cluster with id {} and representative mention {}", corefCluster.getId(), corefCluster.getRepresentativeMention());
                 for (var mention : corefCluster.getMentions()) {
                     var firstPosition = mention.getFirst().getPosition();
-                    var lastPosition = 0;
-                    var textBuilder = new StringBuilder();
-                    for (var word : mention) {
-                        lastPosition = word.getPosition();
-                        textBuilder.append(word.getText());
-                        textBuilder.append(" ");
-                    }
-                    var mentionText = textBuilder.toString().strip();
+                    var lastPosition = mention.getLast().getPosition();
+                    var mentionText = ICorefCluster.getTextForMention(mention);
                     logger.debug("  Mention: {} ({} - {})", mentionText, firstPosition, lastPosition);
                 }
             }

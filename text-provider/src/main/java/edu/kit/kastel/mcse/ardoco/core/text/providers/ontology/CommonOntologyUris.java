@@ -17,7 +17,12 @@ enum CommonOntologyUris {
     UUID_PROPERTY("https://informalin.github.io/knowledgebases/informalin_base.owl#OWLDataProperty_d45dcc42_a463_476d_a06f_939637c6bc1c"),
     TEXT_DOCUMENT_CLASS("https://informalin.github.io/knowledgebases/informalin_base_text#OWLClass_f7ee71e0_fe7c_4640_b432_bb876416974a"),
     WORD_CLASS("https://informalin.github.io/knowledgebases/informalin_base#OWLClass_33cd62aa_e856_4bd3_93fd_454951b453b0"),
-    WORD_DEPENDENCY_CLASS("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLClass_23b11e6d_0c9d_48a6_98c6_27ce9f2ceffb");
+    WORD_DEPENDENCY_CLASS("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLClass_23b11e6d_0c9d_48a6_98c6_27ce9f2ceffb"),
+    COREF_CLUSTER_CLASS("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLClass_b5f49fac_9778_48c1_9462_f6dd11ae711f"),
+    COREF_MENTION_CLASS("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLClass_17dae5c7_2e82_4fef_a884_48d0c7c4561a"),
+    HAS_MENTION_PROPERTY("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_065d33e1_eb0a_4143_842a_dfdf5e49497a"),
+    REPRESENTATIVE_MENTION_PROPERTY(
+            "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_743f0626_55af_428c_a2ac_d04102108ff7");
 
     private String uri;
 
