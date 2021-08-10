@@ -186,6 +186,15 @@ public class ParseConverter {
             return posTag.getTag().startsWith("PR") ||
                     posTag.getTag().startsWith("WP");
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this.getClass() != obj.getClass()) {
+                return false;
+            }
+            IWord word = (IWord) obj;
+            return this.text.equals(word.getText()) && this.position == word.getPosition();
+        }
     }
 
     private static final class Text implements IText {
