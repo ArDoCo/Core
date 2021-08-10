@@ -85,6 +85,10 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param n                   the current node
      */
     private void checkForNameBeforeType(ITextState textExtractionState, IWord n) {
+        if (textExtractionState == null || n == null) {
+            return;
+        }
+
         IWord pre = n.getPreWord();
 
         Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
@@ -113,6 +117,10 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param n                   the current node
      */
     private void checkForNameAfterType(ITextState textExtractionState, IWord n) {
+        if (textExtractionState == null || n == null) {
+            return;
+        }
+
         IWord after = n.getNextWord();
 
         Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
@@ -140,6 +148,9 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param n                   the current node
      */
     private void checkForNortBeforeType(ITextState textExtractionState, IWord n) {
+        if (textExtractionState == null || n == null) {
+            return;
+        }
 
         IWord pre = n.getPreWord();
 
@@ -189,6 +200,10 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param n                   the current node
      */
     private void checkForNortAfterType(ITextState textExtractionState, IWord n) {
+        if (textExtractionState == null || n == null) {
+            return;
+        }
+
         IWord after = n.getNextWord();
 
         Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
@@ -217,13 +232,17 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @return the unique matching instance
      */
     private IModelInstance tryToIdentify(ITextState textExtractioinState, ImmutableList<String> similarTypes, IWord n) {
+        if (textExtractioinState == null || similarTypes == null || n == null) {
+            return null;
+        }
         MutableList<IModelInstance> matchingInstances = Lists.mutable.empty();
 
         for (String type : similarTypes) {
             matchingInstances.addAll(modelState.getInstancesOfType(type).castToCollection());
         }
 
-        matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(n.getText())));
+        var text = n.getText();
+        matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(text)));
 
         if (matchingInstances.size() == 1) {
             textExtractioinState.addName(n, matchingInstances.get(0).getLongestName(), probability);
