@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendedRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
@@ -12,22 +12,21 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 /**
  * Adds
- * @see RecommendedRelation
- * instances to {@link RecommendedRelationAgent#recommendationState}
+ * @see InstanceRelation
+ * instances to {@link InstanceRelationAgent#recommendationState}
  */
-public class RecommendedRelationAgent extends DependencyAgent {
+public class InstanceRelationAgent extends DependencyAgent {
 
-    private static final Logger logger = LogManager.getLogger("RecommendedRelationAgent");
+    private static final Logger logger = LogManager.getLogger("InstanceRelationAgent");
     private List<DependencyExtractor> extractors = new ArrayList<>();
 
     /**
      * Default constructor
      */
-    public RecommendedRelationAgent() {
+    public InstanceRelationAgent() {
         super(GenericRecommendationConfig.class);
     }
 
@@ -40,8 +39,8 @@ public class RecommendedRelationAgent extends DependencyAgent {
      * @param recommendationState state of recommendations
      * @param config configuration
      */
-    public RecommendedRelationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-                                    GenericRecommendationConfig config) {
+    public InstanceRelationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+                                 GenericRecommendationConfig config) {
         super(DependencyType.TEXT_MODEL_RECOMMENDATION, GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
         initializeExtractors(config.dependencyExtractors, config);
     }
@@ -64,18 +63,18 @@ public class RecommendedRelationAgent extends DependencyAgent {
     }
 
     /**
-     * Create a new RecommendedRelationAgent from passed parameters
+     * Create a new InstanceRelationAgent from passed parameters
      *
      * @param text annotated text
      * @param textState state of text
      * @param modelState model state
      * @param recommendationState state of recommendations
      * @param config configuration
-     * @return new RecommendedRelationAgent instance
+     * @return new InstanceRelationAgent instance
      */
     @Override
-    public RecommendedRelationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, Configuration config) {
-        return new RecommendedRelationAgent(text, textState, modelState, recommendationState, (GenericRecommendationConfig) config);
+    public InstanceRelationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, Configuration config) {
+        return new InstanceRelationAgent(text, textState, modelState, recommendationState, (GenericRecommendationConfig) config);
     }
 
     /**
@@ -104,21 +103,22 @@ public class RecommendedRelationAgent extends DependencyAgent {
                         for (IRecommendedInstance secondInstance : recommendationState.getRecommendedInstances()) {
                             if (!secondInstance.equals(instance) &&
                                 this.getInstanceWords(secondInstance).contains(secondWord) &&
-                                //!word.equals(secondWord) &&
-                                word == secondWord &&
-                                this.recommendationState.getRecommendedRelations().stream().noneMatch(
+                                !word.equals(secondWord) &&
+                                this.recommendationState.getInstanceRelations().stream().noneMatch(
                                     i ->
-                                    i.getNodes().contains(word) &&
-                                    i.getNodes().contains(secondWord) &&
-                                    i.getRelator().equals(verbOn))) {
+                                    i.isIn(verbOn, Collections.singletonList(word), Collections.singletonList(secondWord)) ||
+                                    i.isIn(verbOn, Collections.singletonList(secondWord), Collections.singletonList(word)))
+                            ) {
                                 /*
                                 Add new relation only if
                                 1. Instance and secondInstance are not equal
                                 2. SecondInstance contains secondWord
-                                3. The relation is not already contained in relations
+                                3. Word and secondWord are not equal
+                                4. The relation is not already contained in relations
                                  */
-                                logger.debug("Add RecommendedRelation from {} over {} to {}", word.getLemma(), verbOn.getLemma(), secondWord.getLemma());
-                                this.recommendationState.addInstanceRelation(1,
+                                logger.debug("Add InstanceRelation from {} over {} to {}", word.getLemma(), verbOn.getLemma(), secondWord.getLemma());
+                                this.recommendationState.addInstanceRelation(verbOn.getLemma(),
+                                        1,
                                         Collections.singletonList(instance),
                                         Collections.singletonList(secondInstance),
                                         verbOn,
@@ -131,7 +131,7 @@ public class RecommendedRelationAgent extends DependencyAgent {
             }
         }
 
-        logger.info("Found {} RecommendedRelations", this.recommendationState.getInstanceRelations().size());
+        logger.info("Found {} InstanceRelations", this.recommendationState.getInstanceRelations().size());
     }
 
     private List<IWord> getInstanceWords(IRecommendedInstance instance) {
