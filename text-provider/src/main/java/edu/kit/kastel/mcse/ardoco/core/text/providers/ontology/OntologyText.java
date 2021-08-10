@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
@@ -26,6 +25,7 @@ public class OntologyText implements IText {
     private Individual textIndividual;
 
     private OntProperty wordsProperty;
+    private OntProperty hasCorefClusterProperty;
     private static OntClass textDocumentClass = null;
 
     protected OntologyText(OntologyConnector ontologyConnector, Individual textIndividual) {
@@ -65,6 +65,7 @@ public class OntologyText implements IText {
 
     private void init() {
         wordsProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_WORDS_PROPERTY.getUri()).orElseThrow();
+        hasCorefClusterProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_COREF_CLUSTERS.getUri()).orElseThrow();
     }
 
     @Override
@@ -129,8 +130,13 @@ public class OntologyText implements IText {
 
     @Override
     public ImmutableList<ICorefCluster> getCorefClusters() {
-        // TODO
-        throw new NotImplementedException("Will be implemented soon");
+        var clusterIndividuals = ontologyConnector.getObjectsOf(textIndividual, hasCorefClusterProperty).collect(n -> n.as(Individual.class));
+        MutableList<ICorefCluster> clusters = Lists.mutable.empty();
+        for (var clusterIndividual : clusterIndividuals) {
+            var cluster = OntologyCorefCluster.get(ontologyConnector, clusterIndividual);
+            clusters.add(cluster);
+        }
+        return clusters.toImmutable();
     }
 
 }

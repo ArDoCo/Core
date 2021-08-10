@@ -43,6 +43,8 @@ public final class OntologyTextProvider implements ITextConnector {
     private OntProperty mentionProperty;
     private OntProperty representativeMentionProperty;
 
+    private OntProperty hasCorefClusterProperty;
+
     private OntologyTextProvider(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
     }
@@ -81,6 +83,7 @@ public final class OntologyTextProvider implements ITextConnector {
         corefClusterClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_CLUSTER_CLASS.getUri()).orElseThrow();
         corefMentionClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_MENTION_CLASS.getUri()).orElseThrow();
         dependencyClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_DEPENDENCY_CLASS.getUri()).orElseThrow();
+
         uuidProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.UUID_PROPERTY.getUri()).orElseThrow();
         textProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.TEXT_PROPERTY.getUri()).orElseThrow();
         posProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POS_PROPERTY.getUri()).orElseThrow();
@@ -91,7 +94,7 @@ public final class OntologyTextProvider implements ITextConnector {
         dependencySourceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_SOURCE_PROPERTY.getUri()).orElseThrow();
         dependencyTargetProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TARGET_PROPERTY.getUri()).orElseThrow();
         dependencyTypeProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TYPE_PROPERTY.getUri()).orElseThrow();
-
+        hasCorefClusterProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_COREF_CLUSTERS.getUri()).orElseThrow();
         mentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_MENTION_PROPERTY.getUri()).orElseThrow();
         representativeMentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.REPRESENTATIVE_MENTION_PROPERTY.getUri()).orElseThrow();
 
@@ -140,6 +143,7 @@ public final class OntologyTextProvider implements ITextConnector {
             var corefClusterIndividual = ontologyConnector.addIndividualToClass(representativeMention, corefClusterClass);
             ontologyConnector.addPropertyToIndividual(corefClusterIndividual, uuidProperty, "" + corefCluster.getId());
             ontologyConnector.addPropertyToIndividual(corefClusterIndividual, representativeMentionProperty, representativeMention);
+            ontologyConnector.addPropertyToIndividual(textIndividual, hasCorefClusterProperty, corefClusterIndividual);
 
             var counter = 0;
             for (var mention : corefCluster.getMentions()) {
