@@ -62,7 +62,7 @@ class TracelinksIT {
 
     @Disabled("Disabled for CI. Enable for local test only!")
     @Test
-    @DisplayName("Evaluate Teastore")
+    @DisplayName("Evaluate Teastore (Text)")
     void compareTracelinksTeastoreTextIT() {
         var similarity = 1.0;
         var minPrecision = 0.62d;
@@ -83,9 +83,9 @@ class TracelinksIT {
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
-    // @Disabled("Disabled for CI. Enable for local test only!")
+    @Disabled("Disabled for CI. Enable for local test only!")
     @Test
-    @DisplayName("Evaluate Teammates")
+    @DisplayName("Evaluate Teammates (Text)")
     void compareTracelinksTeammatesTextIT() {
         var similarity = 0.80;
         var minPrecision = 0.60d;
@@ -108,7 +108,7 @@ class TracelinksIT {
 
     @Disabled("Disabled for CI. Enable for local test only!")
     @Test
-    @DisplayName("Evaluate Mediastore")
+    @DisplayName("Evaluate Mediastore (Text)")
     void compareTracelinksMediastoreTextIT() {
         var similarity = 1.00;
         var minPrecision = 0.46d;

@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
  * @author Jan Keim
  *
  */
-public class CachedOntologyCorefCluster implements ICorefCluster {
+public final class CachedOntologyCorefCluster implements ICorefCluster {
     private static final Map<ICorefCluster, CachedOntologyCorefCluster> cache = new HashMap<>();
 
     private ICorefCluster ontologyCorefCluster;
@@ -53,7 +53,7 @@ public class CachedOntologyCorefCluster implements ICorefCluster {
     @Override
     public synchronized ImmutableList<ImmutableList<IWord>> getMentions() {
         if (mentions == null) {
-            mentions = ontologyCorefCluster.getMentions();
+            mentions = ontologyCorefCluster.getMentions().collect(list -> list.collect(CachedOntologyWord::get));
         }
         return mentions;
     }

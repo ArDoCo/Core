@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 class OntologyWordTest {
     protected static String ontologyPath = "src/test/resources/teastore_w_text.owl";
 
-    protected static final String testWordUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#wjH9KUsDJY";
+    protected static final String testWordUri = "https://informalin.github.io/knowledgebases/examples/teastore_w_text.owl#hrlxHgUEdI";
 
     protected OntologyConnector ontologyConnector;
     protected IWord ontologyWord;
@@ -95,7 +95,8 @@ class OntologyWordTest {
     @Test
     @DisplayName("Test retrieval of incoming dependencies")
     void getIncomingDependenciesTest() {
-        var targetUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#sUAn9rYoLC";
+        // Images (71)
+        var targetUri = "https://informalin.github.io/knowledgebases/examples/teastore_w_text.owl#aA2IQT1MKG";
 
         var testWordTargetIndividual = ontologyConnector.getIndividualByIri(targetUri).orElseThrow();
         ontologyWord = OntologyWord.get(ontologyConnector, testWordTargetIndividual);
@@ -110,7 +111,8 @@ class OntologyWordTest {
     @Test
     @DisplayName("Test retrieval of outgoing dependencies")
     void getOutgoingDependenciesTest() {
-        var dependencyWordSourceUri = "https://informalin.github.io/knowledgebases/examples/teastore.owl#nX2CNoSy17";
+        // rankings (595)
+        var dependencyWordSourceUri = "https://informalin.github.io/knowledgebases/examples/teastore_w_text.owl#p2kMLMA4vS";
         var testWordSourceIndividual = ontologyConnector.getIndividualByIri(dependencyWordSourceUri).orElseThrow();
         ontologyWord = OntologyWord.get(ontologyConnector, testWordSourceIndividual);
 

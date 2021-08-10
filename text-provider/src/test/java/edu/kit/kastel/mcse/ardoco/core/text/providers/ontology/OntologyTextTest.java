@@ -55,4 +55,14 @@ class OntologyTextTest {
         var expectedText = "The";
         Assertions.assertEquals(expectedText, startNodeText);
     }
+
+    @Test
+    @DisplayName("Test retrieval of CorefClusters")
+    void getCorefClustersTest() {
+        var clusters = ontologyText.getCorefClusters();
+        Assertions.assertNotNull(clusters);
+
+        var expectedNumberOfClusters = 16;
+        Assertions.assertEquals(expectedNumberOfClusters, clusters.size());
+    }
 }

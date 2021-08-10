@@ -22,7 +22,8 @@ enum CommonOntologyUris {
     COREF_MENTION_CLASS("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLClass_17dae5c7_2e82_4fef_a884_48d0c7c4561a"),
     HAS_MENTION_PROPERTY("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_065d33e1_eb0a_4143_842a_dfdf5e49497a"),
     REPRESENTATIVE_MENTION_PROPERTY(
-            "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_743f0626_55af_428c_a2ac_d04102108ff7");
+            "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_743f0626_55af_428c_a2ac_d04102108ff7"),
+    HAS_COREF_CLUSTERS("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_c1ce8819_cdfc_48de_bb7c_2f4802f7b51d");
 
     private String uri;
 
