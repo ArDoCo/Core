@@ -7,11 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
 
 /**
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
@@ -24,12 +20,14 @@ public class RecommendationState implements IRecommendationState {
 
     private List<IRecommendedInstance> recommendedInstances;
     private List<IRecommendedRelation> recommendedRelations;
+    private List<IInstanceRelation> instanceRelations;
 
     @Override
     public IRecommendationState createCopy() {
         var recommendationState = new RecommendationState();
         recommendationState.recommendedInstances = recommendedInstances.stream().map(IRecommendedInstance::createCopy).collect(Collectors.toList());
         recommendationState.recommendedRelations = recommendedRelations.stream().map(IRecommendedRelation::createCopy).collect(Collectors.toList());
+        recommendationState.instanceRelations = instanceRelations.stream().map(IInstanceRelation::createCopy).collect(Collectors.toList());
         return recommendationState;
     }
 
@@ -39,6 +37,7 @@ public class RecommendationState implements IRecommendationState {
     public RecommendationState() {
         recommendedInstances = new ArrayList<>();
         recommendedRelations = new ArrayList<>();
+        instanceRelations = new ArrayList<>();
     }
 
     /**
@@ -59,6 +58,36 @@ public class RecommendationState implements IRecommendationState {
     @Override
     public List<IRecommendedRelation> getRecommendedRelations() {
         return recommendedRelations;
+    }
+
+    /**
+     * Returns all instance relations.
+     *
+     * @return all instance relations as list
+     */
+    @Override
+    public List<IInstanceRelation> getInstanceRelations() {
+        return instanceRelations;
+    }
+
+    /**
+     * Adds a new instance relation.
+     *
+     * @param probability   probability of the instance relation
+     * @param fromInstances source instances of the instance relation
+     * @param toInstances   target instances of the instance relation
+     * @param relator       relating word
+     * @param from          source nodes of the instance relation
+     * @param to            target nodes of the instance relation
+     */
+    public void addInstanceRelation(String lemma,
+                                    double probability,
+                                    List<IRecommendedInstance> fromInstances,
+                                    List<IRecommendedInstance> toInstances,
+                                    IWord relator,
+                                    List<IWord> from,
+                                    List<IWord> to) {
+        this.instanceRelations.add(new InstanceRelation(lemma, probability, fromInstances, toInstances, relator, from, to));
     }
 
     /**

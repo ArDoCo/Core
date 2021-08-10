@@ -23,6 +23,13 @@ public interface IRecommendationState extends IState {
     List<IRecommendedRelation> getRecommendedRelations();
 
     /**
+     * Returns all instance relations.
+     *
+     * @return all instance relations as list
+     */
+    List<IInstanceRelation> getInstanceRelations();
+
+    /**
      * Adds a new recommended relation.
      *
      * @param name           name of that recommended relation
@@ -34,6 +41,14 @@ public interface IRecommendationState extends IState {
      */
     void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, List<IRecommendedInstance> otherInstances, double probability,
             List<IWord> occurrences);
+
+    void addInstanceRelation(String lemma,
+                             double probability,
+                            List<IRecommendedInstance> fromInstances,
+                            List<IRecommendedInstance> toInstances,
+                            IWord relator,
+                            List<IWord> from,
+                            List<IWord> to);
 
     /**
      * Adds a recommended instance without a type.
