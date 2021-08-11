@@ -191,7 +191,7 @@ public class RecommendedInstance implements IRecommendedInstance {
         MutableList<Integer> typePositions = Lists.mutable.empty();
         for (INounMapping typeMapping : typeMappings) {
             typeNodeVals.add(typeMapping.toString());
-            typeOccurrences.addAll(typeMapping.getOccurrences().castToCollection());
+            typeOccurrences.addAll(typeMapping.getSurfaceForms().castToCollection());
             typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
 
@@ -200,7 +200,7 @@ public class RecommendedInstance implements IRecommendedInstance {
         MutableList<Integer> namePositions = Lists.mutable.empty();
         for (INounMapping nameMapping : nameMappings) {
             nameNodeVals.add(nameMapping.toString());
-            nameOccurrences.addAll(nameMapping.getOccurrences().castToCollection());
+            nameOccurrences.addAll(nameMapping.getSurfaceForms().castToCollection());
             namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
         return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + probability + //

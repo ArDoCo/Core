@@ -237,12 +237,12 @@ public class TextState implements ITextState {
     /**
      * Returns all mappings containing the given node.
      *
-     * @param n the given node
+     * @param word the given word
      * @return all mappings containing the given node as list
      */
     @Override
-    public final ImmutableList<INounMapping> getNounMappingsByNode(IWord n) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(nMapping -> nMapping.getWords().contains(n)));
+    public final ImmutableList<INounMapping> getNounMappingsByWord(IWord word) {
+        return Lists.immutable.fromStream(nounMappings.values().stream().filter(nMapping -> nMapping.getWords().contains(word)));
     }
 
     /**
@@ -557,7 +557,7 @@ public class TextState implements ITextState {
             NounMapping existingMapping = nounMappings.get(reference);
             existingMapping.addKindWithProbability(kind, probability);
             existingMapping.addOccurrence(occurrences);
-            existingMapping.addNode(word);
+            existingMapping.addWord(word);
 
         } else {
 
@@ -567,7 +567,7 @@ public class TextState implements ITextState {
             for (String ref : similarRefs) {
                 NounMapping similarMapping = nounMappings.get(ref);
                 similarMapping.addOccurrence(occurrences);
-                similarMapping.addNode(word);
+                similarMapping.addWord(word);
                 similarMapping.addKindWithProbability(kind, probability);
             }
             if (similarRefs.isEmpty()) {

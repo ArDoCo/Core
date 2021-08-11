@@ -184,8 +184,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
     private void addRecommendedInstanceIfNodeNotNull(//
             IWord currentNode, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings) {
-        if (textExtractionState.getNounMappingsByNode(currentNode) != null && instance != null) {
-            ImmutableList<INounMapping> nmappings = textExtractionState.getNounMappingsByNode(currentNode);
+        if (textExtractionState.getNounMappingsByWord(currentNode) != null && instance != null) {
+            ImmutableList<INounMapping> nmappings = textExtractionState.getNounMappingsByWord(currentNode);
             for (INounMapping nmapping : nmappings) {
                 recommendationState.addRecommendedInstance(instance.getLongestName(), nmapping.getReference(), probability, nameMappings, typeMappings);
             }

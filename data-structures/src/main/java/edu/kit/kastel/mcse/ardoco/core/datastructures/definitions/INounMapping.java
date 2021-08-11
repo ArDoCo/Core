@@ -27,16 +27,16 @@ public interface INounMapping extends ICopyable<INounMapping> {
     void hardSetProbability(double probability);
 
     /**
-     * Returns the occurrences of this mapping.
+     * Returns the surface forms (previously called occurrences) of this mapping.
      *
      * @return all appearances of the mapping
      */
-    ImmutableList<String> getOccurrences();
+    ImmutableList<String> getSurfaceForms();
 
     /**
-     * Returns all nodes contained by the mapping.
+     * Returns all words that are contained by the mapping. This should include coreferences.
      *
-     * @return all mapping nodes
+     * @return all words that are referenced with this mapping
      */
     ImmutableList<IWord> getWords();
 
@@ -45,14 +45,14 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @param nodes graph nodes to add to the mapping
      */
-    void addNodes(ImmutableList<IWord> nodes);
+    void addWords(ImmutableList<IWord> nodes);
 
     /**
      * Adds a node to the mapping, it its not already contained.
      *
      * @param n graph node to add.
      */
-    void addNode(IWord n);
+    void addWord(IWord n);
 
     /**
      * Returns the probability of being a mapping of its kind.

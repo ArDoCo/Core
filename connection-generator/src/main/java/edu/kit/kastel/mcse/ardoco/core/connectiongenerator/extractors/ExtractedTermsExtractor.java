@@ -191,7 +191,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
             while (!nounMappings.isEmpty()) {
                 INounMapping resultOfPreMatch = matchNode(nounMappings.toImmutable(), preTermNode);
 
-                if (sentence == preTermNode.getSentenceNo() || resultOfPreMatch == null) {
+                if (preTermNode == null || sentence == preTermNode.getSentenceNo() || resultOfPreMatch == null) {
                     break;
                 }
 
@@ -244,6 +244,9 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     }
 
     private static INounMapping matchNode(ImmutableList<INounMapping> nounMappings, IWord node) {
+        if (node == null) {
+            return null;
+        }
         for (INounMapping mapping : nounMappings) {
             if (mapping.getWords().contains(node)) {
                 return mapping;
@@ -272,11 +275,11 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
         if (preTermNode != null && sentence == preTermNode.getSentenceNo()) {
 
-            ImmutableList<INounMapping> nounMappingsOfPreTermNode = textState.getNounMappingsByNode(preTermNode);
+            ImmutableList<INounMapping> nounMappingsOfPreTermNode = textState.getNounMappingsByWord(preTermNode);
             possibleMappings.addAll(nounMappingsOfPreTermNode.castToCollection());
         }
         if (afterTermNode != null && sentence == afterTermNode.getSentenceNo()) {
-            ImmutableList<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByNode(afterTermNode);
+            ImmutableList<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByWord(afterTermNode);
             possibleMappings.addAll(nounMappingsOfAfterTermNode.castToCollection());
         }
         return possibleMappings.select(nounMapping -> nounMapping.getKind() != kind).toImmutable();
