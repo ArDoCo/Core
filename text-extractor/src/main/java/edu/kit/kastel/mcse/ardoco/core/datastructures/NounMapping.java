@@ -20,9 +20,14 @@ import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
  */
 public class NounMapping implements INounMapping {
 
-    private MutableList<IWord> words;
+    /* Main reference */
     private String reference;
-    private MutableList<String> occurrences;
+
+    /* Words are the references within the text */
+    private MutableList<IWord> words;
+
+    /* the different surface forms */
+    private MutableList<String> surfaceForms;
 
     private MappingKind mostProbableKind;
     private Double highestProbability;
@@ -40,7 +45,7 @@ public class NounMapping implements INounMapping {
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.reference = reference;
-        this.occurrences = Lists.mutable.withAll(occurrences);
+        surfaceForms = Lists.mutable.withAll(occurrences);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
     }
@@ -70,25 +75,25 @@ public class NounMapping implements INounMapping {
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.reference = reference;
-        this.occurrences = Lists.mutable.withAll(occurrences);
+        surfaceForms = Lists.mutable.withAll(occurrences);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
     }
 
     /**
-     * Returns the occurrences of this mapping.
+     * Returns the surface forms (previously called occurrences) of this mapping.
      *
      * @return all appearances of the mapping
      */
     @Override
-    public final ImmutableList<String> getOccurrences() {
-        return Lists.immutable.withAll(occurrences);
+    public final ImmutableList<String> getSurfaceForms() {
+        return Lists.immutable.withAll(surfaceForms);
     }
 
     /**
-     * Returns all nodes contained by the mapping
+     * Returns all words that are contained by the mapping. This should include coreferences.
      *
-     * @return all mapping nodes
+     * @return all words that are referenced with this mapping
      */
     @Override
     public final ImmutableList<IWord> getWords() {
@@ -98,24 +103,24 @@ public class NounMapping implements INounMapping {
     /**
      * Adds nodes to the mapping, if they are not already contained.
      *
-     * @param nodes graph nodes to add to the mapping
+     * @param words graph nodes to add to the mapping
      */
     @Override
-    public final void addNodes(ImmutableList<IWord> nodes) {
-        for (IWord n : nodes) {
-            addNode(n);
+    public final void addWords(ImmutableList<IWord> words) {
+        for (var word : words) {
+            addWord(word);
         }
     }
 
     /**
      * Adds a node to the mapping, it its not already contained.
      *
-     * @param n graph node to add.
+     * @param word graph node to add.
      */
     @Override
-    public final void addNode(IWord n) {
-        if (!words.contains(n)) {
-            words.add(n);
+    public final void addWord(IWord word) {
+        if (!words.contains(word)) {
+            words.add(word);
         }
     }
 
@@ -151,8 +156,8 @@ public class NounMapping implements INounMapping {
     @Override
     public final void addOccurrence(ImmutableList<String> newOccurances) {
         for (String o : newOccurances) {
-            if (!occurrences.contains(o)) {
-                occurrences.add(o);
+            if (!surfaceForms.contains(o)) {
+                surfaceForms.add(o);
             }
         }
     }
@@ -166,7 +171,7 @@ public class NounMapping implements INounMapping {
     @Override
     public final void copyOccurrencesAndNodesTo(String occurrence, INounMapping createdMapping) {
         ImmutableList<IWord> occNodes = words.select(n -> n.getText().equals(occurrence)).toImmutable();
-        createdMapping.addNodes(occNodes);
+        createdMapping.addWords(occNodes);
         createdMapping.addOccurrence(Lists.immutable.with(occurrence));
     }
 
@@ -191,7 +196,7 @@ public class NounMapping implements INounMapping {
 
     @Override
     public NounMapping createCopy() {
-        return new NounMapping(words.toImmutable(), distribution, reference, occurrences.toImmutable());
+        return new NounMapping(words.toImmutable(), distribution, reference, surfaceForms.toImmutable());
     }
 
     @Override
@@ -208,7 +213,7 @@ public class NounMapping implements INounMapping {
     @Override
     public ImmutableList<String> getRepresentativeComparables() {
         MutableList<String> comparables = Lists.mutable.empty();
-        for (String occ : occurrences) {
+        for (String occ : surfaceForms) {
             if (SimilarityUtils.containsSeparator(occ)) {
                 ImmutableList<String> parts = SimilarityUtils.splitAtSeparators(occ);
                 for (String part : parts) {
@@ -301,7 +306,7 @@ public class NounMapping implements INounMapping {
         return "NounMapping [" + "distribution="
                 + distribution.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + //
                 ", reference=" + reference + //
-                ", node=" + String.join(", ", occurrences) + //
+                ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
                 ", probability=" + highestProbability + "]";
     }
