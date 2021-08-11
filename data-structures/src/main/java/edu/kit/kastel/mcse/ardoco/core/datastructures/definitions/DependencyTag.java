@@ -108,61 +108,89 @@ public enum DependencyTag {
      */
     XCOMP,
 
-    OBL, //"obl", "oblique modifier";
+    /**
+     * "obl", "oblique modifier"
+     */
+    OBL,
 
-    VOCATIVE, //"vocative", "vocative";
+    /**
+     * "vocative", "vocative"
+     */
+    VOCATIVE,
     /**
      * This relation captures an existential "there". The main verb of the clause is the governor.
      */
     EXPL,
 
-    DISLOCATED, //"dislocated", "dislocated";
+    /**
+     * "dislocated", "dislocated"
+     */
+    DISLOCATED,
 
-    ADVCL, //"advcl", "adverbial clause modifier";
+    /**
+     * "advcl", "adverbial clause modifier"
+     */
+    ADVCL,
 
-    ADVMOD, //"advmod", "adverbial modifier";
+    /**
+     * "advmod", "adverbial modifier"
+     */
+    ADVMOD,
     /**
      * This is used for interjections and other discourse particles and elements (which are not clearly linked to the
      * structure of the sentence, except in an expressive way).  We generally follow the guidelines of what the Penn
      * Treebanks count as an INTJ. They define this to include: interjections (oh,uh-huh,Welcome), fillers (um,ah), and
      * discourse markers (well,like,actually, but not you know).
      */
-    DISCOURSE, //"discourse", "discourse element";
+    DISCOURSE,
     /**
      * An auxiliary of a clause is a non-main verb of the clause, e.g., a modal auxiliary, or a form of "be", "do" or
      * "have" in a periphrastic tense.
      */
-    AUXILIARY, //"auxiliary", "auxiliary element";
+    AUXILIARY,
     /**
      * A copula is the relation between the complement of a copular verb and the copular verb. (We normally take a
      * copula as a dependent of its complement; see the discussion in section 4.)
+     *
      */
-    COP, //"cop", "copula";
+    COP,
     /**
      * A marker is the word introducing a finite clause subordinate to another clause. For a complement clause, this
      * will typically be "that" or "whether".  For an adverbial clause, the marker is typically a preposition like
      * "while" or "although". The mark is a dependent of the subordinate clause head.
      */
-    MARK, //"mark", "marker";
+    MARK,
 
-    ACL, //"acl", "clausal modifier of a noun (adjectival clause)";
+    /**
+     * "acl", "clausal modifier of a noun (adjectival clause)"
+     */
+    ACL,
 
-    AMOD, //"amod", "adjectival modifier";
+    /**
+     * "amod", "adjectival modifier"
+     */
+    AMOD,
     /**
      * A determiner is the relation between the head of an NP and its determiner.
      */
-    DET, //"det", "determiner";
+    DET,
 
-    CLF, //"clf", "classifier";
+    /**
+     * "clf", "classifier"
+     */
+    CLF,
 
-    CASE, //"case", "case marker";
+    /**
+     * "case", "case marker"
+     */
+    CASE,
 
     /**
      * A conjunct is the relation between two elements connected by a coordinating conjunction, such as "and","or",
      * etc. We treat conjunctions asymmetrically: The head of the relation is the first conjunct and other conjunctions
      * depend on it via the conj relation.
      */
-    CONJ, //"conj", "conjunct";
+    CONJ,
 
     /**
      * A coordination is the relation between an element of a conjunct and the coordinating conjunction word of the
@@ -170,55 +198,88 @@ public enum DependencyTag {
      * of a conjunction (normally the first) as the head of the conjunction.) A conjunction may also appear at the
      * beginning of a sentence. This is also called a cc, and dependent on the root predicate of the sentence.
      */
-    CC, //"cc", "coordinating conjunction";
+    CC,
 
-    FIXED, //"fixed", "fixed multiword expression";
+    /**
+     * "fixed", "fixed multiword expression"
+     */
+    FIXED, 
 
-    FLAT, //"flat", "flat multiword expression";
+    /**
+     * "flat", "flat multiword expression"
+     */
+    FLAT, 
 
-    COMPOUND, //"compound", "compound";
+    COMPOUND, 
 
-    LIST, //"list", "list";
+    LIST,
 
-    PARATAXIS, //"parataxis", "parataxis";
+    PARATAXIS,
 
-    ORPHAN, //"orphan", "orphan";
+    ORPHAN,
 
     /**
      * This relation links two parts of a word that are separated in text that is not well edited.  We follow the
      * treebank: The GW part is the dependent and the head is in some sense the "main" part, often the second part.
      */
-    GOES_WITH, //"goeswith", "goes with";
+    GOES_WITH,
 
-    REPARANDUM, //"reparandum", "reparandum";
+    REPARANDUM,
 
     /**
      * This is used for any piece of punctuation in a clause, if punctuation is being retained in the typed
      * dependencies. By default, punctuation is not retained in the output.
      */
-    PUNCT, //"punct", "punctuation";
+    PUNCT,
 
     /**
      * A clausal passive subject is a clausal syntactic subject of a passive clause.  In the example below,
      * "that she lied" is the subject.
      */
-    CSUBJ_PASS, //"csubj:pass", "clausal passive subject";
+    CSUBJ_PASS,
 
-    ACL_RELCL, //"acl:relcl", "relative clause";
+    /**
+     * "acl:relcl", "relative clause"
+     */
+    ACL_RELCL,
 
-    COMPOUND_PRT, //"compound:prt", "phrasal verb particle";
+    /**
+     * "compound:prt", "phrasal verb particle"
+     */
+    COMPOUND_PRT,
 
-    NMOD_POSS, //"nmod:poss", "possessor";
+    /**
+     * "nmod:poss", "possessor"
+     */
+    NMOD_POSS,
 
-    REF, //"ref", "pronominal referent";
+    /**
+     * "ref", "pronominal referent"
+     */
+    REF,
 
-    NSUBJ_XSUBJ, //"nsubj:xsubj", "controlling nominal subject";
+    /**
+     * "nsubj:xsubj", "controlling nominal subject"
+     */
+    NSUBJ_XSUBJ,
 
-    NSUBJ_PASS_XSUBJ, //"nsubj:pass:xsubj", "controlling nominal passive subject";
+    /**
+     * "nsubj:pass:xsubj", "controlling nominal passive subject"
+     */
+    NSUBJ_PASS_XSUBJ,
 
-    NSUBJ_RELSUBJ, //"nsubj:relsubj", "relative nominal subject";
+    /**
+     * "nsubj:relsubj", "relative nominal subject"
+     */
+    NSUBJ_RELSUBJ,
 
-    NSUBJ_PASS_RELSUBJ, //"nsubj:pass:relsubj", "relative nominal passive subject";
+    /**
+     * "nsubj:pass:relsubj", "relative nominal passive subject"
+     */
+    NSUBJ_PASS_RELSUBJ,
 
-    OBJ_RELOBJ; //"obl:relobj", "relative object";
+    /**
+     * "obl:relobj", "relative object"
+     */
+    OBJ_RELOBJ;
 }
