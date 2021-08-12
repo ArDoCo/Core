@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -148,4 +149,19 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * @return the distribution
      */
     Map<MappingKind, Double> getDistribution();
+
+    /**
+     * @param coreference the coreference to add
+     */
+    void addCoreference(IWord coreference);
+
+    /**
+     * @param coreferences the coreferences to add
+     */
+    void addCoreferences(Collection<IWord> coreferences);
+
+    /**
+     * @return the coreferences
+     */
+    ImmutableList<IWord> getCoreferences();
 }

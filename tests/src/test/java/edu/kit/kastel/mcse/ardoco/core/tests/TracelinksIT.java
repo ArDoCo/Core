@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -192,7 +193,7 @@ class TracelinksIT {
 
     private EvaluationResults calculateResults(String name, AgentDatastructure data) {
         var connectionState = data.getConnectionState();
-        List<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
+        Set<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
 
         var goldStandard = getGoldStandard(name);
 
@@ -200,9 +201,9 @@ class TracelinksIT {
         return results;
     }
 
-    private List<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
+    private Set<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
         var formatString = "%s,%d";
-        return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToList();
+        return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToSet();
     }
 
     private void prepareConfig(double similarity) {

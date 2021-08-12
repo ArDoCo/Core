@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -55,6 +56,19 @@ public abstract class Configuration {
     }
 
     /**
+     * Returns the specified property of the config file as a boolean if it is set.
+     *
+     * @param key     name of the specified property
+     * @param configs the configuration map
+     * @return value of the property as a boolean. True, if the value for the key is "true", "yes", or "1" ignoring
+     *         case.
+     */
+    protected static boolean isPropertyEnabled(String key, Map<String, String> configs) {
+        var propValue = configs.get(key).strip();
+        return Boolean.parseBoolean(propValue) || propValue.equalsIgnoreCase("yes") || propValue.equalsIgnoreCase("1");
+    }
+
+    /**
      * Get all properties and raw values of a configuration
      *
      * @return all properties with their raw values
@@ -84,21 +98,19 @@ public abstract class Configuration {
      * @param additionalConfigs the file with additional configs
      */
     public static void overrideConfigInMap(Map<String, String> configs, File additionalConfigs) {
-        try (var scan = new Scanner(additionalConfigs)) {
+        try (var scan = new Scanner(additionalConfigs, StandardCharsets.UTF_8)) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
+                String[] kv = new String[0];
                 if (line == null || line.isBlank()) {
                     logger.warn("Illegal Line in config: \"{}\"", line);
-                    continue;
+                } else {
+                    kv = line.trim().split("=", 2);
                 }
 
-                String[] kv = line.trim().split("=", 2);
                 if (kv.length != 2) {
                     logger.warn("Illegal Line in config: \"{}\"", line);
-                    continue;
-                }
-
-                if (configs.containsKey(kv[0].trim())) {
+                } else if (configs.containsKey(kv[0].trim())) {
                     configs.put(kv[0].trim(), kv[1].trim());
                 }
             }

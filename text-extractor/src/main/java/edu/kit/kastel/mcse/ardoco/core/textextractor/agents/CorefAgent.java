@@ -11,9 +11,12 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 
 public class CorefAgent extends TextAgent {
+
+    private boolean enabled;
 
     /**
      * Prototype constructor.
@@ -24,7 +27,7 @@ public class CorefAgent extends TextAgent {
 
     private CorefAgent(IText text, ITextState textState, GenericTextConfig config) {
         super(GenericTextConfig.class, text, textState);
-        // TODO config?
+        enabled = config.corefEnable;
     }
 
     @Override
@@ -34,15 +37,12 @@ public class CorefAgent extends TextAgent {
 
     @Override
     public void exec() {
-        var corefClusters = text.getCorefClusters();
-        if (logger.isDebugEnabled()) {
-            logCorefClusters(corefClusters);
+        if (!enabled) {
+            logger.info("Coref-Resolution is disabled in the config. This is usually due to the rather bad performance of the resolution "
+                    + "that slightly increases recall but often decreases precision by a lot.");
+            return;
         }
-
-        // add words of coreferences to the noun mappings that they belong
-        // so for each cluster, search for one or more NounMappings that contain the mentions
-        // add the mentions to the NounMappings
-        // if more than one NounMapping is found, merge (?) them
+        var corefClusters = text.getCorefClusters();
 
         for (var corefCluster : corefClusters) {
             MutableSet<INounMapping> nounMappings = Sets.mutable.empty();
@@ -52,36 +52,20 @@ public class CorefAgent extends TextAgent {
                 nounMappings.addAll(nounMappingsForWord);
             }
 
-            if (!nounMappings.isEmpty() && logger.isDebugEnabled()) {
-                logger.debug("Found noun mappings for CorefCluster {}", corefCluster.getRepresentativeMention());
-            }
-
-            // TODO add mentions (or all words of them) to nounMappings
+            // add words to noun mappings as coreferences
+            // only add pronoun-related coreferences for now
             for (var nounMapping : nounMappings) {
-                // nounMapping.addWords(words);
-                // Current problem: words are used in so many places for nounMappings
-                // maybe add coreferences in some other fashion? Or change the use of nounmappings?
-                logger.debug("  - {}", nounMapping.getReference());
+                for (var word : words) {
+                    if (word.getPosTag() == POSTag.PRONOUN_PERSONAL || word.getPosTag() == POSTag.PRONOUN_POSSESSIVE) {
+                        nounMapping.addCoreference(word);
+                    }
+                }
             }
-
-            // TODO merge NounMappings?
         }
-
     }
 
     private static ImmutableList<IWord> getAllWordsFromCorefCluster(ICorefCluster corefCluster) {
         return corefCluster.getMentions().flatCollect(mention -> mention);
     }
 
-    private void logCorefClusters(ImmutableList<ICorefCluster> corefClusters) {
-        for (var corefCluster : corefClusters) {
-            logger.debug("Coref cluster with id {} and representative mention {}", corefCluster.getId(), corefCluster.getRepresentativeMention());
-            for (var mention : corefCluster.getMentions()) {
-                var firstPosition = mention.getFirst().getPosition();
-                var lastPosition = mention.getLast().getPosition();
-                var mentionText = ICorefCluster.getTextForMention(mention);
-                logger.debug("  Mention: {} ({} - {})", mentionText, firstPosition, lastPosition);
-            }
-        }
-    }
 }

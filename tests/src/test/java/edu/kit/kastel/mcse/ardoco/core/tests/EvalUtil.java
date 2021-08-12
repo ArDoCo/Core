@@ -1,7 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,7 +11,7 @@ class EvalUtil {
         throw new IllegalAccessError("This constructor should not be called!");
     }
 
-    protected static EvaluationResults compare(List<String> traceLinks, List<String> goldStandard) {
+    protected static EvaluationResults compare(Collection<String> traceLinks, Collection<String> goldStandard) {
         Set<String> distinctTraceLinks = new HashSet<>(traceLinks);
         Set<String> distinctGoldStandard = new HashSet<>(goldStandard);
 

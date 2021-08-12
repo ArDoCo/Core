@@ -18,6 +18,7 @@ public class GenericTextConfig extends Configuration {
     private static final String MULTIPLE_PART_SOLVER_PROBABILITY = "MultiplePartSolver_Probability";
     private static final String IN_DEP_ARCS_ANALYZER_PROBABILITY = "InDepArcsAnalyzer_Probability";
     private static final String ARTICLE_TYPE_NAME_ANALYZER_PROBABILITY = "ArticleTypeNameAnalyzer_Probability";
+    private static final String COREF_ENABLE = "Coref_Enable";
     private static final String EXTRACTORS = "Extractors";
 
     /** The DEFAULT_CONFIG. */
@@ -62,6 +63,11 @@ public class GenericTextConfig extends Configuration {
      */
     public final double separatedNamesAnalyzerProbability;
 
+    /**
+     * if coref should be enabled
+     */
+    public final boolean corefEnable;
+
     private GenericTextConfig() {
         var config = new ResourceAccessor("/configs/TextAnalyzerSolverConfig.properties", true);
         textExtractors = config.getPropertyAsList(EXTRACTORS);
@@ -71,6 +77,7 @@ public class GenericTextConfig extends Configuration {
         nounAnalyzerProbability = config.getPropertyAsDouble(NOUN_ANALYZER_PROBABILITY);
         outDepArcsAnalyzerProbability = config.getPropertyAsDouble(OUT_DEP_ARCS_ANALYZER_PROBABILITY);
         separatedNamesAnalyzerProbability = config.getPropertyAsDouble(SEPARATED_NAMES_ANALYZER_PROBABILITY);
+        corefEnable = config.isPropertyEnabled(COREF_ENABLE);
     }
 
     /**
@@ -86,7 +93,7 @@ public class GenericTextConfig extends Configuration {
         nounAnalyzerProbability = getPropertyAsDouble(NOUN_ANALYZER_PROBABILITY, configs);
         outDepArcsAnalyzerProbability = getPropertyAsDouble(OUT_DEP_ARCS_ANALYZER_PROBABILITY, configs);
         separatedNamesAnalyzerProbability = getPropertyAsDouble(SEPARATED_NAMES_ANALYZER_PROBABILITY, configs);
-
+        corefEnable = isPropertyEnabled(COREF_ENABLE, configs);
     }
 
     @Override
@@ -98,7 +105,8 @@ public class GenericTextConfig extends Configuration {
                 MULTIPLE_PART_SOLVER_PROBABILITY, String.valueOf(multiplePartSolverProbability), //
                 NOUN_ANALYZER_PROBABILITY, String.valueOf(nounAnalyzerProbability), //
                 OUT_DEP_ARCS_ANALYZER_PROBABILITY, String.valueOf(outDepArcsAnalyzerProbability), //
-                SEPARATED_NAMES_ANALYZER_PROBABILITY, String.valueOf(separatedNamesAnalyzerProbability) //
+                SEPARATED_NAMES_ANALYZER_PROBABILITY, String.valueOf(separatedNamesAnalyzerProbability), //
+                COREF_ENABLE, String.valueOf(corefEnable) //
         );
     }
 
