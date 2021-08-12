@@ -42,13 +42,22 @@ public class NounMapping implements INounMapping {
      * @param words        the words
      * @param distribution the distribution
      * @param reference    the reference
-     * @param occurrences  the occurrences
+     * @param surfaceForm  the occurrences
      */
-    public NounMapping(ImmutableList<IWord> words, Map<MappingKind, Double> distribution, String reference, ImmutableList<String> occurrences) {
+    public NounMapping(ImmutableList<IWord> words, Map<MappingKind, Double> distribution, String reference, ImmutableList<String> surfaceForms) {
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.reference = reference;
-        surfaceForms = Lists.mutable.withAll(occurrences);
+        this.surfaceForms = Lists.mutable.withAll(surfaceForms);
+        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
+        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
+    }
+
+    private NounMapping(INounMapping nm) {
+        words = Lists.mutable.withAll(nm.getWords());
+        initializeDistribution(nm.getDistribution());
+        reference = nm.getReference();
+        surfaceForms = Lists.mutable.withAll(nm.getSurfaceForms());
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
     }
@@ -193,12 +202,13 @@ public class NounMapping implements INounMapping {
      * @param kind        the kind
      * @param probability the probability
      */
+    @Override
     public void addKindWithProbability(MappingKind kind, double probability) {
         recalculateProbability(kind, probability);
     }
 
     @Override
-    public NounMapping createCopy() {
+    public INounMapping createCopy() {
         return new NounMapping(words.toImmutable(), distribution, reference, surfaceForms.toImmutable());
     }
 
@@ -391,6 +401,33 @@ public class NounMapping implements INounMapping {
     @Override
     public double getProbabilityForNort() {
         return distribution.get(MappingKind.NAME_OR_TYPE);
+    }
+
+    @Override
+    public INounMapping merge(INounMapping other) {
+        if (other == null) {
+            return new NounMapping(this);
+        }
+        var newWords = Lists.mutable.ofAll(words);
+        newWords.addAll(other.getWords().castToCollection());
+        Map<MappingKind, Double> newDistribution = new EnumMap<>(distribution);
+        for (var entry : other.getDistribution().entrySet()) {
+            if (newDistribution.containsKey(entry.getKey())) {
+                var thisVal = newDistribution.get(entry.getKey());
+                var maxValue = Double.max(thisVal, entry.getValue());
+                newDistribution.put(entry.getKey(), maxValue);
+            } else {
+                newDistribution.put(entry.getKey(), entry.getValue());
+            }
+        }
+        var newSurfaceForms = Lists.mutable.ofAll(surfaceForms);
+        newSurfaceForms.addAll(other.getSurfaceForms().castToCollection());
+
+        INounMapping newNounMapping = new NounMapping(newWords.toImmutable(), newDistribution, reference, newSurfaceForms.toImmutable());
+        newNounMapping.addCoreferences(coreferences);
+        newNounMapping.addCoreferences(other.getCoreferences().castToCollection());
+
+        return newNounMapping;
     }
 
 }

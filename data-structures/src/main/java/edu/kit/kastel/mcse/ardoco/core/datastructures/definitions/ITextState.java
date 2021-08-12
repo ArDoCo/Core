@@ -366,6 +366,13 @@ public interface ITextState extends IState<ITextState> {
     /**
      * Adds the noun mapping.
      *
+     * @param nounMapping the noun mapping.
+     */
+    void addNounMapping(INounMapping nounMapping);
+
+    /**
+     * Adds the noun mapping.
+     *
      * @param nodes       the nodes
      * @param reference   the reference
      * @param kind        the kind
@@ -403,5 +410,4 @@ public interface ITextState extends IState<ITextState> {
     default ImmutableList<INounMapping> getMappingsThatCouldBeANort(IWord word) {
         return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForNort() > 0);
     }
-
 }

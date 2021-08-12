@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 public class CorefAgent extends TextAgent {
 
     private boolean enabled;
+    private static boolean DO_MERGING = false;
 
     /**
      * Prototype constructor.
@@ -60,6 +61,16 @@ public class CorefAgent extends TextAgent {
                         nounMapping.addCoreference(word);
                     }
                 }
+            }
+
+            if (DO_MERGING && nounMappings.size() > 1) {
+                logger.debug("MORE THAN 1 FOR {}", corefCluster.getRepresentativeMention());
+                INounMapping mergedNounMapping = null;
+                for (var nounMapping : nounMappings) {
+                    mergedNounMapping = nounMapping.merge(mergedNounMapping);
+                    textState.removeNounNode(nounMapping);
+                }
+                textState.addNounMapping(mergedNounMapping);
             }
         }
     }
