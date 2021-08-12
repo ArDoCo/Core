@@ -10,7 +10,7 @@ public interface IInstanceRelation {
 
     boolean addLink(IWord relator, List<IWord> from, List<IWord> to);
 
-    boolean fitsRelation(String lemma, List<IRecommendedInstance> fromInstances, List<IRecommendedInstance> toInstances);
+    boolean matches(IRecommendedInstance fromInstance, IRecommendedInstance toInstance);
 
     boolean isIn(IWord relator, List<IWord> from, List<IWord> to);
 
@@ -18,7 +18,7 @@ public interface IInstanceRelation {
 
     void setProbability(double newProbability);
 
-    List<IRecommendedInstance> getFromInstances();
+    IRecommendedInstance getFromInstance();
 
-    List<IRecommendedInstance> getToInstances();
+    IRecommendedInstance getToInstance();
 }

@@ -100,30 +100,40 @@ public class InstanceRelationAgent extends DependencyAgent {
                             // If word, verbOn and secondWord are not in the same sentence, ignore
                             continue;
                         }
+                        IWord from = word.getPosition() < secondWord.getPosition() ? word : secondWord;
+                        IWord to = word.getPosition() < secondWord.getPosition() ? secondWord : word;
                         for (IRecommendedInstance secondInstance : recommendationState.getRecommendedInstances()) {
-                            if (!secondInstance.equals(instance) &&
-                                this.getInstanceWords(secondInstance).contains(secondWord) &&
-                                !word.equals(secondWord) &&
-                                this.recommendationState.getInstanceRelations().stream().noneMatch(
-                                    i ->
-                                    i.isIn(verbOn, Collections.singletonList(word), Collections.singletonList(secondWord)) ||
-                                    i.isIn(verbOn, Collections.singletonList(secondWord), Collections.singletonList(word)))
-                            ) {
-                                /*
-                                Add new relation only if
-                                1. Instance and secondInstance are not equal
-                                2. SecondInstance contains secondWord
-                                3. Word and secondWord are not equal
-                                4. The relation is not already contained in relations
-                                 */
-                                logger.debug("Add InstanceRelation from {} over {} to {}", word.getLemma(), verbOn.getLemma(), secondWord.getLemma());
-                                this.recommendationState.addInstanceRelation(verbOn.getLemma(),
-                                        1,
-                                        Collections.singletonList(instance),
-                                        Collections.singletonList(secondInstance),
-                                        verbOn,
-                                        Collections.singletonList(word),
-                                        Collections.singletonList(secondWord));
+
+                            if (this.getInstanceWords(secondInstance).contains(secondWord) && !instance.equals(secondInstance) && !word.equals(secondWord)) {
+                                boolean newInstance = true;
+                                for (IInstanceRelation relation : this.recommendationState.getInstanceRelations()) {
+                                    if (relation.isIn(verbOn, Collections.singletonList(from), Collections.singletonList(to))) {
+                                        /*
+                                        Break loop if relation already exists
+                                         */
+                                        newInstance = false;
+                                        break;
+                                    } else if (relation.matches(instance, secondInstance)) {
+                                        /*
+                                        Add to existing if instances match, but specific relation does not exist there yet
+                                         */
+                                        newInstance = false;
+                                        logger.debug("Add to existing InstanceRelation from {} over {} to {}", word.getText(), verbOn.getText(), secondWord.getText());
+                                        relation.addLink(verbOn, Collections.singletonList(from), Collections.singletonList(to));
+                                        break;
+                                    }
+                                }
+                                if (newInstance) {
+                                    /*
+                                    Add new relation if not found previously
+                                     */
+                                    logger.debug("Add new InstanceRelation from {} over {} to {}", word.getText(), verbOn.getText(), secondWord.getText());
+                                    this.recommendationState.addInstanceRelation(instance,
+                                            secondInstance,
+                                            verbOn,
+                                            Collections.singletonList(from),
+                                            Collections.singletonList(to));
+                                }
                             }
                         }
                     }

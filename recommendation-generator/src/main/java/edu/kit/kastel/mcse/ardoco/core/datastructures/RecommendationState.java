@@ -73,21 +73,18 @@ public class RecommendationState implements IRecommendationState {
     /**
      * Adds a new instance relation.
      *
-     * @param probability   probability of the instance relation
-     * @param fromInstances source instances of the instance relation
-     * @param toInstances   target instances of the instance relation
-     * @param relator       relating word
-     * @param from          source nodes of the instance relation
-     * @param to            target nodes of the instance relation
+     * @param fromInstance source instances of the instance relation
+     * @param toInstance   target instances of the instance relation
+     * @param relator      relating word
+     * @param from         source nodes of the instance relation
+     * @param to           target nodes of the instance relation
      */
-    public void addInstanceRelation(String lemma,
-                                    double probability,
-                                    List<IRecommendedInstance> fromInstances,
-                                    List<IRecommendedInstance> toInstances,
+    public void addInstanceRelation(IRecommendedInstance fromInstance,
+                                    IRecommendedInstance toInstance,
                                     IWord relator,
                                     List<IWord> from,
                                     List<IWord> to) {
-        this.instanceRelations.add(new InstanceRelation(lemma, probability, fromInstances, toInstances, relator, from, to));
+        this.instanceRelations.add(new InstanceRelation(fromInstance, toInstance, relator, from, to));
     }
 
     /**

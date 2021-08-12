@@ -7,33 +7,34 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Relation between RecommendedInstances, store specific occurrences as
+ * @see LocalRelation
+ *
+ * TODO fromInstance and toInstance to List to comprise more complex relations?!
+ */
 public class InstanceRelation implements IInstanceRelation {
     private double probability;
-    private final String lemma;
-    private final List<IRecommendedInstance> fromInstances;
-    private final List<IRecommendedInstance> toInstances;
-    private List<LocalRelation> localRelations;
+    private final IRecommendedInstance fromInstance;
+    private final IRecommendedInstance toInstance;
+    private final List<LocalRelation> localRelations;
 
     @Override
     public IInstanceRelation createCopy() {
-        InstanceRelation relation = new InstanceRelation(this.lemma, this.probability, this.fromInstances, this.toInstances, null, null, null);
+        InstanceRelation relation = new InstanceRelation(this.fromInstance, this.toInstance, null, null, null);
         for (LocalRelation localRelation : localRelations) {
             this.addLink(localRelation.relator, localRelation.from, localRelation.to);
         }
         return relation;
     }
 
-    public InstanceRelation(String lemma,
-                            double probability,
-                            List<IRecommendedInstance> fromInstances,
-                            List<IRecommendedInstance> toInstances,
+    public InstanceRelation(IRecommendedInstance fromInstance,
+                            IRecommendedInstance toInstance,
                             IWord relator,
                             List<IWord> from,
                             List<IWord> to) {
-        this.probability = probability;
-        this.fromInstances = fromInstances;
-        this.toInstances = toInstances;
-        this.lemma = lemma;
+        this.fromInstance = fromInstance;
+        this.toInstance = toInstance;
         this.localRelations = new ArrayList<>();
         this.addLink(relator, from, to);
     }
@@ -52,17 +53,13 @@ public class InstanceRelation implements IInstanceRelation {
             }
         }
         this.localRelations.add(new LocalRelation(relator, from, to));
-        this.probability += 1;
+        this.probability += (this.getFromInstance().getProbability() + this.getToInstance().getProbability()) / 2;
         return true;
     }
 
     @Override
-    public boolean fitsRelation(String lemma, List<IRecommendedInstance> fromInstances, List<IRecommendedInstance> toInstances) {
-        return this.fromInstances.size() == fromInstances.size() &&
-                this.fromInstances.containsAll(fromInstances) &&
-                this.toInstances.size() == toInstances.size() &&
-                this.toInstances.containsAll(toInstances) &&
-                this.lemma.equals(lemma);
+    public boolean matches(IRecommendedInstance fromInstance, IRecommendedInstance toInstance) {
+        return this.fromInstance.equals(fromInstance) && this.toInstance.equals(toInstance);
     }
 
     @Override
@@ -90,13 +87,13 @@ public class InstanceRelation implements IInstanceRelation {
     }
 
     @Override
-    public List<IRecommendedInstance> getFromInstances() {
-        return fromInstances;
+    public IRecommendedInstance getFromInstance() {
+        return fromInstance;
     }
 
     @Override
-    public List<IRecommendedInstance> getToInstances() {
-        return toInstances;
+    public IRecommendedInstance getToInstance() {
+        return toInstance;
     }
 
     @Override
@@ -109,30 +106,23 @@ public class InstanceRelation implements IInstanceRelation {
         }
         InstanceRelation other = (InstanceRelation) obj;
 
-        return this.fromInstances.size() == other.fromInstances.size() &&
-                this.fromInstances.containsAll(other.fromInstances) &&
-                this.toInstances.size() == other.toInstances.size() &&
-                this.toInstances.containsAll(other.toInstances) &&
-                this.lemma.equals(other.lemma);
+        return this.fromInstance == other.fromInstance &&
+                this.toInstance == other.toInstance;
     }
 
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder("InstanceRelation{");
-        str.append("probability=")
+        StringBuilder str = new StringBuilder("");
+        str.append("InstanceRelation{")
+            .append("probability=")
             .append(probability)
-            .append(", lemma='")
-            .append(lemma)
-            .append('\'')
-            .append(", fromInstances=");
-        for (IRecommendedInstance instance : this.fromInstances) {
-            str.append(instance.toString()).append(", ");
-        }
-        str.append("toInstances=");
-        for (IRecommendedInstance instance : this.toInstances) {
-            str.append(instance.toString()).append(", ");
-        }
-        str.append("localRelations=");
+            .append(", fromInstance=")
+            .append(this.fromInstance.toString())
+            .append(", ")
+            .append("toInstance=")
+            .append(this.toInstance.toString())
+            .append(", ")
+            .append("localRelations=");
         for (LocalRelation relation : this.localRelations) {
             str.append(relation.toString())
                     .append(", ");
