@@ -164,4 +164,21 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * @return the coreferences
      */
     ImmutableList<IWord> getCoreferences();
+
+    /**
+     * Creates a new INounMapping that resutls when merging the data from the INounMapping with a given other
+     * INounMapping
+     *
+     * @param other the other INounMapping
+     * @return new INounMapping that is a merge of the given INounMappings
+     */
+    INounMapping merge(INounMapping other);
+
+    /**
+     * Adds the kind with probability.
+     *
+     * @param kind        the kind
+     * @param probability the probability
+     */
+    void addKindWithProbability(MappingKind kind, double probability);
 }

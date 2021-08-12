@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
 public class TextState implements ITextState {
     private double similarityPercentage;
 
-    private Map<String, NounMapping> nounMappings;
+    private Map<String, INounMapping> nounMappings;
 
     /** The relation mappings. */
     private MutableList<IRelationMapping> relationMappings;
@@ -537,8 +537,13 @@ public class TextState implements ITextState {
     }
 
     @Override
+    public void addNounMapping(INounMapping nounMapping) {
+        nounMappings.put(nounMapping.getReference(), nounMapping);
+    }
+
+    @Override
     public void addNounMapping(ImmutableList<IWord> nodes, String reference, MappingKind kind, double confidence, ImmutableList<String> occurrences) {
-        var mapping = new NounMapping(nodes, Map.of(kind, confidence), reference, occurrences);
+        INounMapping mapping = new NounMapping(nodes, Map.of(kind, confidence), reference, occurrences);
         nounMappings.put(mapping.getReference(), mapping);
     }
 
@@ -554,7 +559,7 @@ public class TextState implements ITextState {
 
         if (nounMappings.containsKey(reference)) {
             // extend existing nounMapping
-            NounMapping existingMapping = nounMappings.get(reference);
+            var existingMapping = nounMappings.get(reference);
             existingMapping.addKindWithProbability(kind, probability);
             existingMapping.addOccurrence(occurrences);
             existingMapping.addWord(word);
@@ -565,14 +570,14 @@ public class TextState implements ITextState {
                     .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference, similarityPercentage)));
 
             for (String ref : similarRefs) {
-                NounMapping similarMapping = nounMappings.get(ref);
+                INounMapping similarMapping = nounMappings.get(ref);
                 similarMapping.addOccurrence(occurrences);
                 similarMapping.addWord(word);
                 similarMapping.addKindWithProbability(kind, probability);
             }
             if (similarRefs.isEmpty()) {
                 // create new nounMapping
-                var mapping = new NounMapping(Lists.immutable.with(word), kind, probability, reference, occurrences);
+                INounMapping mapping = new NounMapping(Lists.immutable.with(word), kind, probability, reference, occurrences);
                 nounMappings.put(reference, mapping);
             }
         }
@@ -612,9 +617,9 @@ public class TextState implements ITextState {
     public void addNort(IWord n, String ref, double probability, ImmutableList<String> occurrences) {
         addNounMapping(n, ref.toLowerCase(), MappingKind.NAME_OR_TYPE, probability, occurrences);
 
-        ImmutableList<NounMapping> wordsWithSimilarNode = Lists.immutable
+        ImmutableList<INounMapping> wordsWithSimilarNode = Lists.immutable
                 .fromStream(nounMappings.values().stream().filter(mapping -> mapping.getWords().contains(n)));
-        for (NounMapping mapping : wordsWithSimilarNode) {
+        for (INounMapping mapping : wordsWithSimilarNode) {
             if (Utilis.valueEqual(mapping.getProbabilityForName(), 0)) {
                 mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
             }
