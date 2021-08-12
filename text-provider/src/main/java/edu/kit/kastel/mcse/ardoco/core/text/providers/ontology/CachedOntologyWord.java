@@ -142,4 +142,9 @@ public final class CachedOntologyWord implements IWord {
         return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s (pos=%s, p=%d, s=%d)", getText(), getPosTag().getTag(), getPosition(), getSentenceNo());
+    }
+
 }

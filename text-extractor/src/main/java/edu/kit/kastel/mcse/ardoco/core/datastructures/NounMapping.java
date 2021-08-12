@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,6 +26,8 @@ public class NounMapping implements INounMapping {
 
     /* Words are the references within the text */
     private MutableList<IWord> words;
+
+    private MutableList<IWord> coreferences = Lists.mutable.empty();
 
     /* the different surface forms */
     private MutableList<String> surfaceForms;
@@ -299,6 +302,30 @@ public class NounMapping implements INounMapping {
         if (probability > highestProbability * 4) {
             reference = ref;
         }
+    }
+
+    /**
+     * @return the coreferences
+     */
+    @Override
+    public ImmutableList<IWord> getCoreferences() {
+        return coreferences.toImmutable();
+    }
+
+    /**
+     * @param coreferences the coreferences to add
+     */
+    @Override
+    public void addCoreferences(Collection<IWord> coreferences) {
+        this.coreferences.addAll(coreferences);
+    }
+
+    /**
+     * @param coreference the coreference to add
+     */
+    @Override
+    public void addCoreference(IWord coreference) {
+        coreferences.add(coreference);
     }
 
     @Override
