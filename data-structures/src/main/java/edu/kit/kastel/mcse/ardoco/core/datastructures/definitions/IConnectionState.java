@@ -1,8 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
@@ -56,11 +57,16 @@ public interface IConnectionState extends IState<IConnectionState> {
      *
      * @return list of tracelinks within this connection state
      */
-    default ImmutableList<Tracelink> getTraceLinks() {
-        MutableList<Tracelink> tracelinks = Lists.mutable.empty();
+    default ImmutableSet<Tracelink> getTraceLinks() {
+        MutableSet<Tracelink> tracelinks = Sets.mutable.empty();
         for (var instanceLink : getInstanceLinks()) {
-            for (var nm : instanceLink.getTextualInstance().getNameMappings()) {
+            var textualInstance = instanceLink.getTextualInstance();
+            for (var nm : textualInstance.getNameMappings()) {
                 for (var word : nm.getWords()) {
+                    var tracelink = new Tracelink(instanceLink, instanceLink.getModelInstance(), word);
+                    tracelinks.add(tracelink);
+                }
+                for (var word : nm.getCoreferences()) {
                     var tracelink = new Tracelink(instanceLink, instanceLink.getModelInstance(), word);
                     tracelinks.add(tracelink);
                 }

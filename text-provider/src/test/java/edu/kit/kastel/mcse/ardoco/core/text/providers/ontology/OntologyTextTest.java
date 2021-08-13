@@ -35,6 +35,13 @@ class OntologyTextTest {
 
         var expectedWords = 763;
         Assertions.assertEquals(expectedWords, words.size());
+
+        // test order
+        for (int i = 0; i < words.size(); i++) {
+            var word = words.get(i);
+            var position = word.getPosition();
+            Assertions.assertEquals(i, position);
+        }
     }
 
     @Test
@@ -54,5 +61,15 @@ class OntologyTextTest {
         var startNodeText = startNode.getText();
         var expectedText = "The";
         Assertions.assertEquals(expectedText, startNodeText);
+    }
+
+    @Test
+    @DisplayName("Test retrieval of CorefClusters")
+    void getCorefClustersTest() {
+        var clusters = ontologyText.getCorefClusters();
+        Assertions.assertNotNull(clusters);
+
+        var expectedNumberOfClusters = 16;
+        Assertions.assertEquals(expectedNumberOfClusters, clusters.size());
     }
 }

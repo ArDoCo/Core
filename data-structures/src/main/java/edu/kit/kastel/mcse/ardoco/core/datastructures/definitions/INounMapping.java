@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -27,16 +28,16 @@ public interface INounMapping extends ICopyable<INounMapping> {
     void hardSetProbability(double probability);
 
     /**
-     * Returns the occurrences of this mapping.
+     * Returns the surface forms (previously called occurrences) of this mapping.
      *
      * @return all appearances of the mapping
      */
-    ImmutableList<String> getOccurrences();
+    ImmutableList<String> getSurfaceForms();
 
     /**
-     * Returns all nodes contained by the mapping.
+     * Returns all words that are contained by the mapping. This should include coreferences.
      *
-     * @return all mapping nodes
+     * @return all words that are referenced with this mapping
      */
     ImmutableList<IWord> getWords();
 
@@ -45,14 +46,14 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @param nodes graph nodes to add to the mapping
      */
-    void addNodes(ImmutableList<IWord> nodes);
+    void addWords(ImmutableList<IWord> nodes);
 
     /**
      * Adds a node to the mapping, it its not already contained.
      *
      * @param n graph node to add.
      */
-    void addNode(IWord n);
+    void addWord(IWord n);
 
     /**
      * Returns the probability of being a mapping of its kind.
@@ -148,4 +149,36 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * @return the distribution
      */
     Map<MappingKind, Double> getDistribution();
+
+    /**
+     * @param coreference the coreference to add
+     */
+    void addCoreference(IWord coreference);
+
+    /**
+     * @param coreferences the coreferences to add
+     */
+    void addCoreferences(Collection<IWord> coreferences);
+
+    /**
+     * @return the coreferences
+     */
+    ImmutableList<IWord> getCoreferences();
+
+    /**
+     * Creates a new INounMapping that resutls when merging the data from the INounMapping with a given other
+     * INounMapping
+     *
+     * @param other the other INounMapping
+     * @return new INounMapping that is a merge of the given INounMappings
+     */
+    INounMapping merge(INounMapping other);
+
+    /**
+     * Adds the kind with probability.
+     *
+     * @param kind        the kind
+     * @param probability the probability
+     */
+    void addKindWithProbability(MappingKind kind, double probability);
 }

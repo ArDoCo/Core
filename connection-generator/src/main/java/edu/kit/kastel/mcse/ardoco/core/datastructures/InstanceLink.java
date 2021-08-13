@@ -110,7 +110,7 @@ public class InstanceLink implements IInstanceLink {
         Set<String> names = new HashSet<>();
         MutableList<Integer> namePositions = Lists.mutable.empty();
         for (INounMapping nameMapping : textualInstance.getNameMappings()) {
-            names.addAll(nameMapping.getOccurrences().castToCollection());
+            names.addAll(nameMapping.getSurfaceForms().castToCollection());
             namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
 
@@ -126,11 +126,11 @@ public class InstanceLink implements IInstanceLink {
         MutableList<Integer> typePositions = Lists.mutable.empty();
 
         for (INounMapping nameMapping : textualInstance.getNameMappings()) {
-            names.addAll(nameMapping.getOccurrences().castToCollection());
+            names.addAll(nameMapping.getSurfaceForms().castToCollection());
             namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
         for (INounMapping typeMapping : textualInstance.getTypeMappings()) {
-            types.addAll(typeMapping.getOccurrences().castToCollection());
+            types.addAll(typeMapping.getSurfaceForms().castToCollection());
             typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
         return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getLongestName() + //
