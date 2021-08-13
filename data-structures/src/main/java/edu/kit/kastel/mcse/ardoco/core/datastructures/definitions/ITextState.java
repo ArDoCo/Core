@@ -202,7 +202,7 @@ public interface ITextState extends IState<ITextState> {
      * @param n the given node
      * @return all mappings containing the given node as list
      */
-    ImmutableList<INounMapping> getNounMappingsByNode(IWord n);
+    ImmutableList<INounMapping> getNounMappingsByWord(IWord n);
 
     /**
      * Returns all mappings with the exact same reference as given.
@@ -366,6 +366,13 @@ public interface ITextState extends IState<ITextState> {
     /**
      * Adds the noun mapping.
      *
+     * @param nounMapping the noun mapping.
+     */
+    void addNounMapping(INounMapping nounMapping);
+
+    /**
+     * Adds the noun mapping.
+     *
      * @param nodes       the nodes
      * @param reference   the reference
      * @param kind        the kind
@@ -381,7 +388,7 @@ public interface ITextState extends IState<ITextState> {
      * @return the mappings that could be A type
      */
     default ImmutableList<INounMapping> getMappingsThatCouldBeAType(IWord word) {
-        return getNounMappingsByNode(word).select(mapping -> mapping.getProbabilityForType() > 0);
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForType() > 0);
     }
 
     /**
@@ -391,7 +398,7 @@ public interface ITextState extends IState<ITextState> {
      * @return the mappings that could be A name
      */
     default ImmutableList<INounMapping> getMappingsThatCouldBeAName(IWord word) {
-        return getNounMappingsByNode(word).select(mapping -> mapping.getProbabilityForName() > 0);
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForName() > 0);
     }
 
     /**
@@ -401,7 +408,6 @@ public interface ITextState extends IState<ITextState> {
      * @return the mappings that could be A nort
      */
     default ImmutableList<INounMapping> getMappingsThatCouldBeANort(IWord word) {
-        return getNounMappingsByNode(word).select(mapping -> mapping.getProbabilityForNort() > 0);
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForNort() > 0);
     }
-
 }

@@ -84,7 +84,7 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
     private ImmutableList<String> collectOccurrencesAsStrings(IRecommendedInstance recInstance) {
         MutableList<String> occurrences = Lists.mutable.empty();
         for (INounMapping nnm : recInstance.getNameMappings()) {
-            occurrences.addAll(nnm.getOccurrences().castToCollection());
+            occurrences.addAll(nnm.getSurfaceForms().castToCollection());
         }
         return occurrences.toImmutable();
     }

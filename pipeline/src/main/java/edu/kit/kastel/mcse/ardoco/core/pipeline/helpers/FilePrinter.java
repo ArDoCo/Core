@@ -314,7 +314,7 @@ public final class FilePrinter {
 
         for (INounMapping mapping : textState.getNounMappings()) {
 
-            NounMapping eagleMapping = (NounMapping) mapping;
+            INounMapping eagleMapping = (INounMapping) mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME));
             var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
@@ -370,10 +370,6 @@ public final class FilePrinter {
 
     public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
         ImmutableList<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
-
-        if (logger.isDebugEnabled()) {
-            inconsistencies.stream().forEach(i -> logger.debug("Found Inconsistency: {}", i.getReason()));
-        }
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
             inconsistencies.flatCollect(IInconsistency::toFileOutput).collect(FilePrinter::convertToCSV).forEach(s -> {

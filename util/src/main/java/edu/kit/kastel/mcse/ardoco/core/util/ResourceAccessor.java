@@ -55,6 +55,18 @@ public final class ResourceAccessor {
     }
 
     /**
+     * Returns the specified property of the config file as a boolean if it is set.
+     *
+     * @param key name of the specified property
+     * @return value of the property as a boolean. True, if the value for the key is "true", "yes", or "1" ignoring
+     *         case.
+     */
+    public boolean isPropertyEnabled(String key) {
+        var propValue = prop.getProperty(key).strip();
+        return Boolean.parseBoolean(propValue) || propValue.equalsIgnoreCase("yes") || propValue.equalsIgnoreCase("1");
+    }
+
+    /**
      * Returns the specified property of the config file as a double.
      *
      * @param key name of the specified property

@@ -8,9 +8,11 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ICorefCluster;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
@@ -25,6 +27,8 @@ public final class OntologyTextProvider implements ITextConnector {
     private OntClass textClass;
     private OntClass wordClass;
     private OntClass dependencyClass;
+    private OntClass corefClusterClass;
+    private OntClass corefMentionClass;
 
     private OntProperty uuidProperty;
     private OntProperty textProperty;
@@ -36,6 +40,10 @@ public final class OntologyTextProvider implements ITextConnector {
     private OntProperty dependencySourceProperty;
     private OntProperty dependencyTargetProperty;
     private OntProperty dependencyTypeProperty;
+    private OntProperty mentionProperty;
+    private OntProperty representativeMentionProperty;
+
+    private OntProperty hasCorefClusterProperty;
 
     private OntologyTextProvider(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
@@ -72,7 +80,10 @@ public final class OntologyTextProvider implements ITextConnector {
 
         textClass = ontologyConnector.getClassByIri(CommonOntologyUris.TEXT_DOCUMENT_CLASS.getUri()).orElseThrow();
         wordClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_CLASS.getUri()).orElseThrow();
+        corefClusterClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_CLUSTER_CLASS.getUri()).orElseThrow();
+        corefMentionClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_MENTION_CLASS.getUri()).orElseThrow();
         dependencyClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_DEPENDENCY_CLASS.getUri()).orElseThrow();
+
         uuidProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.UUID_PROPERTY.getUri()).orElseThrow();
         textProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.TEXT_PROPERTY.getUri()).orElseThrow();
         posProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POS_PROPERTY.getUri()).orElseThrow();
@@ -83,6 +94,10 @@ public final class OntologyTextProvider implements ITextConnector {
         dependencySourceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_SOURCE_PROPERTY.getUri()).orElseThrow();
         dependencyTargetProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TARGET_PROPERTY.getUri()).orElseThrow();
         dependencyTypeProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TYPE_PROPERTY.getUri()).orElseThrow();
+        hasCorefClusterProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_COREF_CLUSTERS.getUri()).orElseThrow();
+        mentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_MENTION_PROPERTY.getUri()).orElseThrow();
+        representativeMentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.REPRESENTATIVE_MENTION_PROPERTY.getUri()).orElseThrow();
+
     }
 
     public void addText(IText text) {
@@ -120,6 +135,36 @@ public final class OntologyTextProvider implements ITextConnector {
         var olo = ontologyConnector.addList("WordsOf" + name, wordIndividuals);
         var listIndividual = olo.getListIndividual();
         ontologyConnector.addPropertyToIndividual(textIndividual, wordsProperty, listIndividual);
+
+        // add coref stuff
+        var corefClusters = text.getCorefClusters();
+        for (var corefCluster : corefClusters) {
+            var representativeMention = corefCluster.getRepresentativeMention();
+            var corefClusterIndividual = ontologyConnector.addIndividualToClass(representativeMention, corefClusterClass);
+            ontologyConnector.addPropertyToIndividual(corefClusterIndividual, uuidProperty, "" + corefCluster.getId());
+            ontologyConnector.addPropertyToIndividual(corefClusterIndividual, representativeMentionProperty, representativeMention);
+            ontologyConnector.addPropertyToIndividual(textIndividual, hasCorefClusterProperty, corefClusterIndividual);
+
+            var counter = 0;
+            for (var mention : corefCluster.getMentions()) {
+                var id = corefCluster.getId() + "_" + counter;
+                counter += 1;
+                var label = ICorefCluster.getTextForMention(mention);
+
+                var mentionIndividual = ontologyConnector.addIndividualToClass(label, corefMentionClass);
+                ontologyConnector.addPropertyToIndividual(mentionIndividual, uuidProperty, id);
+                ontologyConnector.addPropertyToIndividual(corefClusterIndividual, mentionProperty, mentionIndividual);
+
+                var mentionWordsIndividuals = getMentionWordIndividuals(mention, wordsToIndividuals);
+                var mentionOlo = ontologyConnector.addList("WordsOf Mention " + id, mentionWordsIndividuals);
+                ontologyConnector.addPropertyToIndividual(mentionIndividual, wordsProperty, mentionOlo.getListIndividual());
+            }
+        }
+
+    }
+
+    private static MutableList<Individual> getMentionWordIndividuals(ImmutableList<IWord> mention, HashMap<IWord, Individual> wordsToIndividuals) {
+        return mention.collect(wordsToIndividuals::get).toList();
     }
 
     private Individual addWord(IWord word) {

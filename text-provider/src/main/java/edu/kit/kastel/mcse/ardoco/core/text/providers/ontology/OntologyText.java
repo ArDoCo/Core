@@ -13,6 +13,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ICorefCluster;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 
@@ -24,6 +25,7 @@ public class OntologyText implements IText {
     private Individual textIndividual;
 
     private OntProperty wordsProperty;
+    private OntProperty hasCorefClusterProperty;
     private static OntClass textDocumentClass = null;
 
     protected OntologyText(OntologyConnector ontologyConnector, Individual textIndividual) {
@@ -63,6 +65,7 @@ public class OntologyText implements IText {
 
     private void init() {
         wordsProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_WORDS_PROPERTY.getUri()).orElseThrow();
+        hasCorefClusterProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_COREF_CLUSTERS.getUri()).orElseThrow();
     }
 
     @Override
@@ -123,6 +126,17 @@ public class OntologyText implements IText {
         }
         OntologyText other = (OntologyText) obj;
         return Objects.equals(textIndividual.getURI(), other.textIndividual.getURI());
+    }
+
+    @Override
+    public ImmutableList<ICorefCluster> getCorefClusters() {
+        var clusterIndividuals = ontologyConnector.getObjectsOf(textIndividual, hasCorefClusterProperty).collect(n -> n.as(Individual.class));
+        MutableList<ICorefCluster> clusters = Lists.mutable.empty();
+        for (var clusterIndividual : clusterIndividuals) {
+            var cluster = OntologyCorefCluster.get(ontologyConnector, clusterIndividual);
+            clusters.add(cluster);
+        }
+        return clusters.toImmutable();
     }
 
 }

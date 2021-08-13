@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,6 +61,18 @@ class TracelinksIT {
         compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
 
+    @Disabled("Disabled for CI. Enable for local test only!")
+    @Test
+    @DisplayName("Evaluate Teastore (Text)")
+    void compareTracelinksTeastoreTextIT() {
+        var similarity = 1.0;
+        var minPrecision = 0.62d;
+        var minRecall = 0.87d;
+        var minF1 = 0.73d;
+
+        compareTextBased("teastore", similarity, minPrecision, minRecall, minF1);
+    }
+
     @Test
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
@@ -71,6 +84,18 @@ class TracelinksIT {
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
+    @Disabled("Disabled for CI. Enable for local test only!")
+    @Test
+    @DisplayName("Evaluate Teammates (Text)")
+    void compareTracelinksTeammatesTextIT() {
+        var similarity = 0.80;
+        var minPrecision = 0.60d;
+        var minRecall = 0.82d;
+        var minF1 = 0.74d;
+
+        compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
+    }
+
     @Test
     @DisplayName("Evaluate Mediastore")
     void compareTracelinksMediastoreIT() {
@@ -80,6 +105,18 @@ class TracelinksIT {
         var minF1 = 0.52d;
 
         compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
+    }
+
+    @Disabled("Disabled for CI. Enable for local test only!")
+    @Test
+    @DisplayName("Evaluate Mediastore (Text)")
+    void compareTracelinksMediastoreTextIT() {
+        var similarity = 1.00;
+        var minPrecision = 0.46d;
+        var minRecall = 0.6d;
+        var minF1 = 0.52d;
+
+        compareTextBased("mediastore", similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled for CI. Only enable this locally if you want to test the cache.")
@@ -125,7 +162,6 @@ class TracelinksIT {
         compare(name, similarity, minPrecision, minRecall, minF1);
     }
 
-    @SuppressWarnings("unused")
     private void compareTextBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
         var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
         inputText = new File(inputTextPath);
@@ -157,7 +193,7 @@ class TracelinksIT {
 
     private EvaluationResults calculateResults(String name, AgentDatastructure data) {
         var connectionState = data.getConnectionState();
-        List<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
+        Set<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
 
         var goldStandard = getGoldStandard(name);
 
@@ -165,9 +201,9 @@ class TracelinksIT {
         return results;
     }
 
-    private List<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
+    private Set<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
         var formatString = "%s,%d";
-        return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToList();
+        return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToSet();
     }
 
     private void prepareConfig(double similarity) {

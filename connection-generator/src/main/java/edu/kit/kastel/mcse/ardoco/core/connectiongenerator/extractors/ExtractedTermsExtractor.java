@@ -105,7 +105,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     }
 
-    private ImmutableList<ITermMapping> getPossibleOccurredTermMappingsToThisSpot(ImmutableList<ITermMapping> termMappings, IWord n) {
+    private static ImmutableList<ITermMapping> getPossibleOccurredTermMappingsToThisSpot(ImmutableList<ITermMapping> termMappings, IWord n) {
 
         MutableList<ITermMapping> possibleOccuredTermMappings = Lists.mutable.empty();
         String word = n.getText();
@@ -133,11 +133,15 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     }
 
-    private boolean areNextWordsEqualToReferences(ImmutableList<INounMapping> references, IWord currentWord, int currentPosition) {
+    private static boolean areNextWordsEqualToReferences(ImmutableList<INounMapping> references, IWord currentWord, int currentPosition) {
         var stop = false;
 
         for (int i = currentPosition + 1; i < references.size() && !stop; i++) {
-            String postWord = currentWord.getNextWord().getText();
+            var nextWord = currentWord.getNextWord();
+            if (nextWord == null) {
+                continue;
+            }
+            String postWord = nextWord.getText();
             String reference = references.get(i).getReference();
 
             if (!SimilarityUtils.areWordsSimilar(reference, postWord)) {
@@ -148,11 +152,15 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         return stop;
     }
 
-    private boolean arePreviousWordsEqualToReferences(ImmutableList<INounMapping> references, IWord currentWord, int currentPosition) {
+    private static boolean arePreviousWordsEqualToReferences(ImmutableList<INounMapping> references, IWord currentWord, int currentPosition) {
         var stop = false;
 
         for (int i = currentPosition - 1; i >= 0 && !stop; i--) {
-            String preWord = currentWord.getPreWord().getText();
+            IWord previousWord = currentWord.getPreWord();
+            if (previousWord == null) {
+                continue;
+            }
+            String preWord = previousWord.getText();
             String reference = references.get(i).getReference();
             if (!SimilarityUtils.areWordsSimilar(reference, preWord)) {
                 stop = true;
@@ -170,7 +178,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         createRecommendedInstancesOfAdjacentTerms(term, adjCompleteTermMappings.toImmutable());
     }
 
-    private ImmutableList<ITermMapping> getCompletePreAdjTermMappings(ImmutableList<ITermMapping> possibleTermMappings, IWord termStartNode) {
+    private static ImmutableList<ITermMapping> getCompletePreAdjTermMappings(ImmutableList<ITermMapping> possibleTermMappings, IWord termStartNode) {
         int sentence = termStartNode.getSentenceNo();
         IWord preTermNode = termStartNode.getPreWord();
 
@@ -183,7 +191,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
             while (!nounMappings.isEmpty()) {
                 INounMapping resultOfPreMatch = matchNode(nounMappings.toImmutable(), preTermNode);
 
-                if (sentence == preTermNode.getSentenceNo() || resultOfPreMatch == null) {
+                if (preTermNode == null || sentence == preTermNode.getSentenceNo() || resultOfPreMatch == null) {
                     break;
                 }
 
@@ -199,7 +207,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         return adjCompleteTermMappings.toImmutable();
     }
 
-    private ImmutableList<ITermMapping> getCompleteAfterAdjTermMappings(ImmutableList<ITermMapping> possibleTermMappings, IWord termStartNode,
+    private static ImmutableList<ITermMapping> getCompleteAfterAdjTermMappings(ImmutableList<ITermMapping> possibleTermMappings, IWord termStartNode,
             ITermMapping term) {
 
         int sentence = termStartNode.getSentenceNo();
@@ -235,7 +243,10 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     }
 
-    private INounMapping matchNode(ImmutableList<INounMapping> nounMappings, IWord node) {
+    private static INounMapping matchNode(ImmutableList<INounMapping> nounMappings, IWord node) {
+        if (node == null) {
+            return null;
+        }
         for (INounMapping mapping : nounMappings) {
             if (mapping.getWords().contains(node)) {
                 return mapping;
@@ -244,7 +255,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
         return null;
     }
 
-    private IWord getAfterTermNode(IWord termStartNode, ITermMapping term) {
+    private static IWord getAfterTermNode(IWord termStartNode, ITermMapping term) {
         IWord afterTermNode = termStartNode.getNextWord();
         for (var i = 0; i < term.getMappings().size() && afterTermNode != null; i++) {
             afterTermNode = afterTermNode.getNextWord();
@@ -264,11 +275,11 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
         if (preTermNode != null && sentence == preTermNode.getSentenceNo()) {
 
-            ImmutableList<INounMapping> nounMappingsOfPreTermNode = textState.getNounMappingsByNode(preTermNode);
+            ImmutableList<INounMapping> nounMappingsOfPreTermNode = textState.getNounMappingsByWord(preTermNode);
             possibleMappings.addAll(nounMappingsOfPreTermNode.castToCollection());
         }
         if (afterTermNode != null && sentence == afterTermNode.getSentenceNo()) {
-            ImmutableList<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByNode(afterTermNode);
+            ImmutableList<INounMapping> nounMappingsOfAfterTermNode = textState.getNounMappingsByWord(afterTermNode);
             possibleMappings.addAll(nounMappingsOfAfterTermNode.castToCollection());
         }
         return possibleMappings.select(nounMapping -> nounMapping.getKind() != kind).toImmutable();

@@ -41,7 +41,7 @@ public final class CachedOntologyWord implements IWord {
 
     @Override
     public synchronized int getSentenceNo() {
-        if (sentenceNo == -1) {
+        if (sentenceNo <= -1) {
             sentenceNo = ontologyWord.getSentenceNo();
         }
         return sentenceNo;
@@ -89,7 +89,7 @@ public final class CachedOntologyWord implements IWord {
 
     @Override
     public synchronized int getPosition() {
-        if (position == -1) {
+        if (position <= -1) {
             position = ontologyWord.getPosition();
         }
         return position;
@@ -140,6 +140,11 @@ public final class CachedOntologyWord implements IWord {
         }
         CachedOntologyWord other = (CachedOntologyWord) obj;
         return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (pos=%s, p=%d, s=%d)", getText(), getPosTag().getTag(), getPosition(), getSentenceNo());
     }
 
 }

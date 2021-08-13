@@ -235,4 +235,9 @@ public final class OntologyWord implements IWord {
         return filteredDependencies;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s (pos=%s, p=%d, s=%d)", getText(), getPosTag().getTag(), getPosition(), getSentenceNo());
+    }
+
 }
