@@ -36,6 +36,7 @@ public class InstanceRelation implements IInstanceRelation {
         this.fromInstance = fromInstance;
         this.toInstance = toInstance;
         this.localRelations = new ArrayList<>();
+        this.probability = 0;
         this.addLink(relator, from, to);
     }
 
@@ -53,8 +54,12 @@ public class InstanceRelation implements IInstanceRelation {
             }
         }
         this.localRelations.add(new LocalRelation(relator, from, to));
-        this.probability += (this.getFromInstance().getProbability() + this.getToInstance().getProbability()) / 2;
+        this.increaseProbability();
         return true;
+    }
+
+    private void increaseProbability() {
+        this.probability += Math.pow(0.5,this.localRelations.size());
     }
 
     @Override
