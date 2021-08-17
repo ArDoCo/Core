@@ -1,35 +1,59 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.extractors;
 
+import java.util.Objects;
+
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 
+/**
+ * The Class RecommendationExtractor defines extractors for the recommendation stage.
+ */
 public abstract class RecommendationExtractor extends Extractor {
 
-	protected ITextState textState;
-	protected IModelState modelState;
-	protected IRecommendationState recommendationState;
+    /** The text state. */
+    protected ITextState textState;
 
-	@Override
-	public RecommendationExtractor create(AgentDatastructure data, Configuration config) {
+    /** The model state. */
+    protected IModelState modelState;
 
-		if (null == data.getTextState() || null == data.getModelState() || null == data.getRecommendationState()) {
-			throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
-		}
-		return create(data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
-	}
+    /** The recommendation state. */
+    protected IRecommendationState recommendationState;
 
-	public abstract RecommendationExtractor create(ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-			Configuration config);
+    /**
+     * Instantiates a new recommendation extractor.
+     *
+     * @param textState           the text state
+     * @param modelState          the model state
+     * @param recommendationState the recommendation state
+     */
+    protected RecommendationExtractor(ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
+        this.textState = textState;
+        this.modelState = modelState;
+        this.recommendationState = recommendationState;
+    }
 
-	protected RecommendationExtractor(DependencyType dependencyType, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
-		super(dependencyType);
-		this.textState = textState;
-		this.modelState = modelState;
-		this.recommendationState = recommendationState;
-	}
+    @Override
+    public final RecommendationExtractor create(AgentDatastructure data, Configuration config) {
+        Objects.requireNonNull(data.getTextState());
+        Objects.requireNonNull(data.getModelState());
+        Objects.requireNonNull(data.getRecommendationState());
+
+        return create(data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
+    }
+
+    /**
+     * Creates the extractor.
+     *
+     * @param textState           the text state
+     * @param modelState          the model state
+     * @param recommendationState the recommendation state
+     * @param config              the config
+     * @return the recommendation extractor
+     */
+    public abstract RecommendationExtractor create(ITextState textState, IModelState modelState, IRecommendationState recommendationState,
+            Configuration config);
 
 }

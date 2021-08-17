@@ -5,9 +5,14 @@
 	<parent>
 		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 		<artifactId>core</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>pipeline</artifactId>
+	
+	<properties>
+	  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
@@ -19,11 +24,15 @@
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+			<artifactId>inconsistency-detection</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 			<artifactId>text-extractor</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>
-			<artifactId>text-provider-indirect</artifactId>
+			<artifactId>text-provider-stanford</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>

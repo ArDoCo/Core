@@ -5,17 +5,15 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 
-@RunWith(JUnitPlatform.class)
 class PcmOntologyModelConnectorTest {
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static PcmOntologyModelConnector loadModel(String modelFile) {
         File file = new File(modelFile);
@@ -32,11 +30,11 @@ class PcmOntologyModelConnectorTest {
             logger.debug("connector is null");
             Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
         }
-        List<IInstance> instances = connectorMediaStore.getInstances();
+        ImmutableList<IModelInstance> instances = connectorMediaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing MediaStore instances:");
-            for (IInstance instance : instances) {
+            for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
                 logger.debug(instance.getNames());
@@ -50,7 +48,7 @@ class PcmOntologyModelConnectorTest {
         List<String> expectedInstancesNames = List.of("FileStorage", "Reencoding", "DB", "MediaAccess", "Facade", "TagWatermarking", "UserDBAdapter",
                 "AudioWatermarking", "UserManagement", "ParallelWatermarking", "MediaManagement", "Cache", "Packaging", "DownloadLoadBalancer");
 
-        for (IInstance instance : instances) {
+        for (IModelInstance instance : instances) {
             String name = instance.getLongestName();
             Assertions.assertTrue(expectedInstancesNames.contains(name), "Found instance does not match one of the expected instances!");
         }
@@ -66,11 +64,11 @@ class PcmOntologyModelConnectorTest {
             logger.debug("connector is null");
             Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
         }
-        List<IInstance> instances = connectorTeaStore.getInstances();
+        ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing TeaStore instances:");
-            for (IInstance instance : instances) {
+            for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
                 logger.debug(instance.getNames());
@@ -92,13 +90,13 @@ class PcmOntologyModelConnectorTest {
             logger.debug("connector is null");
             Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
         }
-        List<IInstance> instances = connectorTeaStore.getInstances();
+        ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
 
         Assertions.assertFalse(instances.isEmpty(), "There need to be some instances contained in the model.");
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing TEAMMATES instances:");
-            for (IInstance instance : instances) {
+            for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
                 logger.debug(instance.getNames());

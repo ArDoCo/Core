@@ -3,7 +3,7 @@
   <parent>
     <groupId>edu.kit.kastel.mcse.ardoco</groupId>
     <artifactId>core</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
   <artifactId>text-provider</artifactId>
   <dependencies>
@@ -11,5 +11,15 @@
   		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
   		<artifactId>data-structures</artifactId>
   	</dependency>
+  	<dependency>
+		<groupId>edu.kit.kastel.informalin</groupId>
+		<artifactId>ontology-connector</artifactId>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.junit.jupiter</groupId>
+		<artifactId>junit-jupiter-params</artifactId>
+		<version>5.7.2</version>
+	</dependency>
   </dependencies>
 </project>

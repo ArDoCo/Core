@@ -2,34 +2,23 @@ package edu.kit.kastel.mcse.ardoco.core.datastructures.extractors;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
 
+/**
+ * The Class Extractor defines the base type of all special extractors.
+ */
 public abstract class Extractor implements IExtractor {
 
-    protected DependencyType dependencyType;
-
+    /**
+     * Creates the extractor.
+     *
+     * @param data   the data
+     * @param config the config
+     * @return the extractor
+     */
     public abstract Extractor create(AgentDatastructure data, Configuration config);
 
-    /**
-     * Creates a new agent of the specified type.
-     *
-     * @param dependencyType the agent type
-     */
-    protected Extractor(DependencyType dependencyType) {
-        this.dependencyType = dependencyType;
-    }
-
-    /**
-     * Returns the dependency type of the current agent.
-     *
-     * @return the dependency type of the current agent
-     */
-    public DependencyType getDependencyType() {
-        return dependencyType;
-    }
-
     @Override
-    public String getName() {
+    public String getId() {
         return this.getClass().getSimpleName();
     }
 

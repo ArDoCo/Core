@@ -1,11 +1,12 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
@@ -27,8 +28,8 @@ public class RecommendedInstance implements IRecommendedInstance {
 
     @Override
     public IRecommendedInstance createCopy() {
-        return new RecommendedInstance(name, type, probability, nameMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()),
-                typeMappings.stream().map(INounMapping::createCopy).collect(Collectors.toList()));
+        return new RecommendedInstance(name, type, probability, Lists.immutable.fromStream(nameMappings.stream().map(INounMapping::createCopy)),
+                Lists.immutable.fromStream(typeMappings.stream().map(INounMapping::createCopy)));
     }
 
     /**
@@ -40,12 +41,12 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param nameNodes   the involved name mappings
      * @param typeNodes   the involved type mappings
      */
-    public RecommendedInstance(String name, String type, double probability, List<INounMapping> nameNodes, List<INounMapping> typeNodes) {
+    public RecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameNodes, ImmutableList<INounMapping> typeNodes) {
         this.type = type;
         this.name = name;
         this.probability = probability;
-        nameMappings = new HashSet<>(nameNodes);
-        typeMappings = new HashSet<>(typeNodes);
+        nameMappings = new HashSet<>(nameNodes.castToCollection());
+        typeMappings = new HashSet<>(typeNodes.castToCollection());
     }
 
     /**
@@ -54,8 +55,8 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @return the name mappings of this recommended instance
      */
     @Override
-    public List<INounMapping> getNameMappings() {
-        return new ArrayList<>(nameMappings);
+    public ImmutableList<INounMapping> getNameMappings() {
+        return Lists.immutable.withAll(nameMappings);
     }
 
     /**
@@ -64,8 +65,8 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @return the type mappings of this recommended instance
      */
     @Override
-    public List<INounMapping> getTypeMappings() {
-        return new ArrayList<>(typeMappings);
+    public ImmutableList<INounMapping> getTypeMappings() {
+        return Lists.immutable.withAll(typeMappings);
     }
 
     /**
@@ -84,8 +85,8 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param nameMappings the name mappings to remove
      */
     @Override
-    public void removeNounNodeMappingsFromName(List<INounMapping> nameMappings) {
-        this.nameMappings.removeAll(nameMappings);
+    public void removeNounNodeMappingsFromName(ImmutableList<INounMapping> nameMappings) {
+        this.nameMappings.removeAll(nameMappings.castToCollection());
     }
 
     /**
@@ -107,7 +108,7 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param typeMapping the type mappings to add
      */
     @Override
-    public void addMappings(List<INounMapping> nameMapping, List<INounMapping> typeMapping) {
+    public void addMappings(ImmutableList<INounMapping> nameMapping, ImmutableList<INounMapping> typeMapping) {
         nameMapping.forEach(this::addName);
         typeMapping.forEach(this::addType);
     }
@@ -185,22 +186,22 @@ public class RecommendedInstance implements IRecommendedInstance {
     @Override
     public String toString() {
         var separator = "\n\t\t\t\t\t";
-        List<String> typeNodeVals = new ArrayList<>();
-        List<String> typeOccurrences = new ArrayList<>();
-        List<Integer> typePositions = new ArrayList<>();
+        MutableList<String> typeNodeVals = Lists.mutable.empty();
+        MutableList<String> typeOccurrences = Lists.mutable.empty();
+        MutableList<Integer> typePositions = Lists.mutable.empty();
         for (INounMapping typeMapping : typeMappings) {
             typeNodeVals.add(typeMapping.toString());
-            typeOccurrences.addAll(typeMapping.getOccurrences());
-            typePositions.addAll(typeMapping.getMappingSentenceNo());
+            typeOccurrences.addAll(typeMapping.getSurfaceForms().castToCollection());
+            typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
 
-        List<String> nameNodeVals = new ArrayList<>();
-        List<String> nameOccurrences = new ArrayList<>();
-        List<Integer> namePositions = new ArrayList<>();
+        MutableList<String> nameNodeVals = Lists.mutable.empty();
+        MutableList<String> nameOccurrences = Lists.mutable.empty();
+        MutableList<Integer> namePositions = Lists.mutable.empty();
         for (INounMapping nameMapping : nameMappings) {
             nameNodeVals.add(nameMapping.toString());
-            nameOccurrences.addAll(nameMapping.getOccurrences());
-            namePositions.addAll(nameMapping.getMappingSentenceNo());
+            nameOccurrences.addAll(nameMapping.getSurfaceForms().castToCollection());
+            namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
         return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + probability + //
                 ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";

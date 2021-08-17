@@ -2,31 +2,32 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>core</artifactId>
-	<version>0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>ArDoCo (Core) - The Consistency Analyzer</name>
-
-	<properties>
-		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
-		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-		<sonar.organization>ardoco</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-	</properties>
-
-	<repositories>
-		<repository>
-			<id>github</id>
-			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
-		</repository>
-	</repositories>
 
 	<parent>
 		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.1.5-SNAPSHOT</version>
 	</parent>
+
+	<artifactId>core</artifactId>
+	<version>0.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>ArDoCo (Core) - The Consistency Analyzer</name>
+
+	<modules>
+		<module>text-extractor</module>
+		<module>text-provider</module>
+		<module>text-provider-stanford</module>
+		<module>recommendation-generator</module>
+		<module>data-structures</module>
+		<module>pipeline</module>
+		<module>connection-generator</module>
+		<module>inconsistency-detection</module>
+		<module>model-provider</module>
+		<module>model-provider-owl</module>
+		<module>util</module>
+		<module>tests</module>
+	</modules>
 
 	<distributionManagement>
 		<repository>
@@ -41,42 +42,23 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<dependencies>
-		<!-- Eclipse collections -->
-		<dependency>
-			<groupId>org.eclipse.collections</groupId>
-			<artifactId>eclipse-collections-api</artifactId>
-			<version>10.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.collections</groupId>
-			<artifactId>eclipse-collections</artifactId>
-			<version>10.4.0</version>
-		</dependency>
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-	</dependencies>
-
+	<properties>
+		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
+		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+		<sonar.organization>ardoco</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+		<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-
 			<dependency>
 				<groupId>org.kohsuke.metainf-services</groupId>
 				<artifactId>metainf-services</artifactId>
 				<version>1.8</version>
 				<optional>true</optional>
 			</dependency>
-
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>text-extractor</artifactId>
@@ -89,7 +71,7 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>text-provider-indirect</artifactId>
+				<artifactId>text-provider-stanford</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -124,11 +106,66 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>inconsistency-detection</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>util</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+
+			<!-- TODO Move to Parent ? -->
+			<dependency>
+				<groupId>edu.kit.kastel.informalin</groupId>
+				<artifactId>ontology-connector</artifactId>
+				<version>0.1-SNAPSHOT</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<dependencies>
+		<!-- Eclipse collections -->
+		<dependency>
+			<groupId>org.eclipse.collections</groupId>
+			<artifactId>eclipse-collections-api</artifactId>
+			<version>10.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.collections</groupId>
+			<artifactId>eclipse-collections</artifactId>
+			<version>10.4.0</version>
+		</dependency>
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.14.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.14.1</version>
+		</dependency>
+		<!-- Apache Commons Lang -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>github</id>
+			<name>GitHub ArDoCo/Core Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/ArDoCo/Core</url>
+		</repository>
+		<repository>
+			<id>github-informalin</id>
+			<name>GitHub Informalin Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/InFormALin/Ontology-Connector</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<pluginManagement>
@@ -136,24 +173,63 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<argLine>--illegal-access=permit</argLine>
+						<fork>true</fork>
+						<meminitial>128m</meminitial>
+						<maxmem>512m</maxmem>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>3.0.0-M5</version>
+					<configuration></configuration>
+					<executions>
+						<execution>
+							<phase>integration-test</phase>
+							<goals>
+								<goal>integration-test</goal>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.7</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
 
-	<modules>
-		<module>text-extractor</module>
-		<module>text-provider</module>
-		<module>text-provider-indirect</module>
-		<module>recommendation-generator</module>
-		<module>data-structures</module>
-		<module>pipeline</module>
-		<module>connection-generator</module>
-		<module>model-provider</module>
-		<module>model-provider-owl</module>
-		<module>util</module>
-	</modules>
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

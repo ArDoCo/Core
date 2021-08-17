@@ -1,30 +1,42 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.*;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IAgentModule;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IModule;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors.GenericRecommendationConfig;
 
-public class RecommendationGenerator implements IAgentModule<AgentDatastructure> {
+/**
+ * The Class RecommendationGenerator defines the recommendation stage.
+ */
+public class RecommendationGenerator implements IExecutionStage {
 
     private AgentDatastructure data;
-    private List<IAgent> recommendationAgents = new ArrayList<>();
-    private List<IAgent> dependencyAgents = new ArrayList<>();
+    private MutableList<IAgent> recommendationAgents = Lists.mutable.empty();
+    private MutableList<IAgent> dependencyAgents = Lists.mutable.empty();
+
     private RecommendationGeneratorConfig config;
     private GenericRecommendationConfig agentConfig;
 
     /**
      * Creates a new model connection agent with the given extraction state and ntr state.
+     *
+     * @param data the data
      */
     public RecommendationGenerator(AgentDatastructure data) {
         this(data, RecommendationGeneratorConfig.DEFAULT_CONFIG, GenericRecommendationConfig.DEFAULT_CONFIG);
     }
 
+    /**
+     * Instantiates a new recommendation generator.
+     *
+     * @param data        the data
+     * @param config      the config
+     * @param agentConfig the agent config
+     */
     public RecommendationGenerator(AgentDatastructure data, RecommendationGeneratorConfig config, GenericRecommendationConfig agentConfig) {
         this.data = data;
         this.config = config;
@@ -33,12 +45,20 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
         initializeAgents();
     }
 
+    /**
+     * Instantiates a new recommendation generator.
+     */
     public RecommendationGenerator() {
     }
 
     @Override
     public void exec() {
-        runAgents();
+        for (IAgent agent : recommendationAgents) {
+            agent.exec();
+        }
+        for (IAgent agent : dependencyAgents) {
+            agent.exec();
+        }
     }
 
     /**
@@ -64,27 +84,13 @@ public class RecommendationGenerator implements IAgentModule<AgentDatastructure>
         }
     }
 
-    /**
-     * Runs solvers, that create recommendations.
-     */
     @Override
-    public void runAgents() {
-        for (IAgent agent : recommendationAgents) {
-            agent.exec();
-        }
-        for (IAgent agent : dependencyAgents) {
-            agent.exec();
-        }
-
-    }
-
-    @Override
-    public AgentDatastructure getState() {
+    public AgentDatastructure getBlackboard() {
         return data;
     }
 
     @Override
-    public IModule<AgentDatastructure> create(AgentDatastructure data, Map<String, String> configs) {
+    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
         return new RecommendationGenerator(data, new RecommendationGeneratorConfig(configs), new GenericRecommendationConfig(configs));
     }
 }

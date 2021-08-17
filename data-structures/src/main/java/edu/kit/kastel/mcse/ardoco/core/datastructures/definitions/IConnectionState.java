@@ -1,19 +1,23 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
-public interface IConnectionState extends IState {
-
-    IConnectionState createCopy();
+/**
+ * The Interface IConnectionState.
+ */
+public interface IConnectionState extends IState<IConnectionState> {
 
     /**
      * Returns all instance links.
      *
      * @return all instance links
      */
-    List<IInstanceLink> getInstanceLinks();
+    ImmutableList<IInstanceLink> getInstanceLinks();
 
     /**
      * Returns all instance links with a model instance containing the given name.
@@ -21,7 +25,7 @@ public interface IConnectionState extends IState {
      * @param name the name of a model instance
      * @return all instance links with a model instance containing the given name as list
      */
-    List<IInstanceLink> getInstanceLinksByName(String name);
+    ImmutableList<IInstanceLink> getInstanceLinksByName(String name);
 
     /**
      * Returns all instance links with a model instance containing the given type.
@@ -29,18 +33,47 @@ public interface IConnectionState extends IState {
      * @param type the type of a model instance
      * @return all instance links with a model instance containing the given type as list
      */
-    List<IInstanceLink> getInstanceLinksByType(String type);
+    ImmutableList<IInstanceLink> getInstanceLinksByType(String type);
 
-    List<IInstanceLink> getInstanceLinksByRecommendedInstance(IRecommendedInstance recommendedInstance);
+    /**
+     * Returns all instance links with a model instance containing the given recommended instance.
+     *
+     * @param recommendedInstance the recommended instance to consider
+     * @return all instance links found
+     */
+    ImmutableList<IInstanceLink> getInstanceLinksByRecommendedInstance(IRecommendedInstance recommendedInstance);
 
     /**
      * Returns all instance links with a model instance containing the given name and type.
      *
-     * @param type the type of a model instance
      * @param name the name of a model instance
+     * @param type the type of a model instance
      * @return all instance links with a model instance containing the given name and type as list
      */
-    List<IInstanceLink> getInstanceLinks(String name, String type);
+    ImmutableList<IInstanceLink> getInstanceLinks(String name, String type);
+
+    /**
+     * Returns a list of tracelinks that are contained within this connection state.
+     *
+     * @return list of tracelinks within this connection state
+     */
+    default ImmutableSet<Tracelink> getTraceLinks() {
+        MutableSet<Tracelink> tracelinks = Sets.mutable.empty();
+        for (var instanceLink : getInstanceLinks()) {
+            var textualInstance = instanceLink.getTextualInstance();
+            for (var nm : textualInstance.getNameMappings()) {
+                for (var word : nm.getWords()) {
+                    var tracelink = new Tracelink(instanceLink, instanceLink.getModelInstance(), word);
+                    tracelinks.add(tracelink);
+                }
+                for (var word : nm.getCoreferences()) {
+                    var tracelink = new Tracelink(instanceLink, instanceLink.getModelInstance(), word);
+                    tracelinks.add(tracelink);
+                }
+            }
+        }
+        return tracelinks.toImmutable();
+    }
 
     /**
      * Adds the connection of a recommended instance and a model instance to the state. If the model instance is already
@@ -50,7 +83,7 @@ public interface IConnectionState extends IState {
      * @param instance                 the model instance
      * @param probability              the probability of the link
      */
-    void addToLinks(IRecommendedInstance recommendedModelInstance, IInstance instance, double probability);
+    void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, double probability);
 
     /**
      * Checks if an instance link is already contained by the state.
@@ -61,21 +94,21 @@ public interface IConnectionState extends IState {
     boolean isContainedByInstanceLinks(IInstanceLink instanceLink);
 
     /**
-     * Removes an instance link from the state
+     * Removes an instance link from the state.
      *
      * @param instanceMapping the instance link to remove
      */
     void removeFromMappings(IInstanceLink instanceMapping);
 
     /**
-     * Removes all instance links containing the given instance
+     * Removes all instance links containing the given instance.
      *
      * @param instance the given instance
      */
-    void removeAllInstanceLinksWith(IInstance instance);
+    void removeAllInstanceLinksWith(IModelInstance instance);
 
     /**
-     * Removes all instance links containing the given recommended instance
+     * Removes all instance links containing the given recommended instance.
      *
      * @param instance the given recommended instance
      */
@@ -93,7 +126,7 @@ public interface IConnectionState extends IState {
      *
      * @return all relation links of this state as list
      */
-    List<IRelationLink> getRelationLinks();
+    ImmutableList<IRelationLink> getRelationLinks();
 
     /**
      * Adds the connection of a recommended relation and a model relation to the state if it is not already contained.
@@ -102,7 +135,7 @@ public interface IConnectionState extends IState {
      * @param relation                 the model relation
      * @param probability              the probability of the link
      */
-    void addToLinks(IRecommendedRelation recommendedModelRelation, IRelation relation, double probability);
+    void addToLinks(IRecommendedRelation recommendedModelRelation, IModelRelation relation, double probability);
 
     /**
      * Adds a relation link to the state.
@@ -114,7 +147,7 @@ public interface IConnectionState extends IState {
     /**
      * Checks if a relation link is already contained by the state.
      *
-     * @param relationMapping
+     * @param relationMapping the relation mapping
      * @return true, if the relation link is already contained. False if not.
      */
     boolean isContainedByRelationLinks(IRelationLink relationMapping);
@@ -138,6 +171,6 @@ public interface IConnectionState extends IState {
      *
      * @param relation the relation to search for
      */
-    void removeAllMappingsWith(IRelation relation);
+    void removeAllMappingsWith(IModelRelation relation);
 
 }

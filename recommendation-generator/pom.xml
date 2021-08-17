@@ -5,9 +5,14 @@
 	<parent>
 		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
 		<artifactId>core</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>recommendation-generator</artifactId>
+	
+	<properties>
+	  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>edu.kit.kastel.mcse.ardoco</groupId>

@@ -1,24 +1,28 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
-public interface IRecommendedRelation {
+import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
-    IRecommendedRelation createCopy();
+/**
+ * The Interface IRecommendedRelation defines the recommendations of connections between words and
+ * {@link IRecommendedInstance}.
+ */
+public interface IRecommendedRelation extends ICopyable<IRecommendedRelation> {
 
     /**
      * Returns the nodes representing the relation.
      *
      * @return nodes representing the relation
      */
-    List<IWord> getNodes();
+    ImmutableList<IWord> getNodes();
 
     /**
      * Adds more occurrences as a list of nodes.
      *
      * @param occs list of nodes; every node represents the relation
      */
-    void addOccurrences(List<IWord> occs);
+    void addOccurrences(ImmutableList<IWord> occs);
 
     /**
      * updates the probability of the recommended relation.
@@ -53,6 +57,6 @@ public interface IRecommendedRelation {
      *
      * @return the involved recommended instances of the relation as list
      */
-    List<IRecommendedInstance> getRelationInstances();
+    ImmutableList<IRecommendedInstance> getRelationInstances();
 
 }

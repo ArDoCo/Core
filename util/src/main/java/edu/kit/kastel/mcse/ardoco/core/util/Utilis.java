@@ -3,6 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
 /**
  * General helper class for outsourced, common methods.
  *
@@ -16,6 +19,17 @@ public final class Utilis {
     }
 
     /**
+     * Compare two double values.
+     *
+     * @param d1 value 1
+     * @param d2 value 2
+     * @return <code>true</code> iff similar enough to be equal
+     */
+    public static boolean valueEqual(double d1, double d2) {
+        return Math.abs(d1 - d2) < 1E-8;
+    }
+
+    /**
      * Creates a cartesian product out of the current list and the parts.
      *
      * @param <T>         generic type of list elements
@@ -23,8 +37,14 @@ public final class Utilis {
      * @param parts       the list of lists with possibilities to add.
      * @return list of different combinations
      */
-    public static <T> List<List<T>> cartesianProduct(List<T> currentList, List<List<T>> parts) {
+    public static <T> ImmutableList<ImmutableList<T>> cartesianProduct(ImmutableList<T> currentList, ImmutableList<ImmutableList<T>> parts) {
+        List<T> cl = currentList.toList();
+        List<List<T>> pl = parts.collect(l -> (List<T>) l.toList()).toList();
 
+        return Lists.immutable.fromStream(privateCartesianProduct(cl, pl).stream()).collect(l -> Lists.immutable.withAll(l));
+    }
+
+    private static <T> List<List<T>> privateCartesianProduct(List<T> currentList, List<List<T>> parts) {
         List<List<T>> result = new ArrayList<>();
 
         if (parts.isEmpty()) {
@@ -38,7 +58,7 @@ public final class Utilis {
 
         for (T si : parts.get(0)) {
             currentList.add(si);
-            result.addAll(cartesianProduct(new ArrayList<>(currentList), cloneParts));
+            result.addAll(privateCartesianProduct(new ArrayList<>(currentList), cloneParts));
             currentList.remove(si);
         }
         return result;

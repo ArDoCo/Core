@@ -1,58 +1,56 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.agents;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * Defines the base class of all agents.
+ */
 public abstract class Agent implements IAgent {
-	protected final Logger logger = Logger.getLogger(getName());
-	protected DependencyType dependencyType;
-	private final Class<? extends Configuration> configType;
+    
+    /** The logger. */
+    protected final Logger logger = LogManager.getLogger(this.getClass());
+    private final Class<? extends Configuration> configType;
 
-	/**
-	 * Prototype Constructor
-	 */
-	protected Agent(Class<? extends Configuration> configType) {
-		this.configType = Objects.requireNonNull(configType);
-	}
+    /**
+     * Use for prototype constructors.
+     *
+     * @param configType the desired type of configurations for {@link #create(AgentDatastructure, Configuration)}
+     */
+    protected Agent(Class<? extends Configuration> configType) {
+        this.configType = Objects.requireNonNull(configType);
+    }
 
-	/**
-	 * Creates a new agent of the specified type.
-	 *
-	 * @param dependencyType the agent type
-	 */
-	protected Agent(DependencyType dependencyType, Class<? extends Configuration> configType) {
-		this.dependencyType = dependencyType;
-		this.configType = configType;
-	}
+    /**
+     * Create an agent instance based on this prototype.
+     *
+     * @param data   the blackboard to be used
+     * @param config the configuration for the agent
+     * @return the agent instance
+     * @throws IllegalArgumentException iff the config has not the class specified in {@link #Agent(Class)}
+     */
+    public final Agent create(AgentDatastructure data, Configuration config) {
+        if (!configType.isInstance(config)) {
+            throw new IllegalArgumentException(String.format("Configuration invalid: Expected: %s - Present: %s", configType, config.getClass()));
+        }
+        return createInternal(data, config);
+    }
 
-	public final Agent create(AgentDatastructure data, Configuration config) {
-		if (!configType.isInstance(config)) {
-			throw new IllegalArgumentException(String.format("Configuration invalid: Expected: %s - Present: %s", configType, config.getClass()));
-		}
-		return this.createInternal(data, config);
-	}
+    /**
+     * Create the agent. It is guaranteed that config is an instance of {@link #configType}. This is the secret
+     * implementation of {@link #create(AgentDatastructure, Configuration)}.
+     *
+     * @param data   the data structure
+     * @param config the configuration
+     * @return the new agent
+     */
+    protected abstract Agent createInternal(AgentDatastructure data, Configuration config);
 
-	/**
-	 * Create the agent. It is guaranteed that config is an instance of {@link #configType}.
-	 *
-	 * @param  data   the data structure
-	 * @param  config the configuration
-	 * @return        the new agent
-	 */
-	protected abstract Agent createInternal(AgentDatastructure data, Configuration config);
-
-	/**
-	 * Returns the dependency type of the current agent.
-	 *
-	 * @return the dependency type of the current agent
-	 */
-	public DependencyType getDependencyType() {
-		return dependencyType;
-	}
-
-	@Override
-	public String getName() {
-		return this.getClass().getSimpleName();
-	}
+    @Override
+    public String getId() {
+        return this.getClass().getSimpleName();
+    }
 
 }

@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,11 +15,16 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMappingWithDistribution;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
@@ -31,8 +35,12 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.Tracelink;
 
-public class FilePrinter {
+/**
+ * The Class FilePrinter contains some helpers for stats.
+ */
+public final class FilePrinter {
     private static final Logger logger = LogManager.getLogger(FilePrinter.class);
 
     private static final String GENERIC_ERROR = "An error occurred.";
@@ -48,17 +56,18 @@ public class FilePrinter {
     /**
      * Writes the sentences as they are stored in the PARSE graph into a file.
      *
-     * @param graph the graph to read from.
+     * @param target the target file
+     * @param text   the text to use.
      */
-    public static void writeSentencesInFile(File target, IText graph) {
+    public static void writeSentencesInFile(File target, IText text) {
         boolean fileCreated = createFileIfNonExistent(target);
         if (!fileCreated) {
             return;
         }
 
-        try (var myWriter = new FileWriter(target)) {
+        try (var myWriter = new FileWriter(target, StandardCharsets.UTF_8)) {
             var minSentenceNumber = 0;
-            for (IWord node : graph.getWords()) {
+            for (IWord node : text.getWords()) {
                 var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
                 if (sentenceNumber + 1 > minSentenceNumber) {
                     myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
@@ -105,40 +114,35 @@ public class FilePrinter {
 
         myWriter.write("FoundNames as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        List<String> nameList = ntrState.getNameList();
-        Collections.sort(nameList);
+        ImmutableList<String> nameList = ntrState.getNameList().toSortedList().toImmutable();
         myWriter.write(nameList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
         myWriter.write("FoundNameTerms as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        List<String> nameTermList = ntrState.getNameTermList();
-        Collections.sort(nameTermList);
+        ImmutableList<String> nameTermList = ntrState.getNameTermList().toSortedList().toImmutable();
         myWriter.write(nameTermList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
         myWriter.write("FoundNORTs as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        List<String> nortList = ntrState.getNortList();
-        Collections.sort(nortList);
+        ImmutableList<String> nortList = ntrState.getNortList().toSortedList().toImmutable();
         myWriter.write(nortList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
         myWriter.write("FoundTypes as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        List<String> typeList = ntrState.getTypeList();
-        Collections.sort(typeList);
+        ImmutableList<String> typeList = ntrState.getTypeList().toSortedList().toImmutable();
         myWriter.write(typeList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
         myWriter.write("FoundTypeTerms as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        List<String> typeTermList = ntrState.getTypeTermList();
-        Collections.sort(typeTermList);
+        ImmutableList<String> typeTermList = ntrState.getTypeTermList().toSortedList().toImmutable();
         myWriter.write(typeTermList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
@@ -146,9 +150,10 @@ public class FilePrinter {
         myWriter.write("Instances of the Recommendation State: ");
         myWriter.append(LINE_SEPARATOR);
 
-        List<IRecommendedInstance> recommendedInstances = recommendationState.getRecommendedInstances();
         Comparator<IRecommendedInstance> comRecommendedInstanceByName = getRecommendedInstancesComparator();
-        Collections.sort(recommendedInstances, comRecommendedInstanceByName);
+        ImmutableList<IRecommendedInstance> recommendedInstances = recommendationState.getRecommendedInstances()
+                .toSortedList(comRecommendedInstanceByName)
+                .toImmutable();
 
         for (IRecommendedInstance ri : recommendedInstances) {
             myWriter.write(ri.toString() + LINE_SEPARATOR);
@@ -160,8 +165,7 @@ public class FilePrinter {
         myWriter.append(LINE_SEPARATOR);
 
         Comparator<IInstanceLink> compInstByUID = getInstanceLinkComparator();
-        List<IInstanceLink> instanceMappings = new ArrayList<>(connectionState.getInstanceLinks());
-        Collections.sort(instanceMappings, compInstByUID);
+        ImmutableList<IInstanceLink> instanceMappings = Lists.immutable.withAll(connectionState.getInstanceLinks()).toSortedList(compInstByUID).toImmutable();
 
         for (IInstanceLink imap : instanceMappings) {
 
@@ -174,9 +178,8 @@ public class FilePrinter {
         myWriter.write("Relations of the Recommendation State: ");
         myWriter.append(LINE_SEPARATOR);
 
-        List<IRecommendedRelation> rels = recommendationState.getRecommendedRelations();
         Comparator<IRecommendedRelation> compRRelationsByFirstInstanceName = getRecommendedRelationComparator();
-        Collections.sort(rels, compRRelationsByFirstInstanceName);
+        ImmutableList<IRecommendedRelation> rels = recommendationState.getRecommendedRelations().toSortedList(compRRelationsByFirstInstanceName).toImmutable();
 
         for (IRecommendedRelation si : rels) {
             myWriter.write(si.toString() + LINE_SEPARATOR);
@@ -189,8 +192,7 @@ public class FilePrinter {
         myWriter.append(LINE_SEPARATOR);
 
         Comparator<IRelationLink> compRelByUID = getRelationLinkComparator();
-        List<IRelationLink> relationLinks = new ArrayList<>(connectionState.getRelationLinks());
-        Collections.sort(relationLinks, compRelByUID);
+        ImmutableList<IRelationLink> relationLinks = Lists.immutable.withAll(connectionState.getRelationLinks()).toSortedList(compRelByUID).toImmutable();
 
         for (IRelationLink rlink : relationLinks) {
             myWriter.write(rlink.toString() + LINE_SEPARATOR);
@@ -209,8 +211,8 @@ public class FilePrinter {
         logger.info(SUCCESS_WRITE);
     }
 
-    /***
-     * Writes the states into a file
+    /**
+     * * Writes the states into a file.
      *
      * @param resultFile          the result file
      * @param extractionState     the extraction state, containing the extracted elements of the model
@@ -228,7 +230,7 @@ public class FilePrinter {
             return;
         }
 
-        try (var myWriter = new FileWriter(resultFile)) {
+        try (var myWriter = new FileWriter(resultFile, StandardCharsets.UTF_8)) {
             writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState, duration);
 
         } catch (IOException e) {
@@ -238,46 +240,65 @@ public class FilePrinter {
 
     }
 
+    /**
+     * Write model instances in csv file.
+     *
+     * @param destination the destination
+     * @param modelState  the model state
+     * @param name        the name
+     */
     public static void writeModelInstancesInCsvFile(File destination, IModelState modelState, String name) {
-        List<String[]> dataLines = getInstancesFromModelState(modelState, name);
+        ImmutableList<String[]> dataLines = getInstancesFromModelState(modelState, name);
         writeDataLinesInFile(destination, dataLines);
     }
 
-    private static List<String[]> getInstancesFromModelState(IModelState modelState, String name) {
-        List<String[]> dataLines = new ArrayList<>();
+    private static ImmutableList<String[]> getInstancesFromModelState(IModelState modelState, String name) {
+        MutableList<String[]> dataLines = Lists.mutable.empty();
 
         dataLines.add(new String[] { "Found Model Elements in " + name + ":", "", "" });
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "UID", "Name", "Type" });
 
-        for (IInstance instance : modelState.getInstances()) {
+        for (IModelInstance instance : modelState.getInstances()) {
 
             dataLines.add(new String[] { instance.getUid(), instance.getLongestName(), instance.getLongestType() });
 
         }
 
-        return dataLines;
+        return dataLines.toImmutable();
     }
 
+    /**
+     * Write trace links in csv file.
+     *
+     * @param resultFile      the result file
+     * @param connectionState the connection state
+     */
     public static void writeTraceLinksInCsvFile(File resultFile, IConnectionState connectionState) {
-        List<String[]> dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
+        ImmutableList<String[]> dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
         writeDataLinesInFile(resultFile, dataLines);
     }
 
+    /**
+     * Write noun mappings in csv file.
+     *
+     * @param resultFile the result file
+     * @param textState  the text state
+     */
     public static void writeNounMappingsInCsvFile(File resultFile, ITextState textState) {
-        List<String[]> dataLines = getMappingsAsDataLinesOfTextState(textState);
+        ImmutableList<String[]> dataLines = getMappingsAsDataLinesOfTextState(textState);
         writeDataLinesInFile(resultFile, dataLines);
     }
 
-    private static List<String[]> getMappingsAsDataLinesOfTextState(ITextState textState) {
-        List<String[]> dataLines = new ArrayList<>();
+    private static ImmutableList<String[]> getMappingsAsDataLinesOfTextState(ITextState textState) {
+        MutableList<String[]> dataLines = Lists.mutable.empty();
 
         dataLines.add(new String[] { "Found NounMappings: ", "", "", "" });
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
 
-        if (textState.getAllMappings().isEmpty() || !(textState.getAllMappings().get(0) instanceof NounMappingWithDistribution)) {
-            for (INounMapping mapping : textState.getAllMappings()) {
+        if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMapping)) {
+            for (INounMapping mapping : textState.getNounMappings()) {
 
                 MappingKind kind = mapping.getKind();
 
@@ -288,12 +309,12 @@ public class FilePrinter {
                 dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
 
             }
-            return dataLines;
+            return dataLines.toImmutable();
         }
 
-        for (INounMapping mapping : textState.getAllMappings()) {
+        for (INounMapping mapping : textState.getNounMappings()) {
 
-            NounMappingWithDistribution eagleMapping = (NounMappingWithDistribution) mapping;
+            INounMapping eagleMapping = (INounMapping) mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME));
             var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
@@ -302,48 +323,38 @@ public class FilePrinter {
             dataLines.add(new String[] { eagleMapping.getReference(), nameProb, typeProb, nortProb });
 
         }
-        return dataLines;
+        return dataLines.toImmutable();
     }
 
-    private static List<String[]> getLinksAsDataLinesOfConnectionState(IConnectionState connectionState) {
-        List<String[]> dataLines = new ArrayList<>();
+    private static ImmutableList<String[]> getLinksAsDataLinesOfConnectionState(IConnectionState connectionState) {
+        MutableList<String[]> dataLines = Lists.mutable.empty();
 
         dataLines.add(new String[] { "#Found TraceLinks: ", "", "" });
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        Set<String> modelElementUids = connectionState.getInstanceLinks()
-                .stream()
-                .map(instanceLink -> instanceLink.getModelInstance().getUid())
-                .collect(Collectors.toSet());
-        for (String modelElementUid : modelElementUids) {
-            List<IInstanceLink> instanceLinksForUid = connectionState.getInstanceLinks()
-                    .stream()
-                    .filter(instanceLink -> instanceLink.getModelInstance().getUid().equals(modelElementUid))
-                    .collect(Collectors.toList());
-
-            IInstanceLink instanceLinkWithBestConfidence = instanceLinksForUid.get(0);
-            for (IInstanceLink instanceLink : instanceLinksForUid) {
-                if (instanceLink.getProbability() > instanceLinkWithBestConfidence.getProbability()) {
-                    instanceLinkWithBestConfidence = instanceLink;
-                }
-            }
-
-            var probability = Double.toString(instanceLinkWithBestConfidence.getProbability());
-
-            for (INounMapping nameMapping : instanceLinkWithBestConfidence.getTextualInstance().getNameMappings()) {
-                for (IWord word : nameMapping.getWords()) {
-                    dataLines.add(new String[] { modelElementUid, Integer.toString(word.getSentenceNo() + 1), probability });
-                }
-            }
+        Set<Tracelink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
+        for (var tracelink : tracelinks) {
+            var modelElementUid = tracelink.getModelElementUid();
+            // sentence offset is 1 because real sentences are 1-indexed
+            var sentenceNumber = Integer.toString(tracelink.getSentenceNumber() + 1);
+            var probability = Double.toString(tracelink.getProbability());
+            dataLines.add(new String[] { modelElementUid, sentenceNumber, probability });
         }
-        return dataLines;
+
+        return dataLines.toImmutable();
     }
 
-    public static void writeDataLinesInFile(File file, List<String[]> dataLines) {
+    /**
+     * Write data lines in file.
+     *
+     * @param file      the file
+     * @param dataLines the data lines
+     */
+    public static void writeDataLinesInFile(File file, ImmutableList<String[]> dataLines) {
 
-        try (var pw = new FileWriter(file)) {
-            dataLines.stream().map(FilePrinter::convertToCSV).forEach(s -> {
+        try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
+            dataLines.collect(FilePrinter::convertToCSV).forEach(s -> {
                 try {
                     pw.append(s).append("\n");
                 } catch (IOException e) {
@@ -357,11 +368,29 @@ public class FilePrinter {
 
     }
 
+    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+        ImmutableList<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+
+        try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
+            inconsistencies.flatCollect(IInconsistency::toFileOutput).collect(FilePrinter::convertToCSV).forEach(s -> {
+                try {
+                    pw.append(s).append("\n");
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            });
+        } catch (IOException e) {
+            logger.error(GENERIC_ERROR);
+            logger.debug(e.getMessage(), e);
+        }
+    }
+
     private static String convertToCSV(String[] data) {
         return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(","));
     }
 
-    private static String escapeSpecialCharacters(String data) {
+    private static String escapeSpecialCharacters(String in) {
+        String data = in;
         String escapedData = data.replaceAll("\\R", " ");
         if (data.contains(",") || data.contains("\"") || data.contains("'")) {
             data = data.replace("\"", "\"\"");
