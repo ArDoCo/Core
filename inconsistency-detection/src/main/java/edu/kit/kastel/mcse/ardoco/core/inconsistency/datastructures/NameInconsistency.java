@@ -1,6 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -41,15 +42,35 @@ public class NameInconsistency implements IInconsistency {
     @Override
     public ImmutableList<String[]> toFileOutput() {
         MutableList<String[]> returnList = Lists.mutable.empty();
-        var sentenceNo = "" + (word.getSentenceNo() + 1);
+        var sentenceNo = "" + (word.getSentenceNo());
         var modelUid = modelInstance.getUid();
-        returnList.add(new String[] { getType(), sentenceNo, modelUid });
+        returnList.add(new String[] { getType(), sentenceNo, modelUid, word.getText(), modelInstance.getLongestName() });
         return returnList.toImmutable();
     }
 
     @Override
     public String getType() {
         return INCONSISTENCY_TYPE_NAME;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(modelInstance, word);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        NameInconsistency other = (NameInconsistency) obj;
+        return Objects.equals(modelInstance, other.modelInstance) && Objects.equals(word, other.word);
     }
 
 }

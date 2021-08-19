@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.collection.ImmutableCollection;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.ICopyable;
 
@@ -28,6 +28,6 @@ public interface IInconsistency extends ICopyable<IInconsistency> {
      * @return List with String arrays as entry with the format {SentenceNumber, ModelElementId/TextElement, (optional)
      *         confidence}.
      */
-    ImmutableList<String[]> toFileOutput();
+    ImmutableCollection<String[]> toFileOutput();
 
 }

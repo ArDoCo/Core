@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -129,7 +128,7 @@ class TracelinksIT {
         if (name.equals("teammates")) {
             similarity = 0.8;
         }
-        prepareConfig(similarity);
+        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, TestUtil.getSimilarityConfigString(similarity));
 
         var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
         inputModel = new File(inputFilePath);
@@ -172,7 +171,7 @@ class TracelinksIT {
     }
 
     private void compare(String name, double similarity, double minPrecision, double minRecall, double minF1) {
-        prepareConfig(similarity);
+        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, TestUtil.getSimilarityConfigString(similarity));
 
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
@@ -197,26 +196,13 @@ class TracelinksIT {
 
         var goldStandard = getGoldStandard(name);
 
-        var results = EvalUtil.compare(traceLinks, goldStandard);
+        var results = TestUtil.compare(traceLinks, goldStandard);
         return results;
     }
 
     private Set<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
         var formatString = "%s,%d";
         return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToSet();
-    }
-
-    private void prepareConfig(double similarity) {
-        File configFile = new File(ADDITIONAL_CONFIG);
-
-        var settings = "similarityPercentage=" + similarity;
-        try {
-            FileWriter fw = new FileWriter(configFile, false);
-            fw.write(settings);
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private List<String> getGoldStandard(String name) {
