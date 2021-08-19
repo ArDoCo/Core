@@ -23,14 +23,17 @@ public class InconsistencyState implements IInconsistencyState {
     }
 
     /**
-     * Add an Inconsistency to this state
+     * Add an Inconsistency to this state. Does not add duplicate inconsistencies.
      *
      * @param inconsistency the inconsistency to add
      * @return true if added successfully
      */
     @Override
     public boolean addInconsistency(IInconsistency inconsistency) {
-        return inconsistencies.add(inconsistency);
+        if (!inconsistencies.contains(inconsistency)) {
+            return inconsistencies.add(inconsistency);
+        }
+        return false;
     }
 
     /**

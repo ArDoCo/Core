@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.MissingModel
 @MetaInfServices(InconsistencyAgent.class)
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
-    private double threshold = 0.7d;
+    private double threshold = 0.75d;
 
     public MissingModelElementInconsistencyAgent() {
         super(GenericInconsistencyConfig.class);
