@@ -63,11 +63,10 @@ public class GenericRecommendationConfig extends Configuration {
     @Override
     protected Map<String, String> getAllProperties() {
         return Map.of(//
-                "Recommendation_Extractors", String.join(" ", recommendationExtractors), //
-                "NameTypeAnalyzer_Probability", String.valueOf(nameTypeAnalyzerProbability), //
-                "SeparatedRelationsSolver_Probability", String.valueOf(separatedRelationSolverProbility), //
-                "Dependency_Extractors", String.valueOf(dependencyExtractors)
-        );
+                RECOMMENDATION_EXTRACTORS, String.join(" ", recommendationExtractors), //
+                NAME_TYPE_ANALYZER_PROBABILITY, String.valueOf(nameTypeAnalyzerProbability), //
+                SEPARATED_RELATIONS_SOLVER_PROBABILITY, String.valueOf(separatedRelationSolverProbility), //
+                DEPENDENCY_EXTRACTORS, String.valueOf(dependencyExtractors));
     }
 
 }

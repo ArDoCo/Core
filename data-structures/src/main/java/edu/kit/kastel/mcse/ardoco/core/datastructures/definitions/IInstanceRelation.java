@@ -1,8 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures.definitions;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-
 import java.util.List;
 
 public interface IInstanceRelation {

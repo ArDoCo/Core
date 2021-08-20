@@ -1,18 +1,19 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+
 /**
  * Relation between RecommendedInstances, store specific occurrences as
+ *
  * @see LocalRelation
  *
- * TODO fromInstance and toInstance to List to comprise more complex relations?!
+ *      TODO fromInstance and toInstance to List to comprise more complex relations?!
  */
 public class InstanceRelation implements IInstanceRelation {
     private double probability;
@@ -22,23 +23,19 @@ public class InstanceRelation implements IInstanceRelation {
 
     @Override
     public IInstanceRelation createCopy() {
-        InstanceRelation relation = new InstanceRelation(this.fromInstance, this.toInstance, null, null, null);
+        InstanceRelation relation = new InstanceRelation(fromInstance, toInstance, null, null, null);
         for (LocalRelation localRelation : localRelations) {
-            this.addLink(localRelation.relator, localRelation.from, localRelation.to);
+            addLink(localRelation.relator, localRelation.from, localRelation.to);
         }
         return relation;
     }
 
-    public InstanceRelation(IRecommendedInstance fromInstance,
-                            IRecommendedInstance toInstance,
-                            IWord relator,
-                            List<IWord> from,
-                            List<IWord> to) {
+    public InstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to) {
         this.fromInstance = fromInstance;
         this.toInstance = toInstance;
-        this.localRelations = new ArrayList<>();
-        this.probability = 0;
-        this.addLink(relator, from, to);
+        localRelations = new ArrayList<>();
+        probability = 0;
+        addLink(relator, from, to);
     }
 
     @Override
@@ -46,21 +43,18 @@ public class InstanceRelation implements IInstanceRelation {
         if (relator == null || from == null || to == null) {
             return false;
         }
-        for (LocalRelation relation : this.localRelations) {
-            if (relation.from.size() == from.size() &&
-                    relation.from.containsAll(from) &&
-                    relation.to.size() == to.size() &&
-                    relation.to.containsAll(to)) {
+        for (LocalRelation relation : localRelations) {
+            if (relation.from.size() == from.size() && relation.from.containsAll(from) && relation.to.size() == to.size() && relation.to.containsAll(to)) {
                 return false;
             }
         }
-        this.localRelations.add(new LocalRelation(relator, from, to));
-        this.increaseProbability();
+        localRelations.add(new LocalRelation(relator, from, to));
+        increaseProbability();
         return true;
     }
 
     private void increaseProbability() {
-        this.probability += Math.pow(0.5,this.localRelations.size());
+        probability += Math.pow(0.5, localRelations.size());
     }
 
     @Override
@@ -70,12 +64,9 @@ public class InstanceRelation implements IInstanceRelation {
 
     @Override
     public boolean isIn(IWord relator, List<IWord> from, List<IWord> to) {
-        for (LocalRelation relation : this.localRelations) {
-            if (relation.relator.equals(relator) &&
-                relation.from.size() == from.size() &&
-                relation.from.containsAll(from) &&
-                relation.to.size() == to.size() &&
-                relation.to.containsAll(to)) {
+        for (LocalRelation relation : localRelations) {
+            if (relation.relator.equals(relator) && relation.from.size() == from.size() && relation.from.containsAll(from) && relation.to.size() == to.size()
+                    && relation.to.containsAll(to)) {
                 return true;
             }
         }
@@ -89,7 +80,7 @@ public class InstanceRelation implements IInstanceRelation {
 
     @Override
     public void setProbability(double newProbability) {
-        this.probability = newProbability;
+        probability = newProbability;
     }
 
     @Override
@@ -116,27 +107,24 @@ public class InstanceRelation implements IInstanceRelation {
             return false;
         }
         InstanceRelation other = (InstanceRelation) obj;
-
-        return this.fromInstance == other.fromInstance &&
-                this.toInstance == other.toInstance;
+        return Objects.equals(fromInstance, other.fromInstance) && Objects.equals(toInstance, other.toInstance);
     }
 
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder("");
         str.append("InstanceRelation{")
-            .append("probability=")
-            .append(probability)
-            .append(", fromInstance=")
-            .append(this.fromInstance.toString())
-            .append(", ")
-            .append("toInstance=")
-            .append(this.toInstance.toString())
-            .append(", ")
-            .append("localRelations=");
-        for (LocalRelation relation : this.localRelations) {
-            str.append(relation.toString())
-                    .append(", ");
+                .append("probability=")
+                .append(probability)
+                .append(", fromInstance=")
+                .append(fromInstance.toString())
+                .append(", ")
+                .append("toInstance=")
+                .append(toInstance.toString())
+                .append(", ")
+                .append("localRelations=");
+        for (LocalRelation relation : localRelations) {
+            str.append(relation.toString()).append(", ");
         }
         str.delete(str.length() - 3, str.length() - 1);
         str.append('}');
@@ -147,12 +135,11 @@ public class InstanceRelation implements IInstanceRelation {
         IWord relator;
         List<IWord> from;
         List<IWord> to;
-        int sentenceNo;
+
         LocalRelation(IWord relator, List<IWord> from, List<IWord> to) {
             this.relator = relator;
             this.from = from;
             this.to = to;
-            this.sentenceNo = relator.getSentenceNo();
         }
 
         @Override
@@ -161,12 +148,12 @@ public class InstanceRelation implements IInstanceRelation {
             for (IWord fromWord : from) {
                 str.append(fromWord.getText()).append(", ");
             }
-            str.deleteCharAt(str.length()-1);
+            str.deleteCharAt(str.length() - 1);
             str.append("->to=");
             for (IWord toWord : to) {
                 str.append(toWord.getText()).append(", ");
             }
-            str.deleteCharAt(str.length()-1);
+            str.deleteCharAt(str.length() - 1);
             str.append('}');
             return str.toString();
         }
