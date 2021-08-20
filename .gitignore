@@ -1,4 +1,4 @@
-testout
+tests/src/test/resources/testout/*
 
 tests/src/test/resources/config.properties
 
