@@ -65,8 +65,9 @@ public class InstanceRelation implements IInstanceRelation {
     @Override
     public boolean isIn(IWord relator, List<IWord> from, List<IWord> to) {
         for (LocalRelation relation : localRelations) {
-            if (relation.relator.equals(relator) && relation.from.size() == from.size() && relation.from.containsAll(from) && relation.to.size() == to.size()
-                    && relation.to.containsAll(to)) {
+            var sizesAreEqual = relation.from.size() == from.size() && relation.to.size() == to.size();
+            var containsEqual = relation.from.containsAll(from) && relation.to.containsAll(to);
+            if (relation.relator.equals(relator) && containsEqual && sizesAreEqual) {
                 return true;
             }
         }
