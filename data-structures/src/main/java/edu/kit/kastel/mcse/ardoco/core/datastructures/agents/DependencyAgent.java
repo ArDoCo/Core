@@ -5,6 +5,8 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendatio
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 
+import java.util.Objects;
+
 public abstract class DependencyAgent extends Agent {
 
     protected IText text;
@@ -16,9 +18,9 @@ public abstract class DependencyAgent extends Agent {
         super(configType);
     }
 
-    protected DependencyAgent(DependencyType dependencyType, Class<? extends Configuration> configType, IText text,
+    protected DependencyAgent(Class<? extends Configuration> configType, IText text,
                               ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
-        super(dependencyType, configType);
+        super(configType);
         this.text = text;
         this.textState = textState;
         this.modelState = modelState;
@@ -27,9 +29,11 @@ public abstract class DependencyAgent extends Agent {
 
     @Override
     protected final DependencyAgent createInternal(AgentDatastructure data, Configuration config) {
-        if (data.getText() == null || data.getTextState() == null || data.getModelState() == null || data.getRecommendationState() == null) {
-            throw new IllegalArgumentException("An input of the agent" + getName() + " was null!");
-        }
+        Objects.requireNonNull(data.getText());
+        Objects.requireNonNull(data.getTextState());
+        Objects.requireNonNull(data.getModelState());
+        Objects.requireNonNull(data.getRecommendationState());
+
         return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
     }
 

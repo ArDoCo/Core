@@ -23,7 +23,7 @@ public class GenericRecommendationConfig extends Configuration {
     /** The recommendation extractors to be loaded. */
     public final ImmutableList<String> recommendationExtractors;
 
-    public final List<String> dependencyExtractors;
+    public final ImmutableList<String> dependencyExtractors;
 
     // NameTypeAnalyzer
     /**

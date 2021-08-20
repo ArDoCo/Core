@@ -1,15 +1,13 @@
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents_extractors;
+package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyType;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.DependencyExtractor;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +20,6 @@ import java.util.stream.Collectors;
 public class InstanceRelationAgent extends DependencyAgent {
 
     private static final Logger logger = LogManager.getLogger("InstanceRelationAgent");
-    private List<DependencyExtractor> extractors = new ArrayList<>();
 
     /**
      * Default constructor
@@ -38,29 +35,9 @@ public class InstanceRelationAgent extends DependencyAgent {
      * @param textState state of text
      * @param modelState model state
      * @param recommendationState state of recommendations
-     * @param config configuration
      */
-    public InstanceRelationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-                                 GenericRecommendationConfig config) {
-        super(DependencyType.TEXT_MODEL_RECOMMENDATION, GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
-        initializeExtractors(config.dependencyExtractors, config);
-    }
-
-    /**
-     * Initialize extractors, currently not used
-     *
-     * @param extractorList list of extractors
-     * @param config configuration
-     */
-    private void initializeExtractors(List<String> extractorList, GenericRecommendationConfig config) {
-        Map<String, DependencyExtractor> loadedExtractors = Loader.loadLoadable(DependencyExtractor.class);
-
-        for (String dependencyExtractor : extractorList) {
-            if (!loadedExtractors.containsKey(dependencyExtractor)) {
-                throw new IllegalArgumentException("DependencyExtractor " + dependencyExtractor + " not found");
-            }
-            extractors.add(loadedExtractors.get(dependencyExtractor).create(textState, modelState, recommendationState, config));
-        }
+    public InstanceRelationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
+        super(GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
     }
 
     /**
@@ -75,7 +52,7 @@ public class InstanceRelationAgent extends DependencyAgent {
      */
     @Override
     public InstanceRelationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, Configuration config) {
-        return new InstanceRelationAgent(text, textState, modelState, recommendationState, (GenericRecommendationConfig) config);
+        return new InstanceRelationAgent(text, textState, modelState, recommendationState);
     }
 
     /**
@@ -159,7 +136,8 @@ public class InstanceRelationAgent extends DependencyAgent {
     }
 
     private List<IWord> getNounDepOn(IWord word) {
-        List<IWord> dependencies = word.getWordsThatAreDependentOnThis(DependencyTag.OBJ).castToList();
+        List<IWord> dependencies = new ArrayList<>();
+        dependencies.addAll(word.getWordsThatAreDependentOnThis(DependencyTag.OBJ).castToList());
         dependencies.addAll(word.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ).castToList());
         return dependencies;
     }
@@ -170,7 +148,8 @@ public class InstanceRelationAgent extends DependencyAgent {
     }
 
     private List<IWord> getNounDepOf(IWord word) {
-        List<IWord> dependencies = word.getWordsThatAreDependencyOfThis(DependencyTag.OBJ).castToList();
+        List<IWord> dependencies = new ArrayList<>();
+        dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.OBJ).castToList());
         dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.NSUBJ).castToList());
         return dependencies;
     }

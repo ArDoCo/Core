@@ -68,8 +68,8 @@ public class RecommendationState implements IRecommendationState {
      * @return all instance relations as list
      */
     @Override
-    public MutableList<IInstanceRelation> getInstanceRelations() {
-        return instanceRelations;
+    public ImmutableList<IInstanceRelation> getInstanceRelations() {
+        return instanceRelations.toImmutable();
     }
 
     /**

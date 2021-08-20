@@ -240,4 +240,34 @@ public final class OntologyWord implements IWord {
         return String.format("%s (pos=%s, p=%d, s=%d)", getText(), getPosTag().getTag(), getPosition(), getSentenceNo());
     }
 
+    @Override
+    public boolean isVerb() {
+        System.out.println("Not implemented: " + this.getClass().getSimpleName() + ":" + this.getClass().getEnclosingMethod().getName());
+        return false;
+    }
+
+    @Override
+    public boolean isAdjective() {
+        System.out.println("Not implemented: " + this.getClass().getSimpleName() + ":" + this.getClass().getEnclosingMethod().getName());
+        return false;
+    }
+
+    @Override
+    public boolean isAdverb() {
+        System.out.println("Not implemented: " + this.getClass().getSimpleName() + ":" + this.getClass().getEnclosingMethod().getName());
+        return false;
+    }
+
+    @Override
+    public boolean isNoun() {
+        System.out.println("Not implemented: " + this.getClass().getSimpleName() + ":" + this.getClass().getEnclosingMethod().getName());
+        return false;
+    }
+
+    @Override
+    public boolean isPronoun() {
+        System.out.println("Not implemented: " + this.getClass().getSimpleName() + ":" + this.getClass().getEnclosingMethod().getName());
+        return false;
+    }
+
 }

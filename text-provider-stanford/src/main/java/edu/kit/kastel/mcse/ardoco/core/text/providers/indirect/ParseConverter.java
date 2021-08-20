@@ -210,6 +210,33 @@ public class ParseConverter {
         }
 
         @Override
+        public boolean isVerb() {
+            return posTag.getTag().startsWith("VB") ||
+                    posTag.getTag().startsWith("MD");
+        }
+
+        @Override
+        public boolean isAdjective() {
+            return posTag.getTag().startsWith("JJ");
+        }
+
+        @Override
+        public boolean isAdverb() {
+            return posTag.getTag().startsWith("RB");
+        }
+
+        @Override
+        public boolean isNoun() {
+            return posTag.getTag().startsWith("NN");
+        }
+
+        @Override
+        public boolean isPronoun() {
+            return posTag.getTag().startsWith("PR") ||
+                    posTag.getTag().startsWith("WP");
+        }
+
+        @Override
         public int hashCode() {
             return Objects.hash(position, sentence, text);
         }
