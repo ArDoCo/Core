@@ -6,6 +6,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Relation between RecommendedInstances, store specific occurrences as
@@ -99,6 +100,11 @@ public class InstanceRelation implements IInstanceRelation {
     @Override
     public IRecommendedInstance getToInstance() {
         return toInstance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fromInstance, toInstance);
     }
 
     @Override
