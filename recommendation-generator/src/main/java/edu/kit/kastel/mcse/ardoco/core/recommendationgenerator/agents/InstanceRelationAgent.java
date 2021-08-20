@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.common.WordHelper;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -137,7 +138,7 @@ public class InstanceRelationAgent extends DependencyAgent {
 
     private List<IWord> getVerbsOn(IWord word) {
         // TODO isVerb access via class compatible with their jv version?
-        return getNounDepOn(word).stream().filter(IWord::isVerb).collect(Collectors.toList());
+        return getNounDepOn(word).stream().filter(WordHelper::isVerb).collect(Collectors.toList());
     }
 
     private List<IWord> getNounDepOn(IWord word) {
@@ -149,7 +150,7 @@ public class InstanceRelationAgent extends DependencyAgent {
 
     private List<IWord> getVerbsOf(IWord word) {
         // TODO isVerb access via class compatible with their jv version?
-        return getNounDepOf(word).stream().filter(IWord::isVerb).collect(Collectors.toList());
+        return getNounDepOf(word).stream().filter(WordHelper::isVerb).collect(Collectors.toList());
     }
 
     private List<IWord> getNounDepOf(IWord word) {
