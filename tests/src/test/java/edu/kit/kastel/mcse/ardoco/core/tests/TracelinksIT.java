@@ -53,9 +53,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teastore")
     void compareTracelinksTeastoreIT() {
         var similarity = 1.0;
-        var minPrecision = 0.62d;
+        var minPrecision = 0.78d;
         var minRecall = 0.87d;
-        var minF1 = 0.73d;
+        var minF1 = 0.82d;
 
         compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
@@ -65,9 +65,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teastore (Text)")
     void compareTracelinksTeastoreTextIT() {
         var similarity = 1.0;
-        var minPrecision = 0.62d;
+        var minPrecision = 0.78d;
         var minRecall = 0.87d;
-        var minF1 = 0.73d;
+        var minF1 = 0.82d;
 
         compareTextBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
@@ -76,9 +76,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
         var similarity = 0.80;
-        var minPrecision = 0.60d;
-        var minRecall = 0.82d;
-        var minF1 = 0.74d;
+        var minPrecision = 0.68d;
+        var minRecall = 0.88d;
+        var minF1 = 0.77d;
 
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
@@ -88,9 +88,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teammates (Text)")
     void compareTracelinksTeammatesTextIT() {
         var similarity = 0.80;
-        var minPrecision = 0.60d;
-        var minRecall = 0.82d;
-        var minF1 = 0.74d;
+        var minPrecision = 0.68d;
+        var minRecall = 0.88d;
+        var minF1 = 0.77d;
 
         compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
