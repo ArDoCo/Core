@@ -46,6 +46,7 @@ class InconsistencyIT {
         inputText = null;
         inputModel = new File("src/test/resources/teammates/inconsistency/tm.owl");
 
+        logger.info("Running Inconsistency IT for Teammates");
         var data = Pipeline.runAndSave("test_teammates_inconsistency", inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
     }
@@ -59,6 +60,7 @@ class InconsistencyIT {
         inputText = null;
         inputModel = new File("src/test/resources/teammates/inconsistency/tm_wo_ui.owl");
 
+        logger.info("Running Inconsistency IT for Teammates missing UI Model Element");
         var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui", inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
     }
