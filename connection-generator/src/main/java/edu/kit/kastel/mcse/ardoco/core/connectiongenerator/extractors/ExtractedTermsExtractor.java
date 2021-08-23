@@ -29,7 +29,8 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     private double probabilityAdjacentTerm;
     private double probabilityJustName;
-    private double probabilityJustAdjacentNoun;
+    private double probabilityJustAdjacentNoun; // TODO can we make this probability more flexible/dynamic? It is
+                                                // responsible for a lot of RI (incl. false positives)
 
     /**
      * Instantiates a new extracted terms analyzer.
