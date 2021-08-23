@@ -91,7 +91,7 @@ public class RecommendationState implements IRecommendationState {
         }
     }
 
-    private void updateRecommendedRelation(IRecommendedRelation recr, ImmutableList<IWord> occurrences, double probability) {
+    private static void updateRecommendedRelation(IRecommendedRelation recr, ImmutableList<IWord> occurrences, double probability) {
         recr.addOccurrences(occurrences);
         recr.updateProbability(probability);
     }
@@ -180,7 +180,7 @@ public class RecommendationState implements IRecommendationState {
         }
     }
 
-    private boolean recommendedInstancesHasEmptyType(IRecommendedInstance ri, IRecommendedInstance riWithExactName) {
+    private static boolean recommendedInstancesHasEmptyType(IRecommendedInstance ri, IRecommendedInstance riWithExactName) {
         return riWithExactName.getType().contentEquals("") && !ri.getType().contentEquals("");
     }
 
