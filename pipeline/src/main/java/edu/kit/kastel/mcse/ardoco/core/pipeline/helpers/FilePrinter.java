@@ -41,6 +41,8 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.Tracelink;
  * The Class FilePrinter contains some helpers for stats.
  */
 public final class FilePrinter {
+    private static final String DELIMITER = ",";
+
     private static final Logger logger = LogManager.getLogger(FilePrinter.class);
 
     private static final String GENERIC_ERROR = "An error occurred.";
@@ -372,27 +374,49 @@ public final class FilePrinter {
         var inconsistencies = inconsistencyState.getInconsistencies();
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
-            inconsistencies.flatCollect(IInconsistency::toFileOutput).collect(FilePrinter::convertToCSV).distinct().toSortedList().forEach(s -> {
-                try {
-                    pw.append(s).append("\n");
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            });
+            inconsistencies.flatCollect(IInconsistency::toFileOutput)
+                    .asLazy()
+                    .collect(FilePrinter::convertToCSV)
+                    .distinct()
+                    .toSortedList(getInconsistencyStringComparator())
+                    .forEach(s -> {
+                        try {
+                            pw.append(s).append("\n");
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    });
         } catch (IOException e) {
             logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e);
         }
     }
 
+    private static Comparator<? super String> getInconsistencyStringComparator() {
+        return (i, j) -> {
+            var values1 = i.split(DELIMITER);
+            var values2 = j.split(DELIMITER);
+            String word1 = values1[2];
+            String word2 = values2[2];
+            var wordComparisonResult = word1.compareTo(word2);
+            if (wordComparisonResult == 0) {
+                var word1SentenceNo = Integer.parseInt(values1[1]);
+                var word2SentenceNo = Integer.parseInt(values2[1]);
+                return word1SentenceNo - word2SentenceNo;
+            } else {
+                return wordComparisonResult;
+            }
+        };
+    }
+
     private static String convertToCSV(String[] data) {
-        return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(","));
+        return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(DELIMITER));
     }
 
     private static String escapeSpecialCharacters(String in) {
         String data = in;
         String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+        if (data.contains(DELIMITER) || data.contains("\"") || data.contains("'")) {
             data = data.replace("\"", "\"\"");
             escapedData = "\"" + data + "\"";
         }

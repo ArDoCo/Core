@@ -58,9 +58,9 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
 
         var name = textualInstance.getName();
         for (var nameMapping : textualInstance.getNameMappings()) {
-            for (var sentenceNo : nameMapping.getMappingSentenceNo()) {
-                var sentenceNoString = "" + (sentenceNo);
-                var entry = new String[] { getType(), sentenceNoString, name, Double.toString(textualInstance.getProbability()) };
+            for (var word : nameMapping.getWords()) {
+                var sentenceNoString = "" + (word.getSentenceNo() + 1);
+                var entry = new String[] { getType(), sentenceNoString, name, word.getText(), Double.toString(textualInstance.getProbability()) };
                 entries.add(entry);
             }
         }
