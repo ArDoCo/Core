@@ -19,15 +19,16 @@ public class NameInconsistency implements IInconsistency {
 
     private IModelInstance modelInstance;
     private IWord word;
+    private int sentenceNo;
 
     public NameInconsistency(IModelInstance modelInstance, IWord word) {
         this.modelInstance = modelInstance;
         this.word = word;
+        sentenceNo = word.getSentenceNo() + 1;
     }
 
     @Override
     public String getReason() {
-        int sentenceNo = word.getSentenceNo() + 1;
         String textOccurence = word.getText();
         String modelOccurence = modelInstance.getLongestName();
         String uid = modelInstance.getUid();
@@ -42,9 +43,8 @@ public class NameInconsistency implements IInconsistency {
     @Override
     public ImmutableList<String[]> toFileOutput() {
         MutableList<String[]> returnList = Lists.mutable.empty();
-        var sentenceNo = "" + (word.getSentenceNo());
         var modelUid = modelInstance.getUid();
-        returnList.add(new String[] { getType(), sentenceNo, word.getText(), modelInstance.getLongestName(), modelUid });
+        returnList.add(new String[] { getType(), Integer.toString(sentenceNo), word.getText(), modelInstance.getLongestName(), modelUid });
         return returnList.toImmutable();
     }
 

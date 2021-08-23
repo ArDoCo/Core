@@ -396,13 +396,19 @@ public final class FilePrinter {
         return (i, j) -> {
             var values1 = i.split(DELIMITER);
             var values2 = j.split(DELIMITER);
-            String word1 = values1[2];
-            String word2 = values2[2];
-            var wordComparisonResult = word1.compareTo(word2);
+            String name1 = values1[2];
+            String name2 = values2[2];
+            var wordComparisonResult = name1.compareTo(name2);
             if (wordComparisonResult == 0) {
                 var word1SentenceNo = Integer.parseInt(values1[1]);
                 var word2SentenceNo = Integer.parseInt(values2[1]);
-                return word1SentenceNo - word2SentenceNo;
+                var compareValue = word1SentenceNo - word2SentenceNo;
+                if (compareValue == 0) {
+                    var word1 = values1[3];
+                    var word2 = values2[3];
+                    compareValue = word1.compareTo(word2);
+                }
+                return compareValue;
             } else {
                 return wordComparisonResult;
             }
