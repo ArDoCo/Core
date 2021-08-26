@@ -239,5 +239,4 @@ public final class OntologyWord implements IWord {
     public String toString() {
         return String.format("%s (pos=%s, p=%d, s=%d)", getText(), getPosTag().getTag(), getPosition(), getSentenceNo());
     }
-
 }

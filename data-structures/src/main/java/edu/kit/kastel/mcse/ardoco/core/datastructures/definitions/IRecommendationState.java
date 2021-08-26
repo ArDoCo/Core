@@ -4,6 +4,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IState;
 
+import java.util.List;
+
 /**
  * The Interface IRecommendationState defines the state for recommendations.
  */
@@ -24,6 +26,13 @@ public interface IRecommendationState extends IState<IRecommendationState> {
     ImmutableList<IRecommendedRelation> getRecommendedRelations();
 
     /**
+     * Returns all instance relations.
+     *
+     * @return all instance relations as list
+     */
+    ImmutableList<IInstanceRelation> getInstanceRelations();
+
+    /**
      * Adds a new recommended relation.
      *
      * @param name           name of that recommended relation
@@ -35,6 +44,12 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      */
     void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, ImmutableList<IRecommendedInstance> otherInstances,
             double probability, ImmutableList<IWord> occurrences);
+
+    void addInstanceRelation(IRecommendedInstance fromInstance,
+                             IRecommendedInstance toInstance,
+                             IWord relator,
+                             List<IWord> from,
+                             List<IWord> to);
 
     /**
      * Adds a recommended instance without a type.

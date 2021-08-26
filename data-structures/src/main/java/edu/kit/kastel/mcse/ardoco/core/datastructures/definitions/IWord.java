@@ -71,5 +71,4 @@ public interface IWord {
      * @return the words that are dependent on this
      */
     ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag);
-
 }

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class represents all valid pos tags.
+ * This class represents all valid part-of-speech (pos) tags
  *
  * @author Sebastian Weigelt
  * @author Markus Kocybik

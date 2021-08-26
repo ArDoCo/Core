@@ -2,15 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.*;
 
 /**
  * The Class RecommendationGenerator defines the recommendation stage.
@@ -18,7 +15,9 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 public class RecommendationGenerator implements IExecutionStage {
 
     private AgentDatastructure data;
-    private MutableList<IAgent> agents = Lists.mutable.empty();
+    private MutableList<IAgent> recommendationAgents = Lists.mutable.empty();
+    private MutableList<IAgent> dependencyAgents = Lists.mutable.empty();
+
     private RecommendationGeneratorConfig config;
     private GenericRecommendationConfig agentConfig;
 
@@ -54,7 +53,10 @@ public class RecommendationGenerator implements IExecutionStage {
 
     @Override
     public void exec() {
-        for (IAgent agent : agents) {
+        for (IAgent agent : recommendationAgents) {
+            agent.exec();
+        }
+        for (IAgent agent : dependencyAgents) {
             agent.exec();
         }
     }
@@ -64,15 +66,22 @@ public class RecommendationGenerator implements IExecutionStage {
      */
     private void initializeAgents() {
 
-        Map<String, RecommendationAgent> myAgents = Loader.loadLoadable(RecommendationAgent.class);
+        Map<String, RecommendationAgent> recommendationAgentsList = Loader.loadLoadable(RecommendationAgent.class);
 
         for (String recommendationAgent : config.recommendationAgents) {
-            if (!myAgents.containsKey(recommendationAgent)) {
+            if (!recommendationAgentsList.containsKey(recommendationAgent)) {
                 throw new IllegalArgumentException("RecommendationAgent " + recommendationAgent + " not found");
             }
-            agents.add(myAgents.get(recommendationAgent).create(data, agentConfig));
+            recommendationAgents.add(recommendationAgentsList.get(recommendationAgent).create(data, agentConfig));
         }
 
+        Map<String, DependencyAgent> dependencyAgentsList = Loader.loadLoadable(DependencyAgent.class);
+        for (String dependencyAgent : config.dependencyAgents) {
+            if (!dependencyAgentsList.containsKey(dependencyAgent)) {
+                throw new IllegalArgumentException("DependencyAgent " + dependencyAgent + " not found");
+            }
+            dependencyAgents.add(dependencyAgentsList.get(dependencyAgent).create(data, agentConfig));
+        }
     }
 
     @Override

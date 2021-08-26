@@ -146,7 +146,7 @@ public final class Pipeline {
     }
 
     /**
-     * Run the approach equally to {@link #runAndSave(String, File, File, File, File, boolean)} but without saving the
+     * Run the approach equally to {@link #runAndSave(String, File, File, File, File)} but without saving the
      * output to the file system.
      *
      * @param name              Name of the run

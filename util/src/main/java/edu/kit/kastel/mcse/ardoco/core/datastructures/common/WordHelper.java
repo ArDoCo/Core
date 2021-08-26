@@ -63,4 +63,29 @@ public final class WordHelper {
     public static ImmutableList<DependencyTag> getOutgoingDependencyTags(IWord word) {
         return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty());
     }
+
+    public static boolean isVerb(IWord word) {
+        String tag = word.getPosTag().getTag();
+        return tag.startsWith("VB") || tag.startsWith("MD");
+    }
+
+    public static boolean isAdjective(IWord word) {
+        String tag = word.getPosTag().getTag();
+        return tag.startsWith("JJ");
+    }
+
+    public static boolean isAdverb(IWord word) {
+        String tag = word.getPosTag().getTag();
+        return tag.startsWith("RB");
+    }
+
+    public static boolean isNoun(IWord word) {
+        String tag = word.getPosTag().getTag();
+        return tag.startsWith("NN");
+    }
+
+    public static boolean isPronoun(IWord word) {
+        String tag = word.getPosTag().getTag();
+        return tag.startsWith("PR") || tag.startsWith("WP");
+    }
 }

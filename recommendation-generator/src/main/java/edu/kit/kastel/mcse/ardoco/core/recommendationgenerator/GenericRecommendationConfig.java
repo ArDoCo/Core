@@ -15,12 +15,15 @@ public class GenericRecommendationConfig extends Configuration {
     private static final String SEPARATED_RELATIONS_SOLVER_PROBABILITY = "SeparatedRelationsSolver_Probability";
     private static final String NAME_TYPE_ANALYZER_PROBABILITY = "NameTypeAnalyzer_Probability";
     private static final String RECOMMENDATION_EXTRACTORS = "Recommendation_Extractors";
+    private static final String DEPENDENCY_EXTRACTORS = "Dependency_Extractors";
 
     /** The DEFAULT_CONFIG. */
     public static final GenericRecommendationConfig DEFAULT_CONFIG = new GenericRecommendationConfig();
 
     /** The recommendation extractors to be loaded. */
     public final ImmutableList<String> recommendationExtractors;
+
+    public final ImmutableList<String> dependencyExtractors;
 
     // NameTypeAnalyzer
     /**
@@ -40,6 +43,7 @@ public class GenericRecommendationConfig extends Configuration {
     public GenericRecommendationConfig() {
         var config = new ResourceAccessor("/configs/RecommendationAnalyzerSolverConfig.properties", true);
         recommendationExtractors = config.getPropertyAsList(RECOMMENDATION_EXTRACTORS);
+        dependencyExtractors = config.getPropertyAsList(DEPENDENCY_EXTRACTORS);
         nameTypeAnalyzerProbability = config.getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY);
         separatedRelationSolverProbility = config.getPropertyAsDouble(SEPARATED_RELATIONS_SOLVER_PROBABILITY);
     }
@@ -51,6 +55,7 @@ public class GenericRecommendationConfig extends Configuration {
      */
     public GenericRecommendationConfig(Map<String, String> configs) {
         recommendationExtractors = getPropertyAsList(RECOMMENDATION_EXTRACTORS, configs);
+        dependencyExtractors = getPropertyAsList(DEPENDENCY_EXTRACTORS, configs);
         nameTypeAnalyzerProbability = getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY, configs);
         separatedRelationSolverProbility = getPropertyAsDouble(SEPARATED_RELATIONS_SOLVER_PROBABILITY, configs);
     }
@@ -60,8 +65,8 @@ public class GenericRecommendationConfig extends Configuration {
         return Map.of(//
                 RECOMMENDATION_EXTRACTORS, String.join(" ", recommendationExtractors), //
                 NAME_TYPE_ANALYZER_PROBABILITY, String.valueOf(nameTypeAnalyzerProbability), //
-                SEPARATED_RELATIONS_SOLVER_PROBABILITY, String.valueOf(separatedRelationSolverProbility) //
-        );
+                SEPARATED_RELATIONS_SOLVER_PROBABILITY, String.valueOf(separatedRelationSolverProbility), //
+                DEPENDENCY_EXTRACTORS, String.valueOf(dependencyExtractors));
     }
 
 }
