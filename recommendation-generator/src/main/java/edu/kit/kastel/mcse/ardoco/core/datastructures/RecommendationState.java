@@ -1,6 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.datastructures;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -8,11 +9,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
 
 /**
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
@@ -25,12 +22,14 @@ public class RecommendationState implements IRecommendationState {
 
     private MutableList<IRecommendedInstance> recommendedInstances;
     private MutableList<IRecommendedRelation> recommendedRelations;
+    private MutableList<IInstanceRelation> instanceRelations;
 
     @Override
     public IRecommendationState createCopy() {
         var recommendationState = new RecommendationState();
         recommendationState.recommendedInstances = recommendedInstances.collect(IRecommendedInstance::createCopy);
         recommendationState.recommendedRelations = recommendedRelations.collect(IRecommendedRelation::createCopy);
+        recommendationState.instanceRelations = instanceRelations.collect(IInstanceRelation::createCopy);
         return recommendationState;
     }
 
@@ -40,6 +39,7 @@ public class RecommendationState implements IRecommendationState {
     public RecommendationState() {
         recommendedInstances = Lists.mutable.empty();
         recommendedRelations = Lists.mutable.empty();
+        instanceRelations = Lists.mutable.empty();
     }
 
     /**
@@ -60,6 +60,33 @@ public class RecommendationState implements IRecommendationState {
     @Override
     public ImmutableList<IRecommendedRelation> getRecommendedRelations() {
         return recommendedRelations.toImmutable();
+    }
+
+    /**
+     * Returns all instance relations.
+     *
+     * @return all instance relations as list
+     */
+    @Override
+    public ImmutableList<IInstanceRelation> getInstanceRelations() {
+        return instanceRelations.toImmutable();
+    }
+
+    /**
+     * Adds a new instance relation.
+     *
+     * @param fromInstance source instances of the instance relation
+     * @param toInstance   target instances of the instance relation
+     * @param relator      relating word
+     * @param from         source nodes of the instance relation
+     * @param to           target nodes of the instance relation
+     */
+    public void addInstanceRelation(IRecommendedInstance fromInstance,
+                                    IRecommendedInstance toInstance,
+                                    IWord relator,
+                                    List<IWord> from,
+                                    List<IWord> to) {
+        this.instanceRelations.add(new InstanceRelation(fromInstance, toInstance, relator, from, to));
     }
 
     /**
