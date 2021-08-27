@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,9 +53,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teastore")
     void compareTracelinksTeastoreIT() {
         var similarity = 1.0;
-        var minPrecision = 0.62d;
+        var minPrecision = 0.78d;
         var minRecall = 0.87d;
-        var minF1 = 0.73d;
+        var minF1 = 0.82d;
 
         compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
@@ -66,9 +65,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teastore (Text)")
     void compareTracelinksTeastoreTextIT() {
         var similarity = 1.0;
-        var minPrecision = 0.62d;
+        var minPrecision = 0.78d;
         var minRecall = 0.87d;
-        var minF1 = 0.73d;
+        var minF1 = 0.82d;
 
         compareTextBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
@@ -77,9 +76,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
         var similarity = 0.80;
-        var minPrecision = 0.60d;
-        var minRecall = 0.82d;
-        var minF1 = 0.74d;
+        var minPrecision = 0.68d;
+        var minRecall = 0.88d;
+        var minF1 = 0.77d;
 
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
@@ -89,9 +88,9 @@ class TracelinksIT {
     @DisplayName("Evaluate Teammates (Text)")
     void compareTracelinksTeammatesTextIT() {
         var similarity = 0.80;
-        var minPrecision = 0.60d;
-        var minRecall = 0.82d;
-        var minF1 = 0.74d;
+        var minPrecision = 0.68d;
+        var minRecall = 0.88d;
+        var minF1 = 0.77d;
 
         compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
@@ -129,7 +128,7 @@ class TracelinksIT {
         if (name.equals("teammates")) {
             similarity = 0.8;
         }
-        prepareConfig(similarity);
+        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, TestUtil.getSimilarityConfigString(similarity));
 
         var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
         inputModel = new File(inputFilePath);
@@ -172,7 +171,7 @@ class TracelinksIT {
     }
 
     private void compare(String name, double similarity, double minPrecision, double minRecall, double minF1) {
-        prepareConfig(similarity);
+        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, TestUtil.getSimilarityConfigString(similarity));
 
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
@@ -197,26 +196,13 @@ class TracelinksIT {
 
         var goldStandard = getGoldStandard(name);
 
-        var results = EvalUtil.compare(traceLinks, goldStandard);
+        var results = TestUtil.compare(traceLinks, goldStandard);
         return results;
     }
 
     private Set<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
         var formatString = "%s,%d";
         return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToSet();
-    }
-
-    private void prepareConfig(double similarity) {
-        File configFile = new File(ADDITIONAL_CONFIG);
-
-        var settings = "similarityPercentage=" + similarity;
-        try {
-            FileWriter fw = new FileWriter(configFile, false);
-            fw.write(settings);
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private List<String> getGoldStandard(String name) {

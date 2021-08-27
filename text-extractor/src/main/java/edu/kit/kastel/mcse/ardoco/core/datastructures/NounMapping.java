@@ -154,8 +154,8 @@ public class NounMapping implements INounMapping {
     @Override
     public final ImmutableList<Integer> getMappingSentenceNo() {
         MutableList<Integer> positions = Lists.mutable.empty();
-        for (IWord n : words) {
-            positions.add(n.getSentenceNo() + 1);
+        for (IWord word : words) {
+            positions.add(word.getSentenceNo() + 1);
         }
         return positions.toSortedList().toImmutable();
     }
