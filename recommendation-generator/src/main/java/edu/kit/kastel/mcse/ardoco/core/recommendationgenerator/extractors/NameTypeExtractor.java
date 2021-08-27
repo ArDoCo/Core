@@ -226,13 +226,13 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * Tries to identify instances by the given similar types and the name of a given node. If an unambiguous instance
      * can be found it is returned and the name is added to the text extraction state.
      *
-     * @param textExtractioinState the next extraction state to work with
+     * @param textExtractionState the next extraction state to work with
      * @param similarTypes         the given similar types
      * @param n                    the node for name identification
      * @return the unique matching instance
      */
-    private IModelInstance tryToIdentify(ITextState textExtractioinState, ImmutableList<String> similarTypes, IWord n) {
-        if (textExtractioinState == null || similarTypes == null || n == null) {
+    private IModelInstance tryToIdentify(ITextState textExtractionState, ImmutableList<String> similarTypes, IWord n) {
+        if (textExtractionState == null || similarTypes == null || n == null) {
             return null;
         }
         MutableList<IModelInstance> matchingInstances = Lists.mutable.empty();
@@ -245,7 +245,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
         matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(text)));
 
         if (matchingInstances.size() == 1) {
-            textExtractioinState.addName(n, matchingInstances.get(0).getLongestName(), probability);
+            textExtractionState.addName(n, matchingInstances.get(0).getLongestName(), probability);
             return matchingInstances.get(0);
         }
         return null;

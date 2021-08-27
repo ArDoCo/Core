@@ -41,6 +41,8 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.Tracelink;
  * The Class FilePrinter contains some helpers for stats.
  */
 public final class FilePrinter {
+    private static final String DELIMITER = ",";
+
     private static final Logger logger = LogManager.getLogger(FilePrinter.class);
 
     private static final String GENERIC_ERROR = "An error occurred.";
@@ -314,7 +316,7 @@ public final class FilePrinter {
 
         for (INounMapping mapping : textState.getNounMappings()) {
 
-            INounMapping eagleMapping = (INounMapping) mapping;
+            INounMapping eagleMapping = mapping;
             Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME));
             var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
@@ -369,30 +371,58 @@ public final class FilePrinter {
     }
 
     public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
-        ImmutableList<IInconsistency> inconsistencies = inconsistencyState.getInconsistencies();
+        var inconsistencies = inconsistencyState.getInconsistencies();
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
-            inconsistencies.flatCollect(IInconsistency::toFileOutput).collect(FilePrinter::convertToCSV).forEach(s -> {
-                try {
-                    pw.append(s).append("\n");
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            });
+            inconsistencies.flatCollect(IInconsistency::toFileOutput)
+                    .asLazy()
+                    .collect(FilePrinter::convertToCSV)
+                    .distinct()
+                    .toSortedList(getInconsistencyStringComparator())
+                    .forEach(s -> {
+                        try {
+                            pw.append(s).append("\n");
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    });
         } catch (IOException e) {
             logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e);
         }
     }
 
+    private static Comparator<? super String> getInconsistencyStringComparator() {
+        return (i, j) -> {
+            var values1 = i.split(DELIMITER);
+            var values2 = j.split(DELIMITER);
+            String name1 = values1[2];
+            String name2 = values2[2];
+            var wordComparisonResult = name1.compareTo(name2);
+            if (wordComparisonResult == 0) {
+                var word1SentenceNo = Integer.parseInt(values1[1]);
+                var word2SentenceNo = Integer.parseInt(values2[1]);
+                var compareValue = word1SentenceNo - word2SentenceNo;
+                if (compareValue == 0) {
+                    var word1 = values1[3];
+                    var word2 = values2[3];
+                    compareValue = word1.compareTo(word2);
+                }
+                return compareValue;
+            } else {
+                return wordComparisonResult;
+            }
+        };
+    }
+
     private static String convertToCSV(String[] data) {
-        return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(","));
+        return Stream.of(data).map(FilePrinter::escapeSpecialCharacters).collect(Collectors.joining(DELIMITER));
     }
 
     private static String escapeSpecialCharacters(String in) {
         String data = in;
         String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+        if (data.contains(DELIMITER) || data.contains("\"") || data.contains("'")) {
             data = data.replace("\"", "\"\"");
             escapedData = "\"" + data + "\"";
         }
