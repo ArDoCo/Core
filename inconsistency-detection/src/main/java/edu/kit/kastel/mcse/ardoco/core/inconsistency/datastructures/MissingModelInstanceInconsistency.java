@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 
 public class MissingModelInstanceInconsistency implements IInconsistency {
-
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
 
     private static final String REASON_FORMAT_STRING = "Text indicates (confidence: %.2f) that \"%s\" should be contained in the model(s) but could not be found. Sentences: %s";
@@ -92,5 +91,4 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         MissingModelInstanceInconsistency other = (MissingModelInstanceInconsistency) obj;
         return Objects.equals(textualInstance, other.textualInstance);
     }
-
 }
