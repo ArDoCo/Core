@@ -151,7 +151,6 @@ public class InstanceRelationAgent extends DependencyAgent {
     }
 
     private static List<IWord> getVerbsOn(IWord word) {
-        // TODO isVerb access via class compatible with their jv version?
         return getNounDepOn(word).stream().filter(WordHelper::isVerb).toList();
     }
 
@@ -163,7 +162,6 @@ public class InstanceRelationAgent extends DependencyAgent {
     }
 
     private static List<IWord> getVerbsOf(IWord word) {
-        // TODO isVerb access via class compatible with their jv version?
         return getNounDepOf(word).stream().filter(WordHelper::isVerb).toList();
     }
 
