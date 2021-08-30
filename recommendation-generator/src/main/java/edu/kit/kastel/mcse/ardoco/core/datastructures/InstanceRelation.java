@@ -80,6 +80,11 @@ public class InstanceRelation implements IInstanceRelation {
     }
 
     @Override
+    public int getSize() {
+        return this.localRelations.size();
+    }
+
+    @Override
     public void setProbability(double newProbability) {
         probability = newProbability;
     }
