@@ -71,7 +71,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     }
 
     private MutableList<IRecommendedInstance> findLikelyTextElementsWithNoTraceLinks(List<IRecommendedInstance> recommendedInstances) {
-        var<IRecommendedInstance> potentialCandidates = Lists.mutable.ofAll(recommendedInstances);
+        MutableList<IRecommendedInstance> potentialCandidates = Lists.mutable.ofAll(recommendedInstances);
 
         // remove all recommended instances that were used in an instanceLink (trace link)
         for (var tracelink : connectionState.getInstanceLinks()) {
