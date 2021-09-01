@@ -1,10 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
-import java.util.List;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
 import org.kohsuke.MetaInfServices;
 
@@ -12,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.InconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
@@ -49,16 +47,44 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     @Override
     public void exec() {
-        var recommendedInstances = Lists.mutable.ofAll(recommendationState.getRecommendedInstances());
+        var candidateElements = Lists.mutable.ofAll(recommendationState.getRecommendedInstances());
+        var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
 
-        List<IRecommendedInstance> candidatesLikelyElements = findLikelyTextElementsWithNoTraceLinks(recommendedInstances);
-        for (var candidate : candidatesLikelyElements) {
-            candidates.add(new MissingElementInconsistencyCandidate(candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK));
+        // find recommendedInstances with no trace link
+        candidateElements.removeAllIterable(linkedRecommendedInstances);
+
+        // add support for those who have a probability higher than the set threshold
+        for (var candidate : candidateElements) {
+            if (candidate.getProbability() >= threshold) {
+                candidates.add(new MissingElementInconsistencyCandidate(candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK));
+            }
+        }
+
+        // find out those elements that are in the same sentence as a traced element
+        // TODO check!
+        for (var relation : recommendationState.getInstanceRelations()) {
+            var fromInstance = relation.getFromInstance();
+            var toInstance = relation.getToInstance();
+            if (linkedRecommendedInstances.contains(fromInstance) && candidateElements.contains(toInstance)) {
+                addToCandidates(toInstance);
+            } else if (linkedRecommendedInstances.contains(toInstance) && candidateElements.contains(fromInstance)) {
+                addToCandidates(fromInstance);
+            }
         }
 
         // TODO methods for other kinds of support
 
         createInconsistencies();
+    }
+
+    private void addToCandidates(IRecommendedInstance recommendedInstance) {
+        var existingCandidate = candidates.detectOptional(c -> c.getRecommendedInstance().equals(recommendedInstance));
+        if (existingCandidate.isPresent()) {
+            logger.info("Found dependency to traced element for candidate {}", recommendedInstance.getName());
+            existingCandidate.get().addSupport(MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT);
+        } else {
+            candidates.add(new MissingElementInconsistencyCandidate(recommendedInstance, MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT));
+        }
     }
 
     private void createInconsistencies() {
@@ -68,17 +94,5 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
                 inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(candidate.getRecommendedInstance()));
             }
         }
-    }
-
-    private MutableList<IRecommendedInstance> findLikelyTextElementsWithNoTraceLinks(List<IRecommendedInstance> recommendedInstances) {
-        MutableList<IRecommendedInstance> potentialCandidates = Lists.mutable.ofAll(recommendedInstances);
-
-        // remove all recommended instances that were used in an instanceLink (trace link)
-        for (var tracelink : connectionState.getInstanceLinks()) {
-            var textualInstance = tracelink.getTextualInstance();
-            potentialCandidates.remove(textualInstance);
-        }
-
-        return potentialCandidates.select(c -> c.getProbability() >= threshold);
     }
 }
