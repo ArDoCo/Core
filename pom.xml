@@ -54,11 +54,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.kohsuke.metainf-services</groupId>
-				<artifactId>metainf-services</artifactId>
-				<optional>true</optional>
-			</dependency>
-			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>text-extractor</artifactId>
 				<version>${project.version}</version>
