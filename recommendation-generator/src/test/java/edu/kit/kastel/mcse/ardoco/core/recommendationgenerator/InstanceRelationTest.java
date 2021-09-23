@@ -1,14 +1,23 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.junit.jupiter.api.*;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
 
 class InstanceRelationTest {
 
@@ -62,7 +71,7 @@ class InstanceRelationTest {
         Assertions.assertEquals(rel1Size, relation1.getSize());
 
         Assertions.assertTrue(relation1.addLink(relator2, from2, to2));
-        Assertions.assertEquals(rel1Size+1, relation1.getSize());
+        Assertions.assertEquals(rel1Size + 1, relation1.getSize());
     }
 
     @Test
