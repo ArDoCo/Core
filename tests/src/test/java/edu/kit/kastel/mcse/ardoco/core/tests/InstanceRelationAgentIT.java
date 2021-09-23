@@ -1,11 +1,29 @@
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
+package edu.kit.kastel.mcse.ardoco.core.tests;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
@@ -14,25 +32,11 @@ import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractorConfig;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-class InstanceRelationAgentTest {
+class InstanceRelationAgentIT {
 
     private static final String TEXT = "src/test/resources/mediastore/mediastore.txt";
     private static final String MODEL = "src/test/resources/mediastore/mediastore.owl";
@@ -47,14 +51,19 @@ class InstanceRelationAgentTest {
 
     @Test
     @DisplayName("Test execution of InstanceRelationAgent")
-    void execTest() throws IOException, LunaInitException, LunaRunException {
+    void instanceRelationIT() throws IOException {
         File inputText = ensureFile(TEXT, false);
         File inputModel = ensureFile(MODEL, false);
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
-        var ontologyTextProvider = OntologyTextProvider.get(ontoConnector);
-        ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
+        ITextConnector textConnector;
+        try {
+            textConnector = new ParseProvider(new FileInputStream(inputText));
+        } catch (FileNotFoundException | LunaRunException | LunaInitException e) {
+            Assertions.fail("Found exception when initialising ParseProvider");
+            return;
+        }
         IText annotatedText = textConnector.getAnnotatedText();
 
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);

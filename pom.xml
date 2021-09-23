@@ -10,7 +10,6 @@
 	</parent>
 
 	<artifactId>core</artifactId>
-	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>ArDoCo (Core) - The Consistency Analyzer</name>
 
