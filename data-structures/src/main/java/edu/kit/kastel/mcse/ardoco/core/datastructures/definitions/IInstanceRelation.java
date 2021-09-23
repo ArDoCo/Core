@@ -13,6 +13,8 @@ public interface IInstanceRelation {
 
     double getProbability();
 
+    int getSize();
+
     void setProbability(double newProbability);
 
     IRecommendedInstance getFromInstance();
