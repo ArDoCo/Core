@@ -161,10 +161,6 @@ public class InstanceRelationAgent extends DependencyAgent {
         return dependencies;
     }
 
-    private static List<IWord> getVerbsOf(IWord word) {
-        return getNounDepOf(word).stream().filter(WordHelper::isVerb).toList();
-    }
-
     private static List<IWord> getNounDepOf(IWord word) {
         List<IWord> dependencies = new ArrayList<>();
         dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.OBJ).castToList());
