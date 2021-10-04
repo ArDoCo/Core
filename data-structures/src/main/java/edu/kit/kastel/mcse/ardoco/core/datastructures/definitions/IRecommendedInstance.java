@@ -102,4 +102,9 @@ public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
      */
     void setName(String name);
 
+    @Override
+    int hashCode();
+
+    @Override
+    boolean equals(Object obj);
 }
