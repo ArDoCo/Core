@@ -66,6 +66,10 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
 
         return entries.toImmutable();
     }
+    
+    public IRecommendedInstance getTextualInstance() {
+		return textualInstance;
+	}
 
     @Override
     public String getType() {
@@ -91,4 +95,10 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         MissingModelInstanceInconsistency other = (MissingModelInstanceInconsistency) obj;
         return Objects.equals(textualInstance, other.textualInstance);
     }
+
+	@Override
+	public String toString() {
+		return "MissingModelInstanceInconsistency [textualInstance=" + textualInstance + "]";
+	}
+    
 }
