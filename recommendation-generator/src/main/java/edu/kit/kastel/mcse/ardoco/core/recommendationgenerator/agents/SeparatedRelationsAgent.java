@@ -54,7 +54,6 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
      */
     @Override
     public void exec() {
-
         addRelationsForAllRecommendedInstances();
     }
 

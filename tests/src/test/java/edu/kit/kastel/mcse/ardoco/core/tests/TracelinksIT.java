@@ -99,7 +99,7 @@ class TracelinksIT {
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
-    // @Disabled("Disabled for CI. Enable for local test only!")
+    @Disabled("Disabled for CI. Enable for local test only!")
     @Test
     @DisplayName("Evaluate Teammates (Text)")
     void compareTracelinksTeammatesTextIT() {
