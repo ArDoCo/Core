@@ -73,6 +73,8 @@ public class ParseConverter {
             orderedWords.add(word);
             instances.put(token, word);
         }
+
+        orderedWords.sort((w1, w2) -> w1.position - w2.position);
     }
 
     private void createDeps() {
