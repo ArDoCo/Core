@@ -26,6 +26,22 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TracelinksIT {
+
+    private static final double SIMILARITY_MS = 1.0;
+    private static final double MIN_F1_MS = 0.52d;
+    private static final double MIN_PREC_MS = 0.46d;
+    private static final double MIN_RECALL_MS = 0.6d;
+
+    private static final double SIMILARITY_TM = 0.80;
+    private static final double MIN_F1_TM = 0.77d;
+    private static final double MIN_PREC_TM = 0.68d;
+    private static final double MIN_RECALL_TM = 0.88d;
+
+    private static final double SIMILARITY_TS = 1.0;
+    private static final double MIN_F1_TS = 0.82d;
+    private static final double MIN_PREC_TS = 0.78d;
+    private static final double MIN_REC_TS = 0.87d;
+
     private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
@@ -52,10 +68,10 @@ class TracelinksIT {
     @Test
     @DisplayName("Evaluate Teastore")
     void compareTracelinksTeastoreIT() {
-        var similarity = 1.0;
-        var minPrecision = 0.78d;
-        var minRecall = 0.87d;
-        var minF1 = 0.82d;
+        var similarity = SIMILARITY_TS;
+        var minPrecision = MIN_PREC_TS;
+        var minRecall = MIN_REC_TS;
+        var minF1 = MIN_F1_TS;
 
         compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
@@ -64,10 +80,10 @@ class TracelinksIT {
     @Test
     @DisplayName("Evaluate Teastore (Text)")
     void compareTracelinksTeastoreTextIT() {
-        var similarity = 1.0;
-        var minPrecision = 0.78d;
-        var minRecall = 0.87d;
-        var minF1 = 0.82d;
+        var similarity = SIMILARITY_TS;
+        var minPrecision = MIN_PREC_TS;
+        var minRecall = MIN_REC_TS;
+        var minF1 = MIN_F1_TS;
 
         compareTextBased("teastore", similarity, minPrecision, minRecall, minF1);
     }
@@ -75,22 +91,22 @@ class TracelinksIT {
     @Test
     @DisplayName("Evaluate Teammates")
     void compareTracelinksTeammatesIT() {
-        var similarity = 0.80;
-        var minPrecision = 0.68d;
-        var minRecall = 0.88d;
-        var minF1 = 0.77d;
+        var similarity = SIMILARITY_TM;
+        var minPrecision = MIN_PREC_TM;
+        var minRecall = MIN_RECALL_TM;
+        var minF1 = MIN_F1_TM;
 
         compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
 
-    @Disabled("Disabled for CI. Enable for local test only!")
+    // @Disabled("Disabled for CI. Enable for local test only!")
     @Test
     @DisplayName("Evaluate Teammates (Text)")
     void compareTracelinksTeammatesTextIT() {
-        var similarity = 0.80;
-        var minPrecision = 0.68d;
-        var minRecall = 0.88d;
-        var minF1 = 0.77d;
+        var similarity = SIMILARITY_TM;
+        var minPrecision = MIN_PREC_TM;
+        var minRecall = MIN_RECALL_TM;
+        var minF1 = MIN_F1_TM;
 
         compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
     }
@@ -98,10 +114,10 @@ class TracelinksIT {
     @Test
     @DisplayName("Evaluate Mediastore")
     void compareTracelinksMediastoreIT() {
-        var similarity = 1.00;
-        var minPrecision = 0.46d;
-        var minRecall = 0.6d;
-        var minF1 = 0.52d;
+        var similarity = SIMILARITY_MS;
+        var minPrecision = MIN_PREC_MS;
+        var minRecall = MIN_RECALL_MS;
+        var minF1 = MIN_F1_MS;
 
         compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
     }
@@ -110,10 +126,10 @@ class TracelinksIT {
     @Test
     @DisplayName("Evaluate Mediastore (Text)")
     void compareTracelinksMediastoreTextIT() {
-        var similarity = 1.00;
-        var minPrecision = 0.46d;
-        var minRecall = 0.6d;
-        var minF1 = 0.52d;
+        var similarity = SIMILARITY_MS;
+        var minPrecision = MIN_PREC_MS;
+        var minRecall = MIN_RECALL_MS;
+        var minF1 = MIN_F1_MS;
 
         compareTextBased("mediastore", similarity, minPrecision, minRecall, minF1);
     }

@@ -146,8 +146,8 @@ public final class Pipeline {
     }
 
     /**
-     * Run the approach equally to {@link #runAndSave(String, File, File, File, File)} but without saving the
-     * output to the file system.
+     * Run the approach equally to {@link #runAndSave(String, File, File, File, File)} but without saving the output to
+     * the file system.
      *
      * @param name              Name of the run
      * @param inputText         File of the input text. Can
@@ -246,7 +246,7 @@ public final class Pipeline {
                 return null;
             }
 
-            ontologyTextProvider.addText(annotatedText);
+            ontologyTextProvider.addText(annotatedText, inputText.getName());
         } else {
             try {
                 annotatedText = ontologyTextProvider.getAnnotatedText();
