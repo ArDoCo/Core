@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -101,8 +103,14 @@ public final class OntologyTextProvider implements ITextConnector {
     }
 
     public void addText(IText text) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm");
+        LocalDateTime now = LocalDateTime.now();
+        addText(text, dtf.format(now));
+    }
+
+    public void addText(IText text, String textName) {
         // create text in ontology
-        var name = "Text"; // TODO should texts have a name? E.g. the filename etc.?
+        var name = "Text_" + textName;
         var textIndividual = ontologyConnector.addIndividualToClass(name, textClass);
         var uuid = ontologyConnector.getLocalName(textIndividual);
         ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);

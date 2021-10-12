@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class OntologyText implements IText {
             textDocumentClass = ontologyConnector.getClassByIri(CommonOntologyUris.TEXT_DOCUMENT_CLASS.getUri()).orElseThrow();
         }
 
-        var optText = getTextIndividual(ontologyConnector);
+        var optText = getFirstTextIndividual(ontologyConnector);
         if (optText.isEmpty()) {
             throw new IllegalStateException(ERR_NO_TEXT_FOUND);
         }
@@ -53,14 +54,17 @@ public class OntologyText implements IText {
         return ontologyText;
     }
 
-    protected static Optional<Individual> getTextIndividual(OntologyInterface ontologyConnector) {
+    protected static Optional<Individual> getFirstTextIndividual(OntologyInterface ontologyConnector) {
         var textIndividuals = ontologyConnector.getIndividualsOfClass(textDocumentClass);
         if (textIndividuals.isEmpty()) {
             return Optional.empty();
         } else {
-            // Assumption: We only have one text right now and always retrieve only the first one
             return Optional.of(textIndividuals.get(0));
         }
+    }
+
+    protected static List<Individual> getTextIndividuals(OntologyInterface ontologyConnector) {
+        return ontologyConnector.getIndividualsOfClass(textDocumentClass);
     }
 
     private void init() {

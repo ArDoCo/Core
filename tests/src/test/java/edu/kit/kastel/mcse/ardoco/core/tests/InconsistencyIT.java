@@ -45,7 +45,7 @@ class InconsistencyIT {
         TestUtil.setConfigOptions(ADDITIONAL_CONFIG, configOptions);
 
         inputText = null;
-        inputModel = new File("src/test/resources/teammates/inconsistency/tm.owl");
+        inputModel = new File("src/test/resources/teammates/inconsistency/tm_w_text.owl");
 
         logger.info("Running Inconsistency IT for Teammates");
         var data = Pipeline.runAndSave("test_teammates_inconsistency", inputText, inputModel, additionalConfigs, outputDir);
@@ -59,11 +59,13 @@ class InconsistencyIT {
         TestUtil.setConfigOptions(ADDITIONAL_CONFIG, configOptions);
 
         inputText = null;
-        inputModel = new File("src/test/resources/teammates/inconsistency/tm_wo_ui.owl");
+        inputModel = new File("src/test/resources/teammates/inconsistency/tm_w_text_wo_ui.owl");
 
         logger.info("Running Inconsistency IT for Teammates missing UI Model Element");
         var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui", inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
+
+        System.out.println("######");
     }
 
     @Disabled("Disabled for CI")
@@ -91,9 +93,11 @@ class InconsistencyIT {
         inputText = new File("src/test/resources/teammates/teammates.txt");
         inputModel = new File("src/test/resources/teammates/inconsistency/tm_wo_ui.owl");
 
-        logger.info("Running Inconsistency IT for Teammates with Text");
+        logger.info("Running Inconsistency IT for Teammates with Text and missing model element");
         var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui_text", inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
+
+        System.out.println("######");
     }
 
 }
