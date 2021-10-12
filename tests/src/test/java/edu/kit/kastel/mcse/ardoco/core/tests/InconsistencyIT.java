@@ -81,4 +81,19 @@ class InconsistencyIT {
         Assertions.assertNotNull(data);
     }
 
+    @Disabled("Disabled for CI")
+    @Test
+    @DisplayName("test inconsistency detection with provided text and one element got deleted from model")
+    void inconsistencyWithDeletedModelElementUsingTextIT() {
+        var configOptions = new String[] { TestUtil.getSimilarityConfigString(0.8), TestUtil.getMmeiThresholdConfigString(0.75) };
+        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, configOptions);
+
+        inputText = new File("src/test/resources/teammates/teammates.txt");
+        inputModel = new File("src/test/resources/teammates/inconsistency/tm_wo_ui.owl");
+
+        logger.info("Running Inconsistency IT for Teammates with Text");
+        var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui_text", inputText, inputModel, additionalConfigs, outputDir);
+        Assertions.assertNotNull(data);
+    }
+
 }
