@@ -54,6 +54,25 @@ public class OntologyText implements IText {
         return ontologyText;
     }
 
+    protected static OntologyText getWithName(OntologyConnector ontologyConnector, String name) {
+        if (textDocumentClass == null) {
+            textDocumentClass = ontologyConnector.getClassByIri(CommonOntologyUris.TEXT_DOCUMENT_CLASS.getUri()).orElseThrow();
+        }
+
+        var texts = getTextIndividuals(ontologyConnector);
+        Individual textIndividual = null;
+        for (var text : texts) {
+            var label = text.getLabel(null);
+            if (name.equalsIgnoreCase(label)) {
+                textIndividual = text;
+                break;
+            }
+        }
+        var ontologyText = new OntologyText(ontologyConnector, textIndividual);
+        ontologyText.init();
+        return ontologyText;
+    }
+
     protected static Optional<Individual> getFirstTextIndividual(OntologyInterface ontologyConnector) {
         var textIndividuals = ontologyConnector.getIndividualsOfClass(textDocumentClass);
         if (textIndividuals.isEmpty()) {

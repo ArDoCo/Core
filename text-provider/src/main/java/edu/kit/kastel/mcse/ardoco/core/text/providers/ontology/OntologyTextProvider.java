@@ -26,6 +26,8 @@ public final class OntologyTextProvider implements ITextConnector {
 
     private OntologyConnector ontologyConnector;
 
+    private String lastAddedTextName = null;
+
     private OntClass textClass;
     private OntClass wordClass;
     private OntClass dependencyClass;
@@ -105,13 +107,14 @@ public final class OntologyTextProvider implements ITextConnector {
     public void addText(IText text) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm");
         LocalDateTime now = LocalDateTime.now();
-        addText(text, dtf.format(now));
+        lastAddedTextName = dtf.format(now);
+        addText(text, lastAddedTextName);
     }
 
     public void addText(IText text, String textName) {
         // create text in ontology
-        var name = "Text_" + textName;
-        var textIndividual = ontologyConnector.addIndividualToClass(name, textClass);
+        lastAddedTextName = "Text_" + textName;
+        var textIndividual = ontologyConnector.addIndividualToClass(lastAddedTextName, textClass);
         var uuid = ontologyConnector.getLocalName(textIndividual);
         ontologyConnector.addPropertyToIndividual(textIndividual, uuidProperty, uuid);
 
@@ -140,7 +143,7 @@ public final class OntologyTextProvider implements ITextConnector {
         }
 
         // create the list that is used for the words property
-        var olo = ontologyConnector.addList("WordsOf" + name, wordIndividuals);
+        var olo = ontologyConnector.addList("WordsOf" + lastAddedTextName, wordIndividuals);
         var listIndividual = olo.getListIndividual();
         ontologyConnector.addPropertyToIndividual(textIndividual, wordsProperty, listIndividual);
 
@@ -212,11 +215,18 @@ public final class OntologyTextProvider implements ITextConnector {
 
     @Override
     public IText getAnnotatedText() {
-        if (useCache) {
-            return CachedOntologyText.get(ontologyConnector);
+        if (lastAddedTextName == null || lastAddedTextName.isBlank()) {
+            if (useCache) {
+                return CachedOntologyText.get(ontologyConnector);
+            } else {
+                return OntologyText.get(ontologyConnector);
+            }
+        } else if (useCache) {
+            return CachedOntologyText.get(ontologyConnector, lastAddedTextName);
         } else {
-            return OntologyText.get(ontologyConnector);
+            return OntologyText.getWithName(ontologyConnector, lastAddedTextName);
         }
+
     }
 
 }
