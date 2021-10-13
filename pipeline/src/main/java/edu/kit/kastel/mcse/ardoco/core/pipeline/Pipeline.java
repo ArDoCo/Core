@@ -247,7 +247,14 @@ public final class Pipeline {
             }
 
             ontologyTextProvider.addText(annotatedText, inputText.getName());
-            // annotatedText = ontologyTextProvider.getAnnotatedText(); //disabled for now
+
+            // the following is a workaround for the problem that text-based and ontology-based execution had
+            // differences
+            // so here we temporary save the text in ontology and reload it, forcing ontology-based execution
+            var tmpOwlFile = inputText.getAbsoluteFile().getParent() + File.separator + "tmp.owl";
+            ontoConnector.save(tmpOwlFile);
+            ontologyTextProvider = OntologyTextProvider.get(new OntologyConnector(tmpOwlFile));
+            annotatedText = ontologyTextProvider.getAnnotatedText();
         } else {
             try {
                 annotatedText = ontologyTextProvider.getAnnotatedText();
