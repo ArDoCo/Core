@@ -247,7 +247,7 @@ public final class Pipeline {
             }
 
             ontologyTextProvider.addText(annotatedText, inputText.getName());
-            annotatedText = ontologyTextProvider.getAnnotatedText();
+            // annotatedText = ontologyTextProvider.getAnnotatedText(); //disabled for now
         } else {
             try {
                 annotatedText = ontologyTextProvider.getAnnotatedText();
