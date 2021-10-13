@@ -35,6 +35,11 @@ public class CachedOntologyText implements IText {
         return new CachedOntologyText(ontologyText);
     }
 
+    protected static CachedOntologyText get(OntologyConnector ontologyConnector, String name) {
+        var ontologyText = OntologyText.getWithName(ontologyConnector, name);
+        return new CachedOntologyText(ontologyText);
+    }
+
     protected static Optional<Individual> getTextIndividual(OntologyInterface ontologyConnector) {
         var textIndividuals = ontologyConnector.getIndividualsOfClass("TextDocument");
         if (textIndividuals.isEmpty()) {

@@ -63,9 +63,8 @@ class InconsistencyIT {
 
         logger.info("Running Inconsistency IT for Teammates missing UI Model Element");
         var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui", inputText, inputModel, additionalConfigs, outputDir);
-        Assertions.assertNotNull(data);
 
-        System.out.println("######");
+        Assertions.assertNotNull(data);
     }
 
     @Disabled("Disabled for CI")
@@ -95,9 +94,8 @@ class InconsistencyIT {
 
         logger.info("Running Inconsistency IT for Teammates with Text and missing model element");
         var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui_text", inputText, inputModel, additionalConfigs, outputDir);
-        Assertions.assertNotNull(data);
 
-        System.out.println("######");
+        Assertions.assertNotNull(data);
     }
 
 }
