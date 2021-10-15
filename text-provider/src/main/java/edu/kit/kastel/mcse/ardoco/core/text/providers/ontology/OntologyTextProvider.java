@@ -105,7 +105,7 @@ public final class OntologyTextProvider implements ITextConnector {
     }
 
     public void addText(IText text) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm");
         LocalDateTime now = LocalDateTime.now();
         lastAddedTextName = dtf.format(now);
         addText(text, lastAddedTextName);
@@ -147,6 +147,10 @@ public final class OntologyTextProvider implements ITextConnector {
         var listIndividual = olo.getListIndividual();
         ontologyConnector.addPropertyToIndividual(textIndividual, wordsProperty, listIndividual);
 
+        addCoref(text, textIndividual, wordsToIndividuals);
+    }
+
+    private void addCoref(IText text, Individual textIndividual, HashMap<IWord, Individual> wordsToIndividuals) {
         // add coref stuff
         var corefClusters = text.getCorefClusters();
         for (var corefCluster : corefClusters) {
@@ -171,7 +175,6 @@ public final class OntologyTextProvider implements ITextConnector {
                 ontologyConnector.addPropertyToIndividual(mentionIndividual, wordsProperty, mentionOlo.getListIndividual());
             }
         }
-
     }
 
     private static MutableList<Individual> getMentionWordIndividuals(ImmutableList<IWord> mention, HashMap<IWord, Individual> wordsToIndividuals) {
