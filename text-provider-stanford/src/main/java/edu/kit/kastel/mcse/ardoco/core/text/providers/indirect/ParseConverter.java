@@ -230,6 +230,11 @@ public class ParseConverter {
             Word other = (Word) obj;
             return position == other.position && sentence == other.sentence && Objects.equals(text, other.text);
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s (%s,%d)", text, posTag, position);
+        }
     }
 
     private static final class Text implements IText {
