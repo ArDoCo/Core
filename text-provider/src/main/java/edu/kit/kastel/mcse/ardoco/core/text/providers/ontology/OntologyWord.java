@@ -128,10 +128,16 @@ public final class OntologyWord implements IWord {
     }
 
     private Individual getSlot() {
-        var optSlot = ontologyConnector.getFirstSubjectOf(hasItem, wordIndividual);
-        if (optSlot.isPresent()) {
-            var slot = optSlot.get();
-            return ontologyConnector.transformIntoIndividual(slot).orElse(null);
+        var hasItemSubjects = ontologyConnector.getSubjectsOf(hasItem, wordIndividual);
+        for (var subject : hasItemSubjects) {
+            var individualOpt = ontologyConnector.transformIntoIndividual(subject);
+            if (individualOpt.isPresent()) {
+                var individual = individualOpt.get();
+                var label = individual.getLabel(null);
+                if (!label.contains("Mention")) {
+                    return individual;
+                }
+            }
         }
         throw new IllegalStateException("Word should be contained in a slot of a word list, but could not find the corresponding slot.");
     }
