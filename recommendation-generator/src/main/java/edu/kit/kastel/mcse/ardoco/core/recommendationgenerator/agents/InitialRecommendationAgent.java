@@ -49,7 +49,6 @@ public class InitialRecommendationAgent extends RecommendationAgent {
             }
             extractors.add(loadedExtractors.get(recommendationExtractor).create(textState, modelState, recommendationState, config));
         }
-
     }
 
     @Override
