@@ -192,31 +192,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
     }
 
     /**
-     * Adds a RecommendedInstance to the recommendation state if the mapping of the current node exists. Otherwise a
-     * recommendation is added for each existing mapping.
-     *
-     * @param currentWord         the current node
-     * @param textExtractionState the text extraction state
-     * @param instance            the instance
-     * @param nameMappings        the name mappings
-     * @param typeMappings        the type mappings
-     */
-    private boolean addRecommendedInstanceIfNodeNotNull(//
-            IWord currentWord, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
-            ImmutableList<INounMapping> typeMappings) {
-        if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
-            ImmutableList<INounMapping> nmappings = textExtractionState.getNounMappingsByWord(currentWord);
-            for (INounMapping nmapping : nmappings) {
-                String name = instance.getLongestName();
-                String type = nmapping.getReference();
-                recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
      * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
      *
@@ -251,6 +226,31 @@ public class NameTypeExtractor extends RecommendationExtractor {
             IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings);
         }
+    }
+
+    /**
+     * Adds a RecommendedInstance to the recommendation state if the mapping of the current node exists. Otherwise a
+     * recommendation is added for each existing mapping.
+     *
+     * @param currentWord         the current node
+     * @param textExtractionState the text extraction state
+     * @param instance            the instance
+     * @param nameMappings        the name mappings
+     * @param typeMappings        the type mappings
+     */
+    private boolean addRecommendedInstanceIfNodeNotNull(//
+            IWord currentWord, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
+            ImmutableList<INounMapping> typeMappings) {
+        if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
+            ImmutableList<INounMapping> nmappings = textExtractionState.getNounMappingsByWord(currentWord);
+            for (INounMapping nmapping : nmappings) {
+                String name = instance.getLongestName();
+                String type = nmapping.getReference();
+                recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
