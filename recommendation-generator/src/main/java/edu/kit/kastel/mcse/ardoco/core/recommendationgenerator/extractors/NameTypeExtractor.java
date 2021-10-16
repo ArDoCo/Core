@@ -100,21 +100,19 @@ public class NameTypeExtractor extends RecommendationExtractor {
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addType(word, similarTypes.get(0), probability);
-            // IModelInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
 
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
 
-            // var alreadyAdded = addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings,
-            // typeMappings);
-            // if (!alreadyAdded) {
             for (var nameMapping : nameMappings) {
                 var name = nameMapping.getReference();
                 for (var type : similarTypes) {
                     recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
                 }
             }
-            // }
+
+            IModelInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings);
         }
     }
 
@@ -139,21 +137,19 @@ public class NameTypeExtractor extends RecommendationExtractor {
                 .fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
-            // IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
 
-            // var alreadyAdded = addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings,
-            // typeMappings);
-            // if (!alreadyAdded) {
             for (var nameMapping : nameMappings) {
                 var name = nameMapping.getReference();
                 for (var type : sameLemmaTypes) {
                     recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
                 }
             }
-            // }
+
+            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings);
         }
     }
 
@@ -179,21 +175,19 @@ public class NameTypeExtractor extends RecommendationExtractor {
 
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
-            // IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
 
-            // var alreadyAdded = addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings,
-            // typeMappings);
-            // if (!alreadyAdded) {
             for (var nameMapping : nortMappings) {
                 var name = nameMapping.getReference();
                 for (var type : sameLemmaTypes) {
                     recommendationState.addRecommendedInstance(name, type, probability, nortMappings, typeMappings);
                 }
             }
-            // }
+
+            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings);
         }
     }
 
@@ -243,21 +237,19 @@ public class NameTypeExtractor extends RecommendationExtractor {
                 .fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
-            // IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
 
-            // var alreadyAdded = addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings,
-            // typeMappings);
-            // if (!alreadyAdded) {
             for (var nameMapping : nortMappings) {
                 var name = nameMapping.getReference();
                 for (var type : sameLemmaTypes) {
                     recommendationState.addRecommendedInstance(name, type, probability, nortMappings, typeMappings);
                 }
             }
-            // }
+
+            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings);
         }
     }
 
