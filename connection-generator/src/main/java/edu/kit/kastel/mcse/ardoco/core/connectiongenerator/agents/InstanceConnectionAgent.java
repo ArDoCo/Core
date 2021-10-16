@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
@@ -54,6 +55,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
     @Override
     public void exec() {
         findNamesOfModelInstancesInSupposedMappings();
+        createLinksForEqualOrSimilarRecommendedInstances();
     }
 
     /**
@@ -68,6 +70,16 @@ public class InstanceConnectionAgent extends ConnectionAgent {
             ImmutableList<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.select(ri -> !ri.getTypeMappings().isEmpty());
             mostLikelyRiWithoutType.forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
             mostLikelyRi.forEach(ml -> connectionState.addToLinks(ml, i, probability));
+        }
+    }
+
+    private void createLinksForEqualOrSimilarRecommendedInstances() {
+        for (var ri : recommendationState.getRecommendedInstances()) {
+            var name = ri.getName();
+            var nameList = Lists.immutable.with(name.split(" "));
+            var sameInstances = modelState.getInstances()
+                    .select(i -> i.getLongestName().equalsIgnoreCase(name) || SimilarityUtils.areWordsOfListsSimilar(i.getNames(), nameList));
+            sameInstances.forEach(i -> connectionState.addToLinks(ri, i, probability));
         }
     }
 

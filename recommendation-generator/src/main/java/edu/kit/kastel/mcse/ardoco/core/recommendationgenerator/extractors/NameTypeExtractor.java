@@ -278,9 +278,10 @@ public class NameTypeExtractor extends RecommendationExtractor {
         var text = word.getText();
         matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(text)));
 
-        if (matchingInstances.size() == 1) {
-            textExtractionState.addName(word, matchingInstances.get(0).getLongestName(), probability);
-            return matchingInstances.get(0);
+        if (!matchingInstances.isEmpty()) {
+            var modelInstance = matchingInstances.get(0);
+            textExtractionState.addName(word, modelInstance.getLongestName(), probability);
+            return modelInstance;
         }
         return null;
     }
