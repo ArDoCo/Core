@@ -26,7 +26,6 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommenda
  * @author Sophie Schulz, Jan Keim
  *
  */
-// TODO Commented code is old code
 @MetaInfServices(RecommendationExtractor.class)
 public class NameTypeExtractor extends RecommendationExtractor {
 
