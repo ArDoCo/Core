@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
 public class CorefAgent extends TextAgent {
 
     private boolean enabled;
-    private static boolean DO_MERGING = false;
+    private static boolean doMerging = false;
 
     /**
      * Prototype constructor.
@@ -63,7 +63,7 @@ public class CorefAgent extends TextAgent {
                 }
             }
 
-            if (DO_MERGING && nounMappings.size() > 1) {
+            if (doMerging && nounMappings.size() > 1) {
                 logger.debug("MORE THAN 1 FOR {}", corefCluster.getRepresentativeMention());
                 INounMapping mergedNounMapping = null;
                 for (var nounMapping : nounMappings) {
