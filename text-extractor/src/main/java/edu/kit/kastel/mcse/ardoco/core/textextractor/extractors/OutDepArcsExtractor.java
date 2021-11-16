@@ -4,12 +4,12 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.WordHelper;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
+import edu.kit.kastel.mcse.ardoco.core.util.WordHelper;
 
 /**
  * The analyzer examines the outgoing arcs of the current node.

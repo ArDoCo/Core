@@ -3,11 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.textextractor.extractors;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.WordHelper;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
+import edu.kit.kastel.mcse.ardoco.core.util.WordHelper;
 
 /**
  * This analyzer finds patterns like article type name or article name type.

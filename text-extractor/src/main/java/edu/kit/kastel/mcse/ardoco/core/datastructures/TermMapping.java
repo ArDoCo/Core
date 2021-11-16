@@ -9,7 +9,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITermMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
+import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
 
 /**
  * This class represents the concatenation of words to one term. A term has at least two words stored as noun mappings.
@@ -132,11 +132,11 @@ public class TermMapping implements ITermMapping {
      */
     @Override
     public void updateProbability(double probability2) {
-        if (Utilis.valueEqual(probability, 1.0)) {
+        if (CommonUtilities.valueEqual(probability, 1.0)) {
             return;
         }
 
-        if (Utilis.valueEqual(probability2, 1.0)) {
+        if (CommonUtilities.valueEqual(probability2, 1.0)) {
             probability = 1.0;
         } else if (probability >= probability2) {
             probability += probability2 * (1 - probability);

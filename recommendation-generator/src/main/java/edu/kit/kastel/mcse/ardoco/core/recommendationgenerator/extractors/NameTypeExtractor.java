@@ -10,7 +10,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
@@ -19,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.RecommendationExtractor;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
+import edu.kit.kastel.mcse.ardoco.core.util.SimilarityUtils;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.

@@ -8,8 +8,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.*;
+import edu.kit.kastel.mcse.ardoco.core.util.SimilarityUtils;
 
 /**
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be

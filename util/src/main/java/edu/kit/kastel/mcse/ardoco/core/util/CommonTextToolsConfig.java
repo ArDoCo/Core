@@ -1,8 +1,6 @@
-package edu.kit.kastel.mcse.ardoco.core.datastructures.common;
+package edu.kit.kastel.mcse.ardoco.core.util;
 
 import org.eclipse.collections.api.list.ImmutableList;
-
-import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
 
 /**
  * The Class CommonTextToolsConfig defines the configuration for the common text tools.

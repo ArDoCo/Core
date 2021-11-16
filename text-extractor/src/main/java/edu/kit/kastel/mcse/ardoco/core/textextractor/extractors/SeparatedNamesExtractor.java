@@ -3,11 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.textextractor.extractors;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.TextExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
+import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
 
 /**
  * This analyzer classifies all nodes, containing separators, as names and adds them as mappings to the current text
@@ -70,7 +70,7 @@ public class SeparatedNamesExtractor extends TextExtractor {
      * @param n node to check
      */
     private void checkForSeparatedNode(IWord n) {
-        if (SimilarityUtils.containsSeparator(n.getText())) {
+        if (CommonUtilities.containsSeparator(n.getText())) {
             textState.addName(n, n.getText(), probability);
         }
     }
