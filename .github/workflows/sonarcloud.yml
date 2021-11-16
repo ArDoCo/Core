@@ -2,7 +2,7 @@ name: SonarCloud Scan
 
 on:
   push:
-    branches: [ main, master, cleanup ]
+    branches: [ main, master, cleanup, refactoring ]
   pull_request:
     types: [opened, synchronize, reopened]
     branches-ignore:
@@ -24,7 +24,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-          
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v2.1.6
         with:
