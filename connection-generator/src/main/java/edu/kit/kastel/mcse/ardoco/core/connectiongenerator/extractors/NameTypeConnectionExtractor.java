@@ -28,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.util.SimilarityUtils;
  *
  */
 @MetaInfServices(ConnectionExtractor.class)
-public class NameTypeExtractor extends ConnectionExtractor {
+public class NameTypeConnectionExtractor extends ConnectionExtractor {
 
     private double probability;
 
@@ -39,7 +39,7 @@ public class NameTypeExtractor extends ConnectionExtractor {
      * @param modelExtractionState the model extraction state
      * @param connectionState      the recommendation state
      */
-    public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+    public NameTypeConnectionExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState) {
         this(textExtractionState, modelExtractionState, recommendationState, connectionState, GenericConnectionConfig.DEFAULT_CONFIG);
     }
@@ -52,7 +52,7 @@ public class NameTypeExtractor extends ConnectionExtractor {
      * @param recommendationState  the recommendation state
      * @param config               the config
      */
-    public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
+    public NameTypeConnectionExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState, GenericConnectionConfig config) {
         super(textExtractionState, modelExtractionState, recommendationState, connectionState);
         probability = config.nameTypeAnalyzerProbability;
@@ -61,14 +61,14 @@ public class NameTypeExtractor extends ConnectionExtractor {
     /**
      * Prototype constructor.
      */
-    public NameTypeExtractor() {
+    public NameTypeConnectionExtractor() {
         this(null, null, null, null);
     }
 
     @Override
     public ConnectionExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
             IConnectionState connectionState, Configuration config) {
-        return new NameTypeExtractor(textState, modelExtractionState, recommendationState, connectionState, (GenericConnectionConfig) config);
+        return new NameTypeConnectionExtractor(textState, modelExtractionState, recommendationState, connectionState, (GenericConnectionConfig) config);
     }
 
     @Override
@@ -105,13 +105,6 @@ public class NameTypeExtractor extends ConnectionExtractor {
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
 
-            for (var nameMapping : nameMappings) {
-                var name = nameMapping.getReference();
-                for (var type : similarTypes) {
-                    recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
-                }
-            }
-
             IModelInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings);
         }
@@ -141,13 +134,6 @@ public class NameTypeExtractor extends ConnectionExtractor {
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
-
-            for (var nameMapping : nameMappings) {
-                var name = nameMapping.getReference();
-                for (var type : sameLemmaTypes) {
-                    recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
-                }
-            }
 
             IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings);
@@ -180,13 +166,6 @@ public class NameTypeExtractor extends ConnectionExtractor {
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
 
-            for (var nameMapping : nortMappings) {
-                var name = nameMapping.getReference();
-                for (var type : sameLemmaTypes) {
-                    recommendationState.addRecommendedInstance(name, type, probability, nortMappings, typeMappings);
-                }
-            }
-
             IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings);
         }
@@ -216,13 +195,6 @@ public class NameTypeExtractor extends ConnectionExtractor {
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
-
-            for (var nameMapping : nortMappings) {
-                var name = nameMapping.getReference();
-                for (var type : sameLemmaTypes) {
-                    recommendationState.addRecommendedInstance(name, type, probability, nortMappings, typeMappings);
-                }
-            }
 
             IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings);
@@ -263,9 +235,6 @@ public class NameTypeExtractor extends ConnectionExtractor {
      * @param word                the node for name identification
      * @return the unique matching instance
      */
-    // TODO: think about changing this. The main problem is that this extractor is used in the RecommendationGenerator
-    // that should be independent from the model. Therefore, this violates this assumption when iterating over the
-    // instances of a certain type
     private IModelInstance tryToIdentify(ITextState textExtractionState, ImmutableList<String> similarTypes, IWord word) {
         if (textExtractionState == null || similarTypes == null || word == null) {
             return null;
