@@ -1,10 +1,19 @@
 package edu.kit.kastel.mcse.ardoco.core.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.NameTypeExtractor;
 
 /**
  * General helper class for outsourced, common methods.
@@ -91,6 +100,27 @@ public final class CommonUtilities {
             }
         }
         return false;
+    }
+
+    public static void addRecommendedInstancesFromNounMappings(ImmutableList<String> similarTypes, ImmutableList<INounMapping> nameMappings,
+            ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState, double probability) {
+        for (var nameMapping : nameMappings) {
+            var name = nameMapping.getReference();
+            for (var type : similarTypes) {
+                recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
+            }
+        }
+    }
+
+    public static ImmutableList<String> getSimilarTypes(IWord word, IModelState modelState) {
+        Set<String> identifiers = NameTypeExtractor.getIdentifiers(modelState);
+        return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+    }
+
+    public static Set<String> getIdentifiers(IModelState modelState) {
+        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
+        identifiers.addAll(modelState.getInstanceTypes());
+        return identifiers;
     }
 
 }
