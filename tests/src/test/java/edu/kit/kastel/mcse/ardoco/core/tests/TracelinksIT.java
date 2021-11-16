@@ -28,19 +28,19 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvi
 class TracelinksIT {
 
     private static final double SIMILARITY_MS = 1.0;
-    private static final double MIN_F1_MS = 0.52d;
-    private static final double MIN_PREC_MS = 0.46d;
-    private static final double MIN_RECALL_MS = 0.6d;
+    private static final double MIN_F1_MS = 0.585d;
+    private static final double MIN_PREC_MS = 0.514d;
+    private static final double MIN_RECALL_MS = 0.680d;
 
     private static final double SIMILARITY_TM = 0.80;
-    private static final double MIN_F1_TM = 0.77d;
-    private static final double MIN_PREC_TM = 0.68d;
-    private static final double MIN_RECALL_TM = 0.88d;
+    private static final double MIN_F1_TM = 0.775d;
+    private static final double MIN_PREC_TM = 0.688d;
+    private static final double MIN_RECALL_TM = 0.887d;
 
     private static final double SIMILARITY_TS = 1.0;
-    private static final double MIN_F1_TS = 0.82d;
-    private static final double MIN_PREC_TS = 0.78d;
-    private static final double MIN_REC_TS = 0.87d;
+    private static final double MIN_F1_TS = 0.83d;
+    private static final double MIN_PREC_TS = 0.785d;
+    private static final double MIN_REC_TS = 0.88d;
 
     private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
 
@@ -198,7 +198,10 @@ class TracelinksIT {
         double f1 = results.getF1();
 
         if (logger.isInfoEnabled()) {
-            logger.info("\n{} with similarity {}:\n{}", name, similarity, results.toPrettyString());
+            String infoString = String.format(
+                    "\n%s with similarity %.2f:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)",
+                    name, similarity, results.getPrecision(), minPrecision, results.getRecall(), minRecall, results.getF1(), minF1);
+            logger.info(infoString);
         }
 
         Assertions.assertTrue(precision >= minPrecision, "Precision " + precision + " is below the expected minimum value " + minPrecision);
