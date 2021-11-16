@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -12,8 +13,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.NameTypeExtractor;
 
 /**
  * General helper class for outsourced, common methods.
@@ -102,6 +103,17 @@ public final class CommonUtilities {
         return false;
     }
 
+    /**
+     * Creates {@link IRecommendedInstance}s for the given {@link INounMapping}s using the given information about
+     * similar types and probability and type mappings. Adds the created {@link IRecommendedInstance}s to the given
+     * {@link IRecommendationState}
+     *
+     * @param similarTypes        The list of similar types
+     * @param nameMappings        the noun mappings
+     * @param typeMappings        the type mappings
+     * @param recommendationState the state the new RecommendedInstances should be added to
+     * @param probability         the probability that should be annotated
+     */
     public static void addRecommendedInstancesFromNounMappings(ImmutableList<String> similarTypes, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState, double probability) {
         for (var nameMapping : nameMappings) {
@@ -112,15 +124,63 @@ public final class CommonUtilities {
         }
     }
 
+    /**
+     * Retrieves a list of similar types in the given model state given the word.
+     *
+     * @param word       the word that might have type names in the model state
+     * @param modelState the model state containing information about types
+     * @return List of type names in the model state that are similar to the given word
+     */
     public static ImmutableList<String> getSimilarTypes(IWord word, IModelState modelState) {
-        Set<String> identifiers = NameTypeExtractor.getIdentifiers(modelState);
+        Set<String> identifiers = getTypeIdentifiers(modelState);
         return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
     }
 
-    public static Set<String> getIdentifiers(IModelState modelState) {
-        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
+    /**
+     * Returns a set of identifiers for the types in the model state.
+     *
+     * @param modelState the model state
+     * @return Set of identifiers for existing types
+     */
+    public static Set<String> getTypeIdentifiers(IModelState modelState) {
+        Set<String> identifiers = modelState.getInstanceTypes()
+                .stream()
+                .map(CommonUtilities::splitSnakeAndKebabCase)
+                .map(CommonUtilities::splitCamelCase)
+                .map(type -> type.split(" "))
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toSet());
         identifiers.addAll(modelState.getInstanceTypes());
         return identifiers;
+    }
+
+    /**
+     * Splits a given String at Snake and Kebab cases. For example, "test-string" and "test_string" become "test
+     * string".
+     *
+     * @param name the given name
+     * @return the name split at snake and kebab case
+     */
+    public static String splitSnakeAndKebabCase(String name) {
+        StringJoiner joiner = new StringJoiner(" ");
+        for (String namePart : name.split("[-_]")) {
+            joiner.add(namePart);
+        }
+        return joiner.toString().replaceAll("\\s+", " ");
+    }
+
+    /**
+     * Splits a given String at camel cases. For example, "testString" becomes "test String".
+     *
+     * @param name the given name
+     * @return the name split at camel case
+     */
+    public static String splitCamelCase(String name) {
+        StringJoiner joiner = new StringJoiner(" ");
+        for (String namePart : name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")) {
+            joiner.add(namePart);
+        }
+        return joiner.toString().replaceAll("\\s+", " ");
     }
 
 }
