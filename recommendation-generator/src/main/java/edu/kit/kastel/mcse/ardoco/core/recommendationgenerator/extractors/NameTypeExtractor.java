@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
@@ -109,9 +108,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
                     recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
                 }
             }
-
-            IModelInstance instance = tryToIdentify(textExtractionState, similarTypes, pre);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings);
         }
     }
 
@@ -146,9 +142,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
                     recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
                 }
             }
-
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings);
         }
     }
 
@@ -184,9 +177,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
                     recommendationState.addRecommendedInstance(name, type, probability, nortMappings, typeMappings);
                 }
             }
-
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings);
         }
     }
 
@@ -221,9 +211,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
                     recommendationState.addRecommendedInstance(name, type, probability, nortMappings, typeMappings);
                 }
             }
-
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings);
         }
     }
 
@@ -250,39 +237,6 @@ public class NameTypeExtractor extends RecommendationExtractor {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Tries to identify instances by the given similar types and the name of a given node. If an unambiguous instance
-     * can be found it is returned and the name is added to the text extraction state.
-     *
-     * @param textExtractionState the next extraction state to work with
-     * @param similarTypes        the given similar types
-     * @param word                the node for name identification
-     * @return the unique matching instance
-     */
-    // TODO: think about changing this. The main problem is that this extractor is used in the RecommendationGenerator
-    // that should be independent from the model. Therefore, this violates this assumption when iterating over the
-    // instances of a certain type
-    private IModelInstance tryToIdentify(ITextState textExtractionState, ImmutableList<String> similarTypes, IWord word) {
-        if (textExtractionState == null || similarTypes == null || word == null) {
-            return null;
-        }
-        MutableList<IModelInstance> matchingInstances = Lists.mutable.empty();
-
-        for (String type : similarTypes) {
-            matchingInstances.addAll(modelState.getInstancesOfType(type).castToCollection());
-        }
-
-        var text = word.getText();
-        matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(text)));
-
-        if (!matchingInstances.isEmpty()) {
-            var modelInstance = matchingInstances.get(0);
-            textExtractionState.addName(word, modelInstance.getLongestName(), probability);
-            return modelInstance;
-        }
-        return null;
     }
 
 }
