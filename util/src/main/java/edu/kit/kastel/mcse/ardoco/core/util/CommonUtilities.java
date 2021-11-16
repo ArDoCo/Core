@@ -51,7 +51,7 @@ public final class CommonUtilities {
         List<T> cl = currentList.toList();
         List<List<T>> pl = parts.collect(l -> (List<T>) l.toList()).toList();
 
-        return Lists.immutable.fromStream(privateCartesianProduct(cl, pl).stream()).collect(l -> Lists.immutable.withAll(l));
+        return Lists.immutable.fromStream(privateCartesianProduct(cl, pl).stream()).collect(Lists.immutable::withAll);
     }
 
     private static <T> List<List<T>> privateCartesianProduct(List<T> currentList, List<List<T>> parts) {
@@ -181,6 +181,19 @@ public final class CommonUtilities {
             joiner.add(namePart);
         }
         return joiner.toString().replaceAll("\\s+", " ");
+    }
+
+    public static double calcNewProbabilityValue(double currentProbability, double newProbability) {
+        if (valueEqual(currentProbability, 1.0)) {
+            return 1.0;
+        }
+        if (valueEqual(newProbability, 1.0)) {
+            return 1.0;
+        } else if (currentProbability >= newProbability) {
+            return currentProbability + (newProbability * (1 - currentProbability));
+        } else {
+            return (currentProbability + newProbability) * 0.5;
+        }
     }
 
 }
