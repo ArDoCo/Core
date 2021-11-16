@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.datastructures.common;
+package edu.kit.kastel.mcse.ardoco.core.util;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;

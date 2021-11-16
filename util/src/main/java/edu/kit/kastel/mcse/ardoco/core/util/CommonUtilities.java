@@ -12,9 +12,9 @@ import org.eclipse.collections.api.list.ImmutableList;
  * @author Sophie
  *
  */
-public final class Utilis {
+public final class CommonUtilities {
 
-    private Utilis() {
+    private CommonUtilities() {
         throw new IllegalAccessError();
     }
 
@@ -62,6 +62,35 @@ public final class Utilis {
             currentList.remove(si);
         }
         return result;
+    }
+
+    /**
+     * Replaces all defined separators in a given string with a whitespace and returns the resulting string.
+     *
+     * @param reference given string
+     * @return reference with whitespaces instead of separators
+     */
+    public static ImmutableList<String> splitAtSeparators(String reference) {
+        String ref = reference;
+        for (String sep : CommonTextToolsConfig.SEPARATORS_TO_SPLIT) {
+            ref = ref.replaceAll(sep, " ");
+        }
+        return Lists.immutable.withAll(Lists.immutable.with(ref.split(" ")));
+    }
+
+    /**
+     * Checks if a string contains any separators.
+     *
+     * @param reference string to check
+     * @return true, if a separator is contained or false, if not
+     */
+    public static boolean containsSeparator(String reference) {
+        for (String sep : CommonTextToolsConfig.SEPARATORS_TO_CONTAIN) {
+            if (reference.contains(sep) && !reference.contentEquals(sep)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

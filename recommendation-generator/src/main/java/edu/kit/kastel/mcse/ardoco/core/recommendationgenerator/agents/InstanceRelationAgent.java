@@ -7,7 +7,6 @@ import java.util.List;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.WordHelper;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
@@ -18,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
+import edu.kit.kastel.mcse.ardoco.core.util.WordHelper;
 
 /**
  * Adds

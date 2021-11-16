@@ -10,11 +10,11 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
+import edu.kit.kastel.mcse.ardoco.core.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
 
 /**
  * The Class NounMapping is a basic realization of {@link INounMapping}.
@@ -227,8 +227,8 @@ public class NounMapping implements INounMapping {
     public ImmutableList<String> getRepresentativeComparables() {
         MutableList<String> comparables = Lists.mutable.empty();
         for (String occ : surfaceForms) {
-            if (SimilarityUtils.containsSeparator(occ)) {
-                ImmutableList<String> parts = SimilarityUtils.splitAtSeparators(occ);
+            if (CommonUtilities.containsSeparator(occ)) {
+                ImmutableList<String> parts = CommonUtilities.splitAtSeparators(occ);
                 for (String part : parts) {
                     if (SimilarityUtils.areWordsSimilar(reference, part)) {
                         comparables.add(part);
@@ -372,11 +372,11 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public void updateProbability(double newProbability) {
-        if (Utilis.valueEqual(highestProbability, 1.0)) {
+        if (CommonUtilities.valueEqual(highestProbability, 1.0)) {
             return;
         }
 
-        if (Utilis.valueEqual(newProbability, 1.0)) {
+        if (CommonUtilities.valueEqual(newProbability, 1.0)) {
             highestProbability = newProbability;
             distribution.put(mostProbableKind, newProbability);
         } else if (highestProbability >= newProbability) {

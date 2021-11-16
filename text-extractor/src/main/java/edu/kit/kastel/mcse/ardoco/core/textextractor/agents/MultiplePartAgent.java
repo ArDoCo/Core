@@ -12,7 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
+import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
 
 /**
  * WORK IN PROGRESS.
@@ -89,7 +89,7 @@ public class MultiplePartAgent extends TextAgent {
         ImmutableList<INounMapping> preMappings = textState.getNounMappingsByWord(pre);
         ImmutableList<INounMapping> nMappings = textState.getNounMappingsByWord(n);
 
-        ImmutableList<ImmutableList<INounMapping>> cartesianProduct = Utilis.cartesianProduct(preMappings, Lists.immutable.with(nMappings));
+        ImmutableList<ImmutableList<INounMapping>> cartesianProduct = CommonUtilities.cartesianProduct(preMappings, Lists.immutable.with(nMappings));
 
         for (ImmutableList<INounMapping> possibleCombination : cartesianProduct) {
             textState.addTerm(ref, possibleCombination.get(0), possibleCombination.get(1), kind, probability);

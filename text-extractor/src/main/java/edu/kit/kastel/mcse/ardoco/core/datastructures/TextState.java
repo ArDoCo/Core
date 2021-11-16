@@ -9,14 +9,14 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelationMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITermMapping;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
+import edu.kit.kastel.mcse.ardoco.core.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
 
 /**
  * The Class TextState defines the basic implementation of a {@link ITextState}.
@@ -548,8 +548,8 @@ public class TextState implements ITextState {
     }
 
     private void addNounMapping(IWord word, String reference, MappingKind kind, double probability, ImmutableList<String> occurrences) {
-        if (SimilarityUtils.containsSeparator(reference)) {
-            ImmutableList<String> parts = SimilarityUtils.splitAtSeparators(reference).select(part -> part.length() > 1);
+        if (CommonUtilities.containsSeparator(reference)) {
+            ImmutableList<String> parts = CommonUtilities.splitAtSeparators(reference).select(part -> part.length() > 1);
             for (String referencePart : parts) {
                 addNounMapping(word, referencePart, kind, probability, occurrences);
             }
@@ -620,10 +620,10 @@ public class TextState implements ITextState {
         ImmutableList<INounMapping> wordsWithSimilarNode = Lists.immutable
                 .fromStream(nounMappings.values().stream().filter(mapping -> mapping.getWords().contains(n)));
         for (INounMapping mapping : wordsWithSimilarNode) {
-            if (Utilis.valueEqual(mapping.getProbabilityForName(), 0)) {
+            if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
                 mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
             }
-            if (Utilis.valueEqual(mapping.getProbabilityForType(), 0)) {
+            if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
                 mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
             }
         }

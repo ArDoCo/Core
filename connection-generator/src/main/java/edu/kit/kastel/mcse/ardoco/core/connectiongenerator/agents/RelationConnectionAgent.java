@@ -9,7 +9,6 @@ import org.kohsuke.MetaInfServices;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
@@ -20,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedIn
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.util.SimilarityUtils;
 
 /**
  *

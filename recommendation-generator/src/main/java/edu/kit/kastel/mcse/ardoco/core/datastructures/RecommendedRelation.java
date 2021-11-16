@@ -12,7 +12,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
+import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
 
 /**
  * This class represents recommended relations. These relations should be contained by the model. The likelihood is
@@ -96,10 +96,10 @@ public class RecommendedRelation implements IRecommendedRelation {
      */
     @Override
     public void updateProbability(double probability2) {
-        if (Utilis.valueEqual(probability, 1)) {
+        if (CommonUtilities.valueEqual(probability, 1)) {
             return;
         }
-        if (Utilis.valueEqual(probability2, 1.0)) {
+        if (CommonUtilities.valueEqual(probability2, 1.0)) {
             probability = 1.0;
         } else if (probability >= probability2) {
             probability += probability2 * (1 - probability);
