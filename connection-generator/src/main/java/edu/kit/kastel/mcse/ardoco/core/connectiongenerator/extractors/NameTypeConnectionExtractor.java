@@ -1,9 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -19,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendatio
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
 import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.ConnectionExtractor;
+import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.util.SimilarityUtils;
 
 /**
@@ -93,11 +90,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
 
         IWord pre = word.getPreWord();
 
-        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-        identifiers.addAll(modelState.getInstanceTypes());
-
-        ImmutableList<String> similarTypes = Lists.immutable
-                .fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+        ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addType(word, similarTypes.get(0), probability);
@@ -124,11 +117,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
 
         IWord after = word.getNextWord();
 
-        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-        identifiers.addAll(modelState.getInstanceTypes());
-
-        ImmutableList<String> sameLemmaTypes = Lists.immutable
-                .fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
 
@@ -154,11 +143,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
 
         IWord pre = word.getPreWord();
 
-        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-        identifiers.addAll(modelState.getInstanceTypes());
-
-        ImmutableList<String> sameLemmaTypes = Lists.immutable
-                .fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
@@ -185,11 +170,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
 
         IWord after = word.getNextWord();
 
-        Set<String> identifiers = modelState.getInstanceTypes().stream().map(type -> type.split(" ")).flatMap(Arrays::stream).collect(Collectors.toSet());
-        identifiers.addAll(modelState.getInstanceTypes());
-
-        ImmutableList<String> sameLemmaTypes = Lists.immutable
-                .fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
 
