@@ -27,26 +27,24 @@ public final class OntologyTextProvider implements ITextConnector {
     private OntologyConnector ontologyConnector;
 
     private String lastAddedTextName = null;
-    private OntResources resources = new OntResources();
+    private OntResources resources;
 
     private OntologyTextProvider(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
+        resources = new OntResources();
     }
 
     private OntologyTextProvider(String ontologyPath) {
         ontologyConnector = new OntologyConnector(ontologyPath);
+        resources = new OntResources();
     }
 
     public static OntologyTextProvider get(String ontologyPath) {
-        var otp = new OntologyTextProvider(ontologyPath);
-        otp.init();
-        return otp;
+        return new OntologyTextProvider(ontologyPath);
     }
 
     public static OntologyTextProvider get(OntologyConnector ontologyConnector) {
-        var otp = new OntologyTextProvider(ontologyConnector);
-        otp.init();
-        return otp;
+        return new OntologyTextProvider(ontologyConnector);
     }
 
     /**
@@ -57,31 +55,6 @@ public final class OntologyTextProvider implements ITextConnector {
      */
     public static void enableCache(boolean useCache) {
         OntologyTextProvider.useCache = useCache;
-    }
-
-    private void init() {
-        ontologyConnector.addOntologyImport(TEXT_ONTOLOGY_IRI);
-
-        resources.textClass = ontologyConnector.getClassByIri(CommonOntologyUris.TEXT_DOCUMENT_CLASS.getUri()).orElseThrow();
-        resources.wordClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_CLASS.getUri()).orElseThrow();
-        resources.corefClusterClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_CLUSTER_CLASS.getUri()).orElseThrow();
-        resources.corefMentionClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_MENTION_CLASS.getUri()).orElseThrow();
-        resources.dependencyClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_DEPENDENCY_CLASS.getUri()).orElseThrow();
-
-        resources.uuidProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.UUID_PROPERTY.getUri()).orElseThrow();
-        resources.textProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.TEXT_PROPERTY.getUri()).orElseThrow();
-        resources.posProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POS_PROPERTY.getUri()).orElseThrow();
-        resources.lemmaProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.LEMMA_PROPERTY.getUri()).orElseThrow();
-        resources.positionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POSITION_PROPERTY.getUri()).orElseThrow();
-        resources.sentenceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.SENTENCE_PROPERTY.getUri()).orElseThrow();
-        resources.wordsProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_WORDS_PROPERTY.getUri()).orElseThrow();
-        resources.dependencySourceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_SOURCE_PROPERTY.getUri()).orElseThrow();
-        resources.dependencyTargetProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TARGET_PROPERTY.getUri()).orElseThrow();
-        resources.dependencyTypeProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TYPE_PROPERTY.getUri()).orElseThrow();
-        resources.hasCorefClusterProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_COREF_CLUSTERS.getUri()).orElseThrow();
-        resources.mentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_MENTION_PROPERTY.getUri()).orElseThrow();
-        resources.representativeMentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.REPRESENTATIVE_MENTION_PROPERTY.getUri()).orElseThrow();
-
     }
 
     public void addText(IText text) {
@@ -220,10 +193,6 @@ public final class OntologyTextProvider implements ITextConnector {
      */
     private final class OntResources {
 
-        OntResources() {
-            super();
-        }
-
         private OntClass textClass;
         private OntClass wordClass;
         private OntClass dependencyClass;
@@ -243,6 +212,30 @@ public final class OntologyTextProvider implements ITextConnector {
         private OntProperty mentionProperty;
         private OntProperty representativeMentionProperty;
         private OntProperty hasCorefClusterProperty;
+
+        OntResources() {
+            ontologyConnector.addOntologyImport(TEXT_ONTOLOGY_IRI);
+
+            textClass = ontologyConnector.getClassByIri(CommonOntologyUris.TEXT_DOCUMENT_CLASS.getUri()).orElseThrow();
+            wordClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_CLASS.getUri()).orElseThrow();
+            corefClusterClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_CLUSTER_CLASS.getUri()).orElseThrow();
+            corefMentionClass = ontologyConnector.getClassByIri(CommonOntologyUris.COREF_MENTION_CLASS.getUri()).orElseThrow();
+            dependencyClass = ontologyConnector.getClassByIri(CommonOntologyUris.WORD_DEPENDENCY_CLASS.getUri()).orElseThrow();
+
+            uuidProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.UUID_PROPERTY.getUri()).orElseThrow();
+            textProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.TEXT_PROPERTY.getUri()).orElseThrow();
+            posProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POS_PROPERTY.getUri()).orElseThrow();
+            lemmaProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.LEMMA_PROPERTY.getUri()).orElseThrow();
+            positionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.POSITION_PROPERTY.getUri()).orElseThrow();
+            sentenceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.SENTENCE_PROPERTY.getUri()).orElseThrow();
+            wordsProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_WORDS_PROPERTY.getUri()).orElseThrow();
+            dependencySourceProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_SOURCE_PROPERTY.getUri()).orElseThrow();
+            dependencyTargetProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TARGET_PROPERTY.getUri()).orElseThrow();
+            dependencyTypeProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.DEP_TYPE_PROPERTY.getUri()).orElseThrow();
+            hasCorefClusterProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_COREF_CLUSTERS.getUri()).orElseThrow();
+            mentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.HAS_MENTION_PROPERTY.getUri()).orElseThrow();
+            representativeMentionProperty = ontologyConnector.getPropertyByIri(CommonOntologyUris.REPRESENTATIVE_MENTION_PROPERTY.getUri()).orElseThrow();
+        }
 
     }
 
