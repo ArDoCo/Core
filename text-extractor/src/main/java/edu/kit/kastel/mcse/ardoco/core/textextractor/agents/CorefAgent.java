@@ -46,33 +46,46 @@ public class CorefAgent extends TextAgent {
         var corefClusters = text.getCorefClusters();
 
         for (var corefCluster : corefClusters) {
-            MutableSet<INounMapping> nounMappings = Sets.mutable.empty();
             var words = getAllWordsFromCorefCluster(corefCluster);
-            for (var word : words) {
-                var nounMappingsForWord = textState.getNounMappingsByWord(word).castToCollection();
-                nounMappings.addAll(nounMappingsForWord);
-            }
 
-            // add words to noun mappings as coreferences
-            // only add pronoun-related coreferences for now
-            for (var nounMapping : nounMappings) {
-                for (var word : words) {
-                    if (word.getPosTag() == POSTag.PRONOUN_PERSONAL || word.getPosTag() == POSTag.PRONOUN_POSSESSIVE) {
-                        nounMapping.addCoreference(word);
-                    }
-                }
-            }
+            MutableSet<INounMapping> nounMappings = addWordsFromCorefClusterToNounMappings(words, textState);
+            addWordsToNounMappingsAsCoreferences(nounMappings, words);
 
             if (doMerging && nounMappings.size() > 1) {
                 logger.debug("MORE THAN 1 FOR {}", corefCluster.getRepresentativeMention());
-                INounMapping mergedNounMapping = null;
-                for (var nounMapping : nounMappings) {
-                    mergedNounMapping = nounMapping.merge(mergedNounMapping);
-                    textState.removeNounNode(nounMapping);
-                }
-                textState.addNounMapping(mergedNounMapping);
+                mergeNounMappings(nounMappings, textState);
             }
         }
+    }
+
+    private static void mergeNounMappings(MutableSet<INounMapping> nounMappings, ITextState textState) {
+        INounMapping mergedNounMapping = null;
+        for (var nounMapping : nounMappings) {
+            mergedNounMapping = nounMapping.merge(mergedNounMapping);
+            textState.removeNounNode(nounMapping);
+        }
+        textState.addNounMapping(mergedNounMapping);
+    }
+
+    private static void addWordsToNounMappingsAsCoreferences(MutableSet<INounMapping> nounMappings, ImmutableList<IWord> words) {
+        // add words to noun mappings as coreferences
+        // only add pronoun-related coreferences for now
+        for (var nounMapping : nounMappings) {
+            for (var word : words) {
+                if (word.getPosTag() == POSTag.PRONOUN_PERSONAL || word.getPosTag() == POSTag.PRONOUN_POSSESSIVE) {
+                    nounMapping.addCoreference(word);
+                }
+            }
+        }
+    }
+
+    private static MutableSet<INounMapping> addWordsFromCorefClusterToNounMappings(ImmutableList<IWord> words, ITextState textState) {
+        MutableSet<INounMapping> nounMappings = Sets.mutable.empty();
+        for (var word : words) {
+            var nounMappingsForWord = textState.getNounMappingsByWord(word).castToCollection();
+            nounMappings.addAll(nounMappingsForWord);
+        }
+        return nounMappings;
     }
 
     private static ImmutableList<IWord> getAllWordsFromCorefCluster(ICorefCluster corefCluster) {
