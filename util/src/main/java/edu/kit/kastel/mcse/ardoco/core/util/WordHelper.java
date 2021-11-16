@@ -30,7 +30,7 @@ public final class WordHelper {
         }
 
         var prePosTag = preWord.getPosTag();
-        return POSTag.DETERMINER.equals(prePosTag);
+        return POSTag.DETERMINER == prePosTag;
 
     }
 

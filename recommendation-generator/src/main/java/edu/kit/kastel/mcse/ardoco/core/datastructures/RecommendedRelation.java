@@ -92,21 +92,11 @@ public class RecommendedRelation implements IRecommendedRelation {
     /**
      * updates the probability of the recommended relation.
      *
-     * @param probability2 the probability to update with
+     * @param newProbability the probability to update with
      */
     @Override
-    public void updateProbability(double probability2) {
-        if (CommonUtilities.valueEqual(probability, 1)) {
-            return;
-        }
-        if (CommonUtilities.valueEqual(probability2, 1.0)) {
-            probability = 1.0;
-        } else if (probability >= probability2) {
-            probability += probability2 * (1 - probability);
-        } else {
-            probability += probability2;
-            probability = probability * 0.5;
-        }
+    public void updateProbability(double newProbability) {
+        probability = CommonUtilities.calcNewProbabilityValue(probability, newProbability);
     }
 
     /**
