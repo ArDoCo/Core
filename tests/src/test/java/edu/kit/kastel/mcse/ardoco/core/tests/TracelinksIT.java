@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -198,7 +199,7 @@ class TracelinksIT {
         double f1 = results.getF1();
 
         if (logger.isInfoEnabled()) {
-            String infoString = String.format(
+            String infoString = String.format(Locale.ENGLISH,
                     "\n%s with similarity %.2f:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)",
                     name, similarity, results.getPrecision(), minPrecision, results.getRecall(), minRecall, results.getF1(), minF1);
             logger.info(infoString);
