@@ -2,7 +2,7 @@ name: SonarCloud Scan
 
 on:
   push:
-    branches: [ main, master, cleanup, refactoring ]
+    branches: [ main, master, cleanup, refactoring, restructuring ]
   pull_request:
     types: [opened, synchronize, reopened]
     branches-ignore:
