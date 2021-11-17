@@ -169,7 +169,7 @@ public class Token extends MainHypothesisToken implements Comparable<Token> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Token) {
+        if (obj != null && obj.getClass() == this.getClass()) {
             final Token other = (Token) obj;
             return super.equals(obj) && getPosition() == other.getPosition() && getChunk().equals(other.getChunk()) && getChunkIOB().equals(other.getChunkIOB())
                     && getInstructionNumber() == other.getInstructionNumber() && getPos().equals(other.getPos()) && Objects.equals(getWord(), other.getWord())

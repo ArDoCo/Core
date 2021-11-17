@@ -25,7 +25,7 @@ public class Chunk {
         return result;
     }
 
-    private void calculateNumberOfSuccessors(String[] iob, final Chunk[] result) {
+    private static void calculateNumberOfSuccessors(String[] iob, final Chunk[] result) {
         // calculate the number of successors
         var tmp = 0;
         for (int i = iob.length - 1; i >= 0; i--) {
@@ -43,7 +43,7 @@ public class Chunk {
         }
     }
 
-    private void setChunkNameAndCalculatePredecessors(String[] iob, final Chunk[] result) {
+    private static void setChunkNameAndCalculatePredecessors(String[] iob, final Chunk[] result) {
         var tmp = 0;
         for (var i = 0; i < iob.length; i++) {
             result[i] = new Chunk();
@@ -90,7 +90,7 @@ public class Chunk {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Chunk) {
+        if (obj != null && obj.getClass() == this.getClass()) {
             final Chunk other = (Chunk) obj;
             return Objects.equals(getName(), other.getName()) && getPredecessor() == other.getPredecessor() && getSuccessor() == other.getSuccessor();
         }

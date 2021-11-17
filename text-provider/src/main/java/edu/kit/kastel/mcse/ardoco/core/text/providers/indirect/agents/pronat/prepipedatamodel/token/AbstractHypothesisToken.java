@@ -21,12 +21,12 @@ public abstract class AbstractHypothesisToken {
     /**
      * Instantiates a new abstract hypothesis token.
      *
-     * @param word the word
-     * @param position the position
+     * @param word       the word
+     * @param position   the position
      * @param confidence the confidence
-     * @param type the type
-     * @param startTime the start time
-     * @param endTime the end time
+     * @param type       the type
+     * @param startTime  the start time
+     * @param endTime    the end time
      */
     protected AbstractHypothesisToken(String word, int position, double confidence, HypothesisTokenType type, double startTime, double endTime) {
         this.word = word;
@@ -41,10 +41,10 @@ public abstract class AbstractHypothesisToken {
     /**
      * Instantiates a new abstract hypothesis token.
      *
-     * @param word the word
-     * @param position the position
+     * @param word       the word
+     * @param position   the position
      * @param confidence the confidence
-     * @param type the type
+     * @param type       the type
      */
     protected AbstractHypothesisToken(String word, int position, double confidence, HypothesisTokenType type) {
         this(word, position, confidence, type, 0.0d, 0.0d);
@@ -160,12 +160,20 @@ public abstract class AbstractHypothesisToken {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof AbstractHypothesisToken) {
+        if (obj != null && obj.getClass() == this.getClass()) {
             final AbstractHypothesisToken other = (AbstractHypothesisToken) obj;
-            return getPosition() == other.getPosition() && getConfidence() == other.getConfidence() && Objects.equals(getWord(), other.getWord())
-                    && getType().equals(other.getType()) && getStartTime() == other.getStartTime() && getEndTime() == other.getEndTime();
+            return getPosition() == other.getPosition() && compareDouble(getConfidence(), other.getConfidence()) && Objects.equals(getWord(), other.getWord())
+                    && getType() == other.getType() && compareDouble(getStartTime(), other.getStartTime()) && compareDouble(getEndTime(), other.getEndTime());
         }
         return false;
+    }
+
+    private static boolean compareDouble(double first, double second) {
+        return compareDouble(first, second, 0.000001d);
+    }
+
+    private static boolean compareDouble(double first, double second, double epsilon) {
+        return Math.abs(first - second) < epsilon;
     }
 
     private void resetHash() {
