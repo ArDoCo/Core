@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 /**
  * @author Jan Keim

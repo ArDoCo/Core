@@ -7,17 +7,17 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.IExtractor;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.RecommendationExtractor;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.IExtractor;
+import edu.kit.kastel.mcse.ardoco.core.common.Loader;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationExtractor;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 /**
  * The Class InitialRecommendationAgent runs all extractors of this stage.

@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.DependencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
-import edu.kit.kastel.mcse.ardoco.core.util.WordHelper;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.InstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 /**
  * Adds

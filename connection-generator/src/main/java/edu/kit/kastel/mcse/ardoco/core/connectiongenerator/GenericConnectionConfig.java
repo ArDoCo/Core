@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 
 /**
  * The configuration for the agents and extractors of the connection generator.

@@ -17,17 +17,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>text-extractor</artifactId>
+			<artifactId>text-extraction</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>text-provider</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>text-provider-stanford</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -68,6 +63,13 @@
 		<dependency>
 			<groupId>edu.kit.kastel.informalin</groupId>
 			<artifactId>ontology-connector</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.8.1</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 		    <groupId>com.tngtech.archunit</groupId>
