@@ -68,7 +68,7 @@ public class MainHypothesisToken extends AbstractHypothesisToken {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MainHypothesisToken) {
+        if (obj != null && obj.getClass() == this.getClass()) {
             final MainHypothesisToken other = (MainHypothesisToken) obj;
             if (alternatives.size() != other.getAlternatives().size()) {
                 return false;

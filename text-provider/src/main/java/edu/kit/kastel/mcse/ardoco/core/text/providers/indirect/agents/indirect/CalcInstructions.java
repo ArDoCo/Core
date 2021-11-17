@@ -8,7 +8,7 @@ import java.util.List;
  * @author Markus Kocybik
  * @author Tobias Hey - extended Boundary Keywords for temporal Keywords (2016-07-28) - added punctuation marks
  */
-class CalcInstruction {
+final class CalcInstruction {
     private static final List<String> PUNCTUATION_MARKS = List.of(".", ":", ",", ";", "'", "´", "`", "!", "?", "\"");
     private static final List<String> IF_KEYWORDS = List.of("if", "when", "whenever", "unless");
     private static final List<String> THEN_KEYWORDS = List.of("then");
@@ -18,6 +18,10 @@ class CalcInstruction {
             "hereupon", "as", "previously");
 
     private static final List<String> FORMS_OF_TO_BE = List.of("be", "am", "'m", "is", "'s", "are", "'re");
+
+    private CalcInstruction() {
+        throw new IllegalAccessError();
+    }
 
     /**
      * This method calculates the instruction number for each word of the input text.
@@ -71,16 +75,12 @@ class CalcInstruction {
                             list[i + 1] = instrNr;
                             i++;
                             verbCounter++;
-                        }
-                        // verb found
-                        else if (pos[i].startsWith("VB")) {
+                        } else if (pos[i].startsWith("VB")) { // verb found
                             list[i] = instrNr;
                             if (!isGerund(words, i)) {
                                 verbCounter++;
                             }
-                        }
-                        // no verb found
-                        else {
+                        } else { // no verb found
                             list[i] = instrNr;
                         }
                     } else {

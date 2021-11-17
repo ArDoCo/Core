@@ -89,7 +89,7 @@ public class SRLToken extends Token {
         if (!roleDescription.isEmpty() && roleDescription.containsKey(role)) {
             return roleDescription.get(role);
         }
-        return null;
+        return new String[] {};
     }
 
     /**
@@ -101,7 +101,7 @@ public class SRLToken extends Token {
         if (!dependentTokens.isEmpty() && dependentTokens.containsKey("V")) {
             return dependentTokens.get("V");
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
@@ -114,7 +114,7 @@ public class SRLToken extends Token {
         if (!dependentTokens.isEmpty() && dependentTokens.containsKey(role)) {
             return dependentTokens.get(role);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
@@ -245,7 +245,7 @@ public class SRLToken extends Token {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof SRLToken) {
+        if (obj != null && obj.getClass() == this.getClass()) {
             SRLToken other = (SRLToken) obj;
             return super.equals(obj) && Objects.equals(correspondingVerb, other.getCorrespondingVerb()) && roleConfidence == other.getRoleConfidence()
                     && Objects.equals(pbRolesetID, other.getPbRolesetID()) && Objects.equals(getPbRolesetDescr(), other.getPbRolesetDescr())
