@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
 
 /**
  * The TextExtractionStateConfig for {@link TextExtractionExtractor}.

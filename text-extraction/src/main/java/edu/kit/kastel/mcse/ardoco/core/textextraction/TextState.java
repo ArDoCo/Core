@@ -12,11 +12,6 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.IRelationMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITermMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
 
 /**
  * The Class TextState defines the basic implementation of a {@link ITextState}.

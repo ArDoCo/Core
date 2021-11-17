@@ -7,9 +7,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITermMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
 
 /**
  * This class represents the concatenation of words to one term. A term has at least two words stored as noun mappings.

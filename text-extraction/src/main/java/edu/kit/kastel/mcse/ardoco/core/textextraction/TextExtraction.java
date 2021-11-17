@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.common.Loader;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
 
 /**
  * The Class TextExtractor.
