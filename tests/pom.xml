@@ -69,6 +69,12 @@
 			<groupId>edu.kit.kastel.informalin</groupId>
 			<artifactId>ontology-connector</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>com.tngtech.archunit</groupId>
+		    <artifactId>archunit-junit5</artifactId>
+		    <version>0.22.0</version>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 
 
