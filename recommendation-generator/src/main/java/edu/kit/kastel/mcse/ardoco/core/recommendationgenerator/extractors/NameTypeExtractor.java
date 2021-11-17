@@ -3,15 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.RecommendationExtractor;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
-import edu.kit.kastel.mcse.ardoco.core.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationExtractor;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.

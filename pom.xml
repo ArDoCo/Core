@@ -14,9 +14,8 @@
 	<name>ArDoCo (Core) - The Consistency Analyzer</name>
 
 	<modules>
-		<module>text-extractor</module>
+		<module>text-extraction</module>
 		<module>text-provider</module>
-		<module>text-provider-stanford</module>
 		<module>recommendation-generator</module>
 		<module>data-structures</module>
 		<module>pipeline</module>
@@ -54,7 +53,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>text-extractor</artifactId>
+				<artifactId>text-extraction</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

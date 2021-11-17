@@ -2,8 +2,8 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 
 public class GenericInconsistencyConfig extends Configuration {
 

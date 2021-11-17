@@ -5,19 +5,19 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.MissingElementInconsistencyCandidate;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.MissingElementSupport;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.MissingModelInstanceInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistencyCandidate;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementSupport;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingModelInstanceInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 @MetaInfServices(InconsistencyAgent.class)
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {

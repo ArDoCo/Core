@@ -3,19 +3,19 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.NameInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.NameInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 @MetaInfServices(InconsistencyAgent.class)
 public class NameInconsistencyAgent extends InconsistencyAgent {

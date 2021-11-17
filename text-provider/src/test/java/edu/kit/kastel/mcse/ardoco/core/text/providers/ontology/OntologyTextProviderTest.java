@@ -5,12 +5,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
 
 @TestMethodOrder(OrderAnnotation.class)
 class OntologyTextProviderTest {

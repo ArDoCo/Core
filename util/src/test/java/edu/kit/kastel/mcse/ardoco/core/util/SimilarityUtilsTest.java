@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+
 class SimilarityUtilsTest {
 
     @Test

@@ -18,36 +18,67 @@ public class ArchitectureTest {
             .resideInAnyPackage("..pipeline..", "..tests..");
 
     @ArchTest
-    public static final ArchRule instancesOnlyAfterRecommendationGenerator = classes().that()
+    public static final ArchRule modelInstancesOnlyAfterRecommendationGenerator = classes().that()
             .haveSimpleName("IModelInstance")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..util..", "..datastructures..");
+            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..");
+
+    @ArchTest
+    public static final ArchRule modelRelationsOnlyAfterRecommendationGenerator = classes().that()
+            .haveSimpleName("IModelRelation")
+            .should()
+            .onlyHaveDependentClassesThat()
+            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..");
+
+    @ArchTest
+    public static final ArchRule linksOnlyAfterConnectionGenerator = classes().that()
+            .haveSimpleNameEndingWith("Link")
+            .should()
+            .onlyHaveDependentClassesThat()
+            .resideInAnyPackage("..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..tests..");
+
+    @ArchTest
+    public static final ArchRule usingLinkAsNamingOnlyInConnectionGenerator = classes().that()
+            .haveSimpleNameEndingWith("Link")
+            .should()
+            .resideInAPackage("..connectiongenerator..");
+
+    @ArchTest
+    public static final ArchRule inconsistencyOnlyAfterInconsistencyDetection = classes().that()
+            .haveSimpleNameContaining("Inconsistency")
+            .should()
+            .onlyHaveDependentClassesThat()
+            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..common..", "..tests..");
 
     @ArchTest
     public static final ArchRule layerRule = layeredArchitecture()
             // Layer definition
+            .layer("Common")
+            .definedBy("..common..", "..tests..")
             .layer("TextExtractor")
-            .definedBy("..textextractor..", "..tests..")
+            .definedBy("..textextraction..")
             .layer("ModelExtractor")
-            .definedBy("..model..", "..tests..")
+            .definedBy("..model..")
             .layer("RecommendationGenerator")
-            .definedBy("..recommendationgenerator..", "..tests..")
+            .definedBy("..recommendationgenerator..")
             .layer("ConnectionGenerator")
-            .definedBy("..connectiongenerator..", "..tests..")
+            .definedBy("..connectiongenerator..")
             .layer("InconsistencyDetection")
-            .definedBy("..inconsistency..", "..tests..")
+            .definedBy("..inconsistency..")
             .layer("Pipeline")
-            .definedBy("..pipeline..", "..tests..")
+            .definedBy("..pipeline..")
             // rule definition
+            .whereLayer("Pipeline")
+            .mayOnlyBeAccessedByLayers("Common")
             .whereLayer("InconsistencyDetection")
-            .mayOnlyBeAccessedByLayers("Pipeline")
+            .mayOnlyBeAccessedByLayers("Pipeline", "Common")
             .whereLayer("ConnectionGenerator")
-            .mayOnlyBeAccessedByLayers("InconsistencyDetection", "Pipeline")
+            .mayOnlyBeAccessedByLayers("InconsistencyDetection", "Pipeline", "Common")
             .whereLayer("RecommendationGenerator")
-            .mayOnlyBeAccessedByLayers("ConnectionGenerator", "InconsistencyDetection", "Pipeline")
+            .mayOnlyBeAccessedByLayers("ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common")
             .whereLayer("TextExtractor")
-            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline")
+            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common")
             .whereLayer("ModelExtractor")
-            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline");
+            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common");
 }

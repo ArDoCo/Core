@@ -9,9 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 
 class OntologyWordTest {
     protected static String ontologyPath = "src/test/resources/teastore_w_text.owl";

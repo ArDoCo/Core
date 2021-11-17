@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 

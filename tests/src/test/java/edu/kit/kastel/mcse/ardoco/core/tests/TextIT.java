@@ -15,15 +15,14 @@ import org.junit.jupiter.api.Test;
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TextIT {
 
-    private static final String TEXT_OWL = "src/test/resources/teammates/teammates_w_text.owl";
     private static final String TEXT = "src/test/resources/teammates/teammates.txt";
     private static final String MODEL_OWL = "src/test/resources/teammates/teammates.owl";
     private String tmpOwlFile;

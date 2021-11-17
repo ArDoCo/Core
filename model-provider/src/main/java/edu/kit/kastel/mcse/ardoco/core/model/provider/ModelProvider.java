@@ -4,13 +4,13 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelExtractionState;
 
 /**
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model

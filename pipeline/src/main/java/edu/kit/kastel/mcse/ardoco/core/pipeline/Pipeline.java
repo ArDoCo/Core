@@ -20,28 +20,28 @@ import org.apache.logging.log4j.Logger;
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGeneratorConfig;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGeneratorConfig;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractorConfig;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionConfig;
 
 /**
  * The Pipeline defines a simple CLI for execution of the agents.
@@ -290,10 +290,10 @@ public final class Pipeline {
     }
 
     private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {
-        IExecutionStage textModule = new TextExtractor(data);
+        IExecutionStage textModule = new TextExtraction(data);
         if (additionalConfigs != null) {
             Map<String, String> configs = new HashMap<>();
-            Configuration.mergeConfigToMap(configs, TextExtractorConfig.DEFAULT_CONFIG);
+            Configuration.mergeConfigToMap(configs, TextExtractionConfig.DEFAULT_CONFIG);
             Configuration.mergeConfigToMap(configs, GenericTextConfig.DEFAULT_CONFIG);
             Configuration.overrideConfigInMap(configs, additionalConfigs);
             textModule = textModule.create(data, configs);
