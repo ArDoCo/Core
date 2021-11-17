@@ -13,8 +13,6 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
 
 /**
  * The Class NounMapping is a basic realization of {@link INounMapping}.

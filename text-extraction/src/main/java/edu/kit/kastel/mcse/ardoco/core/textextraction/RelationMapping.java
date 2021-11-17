@@ -7,8 +7,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.IRelationMapping;
 
 /**
  * This class represents relations found in the graph. A relation mapping has relation mappings, representing the
