@@ -39,8 +39,6 @@ public class CorefAgent extends TextAgent {
     @Override
     public void exec() {
         if (!enabled) {
-            logger.info("Coref-Resolution is disabled in the config. This is usually due to the rather bad performance of the resolution "
-                    + "that slightly increases recall but often decreases precision by a lot.");
             return;
         }
         var corefClusters = text.getCorefClusters();
