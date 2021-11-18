@@ -14,9 +14,9 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 public class OntologyText implements IText {
     private static final String ERR_NO_LIST = "Could not find list of words in the ontology.";

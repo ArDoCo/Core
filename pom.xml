@@ -14,9 +14,8 @@
 	<name>ArDoCo (Core) - The Consistency Analyzer</name>
 
 	<modules>
-		<module>text-extractor</module>
+		<module>text-extraction</module>
 		<module>text-provider</module>
-		<module>text-provider-stanford</module>
 		<module>recommendation-generator</module>
 		<module>data-structures</module>
 		<module>pipeline</module>
@@ -47,14 +46,14 @@
 		<sonar.organization>ardoco</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
-		<argLine>--illegal-access=permit -Xmx4g -Xss256m</argLine>
+		<argLine>-Xmx4g -Xss256m</argLine>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>text-extractor</artifactId>
+				<artifactId>text-extraction</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

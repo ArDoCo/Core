@@ -5,17 +5,17 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
-import edu.kit.kastel.mcse.ardoco.core.util.Utilis;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 /**
  * The separated relation solver is a solver for the creation of recommended relations. Whenever a recommended instance
@@ -74,13 +74,13 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
         }
     }
 
-    private ImmutableList<String> collectOccurrencesWithSeparators(IRecommendedInstance recommendedInstance) {
+    private static ImmutableList<String> collectOccurrencesWithSeparators(IRecommendedInstance recommendedInstance) {
         ImmutableList<String> occs = collectOccurrencesAsStrings(recommendedInstance);
-        return occs.select(SimilarityUtils::containsSeparator);
+        return occs.select(CommonUtilities::containsSeparator);
 
     }
 
-    private ImmutableList<String> collectOccurrencesAsStrings(IRecommendedInstance recInstance) {
+    private static ImmutableList<String> collectOccurrencesAsStrings(IRecommendedInstance recInstance) {
         MutableList<String> occurrences = Lists.mutable.empty();
         for (INounMapping nnm : recInstance.getNameMappings()) {
             occurrences.addAll(nnm.getSurfaceForms().castToCollection());
@@ -92,7 +92,7 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
             String occurrence) {
         String recInstanceName = recInstance.getName();
 
-        ImmutableList<String> relationParticipants = SimilarityUtils.splitAtSeparators(occurrence);
+        ImmutableList<String> relationParticipants = CommonUtilities.splitAtSeparators(occurrence);
 
         MutableList<MutableList<IRecommendedInstance>> participatingRecInstances = Lists.mutable.empty();
 
@@ -115,7 +115,8 @@ public class SeparatedRelationsAgent extends RecommendationAgent {
             return;
         }
 
-        ImmutableList<ImmutableList<IRecommendedInstance>> allRelationProbabilities = Utilis.cartesianProduct(Lists.immutable.empty(), recommendedParticipants);
+        ImmutableList<ImmutableList<IRecommendedInstance>> allRelationProbabilities = CommonUtilities.cartesianProduct(Lists.immutable.empty(),
+                recommendedParticipants);
 
         for (ImmutableList<IRecommendedInstance> p : allRelationProbabilities) {
             MutableList<IRecommendedInstance> possibility = p.toList();

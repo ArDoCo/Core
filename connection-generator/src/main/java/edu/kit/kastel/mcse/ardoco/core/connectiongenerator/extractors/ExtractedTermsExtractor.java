@@ -5,18 +5,18 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.kohsuke.MetaInfServices;
 
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionExtractor;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.common.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITermMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.extractors.ConnectionExtractor;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITermMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
 
 /**
  * This analyzer identifies terms and examines their textual environment.

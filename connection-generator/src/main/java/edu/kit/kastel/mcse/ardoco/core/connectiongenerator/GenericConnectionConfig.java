@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.util.ResourceAccessor;
+import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 
 /**
  * The configuration for the agents and extractors of the connection generator.
@@ -27,6 +27,8 @@ public class GenericConnectionConfig extends Configuration {
     private static final String EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN = "ExtractedTermsAnalyzer_ProbabilityAdjacentNoun";
     private static final String EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY = "ExtractionDependentOccurrenceAnalyzer_Probability";
     private static final String CONNECTION_EXTRACTORS = "Connection_Extractors";
+    private static final String NAME_TYPE_ANALYZER_PROBABILITY = "NameTypeAnalyzer_Probability";
+
     /**
      * The default configuration to use.
      */
@@ -36,6 +38,9 @@ public class GenericConnectionConfig extends Configuration {
      * All extractor names of extractors to be used.
      */
     public final ImmutableList<String> connectionExtractors;
+
+    // NameTypeExtractor
+    public final double nameTypeAnalyzerProbability;
 
     // ExtractionDependendOccurrenceAnalyzer
     /**
@@ -90,6 +95,7 @@ public class GenericConnectionConfig extends Configuration {
     private GenericConnectionConfig() {
         var config = new ResourceAccessor("/configs/ConnectionAnalyzerSolverConfig.properties", true);
         connectionExtractors = config.getPropertyAsList(CONNECTION_EXTRACTORS);
+        nameTypeAnalyzerProbability = config.getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY);
         extractionDependentOccurrenceAnalyzerProbability = config.getPropertyAsDouble(EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY);
         extractedTermsAnalyzerProbabilityAdjacentNoun = config.getPropertyAsDouble(EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN);
         extractedTermsAnalyzerProbabilityJustName = config.getPropertyAsDouble(EXTRACTED_TERMS_ANALYZER_PROBABILITY_JUST_NAME);
@@ -110,6 +116,7 @@ public class GenericConnectionConfig extends Configuration {
     public GenericConnectionConfig(Map<String, String> configs) {
         connectionExtractors = getPropertyAsList(CONNECTION_EXTRACTORS, configs);
         extractionDependentOccurrenceAnalyzerProbability = getPropertyAsDouble(EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY, configs);
+        nameTypeAnalyzerProbability = getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY, configs);
         extractedTermsAnalyzerProbabilityAdjacentNoun = getPropertyAsDouble(EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN, configs);
         extractedTermsAnalyzerProbabilityJustName = getPropertyAsDouble(EXTRACTED_TERMS_ANALYZER_PROBABILITY_JUST_NAME, configs);
         extractedTermsAnalyzerProbabilityAdjacentTerm = getPropertyAsDouble(EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_TERM, configs);
@@ -125,6 +132,7 @@ public class GenericConnectionConfig extends Configuration {
     protected Map<String, String> getAllProperties() {
         Map<String, String> properties = new HashMap<>();
         properties.put(CONNECTION_EXTRACTORS, String.join(" ", connectionExtractors));
+        properties.put(NAME_TYPE_ANALYZER_PROBABILITY, String.valueOf(nameTypeAnalyzerProbability));
         properties.put(EXTRACTION_DEPENDENT_OCCURRENCE_ANALYZER_PROBABILITY, String.valueOf(extractionDependentOccurrenceAnalyzerProbability));
         properties.put(EXTRACTED_TERMS_ANALYZER_PROBABILITY_ADJACENT_NOUN, String.valueOf(extractedTermsAnalyzerProbabilityAdjacentNoun));
         properties.put(EXTRACTED_TERMS_ANALYZER_PROBABILITY_JUST_NAME, String.valueOf(extractedTermsAnalyzerProbabilityJustName));

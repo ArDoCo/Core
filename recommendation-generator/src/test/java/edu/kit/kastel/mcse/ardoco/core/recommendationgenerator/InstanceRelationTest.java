@@ -11,13 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.InstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 
 class InstanceRelationTest {
 

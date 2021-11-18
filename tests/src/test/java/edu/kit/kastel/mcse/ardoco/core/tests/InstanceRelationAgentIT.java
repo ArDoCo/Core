@@ -19,22 +19,22 @@ import org.junit.jupiter.api.Test;
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextractor.TextExtractorConfig;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionConfig;
 
 class InstanceRelationAgentIT {
 
@@ -75,7 +75,7 @@ class InstanceRelationAgentIT {
         Map<String, String> config = new HashMap<>();
         config.put("similarityPercentage", "0.75");
         config.put("Text_Agents", "InitialTextAgent MultiplePartAgent CorefAgent");
-        IExecutionStage textModule = new TextExtractor(data, new TextExtractorConfig(config), GenericTextConfig.DEFAULT_CONFIG);
+        IExecutionStage textModule = new TextExtraction(data, new TextExtractionConfig(config), GenericTextConfig.DEFAULT_CONFIG);
         textModule.exec();
         data.overwrite(textModule.getBlackboard());
 
