@@ -2,9 +2,9 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
@@ -34,8 +34,8 @@ class SingleExecution implements IPARSEExecution {
         return graph;
     }
 
-    private IGraph generateIndirectGraphFromText(InputStream inputText) throws LunaRunException {
-        var scanner = new Scanner(inputText);
+    private static IGraph generateIndirectGraphFromText(InputStream inputText) throws LunaRunException {
+        var scanner = new Scanner(inputText, StandardCharsets.UTF_8);
         scanner.useDelimiter("\\A");
         String content = scanner.next();
         scanner.close();
@@ -57,7 +57,7 @@ class SingleExecution implements IPARSEExecution {
      * @return data of the preprocessing
      * @throws Exception if a step of the preprocessing fails
      */
-    private PrePipelineData init(String input) throws LunaRunException {
+    private static PrePipelineData init(String input) throws LunaRunException {
 
         var tokenizer = new Tokenizer();
         tokenizer.init();
@@ -83,7 +83,7 @@ class SingleExecution implements IPARSEExecution {
         return ppd;
     }
 
-    private void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws LunaRunException {
+    private static void runAdditionalIndirectAgentsOnGraph(IGraph graph) throws LunaRunException {
         var stanfordAgent = new StanfordCoreNLPProcessorAgent();
         execute(graph, stanfordAgent);
     }
@@ -97,7 +97,7 @@ class SingleExecution implements IPARSEExecution {
      * @throws NoSuchMethodException
      * @throws Exception             if agent fails
      */
-    private void execute(IGraph graph, AbstractAgent agent) throws LunaRunException {
+    private static void execute(IGraph graph, AbstractAgent agent) throws LunaRunException {
         agent.init();
         agent.setGraph(graph);
         try {

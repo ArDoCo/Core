@@ -25,6 +25,10 @@ public class Tokenizer implements IPipelineStage {
 
     private TokenizerFactory<CoreLabel> tokenizerFactory;
 
+    public Tokenizer() {
+        super();
+    }
+
     /*
      * (non-Javadoc)
      *
