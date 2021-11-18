@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
@@ -32,6 +31,10 @@ public class TextSNLP implements IPipelineStage {
     private Facade biosFacade;
     private Stanford stanford;
 
+    public TextSNLP() {
+        super();
+    }
+
     @Override
     public void init() {
         stanford = new Stanford();
@@ -51,7 +54,7 @@ public class TextSNLP implements IPipelineStage {
         // try to process on MainHypothesisTokens
         try {
             List<MainHypothesisToken> hypothesis = prePipelineData.getMainHypothesis();
-            List<Token> taggedHypotheses = parse(hypothesis.stream().map(AbstractHypothesisToken::getWord).collect(Collectors.toList()));
+            List<Token> taggedHypotheses = parse(hypothesis.stream().map(AbstractHypothesisToken::getWord).toList());
             TextSNLP.transferTokenInformation(hypothesis, taggedHypotheses);
             List<List<Token>> result = new ArrayList<>(1);
             result.add(taggedHypotheses);

@@ -8,7 +8,7 @@ import java.util.Objects;
  * @author Sebastian Weigelt
  * @author Jan Keim
  */
-public abstract class AbstractHypothesisToken {
+public class AbstractHypothesisToken {
 
     private String word;
     private int position;
