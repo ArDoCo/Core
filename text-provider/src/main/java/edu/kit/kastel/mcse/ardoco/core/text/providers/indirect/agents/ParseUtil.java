@@ -13,6 +13,16 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.INodeType;
 import edu.kit.ipd.parse.luna.graph.ParseGraph;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.DocIDAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.IsNewlineAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokenBeginAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokenEndAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
 
 public final class ParseUtil {
     private static final Logger logger = LoggerFactory.getLogger(ParseUtil.class);
@@ -125,6 +135,29 @@ public final class ParseUtil {
      */
     public static INodeType getTokenINodeType(IGraph graph) {
         return graph.hasNodeType(TOKEN_NODE_TYPE) ? graph.getNodeType(TOKEN_NODE_TYPE) : graph.createNodeType(TOKEN_NODE_TYPE);
+    }
+
+    public static Annotation createDocument(final int beginOffset, int endOffset, List<CoreLabel> tokens, String input) {
+        var doc = new Annotation(input);
+        doc.set(DocIDAnnotation.class, "0");
+        doc.set(TokensAnnotation.class, tokens);
+        doc.set(CharacterOffsetBeginAnnotation.class, beginOffset);
+        doc.set(CharacterOffsetEndAnnotation.class, endOffset);
+        doc.set(CoreAnnotations.TokenBeginAnnotation.class, 0);
+        doc.set(CoreAnnotations.TokenEndAnnotation.class, tokens.size());
+        return doc;
+    }
+
+    public static CoreLabel createCoreLabelToken(String word, int beginOffset, int endOffset) {
+        var clToken = new CoreLabel();
+        clToken.setValue(word);
+        clToken.setWord(word);
+        clToken.setOriginalText(word);
+        clToken.setDocID("0");
+        clToken.set(CharacterOffsetBeginAnnotation.class, beginOffset);
+        clToken.set(CharacterOffsetEndAnnotation.class, endOffset);
+        clToken.set(IsNewlineAnnotation.class, false);
+        return clToken;
     }
 
 }
