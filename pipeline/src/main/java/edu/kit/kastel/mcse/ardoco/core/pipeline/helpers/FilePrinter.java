@@ -19,23 +19,23 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRecommendedRelation;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IRelationLink;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.Tracelink;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IRelationLink;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.TraceLink;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedRelation;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
@@ -335,7 +335,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        Set<Tracelink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
+        Set<TraceLink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
         for (var tracelink : tracelinks) {
             var modelElementUid = tracelink.getModelElementUid();
             // sentence offset is 1 because real sentences are 1-indexed

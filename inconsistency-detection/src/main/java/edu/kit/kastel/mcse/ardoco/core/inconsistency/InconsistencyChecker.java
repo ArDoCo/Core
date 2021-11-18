@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.common.Loader;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.GenericInconsistencyConfig;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.datastructures.InconsistencyState;
 
 public class InconsistencyChecker implements IExecutionStage {
 

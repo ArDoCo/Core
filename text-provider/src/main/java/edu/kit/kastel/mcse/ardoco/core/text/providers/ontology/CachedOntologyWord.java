@@ -7,9 +7,9 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IWord;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 
 public final class CachedOntologyWord implements IWord {
     private static final Map<IWord, CachedOntologyWord> cache = new HashMap<>();

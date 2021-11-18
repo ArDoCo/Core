@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.definitions.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 class OntologyTextTest {
     protected static String ontologyPath = "src/test/resources/teastore_w_text.owl";

@@ -6,20 +6,61 @@
     <version>0.2-SNAPSHOT</version>
   </parent>
   <artifactId>text-provider</artifactId>
+  
+  <properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+  
   <dependencies>
-  	<dependency>
-  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
-  		<artifactId>data-structures</artifactId>
-  	</dependency>
-  	<dependency>
-		<groupId>edu.kit.kastel.informalin</groupId>
-		<artifactId>ontology-connector</artifactId>
-	</dependency>
+	  	<dependency>
+	  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
+	  		<artifactId>data-structures</artifactId>
+	  	</dependency>
+	  	<dependency>
+			<groupId>edu.kit.kastel.informalin</groupId>
+			<artifactId>ontology-connector</artifactId>
+		</dependency>
 	
-	<dependency>
-		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-params</artifactId>
-		<version>5.8.1</version>
-	</dependency>
+		<!-- PARSE / INDIRECT -->
+		<dependency>
+			<groupId>edu.kit.ipd.parse</groupId>
+			<artifactId>luna</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.kohsuke.metainf-services</groupId>
+			<artifactId>metainf-services</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.ipd.parse</groupId>
+			<artifactId>parseBios</artifactId>
+		</dependency>
+
+		<!-- Stanford -->
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<classifier>models</classifier>
+			<version>4.3.1</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.8.1</version>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
+  
+  <repositories>
+		<repository>
+			<id>ipdNexus-public-all</id>
+			<name>IPD-Repository</name>
+			<url>https://bob.ipd.kit.edu/nexus/repository/maven-public-all</url>
+		</repository>
+	</repositories>
 </project>

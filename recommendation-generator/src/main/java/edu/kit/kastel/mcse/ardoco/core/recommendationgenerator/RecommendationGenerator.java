@@ -5,13 +5,10 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.datastructures.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.DependencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.Loader;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.agents.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.datastructures.modules.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.common.Loader;
 
 /**
  * The Class RecommendationGenerator defines the recommendation stage.
