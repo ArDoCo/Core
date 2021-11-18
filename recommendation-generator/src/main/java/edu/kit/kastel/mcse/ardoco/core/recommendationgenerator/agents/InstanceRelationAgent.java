@@ -79,7 +79,9 @@ public class InstanceRelationAgent extends DependencyAgent {
             processRecommendedInstance(instance);
         }
 
-        logger.info("Found {} InstanceRelations", recommendationState.getInstanceRelations().size());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Found {} InstanceRelations", recommendationState.getInstanceRelations().size());
+        }
     }
 
     private void processRecommendedInstance(IRecommendedInstance instance) {

@@ -1,11 +1,12 @@
 package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.Objects;
-import java.util.StringJoiner;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
  * This class represents an instance extracted from a model. The name of an instance (as well as the type) are splitted
@@ -46,14 +47,13 @@ public class Instance implements IModelInstance {
      */
     public Instance(String name, String type, String uid) {
 
-        String splitName = splitSnakeAndKebabCase(name);
-        splitName = splitCamelCase(splitName);
+        String splitName = CommonUtilities.splitCases(name);
         names = Lists.mutable.with(splitName.split(" "));
         if (names.size() > 1) {
             names.add(name);
         }
 
-        String splitType = splitCamelCase(type);
+        String splitType = CommonUtilities.splitCases(type);
         types = Lists.mutable.with(splitType.split(" "));
         if (types.size() > 1) {
             types.add(type);
@@ -61,22 +61,6 @@ public class Instance implements IModelInstance {
         this.uid = uid;
         longestName = name;
         longestType = type;
-    }
-
-    private static String splitCamelCase(String name) {
-        var joiner = new StringJoiner(" ");
-        for (String namePart : name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")) {
-            joiner.add(namePart);
-        }
-        return joiner.toString().replaceAll("\\s+", " "); // also remove extra spaces between words
-    }
-
-    private static String splitSnakeAndKebabCase(String name) {
-        var joiner = new StringJoiner(" ");
-        for (String namePart : name.split("[-_]")) {
-            joiner.add(namePart);
-        }
-        return joiner.toString().replaceAll("\\s+", " "); // also remove extra spaces between words
     }
 
     /**

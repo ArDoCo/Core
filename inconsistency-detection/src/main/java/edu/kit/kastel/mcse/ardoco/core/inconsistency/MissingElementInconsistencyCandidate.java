@@ -69,4 +69,9 @@ public class MissingElementInconsistencyCandidate {
         return Objects.equals(recommendedInstance, other.recommendedInstance);
     }
 
+    @Override
+    public String toString() {
+        return "MissingElementInconsistencyCandidate [" + (recommendedInstance != null ? "recommendedInstance=" + recommendedInstance : "") + "]";
+    }
+
 }

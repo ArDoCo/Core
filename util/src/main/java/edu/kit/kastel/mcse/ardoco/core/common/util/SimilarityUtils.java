@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.util.List;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -141,9 +142,8 @@ public final class SimilarityUtils {
     public static ImmutableList<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
             ImmutableList<IRecommendedInstance> recommendedInstances) {
         ImmutableList<String> instanceNames = instance.getNames();
-        ImmutableList<IRecommendedInstance> selection = recommendedInstances.select(//
-                ri -> (SimilarityUtils.areWordsOfListsSimilar(instanceNames, Lists.immutable.with(ri.getName()))
-                        || SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName())));
+        double similarity = CommonTextToolsConfig.ARE_WORDS_OF_LISTS_SIMILAR_DEFAULT_THRESHOLD;
+        ImmutableList<IRecommendedInstance> selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(instance, ri, similarity));
 
         double getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
         double getMostRecommendedIByRefIncrease = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_INCREASE;
@@ -151,6 +151,7 @@ public final class SimilarityUtils {
         MutableList<IRecommendedInstance> whileSelection = Lists.mutable.withAll(selection);
         var allListsSimilar = 0;
 
+        // TODO check here, what does this do??
         while (whileSelection.size() > 1 && getMostRecommendedIByRefMinProportion <= 1) {
             selection = Lists.immutable.withAll(whileSelection);
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
@@ -177,6 +178,28 @@ public final class SimilarityUtils {
         }
         return whileSelection.toImmutable();
 
+    }
+
+    private static boolean checkRecommendedInstanceForSelection(IModelInstance instance, IRecommendedInstance ri, double similarity) {
+        ImmutableList<String> instanceNames = instance.getNames();
+        ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getLongestName()).split(" "));
+        ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
+        if (SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName(), similarity)
+                || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList, similarity)
+                || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
+            return true;
+        }
+        for (var nounMapping : ri.getNameMappings()) {
+            for (var surfaceForm : nounMapping.getSurfaceForms()) {
+                var splitSurfaceForm = CommonUtilities.splitCases(surfaceForm);
+                var surfaceFormWords = CommonUtilities.splitAtSeparators(splitSurfaceForm);
+                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity)
+                        || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
