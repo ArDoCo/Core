@@ -183,6 +183,10 @@ public final class CommonUtilities {
         return joiner.toString().replaceAll("\\s+", " ");
     }
 
+    public static String splitCases(String name) {
+        return splitCamelCase(splitSnakeAndKebabCase(name));
+    }
+
     public static double calcNewProbabilityValue(double currentProbability, double newProbability) {
         if (valueEqual(currentProbability, 1.0)) {
             return 1.0;
