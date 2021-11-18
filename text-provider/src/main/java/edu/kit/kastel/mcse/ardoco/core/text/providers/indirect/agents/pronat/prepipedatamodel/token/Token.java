@@ -151,20 +151,19 @@ public class Token extends MainHypothesisToken implements Comparable<Token> {
     public int hashCode() {
         if (hash != 0) {
             return hash;
-        } else {
-            hash = getWord().hashCode();
-            hash = 31 * hash + getPosition();
-            hash = getChunk() == null || getChunk().getName() == null ? hash : 31 * hash + getChunk().getName().hashCode();
-            hash = getChunk() == null ? hash : 31 * hash + getChunk().getPredecessor();
-            hash = getChunk() == null ? hash : 31 * hash + getChunk().getSuccessor();
-            hash = getChunkIOB() == null ? hash : 31 * hash + getChunkIOB().toString().hashCode();
-            hash = 31 * hash + getInstructionNumber();
-            hash = getPos() == null ? hash : 31 * hash + getPos().hashCode();
-            hash = getNer() == null ? hash : 31 * hash + getNer().hashCode();
-            hash = getLemma() == null ? hash : 31 * hash + getLemma().hashCode();
-            hash = getStem() == null ? hash : 31 * hash + getStem().hashCode();
-            return hash;
         }
+        hash = getWord().hashCode();
+        hash = 31 * hash + getPosition();
+        hash = getChunk() == null || getChunk().getName() == null ? hash : 31 * hash + getChunk().getName().hashCode();
+        hash = getChunk() == null ? hash : 31 * hash + getChunk().getPredecessor();
+        hash = getChunk() == null ? hash : 31 * hash + getChunk().getSuccessor();
+        hash = getChunkIOB() == null ? hash : 31 * hash + getChunkIOB().toString().hashCode();
+        hash = 31 * hash + getInstructionNumber();
+        hash = getPos() == null ? hash : 31 * hash + getPos().hashCode();
+        hash = getNer() == null ? hash : 31 * hash + getNer().hashCode();
+        hash = getLemma() == null ? hash : 31 * hash + getLemma().hashCode();
+        hash = getStem() == null ? hash : 31 * hash + getStem().hashCode();
+        return hash;
     }
 
     @Override

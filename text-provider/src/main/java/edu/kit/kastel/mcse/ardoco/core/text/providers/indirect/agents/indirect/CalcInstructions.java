@@ -33,74 +33,69 @@ final class CalcInstruction {
      * @throws IllegalArgumentException throws an exception if word array and pos array have different lengths
      */
     static int[] calculateInstructionNumber(List<String> words, String[] pos) throws IllegalArgumentException {
-        if (words.size() == pos.length) {
-            var list = new int[words.size()];
-            var instrNr = 0;
-            var verbCounter = 0;
-            var lastWasPunctuation = false;
-            for (var i = 0; i < words.size(); i++) {
-
-                if (isInstructionBoundary(words.get(i))) {
-                    // no verb in between boundaries resets instructionNumber
-                    // and extends previous instruction
-                    if (verbCounter == 0) {
-                        if (!lastWasPunctuation) {
-                            resetLastInstruction(list, instrNr);
-                            list[i] = instrNr;
-                        } else {
-                            list[i] = instrNr;
-                            lastWasPunctuation = false;
-                        }
-
-                    } else if (i == words.size() - 1) {
-                        list[i] = instrNr;
-                        lastWasPunctuation = false;
-                    } else if (PUNCTUATION_MARKS.contains(words.get(i).toLowerCase())) {
-                        verbCounter = 0;
-                        list[i] = instrNr;
-                        lastWasPunctuation = true;
-                        instrNr++;
-                    } else {
-                        verbCounter = 0;
-                        instrNr++;
-                        list[i] = instrNr;
-                        lastWasPunctuation = false;
-                    }
-                } else {
-                    // search Verb
-                    if (verbCounter == 0) {
-                        // special case: two verbs in a row
-                        if (pos[i].startsWith("VB") && i < words.size() - 1 && pos[i + 1].startsWith("VB")) {
-                            list[i] = instrNr;
-                            list[i + 1] = instrNr;
-                            i++;
-                            verbCounter++;
-                        } else if (pos[i].startsWith("VB")) { // verb found
-                            list[i] = instrNr;
-                            if (!isGerund(words, i)) {
-                                verbCounter++;
-                            }
-                        } else { // no verb found
-                            list[i] = instrNr;
-                        }
-                    } else {
-                        // another verb also initiates a new instruction
-                        // (imperative sentence)
-                        if (pos[i].startsWith("VB") && !isGerund(words, i) && !isToInfinitive(pos, i)) {
-                            instrNr++;
-                            verbCounter = 0;
-                            i--; // repeat loop
-                        } else {
-                            list[i] = instrNr;
-                        }
-                    }
-                }
-
-            }
-            return list;
-        } else {
+        if (words.size() != pos.length) {
             throw new IllegalArgumentException("word array and pos array have different lengths");
         }
+
+        var list = new int[words.size()];
+        var instrNr = 0;
+        var verbCounter = 0;
+        var lastWasPunctuation = false;
+        for (var i = 0; i < words.size(); i++) {
+            if (isInstructionBoundary(words.get(i))) {
+                // no verb in between boundaries resets instructionNumber
+                // and extends previous instruction
+                if (verbCounter == 0) {
+                    if (!lastWasPunctuation) {
+                        resetLastInstruction(list, instrNr);
+                        list[i] = instrNr;
+                    } else {
+                        list[i] = instrNr;
+                        lastWasPunctuation = false;
+                    }
+
+                } else if (i == words.size() - 1) {
+                    list[i] = instrNr;
+                    lastWasPunctuation = false;
+                } else if (PUNCTUATION_MARKS.contains(words.get(i).toLowerCase())) {
+                    verbCounter = 0;
+                    list[i] = instrNr;
+                    lastWasPunctuation = true;
+                    instrNr++;
+                } else {
+                    verbCounter = 0;
+                    instrNr++;
+                    list[i] = instrNr;
+                    lastWasPunctuation = false;
+                }
+            } else if (verbCounter == 0) { // search Verb
+                // special case: two verbs in a row
+                if (pos[i].startsWith("VB") && i < words.size() - 1 && pos[i + 1].startsWith("VB")) {
+                    list[i] = instrNr;
+                    list[i + 1] = instrNr;
+                    i++;
+                    verbCounter++;
+                } else if (pos[i].startsWith("VB")) { // verb found
+                    list[i] = instrNr;
+                    if (!isGerund(words, i)) {
+                        verbCounter++;
+                    }
+                } else { // no verb found
+                    list[i] = instrNr;
+                }
+
+            } else if (pos[i].startsWith("VB") && !isGerund(words, i) && !isToInfinitive(pos, i)) {
+                // another verb also initiates a new instruction
+                // (imperative sentence)
+                instrNr++;
+                verbCounter = 0;
+                i--; // repeat loop
+
+            } else {
+                list[i] = instrNr;
+            }
+        }
+        return list;
 
     }
 
@@ -121,9 +116,11 @@ final class CalcInstruction {
     }
 
     private static boolean isInstructionBoundary(String word) {
-        return word.equalsIgnoreCase("and") || word.equalsIgnoreCase("or") || word.equalsIgnoreCase("but") || TEMPORAL_KEYWORDS.contains(word.toLowerCase())
-                || PUNCTUATION_MARKS.contains(word.toLowerCase()) || IF_KEYWORDS.contains(word.toLowerCase()) || THEN_KEYWORDS.contains(word.toLowerCase())
+        boolean equalsAndOrBut = word.equalsIgnoreCase("and") || word.equalsIgnoreCase("or") || word.equalsIgnoreCase("but");
+        boolean containsControlFlowKeywords = IF_KEYWORDS.contains(word.toLowerCase()) || THEN_KEYWORDS.contains(word.toLowerCase())
                 || ELSE_KEYWORDS.contains(word.toLowerCase());
+        return equalsAndOrBut || TEMPORAL_KEYWORDS.contains(word.toLowerCase()) || PUNCTUATION_MARKS.contains(word.toLowerCase())
+                || containsControlFlowKeywords;
     }
 
     private static void resetLastInstruction(int[] list, int instrNum) {
