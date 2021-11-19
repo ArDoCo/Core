@@ -283,7 +283,8 @@ public class NounMapping implements INounMapping {
     private void recalculateProbability(MappingKind kind, double newProbability) {
 
         double currentProbability = distribution.get(kind);
-        distribution.put(kind, currentProbability + newProbability);
+        // distribution.put(kind, Math.max(currentProbability + newProbability, 1.0));
+        distribution.put(kind, (currentProbability + newProbability) / 2);
 
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         if (mostProbableKind != null) {
@@ -381,8 +382,8 @@ public class NounMapping implements INounMapping {
             double probabilityToSet = highestProbability + newProbability * (1 - highestProbability);
             recalculateProbability(mostProbableKind, probabilityToSet);
         } else {
-            double porbabilityToSet = (highestProbability + newProbability) * 0.5;
-            recalculateProbability(mostProbableKind, porbabilityToSet);
+            double probabilityToSet = (highestProbability + newProbability) * 0.5;
+            recalculateProbability(mostProbableKind, probabilityToSet);
         }
     }
 

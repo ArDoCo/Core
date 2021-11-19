@@ -159,19 +159,19 @@ public class RecommendationState implements IRecommendationState {
 
     /**
      * Adds a recommended instance to the state. If the in the stored instance an instance with the same name and type
-     * is contained it is extended. If an rec. istance with the same name can be found it is extended. Elsewhere a new
-     * recommended instance is created.
+     * is contained it is extended. If an recommendedInstance with the same name can be found it is extended. Elsewhere
+     * a new recommended instance is created.
      *
      * @param ri
      */
     private void addRecommendedInstance(IRecommendedInstance ri) {
 
-        ImmutableList<IRecommendedInstance> risWithExactName = recommendedInstances.select(r -> r.getName().contentEquals(ri.getName())).toImmutable();
-        ImmutableList<IRecommendedInstance> risWithExactNameAndType = risWithExactName.select(r -> r.getType().contentEquals(ri.getType()));
-
         if (recommendedInstances.contains(ri)) {
             return;
         }
+
+        ImmutableList<IRecommendedInstance> risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable();
+        ImmutableList<IRecommendedInstance> risWithExactNameAndType = risWithExactName.select(r -> r.getType().equalsIgnoreCase(ri.getType()));
 
         if (risWithExactNameAndType.isEmpty()) {
             processRecommendedInstancesWithNoExactNameAndType(ri, risWithExactName);
@@ -199,14 +199,14 @@ public class RecommendationState implements IRecommendationState {
                 }
             }
 
-            if (!added && !ri.getType().contentEquals("")) {
+            if (!added && !ri.getType().isBlank()) {
                 recommendedInstances.add(ri);
             }
         }
     }
 
     private static boolean recommendedInstancesHasEmptyType(IRecommendedInstance ri, IRecommendedInstance riWithExactName) {
-        return riWithExactName.getType().contentEquals("") && !ri.getType().contentEquals("");
+        return riWithExactName.getType().isBlank() && !ri.getType().isBlank();
     }
 
     /**

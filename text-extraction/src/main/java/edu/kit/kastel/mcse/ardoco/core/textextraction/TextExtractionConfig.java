@@ -25,7 +25,6 @@ public class TextExtractionConfig extends Configuration {
      */
     public final ImmutableList<String> textAgents;
 
-    // TODO @Sophie details
     /** The similarity percentage in the state. */
     public final double similarityPercentage;
 
