@@ -131,7 +131,7 @@ public final class SimilarityUtils {
      * Extracts most likely matches of a list of recommended instances by similarity to a given instance. For this, the
      * method uses an increasing minimal proportional threshold with the method
      * {@link #areWordsOfListsSimilar(List, List, double)}. If all lists are similar to the given instance by a
-     * threshold of 1-increase value the while loop can be leaved. If the while loop ends with more than one possibility
+     * threshold of 1-increase value the while loop can be left. If the while loop ends with more than one possibility
      * or all remaining lists are sorted out in the same run, all are returned. Elsewhere only the remaining recommended
      * instance is returned within the list.
      *
@@ -151,18 +151,17 @@ public final class SimilarityUtils {
         MutableList<IRecommendedInstance> whileSelection = Lists.mutable.withAll(selection);
         var allListsSimilar = 0;
 
-        // TODO check here, what does this do??
         while (whileSelection.size() > 1 && getMostRecommendedIByRefMinProportion <= 1) {
             selection = Lists.immutable.withAll(whileSelection);
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
             MutableList<IRecommendedInstance> risToRemove = Lists.mutable.empty();
             for (IRecommendedInstance ri : whileSelection) {
-
-                if (areWordsSimilar(String.join(" ", instanceNames), String.join(" ", ri.getName()), 1 - getMostRecommendedIByRefIncrease)) {
+                if (checkRecommendedInstanceWordSimilarityToInstance(instance, ri, getMostRecommendedIByRefMinProportion)) {
                     allListsSimilar++;
                 }
 
                 if (!SimilarityUtils.areWordsOfListsSimilar(instanceNames, Lists.immutable.with(ri.getName()), getMostRecommendedIByRefMinProportion)) {
+                    // TODO this is most likely the problem why multi-word entities are not recognized
                     risToRemove.add(ri);
                 }
             }
@@ -178,6 +177,17 @@ public final class SimilarityUtils {
         }
         return whileSelection.toImmutable();
 
+    }
+
+    private static boolean checkRecommendedInstanceWordSimilarityToInstance(IModelInstance instance, IRecommendedInstance ri, double similarityThreshold) {
+        ImmutableList<String> instanceNames = instance.getNames();
+        for (var sf : ri.getNameMappings().flatCollect(INounMapping::getSurfaceForms)) {
+            var splitSF = CommonUtilities.splitCases(String.join(" ", CommonUtilities.splitAtSeparators(sf)));
+            if (areWordsSimilar(String.join(" ", instanceNames), splitSF, similarityThreshold)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean checkRecommendedInstanceForSelection(IModelInstance instance, IRecommendedInstance ri, double similarity) {
