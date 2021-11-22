@@ -549,7 +549,6 @@ public class TextState implements ITextState {
                 addNounMapping(word, referencePart, kind, probability, occurrences);
             }
             return;
-
         }
 
         if (nounMappings.containsKey(reference)) {
@@ -560,10 +559,8 @@ public class TextState implements ITextState {
             existingMapping.addWord(word);
 
         } else {
-
             ImmutableList<String> similarRefs = Lists.immutable
                     .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference, similarityPercentage)));
-
             for (String ref : similarRefs) {
                 INounMapping similarMapping = nounMappings.get(ref);
                 similarMapping.addOccurrence(occurrences);
@@ -589,7 +586,6 @@ public class TextState implements ITextState {
      * @param probability the probability that this term is from that kind
      */
     private void addTerm(String reference, ImmutableList<INounMapping> mappings, MappingKind kind, double probability) {
-
         ImmutableList<ITermMapping> includedTerms = getTermsByMappingsAndKind(mappings, kind);
 
         if (!includedTerms.isEmpty()) {
@@ -600,7 +596,6 @@ public class TextState implements ITextState {
             ITermMapping term;
             if (mappings.size() <= 2) {
                 term = new TermMapping(reference, mappings.get(0), mappings.get(1), Lists.immutable.with(), kind, probability);
-
             } else {
                 term = new TermMapping(reference, mappings.get(0), mappings.get(1), mappings.subList(2, mappings.size() - 1), kind, probability);
             }
