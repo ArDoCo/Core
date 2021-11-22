@@ -23,9 +23,7 @@ public class TermMapping implements ITermMapping {
 
     @Override
     public ITermMapping createCopy() {
-
         return new TermMapping(reference, mappings.collect(INounMapping::createCopy).toImmutable(), probability, kind);
-
     }
 
     /**

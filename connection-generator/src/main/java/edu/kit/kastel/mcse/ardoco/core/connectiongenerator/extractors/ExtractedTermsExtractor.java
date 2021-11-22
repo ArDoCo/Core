@@ -29,8 +29,9 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
 
     private double probabilityAdjacentTerm;
     private double probabilityJustName;
-    private double probabilityJustAdjacentNoun; // TODO can we make this probability more flexible/dynamic? It is
-                                                // responsible for a lot of RI (incl. false positives)
+    private double probabilityJustAdjacentNoun;
+    // TODO can we make this probability more flexible/dynamic? It is
+    // responsible for a lot of RI (incl. false positives)
 
     /**
      * Instantiates a new extracted terms analyzer.
@@ -81,9 +82,7 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
     }
 
     private void createRecommendedInstancesForTerm(IWord node) {
-
         ImmutableList<ITermMapping> termMappings = textState.getTermMappingsByNode(node);
-
         termMappings = getPossibleOccurredTermMappingsToThisSpot(termMappings, node);
 
         if (termMappings.isEmpty()) {
@@ -103,7 +102,6 @@ public class ExtractedTermsExtractor extends ConnectionExtractor {
                 createRecommendedInstancesForAdjacentTermMappings(node, term, adjacentTermMappings.toImmutable());
             }
         }
-
     }
 
     private static ImmutableList<ITermMapping> getPossibleOccurredTermMappingsToThisSpot(ImmutableList<ITermMapping> termMappings, IWord n) {

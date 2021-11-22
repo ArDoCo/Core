@@ -61,7 +61,6 @@ public class InitialConnectionAgent extends ConnectionAgent {
 
     @Override
     public void exec() {
-
         for (IExtractor extractor : extractors) {
             for (IWord word : text.getWords()) {
                 extractor.exec(word);
