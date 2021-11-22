@@ -130,4 +130,9 @@ public class TermMapping implements ITermMapping {
         probability = CommonUtilities.calcNewProbabilityValue(probability, newProbability);
     }
 
+    @Override
+    public String toString() {
+        return "TermMapping [" + (reference != null ? "reference=" + reference + ", " : "") + (kind != null ? "kind=" + kind : "") + "]";
+    }
+
 }

@@ -149,32 +149,6 @@ public class TextState implements ITextState {
     }
 
     /**
-     * Adds a term as a name to the state.
-     *
-     * @param reference   the reference of the term
-     * @param mapping1    the first mapping of the term
-     * @param mapping2    the second mapping of the term
-     * @param probability the probability that this term is a name
-     */
-    @Override
-    public final void addNameTerm(String reference, INounMapping mapping1, INounMapping mapping2, double probability) {
-        addTerm(reference, Lists.immutable.with(mapping1, mapping2), MappingKind.NAME, probability);
-    }
-
-    /**
-     * Adds a term as a type to the state.
-     *
-     * @param reference   the reference of the term
-     * @param mapping1    the first mapping of the term
-     * @param mapping2    the second mapping of the term
-     * @param probability the probability that this term is a type
-     */
-    @Override
-    public final void addTypeTerm(String reference, INounMapping mapping1, INounMapping mapping2, double probability) {
-        addTerm(reference, Lists.immutable.with(mapping1, mapping2), MappingKind.TYPE, probability);
-    }
-
-    /**
      * Removes a relation mapping from the state.
      *
      * @param n relation mapping to remove
