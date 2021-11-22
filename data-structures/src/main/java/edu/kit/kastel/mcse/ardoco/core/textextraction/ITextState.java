@@ -109,26 +109,6 @@ public interface ITextState extends IState<ITextState> {
     void addTerm(String reference, INounMapping mapping1, INounMapping mapping2, ImmutableList<INounMapping> otherMappings, MappingKind kind,
             double probability);
 
-    /**
-     * Adds a term as a name to the state.
-     *
-     * @param reference   the reference of the term
-     * @param mapping1    the first mapping of the term
-     * @param mapping2    the second mapping of the term
-     * @param probability the probability that this term is a name
-     */
-    void addNameTerm(String reference, INounMapping mapping1, INounMapping mapping2, double probability);
-
-    /**
-     * Adds a term as a type to the state.
-     *
-     * @param reference   the reference of the term
-     * @param mapping1    the first mapping of the term
-     * @param mapping2    the second mapping of the term
-     * @param probability the probability that this term is a type
-     */
-    void addTypeTerm(String reference, INounMapping mapping1, INounMapping mapping2, double probability);
-
     // --- remove section --->
     /**
      * Removes a noun mapping from the state.

@@ -130,9 +130,7 @@ public class RecommendationState implements IRecommendationState {
      */
     @Override
     public void addRecommendedInstanceJustName(String name, double probability, ImmutableList<INounMapping> nameMappings) {
-
         this.addRecommendedInstance(name, "", probability, nameMappings, Lists.immutable.empty());
-
     }
 
     /**
@@ -148,7 +146,6 @@ public class RecommendationState implements IRecommendationState {
     @Override
     public IRecommendedInstance addRecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings) {
-
         var recommendedInstance = new RecommendedInstance(name, type, probability, //
                 Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),
                 Lists.immutable.withAll(new HashSet<>(typeMappings.castToCollection())));
@@ -165,7 +162,6 @@ public class RecommendationState implements IRecommendationState {
      * @param ri
      */
     private void addRecommendedInstance(IRecommendedInstance ri) {
-
         if (recommendedInstances.contains(ri)) {
             return;
         }
@@ -186,11 +182,9 @@ public class RecommendationState implements IRecommendationState {
         if (risWithExactName.isEmpty()) {
             recommendedInstances.add(ri);
         } else {
-
             var added = false;
 
             for (IRecommendedInstance riWithExactName : risWithExactName) {
-
                 boolean areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType(), 0.85);
                 if (areWordsSimilar || recommendedInstancesHasEmptyType(ri, riWithExactName)) {
                     riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());

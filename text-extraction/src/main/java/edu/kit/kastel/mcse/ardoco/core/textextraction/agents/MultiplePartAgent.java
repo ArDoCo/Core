@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
  *
  * @author Sophie
  */
-// TODO @Sophie create a desc
 @MetaInfServices(TextAgent.class)
 public class MultiplePartAgent extends TextAgent {
 
@@ -51,21 +50,17 @@ public class MultiplePartAgent extends TextAgent {
 
     @Override
     public void exec() {
-        searchForName();
+        // TODO make this work properly and not clutter everything
+        // TODO disabled in the config for now
+        // searchForName();
         searchForType();
     }
 
     private void searchForName() {
         for (INounMapping nameMap : textState.getNames()) {
             ImmutableList<IWord> nameNodes = Lists.immutable.withAll(nameMap.getWords());
-            for (IWord n : nameNodes) {
-                IWord pre = n.getPreWord();
-                boolean nodeIsContainedByNounMappings = textState.isNodeContainedByNounMappings(pre);
-                boolean nodeIsContainedByTypeNodes = textState.isNodeContainedByTypeNodes(pre);
-                if (pre != null && nodeIsContainedByNounMappings && !nodeIsContainedByTypeNodes) {
-                    String ref = pre.getText() + " " + n.getText();
-                    addTerm(ref, pre, n, MappingKind.NAME);
-                }
+            for (IWord word : nameNodes) {
+                incorporatePreWordOfWordForName(word);
             }
         }
     }
@@ -74,14 +69,28 @@ public class MultiplePartAgent extends TextAgent {
         for (INounMapping typeMap : textState.getTypes()) {
             ImmutableList<IWord> typeNodes = Lists.immutable.withAll(typeMap.getWords());
             for (IWord n : typeNodes) {
-                IWord pre = n.getPreWord();
-                boolean nodeIsContainedByNounMappings = textState.isNodeContainedByNounMappings(pre);
-                boolean nodeIsContainedByNameNodes = textState.isNodeContainedByNameNodes(pre);
-                if (pre != null && nodeIsContainedByNounMappings && !nodeIsContainedByNameNodes) {
-                    String ref = pre.getText() + " " + n.getText();
-                    addTerm(ref, pre, n, MappingKind.TYPE);
-                }
+                incorporatePreWordOfWordForType(n);
             }
+        }
+    }
+
+    private void incorporatePreWordOfWordForName(IWord word) {
+        IWord previousWord = word.getPreWord();
+        boolean nodeIsContainedByNounMappings = textState.isNodeContainedByNounMappings(previousWord);
+        boolean nodeIsContainedByTypeNodes = textState.isNodeContainedByTypeNodes(previousWord);
+        if (previousWord != null && nodeIsContainedByNounMappings && !nodeIsContainedByTypeNodes) {
+            String ref = previousWord.getText() + " " + word.getText();
+            addTerm(ref, previousWord, word, MappingKind.NAME);
+        }
+    }
+
+    private void incorporatePreWordOfWordForType(IWord n) {
+        IWord pre = n.getPreWord();
+        boolean nodeIsContainedByNounMappings = textState.isNodeContainedByNounMappings(pre);
+        boolean nodeIsContainedByNameNodes = textState.isNodeContainedByNameNodes(pre);
+        if (pre != null && nodeIsContainedByNounMappings && !nodeIsContainedByNameNodes) {
+            String ref = pre.getText() + " " + n.getText();
+            addTerm(ref, pre, n, MappingKind.TYPE);
         }
     }
 
