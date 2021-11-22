@@ -12,13 +12,22 @@ import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
 
+/**
+ * Agent that is responsible for looking at phrases and extracting {@link INounMapping}s from compound nouns etc.
+ *
+ * @author Jan Keim
+ *
+ */
 @MetaInfServices(TextAgent.class)
 public class PhraseAgent extends TextAgent {
+
+    private static final double PHRASE_CONFIDENCE = 0.6;
 
     /**
      * Instantiates a new initial text agent.
@@ -27,32 +36,27 @@ public class PhraseAgent extends TextAgent {
         super(GenericTextConfig.class);
     }
 
-    private PhraseAgent(IText text, ITextState textState, GenericTextConfig config) {
+    private PhraseAgent(IText text, ITextState textState) {
         super(GenericTextConfig.class, text, textState);
     }
 
     @Override
     public TextAgent create(IText text, ITextState textState, Configuration config) {
-        return new PhraseAgent(text, textState, (GenericTextConfig) config);
+        return new PhraseAgent(text, textState);
     }
 
     @Override
     public void exec() {
-        // TODO Auto-generated method stub
-        logger.info("Executing PhraseAgent");
-
+        // TODO
         for (var word : text.getWords()) {
             var phrase = getCompoundPhrases(word);
             if (phrase.size() > 1) {
                 var reference = createReferenceForPhrase(phrase);
                 var occurences = phrase.collect(IWord::getText);
-                var phraseNounMapping = new NounMapping(phrase, MappingKind.NAME, 0.6, reference, occurences);
+                var phraseNounMapping = new NounMapping(phrase, MappingKind.NAME, PHRASE_CONFIDENCE, reference, occurences);
                 textState.addNounMapping(phraseNounMapping);
-                // TODO check
             }
-
         }
-
     }
 
     private static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
@@ -63,15 +67,14 @@ public class PhraseAgent extends TextAgent {
         return referenceJoiner.toString();
     }
 
-    private ImmutableList<IWord> getCompoundPhrases(IWord word) {
+    private static ImmutableList<IWord> getCompoundPhrases(IWord word) {
         var deps = Lists.mutable.of(word);
         deps.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(IWord::getPosition);
         List<IWord> returnList = Lists.mutable.empty();
         for (var currWord : sortedWords) {
-            if (!textState.isNodeContainedByTypeNodes(currWord)) {
-                returnList.add(currWord);
-            }
+            // TODO shall type nodes be filtered? Or treated differently?
+            returnList.add(currWord);
         }
         return Lists.immutable.ofAll(returnList);
     }
