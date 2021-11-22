@@ -121,13 +121,6 @@ public final class FilePrinter {
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
-        myWriter.write("FoundNameTerms as Set: ");
-        myWriter.append(LINE_SEPARATOR);
-        ImmutableList<String> nameTermList = ntrState.getNameTermList().toSortedList().toImmutable();
-        myWriter.write(nameTermList.toString() + LINE_SEPARATOR);
-        myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
         myWriter.write("FoundNORTs as Set: ");
         myWriter.append(LINE_SEPARATOR);
         ImmutableList<String> nortList = ntrState.getNortList().toSortedList().toImmutable();
@@ -139,13 +132,6 @@ public final class FilePrinter {
         myWriter.append(LINE_SEPARATOR);
         ImmutableList<String> typeList = ntrState.getTypeList().toSortedList().toImmutable();
         myWriter.write(typeList.toString() + LINE_SEPARATOR);
-        myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
-
-        myWriter.write("FoundTypeTerms as Set: ");
-        myWriter.append(LINE_SEPARATOR);
-        ImmutableList<String> typeTermList = ntrState.getTypeTermList().toSortedList().toImmutable();
-        myWriter.write(typeTermList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
