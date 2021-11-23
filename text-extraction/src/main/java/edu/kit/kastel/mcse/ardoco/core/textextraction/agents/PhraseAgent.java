@@ -67,14 +67,16 @@ public class PhraseAgent extends TextAgent {
         return referenceJoiner.toString();
     }
 
-    private static ImmutableList<IWord> getCompoundPhrases(IWord word) {
+    private ImmutableList<IWord> getCompoundPhrases(IWord word) {
         var deps = Lists.mutable.of(word);
         deps.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(IWord::getPosition);
         List<IWord> returnList = Lists.mutable.empty();
         for (var currWord : sortedWords) {
-            // TODO shall type nodes be filtered? Or treated differently?
-            returnList.add(currWord);
+            if (!textState.isNodeContainedByTypeNodes(currWord)) {
+                returnList.add(currWord);
+            }
+
         }
         return Lists.immutable.ofAll(returnList);
     }
