@@ -134,6 +134,11 @@ public class NounMapping implements INounMapping {
         }
     }
 
+    @Override
+    public void removeWord(IWord word) {
+        words.remove(word);
+    }
+
     /**
      * Returns the reference, the comparable and naming attribute of this mapping.
      *
