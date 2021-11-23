@@ -242,7 +242,7 @@ public class TextState implements ITextState {
      * @return a list of alltype mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getTypeNodesByNode(IWord node) {
+    public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord node) {
         return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(node)).filter(n -> n.getKind() == MappingKind.TYPE));
     }
 
@@ -253,7 +253,7 @@ public class TextState implements ITextState {
      * @return a list of all name mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getNameNodesByNode(IWord node) {
+    public final ImmutableList<INounMapping> getNameMappingsByWord(IWord node) {
         return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(node)).filter(n -> n.getKind() == MappingKind.NAME));
     }
 
@@ -264,7 +264,7 @@ public class TextState implements ITextState {
      * @return a list of all name or type mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getNortNodesByNode(IWord node) {
+    public final ImmutableList<INounMapping> getNortMappingsByWord(IWord node) {
         return Lists.immutable
                 .fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(node)).filter(n -> n.getKind() == MappingKind.NAME_OR_TYPE));
     }
@@ -407,7 +407,7 @@ public class TextState implements ITextState {
     }
 
     @Override
-    public void removeNounNode(INounMapping n) {
+    public void removeNounMapping(INounMapping n) {
         nounMappings.remove(n.getReference());
     }
 
