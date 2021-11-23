@@ -47,19 +47,16 @@ public class PhraseRecommendationAgent extends RecommendationAgent {
     @Override
     public void exec() {
         createRecommendationInstancesFromPhraseNounMappings();
-        // TODO
     }
 
     private void createRecommendationInstancesFromPhraseNounMappings() {
         for (var nounMapping : textState.getNounMappings()) {
-            // TODO Look if we can extract type information because type is within the compound but was filtered
             if (nounMapping.isPhrase()) {
                 var nounMappings = Lists.immutable.of(nounMapping);
                 var typeMappings = getRelatedTypeMappings(nounMapping);
                 var types = getSimilarModelTypes(typeMappings);
                 if (types.isEmpty()) {
-                    String type = "";
-                    recommendationState.addRecommendedInstance(nounMapping.getReference(), type, CONFIDENCE, nounMappings, typeMappings);
+                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", CONFIDENCE, nounMappings, typeMappings);
                 } else {
                     for (var type : types) {
                         recommendationState.addRecommendedInstance(nounMapping.getReference(), type, CONFIDENCE, nounMappings, typeMappings);
