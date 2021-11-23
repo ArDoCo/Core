@@ -60,7 +60,7 @@ public class CorefAgent extends TextAgent {
         INounMapping mergedNounMapping = null;
         for (var nounMapping : nounMappings) {
             mergedNounMapping = nounMapping.merge(mergedNounMapping);
-            textState.removeNounNode(nounMapping);
+            textState.removeNounMapping(nounMapping);
         }
         textState.addNounMapping(mergedNounMapping);
     }

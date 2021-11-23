@@ -91,7 +91,7 @@ public interface ITextState extends IState<ITextState> {
      *
      * @param n noun mapping to remove
      */
-    void removeNounNode(INounMapping n);
+    void removeNounMapping(INounMapping n);
 
     /**
      * Removes a relation mapping from the state.
@@ -161,10 +161,10 @@ public interface ITextState extends IState<ITextState> {
     /**
      * Returns alltype mappings containing the given node.
      *
-     * @param node node to filter for
+     * @param word node to filter for
      * @return a list of alltype mappings containing the given node
      */
-    ImmutableList<INounMapping> getTypeNodesByNode(IWord node);
+    ImmutableList<INounMapping> getTypeMappingsByWord(IWord word);
 
     /**
      * Returns all name mappings containing the given node.
@@ -172,7 +172,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to filter for
      * @return a list of all name mappings containing the given node
      */
-    ImmutableList<INounMapping> getNameNodesByNode(IWord node);
+    ImmutableList<INounMapping> getNameMappingsByWord(IWord node);
 
     /**
      * Returns all name or type mappings containing the given node.
@@ -180,7 +180,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to filter for
      * @return a list of all name or type mappings containing the given node
      */
-    ImmutableList<INounMapping> getNortNodesByNode(IWord node);
+    ImmutableList<INounMapping> getNortMappingsByWord(IWord node);
 
     /**
      * Returns all relation mappings.
