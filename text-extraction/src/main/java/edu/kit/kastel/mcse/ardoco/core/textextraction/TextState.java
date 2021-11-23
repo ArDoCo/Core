@@ -152,8 +152,20 @@ public class TextState implements ITextState {
      * @return a list of noun mappings with the given reference.
      */
     @Override
-    public final ImmutableList<INounMapping> getNounMappingsWithSameReference(String ref) {
+    public final ImmutableList<INounMapping> getNounMappingsWithEqualReference(String ref) {
         return Lists.immutable.fromStream(nounMappings.values().stream().filter(nMapping -> nMapping.getReference().equalsIgnoreCase(ref)));
+    }
+
+    /**
+     * Returns all mappings with a similar reference as given.
+     *
+     * @param ref the reference to search for
+     * @return a list of noun mappings with the given reference.
+     */
+    @Override
+    public final ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref) {
+        return Lists.immutable
+                .fromStream(nounMappings.values().stream().filter(nm -> SimilarityUtils.areWordsSimilar(ref, nm.getReference(), similarityPercentage)));
     }
 
     /**
@@ -270,15 +282,15 @@ public class TextState implements ITextState {
     /**
      * Returns if a node is contained by the name or type mappings.
      *
-     * @param node node to check
+     * @param word word to check
      * @return true if the node is contained by name or type mappings.
      */
     @Override
-    public final boolean isNodeContainedByNameOrTypeNodes(IWord node) {
+    public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
         return !nounMappings.values()
                 .stream()
                 .filter(n -> MappingKind.NAME_OR_TYPE == n.getKind())
-                .filter(n -> n.getWords().contains(node))
+                .filter(n -> n.getWords().contains(word))
                 .findAny()
                 .isEmpty();
     }
@@ -286,34 +298,34 @@ public class TextState implements ITextState {
     /**
      * Returns if a node is contained by the name mappings.
      *
-     * @param node node to check
+     * @param word node to check
      * @return true if the node is contained by name mappings.
      */
     @Override
-    public final boolean isNodeContainedByNameNodes(IWord node) {
-        return !nounMappings.values().stream().filter(n -> MappingKind.NAME == n.getKind()).filter(n -> n.getWords().contains(node)).findAny().isEmpty();
+    public final boolean isWordContainedByNameMapping(IWord word) {
+        return !nounMappings.values().stream().filter(n -> MappingKind.NAME == n.getKind()).filter(n -> n.getWords().contains(word)).findAny().isEmpty();
     }
 
     /**
      * Returns if a node is contained by the mappings.
      *
-     * @param node node to check
+     * @param word node to check
      * @return true if the node is contained by mappings.
      */
     @Override
-    public final boolean isNodeContainedByNounMappings(IWord node) {
-        return nounMappings.values().stream().anyMatch(n -> n.getWords().contains(node));
+    public final boolean isWordContainedByNounMappings(IWord word) {
+        return nounMappings.values().stream().anyMatch(n -> n.getWords().contains(word));
     }
 
     /**
      * Returns if a node is contained by the type mappings.
      *
-     * @param node node to check
+     * @param word node to check
      * @return true if the node is contained by type mappings.
      */
     @Override
-    public final boolean isNodeContainedByTypeNodes(IWord node) {
-        return nounMappings.values().stream().anyMatch(n -> MappingKind.TYPE == n.getKind() && n.getWords().contains(node));
+    public final boolean isWordContainedByTypeMapping(IWord word) {
+        return nounMappings.values().stream().anyMatch(n -> MappingKind.TYPE == n.getKind() && n.getWords().contains(word));
     }
 
     @Override

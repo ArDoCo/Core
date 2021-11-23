@@ -67,10 +67,10 @@ public class ArticleTypeNameExtractor extends TextExtractionExtractor {
      * @param n node to check
      */
     private boolean checkIfNodeIsName(IWord n) {
-        if (textState.isNodeContainedByNameOrTypeNodes(n)) {
+        if (textState.isWordContainedByNameOrTypeMapping(n)) {
 
             IWord prevNode = n.getPreWord();
-            if (prevNode != null && textState.isNodeContainedByTypeNodes(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+            if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
 
                 textState.addName(n, n.getText(), probability);
                 return true;
@@ -87,10 +87,10 @@ public class ArticleTypeNameExtractor extends TextExtractionExtractor {
      * @param n node to check
      */
     private boolean checkIfNodeIsType(IWord n) {
-        if (textState.isNodeContainedByNameOrTypeNodes(n)) {
+        if (textState.isWordContainedByNameOrTypeMapping(n)) {
 
             IWord prevNode = n.getPreWord();
-            if (prevNode != null && textState.isNodeContainedByNameNodes(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+            if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
 
                 textState.addType(n, n.getText(), probability);
                 return true;

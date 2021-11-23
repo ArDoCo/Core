@@ -121,7 +121,7 @@ public interface ITextState extends IState<ITextState> {
      * @param ref the reference to search for
      * @return a list of noun mappings with the given reference.
      */
-    ImmutableList<INounMapping> getNounMappingsWithSameReference(String ref);
+    ImmutableList<INounMapping> getNounMappingsWithEqualReference(String ref);
 
     /**
      * Returns a list of all references of name mappings.
@@ -196,7 +196,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to check
      * @return true if the node is contained by name or type mappings.
      */
-    boolean isNodeContainedByNameOrTypeNodes(IWord node);
+    boolean isWordContainedByNameOrTypeMapping(IWord node);
 
     /**
      * Returns if a node is contained by the name mappings.
@@ -204,7 +204,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to check
      * @return true if the node is contained by name mappings.
      */
-    boolean isNodeContainedByNameNodes(IWord node);
+    boolean isWordContainedByNameMapping(IWord node);
 
     /**
      * Returns if a node is contained by the mappings.
@@ -212,7 +212,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to check
      * @return true if the node is contained by mappings.
      */
-    boolean isNodeContainedByNounMappings(IWord node);
+    boolean isWordContainedByNounMappings(IWord node);
 
     /**
      * Returns if a node is contained by the type mappings.
@@ -220,7 +220,7 @@ public interface ITextState extends IState<ITextState> {
      * @param node node to check
      * @return true if the node is contained by type mappings.
      */
-    boolean isNodeContainedByTypeNodes(IWord node);
+    boolean isWordContainedByTypeMapping(IWord node);
 
     /**
      * Gets the all noun mappings.
@@ -276,4 +276,12 @@ public interface ITextState extends IState<ITextState> {
     default ImmutableList<INounMapping> getMappingsThatCouldBeANort(IWord word) {
         return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForNort() > 0);
     }
+
+    /**
+     * Returns all mappings with a similar reference as given.
+     *
+     * @param ref the reference to search for
+     * @return a list of noun mappings with the given reference.
+     */
+    ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref);
 }
