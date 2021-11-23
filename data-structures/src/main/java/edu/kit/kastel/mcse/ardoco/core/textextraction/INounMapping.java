@@ -189,4 +189,11 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * @param probability the probability
      */
     void addKindWithProbability(MappingKind kind, double probability);
+
+    /**
+     * @return if this is a phrase or contains a phrase
+     */
+    boolean isPhrase();
+
+    void setAsPhrase(boolean hasPhrase);
 }
