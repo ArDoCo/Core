@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 @MetaInfServices(RecommendationAgent.class)
 public class PhraseRecommendationAgent extends RecommendationAgent {
 
-    private static final double CONFIDENCE = 0.8;
+    private double confidence = 0.8;
 
     /**
      * Prototype constructor.
@@ -36,6 +36,7 @@ public class PhraseRecommendationAgent extends RecommendationAgent {
     private PhraseRecommendationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             GenericRecommendationConfig config) {
         super(GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
+        confidence = config.phraseRecommendationConfidence;
     }
 
     @Override
@@ -56,10 +57,10 @@ public class PhraseRecommendationAgent extends RecommendationAgent {
                 var typeMappings = getRelatedTypeMappings(nounMapping);
                 var types = getSimilarModelTypes(typeMappings);
                 if (types.isEmpty()) {
-                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", CONFIDENCE, nounMappings, typeMappings);
+                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", confidence, nounMappings, typeMappings);
                 } else {
                     for (var type : types) {
-                        recommendationState.addRecommendedInstance(nounMapping.getReference(), type, CONFIDENCE, nounMappings, typeMappings);
+                        recommendationState.addRecommendedInstance(nounMapping.getReference(), type, confidence, nounMappings, typeMappings);
                     }
                 }
             }

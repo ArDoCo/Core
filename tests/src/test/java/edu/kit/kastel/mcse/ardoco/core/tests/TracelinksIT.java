@@ -213,6 +213,7 @@ class TracelinksIT {
     private EvaluationResults calculateResults(String name, AgentDatastructure data) {
         var connectionState = data.getConnectionState();
         Set<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
+        logger.info("Found {} trace links", traceLinks.size());
 
         var goldStandard = getGoldStandard(name);
 
