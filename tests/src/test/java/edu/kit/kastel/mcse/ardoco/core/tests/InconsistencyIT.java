@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model.DeleteOneModelElementEval;
@@ -49,13 +50,12 @@ class InconsistencyIT {
     @DisplayName("Evaluate Inconsistency Analyses for Teammates")
     void inconsistencyTeammatesIT() {
         DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
-        // SimplyGetItNaming eval2 = new SimplyGetItNaming();
-        // SimplyGetItModel eval3 = new SimplyGetItModel();
 
         var outFile = OUTPUT + File.separator + "inconsistency-eval-teammates.txt";
 
         try (PrintStream os = new PrintStream(new File(outFile))) {
-            run(Projects.TEAMMATES, eval1, os);
+            var results = run(Projects.TEAMMATES, eval1, os);
+            Assertions.assertNotNull(results);
         } catch (FileNotFoundException e) {
             Assertions.assertTrue(false, "Could not find file.");
         }
@@ -65,13 +65,12 @@ class InconsistencyIT {
     @DisplayName("Evaluate Inconsistency Analyses for Mediastore")
     void inconsistencyMediastoreIT() {
         DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
-        // SimplyGetItNaming eval2 = new SimplyGetItNaming();
-        // SimplyGetItModel eval3 = new SimplyGetItModel();
 
         var outFile = OUTPUT + File.separator + "inconsistency-eval-mediastore.txt";
 
         try (PrintStream os = new PrintStream(new File(outFile))) {
-            run(Projects.MEDIASTORE, eval1, os);
+            var results = run(Projects.MEDIASTORE, eval1, os);
+            Assertions.assertNotNull(results);
         } catch (FileNotFoundException e) {
             Assertions.assertTrue(false, "Could not find file.");
         }
@@ -81,19 +80,18 @@ class InconsistencyIT {
     @DisplayName("Evaluate Inconsistency Analyses for Teastore")
     void inconsistencyTeastoreIT() {
         DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
-        // SimplyGetItNaming eval2 = new SimplyGetItNaming();
-        // SimplyGetItModel eval3 = new SimplyGetItModel();
 
         var outFile = OUTPUT + File.separator + "inconsistency-eval-teastore.txt";
 
         try (PrintStream os = new PrintStream(new File(outFile))) {
-            run(Projects.TEASTORE, eval1, os);
+            var results = run(Projects.TEASTORE, eval1, os);
+            Assertions.assertNotNull(results);
         } catch (FileNotFoundException e) {
             Assertions.assertTrue(false, "Could not find file.");
         }
     }
 
-    private static void run(Projects project, IEvaluationStrategy eval, PrintStream os) {
+    private static EvaluationResult run(Projects project, IEvaluationStrategy eval, PrintStream os) {
         os.println("####################################");
         os.println("START Eval: " + project + " -- " + eval);
 
@@ -101,10 +99,11 @@ class InconsistencyIT {
         IText annotatedText = project.getText();
 
         GoldStandard gs = project.getGoldStandard(pcmModel);
-        eval.evaluate(project, pcmModel, annotatedText, gs, os);
+        var results = eval.evaluate(project, pcmModel, annotatedText, gs, os);
 
         os.println("END Eval: " + project + " -- " + eval);
         os.println("####################################\n");
+        return results;
     }
 
     // OLD Tests

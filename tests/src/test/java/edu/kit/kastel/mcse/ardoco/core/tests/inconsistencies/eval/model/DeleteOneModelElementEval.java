@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.Projects;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.InconsistencyHelper;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1Evaluator;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
@@ -31,7 +32,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     }
 
     @Override
-    public void evaluate(Projects p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public PRF1 evaluate(Projects p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
         Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> result = process(originalModel, originalText, strategy);
 
@@ -42,6 +43,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         }
 
         os.println("Overall: " + evaluator.getOverallPRF1());
+        return evaluator.getOverallPRF1();
     }
 
     private static Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> process(IModelConnector pcmModel, IText annotatedText,
