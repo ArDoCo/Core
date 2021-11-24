@@ -9,12 +9,15 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 /**
  * General helper class for outsourced, common methods.
@@ -183,6 +186,23 @@ public final class CommonUtilities {
         return joiner.toString().replaceAll("\\s+", " ");
     }
 
+    /**
+     * Splits a given String using {@link #splitCamelCase(String)} and {@link #splitSnakeAndKebabCase(String)}
+     *
+     * @param name the given name
+     * @return the split name
+     */
+    public static String splitCases(String name) {
+        return splitCamelCase(splitSnakeAndKebabCase(name));
+    }
+
+    /**
+     * Calculates the probability given the current probability and the update value
+     *
+     * @param currentProbability current probability
+     * @param newProbability     update value
+     * @return the new probability
+     */
     public static double calcNewProbabilityValue(double currentProbability, double newProbability) {
         if (valueEqual(currentProbability, 1.0)) {
             return 1.0;
@@ -194,6 +214,38 @@ public final class CommonUtilities {
         } else {
             return (currentProbability + newProbability) * 0.5;
         }
+    }
+
+    /**
+     * Creates a reference given a list of words (phrase)
+     *
+     * @param phrase the given phrase
+     * @return a reference that consists of the words in the given phrase
+     */
+    public static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
+        var sortedPhrase = phrase.toSortedListBy(IWord::getPosition);
+        StringJoiner referenceJoiner = new StringJoiner(" ");
+        for (var w : sortedPhrase) {
+            referenceJoiner.add(w.getText());
+        }
+        return referenceJoiner.toString();
+    }
+
+    public static ImmutableList<IWord> getCompoundPhrases(IWord word) {
+        var deps = Lists.mutable.of(word);
+        deps.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.COMPOUND).toList());
+        var sortedWords = deps.toSortedListBy(IWord::getPosition);
+        return Lists.immutable.ofAll(sortedWords);
+    }
+
+    public static ImmutableList<IWord> filterWordsOfTypeMappings(ImmutableList<IWord> words, ITextState textState) {
+        MutableList<IWord> filteredWords = Lists.mutable.empty();
+        for (var word : words) {
+            if (!textState.isWordContainedByTypeMapping(word)) {
+                filteredWords.add(word);
+            }
+        }
+        return filteredWords.toImmutable();
     }
 
 }

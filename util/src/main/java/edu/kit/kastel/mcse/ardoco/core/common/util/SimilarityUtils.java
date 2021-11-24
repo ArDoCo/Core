@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.util.List;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -130,7 +131,7 @@ public final class SimilarityUtils {
      * Extracts most likely matches of a list of recommended instances by similarity to a given instance. For this, the
      * method uses an increasing minimal proportional threshold with the method
      * {@link #areWordsOfListsSimilar(List, List, double)}. If all lists are similar to the given instance by a
-     * threshold of 1-increase value the while loop can be leaved. If the while loop ends with more than one possibility
+     * threshold of 1-increase value the while loop can be left. If the while loop ends with more than one possibility
      * or all remaining lists are sorted out in the same run, all are returned. Elsewhere only the remaining recommended
      * instance is returned within the list.
      *
@@ -141,9 +142,8 @@ public final class SimilarityUtils {
     public static ImmutableList<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
             ImmutableList<IRecommendedInstance> recommendedInstances) {
         ImmutableList<String> instanceNames = instance.getNames();
-        ImmutableList<IRecommendedInstance> selection = recommendedInstances.select(//
-                ri -> (SimilarityUtils.areWordsOfListsSimilar(instanceNames, Lists.immutable.with(ri.getName()))
-                        || SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName())));
+        double similarity = CommonTextToolsConfig.ARE_WORDS_OF_LISTS_SIMILAR_DEFAULT_THRESHOLD;
+        ImmutableList<IRecommendedInstance> selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(instance, ri, similarity));
 
         double getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
         double getMostRecommendedIByRefIncrease = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_INCREASE;
@@ -156,12 +156,12 @@ public final class SimilarityUtils {
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
             MutableList<IRecommendedInstance> risToRemove = Lists.mutable.empty();
             for (IRecommendedInstance ri : whileSelection) {
-
-                if (areWordsSimilar(String.join(" ", instanceNames), String.join(" ", ri.getName()), 1 - getMostRecommendedIByRefIncrease)) {
+                if (checkRecommendedInstanceWordSimilarityToInstance(instance, ri, getMostRecommendedIByRefMinProportion)) {
                     allListsSimilar++;
                 }
 
                 if (!SimilarityUtils.areWordsOfListsSimilar(instanceNames, Lists.immutable.with(ri.getName()), getMostRecommendedIByRefMinProportion)) {
+                    // TODO this is most likely the problem why multi-word entities are not recognized
                     risToRemove.add(ri);
                 }
             }
@@ -177,6 +177,39 @@ public final class SimilarityUtils {
         }
         return whileSelection.toImmutable();
 
+    }
+
+    private static boolean checkRecommendedInstanceWordSimilarityToInstance(IModelInstance instance, IRecommendedInstance ri, double similarityThreshold) {
+        ImmutableList<String> instanceNames = instance.getNames();
+        for (var sf : ri.getNameMappings().flatCollect(INounMapping::getSurfaceForms)) {
+            var splitSF = CommonUtilities.splitCases(String.join(" ", CommonUtilities.splitAtSeparators(sf)));
+            if (areWordsSimilar(String.join(" ", instanceNames), splitSF, similarityThreshold)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean checkRecommendedInstanceForSelection(IModelInstance instance, IRecommendedInstance ri, double similarity) {
+        ImmutableList<String> instanceNames = instance.getNames();
+        ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getLongestName()).split(" "));
+        ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
+        if (SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName(), similarity)
+                || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList, similarity)
+                || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
+            return true;
+        }
+        for (var nounMapping : ri.getNameMappings()) {
+            for (var surfaceForm : nounMapping.getSurfaceForms()) {
+                var splitSurfaceForm = CommonUtilities.splitCases(surfaceForm);
+                var surfaceFormWords = CommonUtilities.splitAtSeparators(splitSurfaceForm);
+                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity)
+                        || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

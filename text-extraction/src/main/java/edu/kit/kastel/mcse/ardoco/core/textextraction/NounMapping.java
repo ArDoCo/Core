@@ -34,6 +34,8 @@ public class NounMapping implements INounMapping {
     private Double highestProbability;
     private Map<MappingKind, Double> distribution;
 
+    private boolean hasPhrase = false;
+
     /**
      * Instantiates a new noun mapping.
      *
@@ -61,9 +63,7 @@ public class NounMapping implements INounMapping {
     }
 
     private void initializeDistribution(Map<MappingKind, Double> distribution) {
-
         this.distribution = new EnumMap<>(distribution);
-
         this.distribution.putIfAbsent(MappingKind.NAME, 0.0);
         this.distribution.putIfAbsent(MappingKind.TYPE, 0.0);
         this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, 0.0);
@@ -88,6 +88,13 @@ public class NounMapping implements INounMapping {
         surfaceForms = Lists.mutable.withAll(occurrences);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
+    }
+
+    public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, String reference, double probability) {
+        var occurences = phrase.collect(IWord::getText);
+        var nm = new NounMapping(phrase, MappingKind.NAME, probability, reference, occurences);
+        nm.hasPhrase = true;
+        return nm;
     }
 
     /**
@@ -132,6 +139,11 @@ public class NounMapping implements INounMapping {
         if (!words.contains(word)) {
             words.add(word);
         }
+    }
+
+    @Override
+    public void removeWord(IWord word) {
+        words.remove(word);
     }
 
     /**
@@ -207,7 +219,9 @@ public class NounMapping implements INounMapping {
 
     @Override
     public INounMapping createCopy() {
-        return new NounMapping(words.toImmutable(), distribution, reference, surfaceForms.toImmutable());
+        var nm = new NounMapping(words.toImmutable(), distribution, reference, surfaceForms.toImmutable());
+        nm.hasPhrase = hasPhrase;
+        return nm;
     }
 
     @Override
@@ -283,7 +297,8 @@ public class NounMapping implements INounMapping {
     private void recalculateProbability(MappingKind kind, double newProbability) {
 
         double currentProbability = distribution.get(kind);
-        distribution.put(kind, currentProbability + newProbability);
+        // distribution.put(kind, Math.max(currentProbability + newProbability, 1.0));
+        distribution.put(kind, (currentProbability + newProbability) / 2);
 
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
         if (mostProbableKind != null) {
@@ -364,6 +379,19 @@ public class NounMapping implements INounMapping {
     }
 
     /**
+     * @return if this is a phrase or contains a phrase
+     */
+    @Override
+    public boolean isPhrase() {
+        return hasPhrase;
+    }
+
+    @Override
+    public void setAsPhrase(boolean hasPhrase) {
+        this.hasPhrase = hasPhrase;
+    }
+
+    /**
      * Updates the probability
      *
      * @param newProbability the probability to update with.
@@ -381,8 +409,8 @@ public class NounMapping implements INounMapping {
             double probabilityToSet = highestProbability + newProbability * (1 - highestProbability);
             recalculateProbability(mostProbableKind, probabilityToSet);
         } else {
-            double porbabilityToSet = (highestProbability + newProbability) * 0.5;
-            recalculateProbability(mostProbableKind, porbabilityToSet);
+            double probabilityToSet = (highestProbability + newProbability) * 0.5;
+            recalculateProbability(mostProbableKind, probabilityToSet);
         }
     }
 
@@ -421,7 +449,10 @@ public class NounMapping implements INounMapping {
         var newSurfaceForms = Lists.mutable.ofAll(surfaceForms);
         newSurfaceForms.addAll(other.getSurfaceForms().castToCollection());
 
-        INounMapping newNounMapping = new NounMapping(newWords.toImmutable(), newDistribution, reference, newSurfaceForms.toImmutable());
+        var mergedReference = reference;
+        // TODO
+
+        INounMapping newNounMapping = new NounMapping(newWords.toImmutable(), newDistribution, mergedReference, newSurfaceForms.toImmutable());
         newNounMapping.addCoreferences(coreferences);
         newNounMapping.addCoreferences(other.getCoreferences().castToCollection());
 
