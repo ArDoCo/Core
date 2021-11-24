@@ -13,7 +13,11 @@
 		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
-		<root>
+	<logger name="org.apache.jena.riot" additivity="false">
+		<level value="error" />
+		<appender-ref ref="console" />
+	</logger>
+	<root>
 		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>

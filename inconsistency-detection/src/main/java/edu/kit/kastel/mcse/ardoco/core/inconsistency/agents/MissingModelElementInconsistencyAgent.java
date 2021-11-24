@@ -61,7 +61,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         }
 
         // find out those elements that are in the same sentence as a traced element
-        // TODO check!
+        // need checking!
         for (var relation : recommendationState.getInstanceRelations()) {
             var fromInstance = relation.getFromInstance();
             var toInstance = relation.getToInstance();
@@ -72,7 +72,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
             }
         }
 
-        // TODO methods for other kinds of support
+        // methods for other kinds of support
 
         createInconsistencies();
     }

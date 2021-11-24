@@ -14,5 +14,6 @@
 		<Logger name="edu.stanford.nlp.ie.NumberNormalizer" level="error" additivity="false">
 			<AppenderRef ref="Console" />
 		</Logger>
+		<Logger name="org.apache.jena" level="warn"/>
 	</Loggers>
 </Configuration>

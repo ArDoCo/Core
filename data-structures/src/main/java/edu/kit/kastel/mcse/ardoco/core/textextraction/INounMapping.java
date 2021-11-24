@@ -52,9 +52,16 @@ public interface INounMapping extends ICopyable<INounMapping> {
     /**
      * Adds a node to the mapping, it its not already contained.
      *
-     * @param n graph node to add.
+     * @param word word to add.
      */
-    void addWord(IWord n);
+    void addWord(IWord word);
+
+    /**
+     * Removes a word from the mapping.
+     *
+     * @param word the word to remove
+     */
+    void removeWord(IWord word);
 
     /**
      * Returns the probability of being a mapping of its kind.
@@ -182,4 +189,11 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * @param probability the probability
      */
     void addKindWithProbability(MappingKind kind, double probability);
+
+    /**
+     * @return if this is a phrase or contains a phrase
+     */
+    boolean isPhrase();
+
+    void setAsPhrase(boolean hasPhrase);
 }

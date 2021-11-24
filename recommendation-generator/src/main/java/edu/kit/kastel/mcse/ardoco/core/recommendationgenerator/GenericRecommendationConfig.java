@@ -16,6 +16,7 @@ public class GenericRecommendationConfig extends Configuration {
     private static final String NAME_TYPE_ANALYZER_PROBABILITY = "NameTypeAnalyzer_Probability";
     private static final String RECOMMENDATION_EXTRACTORS = "Recommendation_Extractors";
     private static final String DEPENDENCY_EXTRACTORS = "Dependency_Extractors";
+    private static final String PHRASE_RECOMMENDATION_CONFIDENCE = "PhraseRecommendation_Confidence";
 
     /** The DEFAULT_CONFIG. */
     public static final GenericRecommendationConfig DEFAULT_CONFIG = new GenericRecommendationConfig();
@@ -38,6 +39,11 @@ public class GenericRecommendationConfig extends Configuration {
     public final double separatedRelationSolverProbility;
 
     /**
+     * The confidence for phrase recommendations
+     */
+    public final double phraseRecommendationConfidence;
+
+    /**
      * Instantiates a new generic recommendation config.
      */
     public GenericRecommendationConfig() {
@@ -46,6 +52,7 @@ public class GenericRecommendationConfig extends Configuration {
         dependencyExtractors = config.getPropertyAsList(DEPENDENCY_EXTRACTORS);
         nameTypeAnalyzerProbability = config.getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY);
         separatedRelationSolverProbility = config.getPropertyAsDouble(SEPARATED_RELATIONS_SOLVER_PROBABILITY);
+        phraseRecommendationConfidence = config.getPropertyAsDouble(PHRASE_RECOMMENDATION_CONFIDENCE);
     }
 
     /**
@@ -58,6 +65,7 @@ public class GenericRecommendationConfig extends Configuration {
         dependencyExtractors = getPropertyAsList(DEPENDENCY_EXTRACTORS, configs);
         nameTypeAnalyzerProbability = getPropertyAsDouble(NAME_TYPE_ANALYZER_PROBABILITY, configs);
         separatedRelationSolverProbility = getPropertyAsDouble(SEPARATED_RELATIONS_SOLVER_PROBABILITY, configs);
+        phraseRecommendationConfidence = getPropertyAsDouble(PHRASE_RECOMMENDATION_CONFIDENCE, configs);
     }
 
     @Override
@@ -66,7 +74,8 @@ public class GenericRecommendationConfig extends Configuration {
                 RECOMMENDATION_EXTRACTORS, String.join(" ", recommendationExtractors), //
                 NAME_TYPE_ANALYZER_PROBABILITY, String.valueOf(nameTypeAnalyzerProbability), //
                 SEPARATED_RELATIONS_SOLVER_PROBABILITY, String.valueOf(separatedRelationSolverProbility), //
-                DEPENDENCY_EXTRACTORS, String.valueOf(dependencyExtractors));
+                DEPENDENCY_EXTRACTORS, String.valueOf(dependencyExtractors), //
+                PHRASE_RECOMMENDATION_CONFIDENCE, String.valueOf(phraseRecommendationConfidence));
     }
 
 }

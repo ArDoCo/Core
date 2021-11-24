@@ -63,11 +63,6 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>text-provider-stanford</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>recommendation-generator</artifactId>
 				<version>${project.version}</version>
 			</dependency>
