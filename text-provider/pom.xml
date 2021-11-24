@@ -9,7 +9,8 @@
   
   <properties>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
-	</properties>
+		<stanford.corenlp.version>4.3.2</stanford.corenlp.version>
+  </properties>
   
   <dependencies>
 	  	<dependency>
@@ -39,13 +40,13 @@
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
 			<artifactId>stanford-corenlp</artifactId>
-			<version>4.3.1</version>
+			<version>${stanford.corenlp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
 			<artifactId>stanford-corenlp</artifactId>
 			<classifier>models</classifier>
-			<version>4.3.1</version>
+			<version>${stanford.corenlp.version}</version>
 		</dependency>
 	
 		<dependency>
