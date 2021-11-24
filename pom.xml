@@ -119,7 +119,7 @@
 		<dependency>
 			<groupId>org.eclipse.collections</groupId>
 			<artifactId>eclipse-collections</artifactId>
-			<version>10.4.0</version>
+			<version>11.0.0</version>
 		</dependency>
 		<!-- Logging -->
 		<dependency>
