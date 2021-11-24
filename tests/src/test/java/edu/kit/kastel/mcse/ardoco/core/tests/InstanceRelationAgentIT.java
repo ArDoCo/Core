@@ -74,7 +74,7 @@ class InstanceRelationAgentIT {
 
         Map<String, String> config = new HashMap<>();
         config.put("similarityPercentage", "0.75");
-        config.put("Text_Agents", "InitialTextAgent MultiplePartAgent CorefAgent");
+        config.put("Text_Agents", "InitialTextAgent PhraseAgent CorefAgent");
         IExecutionStage textModule = new TextExtraction(data, new TextExtractionConfig(config), GenericTextConfig.DEFAULT_CONFIG);
         textModule.exec();
         data.overwrite(textModule.getBlackboard());
