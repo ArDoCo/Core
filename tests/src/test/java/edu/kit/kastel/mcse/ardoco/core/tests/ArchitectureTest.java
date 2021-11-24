@@ -18,11 +18,11 @@ public class ArchitectureTest {
             .resideInAnyPackage("..pipeline..", "..tests..");
 
     @ArchTest
-    public static final ArchRule modelInstancesOnlyAfterRecommendationGenerator = classes().that()
+    public static final ArchRule modelInstancesOnlyAfterModelExtraction = classes().that()
             .haveSimpleName("IModelInstance")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..");
+            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..tests..");
 
     @ArchTest
     public static final ArchRule modelRelationsOnlyAfterRecommendationGenerator = classes().that()
