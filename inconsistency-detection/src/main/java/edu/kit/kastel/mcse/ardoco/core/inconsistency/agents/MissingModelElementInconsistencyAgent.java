@@ -80,7 +80,6 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     private void addToCandidates(IRecommendedInstance recommendedInstance) {
         var existingCandidate = candidates.detectOptional(c -> c.getRecommendedInstance().equals(recommendedInstance));
         if (existingCandidate.isPresent()) {
-            logger.info("Found dependency to traced element for candidate {}", recommendedInstance.getName());
             existingCandidate.get().addSupport(MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT);
         } else {
             candidates.add(new MissingElementInconsistencyCandidate(recommendedInstance, MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT));

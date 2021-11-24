@@ -1,6 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +13,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model.DeleteOneModelElementEval;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class InconsistencyIT {
@@ -39,6 +46,71 @@ class InconsistencyIT {
     }
 
     @Test
+    @DisplayName("Evaluate Inconsistency Analyses for Teammates")
+    void inconsistencyTeammatesIT() {
+        DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
+        // SimplyGetItNaming eval2 = new SimplyGetItNaming();
+        // SimplyGetItModel eval3 = new SimplyGetItModel();
+
+        var outFile = OUTPUT + File.separator + "inconsistency-eval-teammates.txt";
+
+        try (PrintStream os = new PrintStream(new File(outFile))) {
+            run(Projects.TEAMMATES, eval1, os);
+        } catch (FileNotFoundException e) {
+            Assertions.assertTrue(false, "Could not find file.");
+        }
+    }
+
+    @Test
+    @DisplayName("Evaluate Inconsistency Analyses for Mediastore")
+    void inconsistencyMediastoreIT() {
+        DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
+        // SimplyGetItNaming eval2 = new SimplyGetItNaming();
+        // SimplyGetItModel eval3 = new SimplyGetItModel();
+
+        var outFile = OUTPUT + File.separator + "inconsistency-eval-mediastore.txt";
+
+        try (PrintStream os = new PrintStream(new File(outFile))) {
+            run(Projects.MEDIASTORE, eval1, os);
+        } catch (FileNotFoundException e) {
+            Assertions.assertTrue(false, "Could not find file.");
+        }
+    }
+
+    @Test
+    @DisplayName("Evaluate Inconsistency Analyses for Teastore")
+    void inconsistencyTeastoreIT() {
+        DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
+        // SimplyGetItNaming eval2 = new SimplyGetItNaming();
+        // SimplyGetItModel eval3 = new SimplyGetItModel();
+
+        var outFile = OUTPUT + File.separator + "inconsistency-eval-teastore.txt";
+
+        try (PrintStream os = new PrintStream(new File(outFile))) {
+            run(Projects.TEASTORE, eval1, os);
+        } catch (FileNotFoundException e) {
+            Assertions.assertTrue(false, "Could not find file.");
+        }
+    }
+
+    private static void run(Projects project, IEvaluationStrategy eval, PrintStream os) {
+        os.println("####################################");
+        os.println("START Eval: " + project + " -- " + eval);
+
+        IModelConnector pcmModel = project.getModel();
+        IText annotatedText = project.getText();
+
+        GoldStandard gs = project.getGoldStandard(pcmModel);
+        eval.evaluate(project, pcmModel, annotatedText, gs, os);
+
+        os.println("END Eval: " + project + " -- " + eval);
+        os.println("####################################\n");
+    }
+
+    // OLD Tests
+
+    @Disabled("Outdated")
+    @Test
     @DisplayName("test inconsistency detection with original input")
     void inconsistencyIT() {
         var configOptions = new String[] { TestUtil.getSimilarityConfigString(0.8), TestUtil.getMmeiThresholdConfigString(0.75) };
@@ -52,6 +124,7 @@ class InconsistencyIT {
         Assertions.assertNotNull(data);
     }
 
+    @Disabled("Outdated")
     @Test
     @DisplayName("test inconsistency detection when one element got deleted from model")
     void inconsistencyWithDeletedModelElementIT() {
