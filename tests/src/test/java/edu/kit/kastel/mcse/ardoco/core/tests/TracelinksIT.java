@@ -205,9 +205,10 @@ class TracelinksIT {
             logger.info(infoString);
         }
 
-        Assertions.assertTrue(precision >= minPrecision, "Precision " + precision + " is below the expected minimum value " + minPrecision);
-        Assertions.assertTrue(recall >= minRecall, "Recall " + recall + " is below the expected minimum value " + minRecall);
-        Assertions.assertTrue(f1 >= minF1, "F1 " + f1 + " is below the expected minimum value " + minF1);
+        Assertions.assertAll("Evaluation Results",
+                () -> Assertions.assertTrue(precision >= minPrecision, "Precision " + precision + " is below the expected minimum value " + minPrecision),
+                () -> Assertions.assertTrue(recall >= minRecall, "Recall " + recall + " is below the expected minimum value " + minRecall),
+                () -> Assertions.assertTrue(f1 >= minF1, "F1 " + f1 + " is below the expected minimum value " + minF1));
     }
 
     private EvaluationResults calculateResults(String name, AgentDatastructure data) {
