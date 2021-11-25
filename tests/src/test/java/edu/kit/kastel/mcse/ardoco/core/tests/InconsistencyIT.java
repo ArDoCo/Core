@@ -6,7 +6,6 @@ import java.io.PrintStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,12 +23,6 @@ class InconsistencyIT {
     private static final Logger logger = LogManager.getLogger(InconsistencyIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
-    private static final String ADDITIONAL_CONFIG = "src/test/resources/config.properties";
-
-    private File inputText;
-    private File inputModel;
-    private File additionalConfigs = new File(ADDITIONAL_CONFIG);
-    private File outputDir = new File(OUTPUT);
 
     @BeforeEach
     void beforeEach() {
@@ -38,55 +31,38 @@ class InconsistencyIT {
         OntologyTextProvider.enableCache(true);
     }
 
-    @AfterEach
-    void afterEach() {
-        File config = new File(ADDITIONAL_CONFIG);
-        config.delete();
-    }
-
     @Test
     @DisplayName("Evaluate Inconsistency Analyses for Teammates")
     void inconsistencyTeammatesIT() {
-        DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
-
-        var outFile = OUTPUT + File.separator + "inconsistency-eval-teammates.txt";
-
-        try (PrintStream os = new PrintStream(new File(outFile))) {
-            var results = run(Projects.TEAMMATES, eval1, os);
-            Assertions.assertNotNull(results);
-        } catch (FileNotFoundException e) {
-            Assertions.assertTrue(false, "Could not find file.");
-        }
+        Assertions.assertNotNull(evalInconsistency(Projects.TEAMMATES));
     }
 
     @Test
     @DisplayName("Evaluate Inconsistency Analyses for Mediastore")
     void inconsistencyMediastoreIT() {
-        DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
-
-        var outFile = OUTPUT + File.separator + "inconsistency-eval-mediastore.txt";
-
-        try (PrintStream os = new PrintStream(new File(outFile))) {
-            var results = run(Projects.MEDIASTORE, eval1, os);
-            Assertions.assertNotNull(results);
-        } catch (FileNotFoundException e) {
-            Assertions.assertTrue(false, "Could not find file.");
-        }
+        Assertions.assertNotNull(evalInconsistency(Projects.MEDIASTORE));
     }
 
     @Test
     @DisplayName("Evaluate Inconsistency Analyses for Teastore")
     void inconsistencyTeastoreIT() {
+        Assertions.assertNotNull(evalInconsistency(Projects.TEASTORE));
+    }
+
+    private static EvaluationResult evalInconsistency(Projects project) {
+        var name = project.name();
+        logger.info("Starting Inconsistency Analyses for {}", name);
         DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
 
-        var outFile = OUTPUT + File.separator + "inconsistency-eval-teastore.txt";
+        var outFile = String.format("%s%sinconsistency-eval-%s.txt", OUTPUT, File.separator, name.toLowerCase());
 
         try (PrintStream os = new PrintStream(new File(outFile))) {
-            var results = run(Projects.TEASTORE, eval1, os);
-            Assertions.assertNotNull(results);
+            var results = run(project, eval1, os);
+            return results;
         } catch (FileNotFoundException e) {
             Assertions.assertTrue(false, "Could not find file.");
         }
+        return null;
     }
 
     private static EvaluationResult run(Projects project, IEvaluationStrategy eval, PrintStream os) {
