@@ -9,12 +9,10 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
@@ -105,69 +103,4 @@ class InconsistencyIT {
         os.println("####################################\n");
         return results;
     }
-
-    // OLD Tests
-
-    @Disabled("Outdated")
-    @Test
-    @DisplayName("test inconsistency detection with original input")
-    void inconsistencyIT() {
-        var configOptions = new String[] { TestUtil.getSimilarityConfigString(0.8), TestUtil.getMmeiThresholdConfigString(0.75) };
-        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, configOptions);
-
-        inputText = null;
-        inputModel = new File("src/test/resources/teammates/inconsistency/tm_w_text.owl");
-
-        logger.info("Running Inconsistency IT for Teammates");
-        var data = Pipeline.runAndSave("test_teammates_inconsistency", inputText, inputModel, additionalConfigs, outputDir);
-        Assertions.assertNotNull(data);
-    }
-
-    @Disabled("Outdated")
-    @Test
-    @DisplayName("test inconsistency detection when one element got deleted from model")
-    void inconsistencyWithDeletedModelElementIT() {
-        var configOptions = new String[] { TestUtil.getSimilarityConfigString(0.8), TestUtil.getMmeiThresholdConfigString(0.75) };
-        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, configOptions);
-
-        inputText = null;
-        inputModel = new File("src/test/resources/teammates/inconsistency/tm_w_text_wo_ui.owl");
-
-        logger.info("Running Inconsistency IT for Teammates missing UI Model Element");
-        var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui", inputText, inputModel, additionalConfigs, outputDir);
-
-        Assertions.assertNotNull(data);
-    }
-
-    @Disabled("Disabled for CI")
-    @Test
-    @DisplayName("test inconsistency detection with original input and provided text")
-    void inconsistencyUsingTextIT() {
-        var configOptions = new String[] { TestUtil.getSimilarityConfigString(0.8), TestUtil.getMmeiThresholdConfigString(0.75) };
-        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, configOptions);
-
-        inputText = new File("src/test/resources/teammates/teammates.txt");
-        inputModel = new File("src/test/resources/teammates/inconsistency/tm.owl");
-
-        logger.info("Running Inconsistency IT for Teammates with Text");
-        var data = Pipeline.runAndSave("test_teammates_inconsistency_text", inputText, inputModel, additionalConfigs, outputDir);
-        Assertions.assertNotNull(data);
-    }
-
-    @Disabled("Disabled for CI")
-    @Test
-    @DisplayName("test inconsistency detection with provided text and one element got deleted from model")
-    void inconsistencyWithDeletedModelElementUsingTextIT() {
-        var configOptions = new String[] { TestUtil.getSimilarityConfigString(0.8), TestUtil.getMmeiThresholdConfigString(0.75) };
-        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, configOptions);
-
-        inputText = new File("src/test/resources/teammates/teammates.txt");
-        inputModel = new File("src/test/resources/teammates/inconsistency/tm_wo_ui.owl");
-
-        logger.info("Running Inconsistency IT for Teammates with Text and missing model element");
-        var data = Pipeline.runAndSave("test_teammates_inconsistency_wo_ui_text", inputText, inputModel, additionalConfigs, outputDir);
-
-        Assertions.assertNotNull(data);
-    }
-
 }
