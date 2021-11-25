@@ -74,7 +74,7 @@ class TracelinksIT {
         var minRecall = MIN_REC_TS;
         var minF1 = MIN_F1_TS;
 
-        compareOntologyBased("teastore", similarity, minPrecision, minRecall, minF1);
+        compareOntologyBased(Project.TEASTORE, similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled for CI. Enable for local test only!")
@@ -86,7 +86,7 @@ class TracelinksIT {
         var minRecall = MIN_REC_TS;
         var minF1 = MIN_F1_TS;
 
-        compareTextBased("teastore", similarity, minPrecision, minRecall, minF1);
+        compareTextBased(Project.TEASTORE, similarity, minPrecision, minRecall, minF1);
     }
 
     @Test
@@ -97,7 +97,7 @@ class TracelinksIT {
         var minRecall = MIN_RECALL_TM;
         var minF1 = MIN_F1_TM;
 
-        compareOntologyBased("teammates", similarity, minPrecision, minRecall, minF1);
+        compareOntologyBased(Project.TEAMMATES, similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled for CI. Enable for local test only!")
@@ -109,7 +109,7 @@ class TracelinksIT {
         var minRecall = MIN_RECALL_TM;
         var minF1 = MIN_F1_TM;
 
-        compareTextBased("teammates", similarity, minPrecision, minRecall, minF1);
+        compareTextBased(Project.TEAMMATES, similarity, minPrecision, minRecall, minF1);
     }
 
     @Test
@@ -120,7 +120,7 @@ class TracelinksIT {
         var minRecall = MIN_RECALL_MS;
         var minF1 = MIN_F1_MS;
 
-        compareOntologyBased("mediastore", similarity, minPrecision, minRecall, minF1);
+        compareOntologyBased(Project.MEDIASTORE, similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled for CI. Enable for local test only!")
@@ -132,7 +132,7 @@ class TracelinksIT {
         var minRecall = MIN_RECALL_MS;
         var minF1 = MIN_F1_MS;
 
-        compareTextBased("mediastore", similarity, minPrecision, minRecall, minF1);
+        compareTextBased(Project.MEDIASTORE, similarity, minPrecision, minRecall, minF1);
     }
 
     @Disabled("Disabled for CI. Only enable this locally if you want to test the cache.")
@@ -170,26 +170,24 @@ class TracelinksIT {
 
     }
 
-    private void compareOntologyBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
+    private void compareOntologyBased(Project project, double similarity, double minPrecision, double minRecall, double minF1) {
         inputText = null;
-        var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
-        inputModel = new File(inputFilePath);
+        inputModel = project.getTextOntologyFile();
 
-        compare(name, similarity, minPrecision, minRecall, minF1);
+        compare(project, similarity, minPrecision, minRecall, minF1);
     }
 
-    private void compareTextBased(String name, double similarity, double minPrecision, double minRecall, double minF1) {
-        var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
-        inputText = new File(inputTextPath);
-        var inputFilePath = String.format("src/test/resources/%s/%s.owl", name, name);
-        inputModel = new File(inputFilePath);
+    private void compareTextBased(Project project, double similarity, double minPrecision, double minRecall, double minF1) {
+        inputText = project.getTextFile();
+        inputModel = project.getModelFile();
 
-        compare(name, similarity, minPrecision, minRecall, minF1);
+        compare(project, similarity, minPrecision, minRecall, minF1);
     }
 
-    private void compare(String name, double similarity, double minPrecision, double minRecall, double minF1) {
+    private void compare(Project project, double similarity, double minPrecision, double minRecall, double minF1) {
         TestUtil.setConfigOptions(ADDITIONAL_CONFIG, TestUtil.getSimilarityConfigString(similarity));
 
+        var name = project.name().toLowerCase();
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
 
