@@ -23,7 +23,7 @@ public enum Projects {
             "src/test/resources/mediastore/goldstandard.csv" //
     ), //
     TEAMMATES( //
-            "src/test/resources/teammates/inconsistency/tm.owl", //
+            "src/test/resources/teammates/teammates.owl", //
             "src/test/resources/teammates/teammates_w_text.owl", //
             "src/test/resources/teammates/teammates.txt", //
             "src/test/resources/teammates/goldstandard.csv" //
