@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
-public enum Projects {
+public enum Project {
     MEDIASTORE(//
             "src/test/resources/mediastore/mediastore.owl", //
             "src/test/resources/mediastore/mediastore_w_text.owl", //
@@ -39,7 +39,7 @@ public enum Projects {
     private String textFile;
     private String goldStandard;
 
-    Projects(String model, String textOntology, String textFile, String goldStandard) {
+    Project(String model, String textOntology, String textFile, String goldStandard) {
         this.model = model;
         this.textOntology = textOntology;
         this.textFile = textFile;

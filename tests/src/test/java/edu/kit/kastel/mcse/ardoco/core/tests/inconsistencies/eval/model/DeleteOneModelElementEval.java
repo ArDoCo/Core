@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.tests.Projects;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.InconsistencyHelper;
@@ -32,7 +32,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     }
 
     @Override
-    public PRF1 evaluate(Projects p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public PRF1 evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
         Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> result = process(originalModel, originalText, strategy);
 

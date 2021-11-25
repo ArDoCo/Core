@@ -34,22 +34,25 @@ class InconsistencyIT {
     @Test
     @DisplayName("Evaluate Inconsistency Analyses for Teammates")
     void inconsistencyTeammatesIT() {
-        Assertions.assertNotNull(evalInconsistency(Projects.TEAMMATES));
+        var results = evalInconsistency(Project.TEAMMATES);
+        Assertions.assertNotNull(results);
     }
 
     @Test
     @DisplayName("Evaluate Inconsistency Analyses for Mediastore")
     void inconsistencyMediastoreIT() {
-        Assertions.assertNotNull(evalInconsistency(Projects.MEDIASTORE));
+        var results = evalInconsistency(Project.MEDIASTORE);
+        Assertions.assertNotNull(results);
     }
 
     @Test
     @DisplayName("Evaluate Inconsistency Analyses for Teastore")
     void inconsistencyTeastoreIT() {
-        Assertions.assertNotNull(evalInconsistency(Projects.TEASTORE));
+        var results = evalInconsistency(Project.TEASTORE);
+        Assertions.assertNotNull(results);
     }
 
-    private static EvaluationResult evalInconsistency(Projects project) {
+    private static EvaluationResult evalInconsistency(Project project) {
         var name = project.name();
         logger.info("Starting Inconsistency Analyses for {}", name);
         DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
@@ -65,7 +68,7 @@ class InconsistencyIT {
         return null;
     }
 
-    private static EvaluationResult run(Projects project, IEvaluationStrategy eval, PrintStream os) {
+    private static EvaluationResult run(Project project, IEvaluationStrategy eval, PrintStream os) {
         os.println("####################################");
         os.println("START Eval: " + project + " -- " + eval);
 
