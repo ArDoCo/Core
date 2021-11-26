@@ -121,4 +121,8 @@ public enum POSTag {
     public boolean isVerb() {
         return getTag().startsWith("VB");
     }
+
+    public boolean isNoun() {
+        return getTag().startsWith("NN");
+    }
 }
