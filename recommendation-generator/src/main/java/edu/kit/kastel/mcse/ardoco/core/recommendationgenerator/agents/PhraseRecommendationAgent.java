@@ -22,14 +22,11 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 @MetaInfServices(RecommendationAgent.class)
-public class PhraseRecommendationAgent extends RecommendationAgent {
+public final class PhraseRecommendationAgent extends RecommendationAgent {
 
     private double confidence = 0.8;
 
-    /**
-     * Prototype constructor.
-     */
-    public PhraseRecommendationAgent() {
+    private PhraseRecommendationAgent() {
         super(GenericRecommendationConfig.class);
     }
 
@@ -48,21 +45,26 @@ public class PhraseRecommendationAgent extends RecommendationAgent {
     @Override
     public void exec() {
         createRecommendationInstancesFromPhraseNounMappings();
+        findMorePhrasesForRecommendationInstances();
     }
 
     private void createRecommendationInstancesFromPhraseNounMappings() {
         for (var nounMapping : textState.getNounMappings()) {
             if (nounMapping.isPhrase()) {
-                var nounMappings = Lists.immutable.of(nounMapping);
                 var typeMappings = getRelatedTypeMappings(nounMapping);
-                var types = getSimilarModelTypes(typeMappings);
-                if (types.isEmpty()) {
-                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", confidence, nounMappings, typeMappings);
-                } else {
-                    for (var type : types) {
-                        recommendationState.addRecommendedInstance(nounMapping.getReference(), type, confidence, nounMappings, typeMappings);
-                    }
-                }
+                addRecommendedInstance(nounMapping, typeMappings);
+            }
+        }
+    }
+
+    private void addRecommendedInstance(INounMapping nounMapping, ImmutableList<INounMapping> typeMappings) {
+        var nounMappings = Lists.immutable.of(nounMapping);
+        var types = getSimilarModelTypes(typeMappings);
+        if (types.isEmpty()) {
+            recommendationState.addRecommendedInstance(nounMapping.getReference(), "", confidence, nounMappings, typeMappings);
+        } else {
+            for (var type : types) {
+                recommendationState.addRecommendedInstance(nounMapping.getReference(), type, confidence, nounMappings, typeMappings);
             }
         }
     }
@@ -92,6 +94,31 @@ public class PhraseRecommendationAgent extends RecommendationAgent {
         }
         // TODO find further TypeMappings around, if possible!
         return typeMappings.toImmutable();
+    }
+
+    private void findMorePhrasesForRecommendationInstances() {
+        // TODO can you make this better?
+        for (var nounMapping : textState.getNounMappings()) {
+            for (var word : nounMapping.getWords()) {
+                var prevWord = word.getPreWord();
+                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, prevWord);
+
+                var nextWord = word.getNextWord();
+                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, nextWord);
+            }
+        }
+    }
+
+    private void addRecommendedInstanceIfPhraseWithOtherWord(INounMapping nounMapping, IWord word) {
+        if (word == null) {
+            return;
+        }
+        if (word.getPosTag().isNoun()) {
+            var typeMappings = textState.getMappingsThatCouldBeAType(word);
+            if (!typeMappings.isEmpty()) {
+                addRecommendedInstance(nounMapping, typeMappings);
+            }
+        }
     }
 
     private static ImmutableList<IWord> getPhraseWordsFromNounMapping(INounMapping nounMapping) {
