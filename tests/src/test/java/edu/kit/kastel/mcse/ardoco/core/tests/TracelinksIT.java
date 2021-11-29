@@ -34,9 +34,9 @@ class TracelinksIT {
     private static final double MIN_RECALL_MS = 0.680d;
 
     private static final double SIMILARITY_TM = 0.80;
-    private static final double MIN_F1_TM = 0.775d;
-    private static final double MIN_PREC_TM = 0.688d;
-    private static final double MIN_RECALL_TM = 0.887d;
+    private static final double MIN_F1_TM = 0.875d;
+    private static final double MIN_PREC_TM = 0.85d;
+    private static final double MIN_RECALL_TM = 0.90d;
 
     private static final double SIMILARITY_TS = 1.0;
     private static final double MIN_F1_TS = 0.83d;
