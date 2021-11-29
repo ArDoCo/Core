@@ -19,6 +19,7 @@ public class PRF1 implements EvaluationResult {
     /**
      * @return the precision
      */
+    @Override
     public double getPrecision() {
         return precision;
     }
@@ -26,6 +27,7 @@ public class PRF1 implements EvaluationResult {
     /**
      * @return the recall
      */
+    @Override
     public double getRecall() {
         return recall;
     }
@@ -33,6 +35,7 @@ public class PRF1 implements EvaluationResult {
     /**
      * @return the f1
      */
+    @Override
     public double getF1() {
         return f1;
     }
