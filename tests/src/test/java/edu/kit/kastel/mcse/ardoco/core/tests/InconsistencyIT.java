@@ -24,6 +24,18 @@ class InconsistencyIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
 
+    private static final double MIN_PREC_TEAMMATES = .853;
+    private static final double MIN_REC_TEAMMATES = .853;
+    private static final double MIN_F1_TEAMMATES = .853;
+
+    private static final double MIN_PREC_MEDIASTORE = .90;
+    private static final double MIN_REC_MEDIASTORE = .24;
+    private static final double MIN_F1_MEDIASTORE = .387;
+
+    private static final double MIN_PREC_TEASTORE = .423;
+    private static final double MIN_REC_TEASTORE = .785;
+    private static final double MIN_F1_TEASTORE = .550;
+
     @BeforeEach
     void beforeEach() {
         // set the cache to true (default setting)
@@ -36,6 +48,17 @@ class InconsistencyIT {
     void inconsistencyTeammatesIT() {
         var results = evalInconsistency(Project.TEAMMATES);
         Assertions.assertNotNull(results);
+
+        var precision = results.getPrecision();
+        var recall = results.getRecall();
+        var f1 = results.getF1();
+
+        Assertions.assertAll(//
+                () -> Assertions.assertTrue(precision >= MIN_PREC_TEAMMATES,
+                        "Precision " + precision + " is below the expected minimum value " + MIN_PREC_TEAMMATES), //
+                () -> Assertions.assertTrue(recall >= MIN_REC_TEAMMATES, "Recall " + recall + " is below the expected minimum value " + MIN_REC_TEAMMATES), //
+                () -> Assertions.assertTrue(f1 >= MIN_F1_TEAMMATES, "F1 " + f1 + " is below the expected minimum value " + MIN_F1_TEAMMATES));
+
     }
 
     @Test
@@ -43,6 +66,16 @@ class InconsistencyIT {
     void inconsistencyMediastoreIT() {
         var results = evalInconsistency(Project.MEDIASTORE);
         Assertions.assertNotNull(results);
+
+        var precision = results.getPrecision();
+        var recall = results.getRecall();
+        var f1 = results.getF1();
+
+        Assertions.assertAll(//
+                () -> Assertions.assertTrue(precision >= MIN_PREC_MEDIASTORE,
+                        "Precision " + precision + " is below the expected minimum value " + MIN_PREC_MEDIASTORE), //
+                () -> Assertions.assertTrue(recall >= MIN_REC_MEDIASTORE, "Recall " + recall + " is below the expected minimum value " + MIN_REC_MEDIASTORE), //
+                () -> Assertions.assertTrue(f1 >= MIN_F1_MEDIASTORE, "F1 " + f1 + " is below the expected minimum value " + MIN_F1_MEDIASTORE));
     }
 
     @Test
@@ -50,6 +83,16 @@ class InconsistencyIT {
     void inconsistencyTeastoreIT() {
         var results = evalInconsistency(Project.TEASTORE);
         Assertions.assertNotNull(results);
+
+        var precision = results.getPrecision();
+        var recall = results.getRecall();
+        var f1 = results.getF1();
+
+        Assertions.assertAll(//
+                () -> Assertions.assertTrue(precision >= MIN_PREC_TEASTORE,
+                        "Precision " + precision + " is below the expected minimum value " + MIN_PREC_TEASTORE), //
+                () -> Assertions.assertTrue(recall >= MIN_REC_TEASTORE, "Recall " + recall + " is below the expected minimum value " + MIN_REC_TEASTORE), //
+                () -> Assertions.assertTrue(f1 >= MIN_F1_TEASTORE, "F1 " + f1 + " is below the expected minimum value " + MIN_F1_TEASTORE));
     }
 
     private static EvaluationResult evalInconsistency(Project project) {
