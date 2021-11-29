@@ -26,7 +26,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
 
     private double confidence = 0.8;
 
-    private PhraseRecommendationAgent() {
+    public PhraseRecommendationAgent() {
         super(GenericRecommendationConfig.class);
     }
 
