@@ -16,9 +16,9 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.InconsistencyHelper;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1Evaluator;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
@@ -32,7 +32,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     }
 
     @Override
-    public PRF1 evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
         Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> result = process(originalModel, originalText, strategy);
 
@@ -104,7 +104,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var fp = foundSentencesWithDuplicatesOverInconsistencies.select(i -> !sentencesAnnotatedWithElement.contains(i));
         var fn = sentencesAnnotatedWithElement.select(i -> !foundSentencesWithDuplicatesOverInconsistencies.contains(i));
 
-        var eval = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
+        EvaluationResult eval = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
 
         os.println(eval);
         os.println("-----------------------------------");

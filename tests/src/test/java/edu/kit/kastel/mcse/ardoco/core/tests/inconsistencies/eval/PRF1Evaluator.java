@@ -10,7 +10,7 @@ public class PRF1Evaluator {
         reset();
     }
 
-    public PRF1 nextEvaluation(int tp, int fp, int fn) {
+    public EvaluationResult nextEvaluation(int tp, int fp, int fn) {
         this.tp += tp;
         this.fp += fp;
         this.fn += fn;
@@ -18,7 +18,7 @@ public class PRF1Evaluator {
         return new PRF1(tp, fp, fn);
     }
 
-    public PRF1 getOverallPRF1() {
+    public EvaluationResult getOverallPRF1() {
         return new PRF1(tp, fp, fn);
     }
 
