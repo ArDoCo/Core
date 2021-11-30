@@ -1,11 +1,11 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
-import java.util.Objects;
-
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import java.util.Objects;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.MutableSet;
 
 public class MissingElementInconsistencyCandidate {
 

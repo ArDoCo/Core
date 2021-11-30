@@ -1,9 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
@@ -14,6 +11,10 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.G
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.TextSNLP;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect.Tokenizer;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.PrePipelineData;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 /**
  * Simply invoke each agent in a suitable order (once).

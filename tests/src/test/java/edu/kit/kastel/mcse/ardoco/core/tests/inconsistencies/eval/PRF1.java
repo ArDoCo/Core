@@ -1,3 +1,4 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
 
 public class PRF1 implements EvaluationResult {

@@ -1,10 +1,10 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-import java.util.Set;
-
-import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.IState;
+import java.util.Set;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IModelState defines the information directly extracted from the models.

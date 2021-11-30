@@ -1,13 +1,14 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
 
 class OntologyCorefClusterTest {
     protected static String ontologyPath = "src/test/resources/teastore_w_text.owl";

@@ -1,4 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
+
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 

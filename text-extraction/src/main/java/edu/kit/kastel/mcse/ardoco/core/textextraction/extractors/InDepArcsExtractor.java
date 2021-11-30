@@ -1,7 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
@@ -10,6 +9,8 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.kohsuke.MetaInfServices;
 
 /**
  * The analyzer examines the incoming dependency arcs of the current node.

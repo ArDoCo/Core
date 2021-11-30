@@ -1,6 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
-import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Agent;
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
@@ -10,6 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import java.util.Objects;
 
 public abstract class InconsistencyAgent extends Agent {
 

@@ -1,11 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import java.util.Map;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.IExtractor;
@@ -16,6 +11,11 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
+import java.util.Map;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.kohsuke.MetaInfServices;
 
 /**
  * The Class InitialTextAgent defines the agent that executes the extractors for the text stage.

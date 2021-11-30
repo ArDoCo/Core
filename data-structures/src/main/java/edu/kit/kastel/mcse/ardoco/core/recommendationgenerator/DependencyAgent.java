@@ -1,4 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
+
 
 import edu.kit.kastel.mcse.ardoco.core.common.Agent;
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
@@ -6,7 +8,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-
 import java.util.Objects;
 
 public abstract class DependencyAgent extends Agent {
@@ -20,8 +21,8 @@ public abstract class DependencyAgent extends Agent {
         super(configType);
     }
 
-    protected DependencyAgent(Class<? extends Configuration> configType, IText text,
-                              ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
+    protected DependencyAgent(Class<? extends Configuration> configType, IText text, ITextState textState, IModelState modelState,
+            IRecommendationState recommendationState) {
         super(configType);
         this.text = text;
         this.textState = textState;
@@ -40,5 +41,5 @@ public abstract class DependencyAgent extends Agent {
     }
 
     public abstract DependencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-                                                     Configuration config);
+            Configuration config);
 }

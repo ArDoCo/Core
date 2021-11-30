@@ -1,12 +1,12 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.List;
-
-import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.IState;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IRecommendationState defines the state for recommendations.

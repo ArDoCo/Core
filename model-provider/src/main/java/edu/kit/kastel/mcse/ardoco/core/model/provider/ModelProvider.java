@@ -1,8 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model.provider;
 
-import java.util.Map;
-
-import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
@@ -11,6 +9,8 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelExtractionState;
+import java.util.Map;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model

@@ -1,8 +1,9 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
-import org.eclipse.collections.api.collection.ImmutableCollection;
 
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
+import org.eclipse.collections.api.collection.ImmutableCollection;
 
 public interface IInconsistency extends ICopyable<IInconsistency> {
 

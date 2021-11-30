@@ -1,16 +1,16 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
+
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.TreeSet;
-
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
-
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 
 public class MissingModelInstanceInconsistency implements IInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
@@ -65,10 +65,10 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
 
         return entries.toImmutable();
     }
-    
+
     public IRecommendedInstance getTextualInstance() {
-		return textualInstance;
-	}
+        return textualInstance;
+    }
 
     @Override
     public String getType() {
@@ -95,9 +95,9 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         return Objects.equals(textualInstance, other.textualInstance);
     }
 
-	@Override
-	public String toString() {
-		return "MissingModelInstanceInconsistency [textualInstance=" + textualInstance + "]";
-	}
-    
+    @Override
+    public String toString() {
+        return "MissingModelInstanceInconsistency [textualInstance=" + textualInstance + "]";
+    }
+
 }
