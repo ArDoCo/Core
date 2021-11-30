@@ -1,3 +1,4 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text;
 
 /**
@@ -19,8 +20,8 @@ public enum DependencyTag {
     NSUBJ,
 
     /**
-     * The possession modifier relation holds between the head of an NP and its possessive determiner,
-     * or agenitive's complement.
+     * The possession modifier relation holds between the head of an NP and its possessive determiner, or agenitive's
+     * complement.
      */
     POSS,
 
@@ -34,10 +35,9 @@ public enum DependencyTag {
     IOBJ,
 
     /**
-     * The nmod relation is used for nominal modifiers of nouns or clausal predicates.
-     * nmod is a noun functioning as a non-core (oblique) argument or adjunct. In English, nmod is used
-     * - for prepositional complements
-     * - for ‘s genitives
+     * The nmod relation is used for nominal modifiers of nouns or clausal predicates. nmod is a noun functioning as a
+     * non-core (oblique) argument or adjunct. In English, nmod is used - for prepositional complements - for ‘s
+     * genitives
      */
     NMOD,
 
@@ -47,15 +47,15 @@ public enum DependencyTag {
     NSUBJPASS,
 
     /**
-     * The object of a preposition is the head of a noun phrase following the preposition,
-     * or the adverbs "here" and "there".
+     * The object of a preposition is the head of a noun phrase following the preposition, or the adverbs "here" and
+     * "there".
      */
     POBJ,
 
     /**
      * An agent is the complement of a passive verb which is introduced by the preposition "by" and does the action.
-     * This relation only appears in the collapsed dependencies, where it can replace prep_by, where appropriate.
-     * It does not appear in basic dependencies output.
+     * This relation only appears in the collapsed dependencies, where it can replace prep_by, where appropriate. It
+     * does not appear in basic dependencies output.
      */
     AGENT,
 
@@ -65,23 +65,19 @@ public enum DependencyTag {
     NUM,
 
     /**
-     * A predeterminer is the relation between the head of an NP and a word that precedes and modifies the meaning
-     * of the NP determiner.
+     * A predeterminer is the relation between the head of an NP and a word that precedes and modifies the meaning of
+     * the NP determiner.
      */
     PREDET,
 
     /**
-     * A relative clause modifier of an NP is a relative clause modifying the NP. The relation points from the head
-     * noun of the NP to the head of the relative clause, normally a verb.
+     * A relative clause modifier of an NP is a relative clause modifying the NP. The relation points from the head noun
+     * of the NP to the head of the relative clause, normally a verb.
      */
     RCMOD,
 
-
-
     /*
-    ==================
-    Newly added types
-    ==================
+     * ================== Newly added types ==================
      */
 
     /**
@@ -138,7 +134,7 @@ public enum DependencyTag {
     ADVMOD,
     /**
      * This is used for interjections and other discourse particles and elements (which are not clearly linked to the
-     * structure of the sentence, except in an expressive way).  We generally follow the guidelines of what the Penn
+     * structure of the sentence, except in an expressive way). We generally follow the guidelines of what the Penn
      * Treebanks count as an INTJ. They define this to include: interjections (oh,uh-huh,Welcome), fillers (um,ah), and
      * discourse markers (well,like,actually, but not you know).
      */
@@ -156,7 +152,7 @@ public enum DependencyTag {
     COP,
     /**
      * A marker is the word introducing a finite clause subordinate to another clause. For a complement clause, this
-     * will typically be "that" or "whether".  For an adverbial clause, the marker is typically a preposition like
+     * will typically be "that" or "whether". For an adverbial clause, the marker is typically a preposition like
      * "while" or "although". The mark is a dependent of the subordinate clause head.
      */
     MARK,
@@ -186,16 +182,16 @@ public enum DependencyTag {
     CASE,
 
     /**
-     * A conjunct is the relation between two elements connected by a coordinating conjunction, such as "and","or",
-     * etc. We treat conjunctions asymmetrically: The head of the relation is the first conjunct and other conjunctions
+     * A conjunct is the relation between two elements connected by a coordinating conjunction, such as "and","or", etc.
+     * We treat conjunctions asymmetrically: The head of the relation is the first conjunct and other conjunctions
      * depend on it via the conj relation.
      */
     CONJ,
 
     /**
      * A coordination is the relation between an element of a conjunct and the coordinating conjunction word of the
-     * conjunct. (Note: different dependency grammars have different treatments of coordination. We take one conjunct
-     * of a conjunction (normally the first) as the head of the conjunction.) A conjunction may also appear at the
+     * conjunct. (Note: different dependency grammars have different treatments of coordination. We take one conjunct of
+     * a conjunction (normally the first) as the head of the conjunction.) A conjunction may also appear at the
      * beginning of a sentence. This is also called a cc, and dependent on the root predicate of the sentence.
      */
     CC,
@@ -203,14 +199,14 @@ public enum DependencyTag {
     /**
      * "fixed", "fixed multiword expression"
      */
-    FIXED, 
+    FIXED,
 
     /**
      * "flat", "flat multiword expression"
      */
-    FLAT, 
+    FLAT,
 
-    COMPOUND, 
+    COMPOUND,
 
     LIST,
 
@@ -219,7 +215,7 @@ public enum DependencyTag {
     ORPHAN,
 
     /**
-     * This relation links two parts of a word that are separated in text that is not well edited.  We follow the
+     * This relation links two parts of a word that are separated in text that is not well edited. We follow the
      * treebank: The GW part is the dependent and the head is in some sense the "main" part, often the second part.
      */
     GOES_WITH,
@@ -233,8 +229,8 @@ public enum DependencyTag {
     PUNCT,
 
     /**
-     * A clausal passive subject is a clausal syntactic subject of a passive clause.  In the example below,
-     * "that she lied" is the subject.
+     * A clausal passive subject is a clausal syntactic subject of a passive clause. In the example below, "that she
+     * lied" is the subject.
      */
     CSUBJ_PASS,
 

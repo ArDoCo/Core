@@ -1,8 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -15,6 +13,9 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationSt
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.kohsuke.MetaInfServices;
 
 /**
  * The reference solver finds instances mentioned in the text extraction state as names. If it founds some similar names

@@ -1,5 +1,8 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,8 +12,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 @TestMethodOrder(OrderAnnotation.class)
 class OntologyTextProviderTest {

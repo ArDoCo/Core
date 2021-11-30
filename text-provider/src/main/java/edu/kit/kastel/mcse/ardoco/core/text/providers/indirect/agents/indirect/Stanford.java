@@ -1,12 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.ParseUtil;
@@ -22,6 +16,13 @@ import edu.stanford.nlp.pipeline.WordsToSentencesAnnotator;
 import edu.stanford.nlp.process.Morphology;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.util.CoreMap;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * This class represents a facade for Stanford CoreNLP

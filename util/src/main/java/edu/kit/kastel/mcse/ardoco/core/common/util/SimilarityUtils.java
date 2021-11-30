@@ -1,16 +1,16 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import java.util.List;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
  * This class is a utility class.

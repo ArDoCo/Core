@@ -1,12 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.kohsuke.MetaInfServices;
 
 import edu.kit.ipd.parse.luna.data.AbstractPipelineData;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
@@ -22,6 +16,12 @@ import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.PrePipelineData;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.SRLToken;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import org.kohsuke.MetaInfServices;
 
 @MetaInfServices(IPipelineStage.class)
 public class GraphBuilder implements IPipelineStage {

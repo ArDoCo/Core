@@ -1,11 +1,11 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
-import java.util.Map;
-
-import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
+import java.util.Map;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The configuration for the connection generator module

@@ -1,9 +1,10 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
-import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import java.util.Objects;
 
 /**
  * Represents a tracelink. Is a convenience data class that takes the necessary info from {@link IInstanceLink} and the

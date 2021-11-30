@@ -1,9 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.MutableSet;
-import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
@@ -18,6 +15,10 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationSt
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.MutableSet;
+import org.kohsuke.MetaInfServices;
 
 @MetaInfServices(InconsistencyAgent.class)
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {

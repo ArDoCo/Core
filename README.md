@@ -1,6 +1,6 @@
 # Core
- [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/dashboard?id=ArDoCo_Core)
- 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/dashboard?id=ArDoCo_Core)
+
 [![Maven Verify](https://github.com/ArDoCo/Core/workflows/Maven%20Verify/badge.svg)](https://github.com/ArDoCo/Core/actions?query=workflow%3A%22Maven+Verify%22)
 
 
@@ -16,19 +16,19 @@ The Core Project contains a CLI that currently supports to find trace links betw
 ### Usage
 ```
 java -jar ardoco-core-pipeline \
-	
+
 	-n NAME_OF_THE_PROJECT (will be stored in the results)
 	-m PATH_TO_THE_PCM_MODEL_AS_OWL (use Ecore2OWL to obtain PCM models as ontology)
 	-o PATH_TO_OUTPUT_FOLDER
 
 	Text input parameters (one of them has to be provided):
-    -t PATH_TO_PLAIN_TEXT
-    -p (provided ontology contains the preprocessed text that should be used instead of the text)
-	
+	-t PATH_TO_PLAIN_TEXT
+	-p (provided ontology contains the preprocessed text that should be used instead of the text)
+
 	Optional Parameters:
-	
+
 	-c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
-	
+
 ```
 
 ### Case Studies
