@@ -1,6 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
-import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import java.util.Objects;
 
 /**
  * The Class ConnectionExtractor defines the base class of extractors in the connection generator stage.

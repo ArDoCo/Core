@@ -1,11 +1,11 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.Map;
-
-import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
+import java.util.Map;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Class TextExtractorConfig defines the configuration for the extractors of this stage.

@@ -1,21 +1,21 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.rdf.model.Resource;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 
 public final class OntologyWord implements IWord {
     private OntologyConnector ontologyConnector = null;

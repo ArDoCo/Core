@@ -1,10 +1,11 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.Extractor;
+import java.util.Objects;
 
 /**
  * The Class TextExtractor is the base class for extractors in the text processing stage.

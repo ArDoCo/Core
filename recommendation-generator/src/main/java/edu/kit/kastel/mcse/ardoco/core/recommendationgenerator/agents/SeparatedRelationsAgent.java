@@ -1,9 +1,6 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
@@ -16,6 +13,10 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationAge
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.kohsuke.MetaInfServices;
 
 /**
  * The separated relation solver is a solver for the creation of recommended relations. Whenever a recommended instance

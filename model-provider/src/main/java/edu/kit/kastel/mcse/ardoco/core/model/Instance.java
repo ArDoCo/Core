@@ -1,12 +1,12 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import java.util.Objects;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
  * This class represents an instance extracted from a model. The name of an instance (as well as the type) are splitted

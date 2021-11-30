@@ -1,8 +1,15 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
+
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.informalin.ontology.OntologyInterface;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
@@ -11,13 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.informalin.ontology.OntologyInterface;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
-import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 
 /**
  * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.

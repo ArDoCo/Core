@@ -1,9 +1,10 @@
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
 
-import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public final class InconsistencyHelper {
     private InconsistencyHelper() {

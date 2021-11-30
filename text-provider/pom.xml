@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -6,62 +7,62 @@
     <version>0.2-SNAPSHOT</version>
   </parent>
   <artifactId>text-provider</artifactId>
-  
-  <properties>
-		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
-		<stanford.corenlp.version>4.3.2</stanford.corenlp.version>
-  </properties>
-  
-  <dependencies>
-	  	<dependency>
-	  		<groupId>edu.kit.kastel.mcse.ardoco</groupId>
-	  		<artifactId>data-structures</artifactId>
-	  	</dependency>
-	  	<dependency>
-			<groupId>edu.kit.kastel.informalin</groupId>
-			<artifactId>ontology-connector</artifactId>
-		</dependency>
-	
-		<!-- PARSE / INDIRECT -->
-		<dependency>
-			<groupId>edu.kit.ipd.parse</groupId>
-			<artifactId>luna</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.kohsuke.metainf-services</groupId>
-			<artifactId>metainf-services</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.parse</groupId>
-			<artifactId>parseBios</artifactId>
-		</dependency>
 
-		<!-- Stanford -->
-		<dependency>
-			<groupId>edu.stanford.nlp</groupId>
-			<artifactId>stanford-corenlp</artifactId>
-			<version>${stanford.corenlp.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.stanford.nlp</groupId>
-			<artifactId>stanford-corenlp</artifactId>
-			<classifier>models</classifier>
-			<version>${stanford.corenlp.version}</version>
-		</dependency>
-	
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
-			<version>5.8.1</version>
-			<scope>test</scope>
-		</dependency>
+  <properties>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+    <stanford.corenlp.version>4.3.2</stanford.corenlp.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
+      <artifactId>data-structures</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.kastel.informalin</groupId>
+      <artifactId>ontology-connector</artifactId>
+    </dependency>
+
+    <!-- PARSE / INDIRECT -->
+    <dependency>
+      <groupId>edu.kit.ipd.parse</groupId>
+      <artifactId>luna</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kohsuke.metainf-services</groupId>
+      <artifactId>metainf-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.ipd.parse</groupId>
+      <artifactId>parseBios</artifactId>
+    </dependency>
+
+    <!-- Stanford -->
+    <dependency>
+      <groupId>edu.stanford.nlp</groupId>
+      <artifactId>stanford-corenlp</artifactId>
+      <version>${stanford.corenlp.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>edu.stanford.nlp</groupId>
+      <artifactId>stanford-corenlp</artifactId>
+      <version>${stanford.corenlp.version}</version>
+      <classifier>models</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>5.8.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-  
+
   <repositories>
-		<repository>
-			<id>ipdNexus-public-all</id>
-			<name>IPD-Repository</name>
-			<url>https://bob.ipd.kit.edu/nexus/repository/maven-public-all</url>
-		</repository>
-	</repositories>
+    <repository>
+      <id>ipdNexus-public-all</id>
+      <name>IPD-Repository</name>
+      <url>https://bob.ipd.kit.edu/nexus/repository/maven-public-all</url>
+    </repository>
+  </repositories>
 </project>

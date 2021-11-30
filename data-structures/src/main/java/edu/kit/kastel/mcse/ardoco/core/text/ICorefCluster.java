@@ -1,10 +1,8 @@
-/**
- *
- */
+/* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text;
 
-import java.util.StringJoiner;
 
+import java.util.StringJoiner;
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**
