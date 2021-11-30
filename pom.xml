@@ -43,6 +43,8 @@
 	<properties>
 		<eclipse-collections.version>11.0.0</eclipse-collections.version>
 		<log4j.version>2.14.1</log4j.version>
+		<spotless.version>2.17.4</spotless.version>
+
 		<sonar.projectKey>ArDoCo_Core</sonar.projectKey>
 		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
 		<sonar.organization>ardoco</sonar.organization>
@@ -185,6 +187,55 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.7</version>
+				</plugin>
+				<plugin>
+				  <groupId>com.diffplug.spotless</groupId>
+				  <artifactId>spotless-maven-plugin</artifactId>
+				  <version>${spotless.version}</version>
+				  <configuration>
+					<formats>
+					  <format>
+						<!-- define the files to apply to -->
+						<includes>
+						  <include>*.md</include>
+						  <include>.gitignore</include>
+						</includes>
+						<!-- define the steps to apply to those files -->
+						<trimTrailingWhitespace/>
+						<endWithNewline/>
+						<indent>
+						  <tabs>true</tabs>
+						  <spacesPerTab>4</spacesPerTab>
+						</indent>
+					  </format>
+					</formats>
+					<!-- define a language-specific format -->
+					<java>
+						<eclipse>
+							<file>${project.basedir}/formatter.xml</file>
+						</eclipse>
+
+						<importOrder />
+						<removeUnusedImports />
+
+						<licenseHeader>
+							<file>${project.basedir}/license-header</file>
+						</licenseHeader>
+					</java>
+					<pom>
+						<includes>
+							<include>pom.xml</include>
+						</includes>
+
+						<sortPom>
+							<encoding>UTF-8</encoding>
+							<keepBlankLines>true</keepBlankLines>
+							<indentBlankLines>false</indentBlankLines>
+							<nrOfIndentSpace>2</nrOfIndentSpace>
+						</sortPom>
+
+						</pom>
+				  </configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
