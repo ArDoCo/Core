@@ -1,9 +1,9 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 

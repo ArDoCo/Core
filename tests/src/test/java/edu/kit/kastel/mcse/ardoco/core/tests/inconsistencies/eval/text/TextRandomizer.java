@@ -1,8 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.text;
 
-
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.misc.Pair;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.misc.Pair;
 
 public class TextRandomizer {
 

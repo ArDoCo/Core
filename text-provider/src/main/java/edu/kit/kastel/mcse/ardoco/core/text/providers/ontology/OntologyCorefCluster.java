@@ -1,15 +1,15 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
-
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntProperty;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+
+import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 /**
  * @author Jan Keim

@@ -1,14 +1,15 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.common.Loader;
-import java.util.Map;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
 
 /**
  * The Class TextExtractor.

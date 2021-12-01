@@ -1,9 +1,9 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
+import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import java.util.List;
 
 public interface IInstanceRelation {
     IInstanceRelation createCopy();

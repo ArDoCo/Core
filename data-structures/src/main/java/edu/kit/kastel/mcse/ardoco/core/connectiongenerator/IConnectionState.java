@@ -1,16 +1,16 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.common.IState;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedRelation;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
 
 /**
  * The Interface IConnectionState.

@@ -1,6 +1,13 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.kohsuke.MetaInfServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.ipd.parse.luna.data.AbstractPipelineData;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
@@ -15,12 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.pre
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.ChunkIOB;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.MainHypothesisToken;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.kohsuke.MetaInfServices;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @MetaInfServices(IPipelineStage.class)
 public class TextSNLP implements IPipelineStage {

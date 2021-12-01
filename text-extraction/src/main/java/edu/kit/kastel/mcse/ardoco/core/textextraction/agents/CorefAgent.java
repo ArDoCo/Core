@@ -1,6 +1,9 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
@@ -11,9 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.MutableSet;
 
 public class CorefAgent extends TextAgent {
 

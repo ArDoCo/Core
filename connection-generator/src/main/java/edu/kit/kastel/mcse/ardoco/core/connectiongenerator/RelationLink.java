@@ -1,10 +1,10 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
+import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedRelation;
-import java.util.Objects;
 
 /**
  * Represents a trace link between a relation of the extracted model and a recommended relation.

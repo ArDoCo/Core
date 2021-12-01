@@ -1,12 +1,13 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.Collection;
+import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import java.util.Collection;
-import java.util.Map;
-import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface INounMapping defines the mapping .

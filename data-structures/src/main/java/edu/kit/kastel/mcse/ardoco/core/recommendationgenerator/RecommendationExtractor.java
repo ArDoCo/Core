@@ -1,13 +1,13 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
+import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import java.util.Objects;
 
 /**
  * The Class RecommendationExtractor defines extractors for the recommendation stage.

@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

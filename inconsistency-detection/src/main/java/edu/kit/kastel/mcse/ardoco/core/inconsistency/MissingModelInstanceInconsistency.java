@@ -1,16 +1,17 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
-
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.TreeSet;
+
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
+
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 
 public class MissingModelInstanceInconsistency implements IInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
