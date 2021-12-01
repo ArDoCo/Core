@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
+import org.eclipse.collections.api.list.ImmutableList;
+import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
@@ -15,8 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
 
 @MetaInfServices(InconsistencyAgent.class)
 public class NameInconsistencyAgent extends InconsistencyAgent {

@@ -1,9 +1,9 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
-import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IModelRelation defines a relation extracted from the model.

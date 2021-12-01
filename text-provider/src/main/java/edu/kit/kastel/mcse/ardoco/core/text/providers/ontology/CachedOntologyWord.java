@@ -1,15 +1,16 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.list.ImmutableList;
 
 public final class CachedOntologyWord implements IWord {
     private static final Map<IWord, CachedOntologyWord> cache = new HashMap<>();

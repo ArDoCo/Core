@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**

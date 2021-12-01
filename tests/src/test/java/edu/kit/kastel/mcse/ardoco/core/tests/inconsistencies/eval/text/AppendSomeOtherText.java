@@ -1,6 +1,9 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.text;
 
+import java.io.PrintStream;
+
+import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -8,8 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalSt
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import java.io.PrintStream;
-import org.eclipse.collections.api.factory.Lists;
 
 public class AppendSomeOtherText extends AbstractEvalStrategy {
 

@@ -1,12 +1,13 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.util;
 
-
-import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 
 class ResourceAccessorTest {
 

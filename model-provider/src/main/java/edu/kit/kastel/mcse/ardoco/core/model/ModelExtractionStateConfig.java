@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-
 import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 
 /**
