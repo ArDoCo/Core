@@ -234,7 +234,9 @@
                 <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
               </eclipse>
 
-              <importOrder></importOrder>
+              <importOrder>
+                <file>spotless.importorder</file>
+              </importOrder>
               <removeUnusedImports></removeUnusedImports>
               <licenseHeader>
                 <file>${maven.multiModuleProjectDirectory}/license-header</file>
