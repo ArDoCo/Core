@@ -110,7 +110,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     private static Properties getStanfordProperties(Properties properties) {
         var allStanfordProperties = new Properties(properties);
 
-        if (!allStanfordProperties.contains("parse.type")) {
+        if (!allStanfordProperties.containsValue("parse.type")) {
             allStanfordProperties.put("parse.type", "stanford");
         }
 
