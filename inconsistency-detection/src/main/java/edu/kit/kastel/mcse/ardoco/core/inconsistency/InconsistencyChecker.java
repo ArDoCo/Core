@@ -1,15 +1,15 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.common.Loader;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.GenericInconsistencyConfig;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class InconsistencyChecker implements IExecutionStage {
 

@@ -1,6 +1,9 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
@@ -16,9 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Adds

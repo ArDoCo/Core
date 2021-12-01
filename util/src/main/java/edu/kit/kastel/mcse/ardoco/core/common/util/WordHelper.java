@@ -1,12 +1,12 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Class WordHelper contains some helper methods to work with words.

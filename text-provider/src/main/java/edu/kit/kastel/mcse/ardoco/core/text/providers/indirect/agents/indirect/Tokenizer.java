@@ -1,6 +1,11 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.kohsuke.MetaInfServices;
 
 import edu.kit.ipd.parse.luna.data.AbstractPipelineData;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
@@ -13,10 +18,6 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
 import edu.stanford.nlp.process.TokenizerFactory;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import org.kohsuke.MetaInfServices;
 
 @MetaInfServices(IPipelineStage.class)
 public class Tokenizer implements IPipelineStage {

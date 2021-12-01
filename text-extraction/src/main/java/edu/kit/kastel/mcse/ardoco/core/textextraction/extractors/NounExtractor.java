@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
+import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
@@ -8,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
-import org.kohsuke.MetaInfServices;
 
 /**
  * The analyzer classifies nouns.

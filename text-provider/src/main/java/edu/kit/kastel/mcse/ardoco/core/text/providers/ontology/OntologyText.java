@@ -1,6 +1,16 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntProperty;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
@@ -8,15 +18,6 @@ import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
 import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.apache.jena.ontology.Individual;
-import org.apache.jena.ontology.OntClass;
-import org.apache.jena.ontology.OntProperty;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 public class OntologyText implements IText {
     private static final String ERR_NO_LIST = "Could not find list of words in the ontology.";

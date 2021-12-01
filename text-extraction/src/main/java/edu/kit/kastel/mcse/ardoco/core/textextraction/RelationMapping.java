@@ -1,12 +1,13 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import java.util.Objects;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 /**
  * This class represents relations found in the graph. A relation mapping has relation mappings, representing the

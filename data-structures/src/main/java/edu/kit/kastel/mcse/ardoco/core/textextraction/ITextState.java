@@ -1,10 +1,10 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.IState;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface ITextState.

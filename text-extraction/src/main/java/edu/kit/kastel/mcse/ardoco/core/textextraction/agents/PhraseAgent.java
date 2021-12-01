@@ -1,6 +1,10 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import java.util.StringJoiner;
+
+import org.eclipse.collections.api.list.ImmutableList;
+import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
@@ -11,9 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
-import java.util.StringJoiner;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
 
 /**
  * Agent that is responsible for looking at phrases and extracting {@link INounMapping}s from compound nouns etc.

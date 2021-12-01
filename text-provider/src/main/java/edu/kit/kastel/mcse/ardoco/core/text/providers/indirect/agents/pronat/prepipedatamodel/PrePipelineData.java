@@ -1,15 +1,16 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.kohsuke.MetaInfServices;
 
 import edu.kit.ipd.parse.luna.data.AbstractPrePipelineData;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.MainHypothesisToken;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import org.kohsuke.MetaInfServices;
 
 /**
  * @author Sebastian Weigelt

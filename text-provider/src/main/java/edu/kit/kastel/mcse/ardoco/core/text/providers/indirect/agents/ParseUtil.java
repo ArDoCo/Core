@@ -1,6 +1,12 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents;
 
+import java.util.List;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IArcType;
@@ -16,11 +22,6 @@ import edu.stanford.nlp.ling.CoreAnnotations.IsNewlineAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
-import java.util.List;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class ParseUtil {
     private static final Logger logger = LoggerFactory.getLogger(ParseUtil.class);

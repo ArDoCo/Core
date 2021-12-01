@@ -1,17 +1,18 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-
-import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
 class PerformanceIT {
     private static final Logger logger = LogManager.getLogger(PerformanceIT.class);

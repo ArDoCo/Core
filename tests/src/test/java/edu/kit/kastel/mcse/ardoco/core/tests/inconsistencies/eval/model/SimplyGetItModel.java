@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model;
 
+import java.io.PrintStream;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingModelInstanceInconsistency;
@@ -10,7 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalSt
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import java.io.PrintStream;
 
 public class SimplyGetItModel extends AbstractEvalStrategy {
 
