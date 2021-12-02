@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 /**
  * This class is a utility class.
  *
- * @author Sophie
+ * @author Sophie, Jan
  *
  */
 public final class SimilarityUtils {

@@ -34,10 +34,10 @@ class SimilarityUtilsTest {
         boolean similar = SimilarityUtils.areWordsSimilar("test", "toast");
         Assertions.assertFalse(similar);
 
-        similar = SimilarityUtils.areWordsSimilar("test", "tset");
+        similar = SimilarityUtils.areWordsSimilar("test", "coast");
         Assertions.assertFalse(similar);
 
-        similar = SimilarityUtils.areWordsSimilar("testtesttesttest", "testtesttest");
+        similar = SimilarityUtils.areWordsSimilar("testtesttesttest", "testertest");
         Assertions.assertFalse(similar);
     }
 }
