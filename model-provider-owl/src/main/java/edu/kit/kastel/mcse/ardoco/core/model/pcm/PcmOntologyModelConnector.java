@@ -7,8 +7,6 @@ import java.util.Optional;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -25,12 +23,9 @@ import edu.kit.kastel.mcse.ardoco.core.model.Instance;
  */
 public class PcmOntologyModelConnector implements IModelConnector {
     private static final String ENTITY_NAME_PROPERTY = "entityName_-_NamedElement";
-
     private static final String ID_PROPERTY = "id_-_Identifier";
-
-    private static Logger logger = LogManager.getLogger(PcmOntologyModelConnector.class);
-
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
+
     private OntologyInterface ontologyConnector;
 
     /**
@@ -94,7 +89,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
 
     @Override
     public ImmutableList<IModelRelation> getRelations() {
-        logger.warn("This method is not yet implemented and will return an empty list!");
+        // TODO implement
         return Lists.immutable.empty();
     }
 
