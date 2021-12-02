@@ -26,6 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
 public class PhraseAgent extends TextAgent {
 
     private static final double PHRASE_CONFIDENCE = 0.6;
+    private static final double SPECIAL_NAMED_ENTITY_CONFIDENCE = 0.6;
 
     /**
      * Instantiates a new initial text agent.
@@ -46,22 +47,35 @@ public class PhraseAgent extends TextAgent {
     @Override
     public void exec() {
         for (var word : text.getWords()) {
-            var phrase = CommonUtilities.getCompoundPhrases(word);
-            phrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
-            if (phrase.size() > 1) {
-                var reference = createReferenceForPhrase(phrase);
-                var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
-                if (similarReferenceNounMappings.isEmpty()) {
-                    INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, reference, PHRASE_CONFIDENCE);
-                    textState.addNounMapping(phraseNounMapping);
-                } else {
-                    for (var nounMapping : similarReferenceNounMappings) {
-                        nounMapping.addWords(phrase);
-                        nounMapping.setAsPhrase(true);
-                    }
+            createNounMappingIfPhrase(word);
+            createNounMappingIfSpecialNamedEntity(word);
+        }
+    }
+
+    private void createNounMappingIfPhrase(IWord word) {
+        var phrase = CommonUtilities.getCompoundPhrases(word);
+        phrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
+        if (phrase.size() > 1) {
+            var reference = createReferenceForPhrase(phrase);
+            var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
+            if (similarReferenceNounMappings.isEmpty()) {
+                INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, reference, PHRASE_CONFIDENCE);
+                textState.addNounMapping(phraseNounMapping);
+            } else {
+                for (var nounMapping : similarReferenceNounMappings) {
+                    nounMapping.addWords(phrase);
+                    nounMapping.setAsPhrase(true);
                 }
             }
         }
+    }
+
+    private void createNounMappingIfSpecialNamedEntity(IWord word) {
+        var text = word.getText();
+        if (CommonUtilities.nameIsCamelCased(text) || CommonUtilities.nameIsSnakeCased(text)) {
+            textState.addName(word, text, SPECIAL_NAMED_ENTITY_CONFIDENCE);
+        }
+        // TODO Can we assume that a single dash "-" is enough for a NounMapping? Then we need to add it here
     }
 
     private static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
