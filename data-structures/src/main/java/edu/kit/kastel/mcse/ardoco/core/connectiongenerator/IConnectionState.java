@@ -8,7 +8,6 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.common.IState;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 
 /**
@@ -124,12 +123,4 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param instanceMapping the instance link to add
      */
     void addToLinks(IInstanceLink instanceMapping);
-
-    /**
-     * Removes all relation links with a given model relation.
-     *
-     * @param relation the relation to search for
-     */
-    void removeAllMappingsWith(IModelRelation relation);
-
 }
