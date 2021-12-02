@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -23,14 +22,12 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 public class RecommendationState implements IRecommendationState {
 
     private MutableList<IRecommendedInstance> recommendedInstances;
-    private MutableList<IRecommendedRelation> recommendedRelations;
     private MutableList<IInstanceRelation> instanceRelations;
 
     @Override
     public IRecommendationState createCopy() {
         var recommendationState = new RecommendationState();
         recommendationState.recommendedInstances = recommendedInstances.collect(IRecommendedInstance::createCopy);
-        recommendationState.recommendedRelations = recommendedRelations.collect(IRecommendedRelation::createCopy);
         recommendationState.instanceRelations = instanceRelations.collect(IInstanceRelation::createCopy);
         return recommendationState;
     }
@@ -40,7 +37,6 @@ public class RecommendationState implements IRecommendationState {
      */
     public RecommendationState() {
         recommendedInstances = Lists.mutable.empty();
-        recommendedRelations = Lists.mutable.empty();
         instanceRelations = Lists.mutable.empty();
     }
 
@@ -52,16 +48,6 @@ public class RecommendationState implements IRecommendationState {
     @Override
     public ImmutableList<IRecommendedInstance> getRecommendedInstances() {
         return Lists.immutable.withAll(recommendedInstances);
-    }
-
-    /**
-     * Returns all recommended relations.
-     *
-     * @return all recommended relations as list
-     */
-    @Override
-    public ImmutableList<IRecommendedRelation> getRecommendedRelations() {
-        return recommendedRelations.toImmutable();
     }
 
     /**
@@ -86,40 +72,6 @@ public class RecommendationState implements IRecommendationState {
     @Override
     public void addInstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to) {
         instanceRelations.add(new InstanceRelation(fromInstance, toInstance, relator, from, to));
-    }
-
-    /**
-     * Adds a new recommended relation.
-     *
-     * @param name           name of that recommended relation
-     * @param probability    probability of being in the model
-     * @param ri1            first end point of the relation as recommended instance
-     * @param ri2            second end point of the relation as recommended instance
-     * @param otherInstances other involved recommended instances
-     * @param occurrences    nodes representing the relation
-     */
-    @Override
-    public void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, ImmutableList<IRecommendedInstance> otherInstances,
-            double probability, ImmutableList<IWord> occurrences) {
-
-        IRecommendedRelation rrel = new RecommendedRelation(name, ri1, ri2, otherInstances, probability, occurrences);
-        MutableList<IRecommendedInstance> ris = Lists.mutable.with(ri1, ri2);
-        ris.addAll(otherInstances.castToCollection());
-        Optional<IRecommendedRelation> recr = recommendedRelations.stream()
-                .filter(//
-                        r -> r.getRelationInstances().containsAll(ris) && ris.containsAll(r.getRelationInstances().castToCollection()))
-                .findAny();
-
-        if (recr.isPresent()) {
-            updateRecommendedRelation(recr.get(), occurrences, probability);
-        } else {
-            recommendedRelations.add(rrel);
-        }
-    }
-
-    private static void updateRecommendedRelation(IRecommendedRelation recr, ImmutableList<IWord> occurrences, double probability) {
-        recr.addOccurrences(occurrences);
-        recr.updateProbability(probability);
     }
 
     /**
