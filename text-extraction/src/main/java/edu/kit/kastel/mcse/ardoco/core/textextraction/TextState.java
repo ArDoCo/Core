@@ -239,35 +239,35 @@ public class TextState implements ITextState {
     /**
      * Returns alltype mappings containing the given node.
      *
-     * @param node node to filter for
+     * @param word word to filter for
      * @return a list of alltype mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord node) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(node)).filter(n -> n.getKind() == MappingKind.TYPE));
+    public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord word) {
+        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(word)).filter(n -> n.getKind() == MappingKind.TYPE));
     }
 
     /**
      * Returns all name mappings containing the given node.
      *
-     * @param node node to filter for
+     * @param word word to filter for
      * @return a list of all name mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getNameMappingsByWord(IWord node) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(node)).filter(n -> n.getKind() == MappingKind.NAME));
+    public final ImmutableList<INounMapping> getNameMappingsByWord(IWord word) {
+        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(word)).filter(n -> n.getKind() == MappingKind.NAME));
     }
 
     /**
      * Returns all name or type mappings containing the given node.
      *
-     * @param node node to filter for
+     * @param word word to filter for
      * @return a list of all name or type mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getNortMappingsByWord(IWord node) {
+    public final ImmutableList<INounMapping> getNortMappingsByWord(IWord word) {
         return Lists.immutable
-                .fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(node)).filter(n -> n.getKind() == MappingKind.NAME_OR_TYPE));
+                .fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(word)).filter(n -> n.getKind() == MappingKind.NAME_OR_TYPE));
     }
 
     /**
