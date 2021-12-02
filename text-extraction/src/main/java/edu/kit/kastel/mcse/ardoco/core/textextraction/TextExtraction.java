@@ -50,7 +50,7 @@ public class TextExtraction implements IExecutionStage {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
-        data.setTextState(new TextState(config.similarityPercentage));
+        data.setTextState(new TextState());
         initializeAgents();
     }
 

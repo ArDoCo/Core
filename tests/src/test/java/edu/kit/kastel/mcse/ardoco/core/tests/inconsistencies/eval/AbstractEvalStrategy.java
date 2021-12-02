@@ -25,8 +25,7 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
     }
 
     protected static AgentDatastructure runRecommendationConnectionInconsistency(AgentDatastructure data) {
-        // Model Extractor has been executed & text extractor does not depend on model
-        // changes
+        // Model Extractor has been executed & textExtractor does not depend on model changes
         data.overwrite(runRecommendationGenerator(data));
         data.overwrite(runConnectionGenerator(data));
         data.overwrite(runInconsistencyChecker(data));
@@ -72,7 +71,7 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
         Configuration.mergeConfigToMap(configurations, TextExtractionConfig.DEFAULT_CONFIG);
         Configuration.mergeConfigToMap(configurations, GenericTextConfig.DEFAULT_CONFIG);
 
-        configurations.put("similarityPercentage", String.valueOf(project.getSimilarity()));
+        // more config options would come here...
 
         return configurations;
     }
