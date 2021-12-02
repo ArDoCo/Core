@@ -359,7 +359,7 @@ public class NounMapping implements INounMapping {
                 ", reference=" + reference + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
-                ", probability=" + highestProbability + "]";
+                ", probability=" + highestProbability + ", hasPhrase=" + hasPhrase + "]";
     }
 
     @Override
