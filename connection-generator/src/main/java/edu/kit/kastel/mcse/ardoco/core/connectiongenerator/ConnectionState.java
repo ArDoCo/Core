@@ -10,9 +10,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedRelation;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
@@ -25,13 +23,11 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 public class ConnectionState implements IConnectionState {
 
     private Set<IInstanceLink> instanceLinks;
-    private Set<IRelationLink> relationLinks;
 
     @Override
     public IConnectionState createCopy() {
         var newState = new ConnectionState();
         newState.instanceLinks = instanceLinks.stream().map(IInstanceLink::createCopy).collect(Collectors.toSet());
-        newState.relationLinks = relationLinks.stream().map(IRelationLink::createCopy).collect(Collectors.toSet());
         return newState;
     }
 
@@ -40,7 +36,6 @@ public class ConnectionState implements IConnectionState {
      */
     public ConnectionState() {
         instanceLinks = new HashSet<>();
-        relationLinks = new HashSet<>();
     }
 
     /**
@@ -169,88 +164,4 @@ public class ConnectionState implements IConnectionState {
     public void addToLinks(IInstanceLink instanceMapping) {
         this.addToLinks(instanceMapping.getTextualInstance(), instanceMapping.getModelInstance(), instanceMapping.getProbability());
     }
-
-    /**
-     * Returns all relation links.
-     *
-     * @return all relation links of this state as list
-     */
-    @Override
-    public ImmutableList<IRelationLink> getRelationLinks() {
-        return Lists.immutable.withAll(relationLinks);
-    }
-
-    /**
-     * Adds the connection of a recommended relation and a model relation to the state if it is not already contained.
-     *
-     * @param recommendedModelRelation the recommended relation
-     * @param relation                 the model relation
-     * @param probability              the probability of the link
-     */
-    @Override
-    public void addToLinks(IRecommendedRelation recommendedModelRelation, IModelRelation relation, double probability) {
-        IRelationLink rel = new RelationLink(recommendedModelRelation, relation, probability);
-        if (!isContainedByRelationLinks(rel)) {
-            relationLinks.add(rel);
-        } else {
-            Optional<IRelationLink> optionalRelationLink = relationLinks.stream().filter(rela -> rela.equals(rel)).findFirst();
-            if (optionalRelationLink.isPresent()) {
-                IRelationLink relationLink = optionalRelationLink.get();
-                relationLink.getTextualRelation().addOccurrences(recommendedModelRelation.getNodes());
-            }
-
-        }
-    }
-
-    /**
-     * Adds a relation link to the state.
-     *
-     * @param relationMapping the relation link to add
-     */
-    @Override
-    public void addToLinks(IRelationLink relationMapping) {
-        this.addToLinks(relationMapping.getTextualRelation(), relationMapping.getModelRelation(), relationMapping.getProbability());
-    }
-
-    /**
-     * Checks if a relation link is already contained by the state.
-     *
-     * @param relationMapping
-     * @return true, if the relation link is already contained. False if not.
-     */
-    @Override
-    public boolean isContainedByRelationLinks(IRelationLink relationMapping) {
-        return relationLinks.contains(relationMapping);
-    }
-
-    /**
-     * Removes a given relation link from the state.
-     *
-     * @param relationMapping the given relation link
-     */
-    @Override
-    public void removeFromMappings(IRelationLink relationMapping) {
-        relationLinks.remove(relationMapping);
-    }
-
-    /**
-     * Removes all relation links with a given model relation.
-     *
-     * @param relation the relation to search for
-     */
-    @Override
-    public void removeAllMappingsWith(IModelRelation relation) {
-        relationLinks.removeIf(mapping -> mapping.getModelRelation().equals(relation));
-    }
-
-    /**
-     * Removes all relation links with a given recommended relation.
-     *
-     * @param relation the recommended relation to search for
-     */
-    @Override
-    public void removeAllMappingsWith(IRecommendedRelation relation) {
-        relationLinks.removeIf(mapping -> mapping.getTextualRelation().equals(relation));
-    }
-
 }
