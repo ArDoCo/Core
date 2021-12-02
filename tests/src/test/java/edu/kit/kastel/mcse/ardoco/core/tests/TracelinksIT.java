@@ -31,11 +31,11 @@ class TracelinksIT {
     private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
-    private static final String ADDITIONAL_CONFIG = "src/test/resources/config.properties";
+    private static final String ADDITIONAL_CONFIG = null;
 
     private File inputText;
     private File inputModel;
-    private File additionalConfigs = new File(ADDITIONAL_CONFIG);
+    private File additionalConfigs = null;
     private File outputDir = new File(OUTPUT);
 
     @BeforeEach
@@ -47,8 +47,13 @@ class TracelinksIT {
 
     @AfterEach
     void afterEach() {
-        File config = new File(ADDITIONAL_CONFIG);
-        config.delete();
+        if (ADDITIONAL_CONFIG != null) {
+            File config = new File(ADDITIONAL_CONFIG);
+            config.delete();
+        }
+        if (additionalConfigs != null) {
+            additionalConfigs = null;
+        }
     }
 
     @DisplayName("Evaluate TLR (Ontology-based)")
@@ -81,8 +86,6 @@ class TracelinksIT {
     }
 
     private void compare(Project project) {
-        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, TestUtil.getSimilarityConfigString(project.getSimilarity()));
-
         var name = project.name().toLowerCase();
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
@@ -92,9 +95,9 @@ class TracelinksIT {
 
         if (logger.isInfoEnabled()) {
             String infoString = String.format(Locale.ENGLISH,
-                    "\n%s with similarity %.2f:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)",
-                    name, project.getSimilarity(), results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(),
-                    results.getF1(), expectedResults.getF1());
+                    "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
+                    results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
+                    expectedResults.getF1());
             logger.info(infoString);
         }
 

@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
  * The Class TextState defines the basic implementation of a {@link ITextState}.
  */
 public class TextState implements ITextState {
-    private double similarityPercentage;
 
     private Map<String, INounMapping> nounMappings;
 
@@ -30,10 +29,9 @@ public class TextState implements ITextState {
      *
      * @param similarityPercentage the similarity percentage
      */
-    public TextState(double similarityPercentage) {
+    public TextState() {
         nounMappings = new HashMap<>();
         relationMappings = Lists.mutable.empty();
-        this.similarityPercentage = similarityPercentage;
     }
 
     /***
@@ -330,7 +328,7 @@ public class TextState implements ITextState {
 
     @Override
     public ITextState createCopy() {
-        var textExtractionState = new TextState(similarityPercentage);
+        var textExtractionState = new TextState();
         textExtractionState.nounMappings = new HashMap<>(nounMappings);
         textExtractionState.relationMappings = relationMappings.collect(IRelationMapping::createCopy);
         return textExtractionState;

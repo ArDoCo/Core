@@ -22,7 +22,6 @@ public enum Project {
             "src/test/resources/mediastore/mediastore_w_text.owl", //
             "src/test/resources/mediastore/mediastore.txt", //
             "src/test/resources/mediastore/goldstandard.csv", //
-            1.0, //
             new EvaluationResults(.943, .68, .79), //
             new EvaluationResults(.90, .67, .80)//
     ), //
@@ -31,7 +30,6 @@ public enum Project {
             "src/test/resources/teammates/teammates_w_text.owl", //
             "src/test/resources/teammates/teammates.txt", //
             "src/test/resources/teammates/goldstandard.csv", //
-            0.8, //
             new EvaluationResults(.85, .90, .875), //
             new EvaluationResults(.853, .853, .853)//
     ), //
@@ -40,25 +38,22 @@ public enum Project {
             "src/test/resources/teastore/teastore_w_text.owl", //
             "src/test/resources/teastore/teastore.txt", //
             "src/test/resources/teastore/goldstandard.csv", //
-            1.0, //
             new EvaluationResults(.758, .88, .814), //
             new EvaluationResults(.75, .80, .77));
 
-    private String model;
-    private String textOntology;
-    private String textFile;
-    private String goldStandard;
-    private EvaluationResults expectedTraceLinkResults;
-    private EvaluationResults expectedInconsistencyResults;
-    private double similarity;
+    private final String model;
+    private final String textOntology;
+    private final String textFile;
+    private final String goldStandard;
+    private final EvaluationResults expectedTraceLinkResults;
+    private final EvaluationResults expectedInconsistencyResults;
 
-    Project(String model, String textOntology, String textFile, String goldStandard, double similarity, EvaluationResults expectedTraceLinkResults,
+    Project(String model, String textOntology, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults,
             EvaluationResults expectedInconsistencyResults) {
         this.model = model;
         this.textOntology = textOntology;
         this.textFile = textFile;
         this.goldStandard = goldStandard;
-        this.similarity = similarity;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
     }
@@ -121,12 +116,4 @@ public enum Project {
     public EvaluationResults getExpectedInconsistencyResults() {
         return expectedInconsistencyResults;
     }
-
-    /**
-     * @return the similarity
-     */
-    public double getSimilarity() {
-        return similarity;
-    }
-
 }
