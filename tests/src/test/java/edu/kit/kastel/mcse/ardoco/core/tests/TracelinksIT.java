@@ -30,8 +30,8 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvi
 class TracelinksIT {
 
     private static final double SIMILARITY_MS = 1.0;
-    private static final double MIN_F1_MS = 0.585d;
-    private static final double MIN_PREC_MS = 0.514d;
+    private static final double MIN_F1_MS = 0.57d;
+    private static final double MIN_PREC_MS = 0.50d;
     private static final double MIN_RECALL_MS = 0.680d;
 
     private static final double SIMILARITY_TM = 0.80;

@@ -49,6 +49,10 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         findMorePhrasesForRecommendationInstances();
     }
 
+    /**
+     * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a phrase (in
+     * text-extraction)
+     */
     private void createRecommendationInstancesFromPhraseNounMappings() {
         for (var nounMapping : textState.getNounMappings()) {
             if (nounMapping.isPhrase()) {
@@ -58,6 +62,22 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         }
     }
 
+    /**
+     * Find additional phrases and create RecommendedInstances for them. Additional phrases are when a word in a
+     * NounMapping has another word in front or afterwards and that phrase is a TypeMapping
+     */
+    private void findMorePhrasesForRecommendationInstances() {
+        // TODO can you make this better?
+        for (var nounMapping : textState.getNounMappings()) {
+            for (var word : nounMapping.getWords()) {
+                var prevWord = word.getPreWord();
+                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, prevWord);
+
+                var nextWord = word.getNextWord();
+                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, nextWord);
+            }
+        }
+    }
     private void addRecommendedInstance(INounMapping nounMapping, ImmutableList<INounMapping> typeMappings) {
         var nounMappings = Lists.immutable.of(nounMapping);
         var types = getSimilarModelTypes(typeMappings);
@@ -95,19 +115,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         }
         // TODO find further TypeMappings around, if possible!
         return typeMappings.toImmutable();
-    }
-
-    private void findMorePhrasesForRecommendationInstances() {
-        // TODO can you make this better?
-        for (var nounMapping : textState.getNounMappings()) {
-            for (var word : nounMapping.getWords()) {
-                var prevWord = word.getPreWord();
-                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, prevWord);
-
-                var nextWord = word.getNextWord();
-                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, nextWord);
-            }
-        }
     }
 
     private void addRecommendedInstanceIfPhraseWithOtherWord(INounMapping nounMapping, IWord word) {
