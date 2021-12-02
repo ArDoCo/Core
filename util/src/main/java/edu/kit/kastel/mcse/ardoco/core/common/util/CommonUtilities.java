@@ -282,4 +282,18 @@ public final class CommonUtilities {
         return filteredWords.toImmutable();
     }
 
+    /**
+     * Check if the word is CamelCased. Additionally, the word needs to have a length > 4, otherwise it is probably only
+     * a abbreviation.
+     *
+     * @param word Word to check
+     * @return <code>true</code> if the word is CamelCased and has a length greater than 4
+     */
+    public static boolean isCamelCasedWord(String word) {
+        if (word.toUpperCase().equals(word)) {
+            return false;
+        }
+        return word.length() > 4 && nameIsCamelCased(word);
+    }
+
 }
