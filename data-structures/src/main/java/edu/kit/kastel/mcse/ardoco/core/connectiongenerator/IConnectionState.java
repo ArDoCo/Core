@@ -10,7 +10,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.IState;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedRelation;
 
 /**
  * The Interface IConnectionState.
@@ -125,51 +124,6 @@ public interface IConnectionState extends IState<IConnectionState> {
      * @param instanceMapping the instance link to add
      */
     void addToLinks(IInstanceLink instanceMapping);
-
-    /**
-     * Returns all relation links.
-     *
-     * @return all relation links of this state as list
-     */
-    ImmutableList<IRelationLink> getRelationLinks();
-
-    /**
-     * Adds the connection of a recommended relation and a model relation to the state if it is not already contained.
-     *
-     * @param recommendedModelRelation the recommended relation
-     * @param relation                 the model relation
-     * @param probability              the probability of the link
-     */
-    void addToLinks(IRecommendedRelation recommendedModelRelation, IModelRelation relation, double probability);
-
-    /**
-     * Adds a relation link to the state.
-     *
-     * @param relationMapping the relation link to add
-     */
-    void addToLinks(IRelationLink relationMapping);
-
-    /**
-     * Checks if a relation link is already contained by the state.
-     *
-     * @param relationMapping the relation mapping
-     * @return true, if the relation link is already contained. False if not.
-     */
-    boolean isContainedByRelationLinks(IRelationLink relationMapping);
-
-    /**
-     * Removes a given relation link from the state.
-     *
-     * @param relationMapping the given relation link
-     */
-    void removeFromMappings(IRelationLink relationMapping);
-
-    /**
-     * Removes all relation links with a given recommended relation.
-     *
-     * @param relation the recommended relation to search for
-     */
-    void removeAllMappingsWith(IRecommendedRelation relation);
 
     /**
      * Removes all relation links with a given model relation.
