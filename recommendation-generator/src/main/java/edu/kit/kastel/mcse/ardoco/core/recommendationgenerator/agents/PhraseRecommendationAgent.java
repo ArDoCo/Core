@@ -47,6 +47,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
     public void exec() {
         createRecommendationInstancesFromPhraseNounMappings();
         findMorePhrasesForRecommendationInstances();
+        findSpecialNamedEntitities();
     }
 
     /**
@@ -78,6 +79,26 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
             }
         }
     }
+
+    /**
+     * Find words that use CamelCase or snake_case.
+     */
+    private void findSpecialNamedEntitities() {
+        findSpecialNamedEntitiesInNounMappings(textState.getNames());
+    }
+
+    private void findSpecialNamedEntitiesInNounMappings(ImmutableList<INounMapping> nounMappings) {
+        for (var nounMapping : nounMappings) {
+            for (var word : nounMapping.getWords()) {
+                var wordText = word.getText();
+                if (CommonUtilities.isCamelCasedWord(wordText) || CommonUtilities.nameIsSnakeCased(wordText)) {
+                    var localNounMappings = Lists.immutable.of(nounMapping);
+                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", confidence, localNounMappings, Lists.immutable.empty());
+                }
+            }
+        }
+    }
+
     private void addRecommendedInstance(INounMapping nounMapping, ImmutableList<INounMapping> typeMappings) {
         var nounMappings = Lists.immutable.of(nounMapping);
         var types = getSimilarModelTypes(typeMappings);
