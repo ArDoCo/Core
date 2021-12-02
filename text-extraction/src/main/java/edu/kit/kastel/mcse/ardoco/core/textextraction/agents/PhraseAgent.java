@@ -72,7 +72,7 @@ public class PhraseAgent extends TextAgent {
 
     private void createNounMappingIfSpecialNamedEntity(IWord word) {
         var text = word.getText();
-        if (CommonUtilities.nameIsCamelCased(text) || CommonUtilities.nameIsSnakeCased(text)) {
+        if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
             textState.addName(word, text, SPECIAL_NAMED_ENTITY_CONFIDENCE);
         }
         // TODO Can we assume that a single dash "-" is enough for a NounMapping? Then we need to add it here
