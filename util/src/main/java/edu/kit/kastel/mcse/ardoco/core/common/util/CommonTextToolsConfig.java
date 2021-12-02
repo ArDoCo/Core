@@ -26,26 +26,16 @@ public final class CommonTextToolsConfig {
     /**
      * Int for the minimal length of word similarity for methods in SimilarityUtils.
      */
-    public static final int ARE_WORDS_SIMILAR_MIN_LENGTH = CONFIG.getPropertyAsInt("areWordsSimilar_MinLength");
+    public static final int LEVENSHTEIN_MIN_LENGTH = CONFIG.getPropertyAsInt("levenshtein_MinLength");
     /**
      * Int for the maximal levensthein distance for two words to be similar for methods in SimilarityUtils.
      */
-    public static final int ARE_WORDS_SIMILAR_MAX_L_DIST = CONFIG.getPropertyAsInt("areWordsSimilar_MaxLdist");
+    public static final int LEVENSHTEIN_MAX_DISTANCE = CONFIG.getPropertyAsInt("levenshtein_MaxDistance");
     /**
      * The default threshold for similarity in methods of SimilarityUtils.
      */
-    public static final double ARE_WORDS_SIMILAR_DEFAULT_THRESHOLD = CONFIG.getPropertyAsDouble("areWordsSimilar_DefaultThreshold");
+    public static final double JAROWINKLER_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("jaroWinkler_SimilarityThreshold");
 
-    /**
-     * Threshold for the similarity of two words in the similarity function of two lists.
-     */
-    public static final double ARE_WORDS_OF_LISTS_SIMILAR_WORD_SIMILARITY_THRESHOLD = //
-            CONFIG.getPropertyAsDouble("areWordsOfListsSimilar_WordSimilarityThreshold");
-
-    /**
-     * Default threshold for the similarity function of two lists.
-     */
-    public static final double ARE_WORDS_OF_LISTS_SIMILAR_DEFAULT_THRESHOLD = CONFIG.getPropertyAsDouble("areWordsOfListsSimilar_DefaultThreshold");
     /**
      * The minimal propotion of two lists that need to be similar, that both are similar. Used in SimilarityUtils.
      */

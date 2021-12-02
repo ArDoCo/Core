@@ -138,7 +138,7 @@ public class RecommendationState implements IRecommendationState {
             var added = false;
 
             for (IRecommendedInstance riWithExactName : risWithExactName) {
-                boolean areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType(), 0.85);
+                boolean areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType());
                 if (areWordsSimilar || recommendedInstancesHasEmptyType(ri, riWithExactName)) {
                     riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());
                     added = true;

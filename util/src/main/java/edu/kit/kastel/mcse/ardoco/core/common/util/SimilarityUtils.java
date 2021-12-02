@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.util.List;
 
+import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.eclipse.collections.api.factory.Lists;
@@ -21,24 +22,27 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
  */
 public final class SimilarityUtils {
 
-    private static LevenshteinDistance ldistance = new LevenshteinDistance();
+    private static LevenshteinDistance levenShteinDistance = new LevenshteinDistance();
+    private static JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
 
     private SimilarityUtils() {
         throw new IllegalAccessError();
     }
 
     /**
-     * Checks the similarity of a test string to an original string. This check is not bidirectional! The test string
-     * has to cover the original. If the original is short (e.g. <3) the similarity is harder to reach. Elsewhere, the
-     * similarity very depends on the coverage of both strings. The similarity allows little errors within the string.
-     * For the comparison the longest common substring and the levenshtein distance are used.
+     * Checks the similarity of a test string to an original string. The test string has to cover the original. If the
+     * original is short (e.g. <3) the similarity is harder to reach. Uses Jaro-Winkler similarity and Levenshtein to
+     * assess the similarity.
      *
      * @param original  original string
      * @param word2test test string to match the original
-     * @param threshold threshold for granularity of similarity
      * @return true, if the test string is similar to the original; false if not.
      */
-    public static boolean areWordsSimilar(String original, String word2test, Double threshold) {
+    public static boolean areWordsSimilar(String original, String word2test) {
+        return areWordsSimilar(original, word2test, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
+    }
+
+    private static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
         if (original == null || word2test == null) {
             return false;
         }
@@ -47,31 +51,34 @@ public final class SimilarityUtils {
         if (originalLowerCase.split(" ").length != word2TestLowerCase.split(" ").length) {
             return false;
         }
-        int areWordsSimilarMinLength = CommonTextToolsConfig.ARE_WORDS_SIMILAR_MIN_LENGTH;
-        int areWordsSimilarMaxLdist = CommonTextToolsConfig.ARE_WORDS_SIMILAR_MAX_L_DIST;
-        int ldist = ldistance.apply(originalLowerCase, word2TestLowerCase);
-        int lcscount = getLongestCommonSubstring(originalLowerCase, word2TestLowerCase);
-        if (original.length() <= areWordsSimilarMinLength) {
-            if (ldist <= areWordsSimilarMaxLdist && lcscount == original.length()) {
-                return true;
-            }
-        } else if (ldist <= areWordsSimilarMaxLdist || lcscount >= (int) (original.length() * threshold)) {
-            return true;
-        }
 
-        return false;
+        var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test);
+        var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
+        return isJaroWinklerSimilar || isLevenshteinSimilar;
     }
 
-    /**
-     * Checks the similarity of a test string to an original string. This check is not bidirectional! This method uses
-     * the {@link #areWordsSimilar(String, String, Double)} with a given threshold.
-     *
-     * @param original  original string
-     * @param word2test test string to match the original
-     * @return true, if the test string is similar to the original; false if not.
-     */
-    public static boolean areWordsSimilar(String original, String word2test) {
-        return areWordsSimilar(original, word2test, CommonTextToolsConfig.ARE_WORDS_SIMILAR_DEFAULT_THRESHOLD);
+    private static boolean jaroWinklerSimilarityTest(String original, String word2test, Double threshold) {
+        return jaroWinklerSimilarity.apply(original, word2test) >= threshold;
+    }
+
+    private static boolean levenshteinDistanceTest(String original, String word2test) {
+        String originalLowerCase = original.toLowerCase();
+        String word2TestLowerCase = word2test.toLowerCase();
+
+        int areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
+        int areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
+
+        int ldist = levenShteinDistance.apply(originalLowerCase, word2TestLowerCase);
+
+        if (original.length() <= areWordsSimilarMinLength) {
+            var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
+            if (ldist <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation) {
+                return true;
+            }
+        } else if (ldist <= areWordsSimilarMaxLdist) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -87,14 +94,14 @@ public final class SimilarityUtils {
      */
     public static boolean areWordsOfListsSimilar(ImmutableList<String> originals, ImmutableList<String> words2test, double minProportion) {
 
-        if (areWordsSimilar(String.join(" ", originals), String.join(" ", words2test), minProportion)) {
+        if (areWordsSimilar(String.join(" ", originals), String.join(" ", words2test))) {
             return true;
         }
 
         var counter = 0;
         for (String o : originals) {
             for (String wd : words2test) {
-                if (areWordsSimilar(o, wd, CommonTextToolsConfig.ARE_WORDS_OF_LISTS_SIMILAR_WORD_SIMILARITY_THRESHOLD)) {
+                if (areWordsSimilar(o, wd)) {
                     counter++;
                 }
             }
@@ -112,7 +119,7 @@ public final class SimilarityUtils {
      * @return true if the list are similar, false if not
      */
     public static boolean areWordsOfListsSimilar(ImmutableList<String> originals, ImmutableList<String> words2test) {
-        return areWordsOfListsSimilar(originals, words2test, CommonTextToolsConfig.ARE_WORDS_OF_LISTS_SIMILAR_DEFAULT_THRESHOLD);
+        return areWordsOfListsSimilar(originals, words2test, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
     }
 
     /**
@@ -143,7 +150,7 @@ public final class SimilarityUtils {
     public static ImmutableList<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
             ImmutableList<IRecommendedInstance> recommendedInstances) {
         ImmutableList<String> instanceNames = instance.getNames();
-        double similarity = CommonTextToolsConfig.ARE_WORDS_OF_LISTS_SIMILAR_DEFAULT_THRESHOLD;
+        double similarity = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD;
         ImmutableList<IRecommendedInstance> selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(instance, ri, similarity));
 
         double getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
@@ -157,12 +164,11 @@ public final class SimilarityUtils {
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
             MutableList<IRecommendedInstance> risToRemove = Lists.mutable.empty();
             for (IRecommendedInstance ri : whileSelection) {
-                if (checkRecommendedInstanceWordSimilarityToInstance(instance, ri, getMostRecommendedIByRefMinProportion)) {
+                if (checkRecommendedInstanceWordSimilarityToInstance(instance, ri)) {
                     allListsSimilar++;
                 }
 
                 if (!SimilarityUtils.areWordsOfListsSimilar(instanceNames, Lists.immutable.with(ri.getName()), getMostRecommendedIByRefMinProportion)) {
-                    // TODO this is most likely the problem why multi-word entities are not recognized
                     risToRemove.add(ri);
                 }
             }
@@ -180,11 +186,11 @@ public final class SimilarityUtils {
 
     }
 
-    private static boolean checkRecommendedInstanceWordSimilarityToInstance(IModelInstance instance, IRecommendedInstance ri, double similarityThreshold) {
+    private static boolean checkRecommendedInstanceWordSimilarityToInstance(IModelInstance instance, IRecommendedInstance ri) {
         ImmutableList<String> instanceNames = instance.getNames();
         for (var sf : ri.getNameMappings().flatCollect(INounMapping::getSurfaceForms)) {
             var splitSF = CommonUtilities.splitCases(String.join(" ", CommonUtilities.splitAtSeparators(sf)));
-            if (areWordsSimilar(String.join(" ", instanceNames), splitSF, similarityThreshold)) {
+            if (areWordsSimilar(String.join(" ", instanceNames), splitSF)) {
                 return true;
             }
         }
@@ -195,7 +201,7 @@ public final class SimilarityUtils {
         ImmutableList<String> instanceNames = instance.getNames();
         ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getLongestName()).split(" "));
         ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
-        if (SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName(), similarity)
+        if (SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName())
                 || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList, similarity)
                 || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
             return true;
@@ -222,7 +228,7 @@ public final class SimilarityUtils {
      * @param nounMappings the noun mappings to filter
      * @return the most similar noun mapping(s)
      */
-    public static ImmutableList<INounMapping> getMostLikelyNMappingsByReference(String ref, ImmutableList<INounMapping> nounMappings) {
+    public static ImmutableList<INounMapping> getMostLikelyNounMappingsByReference(String ref, ImmutableList<INounMapping> nounMappings) {
 
         double threshold = CommonTextToolsConfig.GET_MOST_LIKELY_MP_BY_REFERENCE_THRESHOLD;
         ImmutableList<INounMapping> selection = Lists.immutable.withAll(SimilarityUtils.getAllSimilarNMappingsByReference(ref, nounMappings));
@@ -231,8 +237,8 @@ public final class SimilarityUtils {
         while (whileSelection.size() > 1 && threshold < 1) {
             selection = Lists.immutable.withAll(whileSelection);
             threshold += CommonTextToolsConfig.GET_MOST_LIKELY_MP_BY_REFERENCE_INCREASE;
-            final double wTh = threshold;
-            whileSelection = whileSelection.select(nnm -> SimilarityUtils.areWordsSimilar(ref, nnm.getReference(), wTh));
+            final double currentThreshold = threshold;
+            whileSelection = whileSelection.select(nnm -> areWordsSimilar(ref, nnm.getReference(), currentThreshold));
 
         }
         if (whileSelection.isEmpty()) {
@@ -241,46 +247,6 @@ public final class SimilarityUtils {
 
         return whileSelection;
 
-    }
-
-    /**
-     * Counts the longest common substring of two strings. Source:
-     * https://www.programcreek.com/2015/04/longest-common-substring-java/
-     *
-     * @param a first String
-     * @param b second String
-     * @return size of the longest common substring
-     */
-    private static int getLongestCommonSubstring(String a, String b) {
-        int m = a.length();
-        int n = b.length();
-
-        var max = 0;
-
-        var dp = new int[m][n];
-
-        for (var i = 0; i < m; i++) {
-            for (var j = 0; j < n; j++) {
-                if (a.charAt(i) == b.charAt(j)) {
-                    compareAndSetLengthOfCommonSubstringAt(dp, i, j);
-
-                    if (max < dp[i][j]) {
-                        max = dp[i][j];
-                    }
-                }
-
-            }
-        }
-
-        return max;
-    }
-
-    private static void compareAndSetLengthOfCommonSubstringAt(int[][] dp, int i, int j) {
-        if (i == 0 || j == 0) {
-            dp[i][j] = 1;
-        } else {
-            dp[i][j] = dp[i - 1][j - 1] + 1;
-        }
     }
 
 }

@@ -30,19 +30,19 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvi
 class TracelinksIT {
 
     private static final double SIMILARITY_MS = 1.0;
-    private static final double MIN_F1_MS = 0.57d;
-    private static final double MIN_PREC_MS = 0.50d;
+    private static final double MIN_F1_MS = 0.790d;
+    private static final double MIN_PREC_MS = 0.943d;
     private static final double MIN_RECALL_MS = 0.680d;
 
     private static final double SIMILARITY_TM = 0.80;
     private static final double MIN_F1_TM = 0.875d;
-    private static final double MIN_PREC_TM = 0.85d;
-    private static final double MIN_RECALL_TM = 0.90d;
+    private static final double MIN_PREC_TM = 0.850d;
+    private static final double MIN_RECALL_TM = 0.900d;
 
     private static final double SIMILARITY_TS = 1.0;
-    private static final double MIN_F1_TS = 0.83d;
-    private static final double MIN_PREC_TS = 0.785d;
-    private static final double MIN_REC_TS = 0.88d;
+    private static final double MIN_F1_TS = 0.814d;
+    private static final double MIN_PREC_TS = 0.758d;
+    private static final double MIN_REC_TS = 0.880d;
 
     private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
 
