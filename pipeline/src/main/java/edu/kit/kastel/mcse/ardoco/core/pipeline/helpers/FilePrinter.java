@@ -22,7 +22,6 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IRelationLink;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
@@ -30,7 +29,6 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedRelation;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
@@ -167,25 +165,11 @@ public final class FilePrinter {
         myWriter.write("Relations of the Recommendation State: ");
         myWriter.append(LINE_SEPARATOR);
 
-        Comparator<IRecommendedRelation> compRRelationsByFirstInstanceName = getRecommendedRelationComparator();
-        ImmutableList<IRecommendedRelation> rels = recommendationState.getRecommendedRelations().toSortedList(compRRelationsByFirstInstanceName).toImmutable();
-
-        for (IRecommendedRelation si : rels) {
-            myWriter.write(si.toString() + LINE_SEPARATOR);
-        }
-
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
         myWriter.write("Relations of the Connection State: ");
         myWriter.append(LINE_SEPARATOR);
-
-        Comparator<IRelationLink> compRelByUID = getRelationLinkComparator();
-        ImmutableList<IRelationLink> relationLinks = Lists.immutable.withAll(connectionState.getRelationLinks()).toSortedList(compRelByUID).toImmutable();
-
-        for (IRelationLink rlink : relationLinks) {
-            myWriter.write(rlink.toString() + LINE_SEPARATOR);
-        }
 
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
@@ -423,13 +407,4 @@ public final class FilePrinter {
     private static Comparator<IInstanceLink> getInstanceLinkComparator() {
         return (i1, i2) -> i1.getModelInstance().getUid().compareTo(i2.getModelInstance().getUid());
     }
-
-    private static Comparator<IRecommendedRelation> getRecommendedRelationComparator() {
-        return (rl1, rl2) -> rl1.getRelationInstances().get(0).getName().compareTo(rl2.getRelationInstances().get(0).getName());
-    }
-
-    private static Comparator<IRelationLink> getRelationLinkComparator() {
-        return (i1, i2) -> i1.getModelRelation().getUid().compareTo(i2.getModelRelation().getUid());
-    }
-
 }

@@ -22,31 +22,11 @@ public interface IRecommendationState extends IState<IRecommendationState> {
     ImmutableList<IRecommendedInstance> getRecommendedInstances();
 
     /**
-     * Returns all recommended relations.
-     *
-     * @return all recommended relations as list
-     */
-    ImmutableList<IRecommendedRelation> getRecommendedRelations();
-
-    /**
      * Returns all instance relations.
      *
      * @return all instance relations as list
      */
     ImmutableList<IInstanceRelation> getInstanceRelations();
-
-    /**
-     * Adds a new recommended relation.
-     *
-     * @param name           name of that recommended relation
-     * @param ri1            first end point of the relation as recommended instance
-     * @param ri2            second end point of the relation as recommended instance
-     * @param otherInstances other involved recommended instances
-     * @param probability    probability of being in the model
-     * @param occurrences    nodes representing the relation
-     */
-    void addRecommendedRelation(String name, IRecommendedInstance ri1, IRecommendedInstance ri2, ImmutableList<IRecommendedInstance> otherInstances,
-            double probability, ImmutableList<IWord> occurrences);
 
     void addInstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to);
 
