@@ -198,6 +198,39 @@ public final class CommonUtilities {
     }
 
     /**
+     * Checks if the given name is a CamelCased-word
+     *
+     * @param name the name to check
+     * @return <code>true</code> if the given name is CamelCased
+     */
+    public static boolean nameIsCamelCased(String name) {
+        var unCamelCased = CommonUtilities.splitCamelCase(name);
+        return (name.length() < unCamelCased.length());
+    }
+
+    /**
+     * Checks if the given name is a snake_cased-word
+     *
+     * @param name the name to check
+     * @return <code>true</code> if the given name is snake_cased
+     */
+    public static boolean nameIsSnakeCased(String name) {
+        var split = name.split("_");
+        return (split.length > 1);
+    }
+
+    /**
+     * Checks if the given name is a kebab-cased-word
+     *
+     * @param name the name to check
+     * @return <code>true</code> if the given name is kebab-cased
+     */
+    public static boolean nameIsKebabCased(String name) {
+        var split = name.split("-");
+        return (split.length > 1);
+    }
+
+    /**
      * Calculates the probability given the current probability and the update value
      *
      * @param currentProbability current probability
