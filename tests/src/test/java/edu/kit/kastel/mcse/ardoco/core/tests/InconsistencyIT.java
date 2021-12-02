@@ -15,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
@@ -61,7 +62,7 @@ class InconsistencyIT {
     private static EvaluationResult evalInconsistency(Project project) {
         var name = project.name();
         logger.info("Starting Inconsistency Analyses for {}", name);
-        DeleteOneModelElementEval eval1 = new DeleteOneModelElementEval();
+        AbstractEvalStrategy eval1 = new DeleteOneModelElementEval();
 
         var outFile = String.format("%s%sinconsistency-eval-%s.txt", OUTPUT, File.separator, name.toLowerCase());
 

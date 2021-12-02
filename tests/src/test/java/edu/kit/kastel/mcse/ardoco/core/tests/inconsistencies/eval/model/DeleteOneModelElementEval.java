@@ -33,9 +33,9 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     }
 
     @Override
-    public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
-        Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> result = process(originalModel, originalText, strategy);
+        Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> result = process(project, originalModel, originalText, strategy);
 
         PRF1Evaluator evaluator = new PRF1Evaluator();
 
@@ -47,12 +47,14 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         return evaluator.getOverallPRF1();
     }
 
-    private static Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> process(IModelConnector pcmModel, IText annotatedText,
-            IModificationStrategy strategy) {
+    private static Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> process(Project project, IModelConnector pcmModel,
+            IText annotatedText, IModificationStrategy strategy) {
         Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> results = new HashMap<>();
 
         var originalData = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
-        runTextExtractor(originalData);
+
+        var configurations = getTextExtractionConfigurations(project);
+        runTextExtractor(originalData, configurations);
         var original = runRecommendationConnectionInconsistency(originalData);
         results.put(null, original);
 
@@ -61,7 +63,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
             var modification = iter.next();
             var model = modification.getArtifact();
             var data = new AgentDatastructure(annotatedText, null, runModelExtractor(model), null, null, null);
-            runTextExtractor(data);
+            runTextExtractor(data, configurations);
             var result = runRecommendationConnectionInconsistency(data);
             results.put(modification, result);
         }

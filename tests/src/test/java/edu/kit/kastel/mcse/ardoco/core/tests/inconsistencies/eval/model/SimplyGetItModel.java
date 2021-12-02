@@ -17,7 +17,7 @@ public class SimplyGetItModel extends AbstractEvalStrategy {
     @Override
     public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         var originalData = new AgentDatastructure(originalText, null, runModelExtractor(originalModel), null, null, null);
-        runTextExtractor(originalData);
+        runTextExtractor(originalData, getTextExtractionConfigurations(p));
         var original = runRecommendationConnectionInconsistency(originalData);
 
         var inconsistencies = original.getInconsistencyState().getInconsistencies();
