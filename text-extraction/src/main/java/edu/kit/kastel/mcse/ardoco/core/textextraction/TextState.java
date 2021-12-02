@@ -165,8 +165,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref) {
-        return Lists.immutable
-                .fromStream(nounMappings.values().stream().filter(nm -> SimilarityUtils.areWordsSimilar(ref, nm.getReference(), similarityPercentage)));
+        return Lists.immutable.fromStream(nounMappings.values().stream().filter(nm -> SimilarityUtils.areWordsSimilar(ref, nm.getReference())));
     }
 
     /**
@@ -354,7 +353,6 @@ public class TextState implements ITextState {
             for (String referencePart : parts) {
                 addNounMapping(word, referencePart, kind, probability, occurrences);
             }
-            return;
         }
 
         if (nounMappings.containsKey(reference)) {
@@ -366,7 +364,7 @@ public class TextState implements ITextState {
 
         } else {
             ImmutableList<String> similarRefs = Lists.immutable
-                    .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference, similarityPercentage)));
+                    .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference)));
             for (String ref : similarRefs) {
                 INounMapping similarMapping = nounMappings.get(ref);
                 similarMapping.addOccurrence(occurrences);
