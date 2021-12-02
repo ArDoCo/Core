@@ -4,13 +4,15 @@ package edu.kit.kastel.mcse.ardoco.core.tests;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
@@ -25,18 +27,6 @@ class InconsistencyIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
 
-    private static final double MIN_PREC_TEAMMATES = .853;
-    private static final double MIN_REC_TEAMMATES = .853;
-    private static final double MIN_F1_TEAMMATES = .853;
-
-    private static final double MIN_PREC_MEDIASTORE = .90;
-    private static final double MIN_REC_MEDIASTORE = .24;
-    private static final double MIN_F1_MEDIASTORE = .387;
-
-    private static final double MIN_PREC_TEASTORE = .423;
-    private static final double MIN_REC_TEASTORE = .785;
-    private static final double MIN_F1_TEASTORE = .550;
-
     @BeforeEach
     void beforeEach() {
         // set the cache to true (default setting)
@@ -44,56 +34,28 @@ class InconsistencyIT {
         OntologyTextProvider.enableCache(true);
     }
 
-    @Test
-    @DisplayName("Evaluate Inconsistency Analyses for Teammates")
-    void inconsistencyTeammatesIT() {
-        var results = evalInconsistency(Project.TEAMMATES);
-        Assertions.assertNotNull(results);
+    @DisplayName("Evaluate Inconsistency Analyses")
+    @ParameterizedTest(name = "Evaluating {0}")
+    @EnumSource(Project.class)
+    void inconsistencyIT(Project project) {
+        var results = evalInconsistency(project);
+        var expectedResults = project.getExpectedInconsistencyResults();
 
-        var precision = results.getPrecision();
-        var recall = results.getRecall();
-        var f1 = results.getF1();
-
-        Assertions.assertAll(//
-                () -> Assertions.assertTrue(precision >= MIN_PREC_TEAMMATES,
-                        "Precision " + precision + " is below the expected minimum value " + MIN_PREC_TEAMMATES), //
-                () -> Assertions.assertTrue(recall >= MIN_REC_TEAMMATES, "Recall " + recall + " is below the expected minimum value " + MIN_REC_TEAMMATES), //
-                () -> Assertions.assertTrue(f1 >= MIN_F1_TEAMMATES, "F1 " + f1 + " is below the expected minimum value " + MIN_F1_TEAMMATES));
-
-    }
-
-    @Test
-    @DisplayName("Evaluate Inconsistency Analyses for Mediastore")
-    void inconsistencyMediastoreIT() {
-        var results = evalInconsistency(Project.MEDIASTORE);
-        Assertions.assertNotNull(results);
-
-        var precision = results.getPrecision();
-        var recall = results.getRecall();
-        var f1 = results.getF1();
+        if (logger.isInfoEnabled()) {
+            String infoString = String.format(Locale.ENGLISH,
+                    "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)",
+                    project.name(), results.getPrecision(), expectedResults.precision, results.getRecall(), expectedResults.getRecall(), results.getF1(),
+                    expectedResults.getF1());
+            logger.info(infoString);
+        }
 
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(precision >= MIN_PREC_MEDIASTORE,
-                        "Precision " + precision + " is below the expected minimum value " + MIN_PREC_MEDIASTORE), //
-                () -> Assertions.assertTrue(recall >= MIN_REC_MEDIASTORE, "Recall " + recall + " is below the expected minimum value " + MIN_REC_MEDIASTORE), //
-                () -> Assertions.assertTrue(f1 >= MIN_F1_MEDIASTORE, "F1 " + f1 + " is below the expected minimum value " + MIN_F1_MEDIASTORE));
-    }
-
-    @Test
-    @DisplayName("Evaluate Inconsistency Analyses for Teastore")
-    void inconsistencyTeastoreIT() {
-        var results = evalInconsistency(Project.TEASTORE);
-        Assertions.assertNotNull(results);
-
-        var precision = results.getPrecision();
-        var recall = results.getRecall();
-        var f1 = results.getF1();
-
-        Assertions.assertAll(//
-                () -> Assertions.assertTrue(precision >= MIN_PREC_TEASTORE,
-                        "Precision " + precision + " is below the expected minimum value " + MIN_PREC_TEASTORE), //
-                () -> Assertions.assertTrue(recall >= MIN_REC_TEASTORE, "Recall " + recall + " is below the expected minimum value " + MIN_REC_TEASTORE), //
-                () -> Assertions.assertTrue(f1 >= MIN_F1_TEASTORE, "F1 " + f1 + " is below the expected minimum value " + MIN_F1_TEASTORE));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(),
+                        "Precision " + results.getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(),
+                        "Recall " + results.getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
+                        "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
     }
 
     private static EvaluationResult evalInconsistency(Project project) {
