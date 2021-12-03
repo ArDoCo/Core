@@ -10,34 +10,33 @@ class SimilarityUtilsTest {
 
     @Test
     void areWordsSimilarEqualTest() {
-        boolean similar = SimilarityUtils.areWordsSimilar("one", "one");
-        Assertions.assertTrue(similar);
-
-        similar = SimilarityUtils.areWordsSimilar("", "");
-        Assertions.assertTrue(similar);
-
-        similar = SimilarityUtils.areWordsSimilar("testtesttesttest", "testtesttesttest");
-        Assertions.assertTrue(similar);
+        Assertions.assertAll(//
+                () -> Assertions.assertTrue(SimilarityUtils.areWordsSimilar("one", "one")),
+                () -> Assertions.assertTrue(SimilarityUtils.areWordsSimilar("", "")),
+                () -> Assertions.assertTrue(SimilarityUtils.areWordsSimilar("testtesttesttest", "testtesttesttest")));
     }
 
     @Test
     void areWordsSimilarSimilarTest() {
-        boolean similar = SimilarityUtils.areWordsSimilar("test", "tast");
-        Assertions.assertTrue(similar);
-
-        similar = SimilarityUtils.areWordsSimilar("testtesttesttest", "testtesttesttes");
-        Assertions.assertTrue(similar);
+        Assertions.assertAll(//
+                () -> Assertions.assertTrue(SimilarityUtils.areWordsSimilar("test", "tast")),
+                () -> Assertions.assertTrue(SimilarityUtils.areWordsSimilar("testtesttesttest", "testtesttesttes")));
     }
 
     @Test
     void areWordsSimilarUnsimilarTest() {
-        boolean similar = SimilarityUtils.areWordsSimilar("test", "toast");
-        Assertions.assertFalse(similar);
+        Assertions.assertAll(//
+                () -> Assertions.assertFalse(SimilarityUtils.areWordsSimilar("test", "toast")),
+                () -> Assertions.assertFalse(SimilarityUtils.areWordsSimilar("test", "coast")),
+                () -> Assertions.assertFalse(SimilarityUtils.areWordsSimilar("testtesttesttest", "testertest")));
+    }
 
-        similar = SimilarityUtils.areWordsSimilar("test", "coast");
-        Assertions.assertFalse(similar);
-
-        similar = SimilarityUtils.areWordsSimilar("testtesttesttest", "testertest");
-        Assertions.assertFalse(similar);
+    @Test
+    void areWordsSimilarAlmostSimilarTest() {
+        Assertions.assertAll(//
+                () -> Assertions.assertFalse(SimilarityUtils.areWordsSimilar("management", "mediamanagement")),
+                () -> Assertions.assertFalse(SimilarityUtils.areWordsSimilar("management", "usermanagement")),
+                () -> Assertions.assertFalse(SimilarityUtils.areWordsSimilar("mediamanagement", "usermanagement")),
+                () -> Assertions.assertFalse(SimilarityUtils.areWordsSimilar("image", "page")));
     }
 }
