@@ -31,8 +31,7 @@ public class SRLToken extends Token {
     private String[] eventTypes;
 
     public SRLToken(Token feed) {
-        super(feed, feed.getPos(), feed.getChunkIOB(), feed.getChunk(), feed.getPosition(), feed.getInstructionNumber(), feed.getNer(), feed.getLemma(),
-                feed.getStem());
+        super(feed, feed.getPos(), feed.getChunkIOB(), feed.getChunk(), feed.getInstructionNumber(), feed.getNer(), feed.getLemma(), feed.getStem());
         dependentTokens = new HashMap<>();
         roleDescription = new HashMap<>();
     }

@@ -53,8 +53,8 @@ public class Token extends MainHypothesisToken implements Comparable<Token> {
         this(word, pos, chunkIOB, chunk, position, instructionNumber, ner, lemma, stem, 0);
     }
 
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String ner, String lemma,
-            String stem, int sentenceNumber) {
+    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String ner, String lemma, String stem,
+            int sentenceNumber) {
         super(feed.getWord(), feed.getPosition(), feed.getConfidence(), feed.getType(), feed.getStartTime(), feed.getEndTime(), feed.getAlternatives());
         this.pos = pos;
         this.chunkIOB = chunkIOB;
@@ -67,25 +67,24 @@ public class Token extends MainHypothesisToken implements Comparable<Token> {
         resetHash();
     }
 
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String ner) {
-        this(feed, pos, chunkIOB, chunk, position, instructionNumber, ner, null, null, 0);
+    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String ner) {
+        this(feed, pos, chunkIOB, chunk, instructionNumber, ner, null, null, 0);
     }
 
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber) {
-        this(feed, pos, chunkIOB, chunk, position, instructionNumber, null);
+    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber) {
+        this(feed, pos, chunkIOB, chunk, instructionNumber, null);
     }
 
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String lemma, String stem) {
-        this(feed, pos, chunkIOB, chunk, position, instructionNumber, null, lemma, stem, 0);
+    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String lemma, String stem) {
+        this(feed, pos, chunkIOB, chunk, instructionNumber, null, lemma, stem, 0);
     }
 
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String ner, String lemma,
-            String stem) {
-        this(feed, pos, chunkIOB, chunk, position, instructionNumber, ner, lemma, stem, 0);
+    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String ner, String lemma, String stem) {
+        this(feed, pos, chunkIOB, chunk, instructionNumber, ner, lemma, stem, 0);
     }
 
     public Token(MainHypothesisToken feed) {
-        this(feed, POSTag.NONE, ChunkIOB.UNDEFINED, null, -1, -1, null, null, null, 0);
+        this(feed, POSTag.NONE, ChunkIOB.UNDEFINED, null, -1, null, null, null, 0);
     }
 
     public void consumeHypothesisToken(MainHypothesisToken token) {
@@ -171,8 +170,8 @@ public class Token extends MainHypothesisToken implements Comparable<Token> {
     public boolean equals(Object obj) {
         if (obj != null && obj.getClass() == this.getClass()) {
             final Token other = (Token) obj;
-            return super.equals(obj) && getPosition() == other.getPosition() && getChunk().equals(other.getChunk()) && getChunkIOB().equals(other.getChunkIOB())
-                    && getInstructionNumber() == other.getInstructionNumber() && getPos().equals(other.getPos()) && Objects.equals(getWord(), other.getWord())
+            return super.equals(obj) && getPosition() == other.getPosition() && getChunk().equals(other.getChunk()) && getChunkIOB() == other.getChunkIOB()
+                    && getInstructionNumber() == other.getInstructionNumber() && getPos() == other.getPos() && Objects.equals(getWord(), other.getWord())
                     && Objects.equals(getNer(), other.getNer()) && Objects.equals(getLemma(), other.getLemma()) && Objects.equals(getStem(), other.getStem());
         }
         return false;

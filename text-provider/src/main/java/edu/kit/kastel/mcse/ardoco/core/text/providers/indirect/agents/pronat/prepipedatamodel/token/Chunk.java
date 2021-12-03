@@ -12,10 +12,10 @@ import java.util.Objects;
  */
 public class Chunk {
 
-    private String name;
-    private int predecessor;
-    private int successor;
-    private int hash;
+    private String name = null;
+    private int predecessor = -1;
+    private int successor = -1;
+    private int hash = -1;
 
     public Chunk[] convertIOB(String[] iob) {
         final var result = new Chunk[iob.length];
