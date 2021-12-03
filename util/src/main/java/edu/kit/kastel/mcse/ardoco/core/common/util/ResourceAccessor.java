@@ -28,10 +28,7 @@ public final class ResourceAccessor {
     public ResourceAccessor(String filepath, boolean isClasspath) {
 
         if (isClasspath) {
-            Object loader = new Object() {
-            };
-
-            try (var inputStream = loader.getClass().getResourceAsStream(filepath)) {
+            try (var inputStream = this.getClass().getResourceAsStream(filepath)) {
                 prop.load(inputStream);
             } catch (IOException e) {
                 logger.debug(e.getMessage(), e.getCause());
