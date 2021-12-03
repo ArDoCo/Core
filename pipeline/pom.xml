@@ -35,7 +35,7 @@
     </dependency>
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>model-provider-owl</artifactId>
+      <artifactId>model-provider</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>

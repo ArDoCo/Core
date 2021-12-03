@@ -21,7 +21,6 @@
     <module>connection-generator</module>
     <module>inconsistency-detection</module>
     <module>model-provider</module>
-    <module>model-provider-owl</module>
     <module>util</module>
     <module>tests</module>
   </modules>
@@ -88,11 +87,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>model-provider</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>model-provider-owl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
