@@ -33,11 +33,17 @@ public class CachedOntologyText implements IText {
 
     protected static CachedOntologyText get(OntologyConnector ontologyConnector) {
         var ontologyText = OntologyText.get(ontologyConnector);
+        if (ontologyText == null) {
+            return null;
+        }
         return new CachedOntologyText(ontologyText);
     }
 
     protected static CachedOntologyText get(OntologyConnector ontologyConnector, String name) {
         var ontologyText = OntologyText.getWithName(ontologyConnector, name);
+        if (ontologyText == null) {
+            return null;
+        }
         return new CachedOntologyText(ontologyText);
     }
 

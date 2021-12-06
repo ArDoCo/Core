@@ -48,7 +48,7 @@ public class OntologyText implements IText {
 
         var optText = getFirstTextIndividual(ontologyConnector);
         if (optText.isEmpty()) {
-            throw new IllegalStateException(ERR_NO_TEXT_FOUND);
+            return null;
         }
         var ontologyText = new OntologyText(ontologyConnector, optText.get());
         ontologyText.init();
@@ -61,6 +61,10 @@ public class OntologyText implements IText {
         }
 
         var texts = getTextIndividuals(ontologyConnector);
+        if (texts.isEmpty()) {
+            return null;
+        }
+
         Individual textIndividual = null;
         for (var text : texts) {
             var label = text.getLabel(null);

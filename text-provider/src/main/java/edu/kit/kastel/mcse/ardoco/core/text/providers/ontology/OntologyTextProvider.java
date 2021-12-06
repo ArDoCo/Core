@@ -5,11 +5,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
@@ -21,6 +24,12 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
 public final class OntologyTextProvider implements ITextConnector {
+    private static final Logger logger = LogManager.getLogger(OntologyTextProvider.class);
+
+    private static final String SLOT_IRI = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#Slot";
+    private static final String ORDERED_LIST_IRI = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#OrderedList";
+    private static final String TEXT_DOCUMENT_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text#OWLClass_f7ee71e0_fe7c_4640_b432_bb876416974a";
+    private static final String INFORMAL_ELEMENT_IRI = "https://informalin.github.io/knowledgebases/informalin_base.owl#OWLClass_171807a5_c2a0_4e61_bd08_3a08f4d10cb0";
     private static final String TEXT_ONTOLOGY_IRI = "https://informalin.github.io/knowledgebases/informalin_base_text.owl";
 
     private static boolean useCache = true;
@@ -58,6 +67,53 @@ public final class OntologyTextProvider implements ITextConnector {
         OntologyTextProvider.useCache = useCache;
     }
 
+    /**
+     * Removes all existing Texts from the ontology
+     */
+    public void removeExistingTexts() {
+        List<Individual> individuals;
+
+        // remove all individuals that have (super-) class InformalElement
+        var informalElementClassOpt = ontologyConnector.getClassByIri(INFORMAL_ELEMENT_IRI);
+        if (informalElementClassOpt.isPresent()) {
+            var informalElementClass = informalElementClassOpt.get();
+            individuals = ontologyConnector.getIndividualsOfClassInherited(informalElementClass);
+            for (var individual : individuals) {
+                ontologyConnector.removeIndividual(individual);
+            }
+        }
+
+        // remove all individuals that have (super-) class TextDocument
+        var textDocumentClassOpt = ontologyConnector.getClassByIri(TEXT_DOCUMENT_IRI);
+        if (textDocumentClassOpt.isPresent()) {
+            var textDocumentClass = textDocumentClassOpt.get();
+            individuals = ontologyConnector.getIndividualsOfClass(textDocumentClass);
+            for (var individual : individuals) {
+                ontologyConnector.removeIndividual(individual);
+            }
+        }
+
+        // remove all individuals that have (super-) class OrderedList and that start with "WordsOf"
+        var orderedListClassOpt = ontologyConnector.getClassByIri(ORDERED_LIST_IRI);
+        if (orderedListClassOpt.isPresent()) {
+            var orderedListClass = orderedListClassOpt.get();
+            individuals = ontologyConnector.getIndividualsOfClass(orderedListClass);
+            for (var individual : individuals) {
+                ontologyConnector.removeIndividual(individual);
+            }
+        }
+
+        // remove all individuals that have (super-) class Slot and that start with "WordsOf"
+        var slotClassOpt = ontologyConnector.getClassByIri(SLOT_IRI);
+        if (slotClassOpt.isPresent()) {
+            var slotClass = slotClassOpt.get();
+            individuals = ontologyConnector.getIndividualsOfClass(slotClass);
+            for (var individual : individuals) {
+                ontologyConnector.removeIndividual(individual);
+            }
+        }
+    }
+
     public void addText(IText text) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm");
         LocalDateTime now = LocalDateTime.now();
@@ -66,6 +122,11 @@ public final class OntologyTextProvider implements ITextConnector {
     }
 
     public void addText(IText text, String textName) {
+        if (getAnnotatedText() != null) {
+            logger.warn(
+                    "There already exists another text! This can cause problems. Use OntologyTextProvider::removeExistingTexts to remove existing texts before adding a new one");
+        }
+
         // create text in ontology
         lastAddedTextName = "Text_" + textName;
         var textIndividual = ontologyConnector.addIndividualToClass(lastAddedTextName, resources.textClass);
@@ -183,7 +244,18 @@ public final class OntologyTextProvider implements ITextConnector {
         } else {
             return OntologyText.getWithName(ontologyConnector, lastAddedTextName);
         }
+    }
 
+    @Override
+    public IText getAnnotatedText(String textName) {
+        if (textName == null) {
+            return null;
+        }
+        if (useCache) {
+            return CachedOntologyText.get(ontologyConnector, textName);
+        } else {
+            return OntologyText.getWithName(ontologyConnector, textName);
+        }
     }
 
     /**
