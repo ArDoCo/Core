@@ -83,9 +83,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
                     .getInconsistencies()
                     .select(MissingModelInstanceInconsistency.class::isInstance)
                     .collect(MissingModelInstanceInconsistency.class::cast)
-                    .flatCollect(i -> i.getTextualInstance().getNameMappings())
-                    .flatCollect(nm -> nm.getWords())
-                    .collect(w -> w.getSentenceNo())
+                    .flatCollect(this::foundSentences)
                     .distinct();
             var outputString = "ORIGINAL: Number of False Positives (assuming consistency for original): " + inconsistencySentences.size();
             os.println(outputString);
