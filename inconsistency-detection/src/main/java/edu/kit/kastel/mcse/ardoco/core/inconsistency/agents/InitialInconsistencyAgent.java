@@ -20,15 +20,14 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
     }
 
     private InitialInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig config) {
+            IConnectionState connectionState, IInconsistencyState inconsistencyState) {
         super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
     }
 
     @Override
     public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
-        return new InitialInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState,
-                (GenericInconsistencyConfig) config);
+        return new InitialInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState);
     }
 
     @Override
