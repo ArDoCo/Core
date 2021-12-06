@@ -77,7 +77,7 @@ class InconsistencyIT {
 
     private static EvaluationResult run(Project project, IEvaluationStrategy eval, PrintStream os) {
         os.println("####################################");
-        os.println("START Eval: " + project + " -- " + eval);
+        os.println("START Eval: " + project + " -- " + eval.getClass().getSimpleName());
 
         IModelConnector pcmModel = project.getModel();
         IText annotatedText = project.getText();
