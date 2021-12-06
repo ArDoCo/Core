@@ -53,4 +53,12 @@ class OntologyTextProviderTest {
         Assertions.assertEquals(text.getFirstWord(), newText.getFirstWord());
     }
 
+    @Order(3)
+    @Test
+    void removeExistingTextsTest() {
+        ontologyTextProvider.removeExistingTexts();
+        var text = ontologyTextProvider.getAnnotatedText();
+        Assertions.assertNull(text);
+    }
+
 }

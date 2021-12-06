@@ -6,7 +6,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.IText;
 /**
  * The Interface ITextConnector defines a provider for annotated texts.
  */
-@FunctionalInterface
 public interface ITextConnector {
 
     /**
@@ -15,4 +14,12 @@ public interface ITextConnector {
      * @return the annotated text
      */
     IText getAnnotatedText();
+
+    /**
+     * Gets the annotated text with the given name
+     *
+     * @param textName name of the text to retrieve
+     * @return the annotated text with the given name
+     */
+    IText getAnnotatedText(String textName);
 }
