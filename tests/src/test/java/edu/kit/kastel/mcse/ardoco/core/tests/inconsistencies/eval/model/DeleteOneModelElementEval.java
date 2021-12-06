@@ -74,12 +74,24 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> r, GoldStandard gs,
             PRF1Evaluator evaluator, PrintStream os) {
 
+        os.println("-----------------------------------");
+
         if (r.getKey() == null) {
-            // Skip Original ..
+            // For original, just put put the number of false positives (assuming original has no missing instances)
+            var inconsistencySentences = r.getValue()
+                    .getInconsistencyState()
+                    .getInconsistencies()
+                    .select(MissingModelInstanceInconsistency.class::isInstance)
+                    .collect(MissingModelInstanceInconsistency.class::cast)
+                    .flatCollect(i -> i.getTextualInstance().getNameMappings())
+                    .flatCollect(nm -> nm.getWords())
+                    .collect(w -> w.getSentenceNo())
+                    .distinct();
+            var outputString = "ORIGINAL: Number of False Positives (assuming consistency for original): " + inconsistencySentences.size();
+            os.println(outputString);
             return;
         }
 
-        os.println("-----------------------------------");
         IModelInstance deletedElement = r.getKey().getElement();
         os.println("DEL " + deletedElement);
 
