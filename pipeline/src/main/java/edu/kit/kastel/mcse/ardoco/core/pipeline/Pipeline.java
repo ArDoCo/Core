@@ -247,8 +247,8 @@ public final class Pipeline {
                 return null;
             }
 
+            ontologyTextProvider.removeExistingTexts();
             ontologyTextProvider.addText(annotatedText, inputText.getName());
-
         } else {
             try {
                 annotatedText = ontologyTextProvider.getAnnotatedText();

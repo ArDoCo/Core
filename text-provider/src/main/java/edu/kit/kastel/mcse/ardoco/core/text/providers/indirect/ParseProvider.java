@@ -53,4 +53,10 @@ public class ParseProvider implements ITextConnector {
         return annotatedText;
     }
 
+    @Override
+    public IText getAnnotatedText(String textName) {
+        logger.warn("Returning annotated text ignoring the provided name");
+        return annotatedText;
+    }
+
 }
