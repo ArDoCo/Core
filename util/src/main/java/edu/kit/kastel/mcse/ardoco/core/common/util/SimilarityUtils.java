@@ -52,7 +52,7 @@ public final class SimilarityUtils {
             return false;
         }
 
-        var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test);
+        var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test, similarityThreshold);
         var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
         return isJaroWinklerSimilar || isLevenshteinSimilar;
     }
@@ -61,21 +61,22 @@ public final class SimilarityUtils {
         return jaroWinklerSimilarity.apply(original, word2test) >= threshold;
     }
 
-    private static boolean levenshteinDistanceTest(String original, String word2test) {
+    private static boolean levenshteinDistanceTest(String original, String word2test, double threshold) {
         String originalLowerCase = original.toLowerCase();
         String word2TestLowerCase = word2test.toLowerCase();
 
         int areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
         int areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
+        int maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, threshold * Math.min(original.length(), word2test.length()));
 
-        int ldist = levenShteinDistance.apply(originalLowerCase, word2TestLowerCase);
+        int levenshteinDistance = levenShteinDistance.apply(originalLowerCase, word2TestLowerCase);
 
         if (original.length() <= areWordsSimilarMinLength) {
             var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
-            if (ldist <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation) {
+            if (levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation) {
                 return true;
             }
-        } else if (ldist <= areWordsSimilarMaxLdist) {
+        } else if (levenshteinDistance <= maxLevenshteinDistance) {
             return true;
         }
         return false;
