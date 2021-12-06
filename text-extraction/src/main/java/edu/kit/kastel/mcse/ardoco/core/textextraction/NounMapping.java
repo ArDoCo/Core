@@ -298,7 +298,6 @@ public class NounMapping implements INounMapping {
     private void recalculateProbability(MappingKind kind, double newProbability) {
 
         double currentProbability = distribution.get(kind);
-        // distribution.put(kind, Math.max(currentProbability + newProbability, 1.0));
         distribution.put(kind, (currentProbability + newProbability) / 2);
 
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
@@ -451,7 +450,6 @@ public class NounMapping implements INounMapping {
         newSurfaceForms.addAll(other.getSurfaceForms().castToCollection());
 
         var mergedReference = reference;
-        // TODO
 
         INounMapping newNounMapping = new NounMapping(newWords.toImmutable(), newDistribution, mergedReference, newSurfaceForms.toImmutable());
         newNounMapping.addCoreferences(coreferences);

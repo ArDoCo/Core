@@ -125,8 +125,8 @@ public class GraphBuilder implements IPipelineStage {
                 arc.setAttributeValue(GraphBuilder.WORD_ATTRIBUTE, "NEXT");
             }
 
-            if (tok instanceof SRLToken) {
-                srlTokens.add((SRLToken) tok);
+            if (tok instanceof SRLToken srlToken) {
+                srlTokens.add(srlToken);
             }
 
             lastNode = node;
@@ -250,9 +250,9 @@ public class GraphBuilder implements IPipelineStage {
 
     private static class IndirectGraph {
         private static final String BOOLEAN = "boolean";
-        private IGraph graph;
-        private INodeType wordType;
-        private IArcType arcType;
+        private IGraph graph = null;
+        private INodeType wordType = null;
+        private IArcType arcType = null;
 
         IGraph getGraph() {
             return graph;
