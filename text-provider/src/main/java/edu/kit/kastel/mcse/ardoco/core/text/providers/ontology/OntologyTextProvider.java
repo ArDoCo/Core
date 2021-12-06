@@ -13,6 +13,7 @@ import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
@@ -24,6 +25,8 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
 public final class OntologyTextProvider implements ITextConnector {
+    private static final String WORDS_OF = "WordsOf";
+
     private static final Logger logger = LogManager.getLogger(OntologyTextProvider.class);
 
     private static final String SLOT_IRI = "https://informalin.github.io/knowledgebases/external/olo/orderedlistontology.owl#Slot";
@@ -70,48 +73,59 @@ public final class OntologyTextProvider implements ITextConnector {
     /**
      * Removes all existing Texts from the ontology
      */
+    // NOTE: There is the assumption that the
     public void removeExistingTexts() {
         List<Individual> individuals;
 
         // remove all individuals that have (super-) class InformalElement
-        var informalElementClassOpt = ontologyConnector.getClassByIri(INFORMAL_ELEMENT_IRI);
-        if (informalElementClassOpt.isPresent()) {
-            var informalElementClass = informalElementClassOpt.get();
-            individuals = ontologyConnector.getIndividualsOfClassInherited(informalElementClass);
-            for (var individual : individuals) {
-                ontologyConnector.removeIndividual(individual);
-            }
+        individuals = getIndividualsOfClassInherited(INFORMAL_ELEMENT_IRI);
+        for (var individual : individuals) {
+            ontologyConnector.removeIndividual(individual);
         }
 
         // remove all individuals that have (super-) class TextDocument
-        var textDocumentClassOpt = ontologyConnector.getClassByIri(TEXT_DOCUMENT_IRI);
-        if (textDocumentClassOpt.isPresent()) {
-            var textDocumentClass = textDocumentClassOpt.get();
-            individuals = ontologyConnector.getIndividualsOfClass(textDocumentClass);
-            for (var individual : individuals) {
-                ontologyConnector.removeIndividual(individual);
-            }
+        individuals = getIndividualsOfClass(TEXT_DOCUMENT_IRI);
+        for (var individual : individuals) {
+            ontologyConnector.removeIndividual(individual);
         }
 
         // remove all individuals that have (super-) class OrderedList and that start with "WordsOf"
-        var orderedListClassOpt = ontologyConnector.getClassByIri(ORDERED_LIST_IRI);
-        if (orderedListClassOpt.isPresent()) {
-            var orderedListClass = orderedListClassOpt.get();
-            individuals = ontologyConnector.getIndividualsOfClass(orderedListClass);
-            for (var individual : individuals) {
+        individuals = getIndividualsOfClass(ORDERED_LIST_IRI);
+        for (var individual : individuals) {
+            var label = individual.getLabel(null);
+            if (label.startsWith(WORDS_OF)) {
                 ontologyConnector.removeIndividual(individual);
             }
         }
 
         // remove all individuals that have (super-) class Slot and that start with "WordsOf"
-        var slotClassOpt = ontologyConnector.getClassByIri(SLOT_IRI);
-        if (slotClassOpt.isPresent()) {
-            var slotClass = slotClassOpt.get();
-            individuals = ontologyConnector.getIndividualsOfClass(slotClass);
-            for (var individual : individuals) {
+        individuals = getIndividualsOfClass(SLOT_IRI);
+        for (var individual : individuals) {
+            var label = individual.getLabel(null);
+            if (label.startsWith(WORDS_OF)) {
                 ontologyConnector.removeIndividual(individual);
             }
         }
+    }
+
+    private List<Individual> getIndividualsOfClass(String iri) {
+        List<Individual> individuals = Lists.mutable.empty();
+        var classOpt = ontologyConnector.getClassByIri(iri);
+        if (classOpt.isPresent()) {
+            var clazz = classOpt.get();
+            individuals = ontologyConnector.getIndividualsOfClass(clazz);
+        }
+        return individuals;
+    }
+
+    private List<Individual> getIndividualsOfClassInherited(String iri) {
+        List<Individual> individuals = Lists.mutable.empty();
+        var classOpt = ontologyConnector.getClassByIri(iri);
+        if (classOpt.isPresent()) {
+            var clazz = classOpt.get();
+            individuals = ontologyConnector.getIndividualsOfClassInherited(clazz);
+        }
+        return individuals;
     }
 
     public void addText(IText text) {
@@ -158,7 +172,7 @@ public final class OntologyTextProvider implements ITextConnector {
         }
 
         // create the list that is used for the words property
-        var olo = ontologyConnector.addList("WordsOf" + lastAddedTextName, wordIndividuals);
+        var olo = ontologyConnector.addList(WORDS_OF + lastAddedTextName, wordIndividuals);
         var listIndividual = olo.getListIndividual();
         ontologyConnector.addPropertyToIndividual(textIndividual, resources.wordsProperty, listIndividual);
 
