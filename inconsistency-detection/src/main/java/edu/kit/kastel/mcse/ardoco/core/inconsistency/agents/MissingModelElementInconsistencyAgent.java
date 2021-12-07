@@ -22,8 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 @MetaInfServices(InconsistencyAgent.class)
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
-    // TODO add some structure like "support" and filter inconsistency with low support (<2)
-    // support is gained if one test identifies this as inconsistency. If another test confirms it, support is increased
 
     private MutableSet<MissingElementInconsistencyCandidate> candidates = Sets.mutable.empty();
     private double minSupport = 1;

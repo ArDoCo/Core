@@ -12,8 +12,10 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
  *
  * @see LocalRelation
  *
- *      TODO fromInstance and toInstance to List to comprise more complex relations?!
+ * 
  */
+// NOTE: Currently, only simple relations are covered. Future versions may fromInstance and toInstance to List to
+// comprise more complex relations?!
 public class InstanceRelation implements IInstanceRelation {
     private double probability;
     private final IRecommendedInstance fromInstance;
@@ -80,7 +82,7 @@ public class InstanceRelation implements IInstanceRelation {
 
     @Override
     public int getSize() {
-        return this.localRelations.size();
+        return localRelations.size();
     }
 
     @Override

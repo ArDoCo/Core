@@ -75,7 +75,6 @@ public class PhraseAgent extends TextAgent {
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
             textState.addName(word, text, SPECIAL_NAMED_ENTITY_CONFIDENCE);
         }
-        // TODO Can we assume that a single dash "-" is enough for a NounMapping? Then we need to add it here
     }
 
     private static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
