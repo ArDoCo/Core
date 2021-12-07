@@ -22,6 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.pre
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.ChunkIOB;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.MainHypothesisToken;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token.TokenBuilder;
 
 @MetaInfServices(IPipelineStage.class)
 public class TextSNLP implements IPipelineStage {
@@ -103,8 +104,12 @@ public class TextSNLP implements IPipelineStage {
             if (sentenceIndex < sentenceNumberEndIndices.length && i > sentenceNumberEndIndices[sentenceIndex]) {
                 sentenceIndex++;
             }
-            var tmp = new Token(words.get(i), POSTag.get(pos[i]), ChunkIOB.get(chunksIOB[i]), chunks[i], i, instr[i]);
-            tmp.setSentenceNumber(sentenceIndex);
+            var tmp = new TokenBuilder(words.get(i), i).withPos(POSTag.get(pos[i]))
+                    .withChunkIOB(ChunkIOB.get(chunksIOB[i]))
+                    .withChunk(chunks[i])
+                    .withInstructionNr(instr[i])
+                    .withSentenceNr(sentenceIndex)
+                    .build();
             result.add(tmp);
         }
         return result;
