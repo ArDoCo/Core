@@ -153,7 +153,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
             annotatorPool.get(pipelineStep).annotate(text);
         }
 
-        // TODO currently "parse" is not saved to graph, but might want to do that!
+        // NOTE: currently "parse" is not saved to graph, but might want to do that!
 
         addDependenciesAndNERToGraph(text, textNodes);
         addCorefToGraph(text, textNodes);

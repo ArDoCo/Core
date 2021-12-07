@@ -76,7 +76,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
         String text = word.getText();
         String lemma = word.getLemma();
 
-        // TODO employ other/better String comparison instead of exact equals?
+        // NOTE: maybe employ other/better String comparison instead of exact equals?
         return modelName.equalsIgnoreCase(text) && modelName.equalsIgnoreCase(lemma);
     }
 
@@ -84,7 +84,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
         String text = word.getText();
         String modelName = modelInstance.getLongestName();
         for (String part : text.split(REGEX_DIVIDER)) {
-            // TODO employ other/better String comparison instead of exact equals?
+            // NOTE: employ other/better String comparison instead of exact equals?
             if (part.equalsIgnoreCase(modelName)) {
                 return true;
             }

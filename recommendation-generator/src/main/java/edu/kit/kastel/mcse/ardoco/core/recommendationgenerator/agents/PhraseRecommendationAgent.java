@@ -68,7 +68,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
      * NounMapping has another word in front or afterwards and that phrase is a TypeMapping
      */
     private void findMorePhrasesForRecommendationInstances() {
-        // TODO can you make this better?
         for (var nounMapping : textState.getNounMappings()) {
             for (var word : nounMapping.getWords()) {
                 var prevWord = word.getPreWord();
@@ -134,7 +133,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         for (var word : phrase) {
             typeMappings.addAll(textState.getTypeMappingsByWord(word).toList());
         }
-        // TODO find further TypeMappings around, if possible!
         return typeMappings.toImmutable();
     }
 
