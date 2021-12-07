@@ -89,7 +89,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
 
     @Override
     public ImmutableList<IModelRelation> getRelations() {
-        // TODO implement
+        // NOT YET IMPLEMENTED!
         return Lists.immutable.empty();
     }
 

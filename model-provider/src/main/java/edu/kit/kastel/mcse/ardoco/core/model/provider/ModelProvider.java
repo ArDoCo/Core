@@ -49,7 +49,6 @@ public final class ModelProvider implements IExecutionStage {
 
     @Override
     public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
-        // TODO Sophie: Check whether it is ok that we do not use the data :)
         return new ModelProvider(modelConnector);
     }
 
