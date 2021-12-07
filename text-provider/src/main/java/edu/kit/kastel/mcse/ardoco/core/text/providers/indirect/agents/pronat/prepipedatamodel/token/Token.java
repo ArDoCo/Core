@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
  * @author Markus Kocybik
  * @author Sebastian Weigelt - let class extend MainHypothesisToken on 2016-12-08
  * @author Tobias Hey - added lemma and stem to Tokens on 2017-01-23
+ * @author Jan Keim - refactor constructors and add TokenBuilder
  */
 public class Token extends MainHypothesisToken implements Comparable<Token> {
     private POSTag pos;
@@ -23,68 +24,78 @@ public class Token extends MainHypothesisToken implements Comparable<Token> {
     private String stem;
     private int sentenceNumber;
 
-    public Token(String word, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String ner, String lemma, String stem,
-            int sentenceNumber) {
+    public static class TokenBuilder {
+        private Token token;
+
+        public TokenBuilder(String word, int position) {
+            token = new Token(word, position);
+        }
+
+        public TokenBuilder(MainHypothesisToken feed) {
+            token = new Token(feed);
+        }
+
+        public Token build() {
+            token.resetHash();
+            return token;
+        }
+
+        public TokenBuilder withPos(POSTag pos) {
+            token.pos = pos;
+            return this;
+        }
+
+        public TokenBuilder withChunkIOB(ChunkIOB chunkIOB) {
+            token.chunkIOB = chunkIOB;
+            return this;
+        }
+
+        public TokenBuilder withChunk(Chunk chunk) {
+            token.chunk = chunk;
+            return this;
+        }
+
+        public TokenBuilder withInstructionNr(int instructionNumber) {
+            token.instructionNumber = instructionNumber;
+            return this;
+        }
+
+        public TokenBuilder withNer(String ner) {
+            token.ner = ner;
+            return this;
+        }
+
+        public TokenBuilder withLemma(String lemma) {
+            token.lemma = lemma;
+            return this;
+        }
+
+        public TokenBuilder withStem(String stem) {
+            token.stem = stem;
+            return this;
+        }
+
+        public TokenBuilder withSentenceNr(int sentenceNumber) {
+            token.sentenceNumber = sentenceNumber;
+            return this;
+        }
+    }
+
+    protected Token(String word, int position) {
         super(word, position);
-        this.pos = pos;
-        this.chunkIOB = chunkIOB;
-        this.chunk = chunk;
-        this.instructionNumber = instructionNumber;
-        this.ner = ner;
-        this.lemma = lemma;
-        this.stem = stem;
-        setSentenceNumber(sentenceNumber);
+    }
+
+    protected Token(MainHypothesisToken feed) {
+        super(feed.getWord(), feed.getPosition());
+        pos = POSTag.NONE;
+        chunkIOB = ChunkIOB.UNDEFINED;
+        chunk = null;
+        instructionNumber = -1;
+        ner = null;
+        lemma = null;
+        stem = null;
+        setSentenceNumber(0);
         resetHash();
-    }
-
-    public Token(String word, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String ner) {
-        this(word, pos, chunkIOB, chunk, position, instructionNumber, ner, null, null, 0);
-    }
-
-    public Token(String word, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber) {
-        this(word, pos, chunkIOB, chunk, position, instructionNumber, null);
-    }
-
-    public Token(String word, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String lemma, String stem) {
-        this(word, pos, chunkIOB, chunk, position, instructionNumber, null, lemma, stem, 0);
-    }
-
-    public Token(String word, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int position, int instructionNumber, String ner, String lemma, String stem) {
-        this(word, pos, chunkIOB, chunk, position, instructionNumber, ner, lemma, stem, 0);
-    }
-
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String ner, String lemma, String stem,
-            int sentenceNumber) {
-        super(feed.getWord(), feed.getPosition(), feed.getConfidence(), feed.getType(), feed.getStartTime(), feed.getEndTime(), feed.getAlternatives());
-        this.pos = pos;
-        this.chunkIOB = chunkIOB;
-        this.chunk = chunk;
-        this.instructionNumber = instructionNumber;
-        this.ner = ner;
-        this.lemma = lemma;
-        this.stem = stem;
-        setSentenceNumber(sentenceNumber);
-        resetHash();
-    }
-
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String ner) {
-        this(feed, pos, chunkIOB, chunk, instructionNumber, ner, null, null, 0);
-    }
-
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber) {
-        this(feed, pos, chunkIOB, chunk, instructionNumber, null);
-    }
-
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String lemma, String stem) {
-        this(feed, pos, chunkIOB, chunk, instructionNumber, null, lemma, stem, 0);
-    }
-
-    public Token(MainHypothesisToken feed, POSTag pos, ChunkIOB chunkIOB, Chunk chunk, int instructionNumber, String ner, String lemma, String stem) {
-        this(feed, pos, chunkIOB, chunk, instructionNumber, ner, lemma, stem, 0);
-    }
-
-    public Token(MainHypothesisToken feed) {
-        this(feed, POSTag.NONE, ChunkIOB.UNDEFINED, null, -1, null, null, null, 0);
     }
 
     public void consumeHypothesisToken(MainHypothesisToken token) {
