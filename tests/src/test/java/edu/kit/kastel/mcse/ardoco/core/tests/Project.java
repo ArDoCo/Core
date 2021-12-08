@@ -22,8 +22,8 @@ public enum Project {
             "src/test/resources/mediastore/mediastore_w_text.owl", //
             "src/test/resources/mediastore/mediastore.txt", //
             "src/test/resources/mediastore/goldstandard.csv", //
-            new EvaluationResults(.943, .68, .79), //
-            new EvaluationResults(.90, .67, .80)//
+            new EvaluationResults(.943, .60, .73), //
+            new EvaluationResults(.90, .60, .75)//
     ), //
     TEAMMATES( //
             "src/test/resources/teammates/teammates.owl", //
