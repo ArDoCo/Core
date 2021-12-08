@@ -21,7 +21,6 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: 17
-        
     - name: Cache Maven packages
       uses: actions/cache@v2.1.7
       with:
@@ -33,4 +32,4 @@ jobs:
       with:
         servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }, { "id": "github-informalin", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
     - name: Verify with Maven
-      run: mvn -B verify --file pom.xml -U
+      run: mvn -B verify --file pom.xml -U -Dparallel=all -DperCoreThreadCount=false -DthreadCount=8 -T 1C
