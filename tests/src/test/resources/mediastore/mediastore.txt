@@ -6,7 +6,7 @@ The main functionality, however, is provided by other components.
 In addition, users can browse, download, and upload audio files using the Facade component.
 Application business logic is provided by a central business logic component, called the MediaManagement component.
 The MediaManagement component coordinates the communication of other components.
-Furthermore, it fetches audio files from a specific location (e.g, a dedicated file server or a local disk) when processing download requests.
+Furthermore, it fetches audio files from a specific location (e.g., a dedicated file server or a local disk) when processing download requests.
 As described above, to communicate with the system, users' registration and authentication are needed.
 The UserManagement component answers the requests for registration and authentication.
 The UserDBAdapter component queries the database.
@@ -20,13 +20,13 @@ To allow users to download several files at a time, we provide the Packaging com
 The ReEncoder component converts the bit rates of audio files.
 This can result in reduction of file sizes.
 The persistence tier contains components that are concerned with the storage of audio files and their meta-data.
-The Database component represents an actual database (e.g, MySQL).
+The Database component represents an actual database (e.g., MySQL).
 It stores user information and meta-data of audio files such as the name and the genre.
 After the user calls the page to list all available audio files, AudioAccess creates a query that is sent to the Database component.
 When a user uploads an audio file, the MediaAccess component stores it at the predefined location.
 The MediaAccess component encapsulates database access for meta-data of audio files.
 Furthermore, it fetches a list of all available audio files.
-by contrast, the UserDBAdapter component provides all functions required in order to encapsulate database access for the user data.
+By contrast, the UserDBAdapter component provides all functions required in order to encapsulate database access for the user data.
 The UserDBAdapter component creates a query based on the user's request.
 The Database component then executes the actual query for files.
 All salted hashes of passwords are also stored in the Database component.
