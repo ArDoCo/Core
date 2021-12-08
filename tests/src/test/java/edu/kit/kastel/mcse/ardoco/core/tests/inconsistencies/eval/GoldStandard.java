@@ -28,7 +28,8 @@ public class GoldStandard {
         try (Scanner scan = new Scanner(goldStandard)) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
-                if (line == null || line.isBlank()) {
+                if (line == null || line.isBlank() || line.contains("modelElementID")) {
+                    // continue if line is empty, null, or is the header (that starts with "modelElementID")
                     continue;
                 }
 
