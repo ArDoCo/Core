@@ -38,8 +38,8 @@ public enum Project {
             "src/test/resources/teastore/teastore_w_text.owl", //
             "src/test/resources/teastore/teastore.txt", //
             "src/test/resources/teastore/goldstandard.csv", //
-            new EvaluationResults(.758, .88, .814), //
-            new EvaluationResults(.75, .80, .77));
+            new EvaluationResults(.94, .57, .71), //
+            new EvaluationResults(.94, .58, .72));
 
     private final String model;
     private final String textOntology;
