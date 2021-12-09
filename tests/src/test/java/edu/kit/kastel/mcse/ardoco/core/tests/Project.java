@@ -39,7 +39,14 @@ public enum Project {
             "src/test/resources/teastore/teastore.txt", //
             "src/test/resources/teastore/goldstandard.csv", //
             new EvaluationResults(.94, .57, .71), //
-            new EvaluationResults(.94, .58, .72));
+            new EvaluationResults(.94, .58, .72)),
+    BIGBLUEBUTTON( //
+            "src/test/resources/bigbluebutton/bbb.owl", //
+            "src/test/resources/bigbluebutton/bbb_w_text.owl", //
+            "src/test/resources/bigbluebutton/bigbluebutton.txt", //
+            "src/test/resources/bigbluebutton/goldstandard.csv", //
+            new EvaluationResults(.0, .0, .0), //
+            new EvaluationResults(.0, .0, .0));
 
     private final String model;
     private final String textOntology;
