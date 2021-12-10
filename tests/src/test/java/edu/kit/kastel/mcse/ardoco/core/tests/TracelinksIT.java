@@ -56,6 +56,9 @@ class TracelinksIT {
         }
     }
 
+    // NOTE: if you only want to test a specific project, you can simply set up the EnumSource
+    // For more details, see https://www.baeldung.com/parameterized-tests-junit-5#3-enum
+    // However, make sure to revert this before you commit and push!
     @DisplayName("Evaluate TLR (Ontology-based)")
     @ParameterizedTest(name = "Evaluating {0} (Onto)")
     @EnumSource(Project.class)
@@ -108,6 +111,7 @@ class TracelinksIT {
                         "Recall " + results.getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
                 () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
                         "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+
     }
 
     private EvaluationResults calculateResults(String name, AgentDatastructure data) {

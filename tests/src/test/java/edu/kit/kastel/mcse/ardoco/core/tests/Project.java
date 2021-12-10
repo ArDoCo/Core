@@ -45,8 +45,8 @@ public enum Project {
             "src/test/resources/bigbluebutton/bbb_w_text.owl", //
             "src/test/resources/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/bigbluebutton/goldstandard.csv", //
-            new EvaluationResults(.0, .0, .0), //
-            new EvaluationResults(.0, .0, .0));
+            new EvaluationResults(.606, .547, .576), //
+            new EvaluationResults(.606, .547, .576));
 
     private final String model;
     private final String textOntology;
