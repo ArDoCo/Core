@@ -30,7 +30,5 @@ jobs:
       uses: whelk-io/maven-settings-xml-action@v20
       with:
         servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }, { "id": "github-informalin", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
-    - name: Verify with Maven
-      run: mvn -B clean verify --file pom.xml -U
     - name: Publish Package
-      run: mvn -B deploy
+      run: mvn -B clean deploy -U
