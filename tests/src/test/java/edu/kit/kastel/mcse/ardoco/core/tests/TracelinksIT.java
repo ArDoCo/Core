@@ -58,10 +58,11 @@ class TracelinksIT {
 
     // NOTE: if you only want to test a specific project, you can simply set up the EnumSource
     // For more details, see https://www.baeldung.com/parameterized-tests-junit-5#3-enum
+    // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
     @DisplayName("Evaluate TLR (Ontology-based)")
     @ParameterizedTest(name = "Evaluating {0} (Onto)")
-    @EnumSource(Project.class)
+    @EnumSource(value = Project.class)
     void compareTraceLinksIT(Project project) {
         compareOntologyBased(project);
     }
@@ -69,7 +70,7 @@ class TracelinksIT {
     @Disabled("Disabled for CI. Enable for local test only!")
     @DisplayName("Evaluate TLR (Text-based)")
     @ParameterizedTest(name = "Evaluating {0} (Text)")
-    @EnumSource(Project.class)
+    @EnumSource(value = Project.class)
     void compareTraceLinksTextIT(Project project) {
         compareTextBased(project);
     }
