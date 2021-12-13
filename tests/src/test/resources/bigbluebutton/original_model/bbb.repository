@@ -2,6 +2,7 @@
 <repository:Repository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" id="_kMF5sFkFEeyewPSmlgszyA" entityName="New Repository">
   <components__Repository xsi:type="repository:BasicComponent" id="_kvWs4FkHEeyewPSmlgszyA" entityName="Recording Service">
     <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_iiD5cFkIEeyewPSmlgszyA" entityName="Recording Service.Recording Service.OperationProvidedRole" providedInterface__OperationProvidedRole="_d9jzgFkIEeyewPSmlgszyA"/>
+    <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_f0fOwFwPEeyiuNx_RO7j-Q" entityName="Recording Service.Redis DB.OperationRequiredRole" requiredInterface__OperationRequiredRole="_UV7gwFwPEeyiuNx_RO7j-Q"/>
   </components__Repository>
   <components__Repository xsi:type="repository:BasicComponent" id="_oN4CMFkHEeyewPSmlgszyA" entityName="kurento" componentType="INFRASTRUCTURE_COMPONENT">
     <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_tVPIIFkIEeyewPSmlgszyA" entityName="kurento.kurento.OperationProvidedRole" providedInterface__OperationProvidedRole="_r42CoFkIEeyewPSmlgszyA"/>
@@ -34,10 +35,18 @@
   <components__Repository xsi:type="repository:BasicComponent" id="_9wZIcFkHEeyewPSmlgszyA" entityName="FSESL" componentType="INFRASTRUCTURE_COMPONENT">
     <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_NzPEgFkJEeyewPSmlgszyA" entityName="FSESL.FSESL.OperationProvidedRole" providedInterface__OperationProvidedRole="_MUFl8FkJEeyewPSmlgszyA"/>
     <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_UINpkFkJEeyewPSmlgszyA" entityName="FSESL.Redis PubSub.OperationRequiredRole" requiredInterface__OperationRequiredRole="_IixQcFkJEeyewPSmlgszyA"/>
+    <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_wyV3AFwPEeyiuNx_RO7j-Q" entityName="FSESL.FreeSWITCH.OperationRequiredRole" requiredInterface__OperationRequiredRole="_qa5z0FwPEeyiuNx_RO7j-Q"/>
   </components__Repository>
   <components__Repository xsi:type="repository:BasicComponent" id="_XuNf4FkJEeyewPSmlgszyA" entityName="Apps">
     <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_ayzSQFkJEeyewPSmlgszyA" entityName="Apps.Interface.OperationProvidedRole" providedInterface__OperationProvidedRole="_ZADiQFkJEeyewPSmlgszyA"/>
     <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_eEr5wFkJEeyewPSmlgszyA" entityName="Apps.Redis PubSub.OperationRequiredRole1" requiredInterface__OperationRequiredRole="_IixQcFkJEeyewPSmlgszyA"/>
+    <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_duTlYFwPEeyiuNx_RO7j-Q" entityName="Apps.Redis DB.OperationRequiredRole" requiredInterface__OperationRequiredRole="_UV7gwFwPEeyiuNx_RO7j-Q"/>
+  </components__Repository>
+  <components__Repository xsi:type="repository:BasicComponent" id="_RDHFIFwPEeyiuNx_RO7j-Q" entityName="Redis DB">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_WXDrAFwPEeyiuNx_RO7j-Q" entityName="Redis DB.Redis DB.OperationProvidedRole" providedInterface__OperationProvidedRole="_UV7gwFwPEeyiuNx_RO7j-Q"/>
+  </components__Repository>
+  <components__Repository xsi:type="repository:BasicComponent" id="_nwrCMFwPEeyiuNx_RO7j-Q" entityName="FreeSWITCH">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_sU-64FwPEeyiuNx_RO7j-Q" entityName="FreeSWITCH.FreeSWITCH.OperationProvidedRole" providedInterface__OperationProvidedRole="_qa5z0FwPEeyiuNx_RO7j-Q"/>
   </components__Repository>
   <interfaces__Repository xsi:type="repository:OperationInterface" id="_d9jzgFkIEeyewPSmlgszyA" entityName="Recording Service"/>
   <interfaces__Repository xsi:type="repository:OperationInterface" id="_r42CoFkIEeyewPSmlgszyA" entityName="kurento"/>
@@ -48,5 +57,7 @@
   <interfaces__Repository xsi:type="repository:OperationInterface" id="_FhvIYFkJEeyewPSmlgszyA" entityName="BBB web"/>
   <interfaces__Repository xsi:type="repository:OperationInterface" id="_IixQcFkJEeyewPSmlgszyA" entityName="Redis PubSub"/>
   <interfaces__Repository xsi:type="repository:OperationInterface" id="_MUFl8FkJEeyewPSmlgszyA" entityName="FSESL"/>
-  <interfaces__Repository xsi:type="repository:OperationInterface" id="_ZADiQFkJEeyewPSmlgszyA" entityName="Interface"/>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_ZADiQFkJEeyewPSmlgszyA" entityName="Apps"/>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_UV7gwFwPEeyiuNx_RO7j-Q" entityName="Redis DB"/>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_qa5z0FwPEeyiuNx_RO7j-Q" entityName="FreeSWITCH"/>
 </repository:Repository>
