@@ -23,7 +23,7 @@ public enum Project {
             "src/test/resources/mediastore/mediastore.txt", //
             "src/test/resources/mediastore/goldstandard.csv", //
             new EvaluationResults(.943, .60, .73), //
-            new EvaluationResults(.90, .60, .75)//
+            new EvaluationResults(.99, .60, .75)//
     ), //
     TEAMMATES( //
             "src/test/resources/teammates/teammates.owl", //
@@ -45,8 +45,8 @@ public enum Project {
             "src/test/resources/bigbluebutton/bbb_w_text.owl", //
             "src/test/resources/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/bigbluebutton/goldstandard.csv", //
-            new EvaluationResults(.606, .547, .576), //
-            new EvaluationResults(.606, .547, .576));
+            new EvaluationResults(.762, .658, .706), //
+            new EvaluationResults(.763, .658, .706));
 
     private final String model;
     private final String textOntology;
