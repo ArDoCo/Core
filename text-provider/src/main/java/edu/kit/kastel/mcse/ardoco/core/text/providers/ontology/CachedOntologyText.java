@@ -11,27 +11,30 @@ import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
 import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 public class CachedOntologyText implements IText {
 
     private OrderedOntologyList textList = null;
     private ImmutableList<IWord> words = null;
     private ImmutableList<ICorefCluster> corefClusters = null;
+    private ImmutableList<ISentence> sentences = null;
 
     private OntologyText ontologyText;
 
-    protected CachedOntologyText(OntologyText ontologyText) {
+    public CachedOntologyText(OntologyText ontologyText) {
         this.ontologyText = ontologyText;
     }
 
-    protected static CachedOntologyText get(OntologyConnector ontologyConnector, Individual textIndividual) {
+    public static CachedOntologyText get(OntologyConnector ontologyConnector, Individual textIndividual) {
         var ontologyText = OntologyText.get(ontologyConnector, textIndividual);
         return new CachedOntologyText(ontologyText);
     }
 
-    protected static CachedOntologyText get(OntologyConnector ontologyConnector) {
+    public static CachedOntologyText get(OntologyConnector ontologyConnector) {
         var ontologyText = OntologyText.get(ontologyConnector);
         if (ontologyText == null) {
             return null;
@@ -39,7 +42,7 @@ public class CachedOntologyText implements IText {
         return new CachedOntologyText(ontologyText);
     }
 
-    protected static CachedOntologyText get(OntologyConnector ontologyConnector, String name) {
+    public static CachedOntologyText get(OntologyConnector ontologyConnector, String name) {
         var ontologyText = OntologyText.getWithName(ontologyConnector, name);
         if (ontologyText == null) {
             return null;
@@ -116,5 +119,13 @@ public class CachedOntologyText implements IText {
         }
         CachedOntologyText other = (CachedOntologyText) obj;
         return Objects.equals(ontologyText, other.ontologyText);
+    }
+
+    @Override
+    public synchronized ImmutableList<ISentence> getSentences() {
+        if (sentences == null) {
+            sentences = Sentence.createSentenceListFromWords(getWords());
+        }
+        return sentences;
     }
 }

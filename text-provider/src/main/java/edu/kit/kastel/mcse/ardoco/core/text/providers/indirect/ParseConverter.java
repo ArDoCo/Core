@@ -16,9 +16,11 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 /**
  * The Class ParseConverter converts an {@link IGraph} to an {@link IText}.
@@ -240,6 +242,7 @@ public class ParseConverter {
 
         private ImmutableList<IWord> words;
         private ImmutableList<ICorefCluster> corefClusters;
+        private ImmutableList<ISentence> sentences = null;
 
         private Text(ImmutableList<Word> orderedWords, ImmutableList<ICorefCluster> corefClusters) {
             orderedWords.stream().forEach(w -> w.parent = this);
@@ -260,6 +263,14 @@ public class ParseConverter {
         @Override
         public ImmutableList<ICorefCluster> getCorefClusters() {
             return corefClusters;
+        }
+
+        @Override
+        public synchronized ImmutableList<ISentence> getSentences() {
+            if (sentences == null) {
+                sentences = Sentence.createSentenceListFromWords(getWords());
+            }
+            return sentences;
         }
 
     }

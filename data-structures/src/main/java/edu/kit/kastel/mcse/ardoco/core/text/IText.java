@@ -37,4 +37,11 @@ public interface IText {
      * @return the coreference clusters
      */
     ImmutableList<ICorefCluster> getCorefClusters();
+
+    /**
+     * Returns the sentences of the text, ordered by appearance.
+     *
+     * @return the sentences of the text, ordered by appearance.
+     */
+    ImmutableList<ISentence> getSentences();
 }
