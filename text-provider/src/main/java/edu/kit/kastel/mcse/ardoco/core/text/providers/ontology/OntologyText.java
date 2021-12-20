@@ -16,8 +16,10 @@ import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
 import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 public class OntologyText implements IText {
     private static final String ERR_NO_LIST = "Could not find list of words in the ontology.";
@@ -28,6 +30,7 @@ public class OntologyText implements IText {
 
     private OntProperty wordsProperty;
     private OntProperty hasCorefClusterProperty;
+
     private static OntClass textDocumentClass = null;
 
     protected OntologyText(OntologyConnector ontologyConnector, Individual textIndividual) {
@@ -165,6 +168,11 @@ public class OntologyText implements IText {
             clusters.add(cluster);
         }
         return clusters.toImmutable();
+    }
+
+    @Override
+    public ImmutableList<ISentence> getSentences() {
+        return Sentence.createSentenceListFromWords(getWords());
     }
 
 }

@@ -73,4 +73,11 @@ class OntologyTextTest {
         var expectedNumberOfClusters = 16;
         Assertions.assertEquals(expectedNumberOfClusters, clusters.size());
     }
+
+    @Test
+    @DisplayName("Test retrieval of sentences")
+    void getSentencesTest() {
+        var sentences = ontologyText.getSentences();
+        Assertions.assertEquals(42, sentences.size());
+    }
 }
