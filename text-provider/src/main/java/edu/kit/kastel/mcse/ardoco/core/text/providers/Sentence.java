@@ -63,13 +63,23 @@ public class Sentence implements ISentence {
 
     private static boolean needsNoSpaceAhead(IWord word) {
         var pos = word.getPosTag();
-        return pos == POSTag.RIGHT_PAREN || pos == POSTag.CLOSER || pos == POSTag.COMMA || pos == POSTag.COLON || pos == POSTag.HYPH
+        var posTest = pos == POSTag.RIGHT_PAREN || pos == POSTag.CLOSER || pos == POSTag.COMMA || pos == POSTag.COLON || pos == POSTag.HYPH
                 || pos == POSTag.CLOSE_QUOTE || pos == POSTag.POSSESSIVE_ENDING;
+        if (posTest) {
+            return true;
+        }
+        var text = word.getText();
+        return text.equals(")") || text.equals(".") || text.equals(",") || text.equals(";") || text.equals("-") || text.equals("\"") || text.equals("\'");
     }
 
     private static boolean needsNoSpaceAfter(IWord word) {
         var pos = word.getPosTag();
-        return pos == POSTag.LEFT_PAREN || pos == POSTag.HYPH;
+        var posTest = pos == POSTag.LEFT_PAREN || pos == POSTag.HYPH;
+        if (posTest) {
+            return true;
+        }
+        var text = word.getText();
+        return text.equals("-") || text.equals("(");
     }
 
     public static ImmutableList<ISentence> createSentenceListFromWords(ImmutableList<IWord> words) {
