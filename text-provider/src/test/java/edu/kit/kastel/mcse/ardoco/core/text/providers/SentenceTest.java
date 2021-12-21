@@ -58,6 +58,11 @@ class SentenceTest {
         expectedSentenceText = "Recommendations are generated based on the users current shopping cart, the user's previous orders and/or the item the user is currently looking at.";
         actualSentenceText = sentence.getText();
         Assertions.assertEquals(expectedSentenceText, actualSentenceText);
+
+        sentence = sentences.get(33);
+        expectedSentenceText = "One CPU-intensive, calculating the item-rankings per user on-the-go and one memory-intensive, calculating the total user rating prediction matrix during the training phase.";
+        actualSentenceText = sentence.getText();
+        Assertions.assertEquals(expectedSentenceText, actualSentenceText);
     }
 
 }
