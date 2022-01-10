@@ -9,6 +9,7 @@
   </parent>
 
   <artifactId>core</artifactId>
+  <version>${revision}</version>
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
 
