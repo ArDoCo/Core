@@ -4,8 +4,6 @@ on:
   push:
     branches: [ main, master, cleanup, refactoring, restructuring ]
   pull_request:
-    branches-ignore:
-      - dependabot/**
     types: [opened, synchronize, reopened]
     
 
@@ -16,6 +14,8 @@ jobs:
   sonar:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    
     steps:
       - uses: actions/checkout@v2.3.4
         with:
