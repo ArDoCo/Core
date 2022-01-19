@@ -31,4 +31,4 @@ jobs:
       with:
         servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }, { "id": "github-informalin", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
     - name: Publish Package
-      run: mvn -B clean deploy -U
+      run: mvn -B deploy -U
