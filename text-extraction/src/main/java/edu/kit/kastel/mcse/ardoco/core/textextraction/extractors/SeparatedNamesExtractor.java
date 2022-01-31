@@ -6,6 +6,7 @@ import org.kohsuke.MetaInfServices;
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
@@ -71,7 +72,7 @@ public class SeparatedNamesExtractor extends TextExtractionExtractor {
      * @param n node to check
      */
     private void checkForSeparatedNode(IWord n) {
-        if (CommonUtilities.containsSeparator(n.getText())) {
+        if (n.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(n.getText())) {
             textState.addName(n, n.getText(), probability);
         }
     }
