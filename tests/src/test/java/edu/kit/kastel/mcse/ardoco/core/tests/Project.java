@@ -30,8 +30,8 @@ public enum Project {
             "src/test/resources/teammates/teammates_w_text.owl", //
             "src/test/resources/teammates/teammates.txt", //
             "src/test/resources/teammates/goldstandard.csv", //
-            new EvaluationResults(.85, .90, .875), //
-            new EvaluationResults(.853, .853, .853)//
+            new EvaluationResults(.877, .877, .877), //
+            new EvaluationResults(.882, .828, .854)//
     ), //
     TEASTORE( //
             "src/test/resources/teastore/teastore.owl", //
