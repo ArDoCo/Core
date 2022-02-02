@@ -37,63 +37,58 @@ public class TextState implements ITextState {
     /***
      * Adds a name mapping to the state
      *
-     * @param n           node of the mapping
-     * @param name        reference of the mapping
      * @param probability probability to be a name mapping
      * @param occurrences list of the appearances of the mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addName(IWord n, String name, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(n, name.toLowerCase(), MappingKind.NAME, probability, occurrences);
+    public final void addName(IWord word, double probability, ImmutableList<String> occurrences) {
+        addNounMapping(word, MappingKind.NAME, probability, occurrences);
     }
 
     /***
      * Adds a name mapping to the state
      *
      * @param word        word of the mapping
-     * @param name        reference of the mapping
      * @param probability probability to be a name mapping
      */
     @Override
-    public final void addName(IWord word, String name, double probability) {
-        addName(word, name.toLowerCase(), probability, Lists.immutable.with(word.getText()));
+    public final void addName(IWord word, double probability) {
+        addName(word, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
      * Adds a name or type mapping to the state
      *
-     * @param n           node of the mapping
-     * @param ref         reference of the mapping
      * @param probability probability to be a name or type mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addNort(IWord n, String ref, double probability) {
-        addNort(n, ref.toLowerCase(), probability, Lists.immutable.with(n.getText()));
+    public final void addNort(IWord word, double probability) {
+        addNort(word, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
      * Adds a type mapping to the state
      *
-     * @param n           node of the mapping
-     * @param type        reference of the mapping
      * @param probability probability to be a type mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addType(IWord n, String type, double probability) {
-        addType(n, type.toLowerCase(), probability, Lists.immutable.with(n.getText()));
+    public final void addType(IWord word, double probability) {
+        addType(word, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
      * Adds a type mapping to the state
      *
-     * @param n           node of the mapping
-     * @param type        reference of the mapping
      * @param probability probability to be a type mapping
      * @param occurrences list of the appearances of the mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addType(IWord n, String type, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(n, type.toLowerCase(), MappingKind.TYPE, probability, occurrences);
+    public final void addType(IWord word, double probability, ImmutableList<String> occurrences) {
+        addNounMapping(word, MappingKind.TYPE, probability, occurrences);
     }
 
     /**
@@ -339,51 +334,47 @@ public class TextState implements ITextState {
         nounMappings.put(nounMapping.getReference(), nounMapping);
     }
 
-    @Override
-    public void addNounMapping(ImmutableList<IWord> nodes, String reference, MappingKind kind, double confidence, ImmutableList<String> occurrences) {
-        INounMapping mapping = new NounMapping(nodes, Map.of(kind, confidence), reference, occurrences);
-        nounMappings.put(mapping.getReference(), mapping);
-    }
+    private void addNounMapping(IWord word, MappingKind kind, double probability, ImmutableList<String> occurrences) {
+        // create new nounMapping
+        var words = Lists.immutable.with(word);
+        INounMapping mapping = new NounMapping(words, kind, probability, words.castToList(), occurrences);
 
-    private void addNounMapping(IWord word, String reference, MappingKind kind, double probability, ImmutableList<String> occurrences) {
-        if (CommonUtilities.containsSeparator(reference)) {
-            ImmutableList<String> parts = CommonUtilities.splitAtSeparators(reference).select(part -> part.length() > 1);
-            for (String referencePart : parts) {
-                addNounMapping(word, referencePart, kind, probability, occurrences);
-            }
-        }
+        // iterate over the parts and find exact same or similar references to it the NounMapping to, else add the new
+        // NounMapping
+        for (var part : CommonUtilities.splitAtSeparators(word.getText().toLowerCase())) {
+            if (nounMappings.containsKey(part)) {
+                // extend existing nounMapping
+                var existingMapping = nounMappings.get(part);
+                existingMapping.addKindWithProbability(kind, probability);
+                existingMapping.addOccurrence(occurrences);
+                existingMapping.addWord(word);
 
-        if (nounMappings.containsKey(reference)) {
-            // extend existing nounMapping
-            var existingMapping = nounMappings.get(reference);
-            existingMapping.addKindWithProbability(kind, probability);
-            existingMapping.addOccurrence(occurrences);
-            existingMapping.addWord(word);
+            } else {
+                // find NameMappings with similar references and add info to them
+                ImmutableList<String> similarRefs = Lists.immutable
+                        .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, part)));
+                for (String ref : similarRefs) {
+                    INounMapping similarMapping = nounMappings.get(ref);
+                    similarMapping.addOccurrence(occurrences);
+                    similarMapping.addWord(word);
+                    similarMapping.addKindWithProbability(kind, probability);
+                }
 
-        } else {
-            ImmutableList<String> similarRefs = Lists.immutable
-                    .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference)));
-            for (String ref : similarRefs) {
-                INounMapping similarMapping = nounMappings.get(ref);
-                similarMapping.addOccurrence(occurrences);
-                similarMapping.addWord(word);
-                similarMapping.addKindWithProbability(kind, probability);
-            }
-            if (similarRefs.isEmpty()) {
-                // create new nounMapping
-                INounMapping mapping = new NounMapping(Lists.immutable.with(word), kind, probability, reference, occurrences);
-                nounMappings.put(reference, mapping);
+                // if no NameMapping with similar reference exists, add new reference and the NounMapping
+                if (similarRefs.isEmpty()) {
+                    nounMappings.put(part, mapping);
+                }
             }
         }
 
     }
 
     @Override
-    public void addNort(IWord n, String ref, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(n, ref.toLowerCase(), MappingKind.NAME_OR_TYPE, probability, occurrences);
+    public void addNort(IWord word, double probability, ImmutableList<String> occurrences) {
+        addNounMapping(word, MappingKind.NAME_OR_TYPE, probability, occurrences);
 
         ImmutableList<INounMapping> wordsWithSimilarNode = Lists.immutable
-                .fromStream(nounMappings.values().stream().filter(mapping -> mapping.getWords().contains(n)));
+                .fromStream(nounMappings.values().stream().filter(mapping -> mapping.getWords().contains(word)));
         for (INounMapping mapping : wordsWithSimilarNode) {
             if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
                 mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);

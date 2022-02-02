@@ -33,25 +33,25 @@ public final class CachedOntologyCorefCluster implements ICorefCluster {
     }
 
     @Override
-    public synchronized int getId() {
+    public synchronized int id() {
         if (id <= -1) {
-            id = ontologyCorefCluster.getId();
+            id = ontologyCorefCluster.id();
         }
         return id;
     }
 
     @Override
-    public synchronized String getRepresentativeMention() {
+    public synchronized String representativeMention() {
         if (representativeMention == null) {
-            representativeMention = ontologyCorefCluster.getRepresentativeMention();
+            representativeMention = ontologyCorefCluster.representativeMention();
         }
         return representativeMention;
     }
 
     @Override
-    public synchronized ImmutableList<ImmutableList<IWord>> getMentions() {
+    public synchronized ImmutableList<ImmutableList<IWord>> mentions() {
         if (mentions == null) {
-            mentions = ontologyCorefCluster.getMentions().collect(list -> list.collect(CachedOntologyWord::get));
+            mentions = ontologyCorefCluster.mentions().collect(list -> list.collect(CachedOntologyWord::get));
         }
         return mentions;
     }

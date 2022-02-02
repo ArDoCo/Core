@@ -35,21 +35,21 @@ class OntologyCorefClusterTest {
     @Test
     @DisplayName("Test getId()")
     void getIdTest() {
-        var id = ontologyCorefCluster.getId();
+        var id = ontologyCorefCluster.id();
         Assertions.assertEquals(198, id);
     }
 
     @Test
     @DisplayName("Test getRepresentativeMention()")
     void getRepresentativeMentionTest() {
-        var reprMention = ontologyCorefCluster.getRepresentativeMention();
+        var reprMention = ontologyCorefCluster.representativeMention();
         Assertions.assertEquals("one single registry", reprMention);
     }
 
     @Test
     @DisplayName("Test getMentions()")
     void getMentionsTest() {
-        var mentions = ontologyCorefCluster.getMentions();
+        var mentions = ontologyCorefCluster.mentions();
         Assertions.assertNotNull(mentions);
         Assertions.assertEquals(2, mentions.size());
 

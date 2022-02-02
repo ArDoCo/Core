@@ -69,25 +69,25 @@ public class OutDepArcsExtractor extends TextExtractionExtractor {
     /**
      * Examines the outgoing dependencies of a node.
      *
-     * @param n the node to check
+     * @param word the word to check
      */
-    private void examineOutgoingDepArcs(IWord n) {
+    private void examineOutgoingDepArcs(IWord word) {
 
-        ImmutableList<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(n);
+        ImmutableList<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(word);
 
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 
             if (DependencyTag.AGENT == shortDepTag) {
-                textState.addNort(n, n.getText(), probability);
+                textState.addNort(word, probability);
 
             } else if (DependencyTag.NUM == shortDepTag) {
-                textState.addType(n, n.getText(), probability);
+                textState.addType(word, probability);
 
             } else if (DependencyTag.PREDET == shortDepTag) {
-                textState.addType(n, n.getText(), probability);
+                textState.addType(word, probability);
 
             } else if (DependencyTag.RCMOD == shortDepTag) {
-                textState.addNort(n, n.getText(), probability);
+                textState.addNort(word, probability);
             }
         }
     }
