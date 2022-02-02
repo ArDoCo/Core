@@ -57,23 +57,23 @@ public class SeparatedNamesExtractor extends TextExtractionExtractor {
     }
 
     /***
-     * Checks if Node Value contains separator. If true, it is splitted and added separately to the names of the text
+     * Checks if Node Value contains separator. If true, it is split and added separately to the names of the text
      * extraction state.
      */
     @Override
-    public void exec(IWord node) {
-        checkForSeparatedNode(node);
+    public void exec(IWord word) {
+        checkForSeparatedNode(word);
     }
 
     /***
-     * Checks if Node Value contains separator. If true, it is splitted and added separately to the names of the text
+     * Checks if Node Value contains separator. If true, it is split and added separately to the names of the text
      * extraction state.
      *
-     * @param n node to check
+     * @param word word to check
      */
-    private void checkForSeparatedNode(IWord n) {
-        if (n.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(n.getText())) {
-            textState.addName(n, probability);
+    private void checkForSeparatedNode(IWord word) {
+        if (word.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(word.getText())) {
+            textState.addName(word, probability);
         }
     }
 
