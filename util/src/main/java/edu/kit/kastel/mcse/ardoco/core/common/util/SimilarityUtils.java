@@ -12,6 +12,7 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
@@ -30,16 +31,26 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks the similarity of a test string to an original string. The test string has to cover the original. If the
-     * original is short (e.g. <3) the similarity is harder to reach. Uses Jaro-Winkler similarity and Levenshtein to
-     * assess the similarity.
+     * Checks the similarity of two {@link IWord}s.
      *
-     * @param original  original string
-     * @param word2test test string to match the original
+     * @param word1 the first word
+     * @param word2 the second word
+     * @return true, if the words are similar; false if not.
+     */
+    public static boolean areWordsSimilar(IWord word1, IWord word2) {
+        // TODO exchange the following with certain metrics
+        return areWordsSimilar(word1.getText(), word2.getText(), CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
+    }
+
+    /**
+     * Checks the similarity oftwol string. Uses Jaro-Winkler similarity and Levenshtein to assess the similarity.
+     *
+     * @param word1 String of first word
+     * @param word2 String of second word
      * @return true, if the test string is similar to the original; false if not.
      */
-    public static boolean areWordsSimilar(String original, String word2test) {
-        return areWordsSimilar(original, word2test, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
+    public static boolean areWordsSimilar(String word1, String word2) {
+        return areWordsSimilar(word1, word2, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
     }
 
     private static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
@@ -83,8 +94,8 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks the similarity of a list, containing test strings, and a list of originals. This check is not
-     * bidirectional! In this method all test strings are compared to all originals. For this the method uses the
+     * Checks the similarity of a list with test strings to a list of "original" strings. In this method all test
+     * strings are compared to all originals. For this the method uses the
      * {@link #areWordsSimilar(String, String, Double)} with a given threshold. All matches are counted. If the
      * proportion of similarities between the lists is greater than the given threshold the method returns true.
      *

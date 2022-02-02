@@ -151,7 +151,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
     private static ImmutableList<IWord> getPhraseWordsFromNounMapping(INounMapping nounMapping) {
         ImmutableList<IWord> phrase = Lists.immutable.empty();
         for (var word : nounMapping.getWords()) {
-            var currPhrase = CommonUtilities.getCompoundPhrases(word);
+            var currPhrase = CommonUtilities.getCompoundPhrase(word);
             if (currPhrase.size() > phrase.size()) {
                 phrase = currPhrase;
             }

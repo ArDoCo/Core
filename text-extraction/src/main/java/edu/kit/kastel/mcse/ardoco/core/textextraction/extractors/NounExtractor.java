@@ -74,15 +74,15 @@ public class NounExtractor extends TextExtractionExtractor {
     /**
      * Finds all nouns and adds them as name-or-type mappings (and types) to the text extraction state.
      *
-     * @param n node to check
+     * @param word word to check
      */
-    private void findSingleNouns(IWord n) {
-        POSTag pos = n.getPosTag();
+    private void findSingleNouns(IWord word) {
+        POSTag pos = word.getPosTag();
         if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
-            textState.addNort(n, n.getText(), probability);
+            textState.addNort(word, probability);
         }
         if (POSTag.NOUN_PLURAL == pos) {
-            textState.addType(n, n.getText(), probability);
+            textState.addType(word, probability);
         }
 
     }

@@ -14,11 +14,11 @@ import org.eclipse.collections.api.list.ImmutableList;
  */
 public interface ICorefCluster {
 
-    int getId();
+    int id();
 
-    String getRepresentativeMention();
+    String representativeMention();
 
-    ImmutableList<ImmutableList<IWord>> getMentions();
+    ImmutableList<ImmutableList<IWord>> mentions();
 
     static String getTextForMention(ImmutableList<IWord> mention) {
         var textJoiner = new StringJoiner(" ");
