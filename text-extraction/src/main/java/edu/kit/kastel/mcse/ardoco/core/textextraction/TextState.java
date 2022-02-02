@@ -342,8 +342,9 @@ public class TextState implements ITextState {
 
         // Look at the first part (if there are more than one) and figure out if there are similar nounMappings
         // then either append existing NounMapping or put new NounMapping in
+        // We only look at the first part because the idea is that separator does something like denoting subpackages or
+        // sub-elements (classes, components) like "test.util". Here, we want the test part rather than the util part
         var parts = CommonUtilities.splitAtSeparators(lcText);
-
         var firstPart = parts.get(0);
         if (nounMappings.containsKey(firstPart)) {
             // extend existing nounMapping
