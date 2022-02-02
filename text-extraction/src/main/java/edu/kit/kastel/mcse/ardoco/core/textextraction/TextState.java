@@ -338,35 +338,39 @@ public class TextState implements ITextState {
         // create new nounMapping
         var words = Lists.immutable.with(word);
         INounMapping mapping = new NounMapping(words, kind, probability, words.castToList(), occurrences);
+        var lcText = word.getText().toLowerCase();
 
-        // iterate over the parts and find exact same or similar references to it the NounMapping to, else add the new
-        // NounMapping
-        for (var part : CommonUtilities.splitAtSeparators(word.getText().toLowerCase())) {
-            if (nounMappings.containsKey(part)) {
-                // extend existing nounMapping
-                var existingMapping = nounMappings.get(part);
-                existingMapping.addKindWithProbability(kind, probability);
-                existingMapping.addOccurrence(occurrences);
-                existingMapping.addWord(word);
+        // Look at the first part (if there are more than one) and figure out if there are similar nounMappings
+        // then either append existing NounMapping or put new NounMapping in
+        var parts = CommonUtilities.splitAtSeparators(lcText);
 
-            } else {
-                // find NameMappings with similar references and add info to them
-                ImmutableList<String> similarRefs = Lists.immutable
-                        .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, part)));
-                for (String ref : similarRefs) {
-                    INounMapping similarMapping = nounMappings.get(ref);
-                    similarMapping.addOccurrence(occurrences);
-                    similarMapping.addWord(word);
-                    similarMapping.addKindWithProbability(kind, probability);
-                }
+        var firstPart = parts.get(0);
+        if (nounMappings.containsKey(firstPart)) {
+            // extend existing nounMapping
+            var existingMapping = nounMappings.get(firstPart);
+            appendExistingNounMapping(word, kind, probability, occurrences, existingMapping);
+        } else {
+            // find NameMappings with similar references and add info to them
+            ImmutableList<String> similarRefs = Lists.immutable
+                    .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, firstPart)));
+            for (String ref : similarRefs) {
+                INounMapping similarMapping = nounMappings.get(ref);
+                appendExistingNounMapping(word, kind, probability, occurrences, similarMapping);
+            }
 
-                // if no NameMapping with similar reference exists, add new reference and the NounMapping
-                if (similarRefs.isEmpty()) {
-                    nounMappings.put(part, mapping);
-                }
+            // if no NameMapping with similar reference exists, add new reference and the NounMapping
+            if (similarRefs.isEmpty()) {
+                nounMappings.put(firstPart, mapping);
             }
         }
 
+    }
+
+    private void appendExistingNounMapping(IWord word, MappingKind kind, double probability, ImmutableList<String> occurrences,
+            INounMapping existingNounMapping) {
+        existingNounMapping.addKindWithProbability(kind, probability);
+        existingNounMapping.addOccurrence(occurrences);
+        existingNounMapping.addWord(word);
     }
 
     @Override

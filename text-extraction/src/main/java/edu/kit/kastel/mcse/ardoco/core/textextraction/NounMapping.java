@@ -150,7 +150,11 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public final String getReference() {
-        return CommonUtilities.createReferenceForPhrase(referenceWords);
+        if (referenceWords.size() == 1) {
+            return referenceWords.get(0).getText();
+        } else {
+            return CommonUtilities.createReferenceForPhrase(referenceWords);
+        }
     }
 
     /**
@@ -218,7 +222,7 @@ public class NounMapping implements INounMapping {
      * Splits all occurrences with a whitespace in it at their spaces and returns all parts that are similar to the
      * reference. If it contains a separator or similar to the reference it is added to the comparables as a whole.
      *
-     * @return all parts of occurrences (splitted at their spaces) that are similar to the reference.
+     * @return all parts of occurrences (split at their spaces) that are similar to the reference.
      */
     @Override
     public ImmutableList<String> getRepresentativeComparables() {
