@@ -275,31 +275,6 @@ public class ParseConverter {
 
     }
 
-    private static final class CorefCluster implements ICorefCluster {
-        private int id;
-        private ImmutableList<ImmutableList<IWord>> mentions;
-        private String representativeMention;
-
-        private CorefCluster(int id, String representativeMention, ImmutableList<ImmutableList<IWord>> mentions) {
-            this.mentions = mentions;
-            this.representativeMention = representativeMention;
-            this.id = id;
-        }
-
-        @Override
-        public String getRepresentativeMention() {
-            return representativeMention;
-        }
-
-        @Override
-        public ImmutableList<ImmutableList<IWord>> getMentions() {
-            return mentions;
-        }
-
-        @Override
-        public int getId() {
-            return id;
-        }
-
+    private static final record CorefCluster(int id, String representativeMention, ImmutableList<ImmutableList<IWord>> mentions) implements ICorefCluster {
     }
 }

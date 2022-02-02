@@ -73,7 +73,7 @@ public class SeparatedNamesExtractor extends TextExtractionExtractor {
      */
     private void checkForSeparatedNode(IWord n) {
         if (n.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(n.getText())) {
-            textState.addName(n, n.getText(), probability);
+            textState.addName(n, probability);
         }
     }
 

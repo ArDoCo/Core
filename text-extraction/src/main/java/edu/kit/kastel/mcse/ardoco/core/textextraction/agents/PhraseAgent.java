@@ -1,9 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import java.util.StringJoiner;
-
-import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
@@ -53,13 +50,13 @@ public class PhraseAgent extends TextAgent {
     }
 
     private void createNounMappingIfPhrase(IWord word) {
-        var phrase = CommonUtilities.getCompoundPhrases(word);
+        var phrase = CommonUtilities.getCompoundPhrase(word);
         phrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
         if (phrase.size() > 1) {
-            var reference = createReferenceForPhrase(phrase);
+            var reference = CommonUtilities.createReferenceForPhrase(phrase);
             var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
             if (similarReferenceNounMappings.isEmpty()) {
-                INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, reference, PHRASE_CONFIDENCE);
+                INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, PHRASE_CONFIDENCE);
                 textState.addNounMapping(phraseNounMapping);
             } else {
                 for (var nounMapping : similarReferenceNounMappings) {
@@ -73,16 +70,8 @@ public class PhraseAgent extends TextAgent {
     private void createNounMappingIfSpecialNamedEntity(IWord word) {
         var text = word.getText();
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
-            textState.addName(word, text, SPECIAL_NAMED_ENTITY_CONFIDENCE);
+            textState.addName(word, SPECIAL_NAMED_ENTITY_CONFIDENCE);
         }
-    }
-
-    private static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
-        StringJoiner referenceJoiner = new StringJoiner(" ");
-        for (var w : phrase) {
-            referenceJoiner.add(w.getText());
-        }
-        return referenceJoiner.toString();
     }
 
 }

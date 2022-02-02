@@ -51,7 +51,7 @@ public class CorefAgent extends TextAgent {
             addWordsToNounMappingsAsCoreferences(nounMappings, words);
 
             if (doMerging && nounMappings.size() > 1) {
-                logger.debug("MORE THAN 1 FOR {}", corefCluster.getRepresentativeMention());
+                logger.debug("MORE THAN 1 FOR {}", corefCluster.representativeMention());
                 mergeNounMappings(nounMappings, textState);
             }
         }
@@ -88,7 +88,7 @@ public class CorefAgent extends TextAgent {
     }
 
     private static ImmutableList<IWord> getAllWordsFromCorefCluster(ICorefCluster corefCluster) {
-        return corefCluster.getMentions().flatCollect(mention -> mention);
+        return corefCluster.mentions().flatCollect(mention -> mention);
     }
 
 }

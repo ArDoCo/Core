@@ -15,58 +15,52 @@ public interface ITextState extends IState<ITextState> {
      * * Adds a name mapping to the state.
      *
      * @param n           node of the mapping
-     * @param name        reference of the mapping
      * @param probability probability to be a name mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addName(IWord n, String name, double probability, ImmutableList<String> occurrences);
+    void addName(IWord n, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a name mapping to the state.
      *
      * @param word        word of the mapping
-     * @param name        reference of the mapping
      * @param probability probability to be a name mapping
      */
-    void addName(IWord word, String name, double probability);
+    void addName(IWord word, double probability);
 
     /**
      * * Adds a name or type mapping to the state.
      *
-     * @param n           node of the mapping
-     * @param ref         reference of the mapping
+     * @param word        node of the mapping
      * @param probability probability to be a name or type mapping
      */
-    void addNort(IWord n, String ref, double probability);
+    void addNort(IWord word, double probability);
 
     /**
      * * Adds a name or type mapping to the state.
      *
-     * @param n           node of the mapping
-     * @param ref         reference of the mapping
+     * @param word        node of the mapping
      * @param probability probability to be a name or type mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addNort(IWord n, String ref, double probability, ImmutableList<String> occurrences);
+    void addNort(IWord word, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a type mapping to the state.
      *
-     * @param n           node of the mapping
-     * @param type        reference of the mapping
+     * @param word        node of the mapping
      * @param probability probability to be a type mapping
      */
-    void addType(IWord n, String type, double probability);
+    void addType(IWord word, double probability);
 
     /**
      * * Adds a type mapping to the state.
      *
-     * @param n           node of the mapping
-     * @param type        reference of the mapping
+     * @param word        node of the mapping
      * @param probability probability to be a type mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addType(IWord n, String type, double probability, ImmutableList<String> occurrences);
+    void addType(IWord word, double probability, ImmutableList<String> occurrences);
 
     /**
      * Creates a new relation mapping and adds it to the state. More end points, as well as a preposition can be added
@@ -236,17 +230,6 @@ public interface ITextState extends IState<ITextState> {
      * @param nounMapping the noun mapping.
      */
     void addNounMapping(INounMapping nounMapping);
-
-    /**
-     * Adds the noun mapping.
-     *
-     * @param nodes       the nodes
-     * @param reference   the reference
-     * @param kind        the kind
-     * @param confidence  the confidence
-     * @param occurrences the occurrences
-     */
-    void addNounMapping(ImmutableList<IWord> nodes, String reference, MappingKind kind, double confidence, ImmutableList<String> occurrences);
 
     /**
      * Gets the mappings that could be A type.

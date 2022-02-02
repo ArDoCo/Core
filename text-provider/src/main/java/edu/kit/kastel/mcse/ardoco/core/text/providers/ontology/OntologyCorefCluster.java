@@ -48,7 +48,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
     }
 
     @Override
-    public int getId() {
+    public int id() {
         var optId = ontologyConnector.getPropertyIntValue(corefIndividual, uuidProperty);
         if (optId.isPresent()) {
             return optId.get();
@@ -57,7 +57,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
     }
 
     @Override
-    public String getRepresentativeMention() {
+    public String representativeMention() {
         var representativeMention = ontologyConnector.getPropertyStringValue(corefIndividual, representativeMentionProperty);
         if (representativeMention.isPresent()) {
             return representativeMention.get();
@@ -66,7 +66,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
     }
 
     @Override
-    public ImmutableList<ImmutableList<IWord>> getMentions() {
+    public ImmutableList<ImmutableList<IWord>> mentions() {
         MutableList<ImmutableList<IWord>> mentionList = Lists.mutable.empty();
 
         ImmutableList<Individual> mentions = ontologyConnector.getObjectsOf(corefIndividual, mentionProperty).collect(n -> n.as(Individual.class));

@@ -265,7 +265,7 @@ public final class CommonUtilities {
         return referenceJoiner.toString();
     }
 
-    public static ImmutableList<IWord> getCompoundPhrases(IWord word) {
+    public static ImmutableList<IWord> getCompoundPhrase(IWord word) {
         var deps = Lists.mutable.of(word);
         deps.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(IWord::getPosition);
