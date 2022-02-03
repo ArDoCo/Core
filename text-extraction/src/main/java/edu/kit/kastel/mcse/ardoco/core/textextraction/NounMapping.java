@@ -206,6 +206,26 @@ public class NounMapping implements INounMapping {
         recalculateProbability(kind, probability);
     }
 
+    private void recalculateProbability(MappingKind kind, double newProbability) {
+        double currentProbability = distribution.get(kind);
+        distribution.put(kind, (currentProbability + newProbability) / 2);
+
+        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
+        if (mostProbableKind != null) {
+            if (mostProbableKind == MappingKind.NAME_OR_TYPE) {
+                var threshold = 0;
+                if (distribution.get(MappingKind.NAME) >= threshold || distribution.get(MappingKind.TYPE) >= threshold) {
+                    if (distribution.get(MappingKind.NAME) >= distribution.get(MappingKind.TYPE)) {
+                        mostProbableKind = MappingKind.NAME;
+                    } else {
+                        mostProbableKind = MappingKind.TYPE;
+                    }
+                }
+            }
+            highestProbability = distribution.get(mostProbableKind);
+        }
+    }
+
     @Override
     public INounMapping createCopy() {
         var nm = new NounMapping(words.toImmutable(), distribution, referenceWords.toList(), surfaceForms.toImmutable());
@@ -261,25 +281,6 @@ public class NounMapping implements INounMapping {
     @Override
     public MappingKind getKind() {
         return mostProbableKind;
-    }
-
-    private void recalculateProbability(MappingKind kind, double newProbability) {
-
-        double currentProbability = distribution.get(kind);
-        distribution.put(kind, (currentProbability + newProbability) / 2);
-
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        if (mostProbableKind != null) {
-            if (mostProbableKind == MappingKind.NAME_OR_TYPE && (distribution.get(MappingKind.NAME) > 0 || distribution.get(MappingKind.TYPE) > 0)) {
-
-                if (distribution.get(MappingKind.NAME) >= distribution.get(MappingKind.TYPE)) {
-                    mostProbableKind = MappingKind.NAME;
-                } else {
-                    mostProbableKind = MappingKind.TYPE;
-                }
-            }
-            highestProbability = distribution.get(mostProbableKind);
-        }
     }
 
     /**
@@ -344,29 +345,6 @@ public class NounMapping implements INounMapping {
     @Override
     public void setAsPhrase(boolean hasPhrase) {
         this.hasPhrase = hasPhrase;
-    }
-
-    /**
-     * Updates the probability
-     *
-     * @param newProbability the probability to update with.
-     */
-    @Override
-    public void updateProbability(double newProbability) {
-        if (CommonUtilities.valueEqual(highestProbability, 1.0)) {
-            return;
-        }
-
-        if (CommonUtilities.valueEqual(newProbability, 1.0)) {
-            highestProbability = newProbability;
-            distribution.put(mostProbableKind, newProbability);
-        } else if (highestProbability >= newProbability) {
-            double probabilityToSet = highestProbability + newProbability * (1 - highestProbability);
-            recalculateProbability(mostProbableKind, probabilityToSet);
-        } else {
-            double probabilityToSet = (highestProbability + newProbability) * 0.5;
-            recalculateProbability(mostProbableKind, probabilityToSet);
-        }
     }
 
     @Override

@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -233,7 +234,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(n -> n.getKind() == MappingKind.TYPE).toImmutable();
+        return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsType()).toImmutable();
     }
 
     /**
@@ -310,7 +311,21 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getKind() == MappingKind.TYPE);
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsType());
+    }
+
+    private Predicate<? super INounMapping> nounMappingIsType() {
+        // TODO Problem is that some NounMappings with a high probability for NorT are wrongly classified as type
+        return n -> n.getKind() == MappingKind.TYPE;
+
+    }
+
+    private Predicate<? super INounMapping> nounMappingIsTypeBecauseOfHighestProbability() {
+        return n -> {
+            var distribution = n.getDistribution();
+            var type = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(MappingKind.NAME_OR_TYPE);
+            return type == MappingKind.TYPE;
+        };
     }
 
     @Override
@@ -326,21 +341,22 @@ public class TextState implements ITextState {
         addNounMappingOrAppendToSimilarNounMapping(nounMapping);
     }
 
-    private void addNounMapping(IWord word, MappingKind kind, double probability, ImmutableList<String> occurrences) {
+    private INounMapping addNounMapping(IWord word, MappingKind kind, double probability, ImmutableList<String> occurrences) {
         var words = Lists.immutable.with(word);
         INounMapping nounMapping = new NounMapping(words, kind, probability, words.castToList(), occurrences);
 
-        addNounMappingOrAppendToSimilarNounMapping(nounMapping);
+        return addNounMappingOrAppendToSimilarNounMapping(nounMapping);
     }
 
-    private void addNounMappingOrAppendToSimilarNounMapping(INounMapping nounMapping) {
+    private INounMapping addNounMappingOrAppendToSimilarNounMapping(INounMapping nounMapping) {
         for (var existingNounMapping : nounMappings) {
             if (SimilarityUtils.areNounMappingsSimilar(nounMapping, existingNounMapping)) {
                 appendNounMappingToExistingNounMapping(nounMapping, existingNounMapping);
-                return;
+                return existingNounMapping;
             }
         }
         nounMappings.add(nounMapping);
+        return nounMapping;
     }
 
     private void appendNounMappingToExistingNounMapping(INounMapping disposableNounMapping, INounMapping existingNounMapping) {
@@ -351,16 +367,13 @@ public class TextState implements ITextState {
 
     @Override
     public void addNort(IWord word, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(word, MappingKind.NAME_OR_TYPE, probability, occurrences);
+        var mapping = addNounMapping(word, MappingKind.NAME_OR_TYPE, probability, occurrences);
 
-        ImmutableList<INounMapping> wordsWithSimilarNode = Lists.immutable.ofAll(nounMappings.select(mapping -> mapping.getWords().contains(word)));
-        for (INounMapping mapping : wordsWithSimilarNode) {
-            if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
-                mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
-            }
-            if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
-                mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
-            }
+        if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
+            mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
+        }
+        if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
+            mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
         }
     }
 
