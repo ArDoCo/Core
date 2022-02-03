@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,6 +104,9 @@ class TracelinksIT {
                     results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
                     expectedResults.getF1());
             logger.info(infoString);
+
+            logger.debug("False negatives:\n{}", results.getFalseNegative().stream().map(Object::toString).collect(Collectors.joining("\n")));
+            logger.debug("False positives:\n{}", results.getFalsePositives().stream().map(Object::toString).collect(Collectors.joining("\n")));
         }
 
         Assertions.assertAll(//
