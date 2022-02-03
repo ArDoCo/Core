@@ -30,6 +30,23 @@ public final class SimilarityUtils {
         throw new IllegalAccessError();
     }
 
+    public static boolean areNounMappingsSimilar(INounMapping nm1, INounMapping nm2) {
+        var nm1Words = nm1.getReferenceWords();
+        var nm2Words = nm2.getReferenceWords();
+        var nm1Reference = nm1.getReference();
+        var nm2Reference = nm2.getReference();
+        var nm1FirstPart = CommonUtilities.splitAtSeparators(nm1Reference).get(0);
+        var nm2FirstPart = CommonUtilities.splitAtSeparators(nm2Reference).get(0);
+
+        if (nm1Words.size() == 1 && nm2Words.size() == 1) {
+            var nm1Word = nm1Words.get(0);
+            var nm2Word = nm2Words.get(0);
+            return areWordsSimilar(nm1Word, nm2Word) || areWordsSimilar(nm1FirstPart, nm2FirstPart);
+        } else {
+            return areWordsSimilar(nm1Reference, nm2Reference);
+        }
+    }
+
     /**
      * Checks the similarity of two {@link IWord}s.
      *
@@ -38,12 +55,11 @@ public final class SimilarityUtils {
      * @return true, if the words are similar; false if not.
      */
     public static boolean areWordsSimilar(IWord word1, IWord word2) {
-        // TODO exchange the following with certain metrics
         return areWordsSimilar(word1.getText(), word2.getText(), CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
     }
 
     /**
-     * Checks the similarity oftwol string. Uses Jaro-Winkler similarity and Levenshtein to assess the similarity.
+     * Checks the similarity of two string. Uses Jaro-Winkler similarity and Levenshtein to assess the similarity.
      *
      * @param word1 String of first word
      * @param word2 String of second word
