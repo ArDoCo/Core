@@ -93,13 +93,6 @@ public interface INounMapping extends ICopyable<INounMapping> {
     void addOccurrence(ImmutableList<String> occurrences);
 
     /**
-     * Updates the probability.
-     *
-     * @param newProbability the probability to update with.
-     */
-    void updateProbability(double newProbability);
-
-    /**
      * Gets the probability for name.
      *
      * @return the probability for name

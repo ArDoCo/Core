@@ -140,6 +140,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         if (word == null) {
             return;
         }
+
         if (word.getPosTag().isNoun()) {
             var typeMappings = textState.getMappingsThatCouldBeAType(word);
             if (!typeMappings.isEmpty()) {
