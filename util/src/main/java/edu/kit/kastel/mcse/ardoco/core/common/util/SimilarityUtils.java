@@ -30,6 +30,13 @@ public final class SimilarityUtils {
         throw new IllegalAccessError();
     }
 
+    /**
+     * Checks the similarity of two {@link INounMapping}s.
+     *
+     * @param nm1 the first NounMapping
+     * @param nm2 the second NounMapping
+     * @return true, if the {@link INounMapping}s are similar; false if not.
+     */
     public static boolean areNounMappingsSimilar(INounMapping nm1, INounMapping nm2) {
         var nm1Words = nm1.getReferenceWords();
         var nm2Words = nm2.getReferenceWords();
@@ -41,7 +48,7 @@ public final class SimilarityUtils {
         if (nm1Words.size() == 1 && nm2Words.size() == 1) {
             var nm1Word = nm1Words.get(0);
             var nm2Word = nm2Words.get(0);
-            return areWordsSimilar(nm1Word, nm2Word) || areWordsSimilar(nm1FirstPart, nm2FirstPart);
+            return areWordsSimilar(nm1FirstPart, nm2FirstPart) || areWordsSimilar(nm1Word, nm2Word);
         } else {
             return areWordsSimilar(nm1Reference, nm2Reference);
         }
@@ -55,7 +62,9 @@ public final class SimilarityUtils {
      * @return true, if the words are similar; false if not.
      */
     public static boolean areWordsSimilar(IWord word1, IWord word2) {
-        return areWordsSimilar(word1.getText(), word2.getText(), CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
+        var word1Text = word1.getText();
+        var word2Text = word2.getText();
+        return areWordsSimilar(word1Text, word2Text);
     }
 
     /**
