@@ -311,22 +311,12 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByTypeMapping(IWord word) {
-        // TODO Problem is that some NounMappings with a high probability for NorT are wrongly classified as type
-        // nounMappingIsTypeBecauseOfHighestProbability() solves that, but then other problems seem to occur
         return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsType());
     }
 
     private Predicate<? super INounMapping> nounMappingIsType() {
         return n -> n.getKind() == MappingKind.TYPE;
 
-    }
-
-    private Predicate<? super INounMapping> nounMappingIsTypeBecauseOfHighestProbability() {
-        return n -> {
-            var distribution = n.getDistribution();
-            var type = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(MappingKind.NAME_OR_TYPE);
-            return type == MappingKind.TYPE;
-        };
     }
 
     @Override
