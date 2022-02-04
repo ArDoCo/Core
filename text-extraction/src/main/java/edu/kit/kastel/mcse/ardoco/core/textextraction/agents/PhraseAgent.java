@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
@@ -49,20 +50,34 @@ public class PhraseAgent extends TextAgent {
         }
     }
 
+    // TODO: for some reason, there are broken phrases that only consist of "."
     private void createNounMappingIfPhrase(IWord word) {
         var phrase = CommonUtilities.getCompoundPhrase(word);
-        phrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
-        if (phrase.size() > 1) {
-            var reference = CommonUtilities.createReferenceForPhrase(phrase);
-            var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
-            if (similarReferenceNounMappings.isEmpty()) {
-                INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, PHRASE_CONFIDENCE);
-                textState.addNounMapping(phraseNounMapping);
-            } else {
-                for (var nounMapping : similarReferenceNounMappings) {
-                    nounMapping.addWords(phrase);
-                    nounMapping.setAsPhrase(true);
-                }
+
+        // add the full phrase
+        if (!phrase.isEmpty()) {
+            addPhraseNounMapping(phrase);
+        } else {
+            return;
+        }
+
+        // filter NounMappings that are types and add the rest of the phrase (if it changed)
+        var filteredPhrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
+        if (filteredPhrase.size() != phrase.size() && filteredPhrase.size() > 1) {
+            addPhraseNounMapping(filteredPhrase);
+        }
+    }
+
+    private void addPhraseNounMapping(ImmutableList<IWord> phrase) {
+        var reference = CommonUtilities.createReferenceForPhrase(phrase);
+        var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
+        if (similarReferenceNounMappings.isEmpty()) {
+            INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, PHRASE_CONFIDENCE);
+            textState.addNounMapping(phraseNounMapping);
+        } else {
+            for (var nounMapping : similarReferenceNounMappings) {
+                nounMapping.addWords(phrase);
+                nounMapping.setAsPhrase(true);
             }
         }
     }
