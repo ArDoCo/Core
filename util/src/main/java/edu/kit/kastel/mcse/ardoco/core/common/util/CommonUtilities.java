@@ -269,7 +269,11 @@ public final class CommonUtilities {
         var deps = Lists.mutable.of(word);
         deps.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(IWord::getPosition);
-        return Lists.immutable.ofAll(sortedWords);
+        if (deps.size() < 2) {
+            return Lists.immutable.empty();
+        } else {
+            return Lists.immutable.ofAll(sortedWords);
+        }
     }
 
     public static ImmutableList<IWord> filterWordsOfTypeMappings(ImmutableList<IWord> words, ITextState textState) {
