@@ -5,7 +5,7 @@
 		class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p %c{1} - %m%n" />
+			<param name="ConversionPattern" value="%d{HH:mm:ss.SSS} %-5p %C{1} - %m%n" />
 		</layout>
 	</appender>
 	<!-- Logger for LUNA, Reflections, etc. -->
@@ -30,7 +30,7 @@
 		<appender-ref ref="console" />
 	</logger>
 	<root>
-		<priority value="debug" />
+		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>
 </log4j:configuration>
