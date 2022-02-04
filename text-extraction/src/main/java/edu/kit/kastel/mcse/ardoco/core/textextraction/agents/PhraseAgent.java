@@ -50,16 +50,15 @@ public class PhraseAgent extends TextAgent {
         }
     }
 
-    // TODO: for some reason, there are broken phrases that only consist of "."
     private void createNounMappingIfPhrase(IWord word) {
         var phrase = CommonUtilities.getCompoundPhrase(word);
 
-        // add the full phrase
-        if (!phrase.isEmpty()) {
-            addPhraseNounMapping(phrase);
-        } else {
+        // if phrase is empty then it is no phrase
+        if (phrase.isEmpty()) {
             return;
         }
+        // add the full phrase
+        addPhraseNounMapping(phrase);
 
         // filter NounMappings that are types and add the rest of the phrase (if it changed)
         var filteredPhrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
