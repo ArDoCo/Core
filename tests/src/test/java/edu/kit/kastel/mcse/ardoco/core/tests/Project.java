@@ -38,8 +38,8 @@ public enum Project {
             "src/test/resources/teastore/teastore_w_text.owl", //
             "src/test/resources/teastore/teastore.txt", //
             "src/test/resources/teastore/goldstandard.csv", //
-            new EvaluationResults(.833, .713, .768), //
-            new EvaluationResults(.99, .570, .726)),
+            new EvaluationResults(.99, .713, .832), //
+            new EvaluationResults(.99, .713, .832)),
     BIGBLUEBUTTON( //
             "src/test/resources/bigbluebutton/bbb.owl", //
             "src/test/resources/bigbluebutton/bbb_w_text.owl", //

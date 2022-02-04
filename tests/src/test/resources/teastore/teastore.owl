@@ -1372,19 +1372,6 @@
     
 
 
-    <!-- https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_h7nF4DVWEeqPG_FgW3bi6Q -->
-
-    <owl:NamedIndividual rdf:about="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_h7nF4DVWEeqPG_FgW3bi6Q">
-        <rdf:type rdf:resource="https://informalin.github.io/knowledgebases/informalin_base_pcm.owl#BasicComponent"/>
-        <pcm:repository__RepositoryComponent_-_RepositoryComponent rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#Repository_VdKBIDVWEeqPG_FgW3bi6Q"/>
-        <pcm:entityName_-_NamedElement>ImageProvider</pcm:entityName_-_NamedElement>
-        <pcm:id_-_Identifier>_h7nF4DVWEeqPG_FgW3bi6Q</pcm:id_-_Identifier>
-        <rdfs:comment xml:lang="id">_h7nF4DVWEeqPG_FgW3bi6Q</rdfs:comment>
-        <rdfs:label>ImageProvider</rdfs:label>
-    </owl:NamedIndividual>
-    
-
-
     <!-- https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_iaElgKpwEeqHXcsU55mirw -->
 
     <owl:Thing rdf:about="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_iaElgKpwEeqHXcsU55mirw">
@@ -10593,7 +10580,6 @@
         <pcm:components__Repository_-_Repository rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_YkXeIDVgEeqPG_FgW3bi6Q"/>
         <pcm:components__Repository_-_Repository rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_bC13QDVWEeqPG_FgW3bi6Q"/>
         <pcm:components__Repository_-_Repository rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_dhM6oDVXEeqPG_FgW3bi6Q"/>
-        <pcm:components__Repository_-_Repository rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_h7nF4DVWEeqPG_FgW3bi6Q"/>
         <pcm:components__Repository_-_Repository rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_iaElgKpwEeqHXcsU55mirw"/>
         <pcm:components__Repository_-_Repository rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_kgbngDVgEeqPG_FgW3bi6Q"/>
         <pcm:components__Repository_-_Repository rdf:resource="https://informalin.github.io/knowledgebases/examples/teastore.owl#BasicComponent_lnx1oDVWEeqPG_FgW3bi6Q"/>
