@@ -13,16 +13,24 @@
 		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
-	<logger name="org.apache.jena" additivity="false">
-		<level value="error" />
+	<logger name="org.apache" additivity="false">
+		<level value="warn" />
 		<appender-ref ref="console" />
 	</logger>
 	<logger name="org.apache.jena.riot" additivity="false">
 		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
+	<logger name="org.reflections.Reflections" additivity="false">
+		<level value="warn" />
+		<appender-ref ref="console" />
+	</logger>
+	<logger name="com.tngtech.archunit" additivity="false">
+		<level value="info" />
+		<appender-ref ref="console" />
+	</logger>
 	<root>
-		<priority value="info" />
+		<priority value="debug" />
 		<appender-ref ref="console" />
 	</root>
 </log4j:configuration>
