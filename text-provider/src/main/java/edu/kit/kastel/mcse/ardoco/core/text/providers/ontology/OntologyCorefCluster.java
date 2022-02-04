@@ -25,17 +25,20 @@ public final class OntologyCorefCluster implements ICorefCluster {
     private OntProperty wordsProperty;
     private OntProperty uuidProperty;
 
-    private OntologyCorefCluster(OntologyConnector ontologyConnector, Individual corefIndividual) {
+    private OntologyText text;
+
+    private OntologyCorefCluster(OntologyConnector ontologyConnector, Individual corefIndividual, OntologyText text) {
         this.corefIndividual = corefIndividual;
         this.ontologyConnector = ontologyConnector;
+        this.text = text;
     }
 
-    static OntologyCorefCluster get(OntologyConnector ontologyConnector, Individual corefIndividual) {
+    static OntologyCorefCluster get(OntologyConnector ontologyConnector, Individual corefIndividual, OntologyText text) {
         if (ontologyConnector == null || corefIndividual == null) {
             return null;
         }
 
-        var occ = new OntologyCorefCluster(ontologyConnector, corefIndividual);
+        var occ = new OntologyCorefCluster(ontologyConnector, corefIndividual, text);
         occ.init();
         return occ;
     }
@@ -84,7 +87,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
 
             MutableList<IWord> words = Lists.mutable.empty();
             for (var wordIndividual : wordList) {
-                var word = OntologyWord.get(ontologyConnector, wordIndividual);
+                var word = OntologyWord.get(ontologyConnector, wordIndividual, text);
                 words.add(word);
             }
             mentionList.add(words.toImmutable());

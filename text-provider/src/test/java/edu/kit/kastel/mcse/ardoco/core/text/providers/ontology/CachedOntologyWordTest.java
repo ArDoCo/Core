@@ -13,7 +13,7 @@ public class CachedOntologyWordTest extends OntologyWordTest {
     void beforeEach() {
         ontologyConnector = new OntologyConnector(ontologyPath);
         var testWordIndividual = ontologyConnector.getIndividualByIri(testWordUri);
-        var tmpOntologyWord = OntologyWord.get(ontologyConnector, testWordIndividual.orElseThrow());
+        var tmpOntologyWord = OntologyWord.get(ontologyConnector, testWordIndividual.orElseThrow(), null);
         ontologyWord = CachedOntologyWord.get(tmpOntologyWord);
     }
 

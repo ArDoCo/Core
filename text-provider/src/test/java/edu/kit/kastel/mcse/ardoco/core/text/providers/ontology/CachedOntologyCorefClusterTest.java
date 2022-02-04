@@ -13,7 +13,7 @@ public class CachedOntologyCorefClusterTest extends OntologyCorefClusterTest {
     void beforeEach() {
         ontologyConnector = new OntologyConnector(ontologyPath);
         var testClusterIndividual = ontologyConnector.getIndividualByIri(testClusterUri).orElseThrow();
-        var tmpOntologyWord = OntologyCorefCluster.get(ontologyConnector, testClusterIndividual);
+        var tmpOntologyWord = OntologyCorefCluster.get(ontologyConnector, testClusterIndividual, null);
         ontologyCorefCluster = CachedOntologyCorefCluster.get(tmpOntologyWord);
     }
 

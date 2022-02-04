@@ -16,6 +16,13 @@ public interface IWord {
     int getSentenceNo();
 
     /**
+     * Return the sentence the word is contained in
+     *
+     * @return the sentence the word is contained in
+     */
+    ISentence getSentence();
+
+    /**
      * Gets the text representation of the word.
      *
      * @return the text
