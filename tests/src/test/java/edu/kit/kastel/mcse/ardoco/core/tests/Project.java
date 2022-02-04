@@ -38,15 +38,15 @@ public enum Project {
             "src/test/resources/teastore/teastore_w_text.owl", //
             "src/test/resources/teastore/teastore.txt", //
             "src/test/resources/teastore/goldstandard.csv", //
-            new EvaluationResults(.99, .570, .726), //
+            new EvaluationResults(.833, .713, .768), //
             new EvaluationResults(.99, .570, .726)),
     BIGBLUEBUTTON( //
             "src/test/resources/bigbluebutton/bbb.owl", //
             "src/test/resources/bigbluebutton/bbb_w_text.owl", //
             "src/test/resources/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/bigbluebutton/goldstandard.csv", //
-            new EvaluationResults(.697, .681, .689), //
-            new EvaluationResults(.697, .681, .689));
+            new EvaluationResults(.734, .817, .773), //
+            new EvaluationResults(.734, .817, .773));
 
     private final String model;
     private final String textOntology;
