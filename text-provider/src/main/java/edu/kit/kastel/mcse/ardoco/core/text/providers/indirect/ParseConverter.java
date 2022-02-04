@@ -167,6 +167,11 @@ public class ParseConverter {
         }
 
         @Override
+        public ISentence getSentence() {
+            return parent.getSentences().get(sentence);
+        }
+
+        @Override
         public String getText() {
             return text;
         }

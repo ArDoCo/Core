@@ -23,7 +23,7 @@ class OntologyCorefClusterTest {
     void beforeEach() {
         ontologyConnector = new OntologyConnector(ontologyPath);
         var testClusterIndividual = ontologyConnector.getIndividualByIri(testClusterUri).orElseThrow();
-        ontologyCorefCluster = OntologyCorefCluster.get(ontologyConnector, testClusterIndividual);
+        ontologyCorefCluster = OntologyCorefCluster.get(ontologyConnector, testClusterIndividual, null);
     }
 
     @AfterEach

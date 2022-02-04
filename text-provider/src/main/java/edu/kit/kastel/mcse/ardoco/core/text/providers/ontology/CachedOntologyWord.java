@@ -9,6 +9,7 @@ import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 
@@ -18,6 +19,7 @@ public final class CachedOntologyWord implements IWord {
     private IWord ontologyWord;
 
     private int sentenceNo = -1;
+    private ISentence sentence = null;
     private String text = null;
     private POSTag posTag = null;
     private IWord preWord = null;
@@ -46,6 +48,14 @@ public final class CachedOntologyWord implements IWord {
             sentenceNo = ontologyWord.getSentenceNo();
         }
         return sentenceNo;
+    }
+
+    @Override
+    public synchronized ISentence getSentence() {
+        if (sentence == null) {
+            sentence = ontologyWord.getSentence();
+        }
+        return sentence;
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 
@@ -34,18 +35,20 @@ public final class OntologyWord implements IWord {
     private OntProperty dependencyTypeProperty = null;
 
     private Individual wordIndividual;
+    private OntologyText text;
 
-    private OntologyWord(OntologyConnector ontologyConnector, Individual wordIndividual) {
+    private OntologyWord(OntologyConnector ontologyConnector, Individual wordIndividual, OntologyText text) {
         this.wordIndividual = wordIndividual;
         this.ontologyConnector = ontologyConnector;
+        this.text = text;
     }
 
-    static OntologyWord get(OntologyConnector ontologyConnector, Individual wordIndividual) {
+    static OntologyWord get(OntologyConnector ontologyConnector, Individual wordIndividual, OntologyText text) {
         if (ontologyConnector == null || wordIndividual == null) {
             return null;
         }
 
-        var ow = new OntologyWord(ontologyConnector, wordIndividual);
+        var ow = new OntologyWord(ontologyConnector, wordIndividual, text);
         ow.init();
         return ow;
     }
@@ -71,6 +74,11 @@ public final class OntologyWord implements IWord {
             return optInt.get();
         }
         return -1;
+    }
+
+    @Override
+    public ISentence getSentence() {
+        return text.getSentences().get(getSentenceNo());
     }
 
     @Override
@@ -100,7 +108,7 @@ public final class OntologyWord implements IWord {
         if (prevSlotIndividual.isPresent()) {
             var prevIndividual = extractItemOutOfSlot(prevSlotIndividual.get());
             if (prevIndividual.isPresent()) {
-                return get(ontologyConnector, prevIndividual.get());
+                return get(ontologyConnector, prevIndividual.get(), text);
             }
         }
         return null;
@@ -114,7 +122,7 @@ public final class OntologyWord implements IWord {
         if (nextSlotIndividual.isPresent()) {
             var nextIndividual = extractItemOutOfSlot(nextSlotIndividual.get());
             if (nextIndividual.isPresent()) {
-                return get(ontologyConnector, nextIndividual.get());
+                return get(ontologyConnector, nextIndividual.get(), text);
             }
         }
         return null;
@@ -209,7 +217,7 @@ public final class OntologyWord implements IWord {
     private ImmutableList<IWord> createWordsFromIndividuals(List<Individual> individuals) {
         MutableList<IWord> words = Lists.mutable.empty();
         for (var individual : individuals) {
-            words.add(OntologyWord.get(ontologyConnector, individual));
+            words.add(OntologyWord.get(ontologyConnector, individual, text));
         }
         return words.toImmutable();
     }
