@@ -26,7 +26,7 @@ class OntologyWordTest {
     void beforeEach() {
         ontologyConnector = new OntologyConnector(ontologyPath);
         var testWordIndividual = ontologyConnector.getIndividualByIri(testWordUri);
-        ontologyWord = OntologyWord.get(ontologyConnector, testWordIndividual.orElseThrow());
+        ontologyWord = OntologyWord.get(ontologyConnector, testWordIndividual.orElseThrow(), null);
     }
 
     @AfterEach
@@ -100,7 +100,7 @@ class OntologyWordTest {
         var targetUri = "https://informalin.github.io/knowledgebases/examples/teastore_w_text.owl#s0tHXOMtwP";
 
         var testWordTargetIndividual = ontologyConnector.getIndividualByIri(targetUri).orElseThrow();
-        ontologyWord = OntologyWord.get(ontologyConnector, testWordTargetIndividual);
+        ontologyWord = OntologyWord.get(ontologyConnector, testWordTargetIndividual, null);
 
         var deps = ontologyWord.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ);
         Assertions.assertEquals(1, deps.size());
@@ -115,7 +115,7 @@ class OntologyWordTest {
         // rankings (595)
         var dependencyWordSourceUri = "https://informalin.github.io/knowledgebases/examples/teastore_w_text.owl#lgDome4c5A";
         var testWordSourceIndividual = ontologyConnector.getIndividualByIri(dependencyWordSourceUri).orElseThrow();
-        ontologyWord = OntologyWord.get(ontologyConnector, testWordSourceIndividual);
+        ontologyWord = OntologyWord.get(ontologyConnector, testWordSourceIndividual, null);
 
         var deps = ontologyWord.getWordsThatAreDependencyOfThis(DependencyTag.NMOD);
         Assertions.assertEquals(2, deps.size());
