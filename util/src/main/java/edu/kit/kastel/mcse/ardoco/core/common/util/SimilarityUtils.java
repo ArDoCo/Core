@@ -42,8 +42,14 @@ public final class SimilarityUtils {
         var nm2Words = nm2.getReferenceWords();
         var nm1Reference = nm1.getReference();
         var nm2Reference = nm2.getReference();
-        var nm1FirstPart = CommonUtilities.splitAtSeparators(nm1Reference).get(0);
-        var nm2FirstPart = CommonUtilities.splitAtSeparators(nm2Reference).get(0);
+        var nm1SplitAtSeparators = CommonUtilities.splitAtSeparators(nm1Reference);
+        var nm2SplitAtSeparators = CommonUtilities.splitAtSeparators(nm2Reference);
+
+        if (nm1SplitAtSeparators.isEmpty() || nm2SplitAtSeparators.isEmpty()) {
+            return false;
+        }
+        var nm1FirstPart = nm1SplitAtSeparators.get(0);
+        var nm2FirstPart = nm2SplitAtSeparators.get(0);
 
         if (nm1Words.size() == 1 && nm2Words.size() == 1) {
             var nm1Word = nm1Words.get(0);
