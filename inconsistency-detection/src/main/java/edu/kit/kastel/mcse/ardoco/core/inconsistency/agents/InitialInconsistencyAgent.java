@@ -32,7 +32,7 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
 
     @Override
     public void exec() {
-        logger.debug("Executing InitialInconsistencyAgent");
+        // TODO
     }
 
 }
