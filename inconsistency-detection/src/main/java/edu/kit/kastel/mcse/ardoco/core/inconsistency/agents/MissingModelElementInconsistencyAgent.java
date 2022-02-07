@@ -56,7 +56,9 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         candidateElements.removeAllIterable(linkedRecommendedInstances);
 
         // remove those candidates for which the words are covered by other RecommendedInstances that have a trace link
-        candidateElements = removeRecommendedInstancesWithWordsThatAreAlreadyTraced(candidateElements, linkedRecommendedInstances);
+        // TODO check!
+        // candidateElements = removeRecommendedInstancesWithWordsThatAreAlreadyTraced(candidateElements,
+        // linkedRecommendedInstances);
 
         // add support for those who have a probability higher than the set threshold
         for (var candidate : candidateElements) {
