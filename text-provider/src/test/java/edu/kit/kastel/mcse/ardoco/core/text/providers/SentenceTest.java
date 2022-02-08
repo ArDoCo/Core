@@ -27,6 +27,11 @@ class SentenceTest {
     }
 
     @Test
+    void getSentencesTest() {
+        Assertions.assertEquals(43, sentences.size());
+    }
+
+    @Test
     void getSentenceNumberTest() {
         int expectedSentenceNumber = 0;
         for (var sentence : sentences) {

@@ -87,6 +87,7 @@ public class Sentence implements ISentence {
         MutableList<IWord> currSentence = Lists.mutable.empty();
         int currSentenceNo = -1;
 
+        // iterate over words and collect sentences when sentence number changes
         for (var word : words) {
             int wordSentenceNo = word.getSentenceNo();
             if (wordSentenceNo > currSentenceNo) {
@@ -100,6 +101,11 @@ public class Sentence implements ISentence {
             }
             currSentence.add(word);
         }
+
+        // add last sentence
+        var sentence = new Sentence(currSentenceNo, currSentence.toImmutable());
+        sentences.add(sentence);
+
         return sentences.toImmutable();
     }
 
