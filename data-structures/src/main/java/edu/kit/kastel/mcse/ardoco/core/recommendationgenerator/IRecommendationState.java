@@ -37,7 +37,7 @@ public interface IRecommendationState extends IState<IRecommendationState> {
      * @param probability  probability of being in the model
      * @param nameMappings name mappings representing that recommended instance
      */
-    void addRecommendedInstanceJustName(String name, double probability, ImmutableList<INounMapping> nameMappings);
+    void addRecommendedInstance(String name, double probability, ImmutableList<INounMapping> nameMappings);
 
     /**
      * Adds a recommended instance.
