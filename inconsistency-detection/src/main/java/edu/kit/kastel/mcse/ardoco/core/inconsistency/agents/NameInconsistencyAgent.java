@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
+//TODO Need to rethink the checks as some other code changed and we cannot simply analyze words anymore (Problematic for compounds)
 @MetaInfServices(InconsistencyAgent.class)
 public class NameInconsistencyAgent extends InconsistencyAgent {
     private static final String REGEX_DIVIDER = "[\\.:]";

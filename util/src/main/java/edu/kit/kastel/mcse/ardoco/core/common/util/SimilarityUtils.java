@@ -61,6 +61,28 @@ public final class SimilarityUtils {
     }
 
     /**
+     * Compares a given {@link INounMapping} with a given {@link IModelInstance} for similarity. Checks if all names,
+     * the longest name or a single name are similar to the reference of the NounMapping.
+     *
+     * @param nounMapping the {@link INounMapping}
+     * @param instance    the {@link IModelInstance}
+     * @return true, iff the {@link INounMapping} and {@link IModelInstance} are similar.
+     */
+    public static boolean isNounMappingSimilarToModelInstance(INounMapping nounMapping, IModelInstance instance) {
+        if (areWordsOfListsSimilar(instance.getNames(), Lists.immutable.with(nounMapping.getReference()))
+                || areWordsSimilar(instance.getLongestName(), nounMapping.getReference())) {
+            return true;
+        }
+
+        for (String name : instance.getNames()) {
+            if (areWordsSimilar(name, nounMapping.getReference())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Checks the similarity of two {@link IWord}s.
      *
      * @param word1 the first word
