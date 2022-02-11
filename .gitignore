@@ -4,6 +4,8 @@ tests/src/test/resources/config.properties
 
 tmp*
 
+.vscode/*
+
 ### ignore log files
 *.log
 
