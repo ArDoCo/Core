@@ -94,7 +94,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
         ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, similarTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
@@ -120,7 +120,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
@@ -147,7 +147,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
@@ -173,7 +173,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
@@ -231,9 +231,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
         matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(text)));
 
         if (!matchingInstances.isEmpty()) {
-            var modelInstance = matchingInstances.get(0);
-            textExtractionState.addName(word, modelInstance.getLongestName(), probability);
-            return modelInstance;
+            return matchingInstances.get(0);
         }
         return null;
     }

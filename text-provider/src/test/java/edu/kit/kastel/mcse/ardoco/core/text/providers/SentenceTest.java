@@ -27,6 +27,11 @@ class SentenceTest {
     }
 
     @Test
+    void getSentencesTest() {
+        Assertions.assertEquals(43, sentences.size());
+    }
+
+    @Test
     void getSentenceNumberTest() {
         int expectedSentenceNumber = 0;
         for (var sentence : sentences) {
@@ -63,6 +68,12 @@ class SentenceTest {
         expectedSentenceText = "One CPU-intensive, calculating the item-rankings per user on-the-go and one memory-intensive, calculating the total user rating prediction matrix during the training phase.";
         actualSentenceText = sentence.getText();
         Assertions.assertEquals(expectedSentenceText, actualSentenceText);
+
+        sentence = sentences.get(42);
+        expectedSentenceText = "By limiting it to a single registry instance, it enables easy configuration of multiple parallel TeaStores with minimal configuration overhead.";
+        actualSentenceText = sentence.getText();
+        Assertions.assertEquals(expectedSentenceText, actualSentenceText);
+
     }
 
 }

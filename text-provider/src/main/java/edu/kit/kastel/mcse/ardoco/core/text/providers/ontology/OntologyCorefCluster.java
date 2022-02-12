@@ -25,17 +25,20 @@ public final class OntologyCorefCluster implements ICorefCluster {
     private OntProperty wordsProperty;
     private OntProperty uuidProperty;
 
-    private OntologyCorefCluster(OntologyConnector ontologyConnector, Individual corefIndividual) {
+    private OntologyText text;
+
+    private OntologyCorefCluster(OntologyConnector ontologyConnector, Individual corefIndividual, OntologyText text) {
         this.corefIndividual = corefIndividual;
         this.ontologyConnector = ontologyConnector;
+        this.text = text;
     }
 
-    static OntologyCorefCluster get(OntologyConnector ontologyConnector, Individual corefIndividual) {
+    static OntologyCorefCluster get(OntologyConnector ontologyConnector, Individual corefIndividual, OntologyText text) {
         if (ontologyConnector == null || corefIndividual == null) {
             return null;
         }
 
-        var occ = new OntologyCorefCluster(ontologyConnector, corefIndividual);
+        var occ = new OntologyCorefCluster(ontologyConnector, corefIndividual, text);
         occ.init();
         return occ;
     }
@@ -48,7 +51,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
     }
 
     @Override
-    public int getId() {
+    public int id() {
         var optId = ontologyConnector.getPropertyIntValue(corefIndividual, uuidProperty);
         if (optId.isPresent()) {
             return optId.get();
@@ -57,7 +60,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
     }
 
     @Override
-    public String getRepresentativeMention() {
+    public String representativeMention() {
         var representativeMention = ontologyConnector.getPropertyStringValue(corefIndividual, representativeMentionProperty);
         if (representativeMention.isPresent()) {
             return representativeMention.get();
@@ -66,7 +69,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
     }
 
     @Override
-    public ImmutableList<ImmutableList<IWord>> getMentions() {
+    public ImmutableList<ImmutableList<IWord>> mentions() {
         MutableList<ImmutableList<IWord>> mentionList = Lists.mutable.empty();
 
         ImmutableList<Individual> mentions = ontologyConnector.getObjectsOf(corefIndividual, mentionProperty).collect(n -> n.as(Individual.class));
@@ -84,7 +87,7 @@ public final class OntologyCorefCluster implements ICorefCluster {
 
             MutableList<IWord> words = Lists.mutable.empty();
             for (var wordIndividual : wordList) {
-                var word = OntologyWord.get(ontologyConnector, wordIndividual);
+                var word = OntologyWord.get(ontologyConnector, wordIndividual, text);
                 words.add(word);
             }
             mentionList.add(words.toImmutable());

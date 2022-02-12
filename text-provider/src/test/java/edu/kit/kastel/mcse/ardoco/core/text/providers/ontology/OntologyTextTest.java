@@ -78,6 +78,6 @@ class OntologyTextTest {
     @DisplayName("Test retrieval of sentences")
     void getSentencesTest() {
         var sentences = ontologyText.getSentences();
-        Assertions.assertEquals(42, sentences.size());
+        Assertions.assertEquals(43, sentences.size());
     }
 }

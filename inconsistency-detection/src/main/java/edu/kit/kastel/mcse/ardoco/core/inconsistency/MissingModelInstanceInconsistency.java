@@ -12,6 +12,7 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
 
 public class MissingModelInstanceInconsistency implements IInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
@@ -57,10 +58,12 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
 
         var name = textualInstance.getName();
         for (var nameMapping : textualInstance.getNameMappings()) {
-            for (var word : nameMapping.getWords()) {
-                var sentenceNoString = "" + (word.getSentenceNo() + 1);
-                var entry = new String[] { getType(), sentenceNoString, name, word.getText(), Double.toString(textualInstance.getProbability()) };
-                entries.add(entry);
+            if (nameMapping.getKind() != MappingKind.TYPE) {
+                for (var word : nameMapping.getWords()) {
+                    var sentenceNoString = "" + (word.getSentenceNo() + 1);
+                    var entry = new String[] { getType(), sentenceNoString, name, word.getText(), Double.toString(textualInstance.getProbability()) };
+                    entries.add(entry);
+                }
             }
         }
 

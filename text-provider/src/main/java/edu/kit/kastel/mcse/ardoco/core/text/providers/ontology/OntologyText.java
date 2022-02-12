@@ -102,7 +102,7 @@ public class OntologyText implements IText {
     @Override
     public IWord getFirstWord() {
         var wordIndividualList = getOrderedOntologyListOfText();
-        return OntologyWord.get(ontologyConnector, wordIndividualList.get(0));
+        return OntologyWord.get(ontologyConnector, wordIndividualList.get(0), this);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class OntologyText implements IText {
 
         var wordIndividualList = textOlo.toList();
         for (var wordIndividual : wordIndividualList) {
-            var word = OntologyWord.get(ontologyConnector, wordIndividual);
+            var word = OntologyWord.get(ontologyConnector, wordIndividual, this);
             words.add(word);
         }
         return words.toImmutable();
@@ -164,7 +164,7 @@ public class OntologyText implements IText {
         var clusterIndividuals = ontologyConnector.getObjectsOf(textIndividual, hasCorefClusterProperty).collect(n -> n.as(Individual.class));
         MutableList<ICorefCluster> clusters = Lists.mutable.empty();
         for (var clusterIndividual : clusterIndividuals) {
-            var cluster = OntologyCorefCluster.get(ontologyConnector, clusterIndividual);
+            var cluster = OntologyCorefCluster.get(ontologyConnector, clusterIndividual, this);
             clusters.add(cluster);
         }
         return clusters.toImmutable();

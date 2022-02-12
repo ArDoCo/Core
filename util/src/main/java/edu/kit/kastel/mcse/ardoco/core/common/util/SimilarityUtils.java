@@ -12,6 +12,7 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
@@ -30,16 +31,79 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks the similarity of a test string to an original string. The test string has to cover the original. If the
-     * original is short (e.g. <3) the similarity is harder to reach. Uses Jaro-Winkler similarity and Levenshtein to
-     * assess the similarity.
+     * Checks the similarity of two {@link INounMapping}s.
      *
-     * @param original  original string
-     * @param word2test test string to match the original
+     * @param nm1 the first NounMapping
+     * @param nm2 the second NounMapping
+     * @return true, if the {@link INounMapping}s are similar; false if not.
+     */
+    public static boolean areNounMappingsSimilar(INounMapping nm1, INounMapping nm2) {
+        var nm1Words = nm1.getReferenceWords();
+        var nm2Words = nm2.getReferenceWords();
+        var nm1Reference = nm1.getReference();
+        var nm2Reference = nm2.getReference();
+        var nm1SplitAtSeparators = CommonUtilities.splitAtSeparators(nm1Reference);
+        var nm2SplitAtSeparators = CommonUtilities.splitAtSeparators(nm2Reference);
+
+        if (nm1SplitAtSeparators.isEmpty() || nm2SplitAtSeparators.isEmpty()) {
+            return false;
+        }
+        var nm1FirstPart = nm1SplitAtSeparators.get(0);
+        var nm2FirstPart = nm2SplitAtSeparators.get(0);
+
+        if (nm1Words.size() == 1 && nm2Words.size() == 1) {
+            var nm1Word = nm1Words.get(0);
+            var nm2Word = nm2Words.get(0);
+            return areWordsSimilar(nm1FirstPart, nm2FirstPart) || areWordsSimilar(nm1Word, nm2Word);
+        } else {
+            return areWordsSimilar(nm1Reference, nm2Reference);
+        }
+    }
+
+    /**
+     * Compares a given {@link INounMapping} with a given {@link IModelInstance} for similarity. Checks if all names,
+     * the longest name or a single name are similar to the reference of the NounMapping.
+     *
+     * @param nounMapping the {@link INounMapping}
+     * @param instance    the {@link IModelInstance}
+     * @return true, iff the {@link INounMapping} and {@link IModelInstance} are similar.
+     */
+    public static boolean isNounMappingSimilarToModelInstance(INounMapping nounMapping, IModelInstance instance) {
+        if (areWordsOfListsSimilar(instance.getNames(), Lists.immutable.with(nounMapping.getReference()))
+                || areWordsSimilar(instance.getLongestName(), nounMapping.getReference())) {
+            return true;
+        }
+
+        for (String name : instance.getNames()) {
+            if (areWordsSimilar(name, nounMapping.getReference())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks the similarity of two {@link IWord}s.
+     *
+     * @param word1 the first word
+     * @param word2 the second word
+     * @return true, if the words are similar; false if not.
+     */
+    public static boolean areWordsSimilar(IWord word1, IWord word2) {
+        var word1Text = word1.getText();
+        var word2Text = word2.getText();
+        return areWordsSimilar(word1Text, word2Text);
+    }
+
+    /**
+     * Checks the similarity of two string. Uses Jaro-Winkler similarity and Levenshtein to assess the similarity.
+     *
+     * @param word1 String of first word
+     * @param word2 String of second word
      * @return true, if the test string is similar to the original; false if not.
      */
-    public static boolean areWordsSimilar(String original, String word2test) {
-        return areWordsSimilar(original, word2test, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
+    public static boolean areWordsSimilar(String word1, String word2) {
+        return areWordsSimilar(word1, word2, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
     }
 
     private static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
@@ -83,8 +147,8 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks the similarity of a list, containing test strings, and a list of originals. This check is not
-     * bidirectional! In this method all test strings are compared to all originals. For this the method uses the
+     * Checks the similarity of a list with test strings to a list of "original" strings. In this method all test
+     * strings are compared to all originals. For this the method uses the
      * {@link #areWordsSimilar(String, String, Double)} with a given threshold. All matches are counted. If the
      * proportion of similarities between the lists is greater than the given threshold the method returns true.
      *

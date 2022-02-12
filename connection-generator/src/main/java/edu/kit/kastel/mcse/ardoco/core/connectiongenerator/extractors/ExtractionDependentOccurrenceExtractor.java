@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
@@ -10,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionExtractor;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
@@ -79,19 +77,15 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
 
     /**
      * This method checks whether a given node is a name of an instance given in the model extraction state. If it
-     * appears to be a name this is stored in the text extraction state. If multiple options are available the node
-     * value is taken as reference.
+     * appears to be a name this is stored in the text extraction state.
      *
-     * @param n the node to check
+     * @param word the node to check
      */
-    private void searchForName(IWord n) {
-        ImmutableList<IModelInstance> instances = modelState.getInstances()
-                .select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(n.getText())));
-        if (instances.size() == 1) {
-            textState.addName(n, instances.get(0).getLongestName(), probability);
-
-        } else if (instances.size() > 1) {
-            textState.addName(n, n.getText(), probability);
+    private void searchForName(IWord word) {
+        boolean instanceNameIsSimilar = modelState.getInstances()
+                .anySatisfy(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(word.getText())));
+        if (instanceNameIsSimilar) {
+            textState.addName(word, probability);
         }
     }
 
@@ -100,16 +94,13 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * appears to be a type this is stored in the text extraction state. If multiple options are available the node
      * value is taken as reference.
      *
-     * @param n the node to check
+     * @param word the node to check
      */
-    private void searchForType(IWord n) {
-        ImmutableList<IModelInstance> instances = modelState.getInstances()
-                .select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), Lists.immutable.with(n.getText())));
-        if (instances.size() == 1) {
-            textState.addType(n, instances.get(0).getLongestType(), probability);
-
-        } else if (instances.size() > 1) {
-            textState.addType(n, n.getText(), probability);
+    private void searchForType(IWord word) {
+        boolean instanceTypeIsSimilar = modelState.getInstances()
+                .anySatisfy(i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), Lists.immutable.with(word.getText())));
+        if (instanceTypeIsSimilar) {
+            textState.addType(word, probability);
         }
     }
 

@@ -1,11 +1,10 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -19,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
  */
 public class TextState implements ITextState {
 
-    private Map<String, INounMapping> nounMappings;
+    private MutableList<INounMapping> nounMappings;
 
     /** The relation mappings. */
     private MutableList<IRelationMapping> relationMappings;
@@ -30,70 +29,65 @@ public class TextState implements ITextState {
      * @param similarityPercentage the similarity percentage
      */
     public TextState() {
-        nounMappings = new HashMap<>();
+        nounMappings = Lists.mutable.empty();
         relationMappings = Lists.mutable.empty();
     }
 
     /***
      * Adds a name mapping to the state
      *
-     * @param n           node of the mapping
-     * @param name        reference of the mapping
      * @param probability probability to be a name mapping
      * @param occurrences list of the appearances of the mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addName(IWord n, String name, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(n, name.toLowerCase(), MappingKind.NAME, probability, occurrences);
+    public final void addName(IWord word, double probability, ImmutableList<String> occurrences) {
+        addNounMapping(word, MappingKind.NAME, probability, occurrences);
     }
 
     /***
      * Adds a name mapping to the state
      *
      * @param word        word of the mapping
-     * @param name        reference of the mapping
      * @param probability probability to be a name mapping
      */
     @Override
-    public final void addName(IWord word, String name, double probability) {
-        addName(word, name.toLowerCase(), probability, Lists.immutable.with(word.getText()));
+    public final void addName(IWord word, double probability) {
+        addName(word, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
      * Adds a name or type mapping to the state
      *
-     * @param n           node of the mapping
-     * @param ref         reference of the mapping
      * @param probability probability to be a name or type mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addNort(IWord n, String ref, double probability) {
-        addNort(n, ref.toLowerCase(), probability, Lists.immutable.with(n.getText()));
+    public final void addNort(IWord word, double probability) {
+        addNort(word, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
      * Adds a type mapping to the state
      *
-     * @param n           node of the mapping
-     * @param type        reference of the mapping
      * @param probability probability to be a type mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addType(IWord n, String type, double probability) {
-        addType(n, type.toLowerCase(), probability, Lists.immutable.with(n.getText()));
+    public final void addType(IWord word, double probability) {
+        addType(word, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
      * Adds a type mapping to the state
      *
-     * @param n           node of the mapping
-     * @param type        reference of the mapping
      * @param probability probability to be a type mapping
      * @param occurrences list of the appearances of the mapping
+     * @param word        node of the mapping
      */
     @Override
-    public final void addType(IWord n, String type, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(n, type.toLowerCase(), MappingKind.TYPE, probability, occurrences);
+    public final void addType(IWord word, double probability, ImmutableList<String> occurrences) {
+        addNounMapping(word, MappingKind.TYPE, probability, occurrences);
     }
 
     /**
@@ -120,7 +114,7 @@ public class TextState implements ITextState {
 
     @Override
     public final ImmutableList<INounMapping> getNounMappings() {
-        return Lists.immutable.withAll(nounMappings.values());
+        return nounMappings.toImmutable();
     }
 
     /**
@@ -130,7 +124,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getTypes() {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.TYPE == n.getKind()));
+        return nounMappings.select(n -> MappingKind.TYPE == n.getKind()).toImmutable();
     }
 
     /**
@@ -141,7 +135,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNounMappingsByWord(IWord word) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(nMapping -> nMapping.getWords().contains(word)));
+        return nounMappings.select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
     }
 
     /**
@@ -152,7 +146,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNounMappingsWithEqualReference(String ref) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(nMapping -> nMapping.getReference().equalsIgnoreCase(ref)));
+        return nounMappings.select(nMapping -> nMapping.getReference().equalsIgnoreCase(ref)).toImmutable();
     }
 
     /**
@@ -163,7 +157,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(nm -> SimilarityUtils.areWordsSimilar(ref, nm.getReference())));
+        return nounMappings.select(nm -> SimilarityUtils.areWordsSimilar(ref, nm.getReference())).toImmutable();
     }
 
     /**
@@ -204,7 +198,6 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<String> getTypeList() {
-
         Set<String> types = new HashSet<>();
         ImmutableList<INounMapping> typeMappings = getTypes();
         for (INounMapping nnm : typeMappings) {
@@ -220,7 +213,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNames() {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.NAME == n.getKind()));
+        return nounMappings.select(n -> MappingKind.NAME == n.getKind()).toImmutable();
     }
 
     /**
@@ -230,7 +223,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNameOrTypeMappings() {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> MappingKind.NAME_OR_TYPE == n.getKind()));
+        return nounMappings.select(n -> MappingKind.NAME_OR_TYPE == n.getKind()).toImmutable();
     }
 
     /**
@@ -241,7 +234,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord word) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(word)).filter(n -> n.getKind() == MappingKind.TYPE));
+        return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsType()).toImmutable();
     }
 
     /**
@@ -252,7 +245,8 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNameMappingsByWord(IWord word) {
-        return Lists.immutable.fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(word)).filter(n -> n.getKind() == MappingKind.NAME));
+        return nounMappings.select(n -> n.getWords().contains(word)).select(n -> n.getKind() == MappingKind.NAME).toImmutable();
+
     }
 
     /**
@@ -263,8 +257,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNortMappingsByWord(IWord word) {
-        return Lists.immutable
-                .fromStream(nounMappings.values().stream().filter(n -> n.getWords().contains(word)).filter(n -> n.getKind() == MappingKind.NAME_OR_TYPE));
+        return nounMappings.select(n -> n.getWords().contains(word)).select(n -> n.getKind() == MappingKind.NAME_OR_TYPE).toImmutable();
     }
 
     /**
@@ -285,12 +278,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
-        return !nounMappings.values()
-                .stream()
-                .filter(n -> MappingKind.NAME_OR_TYPE == n.getKind())
-                .filter(n -> n.getWords().contains(word))
-                .findAny()
-                .isEmpty();
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getKind() == MappingKind.NAME_OR_TYPE);
     }
 
     /**
@@ -301,7 +289,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByNameMapping(IWord word) {
-        return !nounMappings.values().stream().filter(n -> MappingKind.NAME == n.getKind()).filter(n -> n.getWords().contains(word)).findAny().isEmpty();
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getKind() == MappingKind.NAME);
     }
 
     /**
@@ -312,7 +300,7 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByNounMappings(IWord word) {
-        return nounMappings.values().stream().anyMatch(n -> n.getWords().contains(word));
+        return nounMappings.anySatisfy(n -> n.getWords().contains(word));
     }
 
     /**
@@ -323,74 +311,60 @@ public class TextState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByTypeMapping(IWord word) {
-        return nounMappings.values().stream().anyMatch(n -> MappingKind.TYPE == n.getKind() && n.getWords().contains(word));
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsType());
+    }
+
+    private Predicate<? super INounMapping> nounMappingIsType() {
+        return n -> n.getKind() == MappingKind.TYPE;
+
     }
 
     @Override
     public ITextState createCopy() {
         var textExtractionState = new TextState();
-        textExtractionState.nounMappings = new HashMap<>(nounMappings);
+        textExtractionState.nounMappings = Lists.mutable.ofAll(nounMappings);
         textExtractionState.relationMappings = relationMappings.collect(IRelationMapping::createCopy);
         return textExtractionState;
     }
 
     @Override
     public void addNounMapping(INounMapping nounMapping) {
-        nounMappings.put(nounMapping.getReference(), nounMapping);
+        addNounMappingOrAppendToSimilarNounMapping(nounMapping);
+    }
+
+    private INounMapping addNounMapping(IWord word, MappingKind kind, double probability, ImmutableList<String> occurrences) {
+        var words = Lists.immutable.with(word);
+        INounMapping nounMapping = new NounMapping(words, kind, probability, words.castToList(), occurrences);
+
+        return addNounMappingOrAppendToSimilarNounMapping(nounMapping);
+    }
+
+    private INounMapping addNounMappingOrAppendToSimilarNounMapping(INounMapping nounMapping) {
+        for (var existingNounMapping : nounMappings) {
+            if (SimilarityUtils.areNounMappingsSimilar(nounMapping, existingNounMapping)) {
+                appendNounMappingToExistingNounMapping(nounMapping, existingNounMapping);
+                return existingNounMapping;
+            }
+        }
+        nounMappings.add(nounMapping);
+        return nounMapping;
+    }
+
+    private void appendNounMappingToExistingNounMapping(INounMapping disposableNounMapping, INounMapping existingNounMapping) {
+        existingNounMapping.addKindWithProbability(disposableNounMapping.getKind(), disposableNounMapping.getProbability());
+        existingNounMapping.addOccurrence(disposableNounMapping.getSurfaceForms());
+        existingNounMapping.addWord(disposableNounMapping.getReferenceWords().get(0));
     }
 
     @Override
-    public void addNounMapping(ImmutableList<IWord> nodes, String reference, MappingKind kind, double confidence, ImmutableList<String> occurrences) {
-        INounMapping mapping = new NounMapping(nodes, Map.of(kind, confidence), reference, occurrences);
-        nounMappings.put(mapping.getReference(), mapping);
-    }
+    public void addNort(IWord word, double probability, ImmutableList<String> occurrences) {
+        var mapping = addNounMapping(word, MappingKind.NAME_OR_TYPE, probability, occurrences);
 
-    private void addNounMapping(IWord word, String reference, MappingKind kind, double probability, ImmutableList<String> occurrences) {
-        if (CommonUtilities.containsSeparator(reference)) {
-            ImmutableList<String> parts = CommonUtilities.splitAtSeparators(reference).select(part -> part.length() > 1);
-            for (String referencePart : parts) {
-                addNounMapping(word, referencePart, kind, probability, occurrences);
-            }
+        if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
+            mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
         }
-
-        if (nounMappings.containsKey(reference)) {
-            // extend existing nounMapping
-            var existingMapping = nounMappings.get(reference);
-            existingMapping.addKindWithProbability(kind, probability);
-            existingMapping.addOccurrence(occurrences);
-            existingMapping.addWord(word);
-
-        } else {
-            ImmutableList<String> similarRefs = Lists.immutable
-                    .fromStream(nounMappings.keySet().stream().filter(ref -> SimilarityUtils.areWordsSimilar(ref, reference)));
-            for (String ref : similarRefs) {
-                INounMapping similarMapping = nounMappings.get(ref);
-                similarMapping.addOccurrence(occurrences);
-                similarMapping.addWord(word);
-                similarMapping.addKindWithProbability(kind, probability);
-            }
-            if (similarRefs.isEmpty()) {
-                // create new nounMapping
-                INounMapping mapping = new NounMapping(Lists.immutable.with(word), kind, probability, reference, occurrences);
-                nounMappings.put(reference, mapping);
-            }
-        }
-
-    }
-
-    @Override
-    public void addNort(IWord n, String ref, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(n, ref.toLowerCase(), MappingKind.NAME_OR_TYPE, probability, occurrences);
-
-        ImmutableList<INounMapping> wordsWithSimilarNode = Lists.immutable
-                .fromStream(nounMappings.values().stream().filter(mapping -> mapping.getWords().contains(n)));
-        for (INounMapping mapping : wordsWithSimilarNode) {
-            if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
-                mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
-            }
-            if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
-                mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
-            }
+        if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
+            mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
         }
     }
 
@@ -405,7 +379,7 @@ public class TextState implements ITextState {
 
     @Override
     public void removeNounMapping(INounMapping n) {
-        nounMappings.remove(n.getReference());
+        nounMappings.remove(n);
     }
 
     @Override

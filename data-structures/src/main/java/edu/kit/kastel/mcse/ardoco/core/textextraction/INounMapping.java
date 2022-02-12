@@ -23,13 +23,6 @@ public interface INounMapping extends ICopyable<INounMapping> {
     ImmutableList<String> getRepresentativeComparables();
 
     /**
-     * Sets the probability of the mapping.
-     *
-     * @param probability probability to set on
-     */
-    void hardSetProbability(double probability);
-
-    /**
      * Returns the surface forms (previously called occurrences) of this mapping.
      *
      * @return all appearances of the mapping
@@ -58,13 +51,6 @@ public interface INounMapping extends ICopyable<INounMapping> {
     void addWord(IWord word);
 
     /**
-     * Removes a word from the mapping.
-     *
-     * @param word the word to remove
-     */
-    void removeWord(IWord word);
-
-    /**
      * Returns the probability of being a mapping of its kind.
      *
      * @return probability of being a mapping of its kind.
@@ -86,13 +72,11 @@ public interface INounMapping extends ICopyable<INounMapping> {
     String getReference();
 
     /**
-     * Changes the kind to another one and recalculates the probability with
-     * {@link #recalculateProbability(double, double)}.
+     * Returns the reference words
      *
-     * @param kind        the new kind
-     * @param probability the probability of the new mappingTzpe
+     * @return the reference words
      */
-    void changeMappingType(MappingKind kind, double probability);
+    ImmutableList<IWord> getReferenceWords();
 
     /**
      * Returns the sentence numbers of occurrences, sorted.
@@ -102,34 +86,11 @@ public interface INounMapping extends ICopyable<INounMapping> {
     ImmutableList<Integer> getMappingSentenceNo();
 
     /**
-     * Updates the reference if the probability is high enough.
-     *
-     * @param ref         new reference
-     * @param probability probability for the new reference.
-     */
-    void updateReference(String ref, double probability);
-
-    /**
      * Adds occurrences to the mapping.
      *
      * @param occurrences occurrences to add
      */
     void addOccurrence(ImmutableList<String> occurrences);
-
-    /**
-     * Copies all nodes and occurrences matching the occurrence to another mapping.
-     *
-     * @param occurrence     the occurrence to copy
-     * @param createdMapping the other mapping
-     */
-    void copyOccurrencesAndNodesTo(String occurrence, INounMapping createdMapping);
-
-    /**
-     * Updates the probability.
-     *
-     * @param newProbability the probability to update with.
-     */
-    void updateProbability(double newProbability);
 
     /**
      * Gets the probability for name.
@@ -197,4 +158,5 @@ public interface INounMapping extends ICopyable<INounMapping> {
     boolean isPhrase();
 
     void setAsPhrase(boolean hasPhrase);
+
 }

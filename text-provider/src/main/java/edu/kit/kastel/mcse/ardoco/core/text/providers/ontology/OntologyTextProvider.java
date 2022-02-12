@@ -183,15 +183,15 @@ public final class OntologyTextProvider implements ITextConnector {
         // add coref stuff
         var corefClusters = text.getCorefClusters();
         for (var corefCluster : corefClusters) {
-            var representativeMention = corefCluster.getRepresentativeMention();
+            var representativeMention = corefCluster.representativeMention();
             var corefClusterIndividual = ontologyConnector.addIndividualToClass(representativeMention, resources.corefClusterClass);
-            ontologyConnector.addPropertyToIndividual(corefClusterIndividual, resources.uuidProperty, "" + corefCluster.getId());
+            ontologyConnector.addPropertyToIndividual(corefClusterIndividual, resources.uuidProperty, "" + corefCluster.id());
             ontologyConnector.addPropertyToIndividual(corefClusterIndividual, resources.representativeMentionProperty, representativeMention);
             ontologyConnector.addPropertyToIndividual(textIndividual, resources.hasCorefClusterProperty, corefClusterIndividual);
 
             var counter = 0;
-            for (var mention : corefCluster.getMentions()) {
-                var id = corefCluster.getId() + "_" + counter;
+            for (var mention : corefCluster.mentions()) {
+                var id = corefCluster.id() + "_" + counter;
                 counter += 1;
                 var label = ICorefCluster.getTextForMention(mention);
 

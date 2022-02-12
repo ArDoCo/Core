@@ -9,6 +9,7 @@ import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,9 +25,15 @@ import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class InconsistencyIT {
-    private static final Logger logger = LogManager.getLogger(InconsistencyIT.class);
+    private static Logger logger = null;
 
     private static final String OUTPUT = "src/test/resources/testout";
+
+    @BeforeAll
+    public static void beforeAll() {
+        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
+        logger = LogManager.getLogger(InconsistencyIT.class);
+    }
 
     @BeforeEach
     void beforeEach() {

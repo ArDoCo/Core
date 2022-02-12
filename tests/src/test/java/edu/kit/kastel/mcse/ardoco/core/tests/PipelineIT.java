@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,11 @@ class PipelineIT {
     private static final String MODEL = "src/test/resources/teastore/teastore.owl";
     private static final String MODEL_W_TEXT = "src/test/resources/teastore/teastore_w_text.owl";
     private static final String NAME = "test_teastore";
+
+    @BeforeAll
+    public static void beforeAll() {
+        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
+    }
 
     @Test
     @DisplayName("Integration Test with provided text file")
