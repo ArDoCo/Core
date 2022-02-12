@@ -7,11 +7,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public record ComparisonContext(double similarityThreshold,
-                                String firstString, String secondString,
-                                @Nullable IWord firstWord, @Nullable IWord secondWord,
-                                @Nullable IModelInstance firstModel, @Nullable IModelInstance secondModel,
-                                boolean lemmatize) {
+/**
+ * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur within ArDoCo.
+ */
+public record ComparisonContext(double similarityThreshold, @Nonnull String firstString, @Nonnull String secondString, @Nullable IWord firstWord,
+                                @Nullable IWord secondWord, @Nullable IModelInstance firstModel, @Nullable IModelInstance secondModel, boolean lemmatize) {
 
     public ComparisonContext(double similarityThreshold, String firstString, String secondString, boolean lemmatize) {
         this(similarityThreshold, firstString, secondString, null, null, null, null, lemmatize);
@@ -25,11 +25,23 @@ public record ComparisonContext(double similarityThreshold,
         this(similarityThreshold, firstModel.getLongestName(), secondModel.getLongestName(), null, null, firstModel, secondModel, lemmatize);
     }
 
-    public String firstTerm() {
+    /**
+     * Finds the most appropriate string representation by the first object in this comparison object.
+     * This method can be used as a shorthand to avoid going through all variables that could possibly represent the first object.
+     *
+     * @return the most appropriate string presentation of the first object in this comparison
+     */
+    @Nonnull public String firstTerm() {
         return findAppropriateTerm(firstString, firstWord, firstModel);
     }
 
-    public String secondTerm() {
+    /**
+     * Finds the most appropriate string representation by the second object in this comparison object.
+     * This method can be used as a shorthand to avoid going through all variables that could possibly represent the second object.
+     *
+     * @return the most appropriate string presentation of the second object in this comparison
+     */
+    @Nonnull public String secondTerm() {
         return findAppropriateTerm(secondString, secondWord, secondModel);
     }
 
