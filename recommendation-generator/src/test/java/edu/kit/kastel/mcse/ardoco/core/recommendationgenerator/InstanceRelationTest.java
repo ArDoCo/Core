@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
 
@@ -129,6 +130,11 @@ class InstanceRelationTest {
 
         @Override
         public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+            return null;
+        }
+
+        @Override
+        public ISentence getSentence() {
             return null;
         }
     }

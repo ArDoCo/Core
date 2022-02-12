@@ -86,7 +86,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
         ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, similarTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getPreWord());
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
@@ -102,14 +102,14 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    public void addRecommendedInstanceIfNameAfterType(ITextState textExtractionState, IWord word) {
+    private void addRecommendedInstanceIfNameAfterType(ITextState textExtractionState, IWord word) {
         if (textExtractionState == null || word == null) {
             return;
         }
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getNextWord());
@@ -133,7 +133,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(word.getPreWord());
@@ -156,7 +156,7 @@ public class NameTypeExtractor extends RecommendationExtractor {
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, sameLemmaTypes.get(0), probability);
+            textExtractionState.addType(word, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(word.getNextWord());

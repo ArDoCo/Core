@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -8,6 +10,9 @@ class EvaluationResults {
     public double precision;
     public double recall;
     public double f1;
+
+    private List<Object> falseNegatives = new ArrayList<>();
+    private List<Object> falsePositives = new ArrayList<>();
 
     public EvaluationResults(double precision, double recall, double f1) {
         super();
@@ -26,6 +31,22 @@ class EvaluationResults {
 
     public double getF1() {
         return f1;
+    }
+
+    public void setFalseNegatives(List<Object> falseNegatives) {
+        this.falseNegatives = falseNegatives;
+    }
+
+    public List<Object> getFalseNegative() {
+        return falseNegatives;
+    }
+
+    public void setFalsePositives(List<Object> falsePositives) {
+        this.falsePositives = falsePositives;
+    }
+
+    public List<Object> getFalsePositives() {
+        return falsePositives;
     }
 
     @Override

@@ -82,7 +82,7 @@ public class RecommendationState implements IRecommendationState {
      * @param nameMappings name mappings representing that recommended instance
      */
     @Override
-    public void addRecommendedInstanceJustName(String name, double probability, ImmutableList<INounMapping> nameMappings) {
+    public void addRecommendedInstance(String name, double probability, ImmutableList<INounMapping> nameMappings) {
         this.addRecommendedInstance(name, "", probability, nameMappings, Lists.immutable.empty());
     }
 

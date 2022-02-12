@@ -9,12 +9,14 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TracelinksIT {
-    private static final Logger logger = LogManager.getLogger(TracelinksIT.class);
+    private static Logger logger = null;
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
@@ -37,6 +39,12 @@ class TracelinksIT {
     private File inputModel;
     private File additionalConfigs = null;
     private File outputDir = new File(OUTPUT);
+
+    @BeforeAll
+    public static void beforeAll() {
+        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
+        logger = LogManager.getLogger(TracelinksIT.class);
+    }
 
     @BeforeEach
     void beforeEach() {
@@ -103,6 +111,9 @@ class TracelinksIT {
                     results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
                     expectedResults.getF1());
             logger.info(infoString);
+
+            logger.debug("False negatives:\n{}", results.getFalseNegative().stream().map(Object::toString).collect(Collectors.joining("\n")));
+            logger.debug("False positives:\n{}", results.getFalsePositives().stream().map(Object::toString).collect(Collectors.joining("\n")));
         }
 
         Assertions.assertAll(//

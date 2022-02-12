@@ -68,22 +68,22 @@ public class InDepArcsExtractor extends TextExtractionExtractor {
     /**
      * Examines the incoming dependency arcs from the PARSE graph.
      *
-     * @param n the node to check
+     * @param word the node to check
      */
-    private void examineIncomingDepArcs(IWord n) {
+    private void examineIncomingDepArcs(IWord word) {
 
-        ImmutableList<DependencyTag> incomingDepArcs = WordHelper.getIncomingDependencyTags(n);
+        ImmutableList<DependencyTag> incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
 
         for (DependencyTag depTag : incomingDepArcs) {
 
             if (hasNortDependencies(depTag)) {
-                textState.addNort(n, n.getText(), probability);
+                textState.addNort(word, probability);
             } else if (hasTypeOrNortDependencies(depTag)) {
-                if (WordHelper.hasIndirectDeterminerAsPreWord(n)) {
-                    textState.addType(n, n.getText(), probability);
+                if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
+                    textState.addType(word, probability);
                 }
 
-                textState.addNort(n, n.getText(), probability);
+                textState.addNort(word, probability);
             }
         }
 

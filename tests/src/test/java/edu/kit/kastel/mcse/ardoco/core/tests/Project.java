@@ -22,31 +22,31 @@ public enum Project {
             "src/test/resources/mediastore/mediastore_w_text.owl", //
             "src/test/resources/mediastore/mediastore.txt", //
             "src/test/resources/mediastore/goldstandard.csv", //
-            new EvaluationResults(.943, .60, .73), //
-            new EvaluationResults(.99, .60, .75)//
+            new EvaluationResults(.943, .606, .738), //
+            new EvaluationResults(.99, .606, .755)//
     ), //
     TEAMMATES( //
             "src/test/resources/teammates/teammates.owl", //
             "src/test/resources/teammates/teammates_w_text.owl", //
             "src/test/resources/teammates/teammates.txt", //
             "src/test/resources/teammates/goldstandard.csv", //
-            new EvaluationResults(.85, .90, .875), //
-            new EvaluationResults(.853, .853, .853)//
+            new EvaluationResults(.877, .877, .877), //
+            new EvaluationResults(.882, .828, .854)//
     ), //
     TEASTORE( //
             "src/test/resources/teastore/teastore.owl", //
             "src/test/resources/teastore/teastore_w_text.owl", //
             "src/test/resources/teastore/teastore.txt", //
             "src/test/resources/teastore/goldstandard.csv", //
-            new EvaluationResults(.94, .57, .71), //
-            new EvaluationResults(.94, .58, .72)),
+            new EvaluationResults(.99, .713, .832), //
+            new EvaluationResults(.99, .713, .832)),
     BIGBLUEBUTTON( //
             "src/test/resources/bigbluebutton/bbb.owl", //
             "src/test/resources/bigbluebutton/bbb_w_text.owl", //
             "src/test/resources/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/bigbluebutton/goldstandard.csv", //
-            new EvaluationResults(.762, .658, .706), //
-            new EvaluationResults(.763, .658, .706));
+            new EvaluationResults(.734, .817, .773), //
+            new EvaluationResults(.734, .817, .773));
 
     private final String model;
     private final String textOntology;

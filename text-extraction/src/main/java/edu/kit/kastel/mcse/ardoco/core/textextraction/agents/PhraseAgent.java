@@ -1,8 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import java.util.StringJoiner;
-
 import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
@@ -53,19 +51,32 @@ public class PhraseAgent extends TextAgent {
     }
 
     private void createNounMappingIfPhrase(IWord word) {
-        var phrase = CommonUtilities.getCompoundPhrases(word);
-        phrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
-        if (phrase.size() > 1) {
-            var reference = createReferenceForPhrase(phrase);
-            var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
-            if (similarReferenceNounMappings.isEmpty()) {
-                INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, reference, PHRASE_CONFIDENCE);
-                textState.addNounMapping(phraseNounMapping);
-            } else {
-                for (var nounMapping : similarReferenceNounMappings) {
-                    nounMapping.addWords(phrase);
-                    nounMapping.setAsPhrase(true);
-                }
+        var phrase = CommonUtilities.getCompoundPhrase(word);
+
+        // if phrase is empty then it is no phrase
+        if (phrase.isEmpty()) {
+            return;
+        }
+        // add the full phrase
+        addPhraseNounMapping(phrase);
+
+        // filter NounMappings that are types and add the rest of the phrase (if it changed)
+        var filteredPhrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
+        if (filteredPhrase.size() != phrase.size() && filteredPhrase.size() > 1) {
+            addPhraseNounMapping(filteredPhrase);
+        }
+    }
+
+    private void addPhraseNounMapping(ImmutableList<IWord> phrase) {
+        var reference = CommonUtilities.createReferenceForPhrase(phrase);
+        var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
+        if (similarReferenceNounMappings.isEmpty()) {
+            INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, PHRASE_CONFIDENCE);
+            textState.addNounMapping(phraseNounMapping);
+        } else {
+            for (var nounMapping : similarReferenceNounMappings) {
+                nounMapping.addWords(phrase);
+                nounMapping.setAsPhrase(true);
             }
         }
     }
@@ -73,16 +84,8 @@ public class PhraseAgent extends TextAgent {
     private void createNounMappingIfSpecialNamedEntity(IWord word) {
         var text = word.getText();
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
-            textState.addName(word, text, SPECIAL_NAMED_ENTITY_CONFIDENCE);
+            textState.addName(word, SPECIAL_NAMED_ENTITY_CONFIDENCE);
         }
-    }
-
-    private static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
-        StringJoiner referenceJoiner = new StringJoiner(" ");
-        for (var w : phrase) {
-            referenceJoiner.add(w.getText());
-        }
-        return referenceJoiner.toString();
     }
 
 }
