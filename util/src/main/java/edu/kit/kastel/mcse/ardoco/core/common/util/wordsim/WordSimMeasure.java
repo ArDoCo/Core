@@ -3,4 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 public interface WordSimMeasure {
 
+    boolean areWordsSimilar(ComparisonContext ctx);
+
 }
