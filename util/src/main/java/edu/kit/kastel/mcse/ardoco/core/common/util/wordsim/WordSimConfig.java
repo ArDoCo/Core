@@ -9,10 +9,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A configuration consisting of word similarity measures and other common settings.
+ */
 public class WordSimConfig {
 
     public static final WordSimConfig DEFAULT = new WordSimConfig(CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD,
-            List.of(new EqualityMeasure(), new JaroWinklerMeasure(), new LevenshteinMeasure()));
+            List.of(
+                    new EqualityMeasure(),
+                    new JaroWinklerMeasure(1.0),
+                    new LevenshteinMeasure(CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH, CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE)
+            )
+    );
 
     private final double defaultSimilarityThreshold;
     private final List<WordSimMeasure> measures;
