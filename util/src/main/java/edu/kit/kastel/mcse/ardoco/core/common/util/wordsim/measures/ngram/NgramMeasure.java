@@ -3,32 +3,125 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import info.debatty.java.stringsimilarity.NGram;
+
+import java.util.Objects;
 
 /**
  * This word similarity measure uses the N-gram word distance function defined by Kondrak 2005.
  */
 public class NgramMeasure implements WordSimMeasure {
 
-    private final NGram nGram;
+    /**
+     * The variants of this algorithm
+     */
+    public enum Variant {
+        /**
+         * This variant matches the algorithm included in apache/lucene which is also positional but deviates from the original algorithm
+         * by using \n as the prefix character and changing the weight for the dN function.
+         */
+        LUCENE,
+        /**
+         * The positional variant as described in Kondrak 2005
+         */
+        POSITIONAL
+    }
+
+    private final Variant variant;
+    private final int n;
     private final double weight;
 
     /**
-     * Constructs a new {@link NgramMeasure} instance.
+     * Constructs a new {@link NgramMeasure}.
      *
-     * @param n the length of each gram
+     * @param variant the variant that should be used
+     * @param n       the length of the considered n-grams
+     * @param weight  a weight that is multiplied to the final normalized distance
      */
-    public NgramMeasure(int n, double weight) {
-        this.nGram = new NGram(n);
+    public NgramMeasure(Variant variant, int n, double weight) {
+        this.variant = Objects.requireNonNull(variant);
+        this.n = n;
         this.weight = weight;
     }
 
     @Override public boolean areWordsSimilar(ComparisonContext ctx) {
-        return calculateDistance(ctx.firstString(), ctx.secondString()) * weight >= ctx.similarityThreshold();
+        Objects.requireNonNull(ctx);
+
+        double distance = calculateDistance(ctx.firstTerm(), ctx.secondTerm());
+
+        double normalizedDistance = distance / Math.max(ctx.firstTerm().length(), ctx.secondTerm().length());
+
+        double similarity = 1.0 - normalizedDistance;
+        double weightedSimilarity = similarity * weight;
+
+        return weightedSimilarity >= ctx.similarityThreshold();
     }
 
-    public double calculateDistance(String firstString, String secondString) {
-        return this.nGram.distance(firstString, secondString); // already normalized
+    public double calculateDistance(String x, String y) {
+        Objects.requireNonNull(x);
+        Objects.requireNonNull(y);
+
+        if (x.isEmpty() || y.isEmpty()) {
+            return Math.max(x.length(), y.length());
+        }
+
+        int K = x.length();
+        int L = y.length();
+        double[][] D = new double[K + 1][L + 1];
+
+        for (int u = 1; u <= n - 1; u++) {
+            if (variant == Variant.LUCENE) {
+                x = '\n' + x;
+                y = '\n' + y;
+            } else if (variant == Variant.POSITIONAL) {
+                x = x.charAt(0) + x;
+                y = y.charAt(0) + y;
+            } else {
+                throw new UnsupportedOperationException("unknown variant: " + variant);
+            }
+        }
+
+        for (int i = 0; i <= K; i++) {
+            D[i][0] = i;
+        }
+
+        for (int j = 1; j <= L; j++) {
+            D[0][j] = j;
+        }
+
+        for (int i = 1; i <= K; i++) {
+            for (int j = 1; j <= L; j++) {
+                double dN = dN(n, i - 1, j - 1, x, y);
+
+                D[i][j] = min(D[i - 1][j] + 1.0, D[i][j - 1] + 1.0, D[i - 1][j - 1] + dN);
+            }
+        }
+
+        return D[K][L];
+    }
+
+    private double dN(int n, int i, int j, String x, String y) {
+        double sum = 0.0;
+        double actualN = n;
+
+        for (int u = 1; u <= n; u++) {
+            double diff = d1(x.charAt(i + u - 1), y.charAt(j + u - 1));
+
+            sum += diff;
+
+            if (variant == Variant.LUCENE && diff == 0 && x.charAt(i + u - 1) == '\n') {
+                actualN -= 1.0; // Ignore prefix character in LUCENE mode
+            }
+        }
+
+        return (1.0 / actualN) * sum;
+    }
+
+    private double d1(char xChar, char yChar) {
+        return xChar == yChar ? 0.0 : 1.0;
+    }
+
+    private double min(double a, double b, double c) {
+        return Math.min(a, Math.min(b, c));
     }
 
 }
