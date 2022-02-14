@@ -4,6 +4,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +19,8 @@ public class WordSimConfig {
             List.of(
                     new EqualityMeasure(),
                     new JaroWinklerMeasure(1.0),
-                    new LevenshteinMeasure(CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH, CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE)
+                    new LevenshteinMeasure(),
+                    new NgramMeasure(NgramMeasure.Variant.LUCENE, 2, 1.0)
             )
     );
 
