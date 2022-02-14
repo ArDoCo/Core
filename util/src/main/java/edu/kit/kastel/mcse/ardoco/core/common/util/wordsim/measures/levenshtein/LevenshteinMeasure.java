@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -12,32 +13,25 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 public class LevenshteinMeasure implements WordSimMeasure {
 
     private final LevenshteinDistance distance = new LevenshteinDistance();
-    private final int minLength;
-    private final int maxDistanceWithoutContext;
-
-    public LevenshteinMeasure(int minLength, int maxDistanceWithoutContext) {
-        this.minLength = minLength;
-        this.maxDistanceWithoutContext = maxDistanceWithoutContext;
-    }
 
     @Override public boolean areWordsSimilar(ComparisonContext ctx) {
-        String firstLowerCase = ctx.firstTerm().toLowerCase();
-        String secondLowerCase = ctx.secondTerm().toLowerCase();
+        String originalLowerCase = ctx.firstTerm().toLowerCase();
+        String word2TestLowerCase = ctx.secondTerm().toLowerCase();
 
-        int maxLevenshteinDistance = (int) Math.min(maxDistanceWithoutContext,
-                ctx.similarityThreshold() * Math.min(ctx.firstTerm().length(), ctx.secondTerm().length()));
+        int areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
+        int areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
+        int maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, ctx.similarityThreshold() * Math.min(ctx.firstTerm().length(), ctx.secondTerm().length()));
 
-        int levenshteinDistance = distance.apply(firstLowerCase, secondLowerCase);
+        int levenshteinDistance = distance.apply(originalLowerCase, word2TestLowerCase);
 
-        if (ctx.firstTerm().length() <= minLength) {
-            var wordsHaveContainmentRelation = secondLowerCase.contains(firstLowerCase) || firstLowerCase.contains(secondLowerCase);
-            if (levenshteinDistance <= maxLevenshteinDistance && wordsHaveContainmentRelation) {
+        if (ctx.firstTerm().length() <= areWordsSimilarMinLength) {
+            var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
+            if (levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation) {
                 return true;
             }
         } else if (levenshteinDistance <= maxLevenshteinDistance) {
             return true;
         }
-
         return false;
     }
 
