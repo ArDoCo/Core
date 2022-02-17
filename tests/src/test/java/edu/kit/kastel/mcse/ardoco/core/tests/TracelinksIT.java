@@ -1,20 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLEvalFiles;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.eclipse.collections.api.factory.Lists;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +11,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.factory.Lists;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLEvalFiles;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TracelinksIT {
     private static Logger logger = null;

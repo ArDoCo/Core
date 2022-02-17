@@ -1,16 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, EvaluationResult {
 
