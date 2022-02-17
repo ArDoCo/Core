@@ -28,19 +28,19 @@ public class NgramMeasure implements WordSimMeasure {
 
     private final Variant variant;
     private final int n;
-    private final double weight;
+    private final double similarityThreshold;
 
     /**
      * Constructs a new {@link NgramMeasure}.
      *
-     * @param variant the variant that should be used
-     * @param n       the length of the considered n-grams
-     * @param weight  a weight that is multiplied to the final normalized distance
+     * @param variant             the variant that should be used
+     * @param n                   the length of the considered n-grams
+     * @param similarityThreshold the threshold above which words are considered similar
      */
-    public NgramMeasure(Variant variant, int n, double weight) {
+    public NgramMeasure(Variant variant, int n, double similarityThreshold) {
         this.variant = Objects.requireNonNull(variant);
         this.n = n;
-        this.weight = weight;
+        this.similarityThreshold = similarityThreshold;
     }
 
     @Override public boolean areWordsSimilar(ComparisonContext ctx) {
@@ -51,9 +51,8 @@ public class NgramMeasure implements WordSimMeasure {
         double normalizedDistance = distance / Math.max(ctx.firstTerm().length(), ctx.secondTerm().length());
 
         double similarity = 1.0 - normalizedDistance;
-        double weightedSimilarity = similarity * weight;
 
-        return weightedSimilarity >= ctx.similarityThreshold();
+        return similarity >= this.similarityThreshold;
     }
 
     public double calculateDistance(String x, String y) {

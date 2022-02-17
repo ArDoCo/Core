@@ -15,16 +15,20 @@ public class LevenshteinMeasure implements WordSimMeasure {
     private final LevenshteinDistance distance = new LevenshteinDistance();
 
     @Override public boolean areWordsSimilar(ComparisonContext ctx) {
-        String originalLowerCase = ctx.firstTerm().toLowerCase();
-        String word2TestLowerCase = ctx.secondTerm().toLowerCase();
+        String original = ctx.firstTerm();
+        String word2test = ctx.secondTerm();
+        double threshold = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD; // should probably changed in the future
+
+        String originalLowerCase = original.toLowerCase();
+        String word2TestLowerCase = word2test.toLowerCase();
 
         int areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
         int areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
-        int maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, ctx.similarityThreshold() * Math.min(ctx.firstTerm().length(), ctx.secondTerm().length()));
+        int maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, threshold * Math.min(original.length(), word2test.length()));
 
         int levenshteinDistance = distance.apply(originalLowerCase, word2TestLowerCase);
 
-        if (ctx.firstTerm().length() <= areWordsSimilarMinLength) {
+        if (original.length() <= areWordsSimilarMinLength) {
             var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
             if (levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation) {
                 return true;

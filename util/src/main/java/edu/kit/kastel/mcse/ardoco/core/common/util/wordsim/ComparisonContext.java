@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 import javax.annotation.Nonnull;
@@ -10,19 +9,15 @@ import java.util.Objects;
 /**
  * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur within ArDoCo.
  */
-public record ComparisonContext(double similarityThreshold, @Nonnull String firstString, @Nonnull String secondString, @Nullable IWord firstWord,
-                                @Nullable IWord secondWord, @Nullable IModelInstance firstModel, @Nullable IModelInstance secondModel, boolean lemmatize) {
+public record ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, @Nullable IWord firstWord, @Nullable IWord secondWord,
+                                boolean lemmatize) {
 
-    public ComparisonContext(double similarityThreshold, String firstString, String secondString, boolean lemmatize) {
-        this(similarityThreshold, firstString, secondString, null, null, null, null, lemmatize);
+    public ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, boolean lemmatize) {
+        this(firstString, secondString, null, null, lemmatize);
     }
 
-    public ComparisonContext(double similarityThreshold, IWord firstWord, IWord secondWord, boolean lemmatize) {
-        this(similarityThreshold, firstWord.getText(), secondWord.getText(), firstWord, secondWord, null, null, lemmatize);
-    }
-
-    public ComparisonContext(double similarityThreshold, IModelInstance firstModel, IModelInstance secondModel, boolean lemmatize) {
-        this(similarityThreshold, firstModel.getLongestName(), secondModel.getLongestName(), null, null, firstModel, secondModel, lemmatize);
+    public ComparisonContext(IWord firstWord, IWord secondWord, boolean lemmatize) {
+        this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize);
     }
 
     /**
@@ -32,7 +27,7 @@ public record ComparisonContext(double similarityThreshold, @Nonnull String firs
      * @return the most appropriate string presentation of the first object in this comparison
      */
     @Nonnull public String firstTerm() {
-        return findAppropriateTerm(firstString, firstWord, firstModel);
+        return findAppropriateTerm(firstString, firstWord);
     }
 
     /**
@@ -42,16 +37,14 @@ public record ComparisonContext(double similarityThreshold, @Nonnull String firs
      * @return the most appropriate string presentation of the second object in this comparison
      */
     @Nonnull public String secondTerm() {
-        return findAppropriateTerm(secondString, secondWord, secondModel);
+        return findAppropriateTerm(secondString, secondWord);
     }
 
-    private String findAppropriateTerm(@Nonnull String string, @Nullable IWord word, @Nullable IModelInstance model) {
+    private String findAppropriateTerm(@Nonnull String string, @Nullable IWord word) {
         Objects.requireNonNull(string);
 
         if (word != null) {
             return lemmatize ? word.getLemma() : word.getText();
-        } else if (model != null) {
-            return model.getLongestName();
         } else {
             return string;
         }
