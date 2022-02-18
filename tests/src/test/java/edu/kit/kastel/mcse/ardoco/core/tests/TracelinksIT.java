@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -14,12 +15,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,6 +23,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLEvalFiles;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TracelinksIT {
@@ -34,6 +32,8 @@ class TracelinksIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
+    private static final String SUMMARY_FILE_NAME = "summary.md";
+    private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
 
     private File inputText;
     private File inputModel;
@@ -44,6 +44,12 @@ class TracelinksIT {
     public static void beforeAll() {
         System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
         logger = LogManager.getLogger(TracelinksIT.class);
+    }
+
+    @AfterAll
+    public static void afterAll() throws IOException {
+        Path summaryFilePath = Path.of(OUTPUT).resolve(SUMMARY_FILE_NAME);
+        TLEvalFiles.saveResults(summaryFilePath, RESULTS);
     }
 
     @BeforeEach
@@ -114,6 +120,12 @@ class TracelinksIT {
 
             logger.debug("False negatives:\n{}", results.getFalseNegative().stream().map(Object::toString).collect(Collectors.joining("\n")));
             logger.debug("False positives:\n{}", results.getFalsePositives().stream().map(Object::toString).collect(Collectors.joining("\n")));
+        }
+
+        try {
+            RESULTS.add(new TLProjectEvalResult(project, data));
+        } catch (IOException e) {
+            e.printStackTrace(); // failing to summarize project results is irrelevant for test success
         }
 
         Assertions.assertAll(//
