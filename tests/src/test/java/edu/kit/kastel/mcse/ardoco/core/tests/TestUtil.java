@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 
-class TestUtil {
+public class TestUtil {
 
     private TestUtil() {
         throw new IllegalAccessError("This constructor should not be called!");
     }
 
-    protected static EvaluationResults compare(Collection<String> traceLinks, Collection<String> goldStandard) {
+    public static EvaluationResults compare(Collection<String> traceLinks, Collection<String> goldStandard) {
         Set<String> distinctTraceLinks = new HashSet<>(traceLinks);
         Set<String> distinctGoldStandard = new HashSet<>(goldStandard);
 

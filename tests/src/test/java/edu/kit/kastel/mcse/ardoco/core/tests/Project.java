@@ -18,33 +18,33 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvi
 
 public enum Project {
     MEDIASTORE(//
-            "src/test/resources/mediastore/mediastore.owl", //
-            "src/test/resources/mediastore/mediastore_w_text.owl", //
-            "src/test/resources/mediastore/mediastore.txt", //
-            "src/test/resources/mediastore/goldstandard.csv", //
+            "src/test/resources/benchmark/mediastore/mediastore.owl", //
+            "src/test/resources/benchmark/mediastore/mediastore_w_text.owl", //
+            "src/test/resources/benchmark/mediastore/mediastore.txt", //
+            "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.943, .606, .738), //
             new EvaluationResults(.99, .606, .755)//
     ), //
     TEAMMATES( //
-            "src/test/resources/teammates/teammates.owl", //
-            "src/test/resources/teammates/teammates_w_text.owl", //
-            "src/test/resources/teammates/teammates.txt", //
-            "src/test/resources/teammates/goldstandard.csv", //
+            "src/test/resources/benchmark/teammates/teammates.owl", //
+            "src/test/resources/benchmark/teammates/teammates_w_text.owl", //
+            "src/test/resources/benchmark/teammates/teammates.txt", //
+            "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new EvaluationResults(.877, .877, .877), //
             new EvaluationResults(.882, .828, .854)//
     ), //
     TEASTORE( //
-            "src/test/resources/teastore/teastore.owl", //
-            "src/test/resources/teastore/teastore_w_text.owl", //
-            "src/test/resources/teastore/teastore.txt", //
-            "src/test/resources/teastore/goldstandard.csv", //
+            "src/test/resources/benchmark/teastore/teastore.owl", //
+            "src/test/resources/benchmark/teastore/teastore_w_text.owl", //
+            "src/test/resources/benchmark/teastore/teastore.txt", //
+            "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.99, .713, .832), //
             new EvaluationResults(.99, .713, .832)),
     BIGBLUEBUTTON( //
-            "src/test/resources/bigbluebutton/bbb.owl", //
-            "src/test/resources/bigbluebutton/bbb_w_text.owl", //
-            "src/test/resources/bigbluebutton/bigbluebutton.txt", //
-            "src/test/resources/bigbluebutton/goldstandard.csv", //
+            "src/test/resources/benchmark/bigbluebutton/bbb.owl", //
+            "src/test/resources/benchmark/bigbluebutton/bbb_w_text.owl", //
+            "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
+            "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.734, .817, .773), //
             new EvaluationResults(.734, .817, .773));
 
