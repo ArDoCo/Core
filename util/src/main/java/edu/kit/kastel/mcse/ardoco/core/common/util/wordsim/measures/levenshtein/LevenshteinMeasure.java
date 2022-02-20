@@ -17,7 +17,7 @@ public class LevenshteinMeasure implements WordSimMeasure {
     @Override public boolean areWordsSimilar(ComparisonContext ctx) {
         String original = ctx.firstTerm();
         String word2test = ctx.secondTerm();
-        double threshold = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD; // should probably changed in the future
+        double threshold = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD; // should probably be changed in the future
 
         String originalLowerCase = original.toLowerCase();
         String word2TestLowerCase = word2test.toLowerCase();
