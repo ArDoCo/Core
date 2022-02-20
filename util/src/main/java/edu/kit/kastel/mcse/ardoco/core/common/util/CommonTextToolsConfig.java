@@ -54,6 +54,32 @@ public final class CommonTextToolsConfig {
      */
     public static final double GET_MOST_LIKELY_MP_BY_REFERENCE_INCREASE = CONFIG.getPropertyAsDouble("getMostLikelyMpBReference_Increase");
 
+    /**
+     * Decides whether the NGram similarity measure should be used.
+     */
+    public static final boolean NGRAM_ENABLED = CONFIG.isPropertyEnabled("ngram_Enabled");
+    /**
+     * The length of ngrams for the N-gram word similarity measure.
+     */
+    public static final int NGRAM_MEASURE_NGRAM_LENGTH = CONFIG.getPropertyAsInt("ngram_NgramLength");
+    /**
+     * The threshold for the ngram similarity measure above which words are considered similar.
+     */
+    public static final double NGRAM_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("ngram_SimilarityThreshold");
+
+    /**
+     * Decides whether the SEWordSim similarity measure should be used.
+     */
+    public static final boolean SEWORDSIM_ENABLED = CONFIG.isPropertyEnabled("sewordsim_Enabled");
+    /**
+     * The threshold for the SEWordSim similarity measure above which words are considered similar.
+     */
+    public static final double SEWORDSIM_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("sewordsim_SimilarityThreshold");
+    /**
+     * The path to the sqlite database file used by the SEWordSim word similarity measure.
+     */
+    public static final String SEWORDSIM_DB_FILE_PATH = CONFIG.getProperty("sewordsim_DatabaseFilePath");
+
     private static ResourceAccessor loadParameters(String filePath) {
         return new ResourceAccessor(filePath, true);
     }

@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
@@ -29,6 +30,13 @@ public class NgramMeasure implements WordSimMeasure {
     private final Variant variant;
     private final int n;
     private final double similarityThreshold;
+
+    /**
+     * Constructs a new {@link NgramMeasure} using the settings provided by {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
+     */
+    public NgramMeasure() {
+        this(Variant.LUCENE, CommonTextToolsConfig.NGRAM_MEASURE_NGRAM_LENGTH, CommonTextToolsConfig.NGRAM_SIMILARITY_THRESHOLD);
+    }
 
     /**
      * Constructs a new {@link NgramMeasure}.
