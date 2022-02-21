@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.kohsuke.MetaInfServices;
 
@@ -68,18 +67,16 @@ public class InstanceConnectionAgent extends ConnectionAgent {
         for (IModelInstance i : modelState.getInstances()) {
             ImmutableList<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
 
-            ImmutableList<IRecommendedInstance> mostLikelyRiWithoutType = mostLikelyRi.select(ri -> !ri.getTypeMappings().isEmpty());
-            mostLikelyRiWithoutType.forEach(ml -> connectionState.addToLinks(ml, i, probabilityWithoutType));
-            mostLikelyRi.forEach(ml -> connectionState.addToLinks(ml, i, probability));
+            for (var ri : mostLikelyRi) {
+                var riProbability = ri.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
+                connectionState.addToLinks(ri, i, riProbability);
+            }
         }
     }
 
     private void createLinksForEqualOrSimilarRecommendedInstances() {
         for (var ri : recommendationState.getRecommendedInstances()) {
-            var name = ri.getName();
-            var nameList = Lists.immutable.with(name.split(" "));
-            var sameInstances = modelState.getInstances()
-                    .select(i -> i.getLongestName().equalsIgnoreCase(name) || SimilarityUtils.areWordsOfListsSimilar(i.getNames(), nameList));
+            var sameInstances = modelState.getInstances().select(i -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(ri, i));
             sameInstances.forEach(i -> connectionState.addToLinks(ri, i, probability));
         }
     }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-class EvaluationResults {
+public class EvaluationResults {
     public double precision;
     public double recall;
     public double f1;
