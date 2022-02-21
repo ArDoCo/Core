@@ -47,11 +47,13 @@ public class CorefAgent extends TextAgent {
         for (var corefCluster : corefClusters) {
             var words = getAllWordsFromCorefCluster(corefCluster);
 
-            MutableSet<INounMapping> nounMappings = addWordsFromCorefClusterToNounMappings(words, textState);
+            MutableSet<INounMapping> nounMappings = getNounMappingsForWordsFromCorefClusters(words, textState);
             addWordsToNounMappingsAsCoreferences(nounMappings, words);
 
             if (doMerging && nounMappings.size() > 1) {
-                logger.debug("MORE THAN 1 FOR {}", corefCluster.representativeMention());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("MORE THAN 1 FOR {}", corefCluster.representativeMention());
+                }
                 mergeNounMappings(nounMappings, textState);
             }
         }
@@ -78,7 +80,7 @@ public class CorefAgent extends TextAgent {
         }
     }
 
-    private static MutableSet<INounMapping> addWordsFromCorefClusterToNounMappings(ImmutableList<IWord> words, ITextState textState) {
+    private static MutableSet<INounMapping> getNounMappingsForWordsFromCorefClusters(ImmutableList<IWord> words, ITextState textState) {
         MutableSet<INounMapping> nounMappings = Sets.mutable.empty();
         for (var word : words) {
             var nounMappingsForWord = textState.getNounMappingsByWord(word).castToCollection();
