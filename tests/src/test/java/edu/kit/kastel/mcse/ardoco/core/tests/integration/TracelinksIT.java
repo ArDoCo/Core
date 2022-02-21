@@ -10,10 +10,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,10 +28,12 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TracelinksIT {
@@ -36,11 +41,12 @@ class TracelinksIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
+    private static final boolean detailedDebug = true;
 
     private File inputText;
     private File inputModel;
     private File additionalConfigs = null;
-    private File outputDir = new File(OUTPUT);
+    private final File outputDir = new File(OUTPUT);
 
     @BeforeAll
     public static void beforeAll() {
@@ -114,8 +120,10 @@ class TracelinksIT {
                     expectedResults.getF1());
             logger.info(infoString);
 
-            logger.debug("False negatives:\n{}", results.getFalseNegative().stream().map(Object::toString).collect(Collectors.joining("\n")));
-            logger.debug("False positives:\n{}", results.getFalsePositives().stream().map(Object::toString).collect(Collectors.joining("\n")));
+            if (detailedDebug) {
+                printDetailedDebug(results, data);
+            }
+
         }
 
         Assertions.assertAll(//
@@ -126,6 +134,49 @@ class TracelinksIT {
                 () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
                         "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
 
+    }
+
+    private void printDetailedDebug(EvaluationResults results, AgentDatastructure data) {
+        var falseNegatives = results.getFalseNegative().stream().map(Object::toString);
+        var falsePositives = results.getFalsePositives().stream().map(Object::toString);
+
+        var sentences = data.getText().getSentences();
+        var instances = data.getModelState().getInstances();
+
+        var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);
+        var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);
+
+        logger.debug("False negatives:\n{}", falseNegativeOutput.stream().collect(Collectors.joining("\n")));
+        logger.debug("False positives:\n{}", falsePositivesOutput.stream().collect(Collectors.joining("\n")));
+
+    }
+
+    private MutableList<String> createOutputStrings(Stream<String> tracelinkStrings, ImmutableList<ISentence> sentences,
+            ImmutableList<IModelInstance> instances) {
+        var outputList = Lists.mutable.<String> empty();
+        for (var tracelinkString : tracelinkStrings.toList()) {
+            var parts = tracelinkString.split(",");
+            if (parts.length < 2) {
+                continue;
+            }
+            var id = parts[0];
+
+            var modelElement = instances.detect(instance -> instance.getUid().equals(id));
+
+            var sentence = parts[1];
+
+            int sentenceNo = -1;
+            try {
+                sentenceNo = Integer.parseInt(sentence);
+            } catch (NumberFormatException e) {
+                logger.debug("Having problems retrieving sentence, so skipping line: {}", tracelinkString);
+                continue;
+            }
+            var sentenceText = sentences.get(sentenceNo - 1);
+
+            outputList.add(String.format("%-20s - %s (%s)", modelElement.getLongestName(), sentenceText.getText(), tracelinkString));
+        }
+        return outputList;
     }
 
     private EvaluationResults calculateResults(Project project, AgentDatastructure data) {
