@@ -22,7 +22,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore_w_text.owl", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(1.0, .620, .766), //
+            new EvaluationResults(1.0, .620, .765), //
             new EvaluationResults(.99, .586, .739)//
     ), //
     TEAMMATES( //
