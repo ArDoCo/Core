@@ -1,5 +1,10 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files;
+
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TestLink;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,38 +14,22 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-
-public class TLEvalFiles {
+public class TLSummaryFile {
 
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static List<TestLink> loadGoldStandardLinks(Project project) throws IOException {
-        Path path = Path.of(String.format("src/test/resources/%s/goldstandard.csv", project.name().toLowerCase(Locale.ROOT)));
-        List<String> lines = Files.readAllLines(path);
-
-        return lines.stream()
-                .skip(1) // skip csv header
-                .map(line -> line.split(",")) // modelElementId,sentenceNr
-                .map(array -> new TestLink(array[0], Integer.parseInt(array[1])))
-                .map(link -> new TestLink(link.modelId(), link.sentenceNr() - 1))
-                // ^ goldstandard sentences start with 1 while ISentences are zero indexed
-                .toList();
-    }
-
-    public static void saveResults(Path targetFile, Collection<TLProjectEvalResult> results) throws IOException {
+    public static void saveResults(Path targetFile, Collection<TLProjectEvalResult> results, Map<Project, AgentDatastructure> dataMap) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
 
         builder.append("Time of evaluation: `").append(DATE_FORMATTER.format(LocalDateTime.now())).append("`\n\n");
 
         for (TLProjectEvalResult result : sortedResults) {
+            AgentDatastructure data = dataMap.get(result.getProject());
+
             String precision = NUMBER_FORMAT.format(result.getPrecision());
             String recall = NUMBER_FORMAT.format(result.getRecall());
             String f1Score = NUMBER_FORMAT.format(result.getF1());
@@ -59,7 +48,7 @@ public class TLEvalFiles {
                 builder.append("False Positives:\n");
 
                 for (TestLink falsePositive : result.getFalsePositives()) {
-                    builder.append("- ").append(format(falsePositive, result)).append('\n');
+                    builder.append("- ").append(format(falsePositive, data)).append('\n');
                 }
 
                 builder.append('\n');
@@ -69,7 +58,7 @@ public class TLEvalFiles {
                 builder.append("False Negatives:\n");
 
                 for (TestLink falseNegatives : result.getFalseNegatives()) {
-                    builder.append("- ").append(format(falseNegatives, result)).append('\n');
+                    builder.append("- ").append(format(falseNegatives, data)).append('\n');
                 }
 
                 builder.append('\n');
@@ -78,12 +67,15 @@ public class TLEvalFiles {
             builder.append('\n');
         }
 
+        if (!Files.exists(targetFile)) {
+            Files.createFile(targetFile);
+        }
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static String format(TestLink link, TLProjectEvalResult result) {
-        IModelInstance model = result.getModel(link.modelId()).orElse(null);
-        ISentence sentence = result.getSentence(link.sentenceNr()).orElse(null);
+    static String format(TestLink link, AgentDatastructure data) {
+        var model = data.getModelState().getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
+        var sentence = data.getText().getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
 
         String modelStr = model == null ? link.modelId() : "\"" + model.getLongestName() + "\"";
         String sentenceStr = sentence == null ? String.valueOf(link.sentenceNr()) : "\"" + sentence.getText() + "\"";

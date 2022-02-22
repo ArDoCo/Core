@@ -1,22 +1,18 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval;
 
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files.TLGoldStandardFile;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-
 public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, EvaluationResult {
 
     private final Project project;
-    private final AgentDatastructure data;
     private final double precision, recall, f1Score;
 
     // Links:
@@ -27,17 +23,15 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
     private final List<TestLink> falseNegatives = new ArrayList<>();
 
     public TLProjectEvalResult(Project project, AgentDatastructure data) throws IOException {
+        this(project, data.getConnectionState().getTraceLinks().stream().map(TestLink::new).toList(), TLGoldStandardFile.loadGoldStandardLinks(project));
+    }
+
+    public TLProjectEvalResult(Project project, Collection<TestLink> foundLinks, Collection<TestLink> correctLinks) {
         this.project = project;
-        this.data = data;
+        this.foundLinks.addAll(foundLinks);
+        this.correctLinks.addAll(correctLinks);
 
-        var connectionState = data.getConnectionState();
-
-        this.foundLinks.addAll(connectionState.getTraceLinks().stream().map(TestLink::new).toList());
-
-        this.correctLinks.addAll(TLEvalFiles.loadGoldStandardLinks(project));
-
-        // --- copied from TestUtil#compare but with TestLink instead of strings
-        // ------------------------------------------------------------------------------
+        // --- copied from TestUtil#compare but with TestLink instead of strings ------------------------------------------------------------------------------
         Set<TestLink> distinctTraceLinks = new HashSet<>(this.foundLinks);
         Set<TestLink> distinctGoldStandard = new HashSet<>(this.correctLinks);
 
@@ -56,8 +50,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         this.precision = tp / (tp + fp);
         this.recall = tp / (tp + fn);
         this.f1Score = 2 * precision * recall / (precision + recall);
-        // --- end of copy
-        // ------------------------------------------------------------------------------------------------------------------------------------
+        // --- end of copy ------------------------------------------------------------------------------------------------------------------------------------
 
         this.truePositives.addAll(truePositives);
         this.falsePositives.addAll(falsePositives);
@@ -107,24 +100,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         return falseNegatives;
     }
 
-    public Optional<IModelInstance> getModel(String modelId) {
-        return data.getModelState().getInstances().stream().filter(i -> i.getUid().equals(modelId)).findAny();
-    }
-
-    public Optional<ISentence> getSentence(int sentenceNr) {
-        return data.getText().getSentences().stream().filter(s -> s.getSentenceNumber() == sentenceNr).findAny();
-    }
-
-    public ImmutableList<IModelInstance> getModels() {
-        return data.getModelState().getInstances();
-    }
-
-    public ImmutableList<ISentence> getSentences() {
-        return data.getText().getSentences();
-    }
-
-    @Override
-    public int compareTo(TLProjectEvalResult o) {
+    @Override public int compareTo(TLProjectEvalResult o) {
         return this.project.name().compareTo(o.project.name());
     }
 
