@@ -1,17 +1,12 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files.*;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
@@ -20,12 +15,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLEvalFiles;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 class TracelinksIT {
     private static Logger logger = null;
@@ -34,6 +30,7 @@ class TracelinksIT {
     private static final String ADDITIONAL_CONFIG = null;
     private static final String SUMMARY_FILE_NAME = "summary.md";
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
+    private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
 
     private File inputText;
     private File inputModel;
@@ -48,8 +45,15 @@ class TracelinksIT {
 
     @AfterAll
     public static void afterAll() throws IOException {
-        Path summaryFilePath = Path.of(OUTPUT).resolve(SUMMARY_FILE_NAME);
-        TLEvalFiles.saveResults(summaryFilePath, RESULTS);
+        var evalDir = Path.of(OUTPUT).resolve("tl_eval");
+        Files.createDirectories(evalDir);
+
+        TLSummaryFile.saveResults(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
+        TLModelFile.saveModels(evalDir.resolve("models.md"), DATA_MAP);
+        TLSentenceFile.saveSentences(evalDir.resolve("sentences.md"), DATA_MAP);
+        TLLogFile.appendToLog(evalDir.resolve("log.md"), RESULTS);
+        TLPreviousFile.saveToFile(evalDir.resolve("previous.csv"), RESULTS); // save before loading to guarantee file exists
+        TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.loadFromFile(evalDir.resolve("previous.csv")), DATA_MAP);
     }
 
     @BeforeEach
@@ -124,6 +128,7 @@ class TracelinksIT {
 
         try {
             RESULTS.add(new TLProjectEvalResult(project, data));
+            DATA_MAP.put(project, data);
         } catch (IOException e) {
             e.printStackTrace(); // failing to summarize project results is irrelevant for test success
         }
