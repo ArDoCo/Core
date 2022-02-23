@@ -45,7 +45,7 @@ public class TLDiffFile {
         builder.append(NUMBER_FORMAT.format(newAvgRecall - oldAvgRecall)).append(" Recall,  ");
         builder.append(NUMBER_FORMAT.format(newAvgF1 - oldAvgF1)).append(" F1\n\n");
 
-        // Append details
+        // Append project specific details
         for (TLProjectEvalResult oldResult : oldResults) {
             Project project = oldResult.getProject();
             TLProjectEvalResult newResult = newResults.stream().filter(r -> r.getProject().equals(project)).findAny().orElseThrow();
@@ -58,39 +58,18 @@ public class TLDiffFile {
             builder.append(NUMBER_FORMAT.format(newResult.getF1() - oldResult.getF1())).append(" F1\n\n");
 
             var newTruePositives = findNewLinks(oldResult.getTruePositives(), newResult.getTruePositives());
-            if (!newTruePositives.isEmpty()) {
-                builder.append("New true positives:\n");
-
-                for (TestLink newTruePositive : newTruePositives) {
-                    builder.append("- ").append(TLSummaryFile.format(newTruePositive, data)).append('\n');
-                }
-
-                builder.append('\n');
-            }
+            appendList(builder, "New true positives", newTruePositives, data);
 
             var newFalsePositives = findNewLinks(oldResult.getFalsePositives(), newResult.getFalsePositives());
-            if (!newFalsePositives.isEmpty()) {
-                builder.append("New false positives:\n");
-
-                for (TestLink newFalsePositive : newFalsePositives) {
-                    builder.append("- ").append(TLSummaryFile.format(newFalsePositive, data)).append('\n');
-                }
-
-                builder.append('\n');
-            }
+            appendList(builder, "New false positives", newFalsePositives, data);
 
             var newFalseNegatives = findNewLinks(oldResult.getFalseNegatives(), newResult.getFalseNegatives());
-            if (!newFalseNegatives.isEmpty()) {
-                builder.append("New false negatives:\n");
+            appendList(builder, "New false negatives", newFalseNegatives, data);
 
-                for (TestLink newFalseNegative : newFalseNegatives) {
-                    builder.append("- ").append(TLSummaryFile.format(newFalseNegative, data)).append('\n');
-                }
+            var lostFalsePositives = findMissingLinks(oldResult.getFalsePositives(), newResult.getFalsePositives());
+            appendList(builder, "False positives that are now true negatives", lostFalsePositives, data);
 
-                builder.append('\n');
-            }
-
-            builder.append("\n\n");
+            builder.append('\n');
         }
 
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -98,6 +77,24 @@ public class TLDiffFile {
 
     private static List<TestLink> findNewLinks(List<TestLink> oldLinks, List<TestLink> newLinks) {
         return newLinks.stream().filter(link -> !oldLinks.contains(link)).toList();
+    }
+
+    private static List<TestLink> findMissingLinks(List<TestLink> oldLinks, List<TestLink> newLinks) {
+        return oldLinks.stream().filter(link -> !newLinks.contains(link)).toList();
+    }
+
+    private static void appendList(StringBuilder builder, String description, List<TestLink> links, AgentDatastructure data) {
+        if (links.isEmpty()) {
+            return;
+        }
+
+        builder.append(description).append(":\n");
+
+        for (TestLink link : links) {
+            builder.append("- ").append(TLSummaryFile.format(link, data)).append('\n');
+        }
+
+        builder.append('\n');
     }
 
 }
