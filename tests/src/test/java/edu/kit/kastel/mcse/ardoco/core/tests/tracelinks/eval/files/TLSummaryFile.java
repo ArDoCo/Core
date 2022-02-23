@@ -67,9 +67,6 @@ public class TLSummaryFile {
             builder.append('\n');
         }
 
-        if (!Files.exists(targetFile)) {
-            Files.createFile(targetFile);
-        }
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
