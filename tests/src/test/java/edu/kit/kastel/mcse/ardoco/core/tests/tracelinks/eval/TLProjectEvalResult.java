@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the trace link evaluation result for a single project.
+ */
 public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, EvaluationResult {
 
     private final Project project;
