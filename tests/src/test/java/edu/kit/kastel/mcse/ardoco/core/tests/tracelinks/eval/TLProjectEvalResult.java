@@ -23,7 +23,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
     private final List<TestLink> falseNegatives = new ArrayList<>();
 
     public TLProjectEvalResult(Project project, AgentDatastructure data) throws IOException {
-        this(project, data.getConnectionState().getTraceLinks().stream().map(TestLink::new).toList(), TLGoldStandardFile.loadGoldStandardLinks(project));
+        this(project, data.getConnectionState().getTraceLinks().stream().map(TestLink::new).toList(), TLGoldStandardFile.loadLinks(project));
     }
 
     public TLProjectEvalResult(Project project, Collection<TestLink> foundLinks, Collection<TestLink> correctLinks) {

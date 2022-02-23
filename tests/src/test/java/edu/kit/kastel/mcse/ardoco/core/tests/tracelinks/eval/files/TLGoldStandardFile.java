@@ -11,7 +11,7 @@ import java.util.Locale;
 
 public class TLGoldStandardFile {
 
-    public static List<TestLink> loadGoldStandardLinks(Project project) throws IOException {
+    public static List<TestLink> loadLinks(Project project) throws IOException {
         Path path = Path.of(String.format("src/test/resources/%s/goldstandard.csv", project.name().toLowerCase(Locale.ROOT)));
         List<String> lines = Files.readAllLines(path);
 

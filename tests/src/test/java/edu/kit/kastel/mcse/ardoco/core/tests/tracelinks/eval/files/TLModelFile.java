@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class TLModelFile {
 
-    public static void saveModels(Path targetFile, Map<Project, AgentDatastructure> dataMap) throws IOException {
+    public static void save(Path targetFile, Map<Project, AgentDatastructure> dataMap) throws IOException {
         var projects = dataMap.keySet().stream().sorted().toList();
         var builder = new StringBuilder();
 
