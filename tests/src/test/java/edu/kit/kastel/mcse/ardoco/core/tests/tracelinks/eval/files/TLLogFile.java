@@ -16,7 +16,7 @@ public class TLLogFile {
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void appendToLog(Path targetFile, List<TLProjectEvalResult> results) throws IOException {
+    public static void append(Path targetFile, List<TLProjectEvalResult> results) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
 

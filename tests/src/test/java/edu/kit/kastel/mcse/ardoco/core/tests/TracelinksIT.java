@@ -28,7 +28,6 @@ class TracelinksIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
-    private static final String SUMMARY_FILE_NAME = "summary.md";
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
     private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
 
@@ -48,12 +47,12 @@ class TracelinksIT {
         var evalDir = Path.of(OUTPUT).resolve("tl_eval");
         Files.createDirectories(evalDir);
 
-        TLSummaryFile.saveResults(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
-        TLModelFile.saveModels(evalDir.resolve("models.md"), DATA_MAP);
-        TLSentenceFile.saveSentences(evalDir.resolve("sentences.md"), DATA_MAP);
-        TLLogFile.appendToLog(evalDir.resolve("log.md"), RESULTS);
-        TLPreviousFile.saveToFile(evalDir.resolve("previous.csv"), RESULTS); // save before loading to guarantee file exists
-        TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.loadFromFile(evalDir.resolve("previous.csv")), DATA_MAP);
+        TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
+        TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
+        TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
+        TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
+        TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading to guarantee file exists
+        TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
     }
 
     @BeforeEach
@@ -130,7 +129,7 @@ class TracelinksIT {
             RESULTS.add(new TLProjectEvalResult(project, data));
             DATA_MAP.put(project, data);
         } catch (IOException e) {
-            e.printStackTrace(); // failing to summarize project results is irrelevant for test success
+            e.printStackTrace(); // failing to save project results is irrelevant for test success
         }
 
         Assertions.assertAll(//
