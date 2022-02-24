@@ -12,7 +12,7 @@ import java.util.Locale;
 public class TLGoldStandardFile {
 
     public static List<TestLink> loadLinks(Project project) throws IOException {
-        Path path = Path.of(String.format("src/test/resources/%s/goldstandard.csv", project.name().toLowerCase(Locale.ROOT)));
+        Path path = Path.of(String.format("src/test/resources/benchmark/%s/goldstandard.csv", project.name().toLowerCase(Locale.ROOT)));
         List<String> lines = Files.readAllLines(path);
 
         return lines.stream().skip(1) // skip csv header
