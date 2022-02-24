@@ -1,15 +1,18 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files.TLGoldStandardFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the trace link evaluation result for a single project.
+ */
 public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, EvaluationResult {
 
     private final Project project;
@@ -23,7 +26,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
     private final List<TestLink> falseNegatives = new ArrayList<>();
 
     public TLProjectEvalResult(Project project, AgentDatastructure data) throws IOException {
-        this(project, data.getConnectionState().getTraceLinks().stream().map(TestLink::new).toList(), TLGoldStandardFile.loadGoldStandardLinks(project));
+        this(project, data.getConnectionState().getTraceLinks().stream().map(TestLink::new).toList(), TLGoldStandardFile.loadLinks(project));
     }
 
     public TLProjectEvalResult(Project project, Collection<TestLink> foundLinks, Collection<TestLink> correctLinks) {
@@ -31,7 +34,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         this.foundLinks.addAll(foundLinks);
         this.correctLinks.addAll(correctLinks);
 
-        // --- copied from TestUtil#compare but with TestLink instead of strings ------------------------------------------------------------------------------
+        // --- copied from TestUtil#compare but with TestLink instead of strings ---
         Set<TestLink> distinctTraceLinks = new HashSet<>(this.foundLinks);
         Set<TestLink> distinctGoldStandard = new HashSet<>(this.correctLinks);
 
@@ -50,7 +53,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         this.precision = tp / (tp + fp);
         this.recall = tp / (tp + fn);
         this.f1Score = 2 * precision * recall / (precision + recall);
-        // --- end of copy ------------------------------------------------------------------------------------------------------------------------------------
+        // --- end of copy ---
 
         this.truePositives.addAll(truePositives);
         this.falsePositives.addAll(falsePositives);
@@ -100,7 +103,8 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         return falseNegatives;
     }
 
-    @Override public int compareTo(TLProjectEvalResult o) {
+    @Override
+    public int compareTo(TLProjectEvalResult o) {
         return this.project.name().compareTo(o.project.name());
     }
 

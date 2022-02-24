@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
-import org.eclipse.collections.api.factory.Lists;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
@@ -71,6 +70,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
 
     @Override
     public void exec(IWord n) {
+        // TODO revisit and check if we want to check something different than only words as well
         searchForName(n);
         searchForType(n);
     }
@@ -82,8 +82,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param word the node to check
      */
     private void searchForName(IWord word) {
-        boolean instanceNameIsSimilar = modelState.getInstances()
-                .anySatisfy(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(word.getText())));
+        boolean instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
             textState.addName(word, probability);
         }
@@ -97,8 +96,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param word the node to check
      */
     private void searchForType(IWord word) {
-        boolean instanceTypeIsSimilar = modelState.getInstances()
-                .anySatisfy(i -> SimilarityUtils.areWordsOfListsSimilar(i.getTypes(), Lists.immutable.with(word.getText())));
+        boolean instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
             textState.addType(word, probability);
         }

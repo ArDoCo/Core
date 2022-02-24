@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.tests;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,8 +39,8 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionConfig;
 
 class InstanceRelationAgentIT {
 
-    private static final String TEXT = "src/test/resources/mediastore/mediastore.txt";
-    private static final String MODEL = "src/test/resources/mediastore/mediastore.owl";
+    private static final String TEXT = "src/test/resources/benchmark/mediastore/mediastore.txt";
+    private static final String MODEL = "src/test/resources/benchmark/mediastore/mediastore.owl";
 
     @BeforeEach
     void beforeEach() {
