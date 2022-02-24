@@ -1,10 +1,10 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files.TLGoldStandardFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
 
 import java.io.IOException;
 import java.util.*;
