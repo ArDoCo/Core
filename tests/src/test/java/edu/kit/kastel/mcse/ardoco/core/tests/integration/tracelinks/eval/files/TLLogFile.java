@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
@@ -31,10 +32,10 @@ public class TLLogFile {
 
         for (TLProjectEvalResult result : sortedResults) {
             String alias = switch (result.getProject()) {
-                case BIGBLUEBUTTON -> "BBB";
-                case MEDIASTORE -> "MS";
-                case TEAMMATES -> "TM";
-                case TEASTORE -> "TS";
+            case BIGBLUEBUTTON -> "BBB";
+            case MEDIASTORE -> "MS";
+            case TEAMMATES -> "TM";
+            case TEASTORE -> "TS";
             };
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());

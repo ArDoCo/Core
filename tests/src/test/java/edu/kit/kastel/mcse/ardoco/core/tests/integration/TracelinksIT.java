@@ -60,7 +60,7 @@ class TracelinksIT {
             TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
             TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
             TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
-            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading to guarantee file exists
+            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
             TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
         }
     }
