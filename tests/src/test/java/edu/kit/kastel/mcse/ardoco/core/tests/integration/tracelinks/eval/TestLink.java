@@ -14,7 +14,8 @@ public record TestLink(String modelId, int sentenceNr) implements Comparable<Tes
         this(traceLink.getModelElementUid(), traceLink.getSentenceNumber());
     }
 
-    @Override public int compareTo(TestLink o) {
+    @Override
+    public int compareTo(TestLink o) {
         return Comparator.comparing(TestLink::modelId).thenComparing(TestLink::sentenceNr).compare(this, o);
     }
 

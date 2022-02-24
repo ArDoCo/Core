@@ -34,7 +34,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         this.foundLinks.addAll(foundLinks);
         this.correctLinks.addAll(correctLinks);
 
-        // --- copied from TestUtil#compare but with TestLink instead of strings ------------------------------------------------------------------------------
+        // --- copied from TestUtil#compare but with TestLink instead of strings ---
         Set<TestLink> distinctTraceLinks = new HashSet<>(this.foundLinks);
         Set<TestLink> distinctGoldStandard = new HashSet<>(this.correctLinks);
 
@@ -53,7 +53,7 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         this.precision = tp / (tp + fp);
         this.recall = tp / (tp + fn);
         this.f1Score = 2 * precision * recall / (precision + recall);
-        // --- end of copy ------------------------------------------------------------------------------------------------------------------------------------
+        // --- end of copy ---
 
         this.truePositives.addAll(truePositives);
         this.falsePositives.addAll(falsePositives);
@@ -103,7 +103,8 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         return falseNegatives;
     }
 
-    @Override public int compareTo(TLProjectEvalResult o) {
+    @Override
+    public int compareTo(TLProjectEvalResult o) {
         return this.project.name().compareTo(o.project.name());
     }
 
