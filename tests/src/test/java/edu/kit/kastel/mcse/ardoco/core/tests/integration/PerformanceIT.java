@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.tests;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
 import java.time.Duration;
@@ -73,14 +73,14 @@ class PerformanceIT {
 
     private void prepareOntology() {
         inputText = null;
-        var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
+        var inputFilePath = String.format("src/test/resources/benchmark/%s/%s_w_text.owl", name, name);
         inputModel = new File(inputFilePath);
     }
 
     private void prepareText() {
-        var inputTextPath = String.format("src/test/resources/%s/%s.txt", name, name);
+        var inputTextPath = String.format("src/test/resources/benchmark/%s/%s.txt", name, name);
         inputText = new File(inputTextPath);
-        var inputFilePath = String.format("src/test/resources/%s/%s.owl", name, name);
+        var inputFilePath = String.format("src/test/resources/benchmark/%s/%s.owl", name, name);
         inputModel = new File(inputFilePath);
     }
 

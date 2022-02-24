@@ -1,19 +1,25 @@
 /* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.tests;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files.*;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class TracelinksIT {
     private static Logger logger = null;
@@ -30,11 +37,12 @@ class TracelinksIT {
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
     private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
+    private static final boolean detailedDebug = true;
 
     private File inputText;
     private File inputModel;
     private File additionalConfigs = null;
-    private File outputDir = new File(OUTPUT);
+    private final File outputDir = new File(OUTPUT);
 
     @BeforeAll
     public static void beforeAll() {
@@ -44,15 +52,17 @@ class TracelinksIT {
 
     @AfterAll
     public static void afterAll() throws IOException {
-        var evalDir = Path.of(OUTPUT).resolve("tl_eval");
-        Files.createDirectories(evalDir);
+        if (detailedDebug) {
+            var evalDir = Path.of(OUTPUT).resolve("tl_eval");
+            Files.createDirectories(evalDir);
 
-        TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
-        TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
-        TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-        TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
-        TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading to guarantee file exists
-        TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
+            TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
+            TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
+            TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
+            TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
+            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading to guarantee file exists
+            TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
+        }
     }
 
     @BeforeEach
@@ -111,7 +121,7 @@ class TracelinksIT {
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(data);
 
-        var results = calculateResults(name, data);
+        var results = calculateResults(project, data);
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
@@ -121,15 +131,17 @@ class TracelinksIT {
                     expectedResults.getF1());
             logger.info(infoString);
 
-            logger.debug("False negatives:\n{}", results.getFalseNegative().stream().map(Object::toString).collect(Collectors.joining("\n")));
-            logger.debug("False positives:\n{}", results.getFalsePositives().stream().map(Object::toString).collect(Collectors.joining("\n")));
-        }
+            if (detailedDebug) {
+                printDetailedDebug(results, data);
 
-        try {
-            RESULTS.add(new TLProjectEvalResult(project, data));
-            DATA_MAP.put(project, data);
-        } catch (IOException e) {
-            e.printStackTrace(); // failing to save project results is irrelevant for test success
+                try {
+                    RESULTS.add(new TLProjectEvalResult(project, data));
+                    DATA_MAP.put(project, data);
+                } catch (IOException e) {
+                    e.printStackTrace(); // failing to save project results is irrelevant for test success
+                }
+            }
+
         }
 
         Assertions.assertAll(//
@@ -142,12 +154,55 @@ class TracelinksIT {
 
     }
 
-    private EvaluationResults calculateResults(String name, AgentDatastructure data) {
+    private void printDetailedDebug(EvaluationResults results, AgentDatastructure data) {
+        var falseNegatives = results.getFalseNegative().stream().map(Object::toString);
+        var falsePositives = results.getFalsePositives().stream().map(Object::toString);
+
+        var sentences = data.getText().getSentences();
+        var instances = data.getModelState().getInstances();
+
+        var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);
+        var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);
+
+        logger.debug("False negatives:\n{}", falseNegativeOutput.stream().collect(Collectors.joining("\n")));
+        logger.debug("False positives:\n{}", falsePositivesOutput.stream().collect(Collectors.joining("\n")));
+
+    }
+
+    private MutableList<String> createOutputStrings(Stream<String> tracelinkStrings, ImmutableList<ISentence> sentences,
+            ImmutableList<IModelInstance> instances) {
+        var outputList = Lists.mutable.<String> empty();
+        for (var tracelinkString : tracelinkStrings.toList()) {
+            var parts = tracelinkString.split(",");
+            if (parts.length < 2) {
+                continue;
+            }
+            var id = parts[0];
+
+            var modelElement = instances.detect(instance -> instance.getUid().equals(id));
+
+            var sentence = parts[1];
+
+            int sentenceNo = -1;
+            try {
+                sentenceNo = Integer.parseInt(sentence);
+            } catch (NumberFormatException e) {
+                logger.debug("Having problems retrieving sentence, so skipping line: {}", tracelinkString);
+                continue;
+            }
+            var sentenceText = sentences.get(sentenceNo - 1);
+
+            outputList.add(String.format("%-20s - %s (%s)", modelElement.getLongestName(), sentenceText.getText(), tracelinkString));
+        }
+        return outputList;
+    }
+
+    private EvaluationResults calculateResults(Project project, AgentDatastructure data) {
         var connectionState = data.getConnectionState();
         Set<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());
 
-        var goldStandard = getGoldStandard(name);
+        var goldStandard = getGoldStandard(project);
 
         var results = TestUtil.compare(traceLinks, goldStandard);
         return results;
@@ -158,9 +213,8 @@ class TracelinksIT {
         return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToSet();
     }
 
-    private List<String> getGoldStandard(String name) {
-        var pathStr = String.format("src/test/resources/%s/goldstandard.csv", name);
-        Path path = Paths.get(pathStr);
+    private List<String> getGoldStandard(Project project) {
+        Path path = Paths.get(project.getGoldStandardFile().toURI());
         List<String> goldLinks = Lists.mutable.empty();
         try {
             goldLinks = Files.readAllLines(path);
@@ -169,39 +223,5 @@ class TracelinksIT {
         }
         goldLinks.remove(0);
         return goldLinks;
-    }
-
-    @Disabled("Disabled for CI. Only enable this locally if you want to test the cache.")
-    @DisplayName("Compare cached and non-cached evaluation")
-    @ParameterizedTest
-    @ValueSource(strings = { "mediastore", "teastore", "teammates" })
-    void compareCachingResultsIT(String name) {
-        // set up
-        var similarity = 1.0;
-        if (name.equals("teammates")) {
-            similarity = 0.8;
-        }
-        TestUtil.setConfigOptions(ADDITIONAL_CONFIG, TestUtil.getSimilarityConfigString(similarity));
-
-        var inputFilePath = String.format("src/test/resources/%s/%s_w_text.owl", name, name);
-        inputModel = new File(inputFilePath);
-
-        var runName = "test_" + name;
-
-        // run cached
-        OntologyTextProvider.enableCache(true);
-        var dataCached = Pipeline.runAndSave(runName + "_cached", inputText, inputModel, additionalConfigs, outputDir);
-        Assertions.assertNotNull(dataCached);
-        var resultsCached = calculateResults(name, dataCached);
-        logger.info("Cached results for {}:\n{}", name, resultsCached.toPrettyString());
-
-        // run not cached
-        OntologyTextProvider.enableCache(false);
-        var dataNonCached = Pipeline.runAndSave(runName, inputText, inputModel, additionalConfigs, outputDir);
-        Assertions.assertNotNull(dataNonCached);
-        var resultsNonCached = calculateResults(name, dataNonCached);
-        logger.info("Non-cached results for {}:\n{}", name, resultsNonCached.toPrettyString());
-
-        Assertions.assertEquals(resultsNonCached, resultsCached, "Results for cached and non-cached run are not equal");
     }
 }

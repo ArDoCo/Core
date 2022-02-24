@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.tests;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,8 +24,8 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvi
 
 class TextIT {
 
-    private static final String TEXT = "src/test/resources/teammates/teammates.txt";
-    private static final String MODEL_OWL = "src/test/resources/teammates/teammates.owl";
+    private static final String TEXT = "src/test/resources/benchmark/teammates/teammates.txt";
+    private static final String MODEL_OWL = "src/test/resources/benchmark/teammates/teammates.owl";
     private String tmpOwlFile;
 
     @Disabled("Only for local testing")
