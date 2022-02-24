@@ -1,8 +1,8 @@
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TestLink;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
 
 import java.io.IOException;
 import java.nio.file.Files;
