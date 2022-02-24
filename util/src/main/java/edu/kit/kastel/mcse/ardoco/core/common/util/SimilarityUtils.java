@@ -60,6 +60,7 @@ public final class SimilarityUtils {
         }
     }
 
+    // TODO: alle Stellen finden, an denen man dies ggf anwenden sollte
     /**
      * Compares a given {@link INounMapping} with a given {@link IModelInstance} for similarity. Checks if all names,
      * the longest name or a single name are similar to the reference of the NounMapping.
@@ -76,6 +77,56 @@ public final class SimilarityUtils {
 
         for (String name : instance.getNames()) {
             if (areWordsSimilar(name, nounMapping.getReference())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Compares a given {@link IWord} with a given {@link IModelInstance} for similarity.
+     *
+     * @param word     the {@link IWord}
+     * @param instance the {@link IModelInstance}
+     * @return true, iff the {@link IWord} and {@link IModelInstance} are similar.
+     */
+    public static boolean isWordSimilarToModelInstance(IWord word, IModelInstance instance) {
+        var names = instance.getNames();
+        return compareWordWithStringListEntries(word, names);
+    }
+
+    /**
+     * Compares a given {@link IRecommendedInstance} with a given {@link IModelInstance} for similarity.
+     *
+     * @param ri       the {@link IRecommendedInstance}
+     * @param instance the {@link IModelInstance}
+     * @return true, iff the {@link IRecommendedInstance} and {@link IModelInstance} are similar.
+     */
+    public static boolean isRecommendedInstanceSimilarToModelInstance(IRecommendedInstance ri, IModelInstance instance) {
+        var name = ri.getName();
+        var nameList = Lists.immutable.with(name.split(" "));
+        return instance.getLongestName().equalsIgnoreCase(ri.getName()) || areWordsOfListsSimilar(instance.getNames(), nameList);
+    }
+
+    /**
+     * Compares a given {@link IWord} with the type of a given {@link IModelInstance} for similarity.
+     *
+     * @param word     the {@link IWord}
+     * @param instance the {@link IModelInstance}
+     * @return true, iff the {@link IWord} and the type of the {@link IModelInstance} are similar.
+     */
+    public static boolean isWordSimilarToModelInstanceType(IWord word, IModelInstance instance) {
+        var types = instance.getTypes();
+        return compareWordWithStringListEntries(word, types);
+    }
+
+    private static boolean compareWordWithStringListEntries(IWord word, ImmutableList<String> names) {
+        if (areWordsOfListsSimilar(names, Lists.immutable.with(word.getText()))) {
+            return true;
+        }
+
+        for (String name : names) {
+            if (areWordsSimilar(name, word.getText())) {
                 return true;
             }
         }

@@ -1,8 +1,9 @@
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files;
+/* Licensed under MIT 2022. */
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TestLink;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +13,7 @@ import java.util.*;
 
 public class TLPreviousFile {
 
-    public static Collection<TLProjectEvalResult> loadFromFile(Path sourceFile) throws IOException {
+    public static Collection<TLProjectEvalResult> load(Path sourceFile) throws IOException {
         List<String> lines = Files.readAllLines(sourceFile);
         Map<Project, List<TestLink>> foundLinkMap = new HashMap<>();
         List<TLProjectEvalResult> results = new ArrayList<>();
@@ -33,7 +34,7 @@ public class TLPreviousFile {
         }
 
         for (Project project : foundLinkMap.keySet()) {
-            var correctLinks = TLGoldStandardFile.loadGoldStandardLinks(project);
+            var correctLinks = TLGoldStandardFile.loadLinks(project);
             var foundLinks = foundLinkMap.get(project);
 
             results.add(new TLProjectEvalResult(project, foundLinks, correctLinks));
@@ -42,7 +43,7 @@ public class TLPreviousFile {
         return results;
     }
 
-    public static void saveToFile(Path targetFile, Collection<TLProjectEvalResult> results) throws IOException {
+    public static void save(Path targetFile, Collection<TLProjectEvalResult> results) throws IOException {
         if (Files.exists(targetFile)) {
             return; // do not overwrite
         }

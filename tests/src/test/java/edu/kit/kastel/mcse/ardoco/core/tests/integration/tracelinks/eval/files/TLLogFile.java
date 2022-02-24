@@ -1,6 +1,7 @@
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files;
+/* Licensed under MIT 2022. */
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +17,7 @@ public class TLLogFile {
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void appendToLog(Path targetFile, List<TLProjectEvalResult> results) throws IOException {
+    public static void append(Path targetFile, List<TLProjectEvalResult> results) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
 
@@ -31,10 +32,10 @@ public class TLLogFile {
 
         for (TLProjectEvalResult result : sortedResults) {
             String alias = switch (result.getProject()) {
-                case BIGBLUEBUTTON -> "BBB";
-                case MEDIASTORE -> "MS";
-                case TEAMMATES -> "TM";
-                case TEASTORE -> "TS";
+            case BIGBLUEBUTTON -> "BBB";
+            case MEDIASTORE -> "MS";
+            case TEAMMATES -> "TM";
+            case TEASTORE -> "TS";
             };
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());

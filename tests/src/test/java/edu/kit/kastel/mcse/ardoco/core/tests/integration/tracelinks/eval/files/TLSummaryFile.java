@@ -1,10 +1,10 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.files;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval.TestLink;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,7 +21,7 @@ public class TLSummaryFile {
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void saveResults(Path targetFile, Collection<TLProjectEvalResult> results, Map<Project, AgentDatastructure> dataMap) throws IOException {
+    public static void save(Path targetFile, Collection<TLProjectEvalResult> results, Map<Project, AgentDatastructure> dataMap) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
 
@@ -67,9 +67,6 @@ public class TLSummaryFile {
             builder.append('\n');
         }
 
-        if (!Files.exists(targetFile)) {
-            Files.createFile(targetFile);
-        }
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 

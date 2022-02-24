@@ -1,10 +1,13 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.tracelinks.eval;
-
-import java.util.Comparator;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.TraceLink;
 
+import java.util.Comparator;
+
+/**
+ * Represents a simple trace link by the id of the model and number of the sentence involved.
+ */
 public record TestLink(String modelId, int sentenceNr) implements Comparable<TestLink> {
 
     public TestLink(TraceLink traceLink) {

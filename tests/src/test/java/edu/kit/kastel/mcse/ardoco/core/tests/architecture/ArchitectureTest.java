@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.tests;
+package edu.kit.kastel.mcse.ardoco.core.tests.architecture;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
