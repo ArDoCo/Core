@@ -1,14 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Represents the trace link evaluation result for a single project.

@@ -1,16 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import org.eclipse.collections.api.list.ImmutableList;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 
 public class TLSentenceFile {
 
