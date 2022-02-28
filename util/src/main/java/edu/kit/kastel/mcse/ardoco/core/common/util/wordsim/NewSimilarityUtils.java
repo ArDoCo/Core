@@ -19,6 +19,7 @@ import java.util.Objects;
  */
 public class NewSimilarityUtils {
 
+
     // --- TODO: REMOVE ---------------------------------------------------------------------------------------------------------------------------------------
     static {
         try {
@@ -45,13 +46,23 @@ public class NewSimilarityUtils {
     public static boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
 
+        ComparisonStats.begin(ctx);
+
+        boolean result = false;
+
         for (WordSimMeasure measure : MEASURES) {
-            if (measure.areWordsSimilar(ctx)) {
-                return true;
+            boolean similar = measure.areWordsSimilar(ctx);
+
+            ComparisonStats.record(measure, similar);
+
+            if (similar) {
+                result = true;
             }
         }
 
-        return false;
+        ComparisonStats.end(result);
+
+        return result;
     }
 
     public static boolean areWordsSimilar(String firstWord, String secondWord) {

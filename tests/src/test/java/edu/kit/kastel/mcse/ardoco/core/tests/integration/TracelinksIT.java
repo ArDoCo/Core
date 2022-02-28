@@ -2,12 +2,14 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.ComparisonStatGroup;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
@@ -37,6 +39,7 @@ class TracelinksIT {
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
     private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
+    private static final Map<Project, ComparisonStatGroup> COMP_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
     private File inputText;
@@ -62,6 +65,7 @@ class TracelinksIT {
             TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
             TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
             TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
+            TLStatsFile.save(evalDir.resolve("stats.md"), COMP_MAP, DATA_MAP);
         }
     }
 
@@ -137,11 +141,12 @@ class TracelinksIT {
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
                     DATA_MAP.put(project, data);
+                    COMP_MAP.put(project, new ComparisonStatGroup(project, data, ComparisonStats.COMPARISONS));
+                    ComparisonStats.COMPARISONS.clear();
                 } catch (IOException e) {
                     e.printStackTrace(); // failing to save project results is irrelevant for test success
                 }
             }
-
         }
 
         Assertions.assertAll(//
