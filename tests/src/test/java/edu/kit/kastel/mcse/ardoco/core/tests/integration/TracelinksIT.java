@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,12 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -33,6 +26,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
@@ -41,6 +36,8 @@ class TracelinksIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
+    private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
+    private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
     private File inputText;
@@ -52,6 +49,21 @@ class TracelinksIT {
     public static void beforeAll() {
         System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
         logger = LogManager.getLogger(TracelinksIT.class);
+    }
+
+    @AfterAll
+    public static void afterAll() throws IOException {
+        if (detailedDebug) {
+            var evalDir = Path.of(OUTPUT).resolve("tl_eval");
+            Files.createDirectories(evalDir);
+
+            TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
+            TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
+            TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
+            TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
+            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
+            TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
+        }
     }
 
     @BeforeEach
@@ -122,6 +134,13 @@ class TracelinksIT {
 
             if (detailedDebug) {
                 printDetailedDebug(results, data);
+
+                try {
+                    RESULTS.add(new TLProjectEvalResult(project, data));
+                    DATA_MAP.put(project, data);
+                } catch (IOException e) {
+                    e.printStackTrace(); // failing to save project results is irrelevant for test success
+                }
             }
 
         }
