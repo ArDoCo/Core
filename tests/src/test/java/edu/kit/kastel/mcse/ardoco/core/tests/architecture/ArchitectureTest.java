@@ -43,7 +43,7 @@ public class ArchitectureTest {
     public static final ArchRule usingLinkAsNamingOnlyInConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()
-            .resideInAPackage("..connectiongenerator..");
+            .resideInAnyPackage("..connectiongenerator..", "..tests..");
 
     @ArchTest
     public static final ArchRule inconsistencyOnlyAfterInconsistencyDetection = classes().that()
