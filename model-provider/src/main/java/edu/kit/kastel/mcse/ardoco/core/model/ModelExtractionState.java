@@ -145,6 +145,21 @@ public class ModelExtractionState implements IModelState {
     }
 
     @Override
+    public void addAllOf(IModelState other) {
+        instanceTypes.addAll(other.getInstanceTypes());
+        relationTypes.addAll(other.getRelationTypes());
+        names.addAll(other.getNames());
+
+        var mergedInstances = Lists.mutable.ofAll(instances);
+        mergedInstances.addAll(other.getInstances().toList());
+        instances = mergedInstances.toImmutable();
+
+        var mergedRelations = Lists.mutable.ofAll(relations);
+        mergedRelations.addAll(other.getRelations().toList());
+        relations = mergedRelations.toImmutable();
+    }
+
+    @Override
     public String toString() {
         var output = new StringBuilder("Instances:\n");
         for (IModelInstance i : instances) {

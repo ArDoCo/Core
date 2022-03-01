@@ -31,6 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConf
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.model.java.JavaOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
@@ -183,28 +184,31 @@ public final class Pipeline {
     public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean hasJavaModel) {
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
-        var prevStartTime = System.currentTimeMillis();
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
-        logger.info("Preparing and processing text input.");
+        logger.info("Preparing and preprocessing text input.");
         var annotatedText = getAnnotatedText(inputText, ontoConnector);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
         }
 
-        logger.info("Processing model input");
+        logger.info("Starting process to generate Trace Links");
+        var prevStartTime = System.currentTimeMillis();
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
+        var modelState = runModelExtractor(pcmModel);
+        if (hasJavaModel) {
+            IModelConnector javaModel = new JavaOntologyModelConnector(ontoConnector);
+            var javaModelState = runModelExtractor(javaModel);
+            modelState.addAllOf(javaModelState);
+
+        }
         if (outputDir != null) {
-            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
+            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), modelState, name);
         }
 
-        logTiming(prevStartTime, "Text- and Model-Loading");
-
-        logger.info("Starting process to generate Trace Links");
-        prevStartTime = System.currentTimeMillis();
-        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
+        var data = new AgentDatastructure(annotatedText, null, modelState, null, null, null);
         logTiming(prevStartTime, "Model-Extractor");
 
         prevStartTime = System.currentTimeMillis();

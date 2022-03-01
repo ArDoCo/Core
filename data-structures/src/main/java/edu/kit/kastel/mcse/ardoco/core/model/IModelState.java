@@ -62,4 +62,6 @@ public interface IModelState extends IState<IModelState> {
      */
     ImmutableList<IModelRelation> getRelations();
 
+    void addAllOf(IModelState other);
+
 }
