@@ -6,7 +6,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,7 +20,13 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -27,7 +38,12 @@ import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLDiffFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLLogFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLModelFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLPreviousFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSentenceFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSummaryFile;
 import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
@@ -76,7 +92,7 @@ class TracelinksIT {
     @AfterEach
     void afterEach() {
         if (ADDITIONAL_CONFIG != null) {
-            File config = new File(ADDITIONAL_CONFIG);
+            var config = new File(ADDITIONAL_CONFIG);
             config.delete();
         }
         if (additionalConfigs != null) {
@@ -119,14 +135,14 @@ class TracelinksIT {
 
     private void compare(Project project) {
         var name = project.name().toLowerCase();
-        var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir);
+        var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir, false);
         Assertions.assertNotNull(data);
 
         var results = calculateResults(project, data);
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
-            String infoString = String.format(Locale.ENGLISH,
+            var infoString = String.format(Locale.ENGLISH,
                     "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
                     results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
                     expectedResults.getF1());
@@ -184,7 +200,7 @@ class TracelinksIT {
 
             var sentence = parts[1];
 
-            int sentenceNo = -1;
+            var sentenceNo = -1;
             try {
                 sentenceNo = Integer.parseInt(sentence);
             } catch (NumberFormatException e) {
@@ -200,13 +216,12 @@ class TracelinksIT {
 
     private EvaluationResults calculateResults(Project project, AgentDatastructure data) {
         var connectionState = data.getConnectionState();
-        Set<String> traceLinks = getTraceLinksFromConnectionState(connectionState);
+        var traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());
 
         var goldStandard = getGoldStandard(project);
 
-        var results = TestUtil.compare(traceLinks, goldStandard);
-        return results;
+        return TestUtil.compare(traceLinks, goldStandard);
     }
 
     private Set<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
@@ -215,7 +230,7 @@ class TracelinksIT {
     }
 
     private List<String> getGoldStandard(Project project) {
-        Path path = Paths.get(project.getGoldStandardFile().toURI());
+        var path = Paths.get(project.getGoldStandardFile().toURI());
         List<String> goldLinks = Lists.mutable.empty();
         try {
             goldLinks = Files.readAllLines(path);

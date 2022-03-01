@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -62,6 +63,9 @@ public final class Pipeline {
     private static final String CMD_PROVIDED = "p";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
+    private static final String CMD_JAVA = "j";
+
+    private static Options options;
 
     /**
      * The main method.
@@ -77,6 +81,7 @@ public final class Pipeline {
         // -p : Flag to make use of provided ontology to load preprocessed text
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
+        // -j : Model contains Java Code Model
 
         CommandLine cmd = null;
         try {
@@ -97,7 +102,7 @@ public final class Pipeline {
         File additionalConfigs = null;
         File outputDir = null;
 
-        boolean providedTextOntology = cmd.hasOption(CMD_PROVIDED);
+        var providedTextOntology = cmd.hasOption(CMD_PROVIDED);
         if (!providedTextOntology && !cmd.hasOption(CMD_TEXT)) {
             printUsage();
             return;
@@ -118,32 +123,21 @@ public final class Pipeline {
             return;
         }
 
-        String name = cmd.getOptionValue(CMD_NAME);
+        var name = cmd.getOptionValue(CMD_NAME);
 
         if (!name.matches("[A-Za-z0-9_]+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
             return;
         }
 
-        runAndSave(name, inputText, inputModel, additionalConfigs, outputDir);
+        var hasJavaModel = cmd.hasOption(CMD_JAVA);
+
+        runAndSave(name, inputText, inputModel, additionalConfigs, outputDir, hasJavaModel);
     }
 
     private static void printUsage() {
-        logger.info(
-                """
-                        Usage: java -jar ardoco-core-pipeline.jar
-                        -n NAME_OF_THE_PROJECT (will be stored in the results)
-                        -m PATH_TO_THE_OWL_ONTOLOGY (use Ecore2OWL to obtain PCM models as ontology)
-                        -o PATH_TO_OUTPUT_FOLDER
-
-                        Text input parameters (one of them has to be provided):
-                        -t PATH_TO_PLAIN_TEXT
-                        -p (provided ontology contains the preprocessed text that should be used instead of the text)
-
-                        Optional Parameters:
-                        -c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
-
-                        """);
+        var formatter = new HelpFormatter();
+        formatter.printHelp("java -jar ardoco-core-pipeline.jar", options);
     }
 
     /**
@@ -157,7 +151,22 @@ public final class Pipeline {
      * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
      */
     public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs) {
-        return runAndSave(name, inputText, inputModel, additionalConfigs, null);
+        return runAndSave(name, inputText, inputModel, additionalConfigs, null, false);
+    }
+
+    /**
+     * Run the approach equally to {@link #runAndSave(String, File, File, File, File)} but without saving the output to
+     * the file system.
+     *
+     * @param name              Name of the run
+     * @param inputText         File of the input text. Can
+     * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
+     * @param additionalConfigs File with the additional or overwriting config parameters that should be used
+     * @param hasJavaModel      indicate that the model contains a java code model
+     * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
+     */
+    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, boolean hasJavaModel) {
+        return runAndSave(name, inputText, inputModel, additionalConfigs, null, hasJavaModel);
     }
 
     /**
@@ -168,17 +177,18 @@ public final class Pipeline {
      * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
      * @param additionalConfigs File with the additional or overwriting config parameters that should be used
      * @param outputDir         File that represents the output directory where the results should be written to
+     * @param hasJavaModel
      * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
      */
-    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir) {
+    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean hasJavaModel) {
         logger.info("Starting {}", name);
-        long startTime = System.currentTimeMillis();
-        long prevStartTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
+        var prevStartTime = System.currentTimeMillis();
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
         logger.info("Preparing and processing text input.");
-        IText annotatedText = getAnnotatedText(inputText, ontoConnector);
+        var annotatedText = getAnnotatedText(inputText, ontoConnector);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
@@ -351,10 +361,7 @@ public final class Pipeline {
      */
     private static File ensureFile(String path, boolean create) throws IOException {
         var file = new File(path);
-        if (file.exists()) {
-            return file;
-        }
-        if (create && file.createNewFile()) {
+        if (file.exists() || create && file.createNewFile()) {
             return file;
         }
         // File not available
@@ -384,7 +391,7 @@ public final class Pipeline {
     }
 
     private static CommandLine parseCommandLine(String[] args) throws ParseException {
-        var options = new Options();
+        options = new Options();
         Option opt;
 
         // Define Options ..
@@ -420,6 +427,11 @@ public final class Pipeline {
         opt = new Option(CMD_OUT_DIR, "out", true, "path to the output directory");
         opt.setRequired(true);
         opt.setType(String.class);
+        options.addOption(opt);
+
+        opt = new Option(CMD_JAVA, "hasjava", false, "indicate that the model contains the java code model");
+        opt.setRequired(false);
+        opt.setType(Boolean.class);
         options.addOption(opt);
 
         CommandLineParser parser = new DefaultParser();
