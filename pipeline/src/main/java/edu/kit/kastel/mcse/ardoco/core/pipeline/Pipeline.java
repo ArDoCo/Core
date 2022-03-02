@@ -209,8 +209,10 @@ public final class Pipeline {
             var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile();
             FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(), name);
 
-            var codeModelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instancesCode.csv").toFile();
-            FilePrinter.writeModelInstancesInCsvFile(codeModelStateFile, data.getCodeModelState(), name);
+            if (hasCodeModel) {
+                var codeModelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instancesCode.csv").toFile();
+                FilePrinter.writeModelInstancesInCsvFile(codeModelStateFile, data.getCodeModelState(), name);
+            }
         }
         logTiming(prevStartTime, "Model-Extractor");
 
