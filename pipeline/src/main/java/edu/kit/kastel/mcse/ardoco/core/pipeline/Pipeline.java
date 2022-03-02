@@ -64,7 +64,7 @@ public final class Pipeline {
     private static final String CMD_PROVIDED = "p";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
-    private static final String CMD_JAVA = "j";
+    private static final String CMD_IMPLEMENTATION = "i";
 
     private static Options options;
 
@@ -82,7 +82,7 @@ public final class Pipeline {
         // -p : Flag to make use of provided ontology to load preprocessed text
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
-        // -j : Model contains Java Code Model
+        // -i : Model contains Code Model
 
         CommandLine cmd = null;
         try {
@@ -131,7 +131,7 @@ public final class Pipeline {
             return;
         }
 
-        var hasJavaModel = cmd.hasOption(CMD_JAVA);
+        var hasJavaModel = cmd.hasOption(CMD_IMPLEMENTATION);
 
         runAndSave(name, inputText, inputModel, additionalConfigs, outputDir, hasJavaModel);
     }
@@ -163,11 +163,11 @@ public final class Pipeline {
      * @param inputText         File of the input text. Can
      * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
      * @param additionalConfigs File with the additional or overwriting config parameters that should be used
-     * @param hasJavaModel      indicate that the model contains a java code model
+     * @param hasCodeModel      indicate that the model contains a code model
      * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
      */
-    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, boolean hasJavaModel) {
-        return runAndSave(name, inputText, inputModel, additionalConfigs, null, hasJavaModel);
+    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, boolean hasCodeModel) {
+        return runAndSave(name, inputText, inputModel, additionalConfigs, null, hasCodeModel);
     }
 
     /**
@@ -178,10 +178,10 @@ public final class Pipeline {
      * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
      * @param additionalConfigs File with the additional or overwriting config parameters that should be used
      * @param outputDir         File that represents the output directory where the results should be written to
-     * @param hasJavaModel
+     * @param hasCodeModel      indicate that the model contains a code model
      * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
      */
-    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean hasJavaModel) {
+    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean hasCodeModel) {
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
@@ -198,17 +198,20 @@ public final class Pipeline {
         var prevStartTime = System.currentTimeMillis();
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
         var modelState = runModelExtractor(pcmModel);
-        if (hasJavaModel) {
+        var data = new AgentDatastructure(annotatedText, null, modelState, null, null, null);
+        if (hasCodeModel) {
             IModelConnector javaModel = new JavaOntologyModelConnector(ontoConnector);
-            var javaModelState = runModelExtractor(javaModel);
-            modelState.addAllOf(javaModelState);
+            var codeModelState = runModelExtractor(javaModel);
+            data.setCodeModelState(codeModelState);
 
         }
         if (outputDir != null) {
-            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), modelState, name);
-        }
+            var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile();
+            FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(), name);
 
-        var data = new AgentDatastructure(annotatedText, null, modelState, null, null, null);
+            var codeModelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instancesCode.csv").toFile();
+            FilePrinter.writeModelInstancesInCsvFile(codeModelStateFile, data.getCodeModelState(), name);
+        }
         logTiming(prevStartTime, "Model-Extractor");
 
         prevStartTime = System.currentTimeMillis();
@@ -433,7 +436,7 @@ public final class Pipeline {
         opt.setType(String.class);
         options.addOption(opt);
 
-        opt = new Option(CMD_JAVA, "hasjava", false, "indicate that the model contains the java code model");
+        opt = new Option(CMD_IMPLEMENTATION, "withimplementation", false, "indicate that the model contains the code model");
         opt.setRequired(false);
         opt.setType(Boolean.class);
         options.addOption(opt);

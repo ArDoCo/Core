@@ -16,6 +16,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
     private IText text;
     private ITextState textState;
     private IModelState modelState;
+    private IModelState codeModelState;
     private IRecommendationState recommendationState;
     private IConnectionState connectionState;
     private IInconsistencyState inconsistencyState;
@@ -40,6 +41,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         data.modelState = modelState == null ? null : modelState.createCopy();
         data.recommendationState = recommendationState == null ? null : recommendationState.createCopy();
         data.connectionState = connectionState == null ? null : connectionState.createCopy();
+        data.codeModelState = codeModelState == null ? null : codeModelState.createCopy();
         return data;
     }
 
@@ -60,6 +62,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         this.recommendationState = recommendationState;
         this.connectionState = connectionState;
         this.inconsistencyState = inconsistencyState;
+        this.codeModelState = null;
     }
 
     /**
@@ -105,6 +108,20 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      */
     public void setModelState(IModelState modelState) {
         this.modelState = modelState;
+    }
+
+    /**
+     * @return the codeState
+     */
+    public IModelState getCodeModelState() {
+        return codeModelState;
+    }
+
+    /**
+     * @param codeModelState the codeState to set
+     */
+    public void setCodeModelState(IModelState codeModelState) {
+        this.codeModelState = codeModelState;
     }
 
     /**
@@ -163,5 +180,6 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         recommendationState = newData.recommendationState;
         connectionState = newData.connectionState;
         inconsistencyState = newData.inconsistencyState;
+        codeModelState = newData.codeModelState;
     }
 }
