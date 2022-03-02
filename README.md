@@ -15,20 +15,16 @@ The Core Project contains a CLI that currently supports to find trace links betw
 
 ### Usage
 ```
-java -jar ardoco-core-pipeline \
-
-	-n NAME_OF_THE_PROJECT (will be stored in the results)
-	-m PATH_TO_THE_PCM_MODEL_AS_OWL (use Ecore2OWL to obtain PCM models as ontology)
-	-o PATH_TO_OUTPUT_FOLDER
-
-	Text input parameters (one of them has to be provided):
-	-t PATH_TO_PLAIN_TEXT
-	-p (provided ontology contains the preprocessed text that should be used instead of the text)
-
-	Optional Parameters:
-
-	-c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
-
+usage: java -jar ardoco-core-pipeline.jar
+ -c,--conf <arg>           path to the additional config file
+ -h,--help                 show this message
+ -i,--withimplementation   indicate that the model contains the code model
+ -m,--model <arg>          path to the owl model
+ -n,--name <arg>           name of the run
+ -o,--out <arg>            path to the output directory
+ -p,--provided             flag to show that ontology has text already
+                           provided
+ -t,--text <arg>           path to the text file
 ```
 
 ### Case Studies
