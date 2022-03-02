@@ -4,14 +4,16 @@
 [![Maven Verify](https://github.com/ArDoCo/Core/workflows/Maven%20Verify/badge.svg)](https://github.com/ArDoCo/Core/actions?query=workflow%3A%22Maven+Verify%22)
 
 
-The goal of this project is to connect architecture documentation and models while identifying missing or deviating elements. An element can be any representable item of the model, like a component or a relation.
+The goal of this project is to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies). 
+An element can be any representable item of the model, like a component or a relation.
+To do so, we first create trace links and then make use of them and other information to identify inconsistencies.
 
-This project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
-
-For more information about the setup or the architecture have a look on the [wiki](https://github.com/ArDoCo/Core/wiki/Overview).
 
 ## CLI
-The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW Architecture Documentation. The CLI is part of the pipeline module of this project. The PCM models have to be converted to ontologies using [Ecore2OWL](https://github.com/kit-sdq/Ecore2OWL).
+The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW Architecture Documentation. 
+The CLI is part of the pipeline module of this project. 
+The PCM models have to be converted to ontologies using [Ecore2OWL](https://github.com/kit-sdq/Ecore2OWL).
+The model can also contain a (java) code model that you can insert using the [CodeModelExtractors](https://github.com/ArDoCo/CodeModelExtractors).
 
 ### Usage
 ```
@@ -27,7 +29,15 @@ usage: java -jar ardoco-core-pipeline.jar
  -t,--text <arg>           path to the text file
 ```
 
-### Case Studies
-To test the Core, you could use case studies provided in ..
-* [ArDoCo Case Studies](https://github.com/ArDoCo/CaseStudies)
+### Wiki
+For more information about the setup or the architecture have a look on the [wiki](https://github.com/ArDoCo/Core/wiki/Overview).
+The wiki is at some points deprecated, the general overview and setup should still hold.
+
+### Case Studies / Benchmarks
+To test the Core, you could use case studies and benchmarks provided in ..
+* [ArDoCo Benchmark](https://github.com/ArDoCo/Benchmark)
 * [SWATTR](https://github.com/ArDoCo/SWATTR)
+
+### Attribution
+The base for this project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
+
