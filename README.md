@@ -4,34 +4,39 @@
 [![Maven Verify](https://github.com/ArDoCo/Core/workflows/Maven%20Verify/badge.svg)](https://github.com/ArDoCo/Core/actions?query=workflow%3A%22Maven+Verify%22)
 
 
-The goal of this project is to connect architecture documentation and models while identifying missing or deviating elements. An element can be any representable item of the model, like a component or a relation.
+The goal of this project is to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies).
+An element can be any representable item of the model, like a component or a relation.
+To do so, we first create trace links and then make use of them and other information to identify inconsistencies.
 
-This project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
-
-For more information about the setup or the architecture have a look on the [wiki](https://github.com/ArDoCo/Core/wiki/Overview).
 
 ## CLI
-The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW Architecture Documentation. The CLI is part of the pipeline module of this project. The PCM models have to be converted to ontologies using [Ecore2OWL](https://github.com/kit-sdq/Ecore2OWL).
+The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW Architecture Documentation.
+The CLI is part of the pipeline module of this project.
+The PCM models have to be converted to ontologies using [Ecore2OWL](https://github.com/kit-sdq/Ecore2OWL).
+The model can also contain a (java) code model that you can insert using the [CodeModelExtractors](https://github.com/ArDoCo/CodeModelExtractors).
 
 ### Usage
 ```
-java -jar ardoco-core-pipeline \
-
-	-n NAME_OF_THE_PROJECT (will be stored in the results)
-	-m PATH_TO_THE_PCM_MODEL_AS_OWL (use Ecore2OWL to obtain PCM models as ontology)
-	-o PATH_TO_OUTPUT_FOLDER
-
-	Text input parameters (one of them has to be provided):
-	-t PATH_TO_PLAIN_TEXT
-	-p (provided ontology contains the preprocessed text that should be used instead of the text)
-
-	Optional Parameters:
-
-	-c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
-
+usage: java -jar ardoco-core-pipeline.jar
+-c,--conf <arg>           path to the additional config file
+-h,--help                 show this message
+-i,--withimplementation   indicate that the model contains the code model
+-m,--model <arg>          path to the owl model
+-n,--name <arg>           name of the run
+-o,--out <arg>            path to the output directory
+-p,--provided             flag to show that ontology has text already
+						provided
+-t,--text <arg>           path to the text file
 ```
 
-### Case Studies
-To test the Core, you could use case studies provided in ..
-* [ArDoCo Case Studies](https://github.com/ArDoCo/CaseStudies)
+### Wiki
+For more information about the setup or the architecture have a look on the [wiki](https://github.com/ArDoCo/Core/wiki/Overview).
+The wiki is at some points deprecated, the general overview and setup should still hold.
+
+### Case Studies / Benchmarks
+To test the Core, you could use case studies and benchmarks provided in ..
+* [ArDoCo Benchmark](https://github.com/ArDoCo/Benchmark)
 * [SWATTR](https://github.com/ArDoCo/SWATTR)
+
+### Attribution
+The base for this project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
