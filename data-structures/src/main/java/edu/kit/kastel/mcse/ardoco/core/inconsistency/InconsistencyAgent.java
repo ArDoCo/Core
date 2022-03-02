@@ -53,16 +53,16 @@ public abstract class InconsistencyAgent extends Agent {
     }
 
     @Override
-    protected final InconsistencyAgent createInternal(AgentDatastructure data, Configuration config) {
+    protected final InconsistencyAgent createInternal(String modelId, AgentDatastructure data, Configuration config) {
         Objects.requireNonNull(data.getText());
         Objects.requireNonNull(data.getTextState());
-        Objects.requireNonNull(data.getModelState());
-        Objects.requireNonNull(data.getRecommendationState());
-        Objects.requireNonNull(data.getConnectionState());
-        Objects.requireNonNull(data.getInconsistencyState());
+        Objects.requireNonNull(data.getModelState(modelId));
+        Objects.requireNonNull(data.getRecommendationState(modelId));
+        Objects.requireNonNull(data.getConnectionState(modelId));
+        Objects.requireNonNull(data.getInconsistencyState(modelId));
 
-        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(),
-                data.getInconsistencyState(), config);
+        return this.create(data.getText(), data.getTextState(), data.getModelState(modelId), data.getRecommendationState(modelId),
+                data.getConnectionState(modelId), data.getInconsistencyState(modelId), config);
     }
 
     public abstract InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,

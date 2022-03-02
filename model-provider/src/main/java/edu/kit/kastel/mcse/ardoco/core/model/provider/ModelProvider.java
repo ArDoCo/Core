@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.model.provider;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -36,7 +37,9 @@ public final class ModelProvider implements IExecutionStage {
 
     @Override
     public AgentDatastructure getBlackboard() {
-        return new AgentDatastructure(null, null, modelExtractionState, null, null, null);
+        Map<String, IModelState> modelState = new HashMap<>();
+        modelState.put(modelExtractionState.getModelId(), modelExtractionState);
+        return new AgentDatastructure(null, null, modelState, null, null, null);
     }
 
     @Override
@@ -44,7 +47,7 @@ public final class ModelProvider implements IExecutionStage {
         ImmutableList<IModelInstance> instances = modelConnector.getInstances();
         ImmutableList<IModelRelation> relations = modelConnector.getRelations();
 
-        modelExtractionState = new ModelExtractionState(instances, relations);
+        modelExtractionState = new ModelExtractionState(modelConnector.getModelId(), modelConnector.getMetamodel(), instances, relations);
     }
 
     @Override

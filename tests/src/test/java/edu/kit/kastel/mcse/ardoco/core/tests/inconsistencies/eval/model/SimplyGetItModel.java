@@ -20,7 +20,7 @@ public class SimplyGetItModel extends AbstractEvalStrategy {
         runTextExtractor(originalData, getTextExtractionConfigurations(p));
         var original = runRecommendationConnectionInconsistency(originalData);
 
-        var inconsistencies = original.getInconsistencyState().getInconsistencies();
+        var inconsistencies = original.getInconsistencyState(originalModel.getModelId()).getInconsistencies();
         var models = inconsistencies.select(MissingModelInstanceInconsistency.class::isInstance).collect(MissingModelInstanceInconsistency.class::cast);
 
         for (var me : models) {

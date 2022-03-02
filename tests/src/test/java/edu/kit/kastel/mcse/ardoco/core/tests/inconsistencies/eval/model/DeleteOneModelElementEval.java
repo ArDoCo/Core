@@ -39,8 +39,10 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
         PRF1Evaluator evaluator = new PRF1Evaluator();
 
+        String modelId = originalModel.getModelId();
+
         for (var r : result.entrySet()) {
-            this.evaluate(result.get(null).getInconsistencyState(), r, gs, evaluator, os);
+            this.evaluate(result.get(null).getInconsistencyState(modelId), r, modelId, gs, evaluator, os);
         }
 
         os.println("Overall: " + evaluator.getOverallPRF1());
@@ -71,15 +73,16 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         return results;
     }
 
-    private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> r, GoldStandard gs,
-            PRF1Evaluator evaluator, PrintStream os) {
+    private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> r, String modelId,
+            GoldStandard gs, PRF1Evaluator evaluator, PrintStream os) {
 
         os.println("-----------------------------------");
 
         if (r.getKey() == null) {
-            // For original, just put put the number of false positives (assuming original has no missing instances)
+            // For original, just put put the number of false positives (assuming original
+            // has no missing instances)
             var inconsistencySentences = r.getValue()
-                    .getInconsistencyState()
+                    .getInconsistencyState(modelId)
                     .getInconsistencies()
                     .select(MissingModelInstanceInconsistency.class::isInstance)
                     .collect(MissingModelInstanceInconsistency.class::cast)
@@ -93,7 +96,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         IModelInstance deletedElement = r.getKey().getElement();
         os.println("DEL " + deletedElement);
 
-        var inconsistencyDiff = InconsistencyHelper.getDiff(originalState, r.getValue().getInconsistencyState());
+        var inconsistencyDiff = InconsistencyHelper.getDiff(originalState, r.getValue().getInconsistencyState(modelId));
         ImmutableList<Integer> sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedList().toImmutable();
 
         var newInconsistencies = inconsistencyDiff.getNewInconsistencies();

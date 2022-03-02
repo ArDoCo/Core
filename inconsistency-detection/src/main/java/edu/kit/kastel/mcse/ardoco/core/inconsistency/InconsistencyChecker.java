@@ -26,7 +26,9 @@ public class InconsistencyChecker implements IExecutionStage {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
-        data.setInconsistencyState(new InconsistencyState());
+        for (String modelId : data.getModelIds()) {
+            data.setInconsistencyState(modelId, new InconsistencyState());
+        }
         initializeAgents();
     }
 
@@ -37,7 +39,9 @@ public class InconsistencyChecker implements IExecutionStage {
             if (!myAgents.containsKey(inconsistencyAgent)) {
                 throw new IllegalArgumentException("InconsistencyAgent " + inconsistencyAgent + " not found");
             }
-            agents.add(myAgents.get(inconsistencyAgent).create(data, agentConfig));
+            for (String modelId : data.getModelIds()) {
+                agents.add(myAgents.get(inconsistencyAgent).create(modelId, data, agentConfig));
+            }
         }
     }
 

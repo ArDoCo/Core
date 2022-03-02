@@ -31,13 +31,13 @@ public abstract class DependencyAgent extends Agent {
     }
 
     @Override
-    protected final DependencyAgent createInternal(AgentDatastructure data, Configuration config) {
+    protected final DependencyAgent createInternal(String modelId, AgentDatastructure data, Configuration config) {
         Objects.requireNonNull(data.getText());
         Objects.requireNonNull(data.getTextState());
-        Objects.requireNonNull(data.getModelState());
-        Objects.requireNonNull(data.getRecommendationState());
+        Objects.requireNonNull(data.getModelState(modelId));
+        Objects.requireNonNull(data.getRecommendationState(modelId));
 
-        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
+        return this.create(data.getText(), data.getTextState(), data.getModelState(modelId), data.getRecommendationState(modelId), config);
     }
 
     public abstract DependencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,

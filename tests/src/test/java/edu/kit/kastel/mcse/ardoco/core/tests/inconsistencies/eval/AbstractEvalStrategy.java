@@ -35,7 +35,7 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
     protected static IModelState runModelExtractor(IModelConnector modelConnector) {
         IExecutionStage modelExtractor = new ModelProvider(modelConnector);
         modelExtractor.exec();
-        return modelExtractor.getBlackboard().getModelState();
+        return modelExtractor.getBlackboard().getModelState(modelConnector.getModelId());
     }
 
     protected static AgentDatastructure runTextExtractor(AgentDatastructure data, Map<String, String> configs) {
