@@ -402,7 +402,7 @@ public final class Pipeline {
         Option opt;
 
         // Define Options ..
-        opt = new Option(CMD_HELP, "help", false, "show help");
+        opt = new Option(CMD_HELP, "help", false, "show this message");
         opt.setRequired(false);
         options.addOption(opt);
 
