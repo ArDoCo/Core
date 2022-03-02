@@ -4,29 +4,29 @@
 [![Maven Verify](https://github.com/ArDoCo/Core/workflows/Maven%20Verify/badge.svg)](https://github.com/ArDoCo/Core/actions?query=workflow%3A%22Maven+Verify%22)
 
 
-The goal of this project is to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies). 
+The goal of this project is to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies).
 An element can be any representable item of the model, like a component or a relation.
 To do so, we first create trace links and then make use of them and other information to identify inconsistencies.
 
 
 ## CLI
-The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW Architecture Documentation. 
-The CLI is part of the pipeline module of this project. 
+The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW Architecture Documentation.
+The CLI is part of the pipeline module of this project.
 The PCM models have to be converted to ontologies using [Ecore2OWL](https://github.com/kit-sdq/Ecore2OWL).
 The model can also contain a (java) code model that you can insert using the [CodeModelExtractors](https://github.com/ArDoCo/CodeModelExtractors).
 
 ### Usage
 ```
 usage: java -jar ardoco-core-pipeline.jar
- -c,--conf <arg>           path to the additional config file
- -h,--help                 show this message
- -i,--withimplementation   indicate that the model contains the code model
- -m,--model <arg>          path to the owl model
- -n,--name <arg>           name of the run
- -o,--out <arg>            path to the output directory
- -p,--provided             flag to show that ontology has text already
-                           provided
- -t,--text <arg>           path to the text file
+-c,--conf <arg>           path to the additional config file
+-h,--help                 show this message
+-i,--withimplementation   indicate that the model contains the code model
+-m,--model <arg>          path to the owl model
+-n,--name <arg>           name of the run
+-o,--out <arg>            path to the output directory
+-p,--provided             flag to show that ontology has text already
+						provided
+-t,--text <arg>           path to the text file
 ```
 
 ### Wiki
@@ -40,4 +40,3 @@ To test the Core, you could use case studies and benchmarks provided in ..
 
 ### Attribution
 The base for this project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
-

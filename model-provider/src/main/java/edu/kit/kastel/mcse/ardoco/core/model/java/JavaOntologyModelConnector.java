@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.model.java;
 
 import org.apache.jena.ontology.Individual;
