@@ -100,8 +100,10 @@ class TracelinksIT {
         }
     }
 
-    // NOTE: if you only want to test a specific project, you can simply set up the EnumSource
-    // For more details, see https://www.baeldung.com/parameterized-tests-junit-5#3-enum
+    // NOTE: if you only want to test a specific project, you can simply set up the
+    // EnumSource
+    // For more details, see
+    // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
     // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
     @DisplayName("Evaluate TLR (Ontology-based)")
@@ -137,8 +139,10 @@ class TracelinksIT {
         var name = project.name().toLowerCase();
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir, false);
         Assertions.assertNotNull(data);
+        Assertions.assertEquals(data.getModelIds().size(), 1);
+        String modelId = data.getModelIds().get(0);
 
-        var results = calculateResults(project, data);
+        var results = calculateResults(project, data, modelId);
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
@@ -176,13 +180,17 @@ class TracelinksIT {
         var falsePositives = results.getFalsePositives().stream().map(Object::toString);
 
         var sentences = data.getText().getSentences();
-        var instances = data.getModelState().getInstances();
 
-        var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);
-        var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);
+        for (String modelId : data.getModelIds()) {
+            var instances = data.getModelState(modelId).getInstances();
 
-        logger.debug("False negatives:\n{}", falseNegativeOutput.stream().collect(Collectors.joining("\n")));
-        logger.debug("False positives:\n{}", falsePositivesOutput.stream().collect(Collectors.joining("\n")));
+            var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);
+            var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);
+
+            logger.debug("Model: \n{}", modelId);
+            logger.debug("False negatives:\n{}", falseNegativeOutput.stream().collect(Collectors.joining("\n")));
+            logger.debug("False positives:\n{}", falsePositivesOutput.stream().collect(Collectors.joining("\n")));
+        }
 
     }
 
@@ -214,8 +222,8 @@ class TracelinksIT {
         return outputList;
     }
 
-    private EvaluationResults calculateResults(Project project, AgentDatastructure data) {
-        var connectionState = data.getConnectionState();
+    private EvaluationResults calculateResults(Project project, AgentDatastructure data, String modelId) {
+        var connectionState = data.getConnectionState(modelId);
         var traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());
 

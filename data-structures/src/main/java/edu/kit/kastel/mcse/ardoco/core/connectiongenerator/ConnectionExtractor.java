@@ -43,13 +43,13 @@ public abstract class ConnectionExtractor extends Extractor {
     }
 
     @Override
-    public final ConnectionExtractor create(AgentDatastructure data, Configuration config) {
+    public final ConnectionExtractor create(String modelId, AgentDatastructure data, Configuration config) {
         Objects.requireNonNull(data.getTextState());
-        Objects.requireNonNull(data.getModelState());
-        Objects.requireNonNull(data.getRecommendationState());
-        Objects.requireNonNull(data.getConnectionState());
+        Objects.requireNonNull(data.getModelState(modelId));
+        Objects.requireNonNull(data.getRecommendationState(modelId));
+        Objects.requireNonNull(data.getConnectionState(modelId));
 
-        return create(data.getTextState(), data.getModelState(), data.getRecommendationState(), data.getConnectionState(), config);
+        return create(data.getTextState(), data.getModelState(modelId), data.getRecommendationState(modelId), data.getConnectionState(modelId), config);
     }
 
     /**

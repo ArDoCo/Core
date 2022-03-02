@@ -12,6 +12,20 @@ import edu.kit.kastel.mcse.ardoco.core.common.IState;
  */
 public interface IModelState extends IState<IModelState> {
     /**
+     * Returns the unique id of the model
+     * 
+     * @return modelId
+     */
+    String getModelId();
+
+    /**
+     * Returns the metalevel or type of the current model
+     * 
+     * @return type of model
+     */
+    Metamodel getMetamodel();
+
+    /**
      * Returns the instances of a specific type.
      *
      * @param type the type to search for

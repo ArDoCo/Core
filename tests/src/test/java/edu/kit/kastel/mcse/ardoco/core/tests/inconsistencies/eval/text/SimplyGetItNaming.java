@@ -20,7 +20,7 @@ public class SimplyGetItNaming extends AbstractEvalStrategy {
         runTextExtractor(originalData, getTextExtractionConfigurations(p));
         var original = runRecommendationConnectionInconsistency(originalData);
 
-        var inconsistencies = original.getInconsistencyState().getInconsistencies();
+        var inconsistencies = original.getInconsistencyState(originalModel.getModelId()).getInconsistencies();
         var namings = inconsistencies.select(NameInconsistency.class::isInstance).collect(NameInconsistency.class::cast);
 
         for (var naming : namings) {

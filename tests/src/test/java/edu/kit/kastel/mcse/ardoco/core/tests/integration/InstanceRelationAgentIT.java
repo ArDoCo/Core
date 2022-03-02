@@ -70,8 +70,11 @@ class InstanceRelationAgentIT {
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
         IExecutionStage modelExtractor = new ModelProvider(pcmModel);
         modelExtractor.exec();
+        var extractorData = modelExtractor.getBlackboard();
 
-        var data = new AgentDatastructure(annotatedText, null, modelExtractor.getBlackboard().getModelState(), null, null, null);
+        Assertions.assertEquals(extractorData.getModelIds().size(), 1);
+        var modelId = extractorData.getModelIds().get(0);
+        var data = new AgentDatastructure(annotatedText, null, extractorData.getModelState(modelId), null, null, null);
 
         Map<String, String> config = new HashMap<>();
         config.put("similarityPercentage", "0.75");
@@ -106,7 +109,7 @@ class InstanceRelationAgentIT {
         }
 
         boolean hasExpected = false;
-        for (IInstanceRelation relation : data.getRecommendationState().getInstanceRelations()) {
+        for (IInstanceRelation relation : data.getRecommendationState(modelId).getInstanceRelations()) {
             if (relation.isIn(relator, Collections.singletonList(from), Collections.singletonList(to))) {
                 hasExpected = true;
             }

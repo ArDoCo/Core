@@ -20,7 +20,9 @@ public class TLModelFile {
         var builder = new StringBuilder();
 
         for (Project project : projects) {
-            ImmutableList<IModelInstance> models = dataMap.get(project).getModelState().getInstances();
+            var projectData = dataMap.get(project);
+            String modelId = project.getModel().getModelId();
+            ImmutableList<IModelInstance> models = projectData.getModelState(modelId).getInstances();
 
             builder.append("# ").append(project.name()).append("\n\n");
 

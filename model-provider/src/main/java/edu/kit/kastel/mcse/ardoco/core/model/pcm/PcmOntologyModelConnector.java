@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
+import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 
 /**
  * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.
@@ -91,6 +92,17 @@ public class PcmOntologyModelConnector implements IModelConnector {
     public ImmutableList<IModelRelation> getRelations() {
         // NOT YET IMPLEMENTED!
         return Lists.immutable.empty();
+    }
+
+    @Override
+    public String getModelId() {
+        // TODO: To implement
+        return null;
+    }
+
+    @Override
+    public Metamodel getMetamodel() {
+        return Metamodel.ARCHITECTURE;
     }
 
 }

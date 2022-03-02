@@ -12,9 +12,11 @@ import java.util.Collection;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 public class TLSummaryFile {
 
@@ -29,6 +31,9 @@ public class TLSummaryFile {
 
         for (TLProjectEvalResult result : sortedResults) {
             AgentDatastructure data = dataMap.get(result.getProject());
+            String modelId = result.getProject().getModel().getModelId();
+            var text = data.getText();
+            var datamodel = data.getModelState(modelId);
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());
             String recall = NUMBER_FORMAT.format(result.getRecall());
@@ -48,7 +53,7 @@ public class TLSummaryFile {
                 builder.append("False Positives:\n");
 
                 for (TestLink falsePositive : result.getFalsePositives()) {
-                    builder.append("- ").append(format(falsePositive, data)).append('\n');
+                    builder.append("- ").append(format(falsePositive, text, datamodel)).append('\n');
                 }
 
                 builder.append('\n');
@@ -58,7 +63,7 @@ public class TLSummaryFile {
                 builder.append("False Negatives:\n");
 
                 for (TestLink falseNegatives : result.getFalseNegatives()) {
-                    builder.append("- ").append(format(falseNegatives, data)).append('\n');
+                    builder.append("- ").append(format(falseNegatives, text, datamodel)).append('\n');
                 }
 
                 builder.append('\n');
@@ -70,9 +75,9 @@ public class TLSummaryFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    static String format(TestLink link, AgentDatastructure data) {
-        var model = data.getModelState().getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
-        var sentence = data.getText().getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
+    static String format(TestLink link, IText text, IModelState modelState) {
+        var model = modelState.getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
+        var sentence = text.getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
 
         String modelStr = model == null ? link.modelId() : "\"" + model.getLongestName() + "\"";
         String sentenceStr = sentence == null ? String.valueOf(link.sentenceNr()) : "\"" + sentence.getText() + "\"";

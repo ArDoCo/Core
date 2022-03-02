@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
+import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 public class TLDiffFile {
 
@@ -51,6 +53,9 @@ public class TLDiffFile {
             Project project = oldResult.getProject();
             TLProjectEvalResult newResult = newResults.stream().filter(r -> r.getProject().equals(project)).findAny().orElseThrow();
             AgentDatastructure data = dataMap.get(project);
+            String modelId = project.getModel().getModelId();
+            var text = data.getText();
+            var datamodel = data.getModelState(modelId);
 
             builder.append("# ").append(project.name()).append("\n\n");
 
@@ -59,16 +64,16 @@ public class TLDiffFile {
             builder.append(NUMBER_FORMAT.format(newResult.getF1() - oldResult.getF1())).append(" F1\n\n");
 
             var newTruePositives = findNewLinks(oldResult.getTruePositives(), newResult.getTruePositives());
-            appendList(builder, "New true positives", newTruePositives, data);
+            appendList(builder, "New true positives", newTruePositives, text, datamodel);
 
             var newFalsePositives = findNewLinks(oldResult.getFalsePositives(), newResult.getFalsePositives());
-            appendList(builder, "New false positives", newFalsePositives, data);
+            appendList(builder, "New false positives", newFalsePositives, text, datamodel);
 
             var newFalseNegatives = findNewLinks(oldResult.getFalseNegatives(), newResult.getFalseNegatives());
-            appendList(builder, "New false negatives", newFalseNegatives, data);
+            appendList(builder, "New false negatives", newFalseNegatives, text, datamodel);
 
             var lostFalsePositives = findMissingLinks(oldResult.getFalsePositives(), newResult.getFalsePositives());
-            appendList(builder, "False positives that are now true negatives", lostFalsePositives, data);
+            appendList(builder, "False positives that are now true negatives", lostFalsePositives, text, datamodel);
 
             builder.append('\n');
         }
@@ -84,7 +89,7 @@ public class TLDiffFile {
         return oldLinks.stream().filter(link -> !newLinks.contains(link)).toList();
     }
 
-    private static void appendList(StringBuilder builder, String description, List<TestLink> links, AgentDatastructure data) {
+    private static void appendList(StringBuilder builder, String description, List<TestLink> links, IText text, IModelState datamodel) {
         if (links.isEmpty()) {
             return;
         }
@@ -92,7 +97,7 @@ public class TLDiffFile {
         builder.append(description).append(":\n");
 
         for (TestLink link : links) {
-            builder.append("- ").append(TLSummaryFile.format(link, data)).append('\n');
+            builder.append("- ").append(TLSummaryFile.format(link, text, datamodel)).append('\n');
         }
 
         builder.append('\n');
