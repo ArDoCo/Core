@@ -2,8 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -51,7 +51,7 @@ public class ModelExtractionState implements IModelState {
      * @param relations relations of this model extraction state
      */
     public ModelExtractionState(String modelId, Metamodel metamodelType, ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations) {
-        this.modelId = (modelId != null) ? modelId : UUID.randomUUID().toString();
+        this.modelId = Objects.requireNonNull(modelId);
         this.metamodelType = metamodelType;
         this.instances = instances;
         this.relations = relations;
