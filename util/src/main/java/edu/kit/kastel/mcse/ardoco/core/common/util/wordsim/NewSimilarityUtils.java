@@ -7,6 +7,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.SEWordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 import java.util.ArrayList;
