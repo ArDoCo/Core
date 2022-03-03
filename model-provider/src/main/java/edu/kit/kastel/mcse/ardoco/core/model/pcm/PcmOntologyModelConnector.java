@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -26,6 +27,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private static final String ENTITY_NAME_PROPERTY = "entityName_-_NamedElement";
     private static final String ID_PROPERTY = "id_-_Identifier";
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
+    private final String modelId = UUID.randomUUID().toString();
 
     private OntologyInterface ontologyConnector;
 
@@ -96,8 +98,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
 
     @Override
     public String getModelId() {
-        // TODO: To implement
-        return null;
+        return modelId;
     }
 
     @Override
