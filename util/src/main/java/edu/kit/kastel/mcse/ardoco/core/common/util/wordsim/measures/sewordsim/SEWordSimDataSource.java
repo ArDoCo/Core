@@ -71,7 +71,8 @@ public class SEWordSimDataSource implements AutoCloseable {
      *
      * @param firstWord  the first word
      * @param secondWord the second word
-     * @return the similarity score, ranging from {@code 0.0} to {@code 1.1}, or {@link Optional#empty()} if the database does not contain the given word pair
+     * @return the similarity score, ranging from {@code 0.0} to {@code 1.0}, or {@link Optional#empty()} if the
+     *         database does not contain the given word pair
      * @throws SQLException if a database access error occurs
      */
     public Optional<Double> getSimilarity(String firstWord, String secondWord) throws SQLException {
