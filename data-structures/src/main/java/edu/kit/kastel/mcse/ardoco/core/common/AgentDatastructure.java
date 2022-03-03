@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.common;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +46,9 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         var data = new AgentDatastructure();
         data.text = text;
         data.textState = textState == null ? null : textState.createCopy();
-        data.modelStates = modelStates == null ? null : copyMap(modelStates, v -> v.createCopy());
-        data.recommendationStates = recommendationStates == null ? null : copyMap(recommendationStates, v -> v.createCopy());
-        data.connectionStates = connectionStates == null ? null : copyMap(connectionStates, v -> v.createCopy());
+        data.modelStates = modelStates == null ? null : copyMap(modelStates, IModelState::createCopy);
+        data.recommendationStates = recommendationStates == null ? null : copyMap(recommendationStates, IRecommendationState::createCopy);
+        data.connectionStates = connectionStates == null ? null : copyMap(connectionStates, IConnectionState::createCopy);
         return data;
     }
 
@@ -74,10 +75,10 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
             IConnectionState connectionState, IInconsistencyState inconsistencyState) {
         this.text = text;
         this.textState = textState;
-        String modelId = modelState.getModelId();
+        var modelId = modelState.getModelId();
         this.modelStates = new HashMap<>();
         modelStates.put(modelId, modelState);
-        this.recommendationStates = new HashMap<>();
+        this.recommendationStates = new EnumMap<>(Metamodel.class);
         recommendationStates.put(modelState.getMetamodel(), recommendationState);
         this.connectionStates = new HashMap<>();
         connectionStates.put(modelId, connectionState);
@@ -117,7 +118,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
     }
 
     public List<Metamodel> getMetamodelTypes() {
-        return new ArrayList<>(this.modelStates.values().stream().map(m -> m.getMetamodel()).collect(Collectors.toSet()));
+        return new ArrayList<>(this.modelStates.values().stream().map(IModelState::getMetamodel).collect(Collectors.toSet()));
     }
 
     /**
@@ -176,6 +177,15 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      */
     public void setConnectionState(String modelId, IConnectionState connectionState) {
         this.connectionStates.put(modelId, connectionState);
+    }
+
+    /**
+     * Returns a map with Model-IDs as keys and the corresponding {@link IConnectionState IConnectionStates} as values.
+     *
+     * @return the IConnectionStates
+     */
+    public Map<String, IConnectionState> getAllConnectionStates() {
+        return connectionStates;
     }
 
     public IInconsistencyState getInconsistencyState(String modelId) {

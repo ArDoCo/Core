@@ -140,7 +140,7 @@ class TracelinksIT {
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir, false);
         Assertions.assertNotNull(data);
         Assertions.assertEquals(data.getModelIds().size(), 1);
-        String modelId = data.getModelIds().get(0);
+        var modelId = data.getModelIds().get(0);
 
         var results = calculateResults(project, data, modelId);
         var expectedResults = project.getExpectedTraceLinkResults();
@@ -154,7 +154,6 @@ class TracelinksIT {
 
             if (detailedDebug) {
                 printDetailedDebug(results, data);
-
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
                     DATA_MAP.put(project, data);
@@ -188,8 +187,12 @@ class TracelinksIT {
             var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);
 
             logger.debug("Model: \n{}", modelId);
-            logger.debug("False negatives:\n{}", falseNegativeOutput.stream().collect(Collectors.joining("\n")));
-            logger.debug("False positives:\n{}", falsePositivesOutput.stream().collect(Collectors.joining("\n")));
+            if (!falseNegativeOutput.isEmpty()) {
+                logger.debug("False negatives:\n{}", falseNegativeOutput.stream().collect(Collectors.joining("\n")));
+            }
+            if (!falsePositivesOutput.isEmpty()) {
+                logger.debug("False positives:\n{}", falsePositivesOutput.stream().collect(Collectors.joining("\n")));
+            }
         }
 
     }

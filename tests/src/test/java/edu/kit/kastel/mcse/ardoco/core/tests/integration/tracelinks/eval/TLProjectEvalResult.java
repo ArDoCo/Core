@@ -2,8 +2,15 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -26,8 +33,15 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
     private final List<TestLink> falseNegatives = new ArrayList<>();
 
     public TLProjectEvalResult(Project project, AgentDatastructure data) throws IOException {
-        this(project, data.getConnectionState(project.getModel().getModelId()).getTraceLinks().stream().map(TestLink::new).toList(),
-                TLGoldStandardFile.loadLinks(project));
+        this(project, getTraceLinks(project, data), TLGoldStandardFile.loadLinks(project));
+    }
+
+    private static List<TestLink> getTraceLinks(Project project, AgentDatastructure data) {
+        var traceLinks = Lists.mutable.<TestLink> empty();
+        for (var connectionState : data.getAllConnectionStates().values()) {
+            traceLinks.addAll(connectionState.getTraceLinks().stream().map(TestLink::new).toList());
+        }
+        return traceLinks.toList();
     }
 
     public TLProjectEvalResult(Project project, Collection<TestLink> foundLinks, Collection<TestLink> correctLinks) {
@@ -72,14 +86,17 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
         return project;
     }
 
+    @Override
     public double getPrecision() {
         return precision;
     }
 
+    @Override
     public double getRecall() {
         return recall;
     }
 
+    @Override
     public double getF1() {
         return f1Score;
     }

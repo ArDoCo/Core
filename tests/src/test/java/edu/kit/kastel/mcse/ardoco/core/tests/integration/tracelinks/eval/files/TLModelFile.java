@@ -7,8 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -21,23 +19,25 @@ public class TLModelFile {
 
         for (Project project : projects) {
             var projectData = dataMap.get(project);
-            String modelId = project.getModel().getModelId();
-            ImmutableList<IModelInstance> models = projectData.getModelState(modelId).getInstances();
 
             builder.append("# ").append(project.name()).append("\n\n");
 
-            for (IModelInstance model : models) {
-                builder.append("- [")
-                        .append(model.getUid())
-                        .append("]: \"")
-                        .append(model.getLongestName())
-                        .append("\" (")
-                        .append(model.getLongestType())
-                        .append(") (")
-                        .append(String.join(", ", model.getNames()))
-                        .append(") (")
-                        .append(String.join(", ", model.getTypes()))
-                        .append(")\n");
+            for (var modelId : projectData.getModelIds()) {
+                var models = projectData.getModelState(modelId).getInstances();
+                builder.append("## ModelId: ").append(modelId).append("\n");
+                for (IModelInstance model : models) {
+                    builder.append("- [")
+                            .append(model.getUid())
+                            .append("]: \"")
+                            .append(model.getLongestName())
+                            .append("\" (")
+                            .append(model.getLongestType())
+                            .append(") (")
+                            .append(String.join(", ", model.getNames()))
+                            .append(") (")
+                            .append(String.join(", ", model.getTypes()))
+                            .append(")\n");
+                }
             }
 
             builder.append("\n\n");

@@ -206,9 +206,7 @@ public final class Pipeline {
 
         }
         if (outputDir != null) {
-
             for (String modelId : data.getModelIds()) {
-
                 var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + data.getModelState(modelId).getMetamodel().toString() + ".csv")
                         .toFile();
                 FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(modelId), name);
@@ -311,7 +309,7 @@ public final class Pipeline {
         IExecutionStage modelExtractor = new ModelProvider(modelConnector);
         modelExtractor.exec();
         // TODO: Beautify
-        String modelId = modelExtractor.getBlackboard().getModelIds().get(0);
+        var modelId = modelExtractor.getBlackboard().getModelIds().get(0);
         return modelExtractor.getBlackboard().getModelState(modelId);
     }
 
