@@ -306,10 +306,9 @@ public final class Pipeline {
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
+        var modelId = modelConnector.getModelId();
         IExecutionStage modelExtractor = new ModelProvider(modelConnector);
         modelExtractor.exec();
-        // TODO: Beautify
-        var modelId = modelExtractor.getBlackboard().getModelIds().get(0);
         return modelExtractor.getBlackboard().getModelState(modelId);
     }
 
