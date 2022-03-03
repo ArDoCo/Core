@@ -14,6 +14,7 @@ import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,6 @@ import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
@@ -50,11 +50,12 @@ class InstanceRelationAgentIT {
     void afterEach() {
     }
 
+    @Disabled("Disabled as it is not used for now")
     @Test
     @DisplayName("Test execution of InstanceRelationAgent")
     void instanceRelationIT() throws IOException {
-        File inputText = ensureFile(TEXT, false);
-        File inputModel = ensureFile(MODEL, false);
+        var inputText = ensureFile(TEXT, false);
+        var inputModel = ensureFile(MODEL, false);
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
@@ -65,14 +66,14 @@ class InstanceRelationAgentIT {
             Assertions.fail("Found exception when initialising ParseProvider");
             return;
         }
-        IText annotatedText = textConnector.getAnnotatedText();
+        var annotatedText = textConnector.getAnnotatedText();
 
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
         IExecutionStage modelExtractor = new ModelProvider(pcmModel);
         modelExtractor.exec();
         var extractorData = modelExtractor.getBlackboard();
 
-        Assertions.assertEquals(extractorData.getModelIds().size(), 1);
+        Assertions.assertEquals(1, extractorData.getModelIds().size());
         var modelId = extractorData.getModelIds().get(0);
         var data = new AgentDatastructure(annotatedText, null, extractorData.getModelState(modelId), null, null, null);
 
@@ -108,7 +109,7 @@ class InstanceRelationAgentIT {
             }
         }
 
-        boolean hasExpected = false;
+        var hasExpected = false;
         for (IInstanceRelation relation : data.getRecommendationState(modelId).getInstanceRelations()) {
             if (relation.isIn(relator, Collections.singletonList(from), Collections.singletonList(to))) {
                 hasExpected = true;
@@ -127,10 +128,7 @@ class InstanceRelationAgentIT {
      */
     private static File ensureFile(String path, boolean create) throws IOException {
         var file = new File(path);
-        if (file.exists()) {
-            return file;
-        }
-        if (create && file.createNewFile()) {
+        if (file.exists() || create && file.createNewFile()) {
             return file;
         }
         // File not available

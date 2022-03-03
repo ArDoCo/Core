@@ -139,7 +139,7 @@ class TracelinksIT {
         var name = project.name().toLowerCase();
         var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir, false);
         Assertions.assertNotNull(data);
-        Assertions.assertEquals(data.getModelIds().size(), 1);
+        Assertions.assertEquals(1, data.getModelIds().size());
         var modelId = data.getModelIds().get(0);
 
         var results = calculateResults(project, data, modelId);

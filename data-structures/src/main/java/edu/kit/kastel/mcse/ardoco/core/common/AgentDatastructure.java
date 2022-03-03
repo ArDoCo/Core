@@ -6,7 +6,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
@@ -210,7 +210,7 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         inconsistencyStates = newData.inconsistencyStates;
     }
 
-    public <K, V> Map<K, V> copyMap(Map<K, V> map, Function<V, V> copy) {
+    public <K, V> Map<K, V> copyMap(Map<K, V> map, UnaryOperator<V> copy) {
         Map<K, V> copyMap = new HashMap<>();
         for (var entry : map.entrySet()) {
             copyMap.put(entry.getKey(), copy.apply(entry.getValue()));
