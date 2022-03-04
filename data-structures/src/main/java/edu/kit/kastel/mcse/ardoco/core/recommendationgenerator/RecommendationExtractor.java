@@ -37,12 +37,12 @@ public abstract class RecommendationExtractor extends Extractor {
     }
 
     @Override
-    public final RecommendationExtractor create(AgentDatastructure data, Configuration config) {
+    public final RecommendationExtractor create(String modelId, AgentDatastructure data, Configuration config) {
         Objects.requireNonNull(data.getTextState());
-        Objects.requireNonNull(data.getModelState());
-        Objects.requireNonNull(data.getRecommendationState());
+        Objects.requireNonNull(data.getModelState(modelId));
+        Objects.requireNonNull(data.getRecommendationState(modelId));
 
-        return create(data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
+        return create(data.getTextState(), data.getModelState(modelId), data.getRecommendationState(modelId), config);
     }
 
     /**

@@ -8,6 +8,10 @@ import org.eclipse.collections.api.list.ImmutableList;
  */
 public interface IModelConnector {
 
+    String getModelId();
+
+    Metamodel getMetamodel();
+
     /**
      * Gets the instances of the model.
      *

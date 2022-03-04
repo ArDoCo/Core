@@ -78,7 +78,7 @@ public class TextExtraction implements IExecutionStage {
             if (!myAgents.containsKey(agent)) {
                 throw new IllegalArgumentException("TextAgent " + agent + " not found");
             }
-            agents.add(myAgents.get(agent).create(data, agentConfig));
+            agents.add(myAgents.get(agent).create(null, data, agentConfig));
         }
     }
 
