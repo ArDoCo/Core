@@ -1,9 +1,18 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.common;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
@@ -15,11 +24,10 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
 
     private IText text;
     private ITextState textState;
-    private IModelState modelState;
-    private IModelState codeModelState;
-    private IRecommendationState recommendationState;
-    private IConnectionState connectionState;
-    private IInconsistencyState inconsistencyState;
+    private Map<String, IModelState> modelStates;
+    private Map<Metamodel, IRecommendationState> recommendationStates;
+    private Map<String, IConnectionState> connectionStates;
+    private Map<String, IInconsistencyState> inconsistencyStates;
 
     /**
      * Create an empty data structure.
@@ -38,31 +46,44 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         var data = new AgentDatastructure();
         data.text = text;
         data.textState = textState == null ? null : textState.createCopy();
-        data.modelState = modelState == null ? null : modelState.createCopy();
-        data.recommendationState = recommendationState == null ? null : recommendationState.createCopy();
-        data.connectionState = connectionState == null ? null : connectionState.createCopy();
-        data.codeModelState = codeModelState == null ? null : codeModelState.createCopy();
+        data.modelStates = modelStates == null ? null : copyMap(modelStates, IModelState::createCopy);
+        data.recommendationStates = recommendationStates == null ? null : copyMap(recommendationStates, IRecommendationState::createCopy);
+        data.connectionStates = connectionStates == null ? null : copyMap(connectionStates, IConnectionState::createCopy);
         return data;
     }
 
     /**
      * Create a new data structure based on states.
      *
-     * @param text                the input text
-     * @param textState           the text state
-     * @param modelState          the model state
-     * @param recommendationState the recommendation state
-     * @param connectionState     the connection state
+     * @param text                 the input text
+     * @param textState            the text states
+     * @param modelStates          the model states
+     * @param recommendationStates the recommendation states
+     * @param connectionStates     the connection state
      */
+    public AgentDatastructure(IText text, ITextState textState, Map<String, IModelState> modelStates, Map<Metamodel, IRecommendationState> recommendationStates,
+            Map<String, IConnectionState> connectionStates, Map<String, IInconsistencyState> inconsistencyStates) {
+        this.text = text;
+        this.textState = textState;
+        this.modelStates = modelStates;
+        this.recommendationStates = recommendationStates;
+        this.connectionStates = connectionStates;
+        this.inconsistencyStates = inconsistencyStates;
+    }
+
     public AgentDatastructure(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState) {
         this.text = text;
         this.textState = textState;
-        this.modelState = modelState;
-        this.recommendationState = recommendationState;
-        this.connectionState = connectionState;
-        this.inconsistencyState = inconsistencyState;
-        this.codeModelState = null;
+        var modelId = modelState.getModelId();
+        this.modelStates = new HashMap<>();
+        modelStates.put(modelId, modelState);
+        this.recommendationStates = new EnumMap<>(Metamodel.class);
+        recommendationStates.put(modelState.getMetamodel(), recommendationState);
+        this.connectionStates = new HashMap<>();
+        connectionStates.put(modelId, connectionState);
+        this.inconsistencyStates = new HashMap<>();
+        inconsistencyStates.put(modelId, inconsistencyState);
     }
 
     /**
@@ -92,13 +113,21 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
         this.textState = textState;
     }
 
+    public List<String> getModelIds() {
+        return new ArrayList<>(modelStates.keySet());
+    }
+
+    public List<Metamodel> getMetamodelTypes() {
+        return new ArrayList<>(this.modelStates.values().stream().map(IModelState::getMetamodel).collect(Collectors.toSet()));
+    }
+
     /**
      * Get the internal model state.
      *
      * @return the model state
      */
-    public IModelState getModelState() {
-        return modelState;
+    public IModelState getModelState(String modelId) {
+        return modelStates.get(modelId);
     }
 
     /**
@@ -106,22 +135,12 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      *
      * @param modelState the new model state
      */
-    public void setModelState(IModelState modelState) {
-        this.modelState = modelState;
+    public void addModelState(String modelId, IModelState modelState) {
+        this.modelStates.put(modelId, modelState);
     }
 
-    /**
-     * @return the codeState
-     */
-    public IModelState getCodeModelState() {
-        return codeModelState;
-    }
-
-    /**
-     * @param codeModelState the codeState to set
-     */
-    public void setCodeModelState(IModelState codeModelState) {
-        this.codeModelState = codeModelState;
+    public IRecommendationState getRecommendationState(String modelId) {
+        return recommendationStates.get(modelStates.get(modelId).getMetamodel());
     }
 
     /**
@@ -129,8 +148,8 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      *
      * @return the recommendation state
      */
-    public IRecommendationState getRecommendationState() {
-        return recommendationState;
+    public IRecommendationState getRecommendationState(Metamodel metamodel) {
+        return recommendationStates.get(metamodel);
     }
 
     /**
@@ -138,8 +157,8 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      *
      * @param recommendationState the new recommendation state
      */
-    public void setRecommendationState(IRecommendationState recommendationState) {
-        this.recommendationState = recommendationState;
+    public void setRecommendationState(Metamodel metamodel, IRecommendationState recommendationState) {
+        this.recommendationStates.put(metamodel, recommendationState);
     }
 
     /**
@@ -147,8 +166,8 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      *
      * @return the connection state
      */
-    public IConnectionState getConnectionState() {
-        return connectionState;
+    public IConnectionState getConnectionState(String modelId) {
+        return connectionStates.get(modelId);
     }
 
     /**
@@ -156,16 +175,25 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
      *
      * @param connectionState the new connection state
      */
-    public void setConnectionState(IConnectionState connectionState) {
-        this.connectionState = connectionState;
+    public void setConnectionState(String modelId, IConnectionState connectionState) {
+        this.connectionStates.put(modelId, connectionState);
     }
 
-    public IInconsistencyState getInconsistencyState() {
-        return inconsistencyState;
+    /**
+     * Returns a map with Model-IDs as keys and the corresponding {@link IConnectionState IConnectionStates} as values.
+     *
+     * @return the IConnectionStates
+     */
+    public Map<String, IConnectionState> getAllConnectionStates() {
+        return connectionStates;
     }
 
-    public void setInconsistencyState(IInconsistencyState inconsistencyState) {
-        this.inconsistencyState = inconsistencyState;
+    public IInconsistencyState getInconsistencyState(String modelId) {
+        return inconsistencyStates.get(modelId);
+    }
+
+    public void setInconsistencyState(String modelId, IInconsistencyState inconsistencyState) {
+        this.inconsistencyStates.put(modelId, inconsistencyState);
     }
 
     /**
@@ -176,10 +204,18 @@ public final class AgentDatastructure implements ICopyable<AgentDatastructure> {
     public void overwrite(AgentDatastructure newData) {
         text = newData.text;
         textState = newData.textState;
-        modelState = newData.modelState;
-        recommendationState = newData.recommendationState;
-        connectionState = newData.connectionState;
-        inconsistencyState = newData.inconsistencyState;
-        codeModelState = newData.codeModelState;
+        modelStates = newData.modelStates;
+        recommendationStates = newData.recommendationStates;
+        connectionStates = newData.connectionStates;
+        inconsistencyStates = newData.inconsistencyStates;
     }
+
+    public <K, V> Map<K, V> copyMap(Map<K, V> map, UnaryOperator<V> copy) {
+        Map<K, V> copyMap = new HashMap<>();
+        for (var entry : map.entrySet()) {
+            copyMap.put(entry.getKey(), copy.apply(entry.getValue()));
+        }
+        return copyMap;
+    }
+
 }

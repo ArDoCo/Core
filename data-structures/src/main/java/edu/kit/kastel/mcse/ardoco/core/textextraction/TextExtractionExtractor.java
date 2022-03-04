@@ -25,7 +25,7 @@ public abstract class TextExtractionExtractor extends Extractor {
     }
 
     @Override
-    public final TextExtractionExtractor create(AgentDatastructure data, Configuration config) {
+    public final TextExtractionExtractor create(String modelId, AgentDatastructure data, Configuration config) {
         Objects.requireNonNull(data.getTextState());
 
         return create(data.getTextState(), config);

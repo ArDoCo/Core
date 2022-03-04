@@ -13,7 +13,7 @@ public abstract class Extractor implements IExtractor {
      * @param config the config
      * @return the extractor
      */
-    public abstract Extractor create(AgentDatastructure data, Configuration config);
+    public abstract Extractor create(String modelId, AgentDatastructure data, Configuration config);
 
     @Override
     public String getId() {

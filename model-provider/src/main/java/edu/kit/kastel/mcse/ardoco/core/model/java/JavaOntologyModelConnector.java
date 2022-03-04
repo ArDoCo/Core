@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.model.java;
 
+import java.util.UUID;
+
 import org.apache.jena.ontology.Individual;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -12,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
+import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 
 /**
  * @author Jan Keim
@@ -20,6 +23,8 @@ import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 public class JavaOntologyModelConnector implements IModelConnector {
     private static final String CLASS_OR_INTERFACE_URI = "https://informalin.github.io/knowledgebases/informalin_base_java.owl#OWLClass_5c834f48_ae0d_40d8_8ea1_c193dc511593";
     private OntologyInterface ontologyConnector;
+    // TODO: Extract id from model.
+    private final String modelId = UUID.randomUUID().toString();
 
     /**
      * Instantiates a new pcm ontology model connector.
@@ -64,6 +69,16 @@ public class JavaOntologyModelConnector implements IModelConnector {
     public ImmutableList<IModelRelation> getRelations() {
         // NOT YET IMPLEMENTED!
         return Lists.immutable.empty();
+    }
+
+    @Override
+    public String getModelId() {
+        return modelId;
+    }
+
+    @Override
+    public Metamodel getMetamodel() {
+        return Metamodel.CODE;
     }
 
 }

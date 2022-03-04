@@ -197,21 +197,19 @@ public final class Pipeline {
         logger.info("Starting process to generate Trace Links");
         var prevStartTime = System.currentTimeMillis();
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
-        var modelState = runModelExtractor(pcmModel);
-        var data = new AgentDatastructure(annotatedText, null, modelState, null, null, null);
+        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
+
         if (hasCodeModel) {
             IModelConnector javaModel = new JavaOntologyModelConnector(ontoConnector);
             var codeModelState = runModelExtractor(javaModel);
-            data.setCodeModelState(codeModelState);
+            data.addModelState(codeModelState.getModelId(), codeModelState);
 
         }
         if (outputDir != null) {
-            var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile();
-            FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(), name);
-
-            if (hasCodeModel) {
-                var codeModelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instancesCode.csv").toFile();
-                FilePrinter.writeModelInstancesInCsvFile(codeModelStateFile, data.getCodeModelState(), name);
+            for (String modelId : data.getModelIds()) {
+                var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + data.getModelState(modelId).getMetamodel().toString() + ".csv")
+                        .toFile();
+                FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(modelId), name);
             }
         }
         logTiming(prevStartTime, "Model-Extractor");
@@ -238,9 +236,12 @@ public final class Pipeline {
         if (outputDir != null) {
             logger.info("Writing output.");
             prevStartTime = System.currentTimeMillis();
-            printResultsInFiles(outputDir, name, data, duration);
-            var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
-            ontoConnector.save(ontoSaveFile);
+
+            for (String modelId : data.getModelIds()) {
+                printResultsInFiles(outputDir, modelId, name, data, duration);
+                var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
+                ontoConnector.save(ontoSaveFile);
+            }
             logTiming(prevStartTime, "Saving");
         }
 
@@ -289,24 +290,26 @@ public final class Pipeline {
         return outFile.getAbsolutePath();
     }
 
-    private static void printResultsInFiles(File outputDir, String name, AgentDatastructure data, Duration duration) {
+    private static void printResultsInFiles(File outputDir, String modelId, String name, AgentDatastructure data, Duration duration) {
 
         FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings.csv").toFile(), //
                 data.getTextState());
 
         FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_trace_links.csv").toFile(), //
-                data.getConnectionState());
+                data.getConnectionState(modelId));
 
         FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states.csv").toFile(), //
-                data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
+                data.getModelState(modelId), data.getTextState(), data.getRecommendationState(modelId), data.getConnectionState(modelId), duration);
 
-        FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(), data.getInconsistencyState());
+        FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(),
+                data.getInconsistencyState(modelId));
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
+        var modelId = modelConnector.getModelId();
         IExecutionStage modelExtractor = new ModelProvider(modelConnector);
         modelExtractor.exec();
-        return modelExtractor.getBlackboard().getModelState();
+        return modelExtractor.getBlackboard().getModelState(modelId);
     }
 
     private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {

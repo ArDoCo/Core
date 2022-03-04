@@ -11,6 +11,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.Modifications;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
@@ -77,6 +78,16 @@ public class DeleteOneElementEach implements IModificationStrategy {
             relations.removeIf(r -> r.getInstances().contains(skippedElement));
             return relations.toImmutable();
 
+        }
+
+        @Override
+        public String getModelId() {
+            return model.getModelId();
+        }
+
+        @Override
+        public Metamodel getMetamodel() {
+            return model.getMetamodel();
         }
 
     }

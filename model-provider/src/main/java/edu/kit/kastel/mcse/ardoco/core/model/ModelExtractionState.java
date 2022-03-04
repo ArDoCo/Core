@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -16,6 +17,8 @@ import org.eclipse.collections.api.list.ImmutableList;
  */
 public class ModelExtractionState implements IModelState {
 
+    private String modelId;
+    private Metamodel metamodelType;
     private Set<String> instanceTypes;
     private Set<String> relationTypes;
     private Set<String> names;
@@ -24,13 +27,15 @@ public class ModelExtractionState implements IModelState {
 
     @Override
     public IModelState createCopy() {
-        return new ModelExtractionState(instanceTypes, relationTypes, names, //
+        return new ModelExtractionState(modelId, metamodelType, instanceTypes, relationTypes, names, //
                 instances.collect(IModelInstance::createCopy), //
                 relations.collect(IModelRelation::createCopy));
     }
 
-    private ModelExtractionState(Set<String> instanceTypes, Set<String> relationTypes, Set<String> names, ImmutableList<IModelInstance> instances,
-            ImmutableList<IModelRelation> relations) {
+    private ModelExtractionState(String modelId, Metamodel metamodelType, Set<String> instanceTypes, Set<String> relationTypes, Set<String> names,
+            ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations) {
+        this.modelId = modelId;
+        this.metamodelType = metamodelType;
         this.instanceTypes = instanceTypes;
         this.relationTypes = relationTypes;
         this.relations = relations;
@@ -45,7 +50,9 @@ public class ModelExtractionState implements IModelState {
      * @param instances instances of this model extraction state
      * @param relations relations of this model extraction state
      */
-    public ModelExtractionState(ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations) {
+    public ModelExtractionState(String modelId, Metamodel metamodelType, ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations) {
+        this.modelId = Objects.requireNonNull(modelId);
+        this.metamodelType = metamodelType;
         this.instances = instances;
         this.relations = relations;
         instanceTypes = new HashSet<>();
@@ -70,6 +77,16 @@ public class ModelExtractionState implements IModelState {
             instanceTypes.addAll(i.getTypes().castToCollection());
             names.addAll(i.getNames().castToCollection());
         }
+    }
+
+    @Override
+    public String getModelId() {
+        return modelId;
+    }
+
+    @Override
+    public Metamodel getMetamodel() {
+        return metamodelType;
     }
 
     /**
