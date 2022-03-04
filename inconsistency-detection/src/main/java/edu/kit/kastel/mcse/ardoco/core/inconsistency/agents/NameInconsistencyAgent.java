@@ -9,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.NameInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.NameInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;

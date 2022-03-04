@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.inconsistency;
+package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -11,6 +11,7 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
 
