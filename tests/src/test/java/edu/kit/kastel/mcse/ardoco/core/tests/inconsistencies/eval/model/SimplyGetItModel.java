@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model;
 import java.io.PrintStream;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingModelInstanceInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
