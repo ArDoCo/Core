@@ -56,7 +56,7 @@ public class ConnectionState implements IConnectionState {
      */
     @Override
     public ImmutableList<IInstanceLink> getInstanceLinksByName(String name) {
-        return Lists.immutable.fromStream(instanceLinks.stream().filter(imapping -> imapping.getModelInstance().getNames().contains(name)));
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(imapping -> imapping.getModelInstance().getNameParts().contains(name)));
     }
 
     /**
@@ -67,7 +67,7 @@ public class ConnectionState implements IConnectionState {
      */
     @Override
     public ImmutableList<IInstanceLink> getInstanceLinksByType(String type) {
-        return Lists.immutable.fromStream(instanceLinks.stream().filter(ilink -> ilink.getModelInstance().getTypes().contains(type)));
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(ilink -> ilink.getModelInstance().getTypeParts().contains(type)));
     }
 
     @Override
@@ -85,8 +85,8 @@ public class ConnectionState implements IConnectionState {
     @Override
     public ImmutableList<IInstanceLink> getInstanceLinks(String name, String type) {
         return Lists.immutable.fromStream(instanceLinks.stream()
-                .filter(imapping -> imapping.getModelInstance().getNames().contains(name))//
-                .filter(imapping -> imapping.getModelInstance().getTypes().contains(type)));
+                .filter(imapping -> imapping.getModelInstance().getNameParts().contains(name))//
+                .filter(imapping -> imapping.getModelInstance().getTypeParts().contains(type)));
     }
 
     /**

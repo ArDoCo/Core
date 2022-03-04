@@ -74,8 +74,8 @@ public class ModelExtractionState implements IModelState {
             }
         }
         for (IModelInstance i : instances) {
-            instanceTypes.addAll(i.getTypes().castToCollection());
-            names.addAll(i.getNames().castToCollection());
+            instanceTypes.addAll(i.getTypeParts().castToCollection());
+            names.addAll(i.getNameParts().castToCollection());
         }
     }
 
@@ -97,7 +97,7 @@ public class ModelExtractionState implements IModelState {
      */
     @Override
     public ImmutableList<IModelInstance> getInstancesOfType(String type) {
-        return instances.select(i -> i.getTypes().contains(type));
+        return instances.select(i -> i.getTypeParts().contains(type));
     }
 
     /**

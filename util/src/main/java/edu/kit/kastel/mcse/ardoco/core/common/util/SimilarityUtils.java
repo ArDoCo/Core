@@ -70,12 +70,12 @@ public final class SimilarityUtils {
      * @return true, iff the {@link INounMapping} and {@link IModelInstance} are similar.
      */
     public static boolean isNounMappingSimilarToModelInstance(INounMapping nounMapping, IModelInstance instance) {
-        if (areWordsOfListsSimilar(instance.getNames(), Lists.immutable.with(nounMapping.getReference()))
-                || areWordsSimilar(instance.getLongestName(), nounMapping.getReference())) {
+        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference()))
+                || areWordsSimilar(instance.getFullName(), nounMapping.getReference())) {
             return true;
         }
 
-        for (String name : instance.getNames()) {
+        for (String name : instance.getNameParts()) {
             if (areWordsSimilar(name, nounMapping.getReference())) {
                 return true;
             }
@@ -91,7 +91,7 @@ public final class SimilarityUtils {
      * @return true, iff the {@link IWord} and {@link IModelInstance} are similar.
      */
     public static boolean isWordSimilarToModelInstance(IWord word, IModelInstance instance) {
-        var names = instance.getNames();
+        var names = instance.getNameParts();
         return compareWordWithStringListEntries(word, names);
     }
 
@@ -105,7 +105,7 @@ public final class SimilarityUtils {
     public static boolean isRecommendedInstanceSimilarToModelInstance(IRecommendedInstance ri, IModelInstance instance) {
         var name = ri.getName();
         var nameList = Lists.immutable.with(name.split(" "));
-        return instance.getLongestName().equalsIgnoreCase(ri.getName()) || areWordsOfListsSimilar(instance.getNames(), nameList);
+        return instance.getFullName().equalsIgnoreCase(ri.getName()) || areWordsOfListsSimilar(instance.getNameParts(), nameList);
     }
 
     /**
@@ -116,7 +116,7 @@ public final class SimilarityUtils {
      * @return true, iff the {@link IWord} and the type of the {@link IModelInstance} are similar.
      */
     public static boolean isWordSimilarToModelInstanceType(IWord word, IModelInstance instance) {
-        var types = instance.getTypes();
+        var types = instance.getTypeParts();
         return compareWordWithStringListEntries(word, types);
     }
 
@@ -265,7 +265,7 @@ public final class SimilarityUtils {
      */
     public static ImmutableList<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
             ImmutableList<IRecommendedInstance> recommendedInstances) {
-        ImmutableList<String> instanceNames = instance.getNames();
+        ImmutableList<String> instanceNames = instance.getNameParts();
         double similarity = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD;
         ImmutableList<IRecommendedInstance> selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(instance, ri, similarity));
 
@@ -303,7 +303,7 @@ public final class SimilarityUtils {
     }
 
     private static boolean checkRecommendedInstanceWordSimilarityToInstance(IModelInstance instance, IRecommendedInstance ri) {
-        ImmutableList<String> instanceNames = instance.getNames();
+        ImmutableList<String> instanceNames = instance.getNameParts();
         for (var sf : ri.getNameMappings().flatCollect(INounMapping::getSurfaceForms)) {
             var splitSF = CommonUtilities.splitCases(String.join(" ", CommonUtilities.splitAtSeparators(sf)));
             if (areWordsSimilar(String.join(" ", instanceNames), splitSF)) {
@@ -314,10 +314,10 @@ public final class SimilarityUtils {
     }
 
     private static boolean checkRecommendedInstanceForSelection(IModelInstance instance, IRecommendedInstance ri, double similarity) {
-        ImmutableList<String> instanceNames = instance.getNames();
-        ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getLongestName()).split(" "));
+        ImmutableList<String> instanceNames = instance.getNameParts();
+        ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
         ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
-        if (SimilarityUtils.areWordsSimilar(instance.getLongestName(), ri.getName())
+        if (SimilarityUtils.areWordsSimilar(instance.getFullName(), ri.getName())
                 || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList, similarity)
                 || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
             return true;

@@ -98,7 +98,7 @@ public class TLSummaryFile {
             return null;
         }
 
-        var modelStr = model == null ? link.modelId() : "\"" + model.getLongestName() + "\"";
+        var modelStr = model == null ? link.modelId() : "\"" + model.getFullName() + "\"";
         var sentenceStr = sentence == null ? String.valueOf(link.sentenceNr()) : "\"" + sentence.getText() + "\"";
 
         return String.format("%s ⇔ %s [%s,%s]", modelStr, sentenceStr, link.modelId(), link.sentenceNr());

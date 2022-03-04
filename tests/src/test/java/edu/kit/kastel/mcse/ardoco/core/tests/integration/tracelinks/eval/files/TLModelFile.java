@@ -29,13 +29,13 @@ public class TLModelFile {
                     builder.append("- [")
                             .append(model.getUid())
                             .append("]: \"")
-                            .append(model.getLongestName())
+                            .append(model.getFullName())
                             .append("\" (")
-                            .append(model.getLongestType())
+                            .append(model.getFullType())
                             .append(") (")
-                            .append(String.join(", ", model.getNames()))
+                            .append(String.join(", ", model.getNameParts()))
                             .append(") (")
-                            .append(String.join(", ", model.getTypes()))
+                            .append(String.join(", ", model.getTypeParts()))
                             .append(")\n");
                 }
             }

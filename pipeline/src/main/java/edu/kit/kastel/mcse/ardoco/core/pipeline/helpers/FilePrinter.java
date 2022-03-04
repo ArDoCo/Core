@@ -234,7 +234,7 @@ public final class FilePrinter {
 
         for (IModelInstance instance : modelState.getInstances()) {
 
-            dataLines.add(new String[] { instance.getUid(), instance.getLongestName(), instance.getLongestType() });
+            dataLines.add(new String[] { instance.getUid(), instance.getFullName(), instance.getFullType() });
 
         }
 

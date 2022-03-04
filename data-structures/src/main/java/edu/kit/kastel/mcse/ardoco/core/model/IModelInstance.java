@@ -11,32 +11,32 @@ import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 public interface IModelInstance extends ICopyable<IModelInstance> {
 
     /**
-     * Returns the longest name of the instance.
+     * Returns the full name of the instance.
      *
      * @return the original name of the instance
      */
-    String getLongestName();
+    String getFullName();
 
     /**
-     * Returns the longest type of the instance.
+     * Returns the full type of the instance.
      *
      * @return the original type of the instance
      */
-    String getLongestType();
+    String getFullType();
 
     /**
      * Returns all name parts of the instance.
      *
      * @return all name parts of the instance as list
      */
-    ImmutableList<String> getNames();
+    ImmutableList<String> getNameParts();
 
     /**
      * Returns all type parts of the instance.
      *
      * @return all type parts of the instance as list
      */
-    ImmutableList<String> getTypes();
+    ImmutableList<String> getTypeParts();
 
     /**
      * Returns the unique identifier of the instance.
