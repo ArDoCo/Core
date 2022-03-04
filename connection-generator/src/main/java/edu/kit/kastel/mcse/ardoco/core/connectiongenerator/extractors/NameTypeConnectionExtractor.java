@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
 import org.eclipse.collections.api.factory.Lists;
