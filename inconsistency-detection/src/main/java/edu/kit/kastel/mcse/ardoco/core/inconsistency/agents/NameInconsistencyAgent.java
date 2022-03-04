@@ -73,7 +73,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
      * @return <code>true</code>, if there is a match, otherwise <code>false</code>
      */
     private static boolean equalTextOrLemma(IModelInstance modelInstance, IWord word) {
-        String modelName = modelInstance.getLongestName();
+        String modelName = modelInstance.getFullName();
         String text = word.getText();
         String lemma = word.getLemma();
 
@@ -83,7 +83,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
 
     private static boolean partOfDividerEqualsModelInstance(IModelInstance modelInstance, IWord word) {
         String text = word.getText();
-        String modelName = modelInstance.getLongestName();
+        String modelName = modelInstance.getFullName();
         for (String part : text.split(REGEX_DIVIDER)) {
             // NOTE: employ other/better String comparison instead of exact equals?
             if (part.equalsIgnoreCase(modelName)) {

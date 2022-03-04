@@ -19,21 +19,21 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  */
 public class Instance implements IModelInstance {
 
-    private String longestName;
-    private String longestType;
+    private String fullName;
+    private String fullType;
     private MutableList<String> names;
     private MutableList<String> types;
     private String uid;
 
     @Override
     public IModelInstance createCopy() {
-        return new Instance(longestName, longestType, Lists.immutable.withAll(names), Lists.immutable.withAll(types), uid);
+        return new Instance(fullName, fullType, Lists.immutable.withAll(names), Lists.immutable.withAll(types), uid);
 
     }
 
-    private Instance(String longestName, String longestType, ImmutableList<String> names, ImmutableList<String> types, String uid) {
-        this.longestName = longestName;
-        this.longestType = longestType;
+    private Instance(String fullName, String fullType, ImmutableList<String> names, ImmutableList<String> types, String uid) {
+        this.fullName = fullName;
+        this.fullType = fullType;
         this.names = names.toList();
         this.types = types.toList();
         this.uid = uid;
@@ -60,8 +60,8 @@ public class Instance implements IModelInstance {
             types.add(type);
         }
         this.uid = uid;
-        longestName = name;
-        longestType = type;
+        fullName = name;
+        fullType = type;
     }
 
     /**
@@ -70,8 +70,8 @@ public class Instance implements IModelInstance {
      * @return the original name of the instance
      */
     @Override
-    public String getLongestName() {
-        return longestName;
+    public String getFullName() {
+        return fullName;
     }
 
     /**
@@ -80,8 +80,8 @@ public class Instance implements IModelInstance {
      * @return the original type of the instance
      */
     @Override
-    public String getLongestType() {
-        return longestType;
+    public String getFullType() {
+        return fullType;
     }
 
     /**
@@ -90,7 +90,7 @@ public class Instance implements IModelInstance {
      * @return all name parts of the instance as list
      */
     @Override
-    public ImmutableList<String> getNames() {
+    public ImmutableList<String> getNameParts() {
         return names.toImmutable();
     }
 
@@ -100,7 +100,7 @@ public class Instance implements IModelInstance {
      * @return all type parts of the instance as list
      */
     @Override
-    public ImmutableList<String> getTypes() {
+    public ImmutableList<String> getTypeParts() {
         return types.toImmutable();
     }
 
@@ -121,7 +121,7 @@ public class Instance implements IModelInstance {
 
     @Override
     public int hashCode() {
-        return Objects.hash(longestName, longestType, uid);
+        return Objects.hash(fullName, fullType, uid);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class Instance implements IModelInstance {
             return false;
         }
         Instance other = (Instance) obj;
-        return Objects.equals(longestName, other.longestName) && Objects.equals(longestType, other.longestType) && Objects.equals(uid, other.uid);
+        return Objects.equals(fullName, other.fullName) && Objects.equals(fullType, other.fullType) && Objects.equals(uid, other.uid);
     }
 
 }

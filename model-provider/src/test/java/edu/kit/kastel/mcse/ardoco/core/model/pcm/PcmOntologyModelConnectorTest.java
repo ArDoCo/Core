@@ -38,7 +38,7 @@ class PcmOntologyModelConnectorTest {
             for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
-                logger.debug(instance.getNames());
+                logger.debug(instance.getNameParts());
             }
             logger.debug("\n");
         }
@@ -50,7 +50,7 @@ class PcmOntologyModelConnectorTest {
                 "AudioWatermarking", "UserManagement", "ParallelWatermarking", "MediaManagement", "Cache", "Packaging", "DownloadLoadBalancer");
 
         for (IModelInstance instance : instances) {
-            String name = instance.getLongestName();
+            String name = instance.getFullName();
             Assertions.assertTrue(expectedInstancesNames.contains(name), "Found instance does not match one of the expected instances!");
         }
 
@@ -72,7 +72,7 @@ class PcmOntologyModelConnectorTest {
             for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
-                logger.debug(instance.getNames());
+                logger.debug(instance.getNameParts());
             }
             logger.debug("\n");
         }
@@ -100,7 +100,7 @@ class PcmOntologyModelConnectorTest {
             for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
-                logger.debug(instance.getNames());
+                logger.debug(instance.getNameParts());
             }
             logger.debug("\n");
         }

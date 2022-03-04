@@ -199,7 +199,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
         if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
             ImmutableList<INounMapping> nmappings = textExtractionState.getNounMappingsByWord(currentWord);
             for (INounMapping nmapping : nmappings) {
-                String name = instance.getLongestName();
+                String name = instance.getFullName();
                 String type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
             }
@@ -228,7 +228,7 @@ public class NameTypeConnectionExtractor extends ConnectionExtractor {
         }
 
         var text = word.getText();
-        matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNames(), Lists.immutable.with(text)));
+        matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNameParts(), Lists.immutable.with(text)));
 
         if (!matchingInstances.isEmpty()) {
             return matchingInstances.get(0);

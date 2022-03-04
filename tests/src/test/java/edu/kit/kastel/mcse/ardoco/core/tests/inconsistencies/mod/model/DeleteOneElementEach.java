@@ -46,7 +46,7 @@ public class DeleteOneElementEach implements IModificationStrategy {
             }
             int deleted = currentDeletion++;
             IModelInstance deletionModelElement = originalModelElements.get(deleted);
-            logger.info("Current deletion model element: {}", deletionModelElement.getLongestName());
+            logger.info("Current deletion model element: {}", deletionModelElement.getFullName());
             return ModifiedElement.of(new ModelWrapper(deleted), deletionModelElement, Modifications.DELETE_ELEMENT);
         }
 

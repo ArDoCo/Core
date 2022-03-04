@@ -91,7 +91,7 @@ public class Relation implements IModelRelation {
 
     @Override
     public String toString() {
-        MutableList<String> instanceNames = instances.collect(IModelInstance::getLongestName);
+        MutableList<String> instanceNames = instances.collect(IModelInstance::getFullName);
         return "Relation: [" + " name=" + type + ", instances= " + String.join(", ", instanceNames) + "]";
     }
 

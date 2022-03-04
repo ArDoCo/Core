@@ -220,7 +220,7 @@ class TracelinksIT {
             }
             var sentenceText = sentences.get(sentenceNo - 1);
 
-            outputList.add(String.format("%-20s - %s (%s)", modelElement.getLongestName(), sentenceText.getText(), tracelinkString));
+            outputList.add(String.format("%-20s - %s (%s)", modelElement.getFullName(), sentenceText.getText(), tracelinkString));
         }
         return outputList;
     }
