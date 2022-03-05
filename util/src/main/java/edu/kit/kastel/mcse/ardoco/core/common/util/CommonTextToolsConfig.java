@@ -24,6 +24,10 @@ public final class CommonTextToolsConfig {
     public static final ImmutableList<String> SEPARATORS_TO_SPLIT = CONFIG.getPropertyAsList("separators_ToSplit");
 
     /**
+     * Decides whether the levenshtein similarity measure should be used.
+     */
+    public static final boolean LEVENSHTEIN_ENABLED = CONFIG.isPropertyEnabled("levenshtein_Enabled");
+    /**
      * Int for the minimal length of word similarity for methods in SimilarityUtils.
      */
     public static final int LEVENSHTEIN_MIN_LENGTH = CONFIG.getPropertyAsInt("levenshtein_MinLength");
@@ -31,6 +35,11 @@ public final class CommonTextToolsConfig {
      * Int for the maximal levensthein distance for two words to be similar for methods in SimilarityUtils.
      */
     public static final int LEVENSHTEIN_MAX_DISTANCE = CONFIG.getPropertyAsInt("levenshtein_MaxDistance");
+
+    /**
+     * Decides whether the JaroWinkler similarity measure should be used.
+     */
+    public static final boolean JAROWINKLER_ENABLED = CONFIG.isPropertyEnabled("jaroWinkler_Enabled");
     /**
      * The default threshold for similarity in methods of SimilarityUtils.
      */

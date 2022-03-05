@@ -1,12 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.SEWordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
@@ -20,27 +14,9 @@ import java.util.Objects;
  */
 public class NewSimilarityUtils {
 
+    private static List<WordSimMeasure> MEASURES = WordSimLoader.loadUsingProperties();
 
-    // --- TODO: REMOVE ---------------------------------------------------------------------------------------------------------------------------------------
-    static {
-        try {
-            var list = new ArrayList<WordSimMeasure>();
-            list.add(new EqualityMeasure());
-            list.add(new LevenshteinMeasure());
-            list.add(new JaroWinklerMeasure());
-            if (CommonTextToolsConfig.NGRAM_ENABLED) { list.add(new NgramMeasure()); }
-            if (CommonTextToolsConfig.SEWORDSIM_ENABLED) { list.add(new SEWordSimMeasure()); }
-            init(list);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    // --------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    private static List<WordSimMeasure> MEASURES;
-
-    public static void init(Collection<WordSimMeasure> measures) {
+    public static void setMeasures(Collection<WordSimMeasure> measures) {
         MEASURES = new ArrayList<>(measures);
     }
 
@@ -77,8 +53,6 @@ public class NewSimilarityUtils {
     public static boolean areWordsSimilar(String firstWord, IWord secondWord) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false));
     }
-
-    // Miscellaneous methods:
 
     private NewSimilarityUtils() {
     }
