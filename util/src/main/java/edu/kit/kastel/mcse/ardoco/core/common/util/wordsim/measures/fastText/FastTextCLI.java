@@ -3,8 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Optional;
+
+import static edu.kit.kastel.mcse.ardoco.core.common.util.VectorUtils.cosineSimilarity;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.VectorUtils.isZero;
 
 /**
  * Provides the fastText word vector embeddings by actively communicating with a compiled fastText binary. Instances of
@@ -12,23 +14,9 @@ import java.util.Optional;
  */
 public class FastTextCLI implements FastTextDataSource {
 
-    private static final float[] ZERO_VECTOR = new float[0];
-
-    // --- REMOVE --------------------------------------------------------------------------
-    public static void main(String[] args) throws RetrieveVectorException, IOException {
-        var exePath = Path.of("C:\\dev\\uni\\ArDoCo\\fastText-0.9.2\\fasttext.exe");
-        var modelPath = Path.of("C:\\dev\\uni\\ArDoCo\\fastText-0.9.2\\dbpedia.bin");
-
-        try (var cli = new FastTextCLI(exePath, modelPath)) {
-            System.out.println(Arrays.toString(cli.getWordVector("tree").orElse(ZERO_VECTOR)));
-            System.out.println(Arrays.toString(cli.getWordVector("apple").orElse(ZERO_VECTOR)));
-            System.out.println(cli.getSimilarity("tree", "apple"));
-
-        }
-    }
-    // ------------------------------------------------------------------------------------
-
     private final CLIProcess process;
+    private final int dimension;
+    private final double[] zeroVector;
 
     /**
      * Constructs a new fastText CLI process.
@@ -38,10 +26,14 @@ public class FastTextCLI implements FastTextDataSource {
      * @throws IOException if launching the fastText CLI process fails
      */
     public FastTextCLI(Path executablePath, Path modelPath) throws IOException {
-        ProcessBuilder processBuilder = new ProcessBuilder().command(executablePath.toAbsolutePath().toString(), "print-word-vectors",
-                modelPath.toAbsolutePath().toString());
+        ProcessBuilder processBuilder = new ProcessBuilder().command(executablePath.toString(), "print-word-vectors", modelPath.toString());
 
         this.process = new CLIProcess(processBuilder);
+
+        // Determine dimension
+        this.process.sendLineToInput("a");
+        this.dimension = this.process.readLineFromOutput().split(" ").length - 1;
+        this.zeroVector = new double[this.dimension];
     }
 
     /**
@@ -49,21 +41,26 @@ public class FastTextCLI implements FastTextDataSource {
      *
      * @param word the word
      * @return the vector representation, or {@link Optional#empty()} if no representation for the given word is found
-     * @throws RetrieveVectorException if the retrieval process fails
+     * @throws RetrieveVectorException  if the retrieval process fails
+     * @throws IllegalArgumentException if the given string contains spaces (not a single word)
      */
-    public Optional<float[]> getWordVector(String word) throws RetrieveVectorException {
+    public Optional<double[]> getWordVector(String word) throws RetrieveVectorException, IllegalArgumentException {
         try {
-            this.process.sendToInput("a " + word + "\n");
+            if (word.contains(" ")) {
+                throw new IllegalArgumentException("given string is not a single word: " + word);
+            }
+
+            this.process.sendLineToInput("a " + word);
             // ^ Prepend the word 'a' to the input to give fastText some other word first
             // since the output line for the first word is for some reason scrambled and cannot be read properly
 
             this.process.readLineFromOutput(); // first output is always garbage
 
             String[] output = this.process.readLineFromOutput().split(" ");
-            float[] vector = new float[output.length - 1];
+            double[] vector = new double[output.length - 1];
 
             for (int i = 0; i < vector.length; i++) {
-                vector[i] = Float.parseFloat(output[i + 1]);
+                vector[i] = Double.parseDouble(output[i + 1]);
             }
 
             return isZero(vector) ? Optional.empty() : Optional.of(vector);
@@ -72,47 +69,51 @@ public class FastTextCLI implements FastTextDataSource {
         }
     }
 
-    @Override
-    public Optional<Double> getSimilarity(String firstWord, String secondWord) throws RetrieveVectorException {
-        float[] firstVec = getWordVector(firstWord).orElse(ZERO_VECTOR);
-        float[] secondVec = getWordVector(secondWord).orElse(ZERO_VECTOR);
+    /**
+     * Attempts to retrieve the average vector representation for the given words.
+     *
+     * @param words the words
+     * @return the vector representation, or {@link Optional#empty()} if no representation for the given words are found
+     * @throws RetrieveVectorException if the retrieval process fails
+     */
+    public Optional<double[]> getWordsVector(String[] words) throws RetrieveVectorException {
+        double[] resultVector = new double[this.dimension];
 
-        if (isZero(firstVec) || isZero(secondVec)) {
+        for (String word : words) {
+            var wordVector = getWordVector(word).orElse(zeroVector);
+            add(resultVector, wordVector);
+        }
+
+        scale(resultVector, 1.0 / words.length);
+
+        return isZero(resultVector) ? Optional.empty() : Optional.of(resultVector);
+    }
+
+    @Override public Optional<Double> getSimilarity(String firstWord, String secondWord) throws RetrieveVectorException {
+        double[] firstVec = getWordsVector(firstWord.split(" ")).orElse(null);
+        double[] secondVec = getWordsVector(secondWord.split(" ")).orElse(null);
+
+        if (firstVec == null || secondVec == null) {
             return Optional.empty();
         }
 
         return Optional.of(cosineSimilarity(firstVec, secondVec));
     }
 
-    private double cosineSimilarity(float[] firstVector, float[] secondVector) {
-        double dotProduct = 0.0, firstNorm = 0.0, secondNorm = 0.0;
-
-        for (int i = 0; i < firstVector.length; i++) {
-            dotProduct += firstVector[i] * secondVector[i];
-            firstNorm += Math.pow(firstVector[i], 2);
-            secondNorm += Math.pow(secondVector[i], 2);
-        }
-
-        return dotProduct / (Math.sqrt(firstNorm) * Math.sqrt(secondNorm));
-    }
-
-    private boolean isZero(float[] vector) {
-        if (vector.length <= 0) {
-            return true;
-        }
-
-        for (float entry : vector) {
-            if (entry != 0.0f) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public void close() {
+    @Override public void close() {
         this.process.close();
+    }
+
+    private void add(double[] target, double[] toAdd) {
+        for (int i = 0; i < target.length; i++) {
+            target[i] += toAdd[i];
+        }
+    }
+
+    private void scale(double[] target, double scalar) {
+        for (int i = 0; i < target.length; i++) {
+            target[i] = target[i] * scalar;
+        }
     }
 
 }

@@ -1,10 +1,9 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 /**
  * Spawns another process and provides a way to send strings to the input stream of the spawned process while
@@ -14,8 +13,9 @@ import java.io.InputStreamReader;
 public class CLIProcess implements AutoCloseable {
 
     private final Process process;
-    private final BufferedReader input;
-    private final DataOutputStream output;
+    private final InputStreamReader reader;
+    private final OutputStreamWriter writer;
+    private final StringBuilder readBuffer = new StringBuilder();
 
     /**
      * Constructs a new {@link CLIProcess}.
@@ -29,8 +29,8 @@ public class CLIProcess implements AutoCloseable {
         builder.redirectError(ProcessBuilder.Redirect.INHERIT);
 
         this.process = builder.start();
-        this.input = new BufferedReader(new InputStreamReader(this.process.getInputStream()));
-        this.output = new DataOutputStream(this.process.getOutputStream());
+        this.reader = new InputStreamReader(this.process.getInputStream());
+        this.writer = new OutputStreamWriter(this.process.getOutputStream());
 
         Runtime.getRuntime().addShutdownHook(new Thread(this.process::destroyForcibly));
     }
@@ -42,8 +42,18 @@ public class CLIProcess implements AutoCloseable {
      * @throws IOException if sending the string to the process fails
      */
     public void sendToInput(String string) throws IOException {
-        this.output.writeUTF(string);
-        this.output.flush();
+        this.writer.write(string);
+        this.writer.flush();
+    }
+
+    /**
+     * Sends the given line along with the system line separator to the input stream of the spawned process.
+     *
+     * @param line the line to send
+     * @throws IOException if sending the line to the process fails
+     */
+    public void sendLineToInput(String line) throws IOException {
+        this.sendToInput(line + System.lineSeparator());
     }
 
     /**
@@ -55,14 +65,29 @@ public class CLIProcess implements AutoCloseable {
      * @throws IOException if reading from the output stream fails
      */
     public String readLineFromOutput() throws IOException {
-        return this.input.readLine();
+        this.readBuffer.delete(0, this.readBuffer.length());
+
+        for (int i = 0; i < 10000; i++) {
+            int intChar = this.reader.read();
+
+            if (intChar == -1) { System.out.println("EOL"); break; }
+
+            char character = (char) intChar;
+
+            if (character == '\n' || character == '\r') {
+                break;
+            }
+
+            this.readBuffer.append(character);
+        }
+
+        return this.readBuffer.toString().trim();
     }
 
     /**
      * Forcibly destroys the spawned process. If the process is not alive, no action is taken.
      */
-    @Override
-    public void close() {
+    @Override public void close() {
         this.process.destroyForcibly();
     }
 
