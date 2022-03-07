@@ -33,7 +33,8 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
             IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
         super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
         // load settings from inconsistencyConfig
-        types.add("BasicComponent"); // TODO load from config or similar
+        types = inconsistencyConfig.getTypesWithRequiredDocumentation();
+        whitelist = inconsistencyConfig.getDocumentationRequirementWhitelist();
     }
 
     @Override
@@ -97,6 +98,7 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
     private void createInconsistencies(MutableList<IModelInstance> candidateModelInstances) {
         for (var candidate : candidateModelInstances) {
             var inconsistency = new MissingTextForModelElementInconsistency(candidate);
+            System.out.println(inconsistency);
             inconsistencyState.addInconsistency(inconsistency);
         }
     }
