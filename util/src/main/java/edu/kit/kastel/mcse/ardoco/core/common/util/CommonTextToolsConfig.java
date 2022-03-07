@@ -89,6 +89,19 @@ public final class CommonTextToolsConfig {
      */
     public static final String SEWORDSIM_DB_FILE_PATH = CONFIG.getProperty("sewordsim_DatabaseFilePath");
 
+    /**
+     * Decides whether the fastText similarity measure should be used.
+     */
+    public static final boolean FASTTEXT_ENABLED = CONFIG.isPropertyEnabled("fastText_Enabled");
+    /**
+     * The threshold for the fastText similarity measure above which words are considered similar.
+     */
+    public static final double FASTTEXT_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("fastText_SimilarityThreshold");
+    /**
+     * The path to the fastText binary model file used by the fastText word similarity measure.
+     */
+    public static final String FASTTEXT_MODEL_FILE_PATH = CONFIG.getProperty("fastText_ModelPath");
+
     private static ResourceAccessor loadParameters(String filePath) {
         return new ResourceAccessor(filePath, true);
     }
