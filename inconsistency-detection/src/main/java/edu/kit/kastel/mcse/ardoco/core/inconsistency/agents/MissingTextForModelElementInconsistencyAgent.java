@@ -51,19 +51,19 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
         // find model instances of given types that are not linked and, thus, are candidates
         var candidateModelInstances = Lists.mutable.<IModelInstance> empty();
         for (var modelInstance : modelState.getInstances()) {
-            if (modelInstanceHasTargetedType(modelInstance) && !linkedModelInstances.contains(modelInstance)) {
+            if (modelInstanceHasTargetedType(modelInstance, types) && !linkedModelInstances.contains(modelInstance)) {
                 candidateModelInstances.add(modelInstance);
             }
         }
 
         // further filtering
-        candidateModelInstances = filterWithWhitelist(candidateModelInstances);
+        candidateModelInstances = filterWithWhitelist(candidateModelInstances, whitelist);
 
         // create Inconsistencies
         createInconsistencies(candidateModelInstances);
     }
 
-    private boolean modelInstanceHasTargetedType(IModelInstance modelInstance) {
+    public static boolean modelInstanceHasTargetedType(IModelInstance modelInstance, List<String> types) {
         if (types.contains(modelInstance.getFullType())) {
             return true;
         }
@@ -75,7 +75,7 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
         return false;
     }
 
-    private MutableList<IModelInstance> filterWithWhitelist(MutableList<IModelInstance> candidateModelInstances) {
+    public static MutableList<IModelInstance> filterWithWhitelist(MutableList<IModelInstance> candidateModelInstances, List<String> whitelist) {
         var filteredCandidates = Lists.mutable.ofAll(candidateModelInstances);
         for (var whitelisting : whitelist) {
             var pattern = Pattern.compile(whitelisting);
@@ -98,7 +98,6 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
     private void createInconsistencies(MutableList<IModelInstance> candidateModelInstances) {
         for (var candidate : candidateModelInstances) {
             var inconsistency = new MissingTextForModelElementInconsistency(candidate);
-            System.out.println(inconsistency);
             inconsistencyState.addInconsistency(inconsistency);
         }
     }
