@@ -22,5 +22,11 @@
       <artifactId>metainf-services</artifactId>
       <optional>true</optional>
     </dependency>
+	<dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>model-provider</artifactId>
+      <version>${project.version}</version>
+	  <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
