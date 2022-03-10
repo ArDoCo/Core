@@ -21,6 +21,11 @@ import java.util.Map;
 public class TLStatsFile {
 
     public static void save(Path targetFile, Map<Project, ComparisonStatGroup> statsMap, Map<Project, AgentDatastructure> dataMap) throws IOException {
+        if (statsMap.isEmpty()) {
+            Files.writeString(targetFile, "disabled", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            return;
+        }
+
         var builder = new StringBuilder();
 
         // Prepare stat groups
