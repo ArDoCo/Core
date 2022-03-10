@@ -6,6 +6,8 @@ tmp*
 
 .vscode/*
 
+tests/eval_results/
+
 ### ignore log files
 *.log
 
