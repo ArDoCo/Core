@@ -66,6 +66,7 @@ class TracelinksIT {
             TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
             TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
             TLStatsFile.save(evalDir.resolve("stats.md"), COMP_MAP, DATA_MAP);
+            TLBinResultsFile.save(evalDir.resolve("results.bin"), RESULTS);
         }
     }
 
