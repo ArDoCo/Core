@@ -9,9 +9,9 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatGroup;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatGroup;
 import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class TracelinksIT {
+public class TracelinksIT {
     private static Logger logger = null;
 
     private static final String OUTPUT = "src/test/resources/testout";
@@ -68,6 +68,10 @@ class TracelinksIT {
             TLStatsFile.save(evalDir.resolve("stats.md"), COMP_MAP, DATA_MAP);
             TLBinResultsFile.save(evalDir.resolve("results.bin"), RESULTS);
         }
+
+        RESULTS.clear();
+        DATA_MAP.clear();
+        COMP_MAP.clear();
     }
 
     @BeforeEach

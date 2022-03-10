@@ -50,4 +50,23 @@ public class TLLogFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 
+    public static void prefixLastLine(Path targetFile, String prefix) throws IOException {
+        if (!Files.exists(targetFile)) {
+            throw new IllegalStateException("file does not exist: " + targetFile);
+        }
+
+        List<String> lines = Files.readAllLines(targetFile);
+        String lastLine = lines.get(lines.size() - 1);
+
+        // - `date` [] [] []
+        lastLine = lastLine.substring(1, lastLine.length());
+
+        //  `date` [] [] []
+        lastLine = "- " + prefix + lastLine;
+
+        // - prefix `date` [] [] []
+        lines.set(lines.size() - 1, lastLine);
+        Files.write(targetFile, lines, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
 }
