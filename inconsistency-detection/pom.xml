@@ -15,22 +15,36 @@
 
   <dependencies>
     <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>data-structures</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>util</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kohsuke.metainf-services</groupId>
       <artifactId>metainf-services</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>data-structures</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>model-provider</artifactId>
-      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>recommendation-generator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>text-extraction</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>model-provider</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

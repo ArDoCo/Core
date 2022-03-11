@@ -62,7 +62,7 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
             if (nameMapping.getKind() != MappingKind.TYPE) {
                 for (var word : nameMapping.getWords()) {
                     var sentenceNoString = "" + (word.getSentenceNo() + 1);
-                    var entry = new String[] { getType(), sentenceNoString, name, word.getText(), Double.toString(textualInstance.getProbability()) };
+                    String[] entry = { getType(), sentenceNoString, name, word.getText(), Double.toString(textualInstance.getProbability()) };
                     entries.add(entry);
                 }
             }
@@ -90,13 +90,10 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MissingModelInstanceInconsistency other = (MissingModelInstanceInconsistency) obj;
+        var other = (MissingModelInstanceInconsistency) obj;
         return Objects.equals(textualInstance, other.textualInstance);
     }
 
