@@ -50,7 +50,7 @@
       <artifactId>model-provider</artifactId>
       <version>${project.version}</version>
     </dependency>
-	<dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>inconsistency-detection</artifactId>
       <version>${project.version}</version>
