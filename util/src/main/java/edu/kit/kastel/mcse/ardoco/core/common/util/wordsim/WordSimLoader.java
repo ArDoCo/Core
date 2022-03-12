@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.DL4JFastTextDataSource;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.FastTextDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.FastTextMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
@@ -67,7 +66,7 @@ public class WordSimLoader {
 
                 LOGGER.info("Loading DL4J fastText data source...");
 
-                FastTextDataSource dataSource = new DL4JFastTextDataSource(modelPath);
+                var dataSource = new DL4JFastTextDataSource(modelPath);
 
                 LOGGER.info("Successfully loaded DL4J fastText data source!");
 
