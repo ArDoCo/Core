@@ -13,6 +13,13 @@
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
   <dependencies>
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
@@ -44,5 +51,16 @@
       <artifactId>deeplearning4j-nlp</artifactId>
       <version>1.0.0-M1.1</version>
     </dependency>
+      <!-- https://mvnrepository.com/artifact/edu.mit/jwi -->
+      <dependency>
+          <groupId>edu.mit</groupId>
+          <artifactId>jwi</artifactId>
+          <version>2.2.3</version>
+      </dependency>
+      <dependency>
+          <groupId>com.github.DonatoMeoli</groupId>
+          <artifactId>WS4J</artifactId>
+          <version>master-c3a97d944b-1</version>
+      </dependency>
   </dependencies>
 </project>
