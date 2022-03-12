@@ -12,6 +12,10 @@ import java.util.Objects;
 public record ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, @Nullable IWord firstWord, @Nullable IWord secondWord,
                                 boolean lemmatize) {
 
+    public ComparisonContext(@Nonnull String firstString, @Nonnull String secondString) {
+        this(firstString, secondString, null, null, false);
+    }
+
     public ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, boolean lemmatize) {
         this(firstString, secondString, null, null, lemmatize);
     }
