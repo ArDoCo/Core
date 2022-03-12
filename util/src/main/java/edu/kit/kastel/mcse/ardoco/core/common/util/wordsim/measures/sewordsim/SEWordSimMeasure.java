@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * This word similarity measures utilizes the SEWordSim database from Tian et al. 2014
@@ -32,9 +33,16 @@ public class SEWordSimMeasure implements WordSimMeasure {
      * Constructs a new {@link SEWordSimMeasure} instance.
      *
      * @param dataSource          the data source from which word similarities are loaded
-     * @param similarityThreshold the threshold above which words are considered similar
+     * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
      */
     public SEWordSimMeasure(SEWordSimDataSource dataSource, double similarityThreshold) {
+        Objects.requireNonNull(dataSource);
+
+        if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
+            throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
+        }
+
+
         this.dataSource = dataSource;
         this.similarityThreshold = similarityThreshold;
     }

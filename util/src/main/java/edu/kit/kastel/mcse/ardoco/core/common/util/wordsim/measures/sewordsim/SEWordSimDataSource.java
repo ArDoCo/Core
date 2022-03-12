@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,6 +34,10 @@ public class SEWordSimDataSource implements AutoCloseable {
     public SEWordSimDataSource(Path sqliteFile) throws SQLException {
         Objects.requireNonNull(sqliteFile);
 
+        if (!Files.exists(sqliteFile)) {
+            throw new IllegalArgumentException("sqliteFile does not exist: " + sqliteFile);
+        }
+
         var cfg = new SQLiteConfig();
         cfg.setReadOnly(true);
         cfg.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
@@ -51,6 +56,9 @@ public class SEWordSimDataSource implements AutoCloseable {
      * @throws SQLException if a database access error occurs
      */
     public boolean containsWord(String word) throws SQLException {
+        Objects.requireNonNull(word);
+        if (word.isEmpty()) { return false; }
+
         word = PorterStemmer.stem(word);
 
         try (var statement = this.connection.prepareStatement(EXISTS_QUERY)) {
@@ -76,6 +84,11 @@ public class SEWordSimDataSource implements AutoCloseable {
      * @throws SQLException if a database access error occurs
      */
     public Optional<Double> getSimilarity(String firstWord, String secondWord) throws SQLException {
+        Objects.requireNonNull(firstWord);
+        Objects.requireNonNull(secondWord);
+
+        // TODO: Split words
+
         firstWord = PorterStemmer.stem(firstWord);
         secondWord = PorterStemmer.stem(secondWord);
 
