@@ -8,6 +8,11 @@ import org.eclipse.collections.api.list.ImmutableList;
  */
 public final class CommonTextToolsConfig {
 
+    /**
+     * TODO: REMOVE
+     */
+    public static boolean INITIAL_LOAD_ENABLED = true;
+
     private CommonTextToolsConfig() {
         throw new IllegalAccessError();
     }
@@ -101,6 +106,55 @@ public final class CommonTextToolsConfig {
      * The path to the fastText binary model file used by the fastText word similarity measure.
      */
     public static final String FASTTEXT_MODEL_FILE_PATH = CONFIG.getProperty("fastText_ModelPath");
+
+    /**
+     * Decides whether the fastText similarity measure should be used.
+     */
+    public static final boolean WORDNET_ENABLED = CONFIG.isPropertyEnabled("wordNet_Enabled");
+    /**
+     * The path to the fastText binary model file used by the fastText word similarity measure.
+     */
+    public static final String WORDNET_DATA_DIR_PATH = CONFIG.getProperty("wordNet_DataDirPath");
+    /**
+     * Decides whether the Leacock & Chodorow (1998) algorithm should be used for the WordNet similarity measure.
+     */
+    public static boolean WORDNET_ALGO_LEACOCK_CHODOROW_ENABLED = CONFIG.isPropertyEnabled("wordNet_Algo_LeacockChodorow_Enabled");
+    /**
+     * The threshold for the Leacock & Chodorow (1998) algorithm above which words are considered similar.
+     */
+    public static double WORDNET_ALGO_LEACOCK_CHODOROW_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_LeacockChodorow_Threshold");
+    /**
+     * Decides whether the Wu & Palmer (1994) algorithm should be used for the WordNet similarity measure.
+     */
+    public static boolean WORDNET_ALGO_WU_PALMER_ENABLED = CONFIG.isPropertyEnabled("wordNet_Algo_WuPalmer_Enabled");
+    /**
+     * The threshold for the Wu & Palmer (1994) algorithm above which words are considered similar.
+     */
+    public static double WORDNET_ALGO_WU_PALMER_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_WuPalmer_Threshold");
+    /**
+     * Decides whether the Jiang & Conrath (1997) algorithm should be used for the WordNet similarity measure.
+     */
+    public static boolean WORDNET_ALGO_JIANG_CONRATH_ENABLED = CONFIG.isPropertyEnabled("wordNet_Algo_JiangConrath_Enabled");
+    /**
+     * The threshold for the Jiang & Conrath (1997) algorithm above which words are considered similar.
+     */
+    public static double WORDNET_ALGO_JIANG_CONRATH_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_JiangConrath_Threshold");
+    /**
+     * Decides whether the extended Lesk algorithm (Banerjee & Pedersen 2003) should be used for the WordNet similarity measure.
+     */
+    public static boolean WORDNET_ALGO_EXTENDED_LESK_ENABLED = CONFIG.isPropertyEnabled("wordNet_Algo_ExtendedLesk_Enabled");
+    /**
+     * The threshold for the extended Lesk algorithm (Banerjee & Pedersen 2003) above which words are considered similar.
+     */
+    public static double WORDNET_ALGO_EXTENDED_LESK_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_ExtendedLesk_Threshold");
+    /**
+     * Decides whether the Ezzikouri algorithm (Ezzikouri et al. 2019) should be used for the WordNet similarity measure.
+     */
+    public static boolean WORDNET_ALGO_EZZIKOURI_ENABLED = CONFIG.isPropertyEnabled("wordNet_Algo_Ezzikouri_Enabled");
+    /**
+     * The threshold for the Ezzikouri algorithm (Ezzikouri et al. 2019) above which words are considered similar.
+     */
+    public static double WORDNET_ALGO_EZZIKOURI_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_Ezzikouri_Threshold");
 
     private static ResourceAccessor loadParameters(String filePath) {
         return new ResourceAccessor(filePath, true);
