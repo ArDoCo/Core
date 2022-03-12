@@ -9,13 +9,22 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.SEWordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet.WordNetMeasure;
+import edu.mit.jwi.IRAMDictionary;
+import edu.mit.jwi.RAMDictionary;
+import edu.mit.jwi.data.ILoadPolicy;
+import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
+import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
+import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
+import edu.uniba.di.lacam.kdde.ws4j.similarity.JiangConrath;
+import edu.uniba.di.lacam.kdde.ws4j.similarity.LeacockChodorow;
+import edu.uniba.di.lacam.kdde.ws4j.similarity.Lesk;
+import edu.uniba.di.lacam.kdde.ws4j.similarity.WuPalmer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Responsible for loading the word similarity measures that should be enabled according to the {@link CommonTextToolsConfig}.
@@ -30,6 +39,8 @@ public class WordSimLoader {
      * @return a list of word similarity measures
      */
     public static List<WordSimMeasure> loadUsingProperties() {
+        if (!CommonTextToolsConfig.INITIAL_LOAD_ENABLED) { return Collections.emptyList(); }
+
         try {
             var list = new ArrayList<WordSimMeasure>();
 
@@ -61,6 +72,36 @@ public class WordSimLoader {
                 LOGGER.info("Successfully loaded DL4J fastText data source!");
 
                 var measure = new FastTextMeasure(dataSource);
+                list.add(measure);
+            }
+
+            if (CommonTextToolsConfig.WORDNET_ENABLED) {
+                Path wordNetDirPath = Path.of(CommonTextToolsConfig.WORDNET_DATA_DIR_PATH);
+                IRAMDictionary dictionary = new RAMDictionary(wordNetDirPath.toFile(), ILoadPolicy.BACKGROUND_LOAD);
+                ILexicalDatabase database = new MITWordNet(dictionary);
+                Map<RelatednessCalculator, Double> calculatorThresholdMap = new HashMap<>();
+
+                if (CommonTextToolsConfig.WORDNET_ALGO_LEACOCK_CHODOROW_ENABLED) {
+                    calculatorThresholdMap.put(new LeacockChodorow(database), CommonTextToolsConfig.WORDNET_ALGO_LEACOCK_CHODOROW_THRESHOLD);
+                }
+
+                if (CommonTextToolsConfig.WORDNET_ALGO_WU_PALMER_ENABLED) {
+                    calculatorThresholdMap.put(new WuPalmer(database), CommonTextToolsConfig.WORDNET_ALGO_WU_PALMER_THRESHOLD);
+                }
+
+                if (CommonTextToolsConfig.WORDNET_ALGO_JIANG_CONRATH_ENABLED) {
+                    calculatorThresholdMap.put(new JiangConrath(database), CommonTextToolsConfig.WORDNET_ALGO_JIANG_CONRATH_THRESHOLD);
+                }
+
+                if (CommonTextToolsConfig.WORDNET_ALGO_EXTENDED_LESK_ENABLED) {
+                    calculatorThresholdMap.put(new Lesk(database), CommonTextToolsConfig.WORDNET_ALGO_EXTENDED_LESK_THRESHOLD);
+                }
+
+                if (CommonTextToolsConfig.WORDNET_ALGO_EZZIKOURI_ENABLED) {
+                    // TODO: Implement EZZIKOURI
+                }
+
+                var measure = new WordNetMeasure(calculatorThresholdMap);
                 list.add(measure);
             }
 
