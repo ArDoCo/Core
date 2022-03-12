@@ -42,10 +42,20 @@ public class NgramMeasure implements WordSimMeasure {
      * Constructs a new {@link NgramMeasure}.
      *
      * @param variant             the variant that should be used
-     * @param n                   the length of the considered n-grams
-     * @param similarityThreshold the threshold above which words are considered similar
+     * @param n                   the length of the considered n-grams, must be a positive integer
+     * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
      */
     public NgramMeasure(Variant variant, int n, double similarityThreshold) {
+        Objects.requireNonNull(variant);
+
+        if (n < 0) {
+            throw new IllegalArgumentException("n must be a positive integer: " + n);
+        }
+
+        if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
+            throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
+        }
+
         this.variant = Objects.requireNonNull(variant);
         this.n = n;
         this.similarityThreshold = similarityThreshold;
