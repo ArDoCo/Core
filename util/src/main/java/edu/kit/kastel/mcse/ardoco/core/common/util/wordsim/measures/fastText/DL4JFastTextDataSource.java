@@ -11,22 +11,22 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.VectorUtils.isZero;
 
 public class DL4JFastTextDataSource implements FastTextDataSource {
 
-    private static final double[] ZERO_VECTOR = new double[0];
-
     private final FastText fastText;
     private final VectorCache cache;
+    private final double[] zeroVector;
 
     public DL4JFastTextDataSource(Path modelPath) {
         this.fastText = FastText.builder().build();
         this.fastText.loadBinaryModel(modelPath.toString());
         this.cache = new VectorCache();
+        this.zeroVector = new double[this.fastText.getDimension()];
     }
 
     public Optional<double[]> getWordVector(String word) {
         double[] vector;
 
         if (this.cache.contains(word)) {
-            vector = this.cache.getOrDefault(word, ZERO_VECTOR);
+            vector = this.cache.getOrDefault(word, zeroVector);
         }
         else {
             vector = this.fastText.getWordVector(word);
@@ -36,7 +36,7 @@ public class DL4JFastTextDataSource implements FastTextDataSource {
         return isZero(vector) ? Optional.empty() : Optional.of(vector);
     }
 
-    @Override public Optional<Double> getSimilarity(String firstWord, String secondWord) throws RetrieveVectorException {
+    @Override public Optional<Double> getSimilarity(String firstWord, String secondWord) {
         var firstVec = getWordVector(firstWord).orElse(null);
         if (firstVec == null) { return Optional.empty(); }
 
