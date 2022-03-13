@@ -16,6 +16,10 @@ public class EvalPlan {
         this.properties = new Properties();
     }
 
+    public EvalPlan(String group, int x) {
+        this(group, String.valueOf(x));
+    }
+
     public String getId() {
         return id;
     }
