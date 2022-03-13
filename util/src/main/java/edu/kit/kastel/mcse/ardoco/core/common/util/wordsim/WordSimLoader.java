@@ -77,6 +77,8 @@ public class WordSimLoader {
             if (CommonTextToolsConfig.WORDNET_ENABLED) {
                 Path wordNetDirPath = Path.of(CommonTextToolsConfig.WORDNET_DATA_DIR_PATH);
                 IRAMDictionary dictionary = new RAMDictionary(wordNetDirPath.toFile(), ILoadPolicy.BACKGROUND_LOAD);
+                dictionary.open();
+
                 ILexicalDatabase database = new MITWordNet(dictionary);
                 Map<RelatednessCalculator, Double> calculatorThresholdMap = new HashMap<>();
 
