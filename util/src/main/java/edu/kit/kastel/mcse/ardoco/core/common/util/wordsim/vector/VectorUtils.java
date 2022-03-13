@@ -111,7 +111,7 @@ public class VectorUtils {
      * @param scalar the scalar
      */
     public static void scale(double[] vector, double scalar) {
-        Objects.requireNonNull(scalar);
+        Objects.requireNonNull(vector);
 
         for (int i = 0; i < vector.length; i++) {
             vector[i] = vector[i] * scalar;
