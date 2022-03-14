@@ -169,7 +169,7 @@ public class TextState implements ITextState {
     public final ImmutableList<String> getNameList() {
 
         Set<String> names = new HashSet<>();
-        ImmutableList<INounMapping> nameMappings = getNames();
+        var nameMappings = getNames();
         for (INounMapping nnm : nameMappings) {
             names.add(nnm.getReference());
         }
@@ -184,7 +184,7 @@ public class TextState implements ITextState {
     @Override
     public final ImmutableList<String> getNortList() {
         Set<String> norts = new HashSet<>();
-        ImmutableList<INounMapping> nortMappings = getNameOrTypeMappings();
+        var nortMappings = getNameOrTypeMappings();
         for (INounMapping nnm : nortMappings) {
             norts.add(nnm.getReference());
         }
@@ -199,7 +199,7 @@ public class TextState implements ITextState {
     @Override
     public final ImmutableList<String> getTypeList() {
         Set<String> types = new HashSet<>();
-        ImmutableList<INounMapping> typeMappings = getTypes();
+        var typeMappings = getTypes();
         for (INounMapping nnm : typeMappings) {
             types.add(nnm.getReference());
         }

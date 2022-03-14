@@ -1,8 +1,6 @@
 /* Licensed under MIT 2021. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
-import java.util.Set;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -110,9 +108,10 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         }
     }
 
+    // TODO check if we can improve type identification
     private ImmutableList<String> getSimilarModelTypes(ImmutableList<INounMapping> typeMappings) {
         MutableSet<String> similarModelTypes = Sets.mutable.empty();
-        Set<String> typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
+        var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
             var currSimilarTypes = Lists.immutable
                     .fromStream(typeIdentifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, typeMapping.getReference())));
