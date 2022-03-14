@@ -108,7 +108,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         }
     }
 
-    // TODO check if we can improve type identification
     private ImmutableList<String> getSimilarModelTypes(ImmutableList<INounMapping> typeMappings) {
         MutableSet<String> similarModelTypes = Sets.mutable.empty();
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
