@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.Objects;
@@ -91,7 +91,7 @@ public class Relation implements IModelRelation {
 
     @Override
     public String toString() {
-        MutableList<String> instanceNames = instances.collect(IModelInstance::getLongestName);
+        MutableList<String> instanceNames = instances.collect(IModelInstance::getFullName);
         return "Relation: [" + " name=" + type + ", instances= " + String.join(", ", instanceNames) + "]";
     }
 

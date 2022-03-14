@@ -1,10 +1,10 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.text;
 
 import java.io.PrintStream;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.NameInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.NameInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;

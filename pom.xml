@@ -258,6 +258,7 @@
               <nrOfIndentSpace>2</nrOfIndentSpace>
             </sortPom>
           </pom>
+          <ratchetFrom>origin/main</ratchetFrom>
         </configuration>
       </plugin>
     </plugins>

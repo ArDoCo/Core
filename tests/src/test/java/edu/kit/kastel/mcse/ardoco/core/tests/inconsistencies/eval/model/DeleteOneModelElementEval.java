@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model;
 
 import java.io.PrintStream;
@@ -12,7 +12,7 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingModelInstanceInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -29,17 +29,16 @@ import edu.kit.kastel.mcse.ardoco.core.text.IText;
 public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
     public DeleteOneModelElementEval() {
-        super();
     }
 
     @Override
     public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
-        Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> result = process(project, originalModel, originalText, strategy);
+        var result = process(project, originalModel, originalText, strategy);
 
-        PRF1Evaluator evaluator = new PRF1Evaluator();
+        var evaluator = new PRF1Evaluator();
 
-        String modelId = originalModel.getModelId();
+        var modelId = originalModel.getModelId();
 
         for (var r : result.entrySet()) {
             this.evaluate(result.get(null).getInconsistencyState(modelId), r, modelId, gs, evaluator, os);
@@ -93,11 +92,11 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
             return;
         }
 
-        IModelInstance deletedElement = r.getKey().getElement();
+        var deletedElement = r.getKey().getElement();
         os.println("DEL " + deletedElement);
 
         var inconsistencyDiff = InconsistencyHelper.getDiff(originalState, r.getValue().getInconsistencyState(modelId));
-        ImmutableList<Integer> sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedList().toImmutable();
+        var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedList().toImmutable();
 
         var newInconsistencies = inconsistencyDiff.getNewInconsistencies();
         var newImportantInconsistencies = newInconsistencies //
@@ -120,7 +119,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var fp = foundSentencesWithDuplicatesOverInconsistencies.select(i -> !sentencesAnnotatedWithElement.contains(i));
         var fn = sentencesAnnotatedWithElement.select(i -> !foundSentencesWithDuplicatesOverInconsistencies.contains(i));
 
-        EvaluationResult eval = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
+        var eval = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
 
         os.println(eval);
         os.println("-----------------------------------");
