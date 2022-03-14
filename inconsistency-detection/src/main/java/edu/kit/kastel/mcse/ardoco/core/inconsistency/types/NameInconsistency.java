@@ -1,5 +1,5 @@
-/* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.inconsistency;
+/* Licensed under MIT 2021-2022. */
+package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -8,6 +8,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
@@ -30,7 +31,7 @@ public class NameInconsistency implements IInconsistency {
     @Override
     public String getReason() {
         String textOccurence = word.getText();
-        String modelOccurence = modelInstance.getLongestName();
+        String modelOccurence = modelInstance.getFullName();
         String uid = modelInstance.getUid();
         return String.format(Locale.US, REASON_FORMAT_STRING, textOccurence, sentenceNo, modelOccurence, uid);
     }
@@ -44,7 +45,7 @@ public class NameInconsistency implements IInconsistency {
     public ImmutableList<String[]> toFileOutput() {
         MutableList<String[]> returnList = Lists.mutable.empty();
         var modelUid = modelInstance.getUid();
-        returnList.add(new String[] { getType(), Integer.toString(sentenceNo), word.getText(), modelInstance.getLongestName(), modelUid });
+        returnList.add(new String[] { getType(), Integer.toString(sentenceNo), word.getText(), modelInstance.getFullName(), modelUid });
         return returnList.toImmutable();
     }
 

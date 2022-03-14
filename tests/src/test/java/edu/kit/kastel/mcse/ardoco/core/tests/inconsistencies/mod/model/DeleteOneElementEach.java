@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model;
 
 import java.util.Iterator;
@@ -46,7 +46,7 @@ public class DeleteOneElementEach implements IModificationStrategy {
             }
             int deleted = currentDeletion++;
             IModelInstance deletionModelElement = originalModelElements.get(deleted);
-            logger.info("Current deletion model element: {}", deletionModelElement.getLongestName());
+            logger.info("Current deletion model element: {}", deletionModelElement.getFullName());
             return ModifiedElement.of(new ModelWrapper(deleted), deletionModelElement, Modifications.DELETE_ELEMENT);
         }
 

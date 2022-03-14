@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
@@ -220,7 +220,7 @@ class TracelinksIT {
             }
             var sentenceText = sentences.get(sentenceNo - 1);
 
-            outputList.add(String.format("%-20s - %s (%s)", modelElement.getLongestName(), sentenceText.getText(), tracelinkString));
+            outputList.add(String.format("%-20s - %s (%s)", modelElement.getFullName(), sentenceText.getText(), tracelinkString));
         }
         return outputList;
     }

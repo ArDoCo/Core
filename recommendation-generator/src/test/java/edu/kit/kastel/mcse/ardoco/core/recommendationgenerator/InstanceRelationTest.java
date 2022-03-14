@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.Collections;
@@ -36,12 +36,12 @@ class InstanceRelationTest {
         instance1 = new RecommendedInstance("i1.name", "i1.type", 1, Lists.immutable.empty(), Lists.immutable.empty());
         instance2 = new RecommendedInstance("i2.name", "i2.type", 1, Lists.immutable.empty(), Lists.immutable.empty());
         instance3 = new RecommendedInstance("i3.name", "i3.type", 1, Lists.immutable.empty(), Lists.immutable.empty());
-        relator1 = new Word();
-        relator2 = new Word();
-        from1 = Collections.singletonList(new Word());
-        to1 = Collections.singletonList(new Word());
-        from2 = Collections.singletonList(new Word());
-        to2 = Collections.singletonList(new Word());
+        relator1 = new DummyWord();
+        relator2 = new DummyWord();
+        from1 = Collections.singletonList(new DummyWord());
+        to1 = Collections.singletonList(new DummyWord());
+        from2 = Collections.singletonList(new DummyWord());
+        to2 = Collections.singletonList(new DummyWord());
         relation1 = new InstanceRelation(instance1, instance2, relator1, from1, to1);
         relation2 = new InstanceRelation(instance2, instance3, relator2, from2, to2);
     }
@@ -64,7 +64,7 @@ class InstanceRelationTest {
     @Test
     @DisplayName("Test adding new link to InstanceRelation/adding already present links")
     void addLinkTest() {
-        int rel1Size = relation1.getSize();
+        var rel1Size = relation1.getSize();
         Assertions.assertFalse(relation1.addLink(relator1, from1, to1));
         Assertions.assertEquals(rel1Size, relation1.getSize());
 
@@ -86,7 +86,7 @@ class InstanceRelationTest {
         Assertions.assertFalse(relation1.isIn(relator2, from2, to2));
     }
 
-    protected class Word implements IWord {
+    protected static class DummyWord implements IWord {
 
         @Override
         public int getSentenceNo() {
