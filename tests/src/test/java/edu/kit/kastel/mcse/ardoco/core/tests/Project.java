@@ -22,7 +22,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore_w_text.owl", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(1.0, .620, .765), //
+            new EvaluationResults(.99, .620, .765), //
             new EvaluationResults(.99, .586, .739)//
     ), //
     TEAMMATES( //
@@ -30,8 +30,8 @@ public enum Project {
             "src/test/resources/benchmark/teammates/teammates_w_text.owl", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new EvaluationResults(.889, .879, .884), //
-            new EvaluationResults(.895, .830, .861)//
+            new EvaluationResults(.913, .880, .896), //
+            new EvaluationResults(.908, .832, .869)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/teastore.owl", //
