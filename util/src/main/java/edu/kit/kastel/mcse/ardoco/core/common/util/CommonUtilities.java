@@ -136,7 +136,6 @@ public final class CommonUtilities {
      * @return List of type names in the model state that are similar to the given word
      */
     public static ImmutableList<String> getSimilarTypes(IWord word, IModelState modelState) {
-        // TODO can we improve detection of similar types
         var identifiers = getTypeIdentifiers(modelState);
         return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
     }
@@ -244,9 +243,8 @@ public final class CommonUtilities {
         }
         if (currentProbability >= newProbability) {
             return currentProbability + newProbability * (1 - currentProbability);
-        } else {
-            return (currentProbability + newProbability) * 0.5;
         }
+        return (currentProbability + newProbability) * 0.5;
     }
 
     /**
