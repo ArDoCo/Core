@@ -85,7 +85,7 @@ public final class CommonUtilities {
      * @return reference with whitespaces instead of separators
      */
     public static ImmutableList<String> splitAtSeparators(String reference) {
-        String ref = reference;
+        var ref = reference;
         for (String sep : CommonTextToolsConfig.SEPARATORS_TO_SPLIT) {
             ref = ref.replaceAll(sep, " ");
         }
@@ -136,7 +136,8 @@ public final class CommonUtilities {
      * @return List of type names in the model state that are similar to the given word
      */
     public static ImmutableList<String> getSimilarTypes(IWord word, IModelState modelState) {
-        Set<String> identifiers = getTypeIdentifiers(modelState);
+        // TODO can we improve detection of similar types
+        var identifiers = getTypeIdentifiers(modelState);
         return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
     }
 
@@ -166,7 +167,7 @@ public final class CommonUtilities {
      * @return the name split at snake and kebab case
      */
     public static String splitSnakeAndKebabCase(String name) {
-        StringJoiner joiner = new StringJoiner(" ");
+        var joiner = new StringJoiner(" ");
         for (String namePart : name.split("[-_]")) {
             joiner.add(namePart);
         }
@@ -180,7 +181,7 @@ public final class CommonUtilities {
      * @return the name split at camel case
      */
     public static String splitCamelCase(String name) {
-        StringJoiner joiner = new StringJoiner(" ");
+        var joiner = new StringJoiner(" ");
         for (String namePart : name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")) {
             joiner.add(namePart);
         }
@@ -205,7 +206,7 @@ public final class CommonUtilities {
      */
     public static boolean nameIsCamelCased(String name) {
         var unCamelCased = CommonUtilities.splitCamelCase(name);
-        return (name.length() < unCamelCased.length());
+        return name.length() < unCamelCased.length();
     }
 
     /**
@@ -216,7 +217,7 @@ public final class CommonUtilities {
      */
     public static boolean nameIsSnakeCased(String name) {
         var split = name.split("_");
-        return (split.length > 1);
+        return split.length > 1;
     }
 
     /**
@@ -227,7 +228,7 @@ public final class CommonUtilities {
      */
     public static boolean nameIsKebabCased(String name) {
         var split = name.split("-");
-        return (split.length > 1);
+        return split.length > 1;
     }
 
     /**
@@ -238,13 +239,11 @@ public final class CommonUtilities {
      * @return the new probability
      */
     public static double calcNewProbabilityValue(double currentProbability, double newProbability) {
-        if (valueEqual(currentProbability, 1.0)) {
+        if (valueEqual(currentProbability, 1.0) || valueEqual(newProbability, 1.0)) {
             return 1.0;
         }
-        if (valueEqual(newProbability, 1.0)) {
-            return 1.0;
-        } else if (currentProbability >= newProbability) {
-            return currentProbability + (newProbability * (1 - currentProbability));
+        if (currentProbability >= newProbability) {
+            return currentProbability + newProbability * (1 - currentProbability);
         } else {
             return (currentProbability + newProbability) * 0.5;
         }
@@ -258,7 +257,7 @@ public final class CommonUtilities {
      */
     public static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
         var sortedPhrase = phrase.toSortedListBy(IWord::getPosition);
-        StringJoiner referenceJoiner = new StringJoiner(" ");
+        var referenceJoiner = new StringJoiner(" ");
         for (var w : sortedPhrase) {
             referenceJoiner.add(w.getText());
         }
@@ -271,9 +270,8 @@ public final class CommonUtilities {
         var sortedWords = deps.toSortedListBy(IWord::getPosition);
         if (deps.size() < 2) {
             return Lists.immutable.empty();
-        } else {
-            return Lists.immutable.ofAll(sortedWords);
         }
+        return Lists.immutable.ofAll(sortedWords);
     }
 
     public static ImmutableList<IWord> filterWordsOfTypeMappings(ImmutableList<IWord> words, ITextState textState) {

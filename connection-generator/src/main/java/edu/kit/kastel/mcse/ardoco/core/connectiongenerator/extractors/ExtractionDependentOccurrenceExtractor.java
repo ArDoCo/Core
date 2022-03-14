@@ -82,10 +82,21 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param word the node to check
      */
     private void searchForName(IWord word) {
-        boolean instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
+        if (posTagIsUndesired(word) && !wordStartsWithCapitalLetter(word)) {
+            return;
+        }
+        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
             textState.addName(word, probability);
         }
+    }
+
+    private boolean wordStartsWithCapitalLetter(IWord word) {
+        return Character.isUpperCase(word.getText().charAt(0));
+    }
+
+    private boolean posTagIsUndesired(IWord word) {
+        return !word.getPosTag().getTag().startsWith("NN");
     }
 
     /**
@@ -96,7 +107,7 @@ public class ExtractionDependentOccurrenceExtractor extends ConnectionExtractor 
      * @param word the node to check
      */
     private void searchForType(IWord word) {
-        boolean instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
+        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
             textState.addType(word, probability);
         }
