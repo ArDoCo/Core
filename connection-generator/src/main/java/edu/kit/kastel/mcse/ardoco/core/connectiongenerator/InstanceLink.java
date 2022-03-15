@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.Arrays;
@@ -133,8 +133,8 @@ public class InstanceLink implements IInstanceLink {
             types.addAll(typeMapping.getSurfaceForms().castToCollection());
             typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
-        return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getLongestName() + //
-                ", as=" + String.join(", ", modelInstance.getLongestType()) + ", probability=" + probability + ", FOUND: " + //
+        return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getFullName() + //
+                ", as=" + String.join(", ", modelInstance.getFullType()) + ", probability=" + probability + ", FOUND: " + //
                 textualInstance.getName() + " : " + getTextualInstance().getType() + ", occurrences= " + //
                 "NameVariants: " + names.size() + ": " + names.toString() + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
                 ", TypeVariants: " + types.size() + ": " + types.toString() + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";

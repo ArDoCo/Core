@@ -55,13 +55,13 @@ public abstract class RecommendationAgent extends Agent {
     }
 
     @Override
-    protected final RecommendationAgent createInternal(AgentDatastructure data, Configuration config) {
+    protected final RecommendationAgent createInternal(String modelId, AgentDatastructure data, Configuration config) {
         Objects.requireNonNull(data.getText());
         Objects.requireNonNull(data.getTextState());
-        Objects.requireNonNull(data.getModelState());
-        Objects.requireNonNull(data.getRecommendationState());
+        Objects.requireNonNull(data.getModelState(modelId));
+        Objects.requireNonNull(data.getRecommendationState(modelId));
 
-        return this.create(data.getText(), data.getTextState(), data.getModelState(), data.getRecommendationState(), config);
+        return this.create(data.getText(), data.getTextState(), data.getModelState(modelId), data.getRecommendationState(modelId), config);
     }
 
     /**

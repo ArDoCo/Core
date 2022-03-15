@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -30,6 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConf
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.model.java.JavaOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
@@ -62,6 +64,9 @@ public final class Pipeline {
     private static final String CMD_PROVIDED = "p";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
+    private static final String CMD_IMPLEMENTATION = "i";
+
+    private static Options options;
 
     /**
      * The main method.
@@ -77,6 +82,7 @@ public final class Pipeline {
         // -p : Flag to make use of provided ontology to load preprocessed text
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
+        // -i : Model contains Code Model
 
         CommandLine cmd = null;
         try {
@@ -97,7 +103,7 @@ public final class Pipeline {
         File additionalConfigs = null;
         File outputDir = null;
 
-        boolean providedTextOntology = cmd.hasOption(CMD_PROVIDED);
+        var providedTextOntology = cmd.hasOption(CMD_PROVIDED);
         if (!providedTextOntology && !cmd.hasOption(CMD_TEXT)) {
             printUsage();
             return;
@@ -118,32 +124,21 @@ public final class Pipeline {
             return;
         }
 
-        String name = cmd.getOptionValue(CMD_NAME);
+        var name = cmd.getOptionValue(CMD_NAME);
 
         if (!name.matches("[A-Za-z0-9_]+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
             return;
         }
 
-        runAndSave(name, inputText, inputModel, additionalConfigs, outputDir);
+        var hasJavaModel = cmd.hasOption(CMD_IMPLEMENTATION);
+
+        runAndSave(name, inputText, inputModel, additionalConfigs, outputDir, hasJavaModel);
     }
 
     private static void printUsage() {
-        logger.info(
-                """
-                        Usage: java -jar ardoco-core-pipeline.jar
-                        -n NAME_OF_THE_PROJECT (will be stored in the results)
-                        -m PATH_TO_THE_OWL_ONTOLOGY (use Ecore2OWL to obtain PCM models as ontology)
-                        -o PATH_TO_OUTPUT_FOLDER
-
-                        Text input parameters (one of them has to be provided):
-                        -t PATH_TO_PLAIN_TEXT
-                        -p (provided ontology contains the preprocessed text that should be used instead of the text)
-
-                        Optional Parameters:
-                        -c CONFIG_FILE (the config file can override any default configuration using the standard property syntax (see config files in src/main/resources)
-
-                        """);
+        var formatter = new HelpFormatter();
+        formatter.printHelp("java -jar ardoco-core-pipeline.jar", options);
     }
 
     /**
@@ -157,7 +152,22 @@ public final class Pipeline {
      * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
      */
     public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs) {
-        return runAndSave(name, inputText, inputModel, additionalConfigs, null);
+        return runAndSave(name, inputText, inputModel, additionalConfigs, null, false);
+    }
+
+    /**
+     * Run the approach equally to {@link #runAndSave(String, File, File, File, File)} but without saving the output to
+     * the file system.
+     *
+     * @param name              Name of the run
+     * @param inputText         File of the input text. Can
+     * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
+     * @param additionalConfigs File with the additional or overwriting config parameters that should be used
+     * @param hasCodeModel      indicate that the model contains a code model
+     * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
+     */
+    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, boolean hasCodeModel) {
+        return runAndSave(name, inputText, inputModel, additionalConfigs, null, hasCodeModel);
     }
 
     /**
@@ -168,33 +178,40 @@ public final class Pipeline {
      * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
      * @param additionalConfigs File with the additional or overwriting config parameters that should be used
      * @param outputDir         File that represents the output directory where the results should be written to
+     * @param hasCodeModel      indicate that the model contains a code model
      * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
      */
-    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir) {
+    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean hasCodeModel) {
         logger.info("Starting {}", name);
-        long startTime = System.currentTimeMillis();
-        long prevStartTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
 
         var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
-        logger.info("Preparing and processing text input.");
-        IText annotatedText = getAnnotatedText(inputText, ontoConnector);
+        logger.info("Preparing and preprocessing text input.");
+        var annotatedText = getAnnotatedText(inputText, ontoConnector);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
         }
 
-        logger.info("Processing model input");
-        IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
-        if (outputDir != null) {
-            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances.csv").toFile(), runModelExtractor(pcmModel), name);
-        }
-
-        logTiming(prevStartTime, "Text- and Model-Loading");
-
         logger.info("Starting process to generate Trace Links");
-        prevStartTime = System.currentTimeMillis();
+        var prevStartTime = System.currentTimeMillis();
+        IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
         var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
+
+        if (hasCodeModel) {
+            IModelConnector javaModel = new JavaOntologyModelConnector(ontoConnector);
+            var codeModelState = runModelExtractor(javaModel);
+            data.addModelState(codeModelState.getModelId(), codeModelState);
+
+        }
+        if (outputDir != null) {
+            for (String modelId : data.getModelIds()) {
+                var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + data.getModelState(modelId).getMetamodel().toString() + ".csv")
+                        .toFile();
+                FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(modelId), name);
+            }
+        }
         logTiming(prevStartTime, "Model-Extractor");
 
         prevStartTime = System.currentTimeMillis();
@@ -219,9 +236,12 @@ public final class Pipeline {
         if (outputDir != null) {
             logger.info("Writing output.");
             prevStartTime = System.currentTimeMillis();
-            printResultsInFiles(outputDir, name, data, duration);
-            var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
-            ontoConnector.save(ontoSaveFile);
+
+            for (String modelId : data.getModelIds()) {
+                printResultsInFiles(outputDir, modelId, name, data, duration);
+                var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
+                ontoConnector.save(ontoSaveFile);
+            }
             logTiming(prevStartTime, "Saving");
         }
 
@@ -270,24 +290,26 @@ public final class Pipeline {
         return outFile.getAbsolutePath();
     }
 
-    private static void printResultsInFiles(File outputDir, String name, AgentDatastructure data, Duration duration) {
+    private static void printResultsInFiles(File outputDir, String modelId, String name, AgentDatastructure data, Duration duration) {
 
         FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings.csv").toFile(), //
                 data.getTextState());
 
         FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_trace_links.csv").toFile(), //
-                data.getConnectionState());
+                data.getConnectionState(modelId));
 
         FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states.csv").toFile(), //
-                data.getModelState(), data.getTextState(), data.getRecommendationState(), data.getConnectionState(), duration);
+                data.getModelState(modelId), data.getTextState(), data.getRecommendationState(modelId), data.getConnectionState(modelId), duration);
 
-        FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(), data.getInconsistencyState());
+        FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(),
+                data.getInconsistencyState(modelId));
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
+        var modelId = modelConnector.getModelId();
         IExecutionStage modelExtractor = new ModelProvider(modelConnector);
         modelExtractor.exec();
-        return modelExtractor.getBlackboard().getModelState();
+        return modelExtractor.getBlackboard().getModelState(modelId);
     }
 
     private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {
@@ -351,10 +373,7 @@ public final class Pipeline {
      */
     private static File ensureFile(String path, boolean create) throws IOException {
         var file = new File(path);
-        if (file.exists()) {
-            return file;
-        }
-        if (create && file.createNewFile()) {
+        if (file.exists() || create && file.createNewFile()) {
             return file;
         }
         // File not available
@@ -384,11 +403,11 @@ public final class Pipeline {
     }
 
     private static CommandLine parseCommandLine(String[] args) throws ParseException {
-        var options = new Options();
+        options = new Options();
         Option opt;
 
         // Define Options ..
-        opt = new Option(CMD_HELP, "help", false, "show help");
+        opt = new Option(CMD_HELP, "help", false, "show this message");
         opt.setRequired(false);
         options.addOption(opt);
 
@@ -420,6 +439,11 @@ public final class Pipeline {
         opt = new Option(CMD_OUT_DIR, "out", true, "path to the output directory");
         opt.setRequired(true);
         opt.setType(String.class);
+        options.addOption(opt);
+
+        opt = new Option(CMD_IMPLEMENTATION, "withimplementation", false, "indicate that the model contains the code model");
+        opt.setRequired(false);
+        opt.setType(Boolean.class);
         options.addOption(opt);
 
         CommandLineParser parser = new DefaultParser();

@@ -1,16 +1,15 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import org.eclipse.collections.api.list.ImmutableList;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
+
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 
 public class TLModelFile {
 
@@ -19,22 +18,26 @@ public class TLModelFile {
         var builder = new StringBuilder();
 
         for (Project project : projects) {
-            ImmutableList<IModelInstance> models = dataMap.get(project).getModelState().getInstances();
+            var projectData = dataMap.get(project);
 
             builder.append("# ").append(project.name()).append("\n\n");
 
-            for (IModelInstance model : models) {
-                builder.append("- [")
-                        .append(model.getUid())
-                        .append("]: \"")
-                        .append(model.getLongestName())
-                        .append("\" (")
-                        .append(model.getLongestType())
-                        .append(") (")
-                        .append(String.join(", ", model.getNames()))
-                        .append(") (")
-                        .append(String.join(", ", model.getTypes()))
-                        .append(")\n");
+            for (var modelId : projectData.getModelIds()) {
+                var models = projectData.getModelState(modelId).getInstances();
+                builder.append("## ModelId: ").append(modelId).append("\n");
+                for (IModelInstance model : models) {
+                    builder.append("- [")
+                            .append(model.getUid())
+                            .append("]: \"")
+                            .append(model.getFullName())
+                            .append("\" (")
+                            .append(model.getFullType())
+                            .append(") (")
+                            .append(String.join(", ", model.getNameParts()))
+                            .append(") (")
+                            .append(String.join(", ", model.getTypeParts()))
+                            .append(")\n");
+                }
             }
 
             builder.append("\n\n");

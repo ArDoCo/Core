@@ -10,6 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.common.Loader;
+import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 
 /**
  * The Class RecommendationGenerator defines the recommendation stage.
@@ -43,7 +44,11 @@ public class RecommendationGenerator implements IExecutionStage {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
-        data.setRecommendationState(new RecommendationState());
+
+        for (Metamodel metamodelType : data.getMetamodelTypes()) {
+            data.setRecommendationState(metamodelType, new RecommendationState());
+        }
+
         initializeAgents();
     }
 
@@ -74,7 +79,9 @@ public class RecommendationGenerator implements IExecutionStage {
             if (!recommendationAgentsList.containsKey(recommendationAgent)) {
                 throw new IllegalArgumentException("RecommendationAgent " + recommendationAgent + " not found");
             }
-            recommendationAgents.add(recommendationAgentsList.get(recommendationAgent).create(data, agentConfig));
+            for (String modelId : data.getModelIds()) {
+                recommendationAgents.add(recommendationAgentsList.get(recommendationAgent).create(modelId, data, agentConfig));
+            }
         }
 
         Map<String, DependencyAgent> dependencyAgentsList = Loader.loadLoadable(DependencyAgent.class);
@@ -82,7 +89,9 @@ public class RecommendationGenerator implements IExecutionStage {
             if (!dependencyAgentsList.containsKey(dependencyAgent)) {
                 throw new IllegalArgumentException("DependencyAgent " + dependencyAgent + " not found");
             }
-            dependencyAgents.add(dependencyAgentsList.get(dependencyAgent).create(data, agentConfig));
+            for (String modelId : data.getModelIds()) {
+                dependencyAgents.add(dependencyAgentsList.get(dependencyAgent).create(modelId, data, agentConfig));
+            }
         }
     }
 

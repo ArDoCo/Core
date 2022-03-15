@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.helpers;
 
 import java.io.File;
@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,7 +60,7 @@ public final class FilePrinter {
      * @param text   the text to use.
      */
     public static void writeSentencesInFile(File target, IText text) {
-        boolean fileCreated = createFileIfNonExistent(target);
+        var fileCreated = createFileIfNonExistent(target);
         if (!fileCreated) {
             return;
         }
@@ -115,21 +114,21 @@ public final class FilePrinter {
 
         myWriter.write("FoundNames as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        ImmutableList<String> nameList = ntrState.getNameList().toSortedList().toImmutable();
+        var nameList = ntrState.getNameList().toSortedList().toImmutable();
         myWriter.write(nameList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
         myWriter.write("FoundNORTs as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        ImmutableList<String> nortList = ntrState.getNortList().toSortedList().toImmutable();
+        var nortList = ntrState.getNortList().toSortedList().toImmutable();
         myWriter.write(nortList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
 
         myWriter.write("FoundTypes as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        ImmutableList<String> typeList = ntrState.getTypeList().toSortedList().toImmutable();
+        var typeList = ntrState.getTypeList().toSortedList().toImmutable();
         myWriter.write(typeList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
@@ -137,10 +136,8 @@ public final class FilePrinter {
         myWriter.write("Instances of the Recommendation State: ");
         myWriter.append(LINE_SEPARATOR);
 
-        Comparator<IRecommendedInstance> comRecommendedInstanceByName = getRecommendedInstancesComparator();
-        ImmutableList<IRecommendedInstance> recommendedInstances = recommendationState.getRecommendedInstances()
-                .toSortedList(comRecommendedInstanceByName)
-                .toImmutable();
+        var comRecommendedInstanceByName = getRecommendedInstancesComparator();
+        var recommendedInstances = recommendationState.getRecommendedInstances().toSortedList(comRecommendedInstanceByName).toImmutable();
 
         for (IRecommendedInstance ri : recommendedInstances) {
             myWriter.write(ri.toString() + LINE_SEPARATOR);
@@ -151,8 +148,8 @@ public final class FilePrinter {
         myWriter.write("Instances of the Connection State: ");
         myWriter.append(LINE_SEPARATOR);
 
-        Comparator<IInstanceLink> compInstByUID = getInstanceLinkComparator();
-        ImmutableList<IInstanceLink> instanceMappings = Lists.immutable.withAll(connectionState.getInstanceLinks()).toSortedList(compInstByUID).toImmutable();
+        var compInstByUID = getInstanceLinkComparator();
+        var instanceMappings = Lists.immutable.withAll(connectionState.getInstanceLinks()).toSortedList(compInstByUID).toImmutable();
 
         for (IInstanceLink imap : instanceMappings) {
 
@@ -198,7 +195,7 @@ public final class FilePrinter {
      */
     public static void writeStatesToFile(File resultFile, IModelState extractionState, ITextState ntrState, //
             IRecommendationState recommendationState, IConnectionState connectionState, Duration duration) {
-        boolean fileCreated = createFileIfNonExistent(resultFile);
+        var fileCreated = createFileIfNonExistent(resultFile);
         if (!fileCreated) {
             return;
         }
@@ -221,7 +218,7 @@ public final class FilePrinter {
      * @param name        the name
      */
     public static void writeModelInstancesInCsvFile(File destination, IModelState modelState, String name) {
-        ImmutableList<String[]> dataLines = getInstancesFromModelState(modelState, name);
+        var dataLines = getInstancesFromModelState(modelState, name);
         writeDataLinesInFile(destination, dataLines);
     }
 
@@ -234,7 +231,7 @@ public final class FilePrinter {
 
         for (IModelInstance instance : modelState.getInstances()) {
 
-            dataLines.add(new String[] { instance.getUid(), instance.getLongestName(), instance.getLongestType() });
+            dataLines.add(new String[] { instance.getUid(), instance.getFullName(), instance.getFullType() });
 
         }
 
@@ -248,7 +245,7 @@ public final class FilePrinter {
      * @param connectionState the connection state
      */
     public static void writeTraceLinksInCsvFile(File resultFile, IConnectionState connectionState) {
-        ImmutableList<String[]> dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
+        var dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
         writeDataLinesInFile(resultFile, dataLines);
     }
 
@@ -259,7 +256,7 @@ public final class FilePrinter {
      * @param textState  the text state
      */
     public static void writeNounMappingsInCsvFile(File resultFile, ITextState textState) {
-        ImmutableList<String[]> dataLines = getMappingsAsDataLinesOfTextState(textState);
+        var dataLines = getMappingsAsDataLinesOfTextState(textState);
         writeDataLinesInFile(resultFile, dataLines);
     }
 
@@ -273,7 +270,7 @@ public final class FilePrinter {
         if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMapping)) {
             for (INounMapping mapping : textState.getNounMappings()) {
 
-                MappingKind kind = mapping.getKind();
+                var kind = mapping.getKind();
 
                 var nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
                 var typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
@@ -287,8 +284,8 @@ public final class FilePrinter {
 
         for (INounMapping mapping : textState.getNounMappings()) {
 
-            INounMapping eagleMapping = mapping;
-            Map<MappingKind, Double> distribution = eagleMapping.getDistribution();
+            var eagleMapping = mapping;
+            var distribution = eagleMapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME));
             var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
             var nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
@@ -367,22 +364,29 @@ public final class FilePrinter {
         return (i, j) -> {
             var values1 = i.split(DELIMITER);
             var values2 = j.split(DELIMITER);
-            String name1 = values1[2];
-            String name2 = values2[2];
+            var name1 = values1[2];
+            var name2 = values2[2];
             var wordComparisonResult = name1.compareTo(name2);
-            if (wordComparisonResult == 0) {
-                var word1SentenceNo = Integer.parseInt(values1[1]);
-                var word2SentenceNo = Integer.parseInt(values2[1]);
-                var compareValue = word1SentenceNo - word2SentenceNo;
-                if (compareValue == 0) {
-                    var word1 = values1[3];
-                    var word2 = values2[3];
-                    compareValue = word1.compareTo(word2);
-                }
-                return compareValue;
-            } else {
+            if (wordComparisonResult != 0) {
                 return wordComparisonResult;
             }
+            var word1SentenceNo = -2;
+            var word2SentenceNo = -1;
+            try {
+                word1SentenceNo = Integer.parseInt(values1[1]);
+                word2SentenceNo = Integer.parseInt(values2[1]);
+            } catch (NumberFormatException e) {
+                // when there is no sentence number, it is intended that the Inconsistency is sorted at the beginning
+                logger.trace("Could not parse sentence number for one of the following: {}, {}", values1[1], values2[1]);
+            }
+
+            var compareValue = word1SentenceNo - word2SentenceNo;
+            if (compareValue == 0) {
+                var word1 = values1[3];
+                var word2 = values2[3];
+                compareValue = word1.compareTo(word2);
+            }
+            return compareValue;
         };
     }
 
@@ -391,8 +395,8 @@ public final class FilePrinter {
     }
 
     private static String escapeSpecialCharacters(String in) {
-        String data = in;
-        String escapedData = data.replaceAll("\\R", " ");
+        var data = in;
+        var escapedData = data.replaceAll("\\R", " ");
         if (data.contains(DELIMITER) || data.contains("\"") || data.contains("'")) {
             data = data.replace("\"", "\"\"");
             escapedData = "\"" + data + "\"";
@@ -401,7 +405,7 @@ public final class FilePrinter {
     }
 
     private static Comparator<IRecommendedInstance> getRecommendedInstancesComparator() {
-        return (ri1, ri2) -> ri1.getName().compareTo(ri2.getName());
+        return Comparator.comparing(IRecommendedInstance::getName);
     }
 
     private static Comparator<IInstanceLink> getInstanceLinkComparator() {

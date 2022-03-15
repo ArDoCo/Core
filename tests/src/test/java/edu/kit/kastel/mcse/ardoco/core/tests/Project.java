@@ -54,6 +54,7 @@ public enum Project {
     private final String goldStandard;
     private final EvaluationResults expectedTraceLinkResults;
     private final EvaluationResults expectedInconsistencyResults;
+    private IModelConnector modelConnector = null;
 
     Project(String model, String textOntology, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults,
             EvaluationResults expectedInconsistencyResults) {
@@ -82,8 +83,15 @@ public enum Project {
     }
 
     public IModelConnector getModel() {
-        OntologyConnector ontoConnector = new OntologyConnector(getModelFile().getAbsolutePath());
-        return new PcmOntologyModelConnector(ontoConnector);
+        if (modelConnector == null) {
+            synchronized (this) {
+                if (modelConnector == null) {
+                    var ontoConnector = new OntologyConnector(getModelFile().getAbsolutePath());
+                    modelConnector = new PcmOntologyModelConnector(ontoConnector);
+                }
+            }
+        }
+        return modelConnector;
     }
 
     public IText getText() {

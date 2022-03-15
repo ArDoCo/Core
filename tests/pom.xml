@@ -52,6 +52,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>inconsistency-detection</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>util</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -68,7 +73,7 @@
     <dependency>
       <groupId>com.tngtech.archunit</groupId>
       <artifactId>archunit-junit5</artifactId>
-      <version>0.23.0</version>
+      <version>0.23.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

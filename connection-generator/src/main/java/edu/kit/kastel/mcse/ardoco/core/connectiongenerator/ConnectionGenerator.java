@@ -54,7 +54,9 @@ public class ConnectionGenerator implements IExecutionStage {
         this.data = data;
         this.config = config;
         this.agentConfig = agentConfig;
-        data.setConnectionState(new ConnectionState());
+        for (String modelId : data.getModelIds()) {
+            data.setConnectionState(modelId, new ConnectionState());
+        }
         initializeAgents();
     }
 
@@ -74,7 +76,9 @@ public class ConnectionGenerator implements IExecutionStage {
             if (!myAgents.containsKey(connectionAnalyzer)) {
                 throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
             }
-            agents.add(myAgents.get(connectionAnalyzer).create(data, agentConfig));
+            for (String modelId : data.getModelIds()) {
+                agents.add(myAgents.get(connectionAnalyzer).create(modelId, data, agentConfig));
+            }
         }
     }
 
