@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import java.util.Objects;
@@ -35,8 +36,7 @@ public class VectorUtils {
     }
 
     /**
-     * Calculates the cosine similarity between the two given vectors.
-     * The two given vectors must have the same length.
+     * Calculates the cosine similarity between the two given vectors. The two given vectors must have the same length.
      *
      * @param firstVec  the first vector
      * @param secondVec the second vector
@@ -85,8 +85,8 @@ public class VectorUtils {
     }
 
     /**
-     * Adds the given vectors together and stores the resulting vector in the first argument.
-     * The two given vectors must have the same length.
+     * Adds the given vectors together and stores the resulting vector in the first argument. The two given vectors must
+     * have the same length.
      *
      * @param result the first vector that will also be the result vector after the addition
      * @param toAdd  the second vector

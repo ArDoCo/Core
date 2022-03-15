@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
@@ -9,8 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents a word similarity measure that is using various algorithms
- * on the WordNet graph to calculate word similarity.
+ * Represents a word similarity measure that is using various algorithms on the WordNet graph to calculate word
+ * similarity.
  */
 public class WordNetMeasure implements WordSimMeasure {
 
@@ -19,14 +20,16 @@ public class WordNetMeasure implements WordSimMeasure {
     /**
      * Instantiates a new {@link WordNetMeasure}.
      *
-     * @param calcThresholdMap a map containing all WordNet algorithms along with their respective similarity thresholds.
+     * @param calcThresholdMap a map containing all WordNet algorithms along with their respective similarity
+     *                         thresholds.
      */
     public WordNetMeasure(Map<RelatednessCalculator, Double> calcThresholdMap) {
         Objects.requireNonNull(calcThresholdMap);
         this.calcThresholdMap = new HashMap<>(calcThresholdMap);
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         for (RelatednessCalculator calculator : this.calcThresholdMap.keySet()) {
             double threshold = this.calcThresholdMap.get(calculator);
 

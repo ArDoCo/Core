@@ -5,12 +5,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**
- * This word similarity measure just checks whether the most appropriate string representations of the
- * passed objects are equal.
+ * This word similarity measure just checks whether the most appropriate string representations of the passed objects
+ * are equal.
  */
 public class EqualityMeasure implements WordSimMeasure {
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         return ctx.firstTerm().equals(ctx.secondTerm());
     }
 

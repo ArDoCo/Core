@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.remove;
 
 import org.sqlite.SQLiteConfig;
@@ -16,7 +17,7 @@ public class FastTextVecToSqlite {
 
     public static void main(String[] args) throws SQLException, IOException {
         Path vecFile = Path.of("C:\\dev\\uni\\fastText-0.9.2\\crawl-300d-2M-subword.vec");
-        //Path vecFile = Path.of("C:\\dev\\uni\\fastText-0.9.2\\testvectors.vec");
+        // Path vecFile = Path.of("C:\\dev\\uni\\fastText-0.9.2\\testvectors.vec");
         Path dbFile = vecFile.getParent().resolve("C:\\dev\\uni\\fastText-0.9.2\\vectors.sqlite");
 
         var cfg = new SQLiteConfig();
@@ -115,12 +116,8 @@ public class FastTextVecToSqlite {
     }
 
     private static void printHexString() {
-        byte[] bytes = {
-                (byte) 0x40, (byte) 0xb0, (byte) 0x00, (byte) 0x00,
-                (byte) 0x40, (byte) 0xa3, (byte) 0x33, (byte) 0x33,
-                (byte) 0x40, (byte) 0xa6, (byte) 0x66, (byte) 0x66,
-                (byte) 0x40, (byte) 0xa9, (byte) 0x99, (byte) 0x9a,
-        };
+        byte[] bytes = { (byte) 0x40, (byte) 0xb0, (byte) 0x00, (byte) 0x00, (byte) 0x40, (byte) 0xa3, (byte) 0x33, (byte) 0x33, (byte) 0x40, (byte) 0xa6,
+                (byte) 0x66, (byte) 0x66, (byte) 0x40, (byte) 0xa9, (byte) 0x99, (byte) 0x9a, };
 
         var buffer = ByteBuffer.wrap(bytes);
 

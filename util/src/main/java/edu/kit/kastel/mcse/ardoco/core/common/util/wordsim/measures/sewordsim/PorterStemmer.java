@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
 /*
@@ -37,9 +38,8 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 /**
  * Stemmer, implementing the Porter Stemming Algorithm
  * <p>
- * The Stemmer class transforms a word into its root form.  The input
- * word can be provided a character at time (by calling add()), or at once
- * by calling one of the various stem(something) methods.
+ * The Stemmer class transforms a word into its root form. The input word can be provided a character at time (by
+ * calling add()), or at once by calling one of the various stem(something) methods.
  */
 public class PorterStemmer {
 
@@ -59,7 +59,7 @@ public class PorterStemmer {
     }
 
     private char[] b;
-    private int i,     /* offset into b */
+    private int i, /* offset into b */
             i_end, /* offset to end of stemmed word */
             j, k;
     private static final int INC = 50;
@@ -72,8 +72,8 @@ public class PorterStemmer {
     }
 
     /**
-     * Add a character to the word being stemmed.  When you are finished
-     * adding characters, you can call stem(void) to stem the word.
+     * Add a character to the word being stemmed. When you are finished adding characters, you can call stem(void) to
+     * stem the word.
      */
     public void add(char ch) {
         if (i == b.length) {
@@ -85,9 +85,8 @@ public class PorterStemmer {
     }
 
     /**
-     * Adds wLen characters to the word being stemmed contained in a portion
-     * of a char[] array. This is like repeated calls of add(char ch), but
-     * faster.
+     * Adds wLen characters to the word being stemmed contained in a portion of a char[] array. This is like repeated
+     * calls of add(char ch), but faster.
      */
     public void add(char[] w, int wLen) {
         if (i + wLen >= b.length) {
@@ -101,9 +100,8 @@ public class PorterStemmer {
     }
 
     /**
-     * After a word has been stemmed, it can be retrieved by toString(),
-     * or a reference to the internal buffer can be retrieved by getResultBuffer
-     * and getResultLength (which is generally more efficient.)
+     * After a word has been stemmed, it can be retrieved by toString(), or a reference to the internal buffer can be
+     * retrieved by getResultBuffer and getResultLength (which is generally more efficient.)
      */
     public String toString() {
         return new String(b, 0, i_end);
@@ -117,9 +115,8 @@ public class PorterStemmer {
     }
 
     /**
-     * Returns a reference to a character buffer containing the results of
-     * the stemming process.  You also need to consult getResultLength()
-     * to determine the length of the result.
+     * Returns a reference to a character buffer containing the results of the stemming process. You also need to
+     * consult getResultLength() to determine the length of the result.
      */
     public char[] getResultBuffer() {
         return b;
@@ -129,22 +126,18 @@ public class PorterStemmer {
 
     private boolean cons(int i) {
         return switch (b[i]) {
-            case 'a', 'e', 'i', 'o', 'u' -> false;
-            case 'y' -> i == 0 || !cons(i - 1);
-            default -> true;
+        case 'a', 'e', 'i', 'o', 'u' -> false;
+        case 'y' -> i == 0 || !cons(i - 1);
+        default -> true;
         };
     }
 
-   /* m() measures the number of consonant sequences between 0 and j. if c is
-      a consonant sequence and v a vowel sequence, and <..> indicates arbitrary
-      presence,
-
-         <c><v>       gives 0
-         <c>vc<v>     gives 1
-         <c>vcvc<v>   gives 2
-         <c>vcvcvc<v> gives 3
-         ....
-   */
+    /*
+     * m() measures the number of consonant sequences between 0 and j. if c is a consonant sequence and v a vowel
+     * sequence, and <..> indicates arbitrary presence,
+     * 
+     * <c><v> gives 0 <c>vc<v> gives 1 <c>vcvc<v> gives 2 <c>vcvcvc<v> gives 3 ....
+     */
 
     private int m() {
         int n = 0;
@@ -198,14 +191,13 @@ public class PorterStemmer {
         return cons(j);
     }
 
-   /* cvc(i) is true <=> i-2,i-1,i has the form consonant - vowel - consonant
-      and also if the second c is not w,x or y. this is used when trying to
-      restore an e at the end of a short word. e.g.
-
-         cav(e), lov(e), hop(e), crim(e), but
-         snow, box, tray.
-
-   */
+    /*
+     * cvc(i) is true <=> i-2,i-1,i has the form consonant - vowel - consonant and also if the second c is not w,x or y.
+     * this is used when trying to restore an e at the end of a short word. e.g.
+     * 
+     * cav(e), lov(e), hop(e), crim(e), but snow, box, tray.
+     * 
+     */
 
     private boolean cvc(int i) {
         if (i < 2 || !cons(i) || cons(i - 1) || !cons(i - 2))
@@ -228,8 +220,9 @@ public class PorterStemmer {
         return true;
     }
 
-   /* setto(s) sets (j+1),...k to the characters in the string s, readjusting
-      k. */
+    /*
+     * setto(s) sets (j+1),...k to the characters in the string s, readjusting k.
+     */
 
     private void setto(String s) {
         int l = s.length();
@@ -246,27 +239,18 @@ public class PorterStemmer {
             setto(s);
     }
 
-   /* step1() gets rid of plurals and -ed or -ing. e.g.
-
-          caresses  ->  caress
-          ponies    ->  poni
-          ties      ->  ti
-          caress    ->  caress
-          cats      ->  cat
-
-          feed      ->  feed
-          agreed    ->  agree
-          disabled  ->  disable
-
-          matting   ->  mat
-          mating    ->  mate
-          meeting   ->  meet
-          milling   ->  mill
-          messing   ->  mess
-
-          meetings  ->  meet
-
-   */
+    /*
+     * step1() gets rid of plurals and -ed or -ing. e.g.
+     * 
+     * caresses -> caress ponies -> poni ties -> ti caress -> caress cats -> cat
+     * 
+     * feed -> feed agreed -> agree disabled -> disable
+     * 
+     * matting -> mat mating -> mate meeting -> meet milling -> mill messing -> mess
+     * 
+     * meetings -> meet
+     * 
+     */
 
     private void step1() {
         if (b[k] == 's') {
@@ -307,9 +291,10 @@ public class PorterStemmer {
             b[k] = 'i';
     }
 
-   /* step3() maps double suffices to single ones. so -ization ( = -ize plus
-      -ation) maps to -ize etc. note that the string before the suffix must give
-      m() > 0. */
+    /*
+     * step3() maps double suffices to single ones. so -ization ( = -ize plus -ation) maps to -ize etc. note that the
+     * string before the suffix must give m() > 0.
+     */
 
     private void step3() {
         if (k == 0)
@@ -552,10 +537,9 @@ public class PorterStemmer {
     }
 
     /**
-     * Stem the word placed into the Stemmer buffer through calls to add().
-     * Returns true if the stemming process resulted in a word different
-     * from the input.  You can retrieve the result with
-     * getResultLength()/getResultBuffer() or toString().
+     * Stem the word placed into the Stemmer buffer through calls to add(). Returns true if the stemming process
+     * resulted in a word different from the input. You can retrieve the result with getResultLength()/getResultBuffer()
+     * or toString().
      */
     public void stem() {
         k = i - 1;

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
@@ -27,7 +28,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Responsible for loading the word similarity measures that should be enabled according to the {@link CommonTextToolsConfig}.
+ * Responsible for loading the word similarity measures that should be enabled according to the
+ * {@link CommonTextToolsConfig}.
  */
 public class WordSimLoader {
 
@@ -39,7 +41,9 @@ public class WordSimLoader {
      * @return a list of word similarity measures
      */
     public static List<WordSimMeasure> loadUsingProperties() {
-        if (!CommonTextToolsConfig.INITIAL_LOAD_ENABLED) { return Collections.emptyList(); }
+        if (!CommonTextToolsConfig.INITIAL_LOAD_ENABLED) {
+            return Collections.emptyList();
+        }
 
         try {
             var list = new ArrayList<WordSimMeasure>();

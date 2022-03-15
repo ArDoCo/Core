@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
@@ -42,12 +43,12 @@ public class SEWordSimMeasure implements WordSimMeasure {
             throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
         }
 
-
         this.dataSource = dataSource;
         this.similarityThreshold = similarityThreshold;
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         try {
             double similarity = this.dataSource.getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
 

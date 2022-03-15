@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.util.wordsim.measures;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
@@ -15,7 +16,8 @@ public class NgramMeasureTest {
 
     // TODO: Check if all these floating point equality assertions actually work as intended
 
-    @Test public void testUnigramDistance() {
+    @Test
+    public void testUnigramDistance() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 1, 1.0);
         var levenshteinDistance = new LevenshteinDistance();
 
@@ -43,7 +45,8 @@ public class NgramMeasureTest {
         assertFalse(measure.areWordsSimilar(new ComparisonContext("Hello", "Heal"))); // 0.6
     }
 
-    @Test public void testBigram() {
+    @Test
+    public void testBigram() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 2, 0.7);
         assertEquals(0.5, measure.calculateDistance("Hello", "Hella"));
 
@@ -53,7 +56,8 @@ public class NgramMeasureTest {
         assertEquals(0.0, measure.calculateDistance("", ""));
     }
 
-    @Test public void testTrigram() {
+    @Test
+    public void testTrigram() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 3, 0.7);
         assertEquals(1.0 / 3.0, measure.calculateDistance("Hello", "Hella"));
 
@@ -63,7 +67,8 @@ public class NgramMeasureTest {
         assertEquals(0.0, measure.calculateDistance("", ""));
     }
 
-    @Test public void testConstructor() {
+    @Test
+    public void testConstructor() {
         assertThrows(IllegalArgumentException.class, () -> new NgramMeasure(NgramMeasure.Variant.LUCENE, -1, 0.5));
         assertThrows(IllegalArgumentException.class, () -> new NgramMeasure(NgramMeasure.Variant.LUCENE, 1, -0.1));
         assertThrows(IllegalArgumentException.class, () -> new NgramMeasure(NgramMeasure.Variant.LUCENE, 1, 1.1));

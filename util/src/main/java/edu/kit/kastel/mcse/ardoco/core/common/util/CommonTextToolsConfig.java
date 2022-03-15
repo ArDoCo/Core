@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -144,15 +144,18 @@ public final class CommonTextToolsConfig {
      */
     public static double WORDNET_ALGO_JIANG_CONRATH_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_JiangConrath_Threshold");
     /**
-     * Decides whether the extended Lesk algorithm (Banerjee & Pedersen 2003) should be used for the WordNet similarity measure.
+     * Decides whether the extended Lesk algorithm (Banerjee & Pedersen 2003) should be used for the WordNet similarity
+     * measure.
      */
     public static boolean WORDNET_ALGO_EXTENDED_LESK_ENABLED = CONFIG.isPropertyEnabled("wordNet_Algo_ExtendedLesk_Enabled");
     /**
-     * The threshold for the extended Lesk algorithm (Banerjee & Pedersen 2003) above which words are considered similar.
+     * The threshold for the extended Lesk algorithm (Banerjee & Pedersen 2003) above which words are considered
+     * similar.
      */
     public static double WORDNET_ALGO_EXTENDED_LESK_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_ExtendedLesk_Threshold");
     /**
-     * Decides whether the Ezzikouri algorithm (Ezzikouri et al. 2019) should be used for the WordNet similarity measure.
+     * Decides whether the Ezzikouri algorithm (Ezzikouri et al. 2019) should be used for the WordNet similarity
+     * measure.
      */
     public static boolean WORDNET_ALGO_EZZIKOURI_ENABLED = CONFIG.isPropertyEnabled("wordNet_Algo_Ezzikouri_Enabled");
     /**

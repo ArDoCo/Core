@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import java.util.HashMap;
@@ -12,8 +13,8 @@ public class VectorCache {
     private final Map<String, double[]> map = new HashMap<>();
 
     /**
-     * Stores the given word with the given vector.
-     * Replaces any previous word-to-vector mapping that had the given word.
+     * Stores the given word with the given vector. Replaces any previous word-to-vector mapping that had the given
+     * word.
      *
      * @param word   the word
      * @param vector the vector
@@ -26,7 +27,8 @@ public class VectorCache {
      * Attempts to retrieve the vector that has been stored for the given word.
      *
      * @param word the word
-     * @return the vector that the given word was mapped to, or {@link Optional#empty()} if no vector has been associated with the given word
+     * @return the vector that the given word was mapped to, or {@link Optional#empty()} if no vector has been
+     *         associated with the given word
      */
     public Optional<double[]> get(String word) {
         return Optional.ofNullable(this.map.get(word));
@@ -37,7 +39,8 @@ public class VectorCache {
      *
      * @param word        the word
      * @param alternative an alternative vector
-     * @return the vector that the given word was mapped to, or the alternative vector if no vector has been associated with the given word
+     * @return the vector that the given word was mapped to, or the alternative vector if no vector has been associated
+     *         with the given word
      */
     public double[] getOrDefault(String word, double[] alternative) {
         var stored = this.map.get(word);
