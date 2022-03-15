@@ -19,6 +19,7 @@ import edu.uniba.di.lacam.kdde.ws4j.similarity.JiangConrath;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.LeacockChodorow;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.Lesk;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.WuPalmer;
+import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +79,12 @@ public class WordSimLoader {
                 Path wordNetDirPath = Path.of(CommonTextToolsConfig.WORDNET_DATA_DIR_PATH);
                 IRAMDictionary dictionary = new RAMDictionary(wordNetDirPath.toFile(), ILoadPolicy.BACKGROUND_LOAD);
                 dictionary.open();
+
+                if (CommonTextToolsConfig.WORDNET_USE_CACHE) {
+                    WS4JConfiguration.getInstance().setCache(true);
+                }
+
+                WS4JConfiguration.getInstance().setStem(true);
 
                 ILexicalDatabase database = new MITWordNet(dictionary);
                 Map<RelatednessCalculator, Double> calculatorThresholdMap = new HashMap<>();
