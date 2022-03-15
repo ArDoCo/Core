@@ -41,7 +41,7 @@
 
   <properties>
     <eclipse-collections.version>11.0.0</eclipse-collections.version>
-    <log4j.version>2.17.1</log4j.version>
+    <log4j.version>2.17.2</log4j.version>
     <spotless.version>2.21.0</spotless.version>
     <error-prone.version>2.10.0</error-prone.version>
 
@@ -160,6 +160,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M5</version>
+          <configuration>
+            <skipTests>${skipTests}</skipTests>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -211,51 +214,54 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.8.7</version>
         </plugin>
-        <plugin>
-          <groupId>com.diffplug.spotless</groupId>
-          <artifactId>spotless-maven-plugin</artifactId>
-          <version>${spotless.version}</version>
-          <configuration>
-            <formats>
-              <format>
-                <includes>
-                  <include>*.md</include>
-                  <include>.gitignore</include>
-                </includes>
-                <trimTrailingWhitespace></trimTrailingWhitespace>
-                <endWithNewline></endWithNewline>
-                <indent>
-                  <tabs>true</tabs>
-                  <spacesPerTab>4</spacesPerTab>
-                </indent>
-              </format>
-            </formats>
-            <!-- define a language-specific format -->
-            <java>
-              <eclipse>
-                <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
-              </eclipse>
-
-              <importOrder>
-                <file>spotless.importorder</file>
-              </importOrder>
-              <removeUnusedImports></removeUnusedImports>
-              <licenseHeader>
-                <file>${maven.multiModuleProjectDirectory}/license-header</file>
-              </licenseHeader>
-            </java>
-            <pom>
-              <sortPom>
-                <encoding>UTF-8</encoding>
-                <keepBlankLines>true</keepBlankLines>
-                <indentBlankLines>false</indentBlankLines>
-                <nrOfIndentSpace>2</nrOfIndentSpace>
-              </sortPom>
-            </pom>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless.version}</version>
+        <configuration>
+          <formats>
+            <format>
+              <includes>
+                <include>*.md</include>
+                <include>.gitignore</include>
+              </includes>
+              <trimTrailingWhitespace></trimTrailingWhitespace>
+              <endWithNewline></endWithNewline>
+              <indent>
+                <tabs>true</tabs>
+                <spacesPerTab>4</spacesPerTab>
+              </indent>
+            </format>
+          </formats>
+          <!-- define a language-specific format -->
+          <java>
+            <eclipse>
+              <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
+            </eclipse>
+
+            <importOrder>
+              <file>spotless.importorder</file>
+            </importOrder>
+            <removeUnusedImports></removeUnusedImports>
+            <licenseHeader>
+              <file>${maven.multiModuleProjectDirectory}/license-header</file>
+            </licenseHeader>
+          </java>
+          <pom>
+            <sortPom>
+              <encoding>UTF-8</encoding>
+              <keepBlankLines>true</keepBlankLines>
+              <indentBlankLines>false</indentBlankLines>
+              <nrOfIndentSpace>2</nrOfIndentSpace>
+            </sortPom>
+          </pom>
+          <ratchetFrom>origin/main</ratchetFrom>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>

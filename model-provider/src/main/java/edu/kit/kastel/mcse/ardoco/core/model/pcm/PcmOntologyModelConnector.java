@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -17,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
+import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 
 /**
  * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.
@@ -25,6 +27,7 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private static final String ENTITY_NAME_PROPERTY = "entityName_-_NamedElement";
     private static final String ID_PROPERTY = "id_-_Identifier";
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
+    private final String modelId = UUID.randomUUID().toString();
 
     private OntologyInterface ontologyConnector;
 
@@ -91,6 +94,16 @@ public class PcmOntologyModelConnector implements IModelConnector {
     public ImmutableList<IModelRelation> getRelations() {
         // NOT YET IMPLEMENTED!
         return Lists.immutable.empty();
+    }
+
+    @Override
+    public String getModelId() {
+        return modelId;
+    }
+
+    @Override
+    public Metamodel getMetamodel() {
+        return Metamodel.ARCHITECTURE;
     }
 
 }

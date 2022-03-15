@@ -32,11 +32,11 @@ public abstract class Agent implements IAgent {
      * @return the agent instance
      * @throws IllegalArgumentException iff the config has not the class specified in {@link #Agent(Class)}
      */
-    public final Agent create(AgentDatastructure data, Configuration config) {
+    public final Agent create(String modelId, AgentDatastructure data, Configuration config) {
         if (!configType.isInstance(config)) {
             throw new IllegalArgumentException(String.format("Configuration invalid: Expected: %s - Present: %s", configType, config.getClass()));
         }
-        return createInternal(data, config);
+        return createInternal(modelId, data, config);
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class Agent implements IAgent {
      * @param config the configuration
      * @return the new agent
      */
-    protected abstract Agent createInternal(AgentDatastructure data, Configuration config);
+    protected abstract Agent createInternal(String modelId, AgentDatastructure data, Configuration config);
 
     @Override
     public String getId() {

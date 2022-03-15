@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -9,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.NameInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.NameInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
@@ -73,7 +73,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
      * @return <code>true</code>, if there is a match, otherwise <code>false</code>
      */
     private static boolean equalTextOrLemma(IModelInstance modelInstance, IWord word) {
-        String modelName = modelInstance.getLongestName();
+        String modelName = modelInstance.getFullName();
         String text = word.getText();
         String lemma = word.getLemma();
 
@@ -83,7 +83,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
 
     private static boolean partOfDividerEqualsModelInstance(IModelInstance modelInstance, IWord word) {
         String text = word.getText();
-        String modelName = modelInstance.getLongestName();
+        String modelName = modelInstance.getFullName();
         for (String part : text.split(REGEX_DIVIDER)) {
             // NOTE: employ other/better String comparison instead of exact equals?
             if (part.equalsIgnoreCase(modelName)) {

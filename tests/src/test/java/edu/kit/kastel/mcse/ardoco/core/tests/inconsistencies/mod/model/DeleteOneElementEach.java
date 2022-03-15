@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model;
 
 import java.util.Iterator;
@@ -11,6 +11,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.Modifications;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
@@ -45,7 +46,7 @@ public class DeleteOneElementEach implements IModificationStrategy {
             }
             int deleted = currentDeletion++;
             IModelInstance deletionModelElement = originalModelElements.get(deleted);
-            logger.info("Current deletion model element: {}", deletionModelElement.getLongestName());
+            logger.info("Current deletion model element: {}", deletionModelElement.getFullName());
             return ModifiedElement.of(new ModelWrapper(deleted), deletionModelElement, Modifications.DELETE_ELEMENT);
         }
 
@@ -77,6 +78,16 @@ public class DeleteOneElementEach implements IModificationStrategy {
             relations.removeIf(r -> r.getInstances().contains(skippedElement));
             return relations.toImmutable();
 
+        }
+
+        @Override
+        public String getModelId() {
+            return model.getModelId();
+        }
+
+        @Override
+        public Metamodel getMetamodel() {
+            return model.getMetamodel();
         }
 
     }

@@ -62,9 +62,9 @@ class PerformanceIT {
     }
 
     private Duration measureExecution() {
-        Instant start = Instant.now();
-        Pipeline.runAndSave("test_time_" + name, inputText, inputModel, additionalConfigs, outputDir);
-        Instant end = Instant.now();
+        var start = Instant.now();
+        Pipeline.runAndSave("test_time_" + name, inputText, inputModel, additionalConfigs, outputDir, false);
+        var end = Instant.now();
 
         var duration = Duration.between(start, end);
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
