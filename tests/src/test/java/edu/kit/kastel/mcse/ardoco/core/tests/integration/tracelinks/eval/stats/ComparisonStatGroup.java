@@ -6,6 +6,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.Comparison;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.MeasureResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.WordPair;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.ProjectAlias;
 
@@ -17,6 +18,10 @@ import static java.util.stream.Collectors.toSet;
 
 public class ComparisonStatGroup {
 
+    private static List<IModelInstance> getModels(AgentDatastructure data) {
+        return data.getModelIds().stream().flatMap(id -> data.getModelState(id).getInstances().stream()).toList();
+    }
+
     private final String groupName;
     private final int modelCount, sentenceCount;
     private final List<Comparison> comparisons;
@@ -26,7 +31,7 @@ public class ComparisonStatGroup {
     private final MeasureMatrix matrix;
 
     public ComparisonStatGroup(Project project, AgentDatastructure data, Collection<Comparison> comparisons) {
-        this(ProjectAlias.getAlias(project), data.getModelState().getInstances().size(), data.getText().getSentences().size(), comparisons);
+        this(ProjectAlias.getAlias(project), getModels(data).size(), data.getText().getSentences().size(), comparisons);
     }
 
     public ComparisonStatGroup(String groupName, int modelCount, int sentenceCount, Collection<Comparison> inputComparisons) {
