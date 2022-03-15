@@ -23,15 +23,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.99, .620, .765), //
-            new EvaluationResults(.901, .754, .821)//
-    ), //
-    TEAMMATES( //
-            "src/test/resources/benchmark/teammates/teammates.owl", //
-            "src/test/resources/benchmark/teammates/teammates_w_text.owl", //
-            "src/test/resources/benchmark/teammates/teammates.txt", //
-            "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.656, .959, .779)//
+            new EvaluationResults(.894, .585, .707)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/teastore.owl", //
@@ -39,14 +31,22 @@ public enum Project {
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.99, .713, .832), //
-            new EvaluationResults(.775, .881, .825)),
+            new EvaluationResults(.666, .785, .720)),
+    TEAMMATES( //
+            "src/test/resources/benchmark/teammates/teammates.owl", //
+            "src/test/resources/benchmark/teammates/teammates_w_text.owl", //
+            "src/test/resources/benchmark/teammates/teammates.txt", //
+            "src/test/resources/benchmark/teammates/goldstandard.csv", //
+            new EvaluationResults(.913, .880, .896), //
+            new EvaluationResults(.643, .904, .751)//
+    ), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/bbb.owl", //
             "src/test/resources/benchmark/bigbluebutton/bbb_w_text.owl", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.676, .971, .797));
+            new EvaluationResults(.543, .941, .689));
 
     private final String model;
     private final String textOntology;
