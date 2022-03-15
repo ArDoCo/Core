@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.util.wordsim.measures;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
@@ -53,8 +54,7 @@ public class WordNetMeasureTest {
     @Test
     @Disabled
     public void manualTest() {
-        List<RelatednessCalculator> list = List.of(
-                new edu.uniba.di.lacam.kdde.ws4j.similarity.Path(db), // [0.0, 1.0]
+        List<RelatednessCalculator> list = List.of(new edu.uniba.di.lacam.kdde.ws4j.similarity.Path(db), // [0.0, 1.0]
                 new WuPalmer(db), // [0.0, 1.0]
                 new JiangConrath(db), // [0.0, Double.MAX_VALUE]
                 new LeacockChodorow(db), // [0.0, Double.MAX_VALUE]
@@ -84,12 +84,8 @@ public class WordNetMeasureTest {
     @Test
     @Disabled
     public void testEquals() {
-        Map<RelatednessCalculator, Double> calcThresholdMap = Map.of(
-                new LeacockChodorow(db), 1.0,
-                new WuPalmer(db), 0.95,
-                new JiangConrath(db), 1.0,
-                new Lesk(db), 1.0
-        );
+        Map<RelatednessCalculator, Double> calcThresholdMap = Map.of(new LeacockChodorow(db), 1.0, new WuPalmer(db), 0.95, new JiangConrath(db), 1.0,
+                new Lesk(db), 1.0);
 
         var measure = new WordNetMeasure(calcThresholdMap);
 

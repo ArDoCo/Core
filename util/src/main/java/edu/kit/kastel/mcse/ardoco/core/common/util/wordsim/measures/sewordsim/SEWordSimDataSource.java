@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
 import org.sqlite.SQLiteConfig;
@@ -13,8 +14,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Provides access to the SEWordSim sqlite database.
- * Instances of this class keep an open connection to the sqlite file until {@link #close()} is called.
+ * Provides access to the SEWordSim sqlite database. Instances of this class keep an open connection to the sqlite file
+ * until {@link #close()} is called.
  */
 public class SEWordSimDataSource implements AutoCloseable {
 
@@ -25,8 +26,8 @@ public class SEWordSimDataSource implements AutoCloseable {
     private final Connection connection;
 
     /**
-     * Construct a new {@link SEWordSimDataSource}.
-     * Once instantiated, a connection to the file will be kept open until {@link #close()} is called on this instance.
+     * Construct a new {@link SEWordSimDataSource}. Once instantiated, a connection to the file will be kept open until
+     * {@link #close()} is called on this instance.
      *
      * @param sqliteFile the path to the sqlite database file
      * @throws SQLException if connecting to the sqlite fails
@@ -57,7 +58,9 @@ public class SEWordSimDataSource implements AutoCloseable {
      */
     public boolean containsWord(String word) throws SQLException {
         Objects.requireNonNull(word);
-        if (word.isEmpty()) { return false; }
+        if (word.isEmpty()) {
+            return false;
+        }
 
         word = PorterStemmer.stem(word);
 
@@ -133,7 +136,8 @@ public class SEWordSimDataSource implements AutoCloseable {
      *
      * @throws SQLException if a database access error occurs
      */
-    @Override public void close() throws SQLException {
+    @Override
+    public void close() throws SQLException {
         this.connection.close();
     }
 

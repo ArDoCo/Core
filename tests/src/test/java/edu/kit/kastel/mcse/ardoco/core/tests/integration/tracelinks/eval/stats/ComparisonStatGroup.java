@@ -23,7 +23,7 @@ public class ComparisonStatGroup {
     private final int comparisonCount;
     private final int wordCount;
     private final List<MeasureStats> measureStats = new ArrayList<>();
-	private final MeasureMatrix matrix;
+    private final MeasureMatrix matrix;
 
     public ComparisonStatGroup(Project project, AgentDatastructure data, Collection<Comparison> comparisons) {
         this(ProjectAlias.getAlias(project), data.getModelState().getInstances().size(), data.getText().getSentences().size(), comparisons);
@@ -34,63 +34,59 @@ public class ComparisonStatGroup {
         this.modelCount = modelCount;
         this.sentenceCount = sentenceCount;
 
-		// 1.) Remove any duplicate comparisons
-	    Map<WordPair, Comparison> comparisonMap = new HashMap<>();
-	    for (Comparison comparison : inputComparisons) {
-		    comparisonMap.put(
-				new WordPair(comparison.ctx().firstString(), comparison.ctx().secondString()),
-			    comparison
-		    );
-	    }
-		this.comparisons = comparisonMap.values().stream().sorted().toList();
+        // 1.) Remove any duplicate comparisons
+        Map<WordPair, Comparison> comparisonMap = new HashMap<>();
+        for (Comparison comparison : inputComparisons) {
+            comparisonMap.put(new WordPair(comparison.ctx().firstString(), comparison.ctx().secondString()), comparison);
+        }
+        this.comparisons = comparisonMap.values().stream().sorted().toList();
 
-		// 2.) Analyze comparisons for gold standard stats
+        // 2.) Analyze comparisons for gold standard stats
         this.comparisonCount = comparisons.size();
-        this.wordCount = Stream.concat(
-                comparisons.stream().map(c -> c.ctx().firstString()),
-                comparisons.stream().map(c -> c.ctx().secondString())
-        ).collect(toSet()).size();
+        this.wordCount = Stream.concat(comparisons.stream().map(c -> c.ctx().firstString()), comparisons.stream().map(c -> c.ctx().secondString()))
+                .collect(toSet())
+                .size();
 
-		// 3.) Analyze comparisons for each individual word similarity measure
-	    List<WordSimMeasure> measures = comparisons.stream()
-		    .flatMap(c -> c.results().stream()).map(MeasureResult::measure)
-		    .collect(toSet())
-		    .stream()
-		    .sorted(Comparator.comparing(measure -> measure.getClass().getSimpleName()))
-		    .toList();
+        // 3.) Analyze comparisons for each individual word similarity measure
+        List<WordSimMeasure> measures = comparisons.stream()
+                .flatMap(c -> c.results().stream())
+                .map(MeasureResult::measure)
+                .collect(toSet())
+                .stream()
+                .sorted(Comparator.comparing(measure -> measure.getClass().getSimpleName()))
+                .toList();
 
-	    Map<WordSimMeasure, MeasureStats> map = measures.stream().collect(Collectors.toMap(m -> m, MeasureStats::new));
+        Map<WordSimMeasure, MeasureStats> map = measures.stream().collect(Collectors.toMap(m -> m, MeasureStats::new));
 
-		this.matrix = new MeasureMatrix(measures);
+        this.matrix = new MeasureMatrix(measures);
 
-	    for (Comparison comparison : comparisons) {
-		    for (MeasureResult measureResult : comparison.results()) {
-			    WordSimMeasure measure = measureResult.measure();
-			    MeasureStats stats = map.get(measure);
+        for (Comparison comparison : comparisons) {
+            for (MeasureResult measureResult : comparison.results()) {
+                WordSimMeasure measure = measureResult.measure();
+                MeasureStats stats = map.get(measure);
 
-			    if (measureResult.accepted()) {
-					stats.accepted.add(comparison);
-				}
-				else {
-					stats.denied.add(comparison);
-			    }
+                if (measureResult.accepted()) {
+                    stats.accepted.add(comparison);
+                } else {
+                    stats.denied.add(comparison);
+                }
 
-			    if (measureResult.accepted() && comparison.getNumberOfAcceptances() == 1) {
-					stats.uniquelyAccepted.add(comparison);
-			    }
+                if (measureResult.accepted() && comparison.getNumberOfAcceptances() == 1) {
+                    stats.uniquelyAccepted.add(comparison);
+                }
 
-				// Update matrix
-			    if (measureResult.accepted()) {
-				    for (MeasureResult otherResult : comparison.results()) {
-					    if (otherResult.accepted()) {
-							this.matrix.increment(measure, otherResult.measure());
-					    }
-				    }
-			    }
-		    }
-	    }
+                // Update matrix
+                if (measureResult.accepted()) {
+                    for (MeasureResult otherResult : comparison.results()) {
+                        if (otherResult.accepted()) {
+                            this.matrix.increment(measure, otherResult.measure());
+                        }
+                    }
+                }
+            }
+        }
 
-		this.measureStats.addAll(map.values());
+        this.measureStats.addAll(map.values());
     }
 
     public String getGroupName() {
@@ -119,8 +115,10 @@ public class ComparisonStatGroup {
 
     public List<MeasureStats> getMeasureStats() {
         return measureStats;
-	}
+    }
 
-	public MeasureMatrix getMatrix() { return matrix; }
+    public MeasureMatrix getMatrix() {
+        return matrix;
+    }
 
 }

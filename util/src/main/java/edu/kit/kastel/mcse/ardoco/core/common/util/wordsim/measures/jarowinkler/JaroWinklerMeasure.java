@@ -24,13 +24,15 @@ public class JaroWinklerMeasure implements WordSimMeasure {
 
     /**
      * Constructs an new {@link JaroWinklerMeasure}.
+     * 
      * @param similarityThreshold the similarity threshold above which word pairs are considered similar
      */
     public JaroWinklerMeasure(double similarityThreshold) {
         this.similarityThreshold = similarityThreshold;
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         return jaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm()) >= this.similarityThreshold;
     }
 

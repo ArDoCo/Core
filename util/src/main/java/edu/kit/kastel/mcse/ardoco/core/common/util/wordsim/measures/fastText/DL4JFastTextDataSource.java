@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorCache;
@@ -11,9 +12,9 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorU
 import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.isZero;
 
 /**
- * Provides the functionality of fastText using the DL4J (JFastText) native wrapper.
- * This data source also has additional caching functionality to improve lookup speeds.
- * Instances of this class keep a loaded fastText binary model active until {@link #close()} is called.
+ * Provides the functionality of fastText using the DL4J (JFastText) native wrapper. This data source also has
+ * additional caching functionality to improve lookup speeds. Instances of this class keep a loaded fastText binary
+ * model active until {@link #close()} is called.
  */
 public class DL4JFastTextDataSource implements AutoCloseable {
 
@@ -62,7 +63,7 @@ public class DL4JFastTextDataSource implements AutoCloseable {
      * @param firstWord  the first word
      * @param secondWord the second word
      * @return the similarity score, ranging from {@code 0.0} and {@code 1.0}, or {@link Optional#empty()} if at least
-     * one of the given words is not recognized by fastText.
+     *         one of the given words is not recognized by fastText.
      */
     public Optional<Double> getSimilarity(String firstWord, String secondWord) {
         var firstVec = getWordVector(firstWord).orElse(null);

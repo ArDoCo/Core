@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.n;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.NewSimilarityUtils;
@@ -16,8 +17,7 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 /**
- * Evaluates multiple {@link EvalPlan} instances one after another.
- * Saves evaluation results to the disk.
+ * Evaluates multiple {@link EvalPlan} instances one after another. Saves evaluation results to the disk.
  */
 public class MultiPlanEvaluator {
 
@@ -26,7 +26,8 @@ public class MultiPlanEvaluator {
 
     /**
      * Constructs a new {@link MultiPlanEvaluator} instance.
-     * @param plans the plans to evaluate
+     * 
+     * @param plans     the plans to evaluate
      * @param resultDir in which directory to store the results
      */
     public MultiPlanEvaluator(List<EvalPlan> plans, Path resultDir) {
@@ -36,6 +37,7 @@ public class MultiPlanEvaluator {
 
     /**
      * Executes the evaluation process.
+     * 
      * @throws IOException if the evaluation encounters an exception
      */
     public void execute() throws IOException {

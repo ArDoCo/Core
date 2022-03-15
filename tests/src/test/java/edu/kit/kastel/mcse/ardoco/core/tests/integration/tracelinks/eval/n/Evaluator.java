@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.n;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
@@ -61,7 +62,8 @@ public class Evaluator {
                 // Ngram
                 if (ngram) {
                     plans.add(new EvalPlan("bigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 2, threshold)));
-                    //plans.add(new EvalPlan("trigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 3, threshold)));
+                    // plans.add(new EvalPlan("trigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 3,
+                    // threshold)));
                 }
 
                 // SEWordSim

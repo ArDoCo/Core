@@ -17,8 +17,8 @@ public class NgramMeasure implements WordSimMeasure {
      */
     public enum Variant {
         /**
-         * This variant matches the algorithm included in apache/lucene which is also positional but deviates from the original algorithm
-         * by using \n as the prefix character and changing the weight for the dN function.
+         * This variant matches the algorithm included in apache/lucene which is also positional but deviates from the
+         * original algorithm by using \n as the prefix character and changing the weight for the dN function.
          */
         LUCENE,
         /**
@@ -32,7 +32,8 @@ public class NgramMeasure implements WordSimMeasure {
     private final double similarityThreshold;
 
     /**
-     * Constructs a new {@link NgramMeasure} using the settings provided by {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
+     * Constructs a new {@link NgramMeasure} using the settings provided by
+     * {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
      */
     public NgramMeasure() {
         this(Variant.LUCENE, CommonTextToolsConfig.NGRAM_MEASURE_NGRAM_LENGTH, CommonTextToolsConfig.NGRAM_SIMILARITY_THRESHOLD);
@@ -61,7 +62,8 @@ public class NgramMeasure implements WordSimMeasure {
         this.similarityThreshold = similarityThreshold;
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
 
         double distance = calculateDistance(ctx.firstTerm(), ctx.secondTerm());

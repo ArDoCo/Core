@@ -73,59 +73,55 @@ public class TLStatsFile {
 
         builder.append("\n");
 
-		// --------------------------------------------------------------------
+        // --------------------------------------------------------------------
 
-		builder.append("\n# Measure Matrix\n\n");
+        builder.append("\n# Measure Matrix\n\n");
 
-	    MeasureMatrix matrix = sumGroup.getMatrix();
-	    List<WordSimMeasure> measures = matrix.getMeasures();
+        MeasureMatrix matrix = sumGroup.getMatrix();
+        List<WordSimMeasure> measures = matrix.getMeasures();
 
-	    builder.append("| X \t| ");
-		measures.forEach(measure -> builder.append(measure.getClass().getSimpleName()).append(" \t|"));
-		builder.append("\n|---|");
-		measures.forEach(measure -> builder.append("---|"));
-		builder.append("\n");
+        builder.append("| X \t| ");
+        measures.forEach(measure -> builder.append(measure.getClass().getSimpleName()).append(" \t|"));
+        builder.append("\n|---|");
+        measures.forEach(measure -> builder.append("---|"));
+        builder.append("\n");
 
-	    for (WordSimMeasure rowMeasure : measures) {
-			builder.append("| **").append(rowMeasure.getClass().getSimpleName()).append("** \t| ");
+        for (WordSimMeasure rowMeasure : measures) {
+            builder.append("| **").append(rowMeasure.getClass().getSimpleName()).append("** \t| ");
 
-		    for (WordSimMeasure colMeasure : measures) {
-			    int count = matrix.get(rowMeasure, colMeasure);
-				builder.append(count).append(" \t| ");
-		    }
+            for (WordSimMeasure colMeasure : measures) {
+                int count = matrix.get(rowMeasure, colMeasure);
+                builder.append(count).append(" \t| ");
+            }
 
-			builder.append("\n");
-	    }
+            builder.append("\n");
+        }
 
-		builder.append("\n");
+        builder.append("\n");
 
-	    // --------------------------------------------------------------------
+        // --------------------------------------------------------------------
 
-	    builder.append("# In detail: Uniquely accepted\n\n");
+        builder.append("# In detail: Uniquely accepted\n\n");
 
-	    for (MeasureStats measureStats : sumGroup.getMeasureStats()) {
-		    if (!measureStats.uniquelyAccepted.isEmpty()) {
-				builder.append("### ").append(measureStats.measureId).append("\n\n");
+        for (MeasureStats measureStats : sumGroup.getMeasureStats()) {
+            if (!measureStats.uniquelyAccepted.isEmpty()) {
+                builder.append("### ").append(measureStats.measureId).append("\n\n");
 
-			    for (Comparison comparison : measureStats.uniquelyAccepted) {
-				    builder.append("- ")
-					    .append(comparison.ctx().firstString())
-					    .append(" & ")
-					    .append(comparison.ctx().secondString())
-					    .append('\n');
-			    }
+                for (Comparison comparison : measureStats.uniquelyAccepted) {
+                    builder.append("- ").append(comparison.ctx().firstString()).append(" & ").append(comparison.ctx().secondString()).append('\n');
+                }
 
-			    builder.append('\n');
-		    }
+                builder.append('\n');
+            }
 
-			builder.append('\n');
-	    }
+            builder.append('\n');
+        }
 
-	    builder.append('\n');
+        builder.append('\n');
 
-	    // --------------------------------------------------------------------
+        // --------------------------------------------------------------------
 
-	    Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
 }

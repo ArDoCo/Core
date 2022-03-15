@@ -14,7 +14,8 @@ public class FastTextMeasure implements WordSimMeasure {
     private final double similarityThreshold;
 
     /**
-     * Constructs a new {@link FastTextMeasure} using the settings provided by {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
+     * Constructs a new {@link FastTextMeasure} using the settings provided by
+     * {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
      *
      * @param dataSource the data source to use for word similarity computation
      */
@@ -25,7 +26,7 @@ public class FastTextMeasure implements WordSimMeasure {
     /**
      * Constructs a new {@link FastTextMeasure} instance.
      *
-     * @param dataSource the data source to use for word similarity computation
+     * @param dataSource          the data source to use for word similarity computation
      * @param similarityThreshold the threshold above which words are considered similar
      */
     public FastTextMeasure(DL4JFastTextDataSource dataSource, double similarityThreshold) {
@@ -33,7 +34,8 @@ public class FastTextMeasure implements WordSimMeasure {
         this.similarityThreshold = similarityThreshold;
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         double similarity = this.dataSource.getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
 
         if (Double.isNaN(similarity)) {
