@@ -81,6 +81,7 @@ public class DL4JFastTextDataSource implements AutoCloseable {
     /**
      * Unloads the binary model from this data source and clears the cache.
      */
+    @Override
     public void close() {
         this.fastText.unloadBinaryModel();
         this.cache.clear();
