@@ -119,16 +119,14 @@ public class RecommendationState implements IRecommendationState {
             return;
         }
 
-        ImmutableList<IRecommendedInstance> risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable();
-        ImmutableList<IRecommendedInstance> risWithExactNameAndType = risWithExactName.select(r -> r.getType().equalsIgnoreCase(ri.getType()));
+        var risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable();
+        var risWithExactNameAndType = risWithExactName.select(r -> r.getType().equalsIgnoreCase(ri.getType()));
 
         if (risWithExactNameAndType.isEmpty()) {
             processRecommendedInstancesWithNoExactNameAndType(ri, risWithExactName);
         } else {
             risWithExactNameAndType.get(0).addMappings(ri.getNameMappings(), ri.getTypeMappings());
-
         }
-
     }
 
     private void processRecommendedInstancesWithNoExactNameAndType(IRecommendedInstance ri, ImmutableList<IRecommendedInstance> risWithExactName) {
@@ -138,7 +136,7 @@ public class RecommendationState implements IRecommendationState {
             var added = false;
 
             for (IRecommendedInstance riWithExactName : risWithExactName) {
-                boolean areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType());
+                var areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType());
                 if (areWordsSimilar || recommendedInstancesHasEmptyType(ri, riWithExactName)) {
                     riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());
                     added = true;

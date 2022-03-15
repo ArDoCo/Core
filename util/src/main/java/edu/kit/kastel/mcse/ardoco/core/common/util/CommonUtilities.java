@@ -296,4 +296,22 @@ public final class CommonUtilities {
         return word.length() > 4 && nameIsCamelCased(word);
     }
 
+    /**
+     * Checks a given list of {@link IWord words} to find out if there are words that the given recommendedInstance has
+     * in its {@link INounMapping NounMappings}.
+     *
+     * @param wordList            the word list to check
+     * @param recommendedInstance the RecommendedInstance in question
+     * @return true if at least one word is also covered by the RecommendedInstance, else false
+     */
+    public static boolean wordListContainsAnyWordFromRecommendedInstance(ImmutableList<IWord> wordList, IRecommendedInstance recommendedInstance) {
+        var recommendedInstanceWords = recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
+        for (var recommendedInstanceWord : recommendedInstanceWords) {
+            if (wordList.contains(recommendedInstanceWord)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

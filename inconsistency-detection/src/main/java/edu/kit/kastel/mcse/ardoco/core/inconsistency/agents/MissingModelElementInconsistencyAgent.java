@@ -9,6 +9,7 @@ import org.eclipse.collections.api.set.MutableSet;
 import org.kohsuke.MetaInfServices;
 
 import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
@@ -20,7 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
@@ -97,7 +97,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
             var linkedWords = linkedRecommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
             var candidatesToRemove = Lists.mutable.<IRecommendedInstance> empty();
             for (var candidate : candidateElements) {
-                if (wordListContainsAnyWordFromRecommendedInstance(linkedWords, candidate)) {
+                if (CommonUtilities.wordListContainsAnyWordFromRecommendedInstance(linkedWords, candidate)) {
                     candidatesToRemove.add(candidate);
                 }
             }
@@ -106,28 +106,21 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         return candidateElements;
     }
 
-    private boolean wordListContainsAnyWordFromRecommendedInstance(ImmutableList<IWord> wordList, IRecommendedInstance recommendedInstance) {
-        var recommendedInstanceWords = recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
-        for (var recommendedInstanceWord : recommendedInstanceWords) {
-            if (wordList.contains(recommendedInstanceWord)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void addToCandidates(MutableSet<MissingElementInconsistencyCandidate> candidates, IRecommendedInstance recommendedInstance,
             MissingElementSupport support) {
         for (var candidate : candidates) {
             var candidateRecommendedInstance = candidate.getRecommendedInstance();
             if (candidateRecommendedInstance.equals(recommendedInstance)) {
-                candidate.addSupport(support);
+                candidate.addSupport(MissingElementSupport.MULTIPLE_OVERLAPPING_RECOMMENDED_INSTANCES);
                 return;
             }
             var candidateWords = candidateRecommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
-            if (wordListContainsAnyWordFromRecommendedInstance(candidateWords, recommendedInstance)) {
-                candidate.addSupport(support);
-                return;
+            if (CommonUtilities.wordListContainsAnyWordFromRecommendedInstance(candidateWords, recommendedInstance)) {
+                candidate.addSupport(MissingElementSupport.MULTIPLE_OVERLAPPING_RECOMMENDED_INSTANCES);
+                // TODO what to do here?
+                // A) return here, but for sure miss some correct sentences
+                // B) do not return and do nothing else, this causes a lot of candidates
+                // C) merge candidates? or merge the underlying recommendedInstances?
             }
         }
 
