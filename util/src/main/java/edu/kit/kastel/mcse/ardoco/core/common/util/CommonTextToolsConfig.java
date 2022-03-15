@@ -108,13 +108,17 @@ public final class CommonTextToolsConfig {
     public static final String FASTTEXT_MODEL_FILE_PATH = CONFIG.getProperty("fastText_ModelPath");
 
     /**
-     * Decides whether the fastText similarity measure should be used.
+     * Decides whether the WordNet similarity measure should be used.
      */
     public static final boolean WORDNET_ENABLED = CONFIG.isPropertyEnabled("wordNet_Enabled");
     /**
-     * The path to the fastText binary model file used by the fastText word similarity measure.
+     * The path to the WordNet data directory.
      */
     public static final String WORDNET_DATA_DIR_PATH = CONFIG.getProperty("wordNet_DataDirPath");
+    /**
+     * Decides whether the WordNet relatedness calculators should cache results.
+     */
+    public static final boolean WORDNET_USE_CACHE = CONFIG.isPropertyEnabled("wordNet_useCache");
     /**
      * Decides whether the Leacock & Chodorow (1998) algorithm should be used for the WordNet similarity measure.
      */
