@@ -39,9 +39,10 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var evaluator = new PRF1Evaluator();
 
         var modelId = originalModel.getModelId();
+        var originalInconsistencyState = result.get(null).getInconsistencyState(modelId);
 
         for (var r : result.entrySet()) {
-            this.evaluate(result.get(null).getInconsistencyState(modelId), r, modelId, gs, evaluator, os);
+            this.evaluate(originalInconsistencyState, r, modelId, gs, evaluator, os);
         }
 
         os.println("Overall: " + evaluator.getOverallPRF1());
@@ -86,7 +87,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
                     .select(MissingModelInstanceInconsistency.class::isInstance)
                     .collect(MissingModelInstanceInconsistency.class::cast)
                     .flatCollect(this::foundSentences)
-                    .distinct();
+                    .toSet();
             var outputString = "ORIGINAL: Number of False Positives (assuming consistency for original): " + inconsistencySentences.size();
             os.println(outputString);
             return;
@@ -99,19 +100,15 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedList().toImmutable();
 
         var newInconsistencies = inconsistencyDiff.getNewInconsistencies();
-        var newImportantInconsistencies = newInconsistencies //
+        var newMissingModelInstanceInconsistencies = newInconsistencies //
                 .select(MissingModelInstanceInconsistency.class::isInstance) //
                 .collect(MissingModelInstanceInconsistency.class::cast);
 
-        if (newInconsistencies.size() >= 2) {
-            os.println("----- IMPORTANT CASE --> Manual Check ------");
-        }
+        os.println("Stats: New: " + newInconsistencies.size() + ", New MissingModelInstanceInconsistencies: " + newMissingModelInstanceInconsistencies.size());
 
-        os.println("Stats: New: " + newInconsistencies.size() + ", Important (New): " + newImportantInconsistencies.size());
+        var foundSentencesWithDuplicatesOverInconsistencies = newMissingModelInstanceInconsistencies.flatCollect(this::foundSentences).toSortedList();
 
-        var foundSentencesWithDuplicatesOverInconsistencies = newImportantInconsistencies.flatCollect(this::foundSentences).toSortedList();
-
-        os.println("Instances: " + String.join(", ", newImportantInconsistencies.collect(i -> i.getTextualInstance().getName())));
+        os.println("Instances: " + String.join(", ", newMissingModelInstanceInconsistencies.collect(i -> i.getTextualInstance().getName())));
         os.println("Is   : " + foundSentencesWithDuplicatesOverInconsistencies);
         os.println("Shall: " + sentencesAnnotatedWithElement);
 
