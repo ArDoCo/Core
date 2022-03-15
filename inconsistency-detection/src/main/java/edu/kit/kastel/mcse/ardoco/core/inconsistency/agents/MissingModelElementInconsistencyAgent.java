@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
 import org.kohsuke.MetaInfServices;
 
@@ -18,6 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 @MetaInfServices(InconsistencyAgent.class)
@@ -50,8 +53,9 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         var candidateElements = Lists.mutable.ofAll(recommendationState.getRecommendedInstances());
         var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
 
-        // find recommendedInstances with no trace link
+        // find recommendedInstances with no trace link (also not sharing words with linked RIs)
         candidateElements.removeAllIterable(linkedRecommendedInstances);
+        candidateElements = filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
 
         // add support for those who have a probability higher than the set threshold
         for (var candidate : candidateElements) {
@@ -73,8 +77,36 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         }
 
         // methods for other kinds of support
+        // NONE
 
+        // finally create inconsistencies
         createInconsistencies(candidates);
+    }
+
+    /**
+     * Filter those that are covered by other RecommendedInstances. covered means that they share at least one word
+     *
+     * @param candidateElements          candidate RecommendedInstances
+     * @param linkedRecommendedInstances already linked RecommendedInstances
+     * @return list of candidate RecommendedInstances that are not already covered by other RecommendedInstances
+     */
+    private MutableList<IRecommendedInstance> filterCandidatesCoveredByRecommendedInstance(MutableList<IRecommendedInstance> candidateElements,
+            ImmutableList<IRecommendedInstance> linkedRecommendedInstances) {
+        for (var linkedRecommendedInstance : linkedRecommendedInstances) {
+            var linkedWords = linkedRecommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
+            var candidatesToRemove = Lists.mutable.<IRecommendedInstance> empty();
+            for (var candidate : candidateElements) {
+                var candidateWords = candidate.getNameMappings().flatCollect(INounMapping::getWords);
+                for (var candidateWord : candidateWords) {
+                    if (linkedWords.contains(candidateWord)) {
+                        candidatesToRemove.add(candidate);
+                        break;
+                    }
+                }
+            }
+            candidateElements.removeAll(candidatesToRemove);
+        }
+        return candidateElements;
     }
 
     private void addToCandidates(MutableSet<MissingElementInconsistencyCandidate> candidates, IRecommendedInstance recommendedInstance,
