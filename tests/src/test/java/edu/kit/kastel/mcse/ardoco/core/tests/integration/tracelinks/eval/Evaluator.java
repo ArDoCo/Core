@@ -1,11 +1,10 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.n;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.NewSimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,20 +16,20 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 /**
- * Evaluates multiple {@link EvalPlan} instances one after another. Saves evaluation results to the disk.
+ * Evaluates multiple {@link EvalPlan} instances one after another. Saves evaluation results to a specified directory.
  */
-public class MultiPlanEvaluator {
+public class Evaluator {
 
     private final List<EvalPlan> plans;
     private final Path resultDir;
 
     /**
-     * Constructs a new {@link MultiPlanEvaluator} instance.
+     * Constructs a new {@link Evaluator} instance.
      * 
      * @param plans     the plans to evaluate
      * @param resultDir in which directory to store the results
      */
-    public MultiPlanEvaluator(List<EvalPlan> plans, Path resultDir) {
+    public Evaluator(List<EvalPlan> plans, Path resultDir) {
         this.plans = plans;
         this.resultDir = resultDir;
     }
@@ -96,6 +95,18 @@ public class MultiPlanEvaluator {
         var f1File = resultDir.resolve(filePrefix + "_f1.dat");
         var precisionFile = resultDir.resolve(filePrefix + "_precision.dat");
         var recallFile = resultDir.resolve(filePrefix + "_recall.dat");
+
+        if (Files.notExists(f1File)) {
+            Files.writeString(f1File, "x y\n", CREATE);
+        }
+
+        if (Files.notExists(precisionFile)) {
+            Files.writeString(precisionFile, "x y\n", CREATE);
+        }
+
+        if (Files.notExists(recallFile)) {
+            Files.writeString(recallFile, "x y\n", CREATE);
+        }
 
         Files.writeString(f1File, plan.getThreshold() + " " + ((int) (results.getF1() * 100)) + "\n", CREATE, APPEND);
         Files.writeString(precisionFile, plan.getThreshold() + " " + ((int) (results.getPrecision() * 100)) + "\n", CREATE, APPEND);

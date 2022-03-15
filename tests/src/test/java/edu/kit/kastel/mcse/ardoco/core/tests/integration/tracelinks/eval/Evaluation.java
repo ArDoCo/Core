@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.n;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Evaluator {
+public class Evaluation {
 
     public static void main(String[] args) throws IOException, SQLException {
         var plans = getPlans();
         var resultDir = Path.of("eval_results");
-        var evaluator = new MultiPlanEvaluator(plans, resultDir);
+        var evaluator = new Evaluator(plans, resultDir);
 
         evaluator.execute();
     }
