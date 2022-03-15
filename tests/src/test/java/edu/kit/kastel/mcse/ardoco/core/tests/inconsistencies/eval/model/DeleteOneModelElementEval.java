@@ -97,7 +97,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         os.println("DEL " + deletedElement);
 
         var inconsistencyDiff = InconsistencyHelper.getDiff(originalState, r.getValue().getInconsistencyState(modelId));
-        var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedList().toImmutable();
+        var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedSet().toImmutable();
 
         var newInconsistencies = inconsistencyDiff.getNewInconsistencies();
         var newMissingModelInstanceInconsistencies = newInconsistencies //
@@ -106,7 +106,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
         os.println("Stats: New: " + newInconsistencies.size() + ", New MissingModelInstanceInconsistencies: " + newMissingModelInstanceInconsistencies.size());
 
-        var foundSentencesWithDuplicatesOverInconsistencies = newMissingModelInstanceInconsistencies.flatCollect(this::foundSentences).toSortedList();
+        var foundSentencesWithDuplicatesOverInconsistencies = newMissingModelInstanceInconsistencies.flatCollect(this::foundSentences).toSortedSet();
 
         os.println("Instances: " + String.join(", ", newMissingModelInstanceInconsistencies.collect(i -> i.getTextualInstance().getName())));
         os.println("Is   : " + foundSentencesWithDuplicatesOverInconsistencies);
@@ -127,7 +127,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         for (var nouns : newImportantInconsistency.getTextualInstance().getNameMappings()) {
             sentences.addAll(nouns.getMappingSentenceNo().castToCollection());
         }
-        return sentences.toSet().toList().toImmutable();
+        return sentences.distinct().toImmutable();
     }
 
 }
