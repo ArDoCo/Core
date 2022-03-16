@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.InconsistencyHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1Evaluator;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
@@ -45,8 +44,10 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
             this.evaluate(originalInconsistencyState, r, modelId, gs, evaluator, os);
         }
 
-        os.println("Overall: " + evaluator.getOverallPRF1());
-        return evaluator.getOverallPRF1();
+        os.println("Overall: ");
+        os.println("Weighted: " + evaluator.getWeightedAveragePRF1());
+        os.println("Average:  " + evaluator.getAveragePRF1());
+        return evaluator.getWeightedAveragePRF1();
     }
 
     private static Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> process(Project project, IModelConnector pcmModel,
@@ -75,7 +76,6 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
     private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> r, String modelId,
             GoldStandard gs, PRF1Evaluator evaluator, PrintStream os) {
-
         os.println("-----------------------------------");
 
         if (r.getKey() == null) {
@@ -96,10 +96,9 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var deletedElement = r.getKey().getElement();
         os.println("DEL " + deletedElement);
 
-        var inconsistencyDiff = InconsistencyHelper.getDiff(originalState, r.getValue().getInconsistencyState(modelId));
         var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedSet().toImmutable();
 
-        var newInconsistencies = inconsistencyDiff.getNewInconsistencies();
+        var newInconsistencies = r.getValue().getInconsistencyState(modelId).getInconsistencies();
         var newMissingModelInstanceInconsistencies = newInconsistencies //
                 .select(MissingModelInstanceInconsistency.class::isInstance) //
                 .collect(MissingModelInstanceInconsistency.class::cast);
@@ -108,7 +107,6 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
         var foundSentencesWithDuplicatesOverInconsistencies = newMissingModelInstanceInconsistencies.flatCollect(this::foundSentences).toSortedSet();
 
-        os.println("Instances: " + String.join(", ", newMissingModelInstanceInconsistencies.collect(i -> i.getTextualInstance().getName())));
         os.println("Is   : " + foundSentencesWithDuplicatesOverInconsistencies);
         os.println("Shall: " + sentencesAnnotatedWithElement);
 
@@ -116,9 +114,9 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var fp = foundSentencesWithDuplicatesOverInconsistencies.select(i -> !sentencesAnnotatedWithElement.contains(i));
         var fn = sentencesAnnotatedWithElement.select(i -> !foundSentencesWithDuplicatesOverInconsistencies.contains(i));
 
-        var eval = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
+        var result = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
 
-        os.println(eval);
+        os.println(result);
         os.println("-----------------------------------");
     }
 
