@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 
@@ -32,6 +33,7 @@ public class EvalPlan {
         this.base = base;
         this.threshold = threshold;
         this.measures = new ArrayList<>(measures);
+        this.measures.add(new EqualityMeasure()); // ALWAYS use equality measure (this is how WordSimLoader works too!)
 
         if (base == 2) {
             this.measures.add(new JaroWinklerMeasure());
