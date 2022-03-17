@@ -7,6 +7,7 @@ import org.sqlite.SQLiteOpenMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class SEWordSimDataSource implements AutoCloseable {
     private static final String SELECT_ALL_QUERY = "SELECT DISTINCT `term_1` FROM `wsim`;";
 
     private final Connection connection;
+    private final PreparedStatement selectStatement;
 
     /**
      * Construct a new {@link SEWordSimDataSource}. Once instantiated, a connection to the file will be kept open until
@@ -47,6 +49,7 @@ public class SEWordSimDataSource implements AutoCloseable {
         cfg.setOpenMode(SQLiteOpenMode.NOMUTEX);
 
         this.connection = cfg.createConnection("jdbc:sqlite:" + sqliteFile);
+        this.selectStatement = this.connection.prepareStatement(SELECT_QUERY);
     }
 
     /**
@@ -95,15 +98,13 @@ public class SEWordSimDataSource implements AutoCloseable {
         firstWord = PorterStemmer.stem(firstWord);
         secondWord = PorterStemmer.stem(secondWord);
 
-        try (var statement = this.connection.prepareStatement(SELECT_QUERY)) {
-            statement.setString(1, firstWord);
-            statement.setString(2, secondWord);
+        this.selectStatement.setString(1, firstWord);
+        this.selectStatement.setString(2, secondWord);
 
-            try (var result = statement.executeQuery()) {
-                if (result.next()) {
-                    var similarity = result.getDouble("similarity");
-                    return Optional.of(similarity);
-                }
+        try (var result = this.selectStatement.executeQuery()) {
+            if (result.next()) {
+                var similarity = result.getDouble("similarity");
+                return Optional.of(similarity);
             }
         }
 
