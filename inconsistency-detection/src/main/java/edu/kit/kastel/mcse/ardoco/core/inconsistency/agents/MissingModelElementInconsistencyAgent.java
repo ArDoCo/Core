@@ -36,7 +36,6 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     private MissingModelElementInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
         super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
-        var threshold = inconsistencyConfig.getMissingModelInstanceInconsistencyThreshold();
     }
 
     @Override
