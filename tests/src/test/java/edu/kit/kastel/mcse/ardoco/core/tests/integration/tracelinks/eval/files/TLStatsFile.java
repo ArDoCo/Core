@@ -5,6 +5,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.Comparison;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalUtils;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatGroup;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.MeasureMatrix;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.MeasureStats;
@@ -29,7 +30,7 @@ public class TLStatsFile {
         var builder = new StringBuilder();
 
         // Prepare stat groups
-        var totalModelCount = dataMap.values().stream().mapToInt(a -> a.getModelState().getInstances().size()).sum();
+        var totalModelCount = EvalUtils.getInstances(dataMap.values()).size();
         var totalSentenceCount = dataMap.values().stream().mapToInt(a -> a.getText().getSentences().size()).sum();
         var allComparisons = statsMap.values().stream().flatMap(c -> c.getComparisons().stream()).toList();
         var sumGroup = new ComparisonStatGroup("Σ", totalModelCount, totalSentenceCount, allComparisons);
