@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.NewSimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -32,6 +33,10 @@ public class Evaluator {
     public Evaluator(List<EvalPlan> plans, Path resultDir) {
         this.plans = plans;
         this.resultDir = resultDir;
+
+        if (plans.isEmpty()) {
+            throw new IllegalArgumentException("no plans were provided to the evaluator");
+        }
     }
 
     /**
@@ -45,7 +50,7 @@ public class Evaluator {
         long totalStart = System.currentTimeMillis();
 
         for (EvalPlan plan : plans) {
-            System.out.printf("\nEvaluating: %s\n\n", plan.getId());
+            System.out.printf("%nEvaluating: %s%n%n", plan.getId());
 
             long evalStart = System.currentTimeMillis();
 
@@ -53,19 +58,20 @@ public class Evaluator {
 
             long evalDuration = System.currentTimeMillis() - evalStart;
 
-            System.out.printf("\nFinished %s ✔ (took %s seconds)\n\n", plan.getId(), evalDuration / 1000);
+            System.out.printf("%nFinished %s ✔ (took %s seconds)%n", plan.getId(), evalDuration / 1000);
 
             saveResults(plan, results);
         }
 
         long totalDuration = System.currentTimeMillis() - totalStart;
 
-        System.out.printf("\nEntire multi plan evaluation took %s seconds\n", totalDuration / 1000);
+        System.out.printf("%nEntire multi plan evaluation took %s seconds%n", totalDuration / 1000);
     }
 
     private EvaluationResults evaluatePlan(EvalPlan plan) throws IOException {
         var results = new EvaluationResults(0.0, 0.0, 0.0);
 
+        ComparisonStats.ENABLED = false;
         NewSimilarityUtils.setMeasures(plan.getMeasures());
 
         for (Project project : Project.values()) {
@@ -79,7 +85,8 @@ public class Evaluator {
             results.precision += projectResult.getPrecision();
             results.recall += projectResult.getRecall();
 
-            System.gc();
+            System.out.printf("%n%s on %s: %s Precision, %s Recall, %s F1%n%n", plan.getId(), project.name().toUpperCase(), projectResult.getPrecision(),
+                    projectResult.getRecall(), projectResult.getF1());
         }
 
         results.f1 /= Project.values().length;
