@@ -28,7 +28,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     private double minSupport = 1;
-    private double threshold = 0.75d;
 
     public MissingModelElementInconsistencyAgent() {
         super(GenericInconsistencyConfig.class);
@@ -37,7 +36,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     private MissingModelElementInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
         super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
-        threshold = inconsistencyConfig.getMissingModelInstanceInconsistencyThreshold();
+        var threshold = inconsistencyConfig.getMissingModelInstanceInconsistencyThreshold();
     }
 
     @Override
@@ -51,18 +50,15 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     public void exec() {
         var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
 
-        var candidateElements = Lists.mutable.ofAll(recommendationState.getRecommendedInstances());
+        var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
         var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
 
         // find recommendedInstances with no trace link (also not sharing words with linked RIs)
         candidateElements.removeAllIterable(linkedRecommendedInstances);
         candidateElements = filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
 
-        // add support for those who have a probability higher than the set threshold
         for (var candidate : candidateElements) {
-            if (candidate.getProbability() >= threshold) {
-                addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
-            }
+            addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
         }
 
         // find out those elements that are in the same sentence as a traced element
