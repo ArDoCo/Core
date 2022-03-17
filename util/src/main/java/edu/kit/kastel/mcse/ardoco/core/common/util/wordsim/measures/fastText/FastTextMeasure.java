@@ -4,9 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils;
 
 /**
  * A word similarity measure based on the fastText neural network.
+ * It grabs the vectors for each word and compares them using cosine similarity.
  */
 public class FastTextMeasure implements WordSimMeasure {
 
@@ -34,13 +36,18 @@ public class FastTextMeasure implements WordSimMeasure {
         this.similarityThreshold = similarityThreshold;
     }
 
-    @Override
-    public boolean areWordsSimilar(ComparisonContext ctx) {
-        double similarity = this.dataSource.getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
-
-        if (Double.isNaN(similarity)) {
+    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+        var firstVec = this.dataSource.getWordVector(ctx.firstTerm()).orElse(null);
+        if (firstVec == null) {
             return false;
         }
+
+        var secondVec = this.dataSource.getWordVector(ctx.secondTerm()).orElse(null);
+        if (secondVec == null) {
+            return false;
+        }
+
+        double similarity = VectorUtils.cosineSimilarity(firstVec, secondVec);
 
         return similarity >= this.similarityThreshold;
     }

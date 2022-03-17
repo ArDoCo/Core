@@ -6,9 +6,9 @@ import org.deeplearning4j.models.fasttext.FastText;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.cosineSimilarity;
 import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.isZero;
 
 /**
@@ -45,6 +45,8 @@ public class DL4JFastTextDataSource implements AutoCloseable {
      * @return the word vector, or {@link Optional#empty()} if no vector was found.
      */
     public Optional<double[]> getWordVector(String word) {
+        Objects.requireNonNull(word);
+
         double[] vector;
 
         if (this.cache.contains(word)) {
@@ -55,28 +57,6 @@ public class DL4JFastTextDataSource implements AutoCloseable {
         }
 
         return isZero(vector) ? Optional.empty() : Optional.of(vector);
-    }
-
-    /**
-     * Attempts to calculate the similarity between the given words.
-     *
-     * @param firstWord  the first word
-     * @param secondWord the second word
-     * @return the similarity score, ranging from {@code 0.0} and {@code 1.0}, or {@link Optional#empty()} if at least
-     *         one of the given words is not recognized by fastText.
-     */
-    public Optional<Double> getSimilarity(String firstWord, String secondWord) {
-        var firstVec = getWordVector(firstWord).orElse(null);
-        if (firstVec == null) {
-            return Optional.empty();
-        }
-
-        var secondVec = getWordVector(secondWord).orElse(null);
-        if (secondVec == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(cosineSimilarity(firstVec, secondVec));
     }
 
     /**
