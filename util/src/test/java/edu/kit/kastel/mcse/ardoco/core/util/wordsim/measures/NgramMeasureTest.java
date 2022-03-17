@@ -14,21 +14,19 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class NgramMeasureTest {
 
-    // TODO: Check if all these floating point equality assertions actually work as intended
-
     @Test
     public void testUnigramDistance() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 1, 1.0);
         var levenshteinDistance = new LevenshteinDistance();
 
-        assertEquals(1.0, measure.calculateDistance("Hello", "Hella"));
+        assertEquals(1.0, measure.calculateDistance("Hello", "Hella"), 0.01);
 
         for (String firstWord : TestUtils.RANDOM_WORDS) {
             for (String secondWord : TestUtils.RANDOM_WORDS) {
                 double levenshteinResult = levenshteinDistance.apply(firstWord, secondWord);
                 double ngramResult = measure.calculateDistance(firstWord, secondWord);
 
-                assertEquals(levenshteinResult, ngramResult);
+                assertEquals(levenshteinResult, ngramResult, 0.1);
             }
         }
 
@@ -48,7 +46,7 @@ public class NgramMeasureTest {
     @Test
     public void testBigram() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 2, 0.7);
-        assertEquals(0.5, measure.calculateDistance("Hello", "Hella"));
+        assertEquals(0.5, measure.calculateDistance("Hello", "Hella"), 0.01);
 
         assertTrue(measure.areWordsSimilar(new ComparisonContext("Hello", "Hella"))); // 0.8
         assertFalse(measure.areWordsSimilar(new ComparisonContext("Hello", "Heal"))); // 0.6
@@ -59,7 +57,7 @@ public class NgramMeasureTest {
     @Test
     public void testTrigram() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 3, 0.7);
-        assertEquals(1.0 / 3.0, measure.calculateDistance("Hello", "Hella"));
+        assertEquals(1.0 / 3.0, measure.calculateDistance("Hello", "Hella"), 0.01);
 
         assertTrue(measure.areWordsSimilar(new ComparisonContext("Hello", "Hella"))); // 0.8
         assertFalse(measure.areWordsSimilar(new ComparisonContext("Hello", "Heal"))); // 0.6
