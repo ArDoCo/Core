@@ -50,7 +50,7 @@ public class WordSimLoader {
 
             list.add(new EqualityMeasure());
 
-            if (CommonTextToolsConfig.JAROWINKLER_ENABLED) {
+            if (CommonTextToolsConfig.LEVENSHTEIN_ENABLED) {
                 list.add(new LevenshteinMeasure());
             }
 
