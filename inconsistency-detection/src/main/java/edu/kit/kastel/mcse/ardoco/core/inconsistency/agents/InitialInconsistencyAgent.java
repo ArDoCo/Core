@@ -54,9 +54,7 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
             }
         }
 
-        System.out.println(this.inconsistencyState.getRecommendedInstances().size());
         this.inconsistencyState.setRecommendedInstances(filteredRecommendedInstances);
-        System.out.println(this.inconsistencyState.getRecommendedInstances().size());
     }
 
     private boolean performHeuristicsAndChecks(IRecommendedInstance recommendedInstance) {
