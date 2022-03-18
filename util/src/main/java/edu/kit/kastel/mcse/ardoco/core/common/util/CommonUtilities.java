@@ -44,6 +44,17 @@ public final class CommonUtilities {
     }
 
     /**
+     * Calculate the harmonic mean between two given values.
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @return the harmonic mean of the two given values
+     */
+    public static double harmonicMean(double first, double second) {
+        return 2 * first * second / (first + second);
+    }
+
+    /**
      * Creates a cartesian product out of the current list and the parts.
      *
      * @param <T>         generic type of list elements

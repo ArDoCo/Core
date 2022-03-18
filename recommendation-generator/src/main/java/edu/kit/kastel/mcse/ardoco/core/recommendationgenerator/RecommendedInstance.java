@@ -9,6 +9,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
@@ -76,7 +77,15 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public double getProbability() {
-        return probability;
+        // return probability;
+        return calculateProbability();
+    }
+
+    private double calculateProbability() {
+        var highestNameProbability = getNameMappings().collectDouble(INounMapping::getProbabilityForName).maxIfEmpty(0);
+        var highestTypeProbability = getTypeMappings().collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
+
+        return CommonUtilities.harmonicMean(highestNameProbability, highestTypeProbability);
     }
 
     /**
@@ -220,7 +229,7 @@ public class RecommendedInstance implements IRecommendedInstance {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        RecommendedInstance other = (RecommendedInstance) obj;
+        var other = (RecommendedInstance) obj;
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
     }
 

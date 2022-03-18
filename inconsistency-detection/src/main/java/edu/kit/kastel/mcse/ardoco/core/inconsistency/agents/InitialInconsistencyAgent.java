@@ -66,7 +66,7 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
     }
 
     private boolean checkProbabilityOfBeingRecommendedInstance(IRecommendedInstance recommendedInstance) {
-        return recommendedInstance.getProbability() > THRESHOLD_RI_PROBABILITY;
+        return recommendedInstance.getProbability() > 0.3;
     }
 
     /**
@@ -77,18 +77,19 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
      * @return true if the probabilities of the types exceed a threshold
      */
     private boolean checkProbabilitiesForNounMappingTypes(IRecommendedInstance recommendedInstance) {
-        for (var type : recommendedInstance.getTypeMappings()) {
-            if (type.getProbabilityForType() > THRESHOLD_TYPE_PROBABILITY) {
-                return true;
-            }
-        }
-
-        for (var name : recommendedInstance.getNameMappings()) {
-            if (name.getProbabilityForName() > THRESHOLD_NAME_PROBABILITY) {
-                return true;
-            }
-        }
-        return false;
+        // for (var type : recommendedInstance.getTypeMappings()) {
+        // if (type.getProbabilityForType() > THRESHOLD_TYPE_PROBABILITY) {
+        // return true;
+        // }
+        // }
+        //
+        // for (var name : recommendedInstance.getNameMappings()) {
+        // if (name.getProbabilityForName() > THRESHOLD_NAME_PROBABILITY) {
+        // return true;
+        // }
+        // }
+        // return false;
+        return true;
     }
 
     /**
