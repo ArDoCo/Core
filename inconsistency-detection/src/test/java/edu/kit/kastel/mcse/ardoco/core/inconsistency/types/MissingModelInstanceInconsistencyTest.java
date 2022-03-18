@@ -41,7 +41,7 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @Override
     protected String getReasonString() {
-        return "Text indicates (confidence: 1.00) that \"name\" should be contained in the model(s) but could not be found. Sentences: 1";
+        return "Text indicates (confidence: 0.00) that \"name\" should be contained in the model(s) but could not be found. Sentences: 1";
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @Override
     protected String[] getFileOutputEntry() {
-        return new String[] { getTypeString(), "1", "name", "text", Double.toString(1.0) };
+        return new String[] { getTypeString(), "1", "name", "text", Double.toString(0.0) };
     }
 
 }
