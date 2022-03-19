@@ -5,6 +5,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -46,6 +47,22 @@ public record ComparisonContext(@Nonnull String firstString, @Nonnull String sec
     @Nonnull
     public String secondTerm() {
         return findAppropriateTerm(secondString, secondWord);
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public List<String> firstTerms() {
+        return SubWordUtils.getSubWords(firstTerm());
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public List<String> secondTerms() {
+        return SubWordUtils.getSubWords(secondTerm());
     }
 
     private String findAppropriateTerm(@Nonnull String string, @Nullable IWord word) {
