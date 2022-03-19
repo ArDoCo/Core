@@ -5,8 +5,8 @@ import java.util.Set;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.common.IConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
+import edu.kit.kastel.mcse.ardoco.core.api.common.IConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 
 /**
  * The Interface IModelState defines the information directly extracted from the models.

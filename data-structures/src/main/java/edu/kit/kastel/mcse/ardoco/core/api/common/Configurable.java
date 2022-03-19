@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.common;
+package edu.kit.kastel.mcse.ardoco.core.api.common;
 
 import java.lang.annotation.*;
 

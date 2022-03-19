@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 
 /**
  * The Interface IRelationMapping defines a marker in the text that represents a possible relation.

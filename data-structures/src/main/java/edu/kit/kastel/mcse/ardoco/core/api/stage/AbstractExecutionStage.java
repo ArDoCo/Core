@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.stage;
 
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AbstractConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
 
 public abstract class AbstractExecutionStage extends AbstractConfigurable implements IExecutionStage {
     @Override

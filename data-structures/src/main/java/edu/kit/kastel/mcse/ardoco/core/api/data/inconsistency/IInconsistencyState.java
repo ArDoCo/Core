@@ -6,9 +6,9 @@ import java.util.List;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.common.IConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.common.IConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 
 /**
  * @author Jan Keim

@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data;
 
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AbstractConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
 
 public abstract class AbstractState extends AbstractConfigurable {
     protected final Map<String, String> configs;

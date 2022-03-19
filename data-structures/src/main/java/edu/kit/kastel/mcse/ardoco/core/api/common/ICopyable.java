@@ -1,5 +1,5 @@
-/* Licensed under MIT 2021. */
-package edu.kit.kastel.mcse.ardoco.core.common;
+/* Licensed under MIT 2021-2022. */
+package edu.kit.kastel.mcse.ardoco.core.api.common;
 
 /**
  * The Interface ICopyable defines types that are copyable.
