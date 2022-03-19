@@ -34,8 +34,8 @@ public class InitialTextAgent extends TextAgent {
     @Override
     public void execute(TextAgentData data) {
         var text = data.getText();
-        for (var extractor : findByClassName(enabledExtractors, extractors)) {
-            for (IWord word : text.getWords()) {
+        for (IWord word : text.getWords()) {
+            for (var extractor : findByClassName(enabledExtractors, extractors)) {
                 extractor.exec(data, word);
             }
         }

@@ -65,7 +65,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         while (iter.hasNext()) {
             var modification = iter.next();
             var model = modification.getArtifact();
-            var data = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), runModelExtractor(pcmModel)));
+            var data = new DataStructure(annotatedText, Map.of(model.getModelId(), runModelExtractor(model)));
             runTextExtractor(data, configurations);
             var result = runRecommendationConnectionInconsistency(data);
             results.put(modification, result);
