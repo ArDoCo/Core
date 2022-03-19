@@ -1,62 +1,63 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.common.IConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
+import java.util.List;
+
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import java.util.List;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.common.IConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 
 /**
  * @author Jan Keim
  */
 public interface IInconsistencyState extends ICopyable<IInconsistencyState>, IConfigurable {
 
-	/**
-	 * Returns a list of inconsistencies held by this state
-	 *
-	 * @return list of inconsistencies
-	 */
-	ImmutableList<IInconsistency> getInconsistencies();
+    /**
+     * Returns a list of inconsistencies held by this state
+     *
+     * @return list of inconsistencies
+     */
+    ImmutableList<IInconsistency> getInconsistencies();
 
-	/**
-	 * Add an Inconsistency to this state
-	 *
-	 * @param inconsistency the inconsistency to add
-	 * @return true if added successfully
-	 */
-	boolean addInconsistency(IInconsistency inconsistency);
+    /**
+     * Add an Inconsistency to this state
+     *
+     * @param inconsistency the inconsistency to add
+     * @return true if added successfully
+     */
+    boolean addInconsistency(IInconsistency inconsistency);
 
-	default boolean addRecommendedInstances(List<IRecommendedInstance> recommendedInstances) {
-		var success = true;
-		for (var recommendedInstance : recommendedInstances) {
-			success &= addRecommendedInstance(recommendedInstance);
-		}
-		return success;
-	}
+    default boolean addRecommendedInstances(List<IRecommendedInstance> recommendedInstances) {
+        var success = true;
+        for (var recommendedInstance : recommendedInstances) {
+            success &= addRecommendedInstance(recommendedInstance);
+        }
+        return success;
+    }
 
-	boolean addRecommendedInstance(IRecommendedInstance recommendedInstance);
+    boolean addRecommendedInstance(IRecommendedInstance recommendedInstance);
 
-	default boolean removeRecommendedInstances(List<IRecommendedInstance> recommendedInstances) {
-		var success = true;
-		for (var recommendedInstance : recommendedInstances) {
-			success &= removeRecommendedInstance(recommendedInstance);
-		}
-		return success;
-	}
+    default boolean removeRecommendedInstances(List<IRecommendedInstance> recommendedInstances) {
+        var success = true;
+        for (var recommendedInstance : recommendedInstances) {
+            success &= removeRecommendedInstance(recommendedInstance);
+        }
+        return success;
+    }
 
-	boolean removeRecommendedInstance(IRecommendedInstance recommendedInstance);
+    boolean removeRecommendedInstance(IRecommendedInstance recommendedInstance);
 
-	/**
-	 * @param recommendedInstances the recommendedInstances to set
-	 */
-	void setRecommendedInstances(List<IRecommendedInstance> recommendedInstances);
+    /**
+     * @param recommendedInstances the recommendedInstances to set
+     */
+    void setRecommendedInstances(List<IRecommendedInstance> recommendedInstances);
 
-	/**
-	 * @return the recommendedInstances
-	 */
-	MutableList<IRecommendedInstance> getRecommendedInstances();
+    /**
+     * @return the recommendedInstances
+     */
+    MutableList<IRecommendedInstance> getRecommendedInstances();
 
 }

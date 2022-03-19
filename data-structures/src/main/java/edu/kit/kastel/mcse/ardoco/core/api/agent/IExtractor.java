@@ -10,14 +10,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
  */
 public interface IExtractor<D extends IData> {
 
-	/**
-	 * Execute the extractor and apply it on a word.
-	 *
-	 * @param word the word
-	 */
-	void exec(D data, IWord word);
+    /**
+     * Execute the extractor and apply it on a word.
+     *
+     * @param word the word
+     */
+    void exec(D data, IWord word);
 
-	default String getId() {
-		return this.getClass().getSimpleName();
-	}
+    default String getId() {
+        return this.getClass().getSimpleName();
+    }
 }
