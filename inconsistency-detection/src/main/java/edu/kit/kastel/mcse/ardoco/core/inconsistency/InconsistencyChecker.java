@@ -15,12 +15,11 @@ import edu.kit.kastel.mcse.ardoco.core.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingModelElementInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingTextForModelElementInconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.NameInconsistencyAgent;
 
 public class InconsistencyChecker extends AbstractExecutionStage {
 
     private MutableList<InconsistencyAgent> agents = Lists.mutable.of(new InitialInconsistencyAgent(), new MissingModelElementInconsistencyAgent(),
-            new MissingTextForModelElementInconsistencyAgent(), new NameInconsistencyAgent());
+            new MissingTextForModelElementInconsistencyAgent());
 
     @Configurable
     private List<String> enabledAgents = agents.collect(IAgent::getId);

@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceI
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     @Configurable
-    private double minSupport = 0.75;
+    private double minSupport = 1;
 
     public MissingModelElementInconsistencyAgent() {
     }
