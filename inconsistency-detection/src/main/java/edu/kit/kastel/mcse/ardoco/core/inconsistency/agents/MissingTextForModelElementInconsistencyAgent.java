@@ -2,65 +2,52 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
-import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingTextForModelElementInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
-@MetaInfServices(InconsistencyAgent.class)
 public class MissingTextForModelElementInconsistencyAgent extends InconsistencyAgent {
-    private List<String> whitelist = Lists.mutable.empty();
-    private List<String> types = Lists.mutable.empty();
+    @Configurable
+    private List<String> whitelist = Lists.mutable.of("DummyRecommender", "Cache");
+    @Configurable
+    private List<String> types = Lists.mutable.of("BasicComponent", "CompositeComponent");
 
     public MissingTextForModelElementInconsistencyAgent() {
-        super(GenericInconsistencyConfig.class);
-    }
-
-    private MissingTextForModelElementInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, GenericInconsistencyConfig inconsistencyConfig) {
-        super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
-        // load settings from inconsistencyConfig
-        types = inconsistencyConfig.getTypesWithRequiredDocumentation();
-        whitelist = inconsistencyConfig.getDocumentationRequirementWhitelist();
     }
 
     @Override
-    public MissingTextForModelElementInconsistencyAgent create(IText text, ITextState textState, IModelState modelState,
-            IRecommendationState recommendationState, IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
-        return new MissingTextForModelElementInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState,
-                (GenericInconsistencyConfig) config);
-    }
+    public void execute(InconsistencyAgentData data) {
+        for (var model : data.getModelIds()) {
+            var connectionState = data.getConnectionState(model);
+            var modelState = data.getModelState(model);
+            var inconsistencyState = data.getInconsistencyState(model);
 
-    @Override
-    public void exec() {
-        var linkedModelInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getModelInstance).distinct();
+            var linkedModelInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getModelInstance).distinct();
 
-        // find model instances of given types that are not linked and, thus, are candidates
-        var candidateModelInstances = Lists.mutable.<IModelInstance> empty();
-        for (var modelInstance : modelState.getInstances()) {
-            if (modelInstanceHasTargetedType(modelInstance, types) && !linkedModelInstances.contains(modelInstance)) {
-                candidateModelInstances.add(modelInstance);
+            // find model instances of given types that are not linked and, thus, are candidates
+            var candidateModelInstances = Lists.mutable.<IModelInstance> empty();
+            for (var modelInstance : modelState.getInstances()) {
+                if (modelInstanceHasTargetedType(modelInstance, types) && !linkedModelInstances.contains(modelInstance)) {
+                    candidateModelInstances.add(modelInstance);
+                }
             }
+
+            // further filtering
+            candidateModelInstances = filterWithWhitelist(candidateModelInstances, whitelist);
+
+            // create Inconsistencies
+            createInconsistencies(candidateModelInstances, inconsistencyState);
         }
-
-        // further filtering
-        candidateModelInstances = filterWithWhitelist(candidateModelInstances, whitelist);
-
-        // create Inconsistencies
-        createInconsistencies(candidateModelInstances);
     }
 
     public static boolean modelInstanceHasTargetedType(IModelInstance modelInstance, List<String> types) {
@@ -95,11 +82,14 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
         return filteredCandidates;
     }
 
-    private void createInconsistencies(MutableList<IModelInstance> candidateModelInstances) {
+    private void createInconsistencies(MutableList<IModelInstance> candidateModelInstances, IInconsistencyState inconsistencyState) {
         for (var candidate : candidateModelInstances) {
             var inconsistency = new MissingTextForModelElementInconsistency(candidate);
             inconsistencyState.addInconsistency(inconsistency);
         }
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

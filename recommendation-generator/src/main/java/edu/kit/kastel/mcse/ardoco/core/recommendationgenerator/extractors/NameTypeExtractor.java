@@ -1,74 +1,47 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationExtractor;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
  * @author Sophie Schulz, Jan Keim
- *
  */
-@MetaInfServices(RecommendationExtractor.class)
-public class NameTypeExtractor extends RecommendationExtractor {
+public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData> {
 
-    private double probability;
-
-    /**
-     * Creates a new NameTypeAnalyzer.
-     *
-     * @param textExtractionState  the text extraction state
-     * @param modelExtractionState the model extraction state
-     * @param recommendationState  the recommendation state
-     */
-    public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState) {
-        this(textExtractionState, modelExtractionState, recommendationState, GenericRecommendationConfig.DEFAULT_CONFIG);
-    }
+    @Configurable
+    private double probability = 1.0;
 
     /**
-     * Instantiates a new name type extractor.
-     *
-     * @param textExtractionState  the text extraction state
-     * @param modelExtractionState the model extraction state
-     * @param recommendationState  the recommendation state
-     * @param config               the config
-     */
-    public NameTypeExtractor(ITextState textExtractionState, IModelState modelExtractionState, IRecommendationState recommendationState,
-            GenericRecommendationConfig config) {
-        super(textExtractionState, modelExtractionState, recommendationState);
-        probability = config.nameTypeAnalyzerProbability;
-    }
-
-    /**
-     * Prototype constructor.
+     * Creates a new NameTypeAnalyzer
      */
     public NameTypeExtractor() {
-        this(null, null, null);
     }
 
     @Override
-    public RecommendationExtractor create(ITextState textState, IModelState modelExtractionState, IRecommendationState recommendationState,
-            Configuration config) {
-        return new NameTypeExtractor(textState, modelExtractionState, recommendationState, (GenericRecommendationConfig) config);
-    }
-
-    @Override
-    public void exec(IWord word) {
-        addRecommendedInstanceIfNameAfterType(textState, word);
-        addRecommendedInstanceIfNameBeforeType(textState, word);
-        addRecommendedInstanceIfNortBeforeType(textState, word);
-        addRecommendedInstanceIfNortAfterType(textState, word);
+    public void exec(RecommendationAgentData data, IWord word) {
+        var textState = data.getTextState();
+        for (var model : data.getModelIds()) {
+            var modelState = data.getModelState(model);
+            var recommendationState = data.getRecommendationState(modelState.getMetamodel());
+            addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);
+            addRecommendedInstanceIfNameBeforeType(textState, word, modelState, recommendationState);
+            addRecommendedInstanceIfNortBeforeType(textState, word, modelState, recommendationState);
+            addRecommendedInstanceIfNortAfterType(textState, word, modelState, recommendationState);
+        }
     }
 
     /**
@@ -78,7 +51,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameBeforeType(ITextState textExtractionState, IWord word) {
+    private void addRecommendedInstanceIfNameBeforeType(ITextState textExtractionState, IWord word, IModelState modelState,
+            IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -102,7 +76,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameAfterType(ITextState textExtractionState, IWord word) {
+    private void addRecommendedInstanceIfNameAfterType(ITextState textExtractionState, IWord word, IModelState modelState,
+            IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -125,7 +100,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNortBeforeType(ITextState textExtractionState, IWord word) {
+    private void addRecommendedInstanceIfNortBeforeType(ITextState textExtractionState, IWord word, IModelState modelState,
+            IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -149,7 +125,8 @@ public class NameTypeExtractor extends RecommendationExtractor {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNortAfterType(ITextState textExtractionState, IWord word) {
+    private void addRecommendedInstanceIfNortAfterType(ITextState textExtractionState, IWord word, IModelState modelState,
+            IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -163,5 +140,9 @@ public class NameTypeExtractor extends RecommendationExtractor {
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, probability);
         }
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
     }
 }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.util.Objects;
@@ -10,10 +10,10 @@ import org.eclipse.collections.api.list.ImmutableList;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 public class CachedOntologyText implements IText {

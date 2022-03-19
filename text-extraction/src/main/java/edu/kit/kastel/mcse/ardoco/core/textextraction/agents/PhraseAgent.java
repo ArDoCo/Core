@@ -1,26 +1,23 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
 
 /**
  * Agent that is responsible for looking at phrases and extracting {@link INounMapping}s from compound nouns etc.
  *
  * @author Jan Keim
- *
  */
-@MetaInfServices(TextAgent.class)
 public class PhraseAgent extends TextAgent {
 
     private static final double PHRASE_CONFIDENCE = 0.6;
@@ -30,27 +27,17 @@ public class PhraseAgent extends TextAgent {
      * Instantiates a new initial text agent.
      */
     public PhraseAgent() {
-        super(GenericTextConfig.class);
-    }
-
-    private PhraseAgent(IText text, ITextState textState) {
-        super(GenericTextConfig.class, text, textState);
     }
 
     @Override
-    public TextAgent create(IText text, ITextState textState, Configuration config) {
-        return new PhraseAgent(text, textState);
-    }
-
-    @Override
-    public void exec() {
-        for (var word : text.getWords()) {
-            createNounMappingIfPhrase(word);
-            createNounMappingIfSpecialNamedEntity(word);
+    public void execute(TextAgentData data) {
+        for (var word : data.getText().getWords()) {
+            createNounMappingIfPhrase(word, data.getTextState());
+            createNounMappingIfSpecialNamedEntity(word, data.getTextState());
         }
     }
 
-    private void createNounMappingIfPhrase(IWord word) {
+    private void createNounMappingIfPhrase(IWord word, ITextState textState) {
         var phrase = CommonUtilities.getCompoundPhrase(word);
 
         // if phrase is empty then it is no phrase
@@ -58,16 +45,16 @@ public class PhraseAgent extends TextAgent {
             return;
         }
         // add the full phrase
-        addPhraseNounMapping(phrase);
+        addPhraseNounMapping(phrase, textState);
 
         // filter NounMappings that are types and add the rest of the phrase (if it changed)
         var filteredPhrase = CommonUtilities.filterWordsOfTypeMappings(phrase, textState);
         if (filteredPhrase.size() != phrase.size() && filteredPhrase.size() > 1) {
-            addPhraseNounMapping(filteredPhrase);
+            addPhraseNounMapping(filteredPhrase, textState);
         }
     }
 
-    private void addPhraseNounMapping(ImmutableList<IWord> phrase) {
+    private void addPhraseNounMapping(ImmutableList<IWord> phrase, ITextState textState) {
         var reference = CommonUtilities.createReferenceForPhrase(phrase);
         var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
         if (similarReferenceNounMappings.isEmpty()) {
@@ -81,11 +68,14 @@ public class PhraseAgent extends TextAgent {
         }
     }
 
-    private void createNounMappingIfSpecialNamedEntity(IWord word) {
+    private void createNounMappingIfSpecialNamedEntity(IWord word, ITextState textState) {
         var text = word.getText();
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
             textState.addName(word, SPECIAL_NAMED_ENTITY_CONFIDENCE);
         }
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

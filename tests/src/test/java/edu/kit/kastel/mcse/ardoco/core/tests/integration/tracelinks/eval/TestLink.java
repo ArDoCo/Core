@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import java.util.Comparator;
 
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.TraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 
 /**
  * Represents a simple trace link by the id of the model and number of the sentence involved.

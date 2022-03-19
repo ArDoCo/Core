@@ -7,6 +7,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
+
 /**
  * Represents a relation extracted from a model. A relation must have at least two end points. These end points are
  * defined as instances.

@@ -10,11 +10,12 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
@@ -23,7 +24,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1Evaluator;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model.DeleteOneElementEach;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
@@ -50,13 +50,13 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         return evaluator.getWeightedAveragePRF1();
     }
 
-    private static Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> process(Project project, IModelConnector pcmModel,
-            IText annotatedText, IModificationStrategy strategy) {
-        Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> results = new HashMap<>();
+    private static Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> process(Project project, IModelConnector pcmModel, IText annotatedText,
+            IModificationStrategy strategy) {
+        Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> results = new HashMap<>();
 
-        var originalData = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
+        var originalData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), runModelExtractor(pcmModel)));
 
-        var configurations = getTextExtractionConfigurations(project);
+        var configurations = new HashMap<String, String>();
         runTextExtractor(originalData, configurations);
         var original = runRecommendationConnectionInconsistency(originalData);
         results.put(null, original);
@@ -65,7 +65,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         while (iter.hasNext()) {
             var modification = iter.next();
             var model = modification.getArtifact();
-            var data = new AgentDatastructure(annotatedText, null, runModelExtractor(model), null, null, null);
+            var data = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), runModelExtractor(pcmModel)));
             runTextExtractor(data, configurations);
             var result = runRecommendationConnectionInconsistency(data);
             results.put(modification, result);
@@ -74,7 +74,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         return results;
     }
 
-    private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> r, String modelId,
+    private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> r, String modelId,
             GoldStandard gs, PRF1Evaluator evaluator, PrintStream os) {
         os.println("-----------------------------------");
 

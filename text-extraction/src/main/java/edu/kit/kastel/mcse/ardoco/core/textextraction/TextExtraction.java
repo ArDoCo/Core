@@ -1,89 +1,46 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.common.Loader;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.CorefAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
 
 /**
  * The Class TextExtractor.
  */
-public class TextExtraction implements IExecutionStage {
+public class TextExtraction extends AbstractExecutionStage {
 
-    private AgentDatastructure data;
-    private MutableList<IAgent> agents = Lists.mutable.empty();
-    private final TextExtractionConfig config;
-    private final GenericTextConfig agentConfig;
+    private MutableList<TextAgent> agents = Lists.mutable.of(new InitialTextAgent(), new PhraseAgent(), new CorefAgent());
 
-    /**
-     * Creates a new model connection agent with the given extraction states.
-     *
-     * @param data the data for the stage
-     */
-    public TextExtraction(AgentDatastructure data) {
-        this(data, TextExtractionConfig.DEFAULT_CONFIG, GenericTextConfig.DEFAULT_CONFIG);
-    }
+    @Configurable
+    private List<String> enabledAgents = agents.collect(IAgent::getId);
 
     /**
      * Instantiates a new text extractor.
      */
     public TextExtraction() {
-        config = null;
-        agentConfig = null;
-
     }
 
-    /**
-     * Instantiates a new text extractor.
-     *
-     * @param data        the data
-     * @param config      the config
-     * @param agentConfig the agent config
-     */
-    public TextExtraction(AgentDatastructure data, TextExtractionConfig config, GenericTextConfig agentConfig) {
-        this.data = data;
-        this.config = config;
-        this.agentConfig = agentConfig;
+    @Override
+    public void execute(DataStructure data, Map<String, String> additionalSettings) {
+        // Init new states
         data.setTextState(new TextState());
-        initializeAgents();
-    }
 
-    @Override
-    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
-        return new TextExtraction(data, new TextExtractionConfig(configs), new GenericTextConfig(configs));
-    }
-
-    @Override
-    public void exec() {
-        for (IAgent agent : agents) {
-            agent.exec();
+        this.applyConfiguration(additionalSettings);
+        for (TextAgent agent : findByClassName(enabledAgents, agents)) {
+            agent.applyConfiguration(additionalSettings);
+            agent.execute(data);
         }
-    }
-
-    /**
-     * Initializes graph dependent analyzers and solvers
-     */
-
-    private void initializeAgents() {
-
-        Map<String, TextAgent> myAgents = Loader.loadLoadable(TextAgent.class);
-
-        for (String agent : config.textAgents) {
-            if (!myAgents.containsKey(agent)) {
-                throw new IllegalArgumentException("TextAgent " + agent + " not found");
-            }
-            agents.add(myAgents.get(agent).create(null, data, agentConfig));
-        }
-    }
-
-    @Override
-    public AgentDatastructure getBlackboard() {
-        return data;
     }
 }

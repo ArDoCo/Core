@@ -1,62 +1,57 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
+
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
-import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
-@MetaInfServices(RecommendationAgent.class)
 public final class PhraseRecommendationAgent extends RecommendationAgent {
 
+    @Configurable
     private double confidence = 0.8;
 
     public PhraseRecommendationAgent() {
-        super(GenericRecommendationConfig.class);
-    }
-
-    private PhraseRecommendationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            GenericRecommendationConfig config) {
-        super(GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
-        confidence = config.phraseRecommendationConfidence;
     }
 
     @Override
-    public RecommendationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            Configuration config) {
-        return new PhraseRecommendationAgent(text, textState, modelState, recommendationState, (GenericRecommendationConfig) config);
-    }
-
-    @Override
-    public void exec() {
-        createRecommendationInstancesFromPhraseNounMappings();
-        findMorePhrasesForRecommendationInstances();
-        findSpecialNamedEntitities();
+    public void execute(RecommendationAgentData data) {
+        for (var model : data.getModelIds()) {
+            var textState = data.getTextState();
+            var modelState = data.getModelState(model);
+            var recommendationState = data.getRecommendationState(modelState.getMetamodel());
+            createRecommendationInstancesFromPhraseNounMappings(textState, recommendationState, modelState);
+            findMorePhrasesForRecommendationInstances(textState, recommendationState, modelState);
+            findSpecialNamedEntitities(textState, recommendationState);
+        }
     }
 
     /**
      * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a phrase (in
      * text-extraction)
+     *
+     * @param textState
+     * @param recommendationState
      */
-    private void createRecommendationInstancesFromPhraseNounMappings() {
+    private void createRecommendationInstancesFromPhraseNounMappings(ITextState textState, IRecommendationState recommendationState, IModelState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
             if (nounMapping.isPhrase()) {
-                var typeMappings = getRelatedTypeMappings(nounMapping);
-                addRecommendedInstance(nounMapping, typeMappings);
+                var typeMappings = getRelatedTypeMappings(nounMapping, textState);
+                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
             }
         }
     }
@@ -64,27 +59,33 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
     /**
      * Find additional phrases and create RecommendedInstances for them. Additional phrases are when a word in a
      * NounMapping has another word in front or afterwards and that phrase is a TypeMapping
+     *
+     * @param textState
+     * @param recommendationState
      */
-    private void findMorePhrasesForRecommendationInstances() {
+    private void findMorePhrasesForRecommendationInstances(ITextState textState, IRecommendationState recommendationState, IModelState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
             for (var word : nounMapping.getWords()) {
                 var prevWord = word.getPreWord();
-                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, prevWord);
+                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, prevWord, textState, recommendationState, modelState);
 
                 var nextWord = word.getNextWord();
-                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, nextWord);
+                addRecommendedInstanceIfPhraseWithOtherWord(nounMapping, nextWord, textState, recommendationState, modelState);
             }
         }
     }
 
     /**
      * Find words that use CamelCase or snake_case.
+     *
+     * @param textState
+     * @param recommendationState
      */
-    private void findSpecialNamedEntitities() {
-        findSpecialNamedEntitiesInNounMappings(textState.getNames());
+    private void findSpecialNamedEntitities(ITextState textState, IRecommendationState recommendationState) {
+        findSpecialNamedEntitiesInNounMappings(textState.getNames(), recommendationState);
     }
 
-    private void findSpecialNamedEntitiesInNounMappings(ImmutableList<INounMapping> nounMappings) {
+    private void findSpecialNamedEntitiesInNounMappings(ImmutableList<INounMapping> nounMappings, IRecommendationState recommendationState) {
         for (var nounMapping : nounMappings) {
             for (var word : nounMapping.getWords()) {
                 var wordText = word.getText();
@@ -96,9 +97,10 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         }
     }
 
-    private void addRecommendedInstance(INounMapping nounMapping, ImmutableList<INounMapping> typeMappings) {
+    private void addRecommendedInstance(INounMapping nounMapping, ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState,
+            IModelState modelState) {
         var nounMappings = Lists.immutable.of(nounMapping);
-        var types = getSimilarModelTypes(typeMappings);
+        var types = getSimilarModelTypes(typeMappings, modelState);
         if (types.isEmpty()) {
             recommendationState.addRecommendedInstance(nounMapping.getReference(), "", confidence, nounMappings, typeMappings);
         } else {
@@ -108,7 +110,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         }
     }
 
-    private ImmutableList<String> getSimilarModelTypes(ImmutableList<INounMapping> typeMappings) {
+    private ImmutableList<String> getSimilarModelTypes(ImmutableList<INounMapping> typeMappings, IModelState modelState) {
         MutableSet<String> similarModelTypes = Sets.mutable.empty();
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
@@ -124,7 +126,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         return similarModelTypes.toList().toImmutable();
     }
 
-    private ImmutableList<INounMapping> getRelatedTypeMappings(INounMapping nounMapping) {
+    private ImmutableList<INounMapping> getRelatedTypeMappings(INounMapping nounMapping, ITextState textState) {
         MutableList<INounMapping> typeMappings = Lists.mutable.empty();
         // find TypeMappings that come from the Phrase Words within the Compound Word
         var phrase = getPhraseWordsFromNounMapping(nounMapping);
@@ -134,7 +136,8 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         return typeMappings.toImmutable();
     }
 
-    private void addRecommendedInstanceIfPhraseWithOtherWord(INounMapping nounMapping, IWord word) {
+    private void addRecommendedInstanceIfPhraseWithOtherWord(INounMapping nounMapping, IWord word, ITextState textState,
+            IRecommendationState recommendationState, IModelState modelState) {
         if (word == null) {
             return;
         }
@@ -142,7 +145,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         if (word.getPosTag().isNoun()) {
             var typeMappings = textState.getMappingsThatCouldBeAType(word);
             if (!typeMappings.isEmpty()) {
-                addRecommendedInstance(nounMapping, typeMappings);
+                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
             }
         }
     }
@@ -158,4 +161,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         return phrase;
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

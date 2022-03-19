@@ -1,10 +1,10 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.ResourceAccessor;
 
 /**
- * The TextExtractionStateConfig for {@link TextExtractionExtractor}.
+ * The TextExtractionStateConfig for {@link TextState}.
  */
 public final class TextExtractionStateConfig {
 
@@ -14,7 +14,9 @@ public final class TextExtractionStateConfig {
 
     private static final ResourceAccessor CONFIG = loadParameters("/configs/TextExtractionState.properties");
 
-    /** The Constant NORT_PROBABILITY_FOR_NAME_AND_TYPE. */
+    /**
+     * The Constant NORT_PROBABILITY_FOR_NAME_AND_TYPE.
+     */
     public static final double NORT_PROBABILITY_FOR_NAME_AND_TYPE = CONFIG.getPropertyAsDouble("nortProbabilityForNameAndType");
 
     private static ResourceAccessor loadParameters(String filePath) {

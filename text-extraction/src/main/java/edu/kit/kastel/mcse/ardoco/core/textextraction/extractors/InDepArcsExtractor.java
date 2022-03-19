@@ -1,76 +1,51 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
 
 /**
  * The analyzer examines the incoming dependency arcs of the current node.
  *
  * @author Sophie
- *
  */
-@MetaInfServices(TextExtractionExtractor.class)
-public class InDepArcsExtractor extends TextExtractionExtractor {
+public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
-    private double probability;
+    @Configurable
+    private double probability = 1.0;
 
     /**
      * Prototype constructor.
      */
     public InDepArcsExtractor() {
-        this(null);
-    }
-
-    /**
-     * Instantiates a new in dep arcs extractor.
-     *
-     * @param textExtractionState the text extraction state
-     */
-    public InDepArcsExtractor(ITextState textExtractionState) {
-        this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
-    }
-
-    /**
-     * Creates a new InDepArcsAnalyzer.
-     *
-     * @param textExtractionState the text extraction state
-     * @param config              the module configuration
-     */
-    public InDepArcsExtractor(ITextState textExtractionState, GenericTextConfig config) {
-        super(textExtractionState);
-        probability = config.inDepArcsAnalyzerProbability;
     }
 
     @Override
-    public TextExtractionExtractor create(ITextState textExtractionState, Configuration config) {
-        return new InDepArcsExtractor(textExtractionState, (GenericTextConfig) config);
-    }
-
-    @Override
-    public void exec(IWord n) {
+    public void exec(TextAgentData data, IWord n) {
         String nodeValue = n.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
             return;
         }
 
-        examineIncomingDepArcs(n);
+        examineIncomingDepArcs(data.getTextState(), n);
     }
 
     /**
      * Examines the incoming dependency arcs from the PARSE graph.
      *
-     * @param word the node to check
+     * @param textState
+     * @param word      the node to check
      */
-    private void examineIncomingDepArcs(IWord word) {
+    private void examineIncomingDepArcs(ITextState textState, IWord word) {
 
         ImmutableList<DependencyTag> incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
 
@@ -98,4 +73,7 @@ public class InDepArcsExtractor extends TextExtractionExtractor {
         return DependencyTag.APPOS == depTag || DependencyTag.NSUBJ == depTag || DependencyTag.POSS == depTag;
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

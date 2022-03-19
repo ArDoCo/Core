@@ -2,17 +2,12 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
@@ -32,13 +27,13 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
     private final List<TestLink> falsePositives = new ArrayList<>();
     private final List<TestLink> falseNegatives = new ArrayList<>();
 
-    public TLProjectEvalResult(Project project, AgentDatastructure data) throws IOException {
+    public TLProjectEvalResult(Project project, DataStructure data) throws IOException {
         this(project, getTraceLinks(project, data), TLGoldStandardFile.loadLinks(project));
     }
 
-    private static List<TestLink> getTraceLinks(Project project, AgentDatastructure data) {
+    private static List<TestLink> getTraceLinks(Project project, DataStructure data) {
         var traceLinks = Lists.mutable.<TestLink> empty();
-        for (var connectionState : data.getAllConnectionStates().values()) {
+        for (var connectionState : data.getModelIds().stream().map(data::getConnectionState).toList()) {
             traceLinks.addAll(connectionState.getTraceLinks().stream().map(TestLink::new).toList());
         }
         return traceLinks.toList();

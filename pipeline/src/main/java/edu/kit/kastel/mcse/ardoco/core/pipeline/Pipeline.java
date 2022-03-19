@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.io.File;
@@ -8,43 +8,31 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGeneratorConfig;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.model.java.JavaOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGeneratorConfig;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionConfig;
 
 /**
  * The Pipeline defines a simple CLI for execution of the agents.
@@ -142,46 +130,46 @@ public final class Pipeline {
     }
 
     /**
-     * Run the approach equally to {@link #runAndSave(String, File, File, File, File)} but without saving the output to
-     * the file system.
+     * Run the approach equally to {@link #runAndSave(String, File, File, File, File, boolean)} but without saving the
+     * output to the file system.
      *
      * @param name              Name of the run
      * @param inputText         File of the input text. Can
      * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
      * @param additionalConfigs File with the additional or overwriting config parameters that should be used
-     * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
+     * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs) {
+    public static DataStructure run(String name, File inputText, File inputModel, File additionalConfigs) {
         return runAndSave(name, inputText, inputModel, additionalConfigs, null, false);
     }
 
     /**
-     * Run the approach equally to {@link #runAndSave(String, File, File, File, File)} but without saving the output to
-     * the file system.
+     * Run the approach equally to {@link #runAndSave(String, File, File, File, File, boolean)} but without saving the
+     * output to the file system.
      *
      * @param name              Name of the run
      * @param inputText         File of the input text. Can
      * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
      * @param additionalConfigs File with the additional or overwriting config parameters that should be used
      * @param hasCodeModel      indicate that the model contains a code model
-     * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
+     * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static AgentDatastructure run(String name, File inputText, File inputModel, File additionalConfigs, boolean hasCodeModel) {
+    public static DataStructure run(String name, File inputText, File inputModel, File additionalConfigs, boolean hasCodeModel) {
         return runAndSave(name, inputText, inputModel, additionalConfigs, null, hasCodeModel);
     }
 
     /**
      * Run the approach with the given parameters and save the output to the file system.
      *
-     * @param name              Name of the run
-     * @param inputText         File of the input text. Can
-     * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
-     * @param additionalConfigs File with the additional or overwriting config parameters that should be used
-     * @param outputDir         File that represents the output directory where the results should be written to
-     * @param hasCodeModel      indicate that the model contains a code model
-     * @return the {@link AgentDatastructure} that contains the blackboard with all results (of all steps)
+     * @param name                  Name of the run
+     * @param inputText             File of the input text. Can
+     * @param inputModel            File of the input model (ontology). If inputText is null, needs to contain the text.
+     * @param additionalConfigsFile File with the additional or overwriting config parameters that should be used
+     * @param outputDir             File that represents the output directory where the results should be written to
+     * @param hasCodeModel          indicate that the model contains a code model
+     * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static AgentDatastructure runAndSave(String name, File inputText, File inputModel, File additionalConfigs, File outputDir, boolean hasCodeModel) {
+    public static DataStructure runAndSave(String name, File inputText, File inputModel, File additionalConfigsFile, File outputDir, boolean hasCodeModel) {
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
@@ -196,15 +184,17 @@ public final class Pipeline {
 
         logger.info("Starting process to generate Trace Links");
         var prevStartTime = System.currentTimeMillis();
+        Map<String, IModelState> models = new HashMap<>();
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
-        var data = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
+        models.put(pcmModel.getModelId(), runModelExtractor(pcmModel));
 
         if (hasCodeModel) {
             IModelConnector javaModel = new JavaOntologyModelConnector(ontoConnector);
             var codeModelState = runModelExtractor(javaModel);
-            data.addModelState(codeModelState.getModelId(), codeModelState);
-
+            models.put(javaModel.getModelId(), codeModelState);
         }
+        var data = new DataStructure(annotatedText, models);
+
         if (outputDir != null) {
             for (String modelId : data.getModelIds()) {
                 var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + data.getModelState(modelId).getMetamodel().toString() + ".csv")
@@ -214,20 +204,37 @@ public final class Pipeline {
         }
         logTiming(prevStartTime, "Model-Extractor");
 
+        Map<String, String> additionalConfigs = new HashMap<>();
+        if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
+            try (Scanner scanner = new Scanner(additionalConfigsFile)) {
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    if (line == null || line.isBlank())
+                        continue;
+                    var values = line.split(":", 2);
+                    if (values.length != 2)
+                        continue;
+                    additionalConfigs.put(values[0], values[1]);
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
         prevStartTime = System.currentTimeMillis();
-        data.overwrite(runTextExtractor(data, additionalConfigs));
+        runTextExtractor(data, additionalConfigs);
         logTiming(prevStartTime, "Text-Extractor");
 
         prevStartTime = System.currentTimeMillis();
-        data.overwrite(runRecommendationGenerator(data, additionalConfigs));
+        runRecommendationGenerator(data, additionalConfigs);
         logTiming(prevStartTime, "Recommendation-Generator");
 
         prevStartTime = System.currentTimeMillis();
-        data.overwrite(runConnectionGenerator(data, additionalConfigs));
+        runConnectionGenerator(data, additionalConfigs);
         logTiming(prevStartTime, "Connection-Generator");
 
         prevStartTime = System.currentTimeMillis();
-        data.overwrite(runInconsistencyChecker(data));
+        runInconsistencyChecker(data, additionalConfigs);
         logTiming(prevStartTime, "Inconsistency-Checker");
 
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
@@ -290,7 +297,7 @@ public final class Pipeline {
         return outFile.getAbsolutePath();
     }
 
-    private static void printResultsInFiles(File outputDir, String modelId, String name, AgentDatastructure data, Duration duration) {
+    private static void printResultsInFiles(File outputDir, String modelId, String name, DataStructure data, Duration duration) {
 
         FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings.csv").toFile(), //
                 data.getTextState());
@@ -299,68 +306,40 @@ public final class Pipeline {
                 data.getConnectionState(modelId));
 
         FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states.csv").toFile(), //
-                data.getModelState(modelId), data.getTextState(), data.getRecommendationState(modelId), data.getConnectionState(modelId), duration);
+                data.getModelState(modelId), data.getTextState(), data.getRecommendationState(data.getModelState(modelId).getMetamodel()),
+                data.getConnectionState(modelId), duration);
 
         FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(),
                 data.getInconsistencyState(modelId));
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector) {
-        var modelId = modelConnector.getModelId();
-        IExecutionStage modelExtractor = new ModelProvider(modelConnector);
-        modelExtractor.exec();
-        return modelExtractor.getBlackboard().getModelState(modelId);
+        ModelProvider modelExtractor = new ModelProvider(modelConnector);
+        return modelExtractor.execute();
     }
 
-    private static AgentDatastructure runTextExtractor(AgentDatastructure data, File additionalConfigs) {
-        IExecutionStage textModule = new TextExtraction(data);
-        if (additionalConfigs != null) {
-            Map<String, String> configs = new HashMap<>();
-            Configuration.mergeConfigToMap(configs, TextExtractionConfig.DEFAULT_CONFIG);
-            Configuration.mergeConfigToMap(configs, GenericTextConfig.DEFAULT_CONFIG);
-            Configuration.overrideConfigInMap(configs, additionalConfigs);
-            textModule = textModule.create(data, configs);
-        }
-
-        textModule.exec();
-        return textModule.getBlackboard();
+    private static DataStructure runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {
+        IExecutionStage textModule = new TextExtraction();
+        textModule.execute(data, additionalConfigs);
+        return data;
     }
 
-    private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data, File additionalConfigs) {
-        IExecutionStage recommendationModule = new RecommendationGenerator(data);
-
-        if (additionalConfigs != null) {
-            Map<String, String> configs = new HashMap<>();
-            Configuration.mergeConfigToMap(configs, RecommendationGeneratorConfig.DEFAULT_CONFIG);
-            Configuration.mergeConfigToMap(configs, GenericRecommendationConfig.DEFAULT_CONFIG);
-            Configuration.overrideConfigInMap(configs, additionalConfigs);
-            recommendationModule = recommendationModule.create(data, configs);
-        }
-
-        recommendationModule.exec();
-        return recommendationModule.getBlackboard();
+    private static DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> additionalConfigs) {
+        IExecutionStage recommendationModule = new RecommendationGenerator();
+        recommendationModule.execute(data, additionalConfigs);
+        return data;
     }
 
-    private static AgentDatastructure runConnectionGenerator(AgentDatastructure data, File additionalConfigs) {
-        IExecutionStage connectionGenerator = new ConnectionGenerator(data);
-
-        if (additionalConfigs != null) {
-            Map<String, String> configs = new HashMap<>();
-            Configuration.mergeConfigToMap(configs, ConnectionGeneratorConfig.DEFAULT_CONFIG);
-            Configuration.mergeConfigToMap(configs, GenericConnectionConfig.DEFAULT_CONFIG);
-            Configuration.overrideConfigInMap(configs, additionalConfigs);
-            connectionGenerator = connectionGenerator.create(data, configs);
-        }
-
-        connectionGenerator.exec();
-        return connectionGenerator.getBlackboard();
+    private static DataStructure runConnectionGenerator(DataStructure data, Map<String, String> additionalConfigs) {
+        IExecutionStage connectionGenerator = new ConnectionGenerator();
+        connectionGenerator.execute(data, additionalConfigs);
+        return data;
     }
 
-    private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
-        IExecutionStage inconsistencyChecker = new InconsistencyChecker(data);
-
-        inconsistencyChecker.exec();
-        return inconsistencyChecker.getBlackboard();
+    private static DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> additionalConfigs) {
+        IExecutionStage inconsistencyChecker = new InconsistencyChecker();
+        inconsistencyChecker.execute(data, additionalConfigs);
+        return data;
     }
 
     /**
