@@ -12,7 +12,7 @@ public class EqualityMeasure implements WordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        return ctx.firstTerm().equals(ctx.secondTerm());
+        return ctx.firstTerm().equalsIgnoreCase(ctx.secondTerm());
     }
 
 }
