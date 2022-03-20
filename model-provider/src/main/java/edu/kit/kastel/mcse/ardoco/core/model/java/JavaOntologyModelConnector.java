@@ -18,11 +18,10 @@ import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 
 /**
  * @author Jan Keim
- *
  */
 public class JavaOntologyModelConnector implements IModelConnector {
     private static final String CLASS_OR_INTERFACE_URI = "https://informalin.github.io/knowledgebases/informalin_base_java.owl#OWLClass_5c834f48_ae0d_40d8_8ea1_c193dc511593";
-    private OntologyInterface ontologyConnector;
+    private final OntologyInterface ontologyConnector;
     // TODO: Extract id from model.
     private final String modelId = UUID.randomUUID().toString();
 

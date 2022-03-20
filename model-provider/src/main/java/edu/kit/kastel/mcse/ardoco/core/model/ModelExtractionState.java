@@ -24,11 +24,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
  */
 public class ModelExtractionState extends AbstractState implements IModelState {
 
-    private String modelId;
-    private Metamodel metamodelType;
-    private Set<String> instanceTypes;
-    private Set<String> relationTypes;
-    private Set<String> names;
+    private final String modelId;
+    private final Metamodel metamodelType;
+    private final Set<String> instanceTypes;
+    private final Set<String> relationTypes;
+    private final Set<String> names;
     private ImmutableList<IModelInstance> instances;
     private ImmutableList<IModelRelation> relations;
 
@@ -193,11 +193,11 @@ public class ModelExtractionState extends AbstractState implements IModelState {
     public String toString() {
         var output = new StringBuilder("Instances:\n");
         for (IModelInstance i : instances) {
-            output.append(i.toString() + "\n");
+            output.append(i.toString()).append("\n");
         }
         output.append("Relations:\n");
         for (IModelRelation r : relations) {
-            output.append(r.toString() + "\n");
+            output.append(r.toString()).append("\n");
         }
         return output.toString();
     }

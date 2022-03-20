@@ -48,10 +48,6 @@ public class ReferenceAgent extends ConnectionAgent {
     /**
      * Searches for instances mentioned in the text extraction state as names. If it founds some similar names it
      * creates recommendations.
-     *
-     * @param modelState
-     * @param recommendationState
-     * @param textState
      */
     private void findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(IModelState modelState, IRecommendationState recommendationState,
             ITextState textState) {

@@ -18,9 +18,9 @@ public class NameInconsistency implements IInconsistency {
 
     private static final String REASON_FORMAT_STRING = "Inconsistent naming in trace link between textual occurence \"%s\" (sentence %d) and model element \"%s\" (%s)";
 
-    private IModelInstance modelInstance;
-    private IWord word;
-    private int sentenceNo;
+    private final IModelInstance modelInstance;
+    private final IWord word;
+    private final int sentenceNo;
 
     public NameInconsistency(IModelInstance modelInstance, IWord word) {
         this.modelInstance = modelInstance;

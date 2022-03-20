@@ -25,7 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent
  */
 public class ConnectionGenerator extends AbstractExecutionStage {
 
-    private MutableList<ConnectionAgent> agents = Lists.mutable.of(new InitialConnectionAgent(), new ReferenceAgent(), new InstanceConnectionAgent());
+    private final MutableList<ConnectionAgent> agents = Lists.mutable.of(new InitialConnectionAgent(), new ReferenceAgent(), new InstanceConnectionAgent());
 
     @Configurable
     private List<String> enabledAgents = agents.collect(IAgent::getId);

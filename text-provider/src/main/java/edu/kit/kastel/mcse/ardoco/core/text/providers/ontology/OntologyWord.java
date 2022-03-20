@@ -34,8 +34,8 @@ public final class OntologyWord implements IWord {
     private OntProperty dependencyTargetProperty = null;
     private OntProperty dependencyTypeProperty = null;
 
-    private Individual wordIndividual;
-    private OntologyText text;
+    private final Individual wordIndividual;
+    private final OntologyText text;
 
     private OntologyWord(OntologyConnector ontologyConnector, Individual wordIndividual, OntologyText text) {
         this.wordIndividual = wordIndividual;
@@ -70,10 +70,7 @@ public final class OntologyWord implements IWord {
     @Override
     public int getSentenceNo() {
         var optInt = ontologyConnector.getPropertyIntValue(wordIndividual, sentenceProperty);
-        if (optInt.isPresent()) {
-            return optInt.get();
-        }
-        return -1;
+        return optInt.orElse(-1);
     }
 
     @Override
@@ -84,10 +81,7 @@ public final class OntologyWord implements IWord {
     @Override
     public String getText() {
         var optString = ontologyConnector.getPropertyStringValue(wordIndividual, textProperty);
-        if (optString.isPresent()) {
-            return optString.get();
-        }
-        return null;
+        return optString.orElse(null);
     }
 
     @Override
@@ -154,19 +148,13 @@ public final class OntologyWord implements IWord {
     @Override
     public int getPosition() {
         var optInt = ontologyConnector.getPropertyIntValue(wordIndividual, positionProperty);
-        if (optInt.isPresent()) {
-            return optInt.get();
-        }
-        return -1;
+        return optInt.orElse(-1);
     }
 
     @Override
     public String getLemma() {
         var optString = ontologyConnector.getPropertyStringValue(wordIndividual, lemmaProperty);
-        if (optString.isPresent()) {
-            return optString.get();
-        }
-        return null;
+        return optString.orElse(null);
     }
 
     @Override
@@ -227,9 +215,7 @@ public final class OntologyWord implements IWord {
         for (var dependency : filteredDependencies) {
             var targetNode = ontologyConnector.getPropertyValue(dependency, property);
             var target = ontologyConnector.transformIntoIndividual(targetNode);
-            if (target.isPresent()) {
-                targets.add(target.get());
-            }
+            target.ifPresent(targets::add);
         }
         return targets;
     }

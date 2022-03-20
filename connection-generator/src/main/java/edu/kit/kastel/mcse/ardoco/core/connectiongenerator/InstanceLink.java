@@ -18,12 +18,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
  * Represents a trace link between an instance of the extracted model and a recommended instance.
  *
  * @author Sophie
- *
  */
 public class InstanceLink implements IInstanceLink {
 
-    private IRecommendedInstance textualInstance;
-    private IModelInstance modelInstance;
+    private final IRecommendedInstance textualInstance;
+    private final IModelInstance modelInstance;
     private double probability;
 
     @Override
@@ -107,7 +106,7 @@ public class InstanceLink implements IInstanceLink {
      * @return all names of the recommended instances
      */
     @Override
-    public String getNameOccurencesAsString() {
+    public String getNameOccurrencesAsString() {
         Set<String> names = new HashSet<>();
         MutableList<Integer> namePositions = Lists.mutable.empty();
         for (INounMapping nameMapping : textualInstance.getNameMappings()) {
@@ -115,7 +114,7 @@ public class InstanceLink implements IInstanceLink {
             namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
 
-        return "name=" + textualInstance.getName() + "occurrences= " + "NameVariants: " + names.size() + ": " + names.toString() + //
+        return "name=" + textualInstance.getName() + "occurrences= " + "NameVariants: " + names.size() + ": " + names + //
                 " sentences{" + Arrays.toString(namePositions.toArray()) + "}";
     }
 
@@ -137,7 +136,7 @@ public class InstanceLink implements IInstanceLink {
         return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getFullName() + //
                 ", as=" + String.join(", ", modelInstance.getFullType()) + ", probability=" + probability + ", FOUND: " + //
                 textualInstance.getName() + " : " + getTextualInstance().getType() + ", occurrences= " + //
-                "NameVariants: " + names.size() + ": " + names.toString() + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
-                ", TypeVariants: " + types.size() + ": " + types.toString() + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";
+                "NameVariants: " + names.size() + ": " + names + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
+                ", TypeVariants: " + types.size() + ": " + types + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";
     }
 }

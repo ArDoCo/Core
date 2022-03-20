@@ -18,15 +18,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * measured by the probability. Every recommended instance has a unique name.
  *
  * @author Sophie
- *
  */
 public class RecommendedInstance implements IRecommendedInstance {
 
     private String type;
     private String name;
     private double probability;
-    private Set<INounMapping> typeMappings;
-    private Set<INounMapping> nameMappings;
+    private final Set<INounMapping> typeMappings;
+    private final Set<INounMapping> nameMappings;
 
     @Override
     public IRecommendedInstance createCopy() {

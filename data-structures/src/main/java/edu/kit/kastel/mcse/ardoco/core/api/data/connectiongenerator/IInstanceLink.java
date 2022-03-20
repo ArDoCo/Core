@@ -43,6 +43,6 @@ public interface IInstanceLink extends ICopyable<IInstanceLink> {
      *
      * @return all names of the recommended instances
      */
-    String getNameOccurencesAsString();
+    String getNameOccurrencesAsString();
 
 }

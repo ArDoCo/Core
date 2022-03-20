@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
  */
 public class TextExtraction extends AbstractExecutionStage {
 
-    private MutableList<TextAgent> agents = Lists.mutable.of(new InitialTextAgent(), new PhraseAgent(), new CorefAgent());
+    private final MutableList<TextAgent> agents = Lists.mutable.of(new InitialTextAgent(), new PhraseAgent(), new CorefAgent());
 
     @Configurable
     private List<String> enabledAgents = agents.collect(IAgent::getId);

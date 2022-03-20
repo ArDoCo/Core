@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.*;
  */
 public class InitialTextAgent extends TextAgent {
 
-    private MutableList<AbstractExtractor<TextAgentData>> extractors = Lists.mutable.of(new NounExtractor(), new InDepArcsExtractor(),
+    private final MutableList<AbstractExtractor<TextAgentData>> extractors = Lists.mutable.of(new NounExtractor(), new InDepArcsExtractor(),
             new OutDepArcsExtractor(), new ArticleTypeNameExtractor(), new SeparatedNamesExtractor());
 
     @Configurable

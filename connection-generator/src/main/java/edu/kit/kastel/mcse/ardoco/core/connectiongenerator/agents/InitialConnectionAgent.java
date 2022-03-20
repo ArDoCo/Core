@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.NameTypeCo
  * The agent that executes the extractors of this stage.
  */
 public class InitialConnectionAgent extends ConnectionAgent {
-    private MutableList<AbstractExtractor<ConnectionAgentData>> extractors = Lists.mutable.of(new NameTypeConnectionExtractor(),
+    private final MutableList<AbstractExtractor<ConnectionAgentData>> extractors = Lists.mutable.of(new NameTypeConnectionExtractor(),
             new ExtractionDependentOccurrenceExtractor());
 
     @Configurable

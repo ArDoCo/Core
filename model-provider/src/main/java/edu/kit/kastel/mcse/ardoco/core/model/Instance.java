@@ -16,15 +16,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * instance.
  *
  * @author Sophie
- *
  */
 public class Instance implements IModelInstance {
 
-    private String fullName;
-    private String fullType;
-    private MutableList<String> names;
-    private MutableList<String> types;
-    private String uid;
+    private final String fullName;
+    private final String fullType;
+    private final MutableList<String> names;
+    private final MutableList<String> types;
+    private final String uid;
 
     @Override
     public IModelInstance createCopy() {

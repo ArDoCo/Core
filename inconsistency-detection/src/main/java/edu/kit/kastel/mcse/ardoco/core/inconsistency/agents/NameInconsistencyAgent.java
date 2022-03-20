@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.NameInconsistency;
 
 //TODO Need to rethink the checks as some other code changed and we cannot simply analyze words anymore (Problematic for compounds)
 public class NameInconsistencyAgent extends InconsistencyAgent {
-    private static final String REGEX_DIVIDER = "[\\.:]";
+    private static final String REGEX_DIVIDER = "[.:]";
 
     public NameInconsistencyAgent() {
     }

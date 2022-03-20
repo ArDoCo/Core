@@ -147,7 +147,6 @@ public enum DependencyTag {
     /**
      * A copula is the relation between the complement of a copular verb and the copular verb. (We normally take a
      * copula as a dependent of its complement; see the discussion in section 4.)
-     *
      */
     COP,
     /**
@@ -277,5 +276,5 @@ public enum DependencyTag {
     /**
      * "obl:relobj", "relative object"
      */
-    OBJ_RELOBJ;
+    OBJ_RELOBJ
 }

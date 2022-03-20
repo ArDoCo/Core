@@ -1,11 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -24,15 +20,15 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 public class NounMapping implements INounMapping {
 
     /* Main reference */
-    private ImmutableList<IWord> referenceWords;
+    private final ImmutableList<IWord> referenceWords;
 
     /* Words are the references within the text */
-    private MutableList<IWord> words;
+    private final MutableList<IWord> words;
 
-    private MutableList<IWord> coreferences = Lists.mutable.empty();
+    private final MutableList<IWord> coreferences = Lists.mutable.empty();
 
     /* the different surface forms */
-    private MutableList<String> surfaceForms;
+    private final MutableList<String> surfaceForms;
 
     private MappingKind mostProbableKind;
     private Double highestProbability;
@@ -42,11 +38,6 @@ public class NounMapping implements INounMapping {
 
     /**
      * Instantiates a new noun mapping.
-     *
-     * @param words        the words
-     * @param distribution the distribution
-     * @param reference    the reference
-     * @param surfaceForm  the occurrences
      */
     private NounMapping(ImmutableList<IWord> words, Map<MappingKind, Double> distribution, List<IWord> referenceWords, ImmutableList<String> surfaceForms) {
         this.words = Lists.mutable.withAll(words);
@@ -59,12 +50,6 @@ public class NounMapping implements INounMapping {
 
     /**
      * Instantiates a new noun mapping.
-     *
-     * @param words       the words
-     * @param kind        the kind
-     * @param probability the probability
-     * @param reference   the reference
-     * @param occurrences the occurrences
      */
     public NounMapping(ImmutableList<IWord> words, MappingKind kind, double probability, List<IWord> referenceWords, ImmutableList<String> occurrences) {
         distribution = new EnumMap<>(MappingKind.class);
@@ -212,20 +197,18 @@ public class NounMapping implements INounMapping {
         double currentProbability = distribution.get(kind);
         distribution.put(kind, (currentProbability + newProbability) / 2);
 
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        if (mostProbableKind != null) {
-            if (mostProbableKind == MappingKind.NAME_OR_TYPE) {
-                var threshold = 0;
-                if (distribution.get(MappingKind.NAME) >= threshold || distribution.get(MappingKind.TYPE) >= threshold) {
-                    if (distribution.get(MappingKind.NAME) >= distribution.get(MappingKind.TYPE)) {
-                        mostProbableKind = MappingKind.NAME;
-                    } else {
-                        mostProbableKind = MappingKind.TYPE;
-                    }
+        mostProbableKind = distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).get();
+        if (mostProbableKind == MappingKind.NAME_OR_TYPE) {
+            var threshold = 0;
+            if (distribution.get(MappingKind.NAME) >= threshold || distribution.get(MappingKind.TYPE) >= threshold) {
+                if (distribution.get(MappingKind.NAME) >= distribution.get(MappingKind.TYPE)) {
+                    mostProbableKind = MappingKind.NAME;
+                } else {
+                    mostProbableKind = MappingKind.TYPE;
                 }
             }
-            highestProbability = distribution.get(mostProbableKind);
         }
+        highestProbability = distribution.get(mostProbableKind);
     }
 
     @Override

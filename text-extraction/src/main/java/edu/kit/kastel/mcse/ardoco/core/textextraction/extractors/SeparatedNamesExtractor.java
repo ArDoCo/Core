@@ -38,12 +38,9 @@ public class SeparatedNamesExtractor extends AbstractExtractor<TextAgentData> {
         checkForSeparatedNode(data.getTextState(), word);
     }
 
-    /***
+    /**
      * Checks if Node Value contains separator. If true, it is split and added separately to the names of the text
      * extraction state.
-     *
-     * @param textState
-     * @param word      word to check
      */
     private void checkForSeparatedNode(ITextState textState, IWord word) {
         if (word.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(word.getText())) {

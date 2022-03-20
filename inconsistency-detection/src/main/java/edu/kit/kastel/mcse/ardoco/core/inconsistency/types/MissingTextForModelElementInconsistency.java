@@ -12,14 +12,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 
 /**
  * @author Jan Keim
- *
  */
 public class MissingTextForModelElementInconsistency implements IInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingTextForModelElement";
 
     private static final String REASON_FORMAT_STRING = "Model contains an Instance that should be documented (because it is not whitelisted and its type \"%s\" is configured to need documentation) but could not be found in documentation: %s";
 
-    private IModelInstance instance;
+    private final IModelInstance instance;
 
     public MissingTextForModelElementInconsistency(IModelInstance instance) {
         this.instance = instance;

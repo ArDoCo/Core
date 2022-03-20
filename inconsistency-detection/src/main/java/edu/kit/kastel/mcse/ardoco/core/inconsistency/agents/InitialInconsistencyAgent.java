@@ -31,8 +31,6 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
 
     /**
      * Filter RecommendedInstances based on various heuristics. First, filter unlikely ones (low probability).
-     * 
-     * @param inconsistencyState
      */
     private void filterRecommendedInstances(IInconsistencyState inconsistencyState) {
         var filteredRecommendedInstances = Lists.mutable.<IRecommendedInstance> empty();
@@ -82,7 +80,6 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
      * Check for ???
      *
      * @param recommendedInstance the {@link IRecommendedInstance} to check
-     * @return
      */
     private boolean checkTwo(IRecommendedInstance recommendedInstance) {
         // TODO

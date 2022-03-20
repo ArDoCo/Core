@@ -37,10 +37,6 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
     /**
      * This method checks whether a given node is a name of an instance given in the model extraction state. If it
      * appears to be a name this is stored in the text extraction state.
-     *
-     * @param modelState
-     * @param textState
-     * @param word       the node to check
      */
     private void searchForName(IModelState modelState, ITextState textState, IWord word) {
         if (posTagIsUndesired(word) && !wordStartsWithCapitalLetter(word)) {
@@ -64,10 +60,6 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
      * This method checks whether a given node is a type of an instance given in the model extraction state. If it
      * appears to be a type this is stored in the text extraction state. If multiple options are available the node
      * value is taken as reference.
-     *
-     * @param modelState
-     * @param textState
-     * @param word       the node to check
      */
     private void searchForType(IModelState modelState, ITextState textState, IWord word) {
         var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));

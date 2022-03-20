@@ -25,8 +25,8 @@ public class OntologyText implements IText {
     private static final String ERR_NO_LIST = "Could not find list of words in the ontology.";
     private static final String ERR_NO_TEXT_FOUND = "Cannot find a text in the ontology.";
 
-    private OntologyConnector ontologyConnector;
-    private Individual textIndividual;
+    private final OntologyConnector ontologyConnector;
+    private final Individual textIndividual;
 
     private OntProperty wordsProperty;
     private OntProperty hasCorefClusterProperty;

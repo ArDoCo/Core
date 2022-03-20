@@ -56,19 +56,13 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
      *
      * @param word word to check
      */
-    private boolean checkIfNodeIsType(ITextState textState, IWord word) {
+    private void checkIfNodeIsType(ITextState textState, IWord word) {
         if (textState.isWordContainedByNameOrTypeMapping(word)) {
-
             IWord prevNode = word.getPreWord();
             if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-
                 textState.addType(word, probability);
-                return true;
             }
-
         }
-        return false;
-
     }
 
     @Override

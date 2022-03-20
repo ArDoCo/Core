@@ -7,6 +7,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
@@ -19,9 +20,10 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
  * @author Jan Keim
  */
 public class PhraseAgent extends TextAgent {
-
-    private static final double PHRASE_CONFIDENCE = 0.6;
-    private static final double SPECIAL_NAMED_ENTITY_CONFIDENCE = 0.6;
+    @Configurable
+    private double phraseConfidence = 0.6;
+    @Configurable
+    private double specialNamedEntityConfidence = 0.6;
 
     /**
      * Instantiates a new initial text agent.
@@ -58,7 +60,7 @@ public class PhraseAgent extends TextAgent {
         var reference = CommonUtilities.createReferenceForPhrase(phrase);
         var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
         if (similarReferenceNounMappings.isEmpty()) {
-            INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, PHRASE_CONFIDENCE);
+            INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, phraseConfidence);
             textState.addNounMapping(phraseNounMapping);
         } else {
             for (var nounMapping : similarReferenceNounMappings) {
@@ -71,7 +73,7 @@ public class PhraseAgent extends TextAgent {
     private void createNounMappingIfSpecialNamedEntity(IWord word, ITextState textState) {
         var text = word.getText();
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
-            textState.addName(word, SPECIAL_NAMED_ENTITY_CONFIDENCE);
+            textState.addName(word, specialNamedEntityConfidence);
         }
     }
 

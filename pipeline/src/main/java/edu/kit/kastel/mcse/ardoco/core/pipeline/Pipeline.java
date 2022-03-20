@@ -72,7 +72,7 @@ public final class Pipeline {
         // -o : Output folder
         // -i : Model contains Code Model
 
-        CommandLine cmd = null;
+        CommandLine cmd;
         try {
             cmd = parseCommandLine(args);
         } catch (IllegalArgumentException | ParseException e) {
@@ -87,9 +87,9 @@ public final class Pipeline {
         }
 
         File inputText = null;
-        File inputModel = null;
+        File inputModel;
         File additionalConfigs = null;
-        File outputDir = null;
+        File outputDir;
 
         var providedTextOntology = cmd.hasOption(CMD_PROVIDED);
         if (!providedTextOntology && !cmd.hasOption(CMD_TEXT)) {
@@ -99,14 +99,14 @@ public final class Pipeline {
 
         try {
             if (!providedTextOntology) {
-                inputText = ensureFile(cmd.getOptionValue(CMD_TEXT), false);
+                inputText = ensureFile(cmd.getOptionValue(CMD_TEXT));
             }
-            inputModel = ensureFile(cmd.getOptionValue(CMD_MODEL), false);
+            inputModel = ensureFile(cmd.getOptionValue(CMD_MODEL));
             if (cmd.hasOption(CMD_CONF)) {
-                additionalConfigs = ensureFile(cmd.getOptionValue(CMD_CONF), false);
+                additionalConfigs = ensureFile(cmd.getOptionValue(CMD_CONF));
             }
 
-            outputDir = ensureDir(cmd.getOptionValue(CMD_OUT_DIR), true);
+            outputDir = ensureDir(cmd.getOptionValue(CMD_OUT_DIR));
         } catch (IOException e) {
             logger.error(e.getMessage());
             return;
@@ -267,7 +267,7 @@ public final class Pipeline {
     private static IText getAnnotatedText(File inputText, OntologyConnector ontoConnector) {
         var ontologyTextProvider = OntologyTextProvider.get(ontoConnector);
 
-        IText annotatedText = null;
+        IText annotatedText;
         if (inputText != null) {
             try {
                 ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
@@ -321,41 +321,36 @@ public final class Pipeline {
         return modelExtractor.execute(additionalConfigs);
     }
 
-    private static DataStructure runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {
+    private static void runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage textModule = new TextExtraction();
         textModule.execute(data, additionalConfigs);
-        return data;
     }
 
-    private static DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> additionalConfigs) {
+    private static void runRecommendationGenerator(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage recommendationModule = new RecommendationGenerator();
         recommendationModule.execute(data, additionalConfigs);
-        return data;
     }
 
-    private static DataStructure runConnectionGenerator(DataStructure data, Map<String, String> additionalConfigs) {
+    private static void runConnectionGenerator(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage connectionGenerator = new ConnectionGenerator();
         connectionGenerator.execute(data, additionalConfigs);
-        return data;
     }
 
-    private static DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> additionalConfigs) {
+    private static void runInconsistencyChecker(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage inconsistencyChecker = new InconsistencyChecker();
         inconsistencyChecker.execute(data, additionalConfigs);
-        return data;
     }
 
     /**
-     * Ensure that a file exists (or create if allowed by parameter).
+     * Ensure that a file exists.
      *
-     * @param path   the path to the file
-     * @param create indicates whether creation is allowed
+     * @param path the path to the file
      * @return the file
      * @throws IOException if something went wrong
      */
-    private static File ensureFile(String path, boolean create) throws IOException {
+    private static File ensureFile(String path) throws IOException {
         var file = new File(path);
-        if (file.exists() || create && file.createNewFile()) {
+        if (file.exists()) {
             return file;
         }
         // File not available
@@ -363,25 +358,19 @@ public final class Pipeline {
     }
 
     /**
-     * Ensure that a directory exists (or create if allowed by parameter).
+     * Ensure that a directory exists (or create ).
      *
-     * @param path   the path to the file
-     * @param create indicates whether creation is allowed
+     * @param path the path to the file
      * @return the file
      * @throws IOException if something went wrong
      */
-    private static File ensureDir(String path, boolean create) throws IOException {
+    private static File ensureDir(String path) throws IOException {
         var file = new File(path);
         if (file.isDirectory() && file.exists()) {
             return file;
         }
-        if (create) {
-            file.mkdirs();
-            return file;
-        }
-
-        // File not available
-        throw new IOException("The specified directory does not exist: " + path);
+        file.mkdirs();
+        return file;
     }
 
     private static CommandLine parseCommandLine(String[] args) throws ParseException {

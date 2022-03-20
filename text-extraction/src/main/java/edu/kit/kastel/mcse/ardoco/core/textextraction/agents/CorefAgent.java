@@ -20,7 +20,8 @@ public class CorefAgent extends TextAgent {
 
     @Configurable
     private boolean enabled = false;
-    private static boolean doMerging = false;
+    @Configurable
+    private boolean doMerging = false;
 
     /**
      * Prototype constructor.

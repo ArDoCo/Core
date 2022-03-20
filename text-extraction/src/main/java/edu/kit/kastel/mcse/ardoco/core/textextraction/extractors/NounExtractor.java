@@ -45,9 +45,6 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
 
     /**
      * Finds all nouns and adds them as name-or-type mappings (and types) to the text extraction state.
-     *
-     * @param textState
-     * @param word      word to check
      */
     private void findSingleNouns(ITextState textState, IWord word) {
         POSTag pos = word.getPosTag();

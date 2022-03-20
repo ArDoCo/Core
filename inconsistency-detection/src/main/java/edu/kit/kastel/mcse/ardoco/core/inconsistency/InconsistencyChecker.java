@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingTextForModelE
 
 public class InconsistencyChecker extends AbstractExecutionStage {
 
-    private MutableList<InconsistencyAgent> agents = Lists.mutable.of(new InitialInconsistencyAgent(), new MissingModelElementInconsistencyAgent(),
+    private final MutableList<InconsistencyAgent> agents = Lists.mutable.of(new InitialInconsistencyAgent(), new MissingModelElementInconsistencyAgent(),
             new MissingTextForModelElementInconsistencyAgent());
 
     @Configurable

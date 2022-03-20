@@ -43,9 +43,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
     /**
      * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a phrase (in
      * text-extraction)
-     *
-     * @param textState
-     * @param recommendationState
      */
     private void createRecommendationInstancesFromPhraseNounMappings(ITextState textState, IRecommendationState recommendationState, IModelState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
@@ -59,9 +56,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
     /**
      * Find additional phrases and create RecommendedInstances for them. Additional phrases are when a word in a
      * NounMapping has another word in front or afterwards and that phrase is a TypeMapping
-     *
-     * @param textState
-     * @param recommendationState
      */
     private void findMorePhrasesForRecommendationInstances(ITextState textState, IRecommendationState recommendationState, IModelState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
@@ -77,9 +71,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
 
     /**
      * Find words that use CamelCase or snake_case.
-     *
-     * @param textState
-     * @param recommendationState
      */
     private void findSpecialNamedEntitities(ITextState textState, IRecommendationState recommendationState) {
         findSpecialNamedEntitiesInNounMappings(textState.getNames(), recommendationState);

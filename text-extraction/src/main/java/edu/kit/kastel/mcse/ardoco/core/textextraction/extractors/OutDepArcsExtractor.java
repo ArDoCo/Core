@@ -42,9 +42,6 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
     /**
      * Examines the outgoing dependencies of a node.
-     *
-     * @param textState
-     * @param word      the word to check
      */
     private void examineOutgoingDepArcs(ITextState textState, IWord word) {
 

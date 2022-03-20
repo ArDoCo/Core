@@ -48,10 +48,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     /**
      * Checks if the current node is a type in the text extraction state. If the names of the text extraction state
      * contain the previous node. If that's the case a recommendation for the combination of both is created.
-     *
-     * @param textExtractionState text extraction state
-     * @param word                the current word
-     * @param modelState
      */
     private void checkForNameBeforeType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
@@ -103,10 +99,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     /**
      * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
      * state contain the previous node. If that's the case a recommendation for the combination of both is created.
-     *
-     * @param textExtractionState text extraction state
-     * @param word                the current word
-     * @param modelState
      */
     private void checkForNortBeforeType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
@@ -131,10 +123,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     /**
      * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
      * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
-     *
-     * @param textExtractionState text extraction state
-     * @param word                the current word
-     * @param modelState
      */
     private void checkForNortAfterType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
@@ -165,7 +153,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      * @param nameMappings        the name mappings
      * @param typeMappings        the type mappings
      */
-    private boolean addRecommendedInstanceIfNodeNotNull(//
+    private void addRecommendedInstanceIfNodeNotNull(//
             IWord currentWord, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState) {
         if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
@@ -175,9 +163,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
                 String type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
             }
-            return true;
         }
-        return false;
     }
 
     /**

@@ -11,12 +11,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 /**
  * @author Jan Keim
- *
  */
 public final class CachedOntologyCorefCluster implements ICorefCluster {
     private static final Map<ICorefCluster, CachedOntologyCorefCluster> cache = new HashMap<>();
 
-    private ICorefCluster ontologyCorefCluster;
+    private final ICorefCluster ontologyCorefCluster;
 
     private int id = -1;
     private String representativeMention = null;

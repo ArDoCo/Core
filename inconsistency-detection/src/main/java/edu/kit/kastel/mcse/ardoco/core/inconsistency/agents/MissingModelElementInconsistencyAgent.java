@@ -43,7 +43,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
             // find recommendedInstances with no trace link (also not sharing words with linked RIs)
             candidateElements.removeAllIterable(linkedRecommendedInstances);
-            candidateElements = filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
+            filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
 
             for (var candidate : candidateElements) {
                 addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
@@ -74,9 +74,8 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
      *
      * @param candidateElements          candidate RecommendedInstances
      * @param linkedRecommendedInstances already linked RecommendedInstances
-     * @return list of candidate RecommendedInstances that are not already covered by other RecommendedInstances
      */
-    private MutableList<IRecommendedInstance> filterCandidatesCoveredByRecommendedInstance(MutableList<IRecommendedInstance> candidateElements,
+    private void filterCandidatesCoveredByRecommendedInstance(MutableList<IRecommendedInstance> candidateElements,
             ImmutableList<IRecommendedInstance> linkedRecommendedInstances) {
         for (var linkedRecommendedInstance : linkedRecommendedInstances) {
             var linkedWords = linkedRecommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
@@ -88,7 +87,6 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
             }
             candidateElements.removeAll(candidatesToRemove);
         }
-        return candidateElements;
     }
 
     private void addToCandidates(MutableSet<MissingElementInconsistencyCandidate> candidates, IRecommendedInstance recommendedInstance,

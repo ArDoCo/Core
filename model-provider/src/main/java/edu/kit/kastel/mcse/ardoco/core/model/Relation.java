@@ -15,13 +15,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
  * defined as instances.
  *
  * @author Sophie
- *
  */
 public class Relation implements IModelRelation {
 
-    private MutableList<IModelInstance> instances;
-    private String type;
-    private String uid;
+    private final MutableList<IModelInstance> instances;
+    private final String type;
+    private final String uid;
 
     @Override
     public IModelRelation createCopy() {

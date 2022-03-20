@@ -23,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseReco
  */
 public class RecommendationGenerator extends AbstractExecutionStage {
 
-    private MutableList<RecommendationAgent> agents = Lists.mutable.of(new InitialRecommendationAgent(), new PhraseRecommendationAgent(),
+    private final MutableList<RecommendationAgent> agents = Lists.mutable.of(new InitialRecommendationAgent(), new PhraseRecommendationAgent(),
             new InstanceRelationAgent());
 
     @Configurable

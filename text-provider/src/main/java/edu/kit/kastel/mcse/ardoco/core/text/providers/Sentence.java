@@ -11,12 +11,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 /**
  * @author Jan Keim
- *
  */
 public class Sentence implements ISentence {
 
-    private int sentenceNumber;
-    private ImmutableList<IWord> words;
+    private final int sentenceNumber;
+    private final ImmutableList<IWord> words;
     private String text = null;
 
     public Sentence(int sentenceNumber, ImmutableList<IWord> words) {
@@ -69,7 +68,7 @@ public class Sentence implements ISentence {
             return true;
         }
         var text = word.getText();
-        return text.equals(")") || text.equals(".") || text.equals(",") || text.equals(";") || text.equals("-") || text.equals("\"") || text.equals("\'");
+        return text.equals(")") || text.equals(".") || text.equals(",") || text.equals(";") || text.equals("-") || text.equals("\"") || text.equals("'");
     }
 
     private static boolean needsNoSpaceAfter(IWord word) {

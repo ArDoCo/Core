@@ -23,7 +23,7 @@ public class CachedOntologyText implements IText {
     private ImmutableList<ICorefCluster> corefClusters = null;
     private ImmutableList<ISentence> sentences = null;
 
-    private OntologyText ontologyText;
+    private final OntologyText ontologyText;
 
     public CachedOntologyText(OntologyText ontologyText) {
         this.ontologyText = ontologyText;

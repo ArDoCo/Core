@@ -15,13 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.InstanceRelation;
 
-/**
- * Adds
- *
- * @see InstanceRelation instances to {@link InstanceRelationAgent#recommendationState}
- */
 public class InstanceRelationAgent extends RecommendationAgent {
 
     /**
@@ -42,9 +36,6 @@ public class InstanceRelationAgent extends RecommendationAgent {
 
     /**
      * Search for relations between RecommendedInstances
-     *
-     * @param recommendationState
-     * @return list of recommended relations
      */
     private void getRelations(IRecommendationState recommendationState) {
         for (IRecommendedInstance instance : recommendationState.getRecommendedInstances()) {

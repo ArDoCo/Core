@@ -19,8 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.ModelExtractionState;
  */
 public final class ModelProvider {
 
-    private IModelState modelExtractionState;
-    private IModelConnector modelConnector;
+    private final IModelConnector modelConnector;
 
     /**
      * Instantiates a new model provider.
@@ -34,7 +33,6 @@ public final class ModelProvider {
     public IModelState execute(Map<String, String> additionalSettings) {
         ImmutableList<IModelInstance> instances = modelConnector.getInstances();
         ImmutableList<IModelRelation> relations = modelConnector.getRelations();
-
         return new ModelExtractionState(modelConnector.getModelId(), modelConnector.getMetamodel(), instances, relations, additionalSettings);
     }
 

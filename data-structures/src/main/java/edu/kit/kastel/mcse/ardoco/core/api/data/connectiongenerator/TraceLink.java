@@ -11,13 +11,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
  * specific {@link IModelInstance} and {@link IWord} that are used in this tracelink.
  *
  * @author Jan Keim
- *
  */
 public class TraceLink {
-    private IInstanceLink instanceLink;
-
-    private IModelInstance modelInstance;
-    private IWord word;
+    private final IInstanceLink instanceLink;
+    private final IModelInstance modelInstance;
+    private final IWord word;
 
     /**
      * Create a tracelink based on a {@link IInstanceLink} and a concrete {@link IModelInstance} along with a concrete
@@ -77,9 +75,7 @@ public class TraceLink {
         if (obj instanceof TraceLink other) {
             var otherId = other.getModelElementUid();
             var otherSentenceNo = other.getSentenceNumber();
-            if (getModelElementUid().equals(otherId) && getSentenceNumber() == otherSentenceNo) {
-                return true;
-            }
+            return getModelElementUid().equals(otherId) && getSentenceNumber() == otherSentenceNo;
         }
         return false;
     }

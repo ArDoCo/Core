@@ -41,16 +41,12 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
     /**
      * Examines the incoming dependency arcs from the PARSE graph.
-     *
-     * @param textState
-     * @param word      the node to check
      */
     private void examineIncomingDepArcs(ITextState textState, IWord word) {
 
         ImmutableList<DependencyTag> incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
 
         for (DependencyTag depTag : incomingDepArcs) {
-
             if (hasNortDependencies(depTag)) {
                 textState.addNort(word, probability);
             } else if (hasTypeOrNortDependencies(depTag)) {
@@ -61,7 +57,6 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
                 textState.addNort(word, probability);
             }
         }
-
     }
 
     private static boolean hasTypeOrNortDependencies(DependencyTag depTag) {

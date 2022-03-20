@@ -10,16 +10,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecomme
 
 public class MissingElementInconsistencyCandidate {
 
-    private IRecommendedInstance recommendedInstance;
-    private MutableSet<MissingElementSupport> supports = Sets.mutable.empty();
-
-    public MissingElementInconsistencyCandidate(IRecommendedInstance recommendedInstance) {
-        super();
-        this.recommendedInstance = recommendedInstance;
-    }
+    private final IRecommendedInstance recommendedInstance;
+    private final MutableSet<MissingElementSupport> supports = Sets.mutable.empty();
 
     public MissingElementInconsistencyCandidate(IRecommendedInstance recommendedInstance, MissingElementSupport support) {
-        super();
         this.recommendedInstance = recommendedInstance;
         supports.add(support);
     }

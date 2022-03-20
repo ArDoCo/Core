@@ -27,9 +27,10 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private static final String ENTITY_NAME_PROPERTY = "entityName_-_NamedElement";
     private static final String ID_PROPERTY = "id_-_Identifier";
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
+    // TODO Extract ID from model.
     private final String modelId = UUID.randomUUID().toString();
 
-    private OntologyInterface ontologyConnector;
+    private final OntologyInterface ontologyConnector;
 
     /**
      * Instantiates a new pcm ontology model connector.

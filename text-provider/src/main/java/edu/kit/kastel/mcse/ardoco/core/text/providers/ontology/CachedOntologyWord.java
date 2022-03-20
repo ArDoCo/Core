@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 public final class CachedOntologyWord implements IWord {
     private static final Map<IWord, CachedOntologyWord> cache = new HashMap<>();
 
-    private IWord ontologyWord;
+    private final IWord ontologyWord;
 
     private int sentenceNo = -1;
     private ISentence sentence = null;

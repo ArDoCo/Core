@@ -16,12 +16,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IRelationMapping;
  * relation ends. It has a probability for being a relation and an assignable preposition.
  *
  * @author Sophie
- *
  */
 public class RelationMapping implements IRelationMapping {
 
-    private MutableList<INounMapping> relationNodes;
-    private double probability;
+    private final MutableList<INounMapping> relationNodes;
+    private final double probability;
     private IWord preposition;
 
     @Override
@@ -102,9 +101,6 @@ public class RelationMapping implements IRelationMapping {
     }
 
     @Override
-    /**
-     * Prints the relation mapping. Contains relation nodes, probability and preposition.
-     */
     public String toString() {
         return "RelationNode [relationNodes=" + relationNodes + ", probability=" + probability + ", preposition=" + preposition + "]";
     }
