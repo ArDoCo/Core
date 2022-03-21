@@ -34,6 +34,7 @@ public class ConfigurationTest {
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
                 .stream()
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();
         for (var clazz : classesThatMayBeConfigured)
             processConfigurationOfClass(configs, clazz);
@@ -44,6 +45,48 @@ public class ConfigurationTest {
         System.out.println(
                 configs.entrySet().stream().map(e -> e.getKey() + AbstractConfigurable.KEY_VALUE_CONNECTOR + e.getValue()).collect(Collectors.joining("\n")));
         System.out.println("-".repeat(50));
+    }
+
+    @Test
+    public void testBasicConfigurable() throws Exception {
+        Map<String, String> configs = new TreeMap<>();
+        processConfigurationOfClass(configs, TestConfigurable.class);
+        Assertions.assertEquals(4, configs.size());
+
+        TestConfigurable t = new TestConfigurable();
+
+        Assertions.assertEquals(24, t.testInt);
+        Assertions.assertEquals(24, t.testIntNo);
+        Assertions.assertEquals(2.0, t.testDouble);
+        Assertions.assertEquals(2.0, t.testDoubleNo);
+        Assertions.assertTrue(t.testBool);
+        Assertions.assertTrue(t.testBoolNo);
+        Assertions.assertEquals(List.of("A", "B", "C"), t.testList);
+        Assertions.assertEquals(List.of("A", "B", "C"), t.testListNo);
+
+        //@formatter:off
+        configs = Map.of(//
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDoubleNo", "48", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBool", "false", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBoolNo", "false", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testList", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testListNo", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z") //
+        );
+        //@formatter:on
+
+        t.applyConfiguration(configs);
+        Assertions.assertEquals(42, t.testInt);
+        Assertions.assertEquals(24, t.testIntNo);
+        Assertions.assertEquals(48, t.testDouble);
+        Assertions.assertEquals(2.0, t.testDoubleNo);
+        Assertions.assertFalse(t.testBool);
+        Assertions.assertTrue(t.testBoolNo);
+        Assertions.assertEquals(List.of("X", "Y", "Z"), t.testList);
+        Assertions.assertEquals(List.of("A", "B", "C"), t.testListNo);
+
     }
 
     private void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz)
@@ -57,7 +100,7 @@ public class ConfigurationTest {
     private void fillConfigs(AbstractConfigurable object, List<Field> fields, Map<String, String> configs) throws IllegalAccessException {
         for (Field f : fields) {
             f.setAccessible(true);
-            var key = f.getDeclaringClass().getSimpleName() + "::" + f.getName();
+            var key = f.getDeclaringClass().getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + f.getName();
             var rawValue = f.get(object);
             var value = getValue(rawValue);
             if (configs.containsKey(key)) {
@@ -75,7 +118,7 @@ public class ConfigurationTest {
         if (rawValue instanceof Boolean b)
             return String.valueOf(b);
         if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String))
-            return s.stream().map(Object::toString).collect(Collectors.joining(","));
+            return s.stream().map(Object::toString).collect(Collectors.joining(AbstractConfigurable.LIST_SEPARATOR));
 
         throw new IllegalArgumentException("RawValue has no type that may be transformed to an Configuration" + rawValue + "[" + rawValue.getClass() + "]");
     }
@@ -107,6 +150,31 @@ public class ConfigurationTest {
 
         Assertions.fail("No suitable constructor has been found for " + clazz);
         throw new Error("Not reachable code");
+    }
+
+    private static final class TestConfigurable extends AbstractConfigurable {
+
+        @Configurable
+        private int testInt = 24;
+        @Configurable
+        private double testDouble = 2.0;
+        @Configurable
+        private boolean testBool = true;
+        @Configurable
+        private List<String> testList = List.of("A", "B", "C");
+
+        private int testIntNo = 24;
+        private double testDoubleNo = 2.0;
+        private boolean testBoolNo = true;
+        private List<String> testListNo = List.of("A", "B", "C");
+
+        public TestConfigurable() {
+            // NOP
+        }
+
+        @Override
+        protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        }
     }
 
 }
