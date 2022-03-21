@@ -83,6 +83,9 @@ public abstract class AbstractConfigurable implements IConfigurable {
         if (fieldsClass == Double.class || fieldsClass == Double.TYPE) {
             return Double.parseDouble(value);
         }
+        if (fieldsClass == Boolean.class || fieldsClass == Boolean.TYPE) {
+            return Boolean.parseBoolean(value);
+        }
         if (List.class.isAssignableFrom(fieldsClass) && field.getGenericType()instanceof ParameterizedType parameterizedType) {
             var generics = parameterizedType.getActualTypeArguments();
 
