@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.architecture;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
@@ -50,13 +50,13 @@ public class ArchitectureTest {
             .haveSimpleNameContaining("Inconsistency")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..common..", "..tests..");
+            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..api..", "..tests..");
 
     @ArchTest
     public static final ArchRule layerRule = layeredArchitecture()
             // Layer definition
             .layer("Common")
-            .definedBy("..common..", "..tests..")
+            .definedBy("..common..", "..api..", "..tests..")
             .layer("TextExtractor")
             .definedBy("..textextraction..")
             .layer("ModelExtractor")

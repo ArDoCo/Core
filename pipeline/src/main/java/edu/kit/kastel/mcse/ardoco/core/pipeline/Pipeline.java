@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
@@ -171,24 +172,7 @@ public final class Pipeline {
      */
     public static DataStructure runAndSave(String name, File inputText, File inputModel, File additionalConfigsFile, File outputDir, boolean hasCodeModel) {
         logger.info("Loading additional configs ..");
-        Map<String, String> additionalConfigs = new HashMap<>();
-        if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
-            try (Scanner scanner = new Scanner(additionalConfigsFile)) {
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    if (line == null || line.isBlank())
-                        continue;
-                    var values = line.split("=", 2);
-                    if (values.length != 2) {
-                        logger.error("Found config line \"" + line + "\". Layout has to be: 'KEY=VALUE', e.g., 'SimpleClassName::AttributeName=42");
-                        continue;
-                    }
-                    additionalConfigs.put(values[0], values[1]);
-                }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+        Map<String, String> additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
@@ -256,6 +240,30 @@ public final class Pipeline {
         }
 
         return data;
+    }
+
+    private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
+        Map<String, String> additionalConfigs = new HashMap<>();
+        if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
+            try (Scanner scanner = new Scanner(additionalConfigsFile)) {
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    if (line == null || line.isBlank())
+                        continue;
+                    var values = line.split(AbstractConfigurable.KEY_VALUE_CONNECTOR, 2);
+                    if (values.length != 2) {
+                        logger.error("Found config line \"" + line + "\". Layout has to be: 'KEY" + AbstractConfigurable.KEY_VALUE_CONNECTOR
+                                + "VALUE', e.g., 'SimpleClassName" + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "AttributeName"
+                                + AbstractConfigurable.KEY_VALUE_CONNECTOR + "42");
+                        continue;
+                    }
+                    additionalConfigs.put(values[0], values[1]);
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return additionalConfigs;
     }
 
     private static void logTiming(long startTime, String step) {

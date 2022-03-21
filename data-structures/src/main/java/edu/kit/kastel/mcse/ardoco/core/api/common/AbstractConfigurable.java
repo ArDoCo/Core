@@ -16,7 +16,10 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractAgent;
 
 public abstract class AbstractConfigurable implements IConfigurable {
-    protected static final String LIST_SEPARATOR = ",";
+    public static final String CLASS_ATTRIBUTE_CONNECTOR = "::";
+    public static final String KEY_VALUE_CONNECTOR = "=";
+
+    public static final String LIST_SEPARATOR = ",";
 
     protected final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -50,7 +53,7 @@ public abstract class AbstractConfigurable implements IConfigurable {
                 continue;
             }
             Configurable c = field.getAnnotation(Configurable.class);
-            String key = c.key().isBlank() ? (currentClass.getSimpleName() + "::" + field.getName()) : c.key();
+            String key = c.key().isBlank() ? (currentClass.getSimpleName() + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : c.key();
             if (additionalConfiguration.containsKey(key)) {
                 setValue(field, additionalConfiguration.get(key));
             }
