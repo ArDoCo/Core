@@ -1,13 +1,20 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
@@ -31,36 +38,37 @@ public class NounMapping implements INounMapping {
     private final MutableList<String> surfaceForms;
 
     private MappingKind mostProbableKind;
-    private Double highestProbability;
-    private Map<MappingKind, Double> distribution;
+    private Confidence highestProbability;
+    private Map<MappingKind, Confidence> distribution;
 
     private boolean hasPhrase = false;
 
     /**
      * Instantiates a new noun mapping.
      */
-    private NounMapping(ImmutableList<IWord> words, Map<MappingKind, Double> distribution, List<IWord> referenceWords, ImmutableList<String> surfaceForms) {
+    private NounMapping(ImmutableList<IWord> words, Map<MappingKind, Confidence> distribution, List<IWord> referenceWords, ImmutableList<String> surfaceForms) {
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
         this.surfaceForms = Lists.mutable.withAll(surfaceForms);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
+        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     /**
      * Instantiates a new noun mapping.
      */
-    public NounMapping(ImmutableList<IWord> words, MappingKind kind, double probability, List<IWord> referenceWords, ImmutableList<String> occurrences) {
+    public NounMapping(ImmutableList<IWord> words, MappingKind kind, IAgent<?> claimant, double probability, List<IWord> referenceWords,
+            ImmutableList<String> occurrences) {
         distribution = new EnumMap<>(MappingKind.class);
-        distribution.put(kind, probability);
+        distribution.put(kind, new Confidence(claimant, probability, Confidence.ConfidenceAggregator.HARMONIC));
 
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
         surfaceForms = Lists.mutable.withAll(occurrences);
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
+        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     private NounMapping(INounMapping nm) {
@@ -69,19 +77,19 @@ public class NounMapping implements INounMapping {
         referenceWords = nm.getReferenceWords();
         surfaceForms = Lists.mutable.withAll(nm.getSurfaceForms());
         mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : 0.0;
+        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
-    private void initializeDistribution(Map<MappingKind, Double> distribution) {
+    private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
         this.distribution = new EnumMap<>(distribution);
-        this.distribution.putIfAbsent(MappingKind.NAME, 0.0);
-        this.distribution.putIfAbsent(MappingKind.TYPE, 0.0);
-        this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, 0.0);
+        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(Confidence.ConfidenceAggregator.HARMONIC));
+        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(Confidence.ConfidenceAggregator.HARMONIC));
+        this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, new Confidence(Confidence.ConfidenceAggregator.HARMONIC));
     }
 
-    public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, double probability) {
+    public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IAgent<?> claimant, double probability) {
         var occurences = phrase.collect(IWord::getText);
-        var nm = new NounMapping(phrase, MappingKind.NAME, probability, phrase.castToList(), occurences);
+        var nm = new NounMapping(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurences);
         nm.hasPhrase = true;
         return nm;
     }
@@ -189,7 +197,7 @@ public class NounMapping implements INounMapping {
      * @param probability the probability
      */
     @Override
-    public void addKindWithProbability(MappingKind kind, double probability) {
+    public void addKindWithProbability(MappingKind kind, IAgent<?> claimant, double probability) {
         recalculateProbability(kind, probability);
     }
 
@@ -219,7 +227,7 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
-    public Map<MappingKind, Double> getDistribution() {
+    public Map<MappingKind, Confidence> getDistribution() {
         return new EnumMap<>(distribution);
     }
 
@@ -255,7 +263,7 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public double getProbability() {
-        return highestProbability;
+        return highestProbability.getConfidence();
     }
 
     /**
@@ -334,17 +342,17 @@ public class NounMapping implements INounMapping {
 
     @Override
     public double getProbabilityForName() {
-        return distribution.get(MappingKind.NAME);
+        return distribution.get(MappingKind.NAME).getConfidence();
     }
 
     @Override
     public double getProbabilityForType() {
-        return distribution.get(MappingKind.TYPE);
+        return distribution.get(MappingKind.TYPE).getConfidence();
     }
 
     @Override
     public double getProbabilityForNort() {
-        return distribution.get(MappingKind.NAME_OR_TYPE);
+        return distribution.get(MappingKind.NAME_OR_TYPE).getConfidence();
     }
 
     @Override
@@ -354,16 +362,13 @@ public class NounMapping implements INounMapping {
         }
         var newWords = Lists.mutable.ofAll(words);
         newWords.addAll(other.getWords().castToCollection());
-        Map<MappingKind, Double> newDistribution = new EnumMap<>(distribution);
-        for (var entry : other.getDistribution().entrySet()) {
-            if (newDistribution.containsKey(entry.getKey())) {
-                var thisVal = newDistribution.get(entry.getKey());
-                var maxValue = Double.max(thisVal, entry.getValue());
-                newDistribution.put(entry.getKey(), maxValue);
-            } else {
-                newDistribution.put(entry.getKey(), entry.getValue());
-            }
+        Map<MappingKind, Confidence> newDistribution = new EnumMap<>(MappingKind.class);
+
+        for (MappingKind mk : MappingKind.values()) {
+            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), Confidence.ConfidenceAggregator.HARMONIC,
+                    Confidence.ConfidenceAggregator.MAX));
         }
+
         var newSurfaceForms = Lists.mutable.ofAll(surfaceForms);
         newSurfaceForms.addAll(other.getSurfaceForms().castToCollection());
 

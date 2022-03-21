@@ -10,6 +10,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
@@ -92,11 +93,11 @@ public final class CommonUtilities {
      * @param probability         the probability that should be annotated
      */
     public static void addRecommendedInstancesFromNounMappings(ImmutableList<String> similarTypes, ImmutableList<INounMapping> nameMappings,
-            ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState, double probability) {
+            ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState, IAgent<?> claimant, double probability) {
         for (var nameMapping : nameMappings) {
             var name = nameMapping.getReference();
             for (var type : similarTypes) {
-                recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
+                recommendationState.addRecommendedInstance(name, type, claimant, probability, nameMappings, typeMappings);
             }
         }
     }

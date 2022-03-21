@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.common.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -50,7 +51,7 @@ public interface IRecommendationState extends ICopyable<IRecommendationState>, I
      * @param typeMappings type mappings representing the type of the recommended instance
      * @return the added recommended instance
      */
-    IRecommendedInstance addRecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameMappings,
+    IRecommendedInstance addRecommendedInstance(String name, String type, IAgent<?> claimant, double probability, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings);
 
     /**

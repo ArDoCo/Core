@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 /**
@@ -118,7 +120,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @return the distribution
      */
-    Map<MappingKind, Double> getDistribution();
+    Map<MappingKind, Confidence> getDistribution();
 
     /**
      * @param coreference the coreference to add
@@ -148,9 +150,10 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * Adds the kind with probability.
      *
      * @param kind        the kind
+     * @param claimant    the agent that claims the kind for this nounmapping with a certain probability
      * @param probability the probability
      */
-    void addKindWithProbability(MappingKind kind, double probability);
+    void addKindWithProbability(MappingKind kind, IAgent<?> claimant, double probability);
 
     /**
      * @return if this is a phrase or contains a phrase
