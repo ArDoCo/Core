@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
 import java.util.List;
@@ -14,11 +14,11 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
-import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 
 /**
  * The Class PcmOntologyModelConnector defines a {@link IModelConnector} that can read PCM Models from Ontologies.
@@ -27,9 +27,10 @@ public class PcmOntologyModelConnector implements IModelConnector {
     private static final String ENTITY_NAME_PROPERTY = "entityName_-_NamedElement";
     private static final String ID_PROPERTY = "id_-_Identifier";
     private static final String[] TYPES = { "BasicComponent", "CompositeComponent" };
+    // TODO Extract ID from model.
     private final String modelId = UUID.randomUUID().toString();
 
-    private OntologyInterface ontologyConnector;
+    private final OntologyInterface ontologyConnector;
 
     /**
      * Instantiates a new pcm ontology model connector.

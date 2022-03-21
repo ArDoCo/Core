@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.HashSet;
@@ -9,23 +9,23 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
  * measured by the probability. Every recommended instance has a unique name.
  *
  * @author Sophie
- *
  */
 public class RecommendedInstance implements IRecommendedInstance {
 
     private String type;
     private String name;
     private double probability;
-    private Set<INounMapping> typeMappings;
-    private Set<INounMapping> nameMappings;
+    private final Set<INounMapping> typeMappings;
+    private final Set<INounMapping> nameMappings;
 
     @Override
     public IRecommendedInstance createCopy() {

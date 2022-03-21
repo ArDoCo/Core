@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.FileInputStream;
@@ -114,29 +114,6 @@ public final class ResourceAccessor {
         values.addAll(Lists.immutable.with(value.split(" ")).castToCollection());
         values.removeIf(String::isBlank);
         return values.toImmutable();
-    }
-
-    /**
-     * Identifies the meant specific enum of the class clazz by the data string and returns it.
-     *
-     * @param <T>   the enum identified by the string
-     * @param data  the string that identifies the enum, the names have to be equal
-     * @param clazz the class that holds the enum
-     * @return the enum identified by the given string
-     */
-    public <T extends Enum<T>> ImmutableList<T> getPropertyAsListOfEnumTypes(String data, Class<T> clazz) {
-        MutableList<T> selectedValues = Lists.mutable.empty();
-        T[] values = clazz.getEnumConstants();
-        ImmutableList<String> valueList = getPropertyAsList(data);
-
-        for (T val : values) {
-            if (valueList.contains(val.name())) {
-                selectedValues.add(val);
-            }
-        }
-
-        return selectedValues.toImmutable();
-
     }
 
 }

@@ -9,13 +9,13 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 
 public class TLSentenceFile {
 
-    public static void save(Path targetFile, Map<Project, AgentDatastructure> dataMap) throws IOException {
+    public static void save(Path targetFile, Map<Project, DataStructure> dataMap) throws IOException {
         var projects = dataMap.keySet().stream().sorted().toList();
         var builder = new StringBuilder();
 

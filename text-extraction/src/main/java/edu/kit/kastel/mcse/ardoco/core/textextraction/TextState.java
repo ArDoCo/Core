@@ -1,7 +1,8 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
@@ -9,26 +10,38 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IRelationMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 /**
  * The Class TextState defines the basic implementation of a {@link ITextState}.
  */
-public class TextState implements ITextState {
+public class TextState extends AbstractState implements ITextState {
 
     private MutableList<INounMapping> nounMappings;
 
-    /** The relation mappings. */
+    /**
+     * The relation mappings.
+     */
     private MutableList<IRelationMapping> relationMappings;
 
+    @Configurable
+    private double nortProbabilityForNameAndType = 0.05;
+
     /**
-     * Creates a new name type relation state.
+     * Creates a new name type relation state
      *
-     * @param similarityPercentage the similarity percentage
+     * @param configs any additional configuration
      */
-    public TextState() {
+    public TextState(Map<String, String> configs) {
+        super(configs);
         nounMappings = Lists.mutable.empty();
         relationMappings = Lists.mutable.empty();
     }
@@ -321,7 +334,7 @@ public class TextState implements ITextState {
 
     @Override
     public ITextState createCopy() {
-        var textExtractionState = new TextState();
+        var textExtractionState = new TextState(this.configs);
         textExtractionState.nounMappings = Lists.mutable.ofAll(nounMappings);
         textExtractionState.relationMappings = relationMappings.collect(IRelationMapping::createCopy);
         return textExtractionState;
@@ -361,10 +374,10 @@ public class TextState implements ITextState {
         var mapping = addNounMapping(word, MappingKind.NAME_OR_TYPE, probability, occurrences);
 
         if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
-            mapping.addKindWithProbability(MappingKind.NAME, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
+            mapping.addKindWithProbability(MappingKind.NAME, nortProbabilityForNameAndType);
         }
         if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
-            mapping.addKindWithProbability(MappingKind.TYPE, TextExtractionStateConfig.NORT_PROBABILITY_FOR_NAME_AND_TYPE);
+            mapping.addKindWithProbability(MappingKind.TYPE, nortProbabilityForNameAndType);
         }
     }
 
@@ -388,4 +401,7 @@ public class TextState implements ITextState {
                 + String.join("\n", relationMappings.toString()) + "]";
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Objects;
@@ -7,19 +7,20 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IRelationMapping;
 
 /**
  * This class represents relations found in the graph. A relation mapping has relation mappings, representing the
  * relation ends. It has a probability for being a relation and an assignable preposition.
  *
  * @author Sophie
- *
  */
 public class RelationMapping implements IRelationMapping {
 
-    private MutableList<INounMapping> relationNodes;
-    private double probability;
+    private final MutableList<INounMapping> relationNodes;
+    private final double probability;
     private IWord preposition;
 
     @Override
@@ -100,9 +101,6 @@ public class RelationMapping implements IRelationMapping {
     }
 
     @Override
-    /**
-     * Prints the relation mapping. Contains relation nodes, probability and preposition.
-     */
     public String toString() {
         return "RelationNode [relationNodes=" + relationNodes + ", probability=" + probability + ", preposition=" + preposition + "]";
     }

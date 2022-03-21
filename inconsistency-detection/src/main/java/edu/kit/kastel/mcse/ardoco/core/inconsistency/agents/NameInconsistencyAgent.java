@@ -1,61 +1,48 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyAgent;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.NameInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 //TODO Need to rethink the checks as some other code changed and we cannot simply analyze words anymore (Problematic for compounds)
-@MetaInfServices(InconsistencyAgent.class)
 public class NameInconsistencyAgent extends InconsistencyAgent {
-    private static final String REGEX_DIVIDER = "[\\.:]";
+    private static final String REGEX_DIVIDER = "[.:]";
 
     public NameInconsistencyAgent() {
-        super(GenericInconsistencyConfig.class);
-    }
-
-    private NameInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState) {
-        super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
     }
 
     @Override
-    public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
-        return new NameInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState);
+    public void execute(InconsistencyAgentData data) {
+        for (var model : data.getModelIds()) {
+            var connectionState = data.getConnectionState(model);
+            var inconsistencyState = data.getInconsistencyState(model);
 
-    }
-
-    @Override
-    public void exec() {
-        ImmutableList<IInstanceLink> tracelinks = connectionState.getInstanceLinks();
-        for (IInstanceLink tracelink : tracelinks) {
-            IModelInstance modelInstance = tracelink.getModelInstance();
-            var recommendationInstance = tracelink.getTextualInstance();
-            var nameMappings = recommendationInstance.getNameMappings();
-            for (INounMapping nameMapping : nameMappings) {
-                var words = nameMapping.getWords();
-                for (IWord word : words) {
-                    analyseWord(modelInstance, word);
+            ImmutableList<IInstanceLink> tracelinks = connectionState.getInstanceLinks();
+            for (IInstanceLink tracelink : tracelinks) {
+                IModelInstance modelInstance = tracelink.getModelInstance();
+                var recommendationInstance = tracelink.getTextualInstance();
+                var nameMappings = recommendationInstance.getNameMappings();
+                for (INounMapping nameMapping : nameMappings) {
+                    var words = nameMapping.getWords();
+                    for (IWord word : words) {
+                        analyseWord(modelInstance, word, inconsistencyState);
+                    }
                 }
             }
         }
     }
 
-    private void analyseWord(IModelInstance modelInstance, IWord word) {
+    private void analyseWord(IModelInstance modelInstance, IWord word, IInconsistencyState inconsistencyState) {
         if (!equalTextOrLemma(modelInstance, word)) {
             if (partOfDividerEqualsModelInstance(modelInstance, word)) {
                 return;
@@ -91,5 +78,9 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
             }
         }
         return false;
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
     }
 }

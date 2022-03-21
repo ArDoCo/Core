@@ -1,9 +1,7 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -12,19 +10,18 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
 /**
  * General helper class for outsourced, common methods.
  *
  * @author Sophie
- *
  */
 public final class CommonUtilities {
 
@@ -52,41 +49,6 @@ public final class CommonUtilities {
      */
     public static double harmonicMean(double first, double second) {
         return 2 * first * second / (first + second);
-    }
-
-    /**
-     * Creates a cartesian product out of the current list and the parts.
-     *
-     * @param <T>         generic type of list elements
-     * @param currentList the list to start with
-     * @param parts       the list of lists with possibilities to add.
-     * @return list of different combinations
-     */
-    public static <T> ImmutableList<ImmutableList<T>> cartesianProduct(ImmutableList<T> currentList, ImmutableList<ImmutableList<T>> parts) {
-        List<T> cl = currentList.toList();
-        List<List<T>> pl = parts.collect(l -> (List<T>) l.toList()).toList();
-
-        return Lists.immutable.fromStream(privateCartesianProduct(cl, pl).stream()).collect(Lists.immutable::withAll);
-    }
-
-    private static <T> List<List<T>> privateCartesianProduct(List<T> currentList, List<List<T>> parts) {
-        List<List<T>> result = new ArrayList<>();
-
-        if (parts.isEmpty()) {
-
-            result.add(currentList);
-            return result;
-        }
-
-        List<List<T>> cloneParts = new ArrayList<>(parts);
-        cloneParts.remove(parts.get(0));
-
-        for (T si : parts.get(0)) {
-            currentList.add(si);
-            result.addAll(privateCartesianProduct(new ArrayList<>(currentList), cloneParts));
-            currentList.remove(si);
-        }
-        return result;
     }
 
     /**
@@ -239,23 +201,6 @@ public final class CommonUtilities {
     public static boolean nameIsKebabCased(String name) {
         var split = name.split("-");
         return split.length > 1;
-    }
-
-    /**
-     * Calculates the probability given the current probability and the update value
-     *
-     * @param currentProbability current probability
-     * @param newProbability     update value
-     * @return the new probability
-     */
-    public static double calcNewProbabilityValue(double currentProbability, double newProbability) {
-        if (valueEqual(currentProbability, 1.0) || valueEqual(newProbability, 1.0)) {
-            return 1.0;
-        }
-        if (currentProbability >= newProbability) {
-            return currentProbability + newProbability * (1 - currentProbability);
-        }
-        return (currentProbability + newProbability) * 0.5;
     }
 
     /**

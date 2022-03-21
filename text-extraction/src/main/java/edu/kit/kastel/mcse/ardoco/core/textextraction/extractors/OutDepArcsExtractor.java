@@ -1,77 +1,49 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
 
 /**
  * The analyzer examines the outgoing arcs of the current node.
  *
  * @author Sophie
- *
  */
 
-@MetaInfServices(TextExtractionExtractor.class)
-public class OutDepArcsExtractor extends TextExtractionExtractor {
+public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
-    private double probability;
+    @Configurable
+    private double probability = 0.8;
 
     /**
      * Prototype constructor.
      */
     public OutDepArcsExtractor() {
-        this(null);
-    }
-
-    /**
-     * Instantiates a new out dep arcs extractor.
-     *
-     * @param textExtractionState the text extraction state
-     */
-    public OutDepArcsExtractor(ITextState textExtractionState) {
-        this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
-    }
-
-    /**
-     * Creates a new OutDepArcsAnalyzer.
-     *
-     * @param textExtractionState the text extraction state
-     * @param config              the module configuration
-     */
-    public OutDepArcsExtractor(ITextState textExtractionState, GenericTextConfig config) {
-        super(textExtractionState);
-        probability = config.outDepArcsAnalyzerProbability;
     }
 
     @Override
-    public TextExtractionExtractor create(ITextState textExtractionState, Configuration config) {
-        return new OutDepArcsExtractor(textExtractionState, (GenericTextConfig) config);
-    }
-
-    @Override
-    public void exec(IWord n) {
+    public void exec(TextAgentData data, IWord n) {
 
         String nodeValue = n.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
             return;
         }
-        examineOutgoingDepArcs(n);
+        examineOutgoingDepArcs(data.getTextState(), n);
     }
 
     /**
      * Examines the outgoing dependencies of a node.
-     *
-     * @param word the word to check
      */
-    private void examineOutgoingDepArcs(IWord word) {
+    private void examineOutgoingDepArcs(ITextState textState, IWord word) {
 
         ImmutableList<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(word);
 
@@ -90,5 +62,9 @@ public class OutDepArcsExtractor extends TextExtractionExtractor {
                 textState.addNort(word, probability);
             }
         }
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
     }
 }

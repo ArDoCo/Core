@@ -1,68 +1,59 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
 /**
  * This connector finds names of model instance in recommended instances.
  *
  * @author Sophie
- *
  */
-@MetaInfServices(ConnectionAgent.class)
 public class InstanceConnectionAgent extends ConnectionAgent {
 
-    private double probability;
-    private double probabilityWithoutType;
+    @Configurable
+    private double probability = 1.0;
+    @Configurable
+    private double probabilityWithoutType = 0.8;
 
     /**
      * Create the agent.
      */
     public InstanceConnectionAgent() {
-        super(GenericConnectionConfig.class);
-    }
 
-    private InstanceConnectionAgent(//
-            IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState, IConnectionState connectionState,
-            GenericConnectionConfig config) {
-        super(GenericConnectionConfig.class, text, textState, modelState, recommendationState, connectionState);
-        probability = config.instanceConnectionSolverProbability;
-        probabilityWithoutType = config.instanceConnectionSolverProbabilityWithoutType;
-    }
-
-    @Override
-    public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, Configuration config) {
-        return new InstanceConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionConfig) config);
     }
 
     /**
      * Executes the connector.
      */
     @Override
-    public void exec() {
-        findNamesOfModelInstancesInSupposedMappings();
-        createLinksForEqualOrSimilarRecommendedInstances();
+    public void execute(ConnectionAgentData data) {
+        for (var model : data.getModelIds()) {
+            var modelState = data.getModelState(model);
+            var recommendationState = data.getRecommendationState(modelState.getMetamodel());
+            var connectionState = data.getConnectionState(model);
+            findNamesOfModelInstancesInSupposedMappings(modelState, recommendationState, connectionState);
+            createLinksForEqualOrSimilarRecommendedInstances(modelState, recommendationState, connectionState);
+        }
     }
 
     /**
      * Searches in the recommended instances of the recommendation state for similar names to extracted instances. If
      * some are found the instance link is added to the connection state.
      */
-    private void findNamesOfModelInstancesInSupposedMappings() {
+    private void findNamesOfModelInstancesInSupposedMappings(IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState) {
         ImmutableList<IRecommendedInstance> ris = recommendationState.getRecommendedInstances();
         for (IModelInstance i : modelState.getInstances()) {
             ImmutableList<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
@@ -74,11 +65,15 @@ public class InstanceConnectionAgent extends ConnectionAgent {
         }
     }
 
-    private void createLinksForEqualOrSimilarRecommendedInstances() {
+    private void createLinksForEqualOrSimilarRecommendedInstances(IModelState modelState, IRecommendationState recommendationState,
+            IConnectionState connectionState) {
         for (var ri : recommendationState.getRecommendedInstances()) {
             var sameInstances = modelState.getInstances().select(i -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(ri, i));
             sameInstances.forEach(i -> connectionState.addToLinks(ri, i, probability));
         }
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

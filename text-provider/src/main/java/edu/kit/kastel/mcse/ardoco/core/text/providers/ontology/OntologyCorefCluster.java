@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import org.apache.jena.ontology.Individual;
@@ -8,24 +8,23 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 /**
  * @author Jan Keim
- *
  */
 public final class OntologyCorefCluster implements ICorefCluster {
 
-    private Individual corefIndividual;
-    private OntologyConnector ontologyConnector;
+    private final Individual corefIndividual;
+    private final OntologyConnector ontologyConnector;
 
     private OntProperty mentionProperty;
     private OntProperty representativeMentionProperty;
     private OntProperty wordsProperty;
     private OntProperty uuidProperty;
 
-    private OntologyText text;
+    private final OntologyText text;
 
     private OntologyCorefCluster(OntologyConnector ontologyConnector, Individual corefIndividual, OntologyText text) {
         this.corefIndividual = corefIndividual;
@@ -53,19 +52,13 @@ public final class OntologyCorefCluster implements ICorefCluster {
     @Override
     public int id() {
         var optId = ontologyConnector.getPropertyIntValue(corefIndividual, uuidProperty);
-        if (optId.isPresent()) {
-            return optId.get();
-        }
-        return -1;
+        return optId.orElse(-1);
     }
 
     @Override
     public String representativeMention() {
         var representativeMention = ontologyConnector.getPropertyStringValue(corefIndividual, representativeMentionProperty);
-        if (representativeMention.isPresent()) {
-            return representativeMention.get();
-        }
-        return null;
+        return representativeMention.orElse(null);
     }
 
     @Override

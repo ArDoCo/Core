@@ -1,71 +1,48 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.kohsuke.MetaInfServices;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.common.IExtractor;
-import edu.kit.kastel.mcse.ardoco.core.common.Loader;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionExtractor;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.GenericConnectionConfig;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ExtractionDependentOccurrenceExtractor;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.NameTypeConnectionExtractor;
 
 /**
  * The agent that executes the extractors of this stage.
  */
-@MetaInfServices(ConnectionAgent.class)
 public class InitialConnectionAgent extends ConnectionAgent {
+    private final MutableList<AbstractExtractor<ConnectionAgentData>> extractors = Lists.mutable.of(new NameTypeConnectionExtractor(),
+            new ExtractionDependentOccurrenceExtractor());
 
-    private MutableList<IExtractor> extractors = Lists.mutable.empty();
+    @Configurable
+    private List<String> enabledExtractors = extractors.collect(e -> e.getClass().getSimpleName());
 
     /**
      * Create the agent.
      */
     public InitialConnectionAgent() {
-        super(GenericConnectionConfig.class);
-    }
-
-    private InitialConnectionAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, GenericConnectionConfig config) {
-        super(GenericConnectionConfig.class, text, textState, modelState, recommendationState, connectionState);
-        initializeAgents(config.connectionExtractors, config);
-    }
-
-    private void initializeAgents(ImmutableList<String> extractorList, GenericConnectionConfig config) {
-        Map<String, ConnectionExtractor> loadedExtractors = Loader.loadLoadable(ConnectionExtractor.class);
-
-        for (String connectionExtractor : extractorList) {
-            if (!loadedExtractors.containsKey(connectionExtractor)) {
-                throw new IllegalArgumentException("ConnectionExtractor " + connectionExtractor + " not found");
-            }
-            extractors.add(loadedExtractors.get(connectionExtractor).create(textState, modelState, recommendationState, connectionState, config));
-        }
-
     }
 
     @Override
-    public ConnectionAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, Configuration config) {
-        return new InitialConnectionAgent(text, textState, modelState, recommendationState, connectionState, (GenericConnectionConfig) config);
-    }
-
-    @Override
-    public void exec() {
-        for (IExtractor extractor : extractors) {
+    public void execute(ConnectionAgentData data) {
+        var text = data.getText();
+        for (var extractor : findByClassName(enabledExtractors, extractors)) {
             for (IWord word : text.getWords()) {
-                extractor.exec(word);
+                extractor.exec(data, word);
             }
         }
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 }

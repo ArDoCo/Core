@@ -1,18 +1,18 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 /**
  * Relation between RecommendedInstances, store specific occurrences as
  *
  * @see LocalRelation
- *
- * 
  */
 // NOTE: Currently, only simple relations are covered. Future versions may fromInstance and toInstance to List to
 // comprise more complex relations?!
@@ -119,7 +119,7 @@ public class InstanceRelation implements IInstanceRelation {
 
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder("");
+        StringBuilder str = new StringBuilder();
         str.append("InstanceRelation{")
                 .append("probability=")
                 .append(probability)
@@ -138,7 +138,7 @@ public class InstanceRelation implements IInstanceRelation {
         return str.toString();
     }
 
-    private class LocalRelation {
+    private static class LocalRelation {
         IWord relator;
         List<IWord> from;
         List<IWord> to;

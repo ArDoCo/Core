@@ -1,30 +1,26 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.util.List;
-
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
 /**
  * This class is a utility class.
  *
  * @author Sophie, Jan
- *
  */
 public final class SimilarityUtils {
 
-    private static LevenshteinDistance levenShteinDistance = new LevenshteinDistance();
-    private static JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
+    private static final LevenshteinDistance levenShteinDistance = new LevenshteinDistance();
+    private static final JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
 
     private SimilarityUtils() {
         throw new IllegalAccessError();
@@ -186,20 +182,16 @@ public final class SimilarityUtils {
 
         if (original.length() <= areWordsSimilarMinLength) {
             var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
-            if (levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation) {
-                return true;
-            }
-        } else if (levenshteinDistance <= maxLevenshteinDistance) {
-            return true;
-        }
-        return false;
+            return levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation;
+        } else
+            return levenshteinDistance <= maxLevenshteinDistance;
     }
 
     /**
      * Checks the similarity of a list with test strings to a list of "original" strings. In this method all test
-     * strings are compared to all originals. For this the method uses the
-     * {@link #areWordsSimilar(String, String, Double)} with a given threshold. All matches are counted. If the
-     * proportion of similarities between the lists is greater than the given threshold the method returns true.
+     * strings are compared to all originals. For this the method uses the areWordsSimilar method with a given
+     * threshold. All matches are counted. If the proportion of similarities between the lists is greater than the given
+     * threshold the method returns true.
      *
      * @param originals     list of original strings
      * @param words2test    list of test strings
@@ -221,12 +213,12 @@ public final class SimilarityUtils {
             }
         }
 
-        return counter / Math.max(originals.size(), words2test.size()) >= minProportion;
+        return 1.0 * counter / Math.max(originals.size(), words2test.size()) >= minProportion;
     }
 
     /**
      * Checks the similarity of a list, containing test strings, and a list of originals. This check is not
-     * bidirectional! This method uses the {@link #areWordsOfListsSimilar(List, List, double)} with a given threshold.
+     * bidirectional! This method uses the areWordsSimilar method with a given threshold.
      *
      * @param originals  list of original strings
      * @param words2test list of test strings
@@ -237,25 +229,11 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Extracts mappings out of a list, containing mappings, by similarity to an instance. This check is not
-     * bidirectional! This method uses the {@link #areWordsOfListsSimilar(List, List)} with the ref as original and the
-     * reference of the mappings as test strings.
-     *
-     * @param ref          the given ref to search for
-     * @param nounMappings the mappings to filter
-     * @return list of mappings which are similar to the given ref.
-     */
-    private static ImmutableList<INounMapping> getAllSimilarNMappingsByReference(String ref, ImmutableList<INounMapping> nounMappings) {
-        return nounMappings.select(n -> SimilarityUtils.areWordsSimilar(n.getReference(), ref));
-    }
-
-    /**
      * Extracts most likely matches of a list of recommended instances by similarity to a given instance. For this, the
-     * method uses an increasing minimal proportional threshold with the method
-     * {@link #areWordsOfListsSimilar(List, List, double)}. If all lists are similar to the given instance by a
-     * threshold of 1-increase value the while loop can be left. If the while loop ends with more than one possibility
-     * or all remaining lists are sorted out in the same run, all are returned. Elsewhere only the remaining recommended
-     * instance is returned within the list.
+     * method uses an increasing minimal proportional threshold with the method areWordsOfListsSimilar method. If all
+     * lists are similar to the given instance by a threshold of 1-increase value the while loop can be left. If the
+     * while loop ends with more than one possibility or all remaining lists are sorted out in the same run, all are
+     * returned. Elsewhere only the remaining recommended instance is returned within the list.
      *
      * @param instance             instance to use as original for compare
      * @param recommendedInstances recommended instances to check for similarity
@@ -331,35 +309,4 @@ public final class SimilarityUtils {
         }
         return false;
     }
-
-    /**
-     * Selects most similar mappings by a given ref. This method compares the given reference, with the references of
-     * the given mappings. This method works almost similar to
-     * {@link #getMostRecommendedInstancesToInstanceByReferences(Instance, List)}.
-     *
-     * @param ref          the given reference
-     * @param nounMappings the noun mappings to filter
-     * @return the most similar noun mapping(s)
-     */
-    public static ImmutableList<INounMapping> getMostLikelyNounMappingsByReference(String ref, ImmutableList<INounMapping> nounMappings) {
-
-        var threshold = CommonTextToolsConfig.GET_MOST_LIKELY_MP_BY_REFERENCE_THRESHOLD;
-        ImmutableList<INounMapping> selection = Lists.immutable.withAll(SimilarityUtils.getAllSimilarNMappingsByReference(ref, nounMappings));
-        ImmutableList<INounMapping> whileSelection = Lists.immutable.withAll(selection);
-
-        while (whileSelection.size() > 1 && threshold < 1) {
-            selection = Lists.immutable.withAll(whileSelection);
-            threshold += CommonTextToolsConfig.GET_MOST_LIKELY_MP_BY_REFERENCE_INCREASE;
-            final var currentThreshold = threshold;
-            whileSelection = whileSelection.select(nnm -> areWordsSimilar(ref, nnm.getReference(), currentThreshold));
-
-        }
-        if (whileSelection.isEmpty()) {
-            return selection;
-        }
-
-        return whileSelection;
-
-    }
-
 }

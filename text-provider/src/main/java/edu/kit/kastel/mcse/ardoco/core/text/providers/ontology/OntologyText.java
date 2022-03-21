@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.util.List;
@@ -15,18 +15,18 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
 import edu.kit.kastel.informalin.ontology.OrderedOntologyList;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 public class OntologyText implements IText {
     private static final String ERR_NO_LIST = "Could not find list of words in the ontology.";
     private static final String ERR_NO_TEXT_FOUND = "Cannot find a text in the ontology.";
 
-    private OntologyConnector ontologyConnector;
-    private Individual textIndividual;
+    private final OntologyConnector ontologyConnector;
+    private final Individual textIndividual;
 
     private OntProperty wordsProperty;
     private OntProperty hasCorefClusterProperty;
