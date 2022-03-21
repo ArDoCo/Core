@@ -1,14 +1,7 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -46,26 +39,4 @@ public class TestUtil {
         evaluationResults.setFalsePositives(Lists.mutable.ofAll(falsePositivesList));
         return evaluationResults;
     }
-
-    public static void setConfigOptions(String configFileLocation, String... options) {
-        File configFile = new File(configFileLocation);
-
-        try (FileWriter fw = new FileWriter(configFile, false)) {
-            for (var option : options) {
-                fw.write(option);
-                fw.write(System.lineSeparator());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String getSimilarityConfigString(double similarity) {
-        return "similarityPercentage=" + similarity;
-    }
-
-    public static String getMmeiThresholdConfigString(double threshold) {
-        return "MissingModelElementInconsistencyAgent_threshold = " + threshold;
-    }
-
 }

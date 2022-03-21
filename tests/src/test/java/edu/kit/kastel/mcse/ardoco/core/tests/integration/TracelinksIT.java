@@ -6,12 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,31 +15,20 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLDiffFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLLogFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLModelFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLPreviousFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSentenceFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSummaryFile;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class TracelinksIT {
@@ -53,7 +37,7 @@ class TracelinksIT {
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
-    private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
+    private static final Map<Project, DataStructure> DATA_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
     private File inputText;
@@ -174,7 +158,7 @@ class TracelinksIT {
 
     }
 
-    private void printDetailedDebug(EvaluationResults results, AgentDatastructure data) {
+    private void printDetailedDebug(EvaluationResults results, DataStructure data) {
         var falseNegatives = results.getFalseNegative().stream().map(Object::toString);
         var falsePositives = results.getFalsePositives().stream().map(Object::toString);
 
@@ -225,7 +209,7 @@ class TracelinksIT {
         return outputList;
     }
 
-    private EvaluationResults calculateResults(Project project, AgentDatastructure data, String modelId) {
+    private EvaluationResults calculateResults(Project project, DataStructure data, String modelId) {
         var connectionState = data.getConnectionState(modelId);
         var traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,31 +11,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionConfig;
 
 class InstanceRelationAgentIT {
 
@@ -69,32 +62,28 @@ class InstanceRelationAgentIT {
         var annotatedText = textConnector.getAnnotatedText();
 
         IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
-        IExecutionStage modelExtractor = new ModelProvider(pcmModel);
-        modelExtractor.exec();
-        var extractorData = modelExtractor.getBlackboard();
+        ModelProvider modelExtractor = new ModelProvider(pcmModel);
+        var modelState = modelExtractor.execute(Map.of());
+        var extractorData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), modelState));
 
         Assertions.assertEquals(1, extractorData.getModelIds().size());
         var modelId = extractorData.getModelIds().get(0);
-        var data = new AgentDatastructure(annotatedText, null, extractorData.getModelState(modelId), null, null, null);
+        var data = new DataStructure(annotatedText, Map.of(modelId, extractorData.getModelState(modelId)));
 
         Map<String, String> config = new HashMap<>();
-        config.put("similarityPercentage", "0.75");
-        config.put("Text_Agents", "InitialTextAgent PhraseAgent CorefAgent");
-        IExecutionStage textModule = new TextExtraction(data, new TextExtractionConfig(config), GenericTextConfig.DEFAULT_CONFIG);
-        textModule.exec();
-        data.overwrite(textModule.getBlackboard());
+        config.put(TextExtraction.class.getSimpleName() + "::" + "enabledAgents", "InitialTextAgent,PhraseAgent,CorefAgent");
 
-        IExecutionStage recommendationModule = new RecommendationGenerator(data);
-        recommendationModule.exec();
-        data.overwrite(recommendationModule.getBlackboard());
+        IExecutionStage textModule = new TextExtraction();
+        textModule.execute(data, config);
 
-        IExecutionStage connectionGenerator = new ConnectionGenerator(data);
-        connectionGenerator.exec();
-        data.overwrite(connectionGenerator.getBlackboard());
+        IExecutionStage recommendationModule = new RecommendationGenerator();
+        recommendationModule.execute(data, Map.of());
 
-        IExecutionStage inconsistencyChecker = new InconsistencyChecker(data);
-        inconsistencyChecker.exec();
-        data.overwrite(inconsistencyChecker.getBlackboard());
+        IExecutionStage connectionGenerator = new ConnectionGenerator();
+        connectionGenerator.execute(data, Map.of());
+
+        IExecutionStage inconsistencyChecker = new InconsistencyChecker();
+        inconsistencyChecker.execute(data, Map.of());
 
         IWord relator = null;
         IWord from = null;
@@ -110,7 +99,7 @@ class InstanceRelationAgentIT {
         }
 
         var hasExpected = false;
-        for (IInstanceRelation relation : data.getRecommendationState(modelId).getInstanceRelations()) {
+        for (IInstanceRelation relation : data.getRecommendationState(pcmModel.getMetamodel()).getInstanceRelations()) {
             if (relation.isIn(relator, Collections.singletonList(from), Collections.singletonList(to))) {
                 hasExpected = true;
             }

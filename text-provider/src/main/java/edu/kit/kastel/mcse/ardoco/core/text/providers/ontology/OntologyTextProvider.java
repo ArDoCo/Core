@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.time.LocalDateTime;
@@ -18,10 +18,10 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
 public final class OntologyTextProvider implements ITextConnector {
@@ -37,10 +37,10 @@ public final class OntologyTextProvider implements ITextConnector {
 
     private static boolean useCache = true;
 
-    private OntologyConnector ontologyConnector;
+    private final OntologyConnector ontologyConnector;
 
     private String lastAddedTextName = null;
-    private OntResources resources;
+    private final OntResources resources;
 
     private OntologyTextProvider(OntologyConnector ontologyConnector) {
         this.ontologyConnector = ontologyConnector;
@@ -276,29 +276,28 @@ public final class OntologyTextProvider implements ITextConnector {
      * Represents a data class that encapsulates certain ontology resources
      *
      * @author Jan Keim
-     *
      */
     private final class OntResources {
 
-        private OntClass textClass;
-        private OntClass wordClass;
-        private OntClass dependencyClass;
-        private OntClass corefClusterClass;
-        private OntClass corefMentionClass;
+        private final OntClass textClass;
+        private final OntClass wordClass;
+        private final OntClass dependencyClass;
+        private final OntClass corefClusterClass;
+        private final OntClass corefMentionClass;
 
-        private OntProperty uuidProperty;
-        private OntProperty textProperty;
-        private OntProperty posProperty;
-        private OntProperty lemmaProperty;
-        private OntProperty positionProperty;
-        private OntProperty sentenceProperty;
-        private OntProperty wordsProperty;
-        private OntProperty dependencySourceProperty;
-        private OntProperty dependencyTargetProperty;
-        private OntProperty dependencyTypeProperty;
-        private OntProperty mentionProperty;
-        private OntProperty representativeMentionProperty;
-        private OntProperty hasCorefClusterProperty;
+        private final OntProperty uuidProperty;
+        private final OntProperty textProperty;
+        private final OntProperty posProperty;
+        private final OntProperty lemmaProperty;
+        private final OntProperty positionProperty;
+        private final OntProperty sentenceProperty;
+        private final OntProperty wordsProperty;
+        private final OntProperty dependencySourceProperty;
+        private final OntProperty dependencyTargetProperty;
+        private final OntProperty dependencyTypeProperty;
+        private final OntProperty mentionProperty;
+        private final OntProperty representativeMentionProperty;
+        private final OntProperty hasCorefClusterProperty;
 
         OntResources() {
             ontologyConnector.addOntologyImport(TEXT_ONTOLOGY_IRI);

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 import java.util.HashMap;
@@ -8,15 +8,15 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 public final class CachedOntologyWord implements IWord {
     private static final Map<IWord, CachedOntologyWord> cache = new HashMap<>();
 
-    private IWord ontologyWord;
+    private final IWord ontologyWord;
 
     private int sentenceNo = -1;
     private ISentence sentence = null;

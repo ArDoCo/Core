@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
@@ -23,7 +23,7 @@ public class TLDiffFile {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static void save(Path targetFile, Collection<TLProjectEvalResult> newResults, Collection<TLProjectEvalResult> oldResults,
-            Map<Project, AgentDatastructure> dataMap) throws IOException {
+            Map<Project, DataStructure> dataMap) throws IOException {
         // Assumption: Both collections contain the same projects
 
         newResults = newResults.stream().sorted().toList();
@@ -84,7 +84,7 @@ public class TLDiffFile {
         return oldLinks.stream().filter(link -> !newLinks.contains(link)).toList();
     }
 
-    private static void appendList(StringBuilder builder, String description, List<TestLink> links, AgentDatastructure data) {
+    private static void appendList(StringBuilder builder, String description, List<TestLink> links, DataStructure data) {
         var text = data.getText();
         if (links.isEmpty()) {
             return;

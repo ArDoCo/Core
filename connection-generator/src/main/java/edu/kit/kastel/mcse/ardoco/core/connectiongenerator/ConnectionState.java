@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,24 +10,26 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
 /**
  * The connection state encapsulates all connections between the model extraction state and the recommendation state.
  * These connections are stored in instance and relation links.
  *
  * @author Sophie
- *
  */
-public class ConnectionState implements IConnectionState {
+public class ConnectionState extends AbstractState implements IConnectionState {
 
     private Set<IInstanceLink> instanceLinks;
 
     @Override
     public IConnectionState createCopy() {
-        var newState = new ConnectionState();
+        var newState = new ConnectionState(this.configs);
         newState.instanceLinks = instanceLinks.stream().map(IInstanceLink::createCopy).collect(Collectors.toSet());
         return newState;
     }
@@ -34,7 +37,8 @@ public class ConnectionState implements IConnectionState {
     /**
      * Creates a new connection state.
      */
-    public ConnectionState() {
+    public ConnectionState(Map<String, String> configs) {
+        super(configs);
         instanceLinks = new HashSet<>();
     }
 

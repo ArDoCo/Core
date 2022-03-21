@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
 
 enum CommonOntologyUris {
@@ -26,7 +26,7 @@ enum CommonOntologyUris {
             "https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLDataProperty_743f0626_55af_428c_a2ac_d04102108ff7"),
     HAS_COREF_CLUSTERS("https://informalin.github.io/knowledgebases/informalin_base_text.owl#OWLObjectProperty_c1ce8819_cdfc_48de_bb7c_2f4802f7b51d");
 
-    private String uri;
+    private final String uri;
 
     CommonOntologyUris(String uri) {
         this.uri = uri;

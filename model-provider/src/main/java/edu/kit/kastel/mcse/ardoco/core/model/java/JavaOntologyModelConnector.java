@@ -10,19 +10,18 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.informalin.ontology.OntologyInterface;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
-import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
 
 /**
  * @author Jan Keim
- *
  */
 public class JavaOntologyModelConnector implements IModelConnector {
     private static final String CLASS_OR_INTERFACE_URI = "https://informalin.github.io/knowledgebases/informalin_base_java.owl#OWLClass_5c834f48_ae0d_40d8_8ea1_c193dc511593";
-    private OntologyInterface ontologyConnector;
+    private final OntologyInterface ontologyConnector;
     // TODO: Extract id from model.
     private final String modelId = UUID.randomUUID().toString();
 

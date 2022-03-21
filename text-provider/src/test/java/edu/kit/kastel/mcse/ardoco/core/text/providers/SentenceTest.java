@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.CachedOntologyText;
 
 /**

@@ -1,32 +1,36 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
  * contained by the model by their probability.
  *
  * @author Sophie
- *
  */
-public class RecommendationState implements IRecommendationState {
+public class RecommendationState extends AbstractState implements IRecommendationState {
 
     private MutableList<IRecommendedInstance> recommendedInstances;
     private MutableList<IInstanceRelation> instanceRelations;
 
     @Override
     public IRecommendationState createCopy() {
-        var recommendationState = new RecommendationState();
+        var recommendationState = new RecommendationState(this.configs);
         recommendationState.recommendedInstances = recommendedInstances.collect(IRecommendedInstance::createCopy);
         recommendationState.instanceRelations = instanceRelations.collect(IInstanceRelation::createCopy);
         return recommendationState;
@@ -35,7 +39,8 @@ public class RecommendationState implements IRecommendationState {
     /**
      * Creates a new recommendation state.
      */
-    public RecommendationState() {
+    public RecommendationState(Map<String, String> configs) {
+        super(configs);
         recommendedInstances = Lists.mutable.empty();
         instanceRelations = Lists.mutable.empty();
     }
@@ -111,8 +116,6 @@ public class RecommendationState implements IRecommendationState {
      * Adds a recommended instance to the state. If the in the stored instance an instance with the same name and type
      * is contained it is extended. If an recommendedInstance with the same name can be found it is extended. Elsewhere
      * a new recommended instance is created.
-     *
-     * @param ri
      */
     private void addRecommendedInstance(IRecommendedInstance ri) {
         if (recommendedInstances.contains(ri)) {

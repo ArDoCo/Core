@@ -22,10 +22,5 @@
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
       <artifactId>util</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kohsuke.metainf-services</groupId>
-      <artifactId>metainf-services</artifactId>
-      <optional>true</optional>
-    </dependency>
   </dependencies>
 </project>

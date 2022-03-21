@@ -19,20 +19,20 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.TraceLink;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 
 /**
@@ -70,7 +70,7 @@ public final class FilePrinter {
             for (IWord node : text.getWords()) {
                 var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
                 if (sentenceNumber + 1 > minSentenceNumber) {
-                    myWriter.append(LINE_SEPARATOR + sentenceNumber + ": ");
+                    myWriter.append(LINE_SEPARATOR).append(String.valueOf(sentenceNumber)).append(": ");
                     minSentenceNumber++;
                 }
                 myWriter.append(" ").append(node.getText());
@@ -104,34 +104,34 @@ public final class FilePrinter {
         myWriter.write("Results of ModelConnector: ");
         myWriter.append(LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("ExtractorState: ");
         myWriter.append(LINE_SEPARATOR);
         myWriter.write(extractionState.toString());
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("FoundNames as Set: ");
         myWriter.append(LINE_SEPARATOR);
         var nameList = ntrState.getNameList().toSortedList().toImmutable();
         myWriter.write(nameList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("FoundNORTs as Set: ");
         myWriter.append(LINE_SEPARATOR);
         var nortList = ntrState.getNortList().toSortedList().toImmutable();
         myWriter.write(nortList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("FoundTypes as Set: ");
         myWriter.append(LINE_SEPARATOR);
         var typeList = ntrState.getTypeList().toSortedList().toImmutable();
         myWriter.write(typeList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("Instances of the Recommendation State: ");
         myWriter.append(LINE_SEPARATOR);
@@ -143,7 +143,7 @@ public final class FilePrinter {
             myWriter.write(ri.toString() + LINE_SEPARATOR);
         }
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("Instances of the Connection State: ");
         myWriter.append(LINE_SEPARATOR);
@@ -157,26 +157,26 @@ public final class FilePrinter {
         }
 
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("Relations of the Recommendation State: ");
         myWriter.append(LINE_SEPARATOR);
 
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("Relations of the Connection State: ");
         myWriter.append(LINE_SEPARATOR);
 
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         myWriter.write("ExecutionTime: " + duration);
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR + LINE_SEPARATOR);
+        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         logger.info(SUCCESS_WRITE);
     }
@@ -284,13 +284,12 @@ public final class FilePrinter {
 
         for (INounMapping mapping : textState.getNounMappings()) {
 
-            var eagleMapping = mapping;
-            var distribution = eagleMapping.getDistribution();
+            var distribution = mapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME));
             var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
             var nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
 
-            dataLines.add(new String[] { eagleMapping.getReference(), nameProb, typeProb, nortProb });
+            dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
 
         }
         return dataLines.toImmutable();
@@ -409,6 +408,6 @@ public final class FilePrinter {
     }
 
     private static Comparator<IInstanceLink> getInstanceLinkComparator() {
-        return (i1, i2) -> i1.getModelInstance().getUid().compareTo(i2.getModelInstance().getUid());
+        return Comparator.comparing(i -> i.getModelInstance().getUid());
     }
 }
