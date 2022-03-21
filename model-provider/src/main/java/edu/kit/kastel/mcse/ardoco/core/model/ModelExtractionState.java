@@ -42,6 +42,17 @@ public class ModelExtractionState extends AbstractState implements IModelState {
                 relations.collect(IModelRelation::createCopy), this.configs);
     }
 
+    // For generation of configuration
+    @SuppressWarnings("unused")
+    private ModelExtractionState() {
+        super(Map.of());
+        this.modelId = null;
+        this.metamodelType = null;
+        this.instanceTypes = null;
+        this.relationTypes = null;
+        this.names = null;
+    }
+
     private ModelExtractionState(String modelId, Metamodel metamodelType, Set<String> instanceTypes, Set<String> relationTypes, Set<String> names,
             ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations, Map<String, String> configs) {
         super(configs);
