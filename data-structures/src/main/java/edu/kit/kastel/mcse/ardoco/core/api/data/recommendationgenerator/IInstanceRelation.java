@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 public interface IInstanceRelation {
@@ -18,7 +19,7 @@ public interface IInstanceRelation {
 
     int getSize();
 
-    void setProbability(double newProbability);
+    void setProbability(IAgent<?> claimant, double newProbability);
 
     IRecommendedInstance getFromInstance();
 

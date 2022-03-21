@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.common.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -19,7 +20,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param probability probability to be a name mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addName(IWord n, double probability, ImmutableList<String> occurrences);
+    void addName(IWord n, IAgent<?> claimant, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a name mapping to the state.
@@ -27,7 +28,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param word        word of the mapping
      * @param probability probability to be a name mapping
      */
-    void addName(IWord word, double probability);
+    void addName(IWord word, IAgent<?> claimant, double probability);
 
     /**
      * * Adds a name or type mapping to the state.
@@ -35,7 +36,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param word        node of the mapping
      * @param probability probability to be a name or type mapping
      */
-    void addNort(IWord word, double probability);
+    void addNort(IWord word, IAgent<?> claimant, double probability);
 
     /**
      * * Adds a name or type mapping to the state.
@@ -44,7 +45,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param probability probability to be a name or type mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addNort(IWord word, double probability, ImmutableList<String> occurrences);
+    void addNort(IWord word, IAgent<?> claimant, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a type mapping to the state.
@@ -52,7 +53,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param word        node of the mapping
      * @param probability probability to be a type mapping
      */
-    void addType(IWord word, double probability);
+    void addType(IWord word, IAgent<?> claimant, double probability);
 
     /**
      * * Adds a type mapping to the state.
@@ -61,7 +62,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param probability probability to be a type mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addType(IWord word, double probability, ImmutableList<String> occurrences);
+    void addType(IWord word, IAgent<?> claimant, double probability, ImmutableList<String> occurrences);
 
     /**
      * Creates a new relation mapping and adds it to the state. More end points, as well as a preposition can be added
@@ -72,14 +73,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param probability probability of being a relation
      * @return the added relation mapping
      */
-    IRelationMapping addRelation(INounMapping node1, INounMapping node2, double probability);
-
-    /**
-     * Adds a relation mapping to the state.
-     *
-     * @param n the relation mapping to add.
-     */
-    void addRelation(IRelationMapping n);
+    IRelationMapping addRelation(INounMapping node1, INounMapping node2, IAgent<?> claimant, double probability);
 
     // --- remove section --->
 
