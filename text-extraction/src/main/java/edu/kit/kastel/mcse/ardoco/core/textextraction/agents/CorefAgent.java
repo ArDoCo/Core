@@ -54,13 +54,13 @@ public class CorefAgent extends TextAgent {
         }
     }
 
-    private static void mergeNounMappings(MutableSet<INounMapping> nounMappings, ITextState textState) {
+    private void mergeNounMappings(MutableSet<INounMapping> nounMappings, ITextState textState) {
         INounMapping mergedNounMapping = null;
         for (var nounMapping : nounMappings) {
             mergedNounMapping = nounMapping.merge(mergedNounMapping);
             textState.removeNounMapping(nounMapping);
         }
-        textState.addNounMapping(mergedNounMapping);
+        textState.addNounMapping(mergedNounMapping, this);
     }
 
     private static void addWordsToNounMappingsAsCoreferences(MutableSet<INounMapping> nounMappings, ImmutableList<IWord> words) {

@@ -1,11 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
+import static edu.kit.kastel.mcse.ardoco.core.api.common.util.JavaUtils.copyMap;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
@@ -105,14 +106,6 @@ public final class DataStructure implements IData, IModelData, ITextData, IRecom
     private void ensureModel(String model) {
         if (!this.modelStates.containsKey(model))
             throw new IllegalArgumentException("Model with Key " + model + " was not found");
-    }
-
-    private <K, V> Map<K, V> copyMap(Map<K, V> map, UnaryOperator<V> copy) {
-        Map<K, V> copyMap = new HashMap<>();
-        for (var entry : map.entrySet()) {
-            copyMap.put(entry.getKey(), copy.apply(entry.getValue()));
-        }
-        return copyMap;
     }
 
 }

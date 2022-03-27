@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -26,7 +27,8 @@ public class SeparatedNamesExtractor extends AbstractExtractor<TextAgentData> {
     /**
      * Prototype constructor.
      */
-    public SeparatedNamesExtractor() {
+    public SeparatedNamesExtractor(IAgent<?> parent) {
+        super(parent);
     }
 
     /***
@@ -44,7 +46,7 @@ public class SeparatedNamesExtractor extends AbstractExtractor<TextAgentData> {
      */
     private void checkForSeparatedNode(ITextState textState, IWord word) {
         if (word.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(word.getText())) {
-            textState.addName(word, probability);
+            textState.addName(word, parent, probability);
         }
     }
 

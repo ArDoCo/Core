@@ -60,8 +60,8 @@ public class PhraseAgent extends TextAgent {
         var reference = CommonUtilities.createReferenceForPhrase(phrase);
         var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
         if (similarReferenceNounMappings.isEmpty()) {
-            INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, phraseConfidence);
-            textState.addNounMapping(phraseNounMapping);
+            INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, this, phraseConfidence);
+            textState.addNounMapping(phraseNounMapping, this);
         } else {
             for (var nounMapping : similarReferenceNounMappings) {
                 nounMapping.addWords(phrase);
@@ -73,7 +73,7 @@ public class PhraseAgent extends TextAgent {
     private void createNounMappingIfSpecialNamedEntity(IWord word, ITextState textState) {
         var text = word.getText();
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
-            textState.addName(word, specialNamedEntityConfidence);
+            textState.addName(word, this, specialNamedEntityConfidence);
         }
     }
 

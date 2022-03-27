@@ -14,6 +14,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.common.util.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
@@ -198,18 +199,18 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public void addKindWithProbability(MappingKind kind, IAgent<?> claimant, double probability) {
-        recalculateProbability(kind, probability);
-    }
-
-    private void recalculateProbability(MappingKind kind, double newProbability) {
-        double currentProbability = distribution.get(kind);
-        distribution.put(kind, (currentProbability + newProbability) / 2);
+        Confidence currentProbability = distribution.get(kind);
+        currentProbability.addAgentConfidence(claimant, probability);
 
         mostProbableKind = distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).get();
         if (mostProbableKind == MappingKind.NAME_OR_TYPE) {
+            // TODO: Maybe to config later
             var threshold = 0;
-            if (distribution.get(MappingKind.NAME) >= threshold || distribution.get(MappingKind.TYPE) >= threshold) {
-                if (distribution.get(MappingKind.NAME) >= distribution.get(MappingKind.TYPE)) {
+            double nameConfidence = distribution.get(MappingKind.NAME).getConfidence();
+            double typeConfidence = distribution.get(MappingKind.TYPE).getConfidence();
+
+            if (Math.max(nameConfidence, typeConfidence) >= threshold) {
+                if (nameConfidence >= typeConfidence) {
                     mostProbableKind = MappingKind.NAME;
                 } else {
                     mostProbableKind = MappingKind.TYPE;
@@ -221,7 +222,8 @@ public class NounMapping implements INounMapping {
 
     @Override
     public INounMapping createCopy() {
-        var nm = new NounMapping(words.toImmutable(), distribution, referenceWords.toList(), surfaceForms.toImmutable());
+        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, d -> d.createCopy()), referenceWords.toList(),
+                surfaceForms.toImmutable());
         nm.hasPhrase = hasPhrase;
         return nm;
     }

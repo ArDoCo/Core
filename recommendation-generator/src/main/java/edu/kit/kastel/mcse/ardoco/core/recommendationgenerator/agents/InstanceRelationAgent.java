@@ -78,7 +78,8 @@ public class InstanceRelationAgent extends RecommendationAgent {
                      * Add new relation if not found previously
                      */
                     logger.debug("Add new InstanceRelation from {} over {} to {}", word.getText(), verbOn.getText(), secondWord.getText());
-                    recommendationState.addInstanceRelation(instance, secondInstance, verbOn, Collections.singletonList(from), Collections.singletonList(to));
+                    recommendationState.addInstanceRelation(instance, secondInstance, verbOn, Collections.singletonList(from), Collections.singletonList(to),
+                            this);
                 }
             }
         }
@@ -99,7 +100,7 @@ public class InstanceRelationAgent extends RecommendationAgent {
                  */
                 newInstance = false;
                 logger.debug("Add to existing InstanceRelation from {} over {} to {}", word.getText(), verbOn.getText(), secondWord.getText());
-                relation.addLink(verbOn, Collections.singletonList(from), Collections.singletonList(to));
+                relation.addLink(verbOn, Collections.singletonList(from), Collections.singletonList(to), this);
             }
             if (!newInstance) {
                 break;

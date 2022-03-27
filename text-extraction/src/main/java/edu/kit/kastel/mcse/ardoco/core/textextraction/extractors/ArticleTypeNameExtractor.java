@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -23,7 +24,8 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
     /**
      * Prototype constructor.
      */
-    public ArticleTypeNameExtractor() {
+    public ArticleTypeNameExtractor(IAgent<?> parent) {
+        super(parent);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
         if (textState.isWordContainedByNameOrTypeMapping(n)) {
             IWord prevNode = n.getPreWord();
             if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addName(n, probability);
+                textState.addName(n, parent, probability);
                 return true;
             }
         }
@@ -60,7 +62,7 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
         if (textState.isWordContainedByNameOrTypeMapping(word)) {
             IWord prevNode = word.getPreWord();
             if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addType(word, probability);
+                textState.addType(word, parent, probability);
             }
         }
     }

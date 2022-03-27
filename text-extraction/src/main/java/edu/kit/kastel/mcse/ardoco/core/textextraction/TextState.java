@@ -10,6 +10,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -54,8 +55,8 @@ public class TextState extends AbstractState implements ITextState {
      * @param word        node of the mapping
      */
     @Override
-    public final void addName(IWord word, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(word, MappingKind.NAME, probability, occurrences);
+    public final void addName(IWord word, IAgent<?> claimant, double probability, ImmutableList<String> occurrences) {
+        addNounMapping(word, MappingKind.NAME, claimant, probability, occurrences);
     }
 
     /***
@@ -65,8 +66,8 @@ public class TextState extends AbstractState implements ITextState {
      * @param probability probability to be a name mapping
      */
     @Override
-    public final void addName(IWord word, double probability) {
-        addName(word, probability, Lists.immutable.with(word.getText()));
+    public final void addName(IWord word, IAgent<?> claimant, double probability) {
+        addName(word, claimant, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
@@ -76,8 +77,8 @@ public class TextState extends AbstractState implements ITextState {
      * @param word        node of the mapping
      */
     @Override
-    public final void addNort(IWord word, double probability) {
-        addNort(word, probability, Lists.immutable.with(word.getText()));
+    public final void addNort(IWord word, IAgent<?> claimant, double probability) {
+        addNort(word, claimant, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
@@ -87,8 +88,8 @@ public class TextState extends AbstractState implements ITextState {
      * @param word        node of the mapping
      */
     @Override
-    public final void addType(IWord word, double probability) {
-        addType(word, probability, Lists.immutable.with(word.getText()));
+    public final void addType(IWord word, IAgent<?> claimant, double probability) {
+        addType(word, claimant, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
@@ -99,20 +100,8 @@ public class TextState extends AbstractState implements ITextState {
      * @param word        node of the mapping
      */
     @Override
-    public final void addType(IWord word, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(word, MappingKind.TYPE, probability, occurrences);
-    }
-
-    /**
-     * Adds a relation mapping to the state.
-     *
-     * @param n the relation mapping to add.
-     */
-    @Override
-    public final void addRelation(IRelationMapping n) {
-        if (!relationMappings.contains(n)) {
-            relationMappings.add(n);
-        }
+    public final void addType(IWord word, IAgent<?> claimant, double probability, ImmutableList<String> occurrences) {
+        addNounMapping(word, MappingKind.TYPE, claimant, probability, occurrences);
     }
 
     /**
@@ -341,21 +330,21 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     @Override
-    public void addNounMapping(INounMapping nounMapping) {
-        addNounMappingOrAppendToSimilarNounMapping(nounMapping);
+    public void addNounMapping(INounMapping nounMapping, IAgent<?> claimant) {
+        addNounMappingOrAppendToSimilarNounMapping(nounMapping, claimant);
     }
 
-    private INounMapping addNounMapping(IWord word, MappingKind kind, double probability, ImmutableList<String> occurrences) {
+    private INounMapping addNounMapping(IWord word, MappingKind kind, IAgent<?> claimant, double probability, ImmutableList<String> occurrences) {
         var words = Lists.immutable.with(word);
-        INounMapping nounMapping = new NounMapping(words, kind, probability, words.castToList(), occurrences);
+        INounMapping nounMapping = new NounMapping(words, kind, claimant, probability, words.castToList(), occurrences);
 
-        return addNounMappingOrAppendToSimilarNounMapping(nounMapping);
+        return addNounMappingOrAppendToSimilarNounMapping(nounMapping, claimant);
     }
 
-    private INounMapping addNounMappingOrAppendToSimilarNounMapping(INounMapping nounMapping) {
+    private INounMapping addNounMappingOrAppendToSimilarNounMapping(INounMapping nounMapping, IAgent<?> claimant) {
         for (var existingNounMapping : nounMappings) {
             if (SimilarityUtils.areNounMappingsSimilar(nounMapping, existingNounMapping)) {
-                appendNounMappingToExistingNounMapping(nounMapping, existingNounMapping);
+                appendNounMappingToExistingNounMapping(nounMapping, existingNounMapping, claimant);
                 return existingNounMapping;
             }
         }
@@ -363,26 +352,26 @@ public class TextState extends AbstractState implements ITextState {
         return nounMapping;
     }
 
-    private void appendNounMappingToExistingNounMapping(INounMapping disposableNounMapping, INounMapping existingNounMapping) {
-        existingNounMapping.addKindWithProbability(disposableNounMapping.getKind(), disposableNounMapping.getProbability());
+    private void appendNounMappingToExistingNounMapping(INounMapping disposableNounMapping, INounMapping existingNounMapping, IAgent<?> claimant) {
+        existingNounMapping.addKindWithProbability(disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
         existingNounMapping.addOccurrence(disposableNounMapping.getSurfaceForms());
         existingNounMapping.addWord(disposableNounMapping.getReferenceWords().get(0));
     }
 
     @Override
-    public void addNort(IWord word, double probability, ImmutableList<String> occurrences) {
-        var mapping = addNounMapping(word, MappingKind.NAME_OR_TYPE, probability, occurrences);
+    public void addNort(IWord word, IAgent<?> claimant, double probability, ImmutableList<String> occurrences) {
+        var mapping = addNounMapping(word, MappingKind.NAME_OR_TYPE, claimant, probability, occurrences);
 
         if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
-            mapping.addKindWithProbability(MappingKind.NAME, nortProbabilityForNameAndType);
+            mapping.addKindWithProbability(MappingKind.NAME, claimant, nortProbabilityForNameAndType);
         }
         if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
-            mapping.addKindWithProbability(MappingKind.TYPE, nortProbabilityForNameAndType);
+            mapping.addKindWithProbability(MappingKind.TYPE, claimant, nortProbabilityForNameAndType);
         }
     }
 
     @Override
-    public IRelationMapping addRelation(INounMapping node1, INounMapping node2, double probability) {
+    public IRelationMapping addRelation(INounMapping node1, INounMapping node2, IAgent<?> claimant, double probability) {
         IRelationMapping relationMapping = new RelationMapping(node1, node2, probability);
         if (!relationMappings.contains(relationMapping)) {
             relationMappings.add(relationMapping);

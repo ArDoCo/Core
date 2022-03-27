@@ -10,8 +10,9 @@ import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 
-public final class Confidence implements Comparable<Confidence> {
+public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
     private ConfidenceAggregator confidenceAggregator;
 
@@ -25,6 +26,16 @@ public final class Confidence implements Comparable<Confidence> {
     public Confidence(IAgent<?> claimant, double probability, ConfidenceAggregator confidenceAggregator) {
         this(confidenceAggregator);
         this.addAgentConfidence(claimant, probability);
+    }
+
+    private Confidence(ConfidenceAggregator confidenceAggregator, List<Pair<IAgent<?>, Double>> agentConfidence) {
+        this(confidenceAggregator);
+        this.agentConfidence = agentConfidence;
+    }
+
+    public Confidence createCopy() {
+
+        return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidence));
     }
 
     public void addAgentConfidence(IAgent<?> claimant, double confidence) {
@@ -112,7 +123,12 @@ public final class Confidence implements Comparable<Confidence> {
         /**
          * Use the min value of the scores as final score.
          */
-        MIN(s -> s.stream().mapToDouble(d -> d).min().getAsDouble());
+        MIN(s -> s.stream().mapToDouble(d -> d).min().getAsDouble()),
+
+        /**
+         * Use the sum of the scores as final score.
+         */
+        SUM(s -> s.stream().mapToDouble(d -> d).sum());
 
         private ToDoubleFunction<Collection<Double>> function;
 

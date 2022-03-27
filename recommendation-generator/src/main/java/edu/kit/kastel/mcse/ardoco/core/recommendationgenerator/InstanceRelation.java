@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -17,30 +19,34 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 // NOTE: Currently, only simple relations are covered. Future versions may fromInstance and toInstance to List to
 // comprise more complex relations?!
 public class InstanceRelation implements IInstanceRelation {
-    private double probability;
+    private Confidence probability;
     private final IRecommendedInstance fromInstance;
     private final IRecommendedInstance toInstance;
     private final List<LocalRelation> localRelations;
 
     @Override
     public IInstanceRelation createCopy() {
-        InstanceRelation relation = new InstanceRelation(fromInstance, toInstance, null, null, null);
-        for (LocalRelation localRelation : localRelations) {
-            addLink(localRelation.relator, localRelation.from, localRelation.to);
-        }
+        InstanceRelation relation = new InstanceRelation(fromInstance, toInstance);
+        relation.localRelations.addAll(this.localRelations);
+        relation.probability = probability.createCopy();
         return relation;
     }
 
-    public InstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to) {
+    private InstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance) {
         this.fromInstance = fromInstance;
         this.toInstance = toInstance;
         localRelations = new ArrayList<>();
-        probability = 0;
-        addLink(relator, from, to);
+        probability = new Confidence(Confidence.ConfidenceAggregator.SUM);
+    }
+
+    public InstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to,
+            IAgent<?> claimant) {
+        this(fromInstance, toInstance);
+        addLink(relator, from, to, claimant);
     }
 
     @Override
-    public boolean addLink(IWord relator, List<IWord> from, List<IWord> to) {
+    public boolean addLink(IWord relator, List<IWord> from, List<IWord> to, IAgent<?> claimant) {
         if (relator == null || from == null || to == null) {
             return false;
         }
@@ -50,12 +56,8 @@ public class InstanceRelation implements IInstanceRelation {
             }
         }
         localRelations.add(new LocalRelation(relator, from, to));
-        increaseProbability();
+        probability.addAgentConfidence(claimant, Math.pow(0.5, localRelations.size()));
         return true;
-    }
-
-    private void increaseProbability() {
-        probability += Math.pow(0.5, localRelations.size());
     }
 
     @Override
@@ -77,7 +79,7 @@ public class InstanceRelation implements IInstanceRelation {
 
     @Override
     public double getProbability() {
-        return probability;
+        return probability.getConfidence();
     }
 
     @Override
@@ -86,8 +88,9 @@ public class InstanceRelation implements IInstanceRelation {
     }
 
     @Override
-    public void setProbability(double newProbability) {
-        probability = newProbability;
+    public void setProbability(IAgent<?> claimant, double newProbability) {
+        // TODO: SET != Add
+        probability.addAgentConfidence(claimant, newProbability);
     }
 
     @Override
@@ -139,9 +142,9 @@ public class InstanceRelation implements IInstanceRelation {
     }
 
     private static class LocalRelation {
-        IWord relator;
-        List<IWord> from;
-        List<IWord> to;
+        final IWord relator;
+        final List<IWord> from;
+        final List<IWord> to;
 
         LocalRelation(IWord relator, List<IWord> from, List<IWord> to) {
             this.relator = relator;
