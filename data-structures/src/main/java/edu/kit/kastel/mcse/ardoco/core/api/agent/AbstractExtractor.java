@@ -5,10 +5,4 @@ import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
 
 public abstract class AbstractExtractor<D extends IData> extends AbstractConfigurable implements IExtractor<D> {
-
-    protected final IAgent<?> parent;
-
-    protected AbstractExtractor(IAgent<?> parent) {
-        this.parent = parent;
-    }
 }

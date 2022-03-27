@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.NameTy
  */
 public class InitialRecommendationAgent extends RecommendationAgent {
 
-    private final List<AbstractExtractor<RecommendationAgentData>> extractors = List.of(new NameTypeExtractor(this));
+    private final List<AbstractExtractor<RecommendationAgentData>> extractors = List.of(new NameTypeExtractor());
 
     @Configurable
     private List<String> enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();

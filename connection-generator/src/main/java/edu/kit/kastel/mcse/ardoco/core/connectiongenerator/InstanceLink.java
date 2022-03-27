@@ -9,6 +9,8 @@ import java.util.Set;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
@@ -23,11 +25,19 @@ public class InstanceLink implements IInstanceLink {
 
     private final IRecommendedInstance textualInstance;
     private final IModelInstance modelInstance;
-    private double probability;
+    private Confidence probability;
 
     @Override
     public IInstanceLink createCopy() {
-        return new InstanceLink(textualInstance.createCopy(), modelInstance.createCopy(), probability);
+        InstanceLink copy = new InstanceLink(textualInstance.createCopy(), modelInstance.createCopy());
+        copy.probability = probability.createCopy();
+        return copy;
+    }
+
+    public InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance) {
+        this.textualInstance = textualInstance;
+        this.modelInstance = modelInstance;
+        this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
     }
 
     /**
@@ -37,10 +47,9 @@ public class InstanceLink implements IInstanceLink {
      * @param modelInstance   the extracted instance
      * @param probability     the probability of this link
      */
-    public InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance, double probability) {
-        this.textualInstance = textualInstance;
-        this.modelInstance = modelInstance;
-        this.probability = probability;
+    public InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance, IClaimant claimant, double probability) {
+        this(textualInstance, modelInstance);
+        this.probability.addAgentConfidence(claimant, probability);
     }
 
     /**
@@ -50,7 +59,7 @@ public class InstanceLink implements IInstanceLink {
      */
     @Override
     public double getProbability() {
-        return probability;
+        return probability.getConfidence();
     }
 
     /**
@@ -59,8 +68,8 @@ public class InstanceLink implements IInstanceLink {
      * @param probability the new probability
      */
     @Override
-    public void setProbability(double probability) {
-        this.probability = probability;
+    public void setProbability(IClaimant claimant, double probability) {
+        this.probability.addAgentConfidence(claimant, probability);
     }
 
     /**

@@ -55,7 +55,7 @@ public class ReferenceAgent extends ConnectionAgent {
             ImmutableList<INounMapping> similarToInstanceMappings = getSimilarNounMappings(instance, textState);
 
             for (INounMapping similarNameMapping : similarToInstanceMappings) {
-                recommendationState.addRecommendedInstance(similarNameMapping.getReference(), probability, similarToInstanceMappings);
+                recommendationState.addRecommendedInstance(similarNameMapping.getReference(), this, probability, similarToInstanceMappings);
             }
         }
 

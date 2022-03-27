@@ -9,7 +9,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
@@ -41,7 +41,7 @@ public class RecommendedInstance implements IRecommendedInstance {
     private RecommendedInstance(String name, String type) {
         this.type = type;
         this.name = name;
-        this.probability = new Confidence(Confidence.ConfidenceAggregator.HARMONIC);
+        this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
         nameMappings = new HashSet<>();
         typeMappings = new HashSet<>();
     }
@@ -55,7 +55,7 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param nameNodes   the involved name mappings
      * @param typeNodes   the involved type mappings
      */
-    public RecommendedInstance(String name, String type, IAgent<?> claimant, double probability, ImmutableList<INounMapping> nameNodes,
+    public RecommendedInstance(String name, String type, IClaimant claimant, double probability, ImmutableList<INounMapping> nameNodes,
             ImmutableList<INounMapping> typeNodes) {
         this(name, type);
         this.probability.addAgentConfidence(claimant, probability);
@@ -161,7 +161,7 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param probability the new probability
      */
     @Override
-    public void setProbability(IAgent<?> claimant, double probability) {
+    public void setProbability(IClaimant claimant, double probability) {
         // TODO: SET != ADD
         this.probability.addAgentConfidence(claimant, probability);
     }

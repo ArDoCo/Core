@@ -9,7 +9,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
@@ -77,7 +77,7 @@ public class RecommendationState extends AbstractState implements IRecommendatio
      */
     @Override
     public void addInstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to,
-            IAgent<?> claimant) {
+            IClaimant claimant) {
         instanceRelations.add(new InstanceRelation(fromInstance, toInstance, relator, from, to, claimant));
     }
 
@@ -89,7 +89,7 @@ public class RecommendationState extends AbstractState implements IRecommendatio
      * @param nameMappings name mappings representing that recommended instance
      */
     @Override
-    public void addRecommendedInstance(String name, IAgent<?> claimant, double probability, ImmutableList<INounMapping> nameMappings) {
+    public void addRecommendedInstance(String name, IClaimant claimant, double probability, ImmutableList<INounMapping> nameMappings) {
         this.addRecommendedInstance(name, "", claimant, probability, nameMappings, Lists.immutable.empty());
     }
 
@@ -104,7 +104,7 @@ public class RecommendationState extends AbstractState implements IRecommendatio
      * @return the added recommended instance
      */
     @Override
-    public IRecommendedInstance addRecommendedInstance(String name, String type, IAgent<?> claimant, double probability,
+    public IRecommendedInstance addRecommendedInstance(String name, String type, IClaimant claimant, double probability,
             ImmutableList<INounMapping> nameMappings, ImmutableList<INounMapping> typeMappings) {
         var recommendedInstance = new RecommendedInstance(name, type, claimant, probability, //
                 Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),

@@ -1,62 +1,73 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
-    private ConfidenceAggregator confidenceAggregator;
+    private final ConfidenceAggregator confidenceAggregator;
 
-    private List<Pair<IAgent<?>, Double>> agentConfidence;
+    private List<Pair<IClaimant, Double>> agentConfidence;
 
     public Confidence(ConfidenceAggregator confidenceAggregator) {
         this.confidenceAggregator = confidenceAggregator;
         this.agentConfidence = new ArrayList<>();
     }
 
-    public Confidence(IAgent<?> claimant, double probability, ConfidenceAggregator confidenceAggregator) {
+    public Confidence(IClaimant claimant, double probability, ConfidenceAggregator confidenceAggregator) {
         this(confidenceAggregator);
         this.addAgentConfidence(claimant, probability);
     }
 
-    private Confidence(ConfidenceAggregator confidenceAggregator, List<Pair<IAgent<?>, Double>> agentConfidence) {
+    private Confidence(ConfidenceAggregator confidenceAggregator, List<Pair<IClaimant, Double>> agentConfidence) {
         this(confidenceAggregator);
         this.agentConfidence = agentConfidence;
     }
 
+    @Override
     public Confidence createCopy() {
-
         return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidence));
     }
 
-    public void addAgentConfidence(IAgent<?> claimant, double confidence) {
-
-        if (agentConfidence.stream().anyMatch(p -> p.getOne().equals(claimant))) {
-            throw new IllegalArgumentException("The agent has already set the confidence of this data: " + claimant);
-        }
+    public void addAgentConfidence(IClaimant claimant, double confidence) {
+        // TODO Decide how to handle same claimants.
+        /*
+         * if (agentConfidence.stream().anyMatch(p -> p.getOne().equals(claimant))) { throw new
+         * IllegalArgumentException("The agent has already set the confidence of this data: " + claimant); }
+         */
 
         agentConfidence.add(Tuples.pair(claimant, confidence));
+    }
+
+    @Override
+    public int compareTo(Confidence o) {
+        return Double.compare(this.getConfidence(), o.getConfidence());
+    }
+
+    @Override
+    public String toString() {
+        return "Confidence{" + confidenceAggregator + "=>" + getConfidence() + '}';
     }
 
     public double getConfidence() {
         if (agentConfidence.isEmpty()) {
             return 0;
         }
-        return confidenceAggregator.applyAsDouble(agentConfidence.stream().map(p -> p.getTwo()).toList());
+        return confidenceAggregator.applyAsDouble(agentConfidence.stream().map(Pair::getTwo).toList());
     }
 
     /**
      * Merges two confidences two one w.r.t. the aggregators
-     * 
+     *
      * @param a                first confidence
      * @param b                second confidence
      * @param globalAggregator aggregator for merging different claimant confidences
@@ -67,7 +78,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         Confidence result = new Confidence(globalAggregator);
 
         for (var aConf : a.agentConfidence) {
-            Pair<IAgent<?>, Double> bConf = b.agentConfidence.stream().filter(p -> p.getOne().equals(aConf.getOne())).findFirst().orElse(null);
+            Pair<IClaimant, Double> bConf = b.agentConfidence.stream().filter(p -> p.getOne().equals(aConf.getOne())).findFirst().orElse(null);
             if (bConf == null) {
                 result.addAgentConfidence(aConf.getOne(), aConf.getTwo());
             } else {
@@ -90,7 +101,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
          * Use the median of the scores as final score.
          */
         MEDIAN(s -> {
-            var sortedNormalized = s.stream().sorted().collect(Collectors.toList());
+            var sortedNormalized = s.stream().sorted().toList();
             int sizeHalf = sortedNormalized.size() / 2;
 
             if (sortedNormalized.size() % 2 == 0) {
@@ -107,7 +118,6 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
         USE_MOST_RECENT(s -> {
             return s.stream().reduce((first, second) -> second).orElse(0.0);
-
         }),
 
         /**
@@ -130,7 +140,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
          */
         SUM(s -> s.stream().mapToDouble(d -> d).sum());
 
-        private ToDoubleFunction<Collection<Double>> function;
+        private final ToDoubleFunction<Collection<Double>> function;
 
         ConfidenceAggregator(ToDoubleFunction<Collection<Double>> function) {
             this.function = function;
@@ -140,11 +150,6 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         public double applyAsDouble(Collection<Double> value) {
             return this.function.applyAsDouble(value);
         }
-    }
-
-    @Override
-    public int compareTo(Confidence o) {
-        return Double.compare(this.getConfidence(), o.getConfidence());
     }
 
 }

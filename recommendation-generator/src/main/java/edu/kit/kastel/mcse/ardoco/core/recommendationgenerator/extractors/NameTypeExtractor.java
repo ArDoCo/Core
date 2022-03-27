@@ -6,7 +6,6 @@ import java.util.Map;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
@@ -29,8 +28,7 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
     /**
      * Creates a new NameTypeAnalyzer
      */
-    public NameTypeExtractor(IAgent<?> parent) {
-        super(parent);
+    public NameTypeExtractor() {
     }
 
     @Override
@@ -62,12 +60,12 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
         ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, parent, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getPreWord());
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, parent, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, this, probability);
         }
     }
 
@@ -86,12 +84,12 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, parent, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getNextWord());
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, parent, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
         }
     }
 
@@ -111,12 +109,12 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, parent, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(word.getPreWord());
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, parent, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
         }
     }
 
@@ -135,12 +133,12 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, parent, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(word.getNextWord());
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, parent, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
         }
     }
 

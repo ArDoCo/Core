@@ -6,7 +6,6 @@ import java.util.Map;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
@@ -28,8 +27,7 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
     /**
      * Prototype constructor.
      */
-    public OutDepArcsExtractor(IAgent<?> parent) {
-        super(parent);
+    public OutDepArcsExtractor() {
     }
 
     @Override
@@ -52,16 +50,16 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 
             if (DependencyTag.AGENT == shortDepTag) {
-                textState.addNort(word, parent, probability);
+                textState.addNort(word, this, probability);
 
             } else if (DependencyTag.NUM == shortDepTag) {
-                textState.addType(word, parent, probability);
+                textState.addType(word, this, probability);
 
             } else if (DependencyTag.PREDET == shortDepTag) {
-                textState.addType(word, parent, probability);
+                textState.addType(word, this, probability);
 
             } else if (DependencyTag.RCMOD == shortDepTag) {
-                textState.addNort(word, parent, probability);
+                textState.addNort(word, this, probability);
             }
         }
     }

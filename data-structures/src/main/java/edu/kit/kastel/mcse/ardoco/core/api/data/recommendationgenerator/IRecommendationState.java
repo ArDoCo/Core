@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -31,7 +31,7 @@ public interface IRecommendationState extends ICopyable<IRecommendationState>, I
     ImmutableList<IInstanceRelation> getInstanceRelations();
 
     void addInstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to,
-            IAgent<?> claimant);
+            IClaimant claimant);
 
     /**
      * Adds a recommended instance without a type.
@@ -40,7 +40,7 @@ public interface IRecommendationState extends ICopyable<IRecommendationState>, I
      * @param probability  probability of being in the model
      * @param nameMappings name mappings representing that recommended instance
      */
-    void addRecommendedInstance(String name, IAgent<?> claimant, double probability, ImmutableList<INounMapping> nameMappings);
+    void addRecommendedInstance(String name, IClaimant claimant, double probability, ImmutableList<INounMapping> nameMappings);
 
     /**
      * Adds a recommended instance.
@@ -52,7 +52,7 @@ public interface IRecommendationState extends ICopyable<IRecommendationState>, I
      * @param typeMappings type mappings representing the type of the recommended instance
      * @return the added recommended instance
      */
-    IRecommendedInstance addRecommendedInstance(String name, String type, IAgent<?> claimant, double probability, ImmutableList<INounMapping> nameMappings,
+    IRecommendedInstance addRecommendedInstance(String name, String type, IClaimant claimant, double probability, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings);
 
     /**
