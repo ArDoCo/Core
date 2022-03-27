@@ -1,19 +1,14 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.util.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -59,10 +54,10 @@ public class NounMapping implements INounMapping {
     /**
      * Instantiates a new noun mapping.
      */
-    public NounMapping(ImmutableList<IWord> words, MappingKind kind, IAgent<?> claimant, double probability, List<IWord> referenceWords,
+    public NounMapping(ImmutableList<IWord> words, MappingKind kind, IClaimant claimant, double probability, List<IWord> referenceWords,
             ImmutableList<String> occurrences) {
         distribution = new EnumMap<>(MappingKind.class);
-        distribution.put(kind, new Confidence(claimant, probability, Confidence.ConfidenceAggregator.HARMONIC));
+        distribution.put(kind, new Confidence(claimant, probability, Confidence.ConfidenceAggregator.AVERAGE));
 
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
@@ -83,12 +78,12 @@ public class NounMapping implements INounMapping {
 
     private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
         this.distribution = new EnumMap<>(distribution);
-        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(Confidence.ConfidenceAggregator.HARMONIC));
-        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(Confidence.ConfidenceAggregator.HARMONIC));
-        this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, new Confidence(Confidence.ConfidenceAggregator.HARMONIC));
+        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
+        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
+        this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
     }
 
-    public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IAgent<?> claimant, double probability) {
+    public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IClaimant claimant, double probability) {
         var occurences = phrase.collect(IWord::getText);
         var nm = new NounMapping(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurences);
         nm.hasPhrase = true;
@@ -198,7 +193,7 @@ public class NounMapping implements INounMapping {
      * @param probability the probability
      */
     @Override
-    public void addKindWithProbability(MappingKind kind, IAgent<?> claimant, double probability) {
+    public void addKindWithProbability(MappingKind kind, IClaimant claimant, double probability) {
         Confidence currentProbability = distribution.get(kind);
         currentProbability.addAgentConfidence(claimant, probability);
 
@@ -367,7 +362,7 @@ public class NounMapping implements INounMapping {
         Map<MappingKind, Confidence> newDistribution = new EnumMap<>(MappingKind.class);
 
         for (MappingKind mk : MappingKind.values()) {
-            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), Confidence.ConfidenceAggregator.HARMONIC,
+            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), Confidence.ConfidenceAggregator.AVERAGE,
                     Confidence.ConfidenceAggregator.MAX));
         }
 

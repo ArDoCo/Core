@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
@@ -17,7 +17,7 @@ public interface IRelationMapping extends ICopyable<IRelationMapping> {
      *
      * @param mappings more noun mappings to add.
      */
-    void addMappingsToRelation(ImmutableList<INounMapping> mappings, IAgent<?> claimant, double probability);
+    void addMappingsToRelation(ImmutableList<INounMapping> mappings, IClaimant claimant, double probability);
 
     /**
      * Sets the preposition of the node.

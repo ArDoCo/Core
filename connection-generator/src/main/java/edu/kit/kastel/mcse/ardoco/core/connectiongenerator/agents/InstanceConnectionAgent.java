@@ -60,7 +60,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
 
             for (var ri : mostLikelyRi) {
                 var riProbability = ri.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
-                connectionState.addToLinks(ri, i, riProbability);
+                connectionState.addToLinks(ri, i, this, riProbability);
             }
         }
     }
@@ -69,7 +69,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
             IConnectionState connectionState) {
         for (var ri : recommendationState.getRecommendedInstances()) {
             var sameInstances = modelState.getInstances().select(i -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(ri, i));
-            sameInstances.forEach(i -> connectionState.addToLinks(ri, i, probability));
+            sameInstances.forEach(i -> connectionState.addToLinks(ri, i, this, probability));
         }
     }
 

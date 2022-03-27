@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -24,8 +23,7 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
     /**
      * Prototype constructor.
      */
-    public NounExtractor(IAgent<?> parent) {
-        super(parent);
+    public NounExtractor() {
     }
 
     /**
@@ -51,10 +49,10 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
     private void findSingleNouns(ITextState textState, IWord word) {
         POSTag pos = word.getPosTag();
         if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
-            textState.addNort(word, parent, probability);
+            textState.addNort(word, this, probability);
         }
         if (POSTag.NOUN_PLURAL == pos) {
-            textState.addType(word, parent, probability);
+            textState.addType(word, this, probability);
         }
 
     }

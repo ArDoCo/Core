@@ -4,9 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
@@ -19,11 +16,11 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.NameTypeCo
  * The agent that executes the extractors of this stage.
  */
 public class InitialConnectionAgent extends ConnectionAgent {
-    private final MutableList<AbstractExtractor<ConnectionAgentData>> extractors = Lists.mutable.of(new NameTypeConnectionExtractor(),
+    private final List<AbstractExtractor<ConnectionAgentData>> extractors = List.of(new NameTypeConnectionExtractor(),
             new ExtractionDependentOccurrenceExtractor());
 
     @Configurable
-    private List<String> enabledExtractors = extractors.collect(e -> e.getClass().getSimpleName());
+    private List<String> enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
 
     /**
      * Create the agent.

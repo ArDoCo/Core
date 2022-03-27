@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
@@ -40,13 +40,13 @@ public class InstanceRelation implements IInstanceRelation {
     }
 
     public InstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to,
-            IAgent<?> claimant) {
+            IClaimant claimant) {
         this(fromInstance, toInstance);
         addLink(relator, from, to, claimant);
     }
 
     @Override
-    public boolean addLink(IWord relator, List<IWord> from, List<IWord> to, IAgent<?> claimant) {
+    public boolean addLink(IWord relator, List<IWord> from, List<IWord> to, IClaimant claimant) {
         if (relator == null || from == null || to == null) {
             return false;
         }
@@ -88,7 +88,7 @@ public class InstanceRelation implements IInstanceRelation {
     }
 
     @Override
-    public void setProbability(IAgent<?> claimant, double newProbability) {
+    public void setProbability(IClaimant claimant, double newProbability) {
         // TODO: SET != Add
         probability.addAgentConfidence(claimant, newProbability);
     }

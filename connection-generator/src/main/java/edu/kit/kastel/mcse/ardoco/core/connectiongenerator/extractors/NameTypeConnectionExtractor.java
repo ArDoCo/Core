@@ -30,7 +30,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     private double probability = 1.0;
 
     public NameTypeConnectionExtractor() {
-
     }
 
     @Override
@@ -59,7 +58,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
@@ -86,7 +85,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
@@ -110,7 +109,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
@@ -133,7 +132,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
 
         ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
@@ -161,7 +160,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             for (INounMapping nmapping : nmappings) {
                 String name = instance.getFullName();
                 String type = nmapping.getReference();
-                recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
+                recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
             }
         }
     }

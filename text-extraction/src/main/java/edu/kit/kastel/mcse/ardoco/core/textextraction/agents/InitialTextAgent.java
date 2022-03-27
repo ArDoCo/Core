@@ -9,19 +9,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ArticleTypeNameExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.InDepArcsExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.NounExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.OutDepArcsExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.SeparatedNamesExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.*;
 
 /**
  * The Class InitialTextAgent defines the agent that executes the extractors for the text stage.
  */
 public class InitialTextAgent extends TextAgent {
 
-    private final List<AbstractExtractor<TextAgentData>> extractors = List.of(new NounExtractor(this), new InDepArcsExtractor(this),
-            new OutDepArcsExtractor(this), new ArticleTypeNameExtractor(this), new SeparatedNamesExtractor(this));
+    private final List<AbstractExtractor<TextAgentData>> extractors = List.of(new NounExtractor(), new InDepArcsExtractor(), new OutDepArcsExtractor(),
+            new ArticleTypeNameExtractor(), new SeparatedNamesExtractor());
 
     @Configurable
     private List<String> enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
