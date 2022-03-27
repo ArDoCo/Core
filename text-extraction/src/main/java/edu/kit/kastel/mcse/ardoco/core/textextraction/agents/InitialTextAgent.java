@@ -4,26 +4,27 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.*;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ArticleTypeNameExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.InDepArcsExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.NounExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.OutDepArcsExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.SeparatedNamesExtractor;
 
 /**
  * The Class InitialTextAgent defines the agent that executes the extractors for the text stage.
  */
 public class InitialTextAgent extends TextAgent {
 
-    private final MutableList<AbstractExtractor<TextAgentData>> extractors = Lists.mutable.of(new NounExtractor(), new InDepArcsExtractor(),
-            new OutDepArcsExtractor(), new ArticleTypeNameExtractor(), new SeparatedNamesExtractor());
+    private final List<AbstractExtractor<TextAgentData>> extractors = List.of(new NounExtractor(this), new InDepArcsExtractor(this),
+            new OutDepArcsExtractor(this), new ArticleTypeNameExtractor(this), new SeparatedNamesExtractor(this));
 
     @Configurable
-    private List<String> enabledExtractors = extractors.collect(e -> e.getClass().getSimpleName());
+    private List<String> enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
 
     /**
      * Instantiates a new initial text agent.

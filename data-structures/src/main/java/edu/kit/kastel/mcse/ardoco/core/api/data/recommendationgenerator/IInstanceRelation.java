@@ -9,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 public interface IInstanceRelation {
     IInstanceRelation createCopy();
 
-    boolean addLink(IWord relator, List<IWord> from, List<IWord> to);
+    boolean addLink(IWord relator, List<IWord> from, List<IWord> to, IAgent<?> claimant);
 
     boolean matches(IRecommendedInstance fromInstance, IRecommendedInstance toInstance);
 

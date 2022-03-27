@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
@@ -26,7 +27,8 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
     /**
      * Prototype constructor.
      */
-    public InDepArcsExtractor() {
+    public InDepArcsExtractor(IAgent<?> parent) {
+        super(parent);
     }
 
     @Override
@@ -48,13 +50,13 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
         for (DependencyTag depTag : incomingDepArcs) {
             if (hasNortDependencies(depTag)) {
-                textState.addNort(word, probability);
+                textState.addNort(word, parent, probability);
             } else if (hasTypeOrNortDependencies(depTag)) {
                 if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
-                    textState.addType(word, probability);
+                    textState.addType(word, parent, probability);
                 }
 
-                textState.addNort(word, probability);
+                textState.addNort(word, parent, probability);
             }
         }
     }

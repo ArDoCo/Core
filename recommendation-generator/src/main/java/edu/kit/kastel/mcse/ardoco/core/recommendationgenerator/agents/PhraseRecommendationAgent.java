@@ -82,7 +82,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
                 var wordText = word.getText();
                 if (CommonUtilities.isCamelCasedWord(wordText) || CommonUtilities.nameIsSnakeCased(wordText)) {
                     var localNounMappings = Lists.immutable.of(nounMapping);
-                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", confidence, localNounMappings, Lists.immutable.empty());
+                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", this, confidence, localNounMappings, Lists.immutable.empty());
                 }
             }
         }
@@ -93,10 +93,10 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         var nounMappings = Lists.immutable.of(nounMapping);
         var types = getSimilarModelTypes(typeMappings, modelState);
         if (types.isEmpty()) {
-            recommendationState.addRecommendedInstance(nounMapping.getReference(), "", confidence, nounMappings, typeMappings);
+            recommendationState.addRecommendedInstance(nounMapping.getReference(), "", this, confidence, nounMappings, typeMappings);
         } else {
             for (var type : types) {
-                recommendationState.addRecommendedInstance(nounMapping.getReference(), type, confidence, nounMappings, typeMappings);
+                recommendationState.addRecommendedInstance(nounMapping.getReference(), type, this, confidence, nounMappings, typeMappings);
             }
         }
     }

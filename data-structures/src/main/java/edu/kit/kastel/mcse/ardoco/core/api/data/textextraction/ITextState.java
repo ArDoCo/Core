@@ -226,7 +226,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      *
      * @param nounMapping the noun mapping.
      */
-    void addNounMapping(INounMapping nounMapping);
+    void addNounMapping(INounMapping nounMapping, IAgent<?> claimant);
 
     /**
      * Gets the mappings that could be A type.
