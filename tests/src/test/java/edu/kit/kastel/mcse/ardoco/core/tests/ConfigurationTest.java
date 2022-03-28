@@ -11,10 +11,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
 
 /**
  * This test class deals with the configurations.
@@ -178,13 +176,4 @@ public class ConfigurationTest {
         protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         }
     }
-
-    private static class Dummy implements IAgent<IData> {
-
-        @Override
-        public void execute(IData data) {
-            // NOP
-        }
-    }
-
 }
