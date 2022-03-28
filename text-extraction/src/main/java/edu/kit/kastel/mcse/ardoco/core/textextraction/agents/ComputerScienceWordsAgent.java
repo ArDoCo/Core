@@ -29,6 +29,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     private static final String WIKI = "wiki";
     private static final String ISO24765 = "ISO24765";
+    private static final String STANDARD_GLOSSARY = "STANDARD_GLOSSARY";
 
     /**
      * This is the probability that will be assigned to found words.
@@ -36,7 +37,8 @@ public class ComputerScienceWordsAgent extends TextAgent {
     @Configurable
     private double probabilityOfFoundWords = 0.2;
 
-    private List<String> sources = List.of(WIKI, ISO24765);
+    @Configurable
+    private List<String> sources = List.of(WIKI, ISO24765, STANDARD_GLOSSARY);
 
     private final ImmutableList<String> commonCSWords;
 
@@ -77,12 +79,15 @@ public class ComputerScienceWordsAgent extends TextAgent {
         Set<String> result = new HashSet<>();
         loadDBPedia(result);
         loadISO24765(result);
+        loadStandardGlossary(result);
         return Lists.immutable.withAll(result.stream().map(w -> w.trim().toLowerCase()).toList());
     }
 
     private void loadDBPedia(Set<String> result) {
         if (!this.sources.contains(WIKI))
             return;
+
+        int before = result.size();
         logger.debug("Loading words from DBPedia");
 
         JsonNode tree;
@@ -98,14 +103,16 @@ public class ComputerScienceWordsAgent extends TextAgent {
         tree.spliterator().forEachRemaining(n -> result.add(n.get("alabel").get("value").textValue()));
 
         result.removeIf(Objects::isNull);
-        logger.debug("Found {} words by adding DBPedia", result.size());
+        logger.debug("Found {} words by adding DBPedia", result.size() - before);
     }
 
     private void loadISO24765(Set<String> result) {
         if (!this.sources.contains(ISO24765))
             return;
+
+        int before = result.size();
         logger.debug("Loading words from ISO24765");
-        List<String> words = new ArrayList<>();
+        List<String> words;
         try (InputStream data = this.getClass().getResourceAsStream("/pdfs/24765-2017.pdf.words.txt")) {
             ObjectMapper oom = new ObjectMapper();
             words = oom.readValue(data, new TypeReference<List<String>>() {
@@ -116,8 +123,28 @@ public class ComputerScienceWordsAgent extends TextAgent {
         }
 
         result.addAll(words);
-        logger.debug("Found {} words by adding ISO24765", result.size());
+        logger.debug("Found {} words by adding ISO24765", result.size() - before);
 
+    }
+
+    private void loadStandardGlossary(Set<String> result) {
+        if (!this.sources.contains(STANDARD_GLOSSARY))
+            return;
+
+        int before = result.size();
+        logger.debug("Loading words from STANDARD_GLOSSARY");
+        List<String> words;
+        try (InputStream data = this.getClass().getResourceAsStream("/pdfs/Standard_glossary_of_terms_used_in_Software_Engineering_1.0.pdf.words.txt")) {
+            ObjectMapper oom = new ObjectMapper();
+            words = oom.readValue(data, new TypeReference<List<String>>() {
+            });
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new IllegalStateException(e);
+        }
+
+        result.addAll(words);
+        logger.debug("Found {} words by adding STANDARD_GLOSSARY", result.size() - before);
     }
 
     @Override
