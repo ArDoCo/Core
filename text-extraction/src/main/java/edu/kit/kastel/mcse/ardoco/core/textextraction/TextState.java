@@ -100,7 +100,7 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getTypes() {
-        return nounMappings.select(n -> MappingKind.TYPE == n.getKind()).toImmutable();
+        return nounMappings.select(nounMappingIsType()).toImmutable();
     }
 
     /**
@@ -167,7 +167,7 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /**
-     * Returns alltype mappings containing the given node.
+     * Returns all type mappings containing the given node.
      *
      * @param word word to filter for
      * @return a list of alltype mappings containing the given node
@@ -175,17 +175,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord word) {
         return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsType()).toImmutable();
-    }
-
-    /**
-     * Returns if a node is contained by the name mappings.
-     *
-     * @param word node to check
-     * @return true if the node is contained by name mappings.
-     */
-    @Override
-    public final boolean isWordContainedByNameMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getKind() == MappingKind.NAME);
     }
 
     /**
@@ -197,6 +186,21 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final boolean isWordContainedByNounMappings(IWord word) {
         return nounMappings.anySatisfy(n -> n.getWords().contains(word));
+    }
+
+    /**
+     * Returns if a node is contained by the name mappings.
+     *
+     * @param word node to check
+     * @return true if the node is contained by name mappings.
+     */
+    @Override
+    public final boolean isWordContainedByNameMapping(IWord word) {
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsName());
+    }
+
+    private Predicate<? super INounMapping> nounMappingIsName() {
+        return n -> n.getKind() == MappingKind.NAME;
     }
 
     /**
@@ -212,12 +216,15 @@ public class TextState extends AbstractState implements ITextState {
 
     private Predicate<? super INounMapping> nounMappingIsType() {
         return n -> n.getKind() == MappingKind.TYPE;
-
     }
 
     @Override
     public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getProbabilityForName() > 0 && n.getProbabilityForType() > 0);
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> {
+            var nameProb = n.getProbabilityForName();
+            var typeProb = n.getProbabilityForType();
+            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < 0.1;
+        });
     }
 
     @Override

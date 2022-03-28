@@ -26,6 +26,7 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
      * Creates a new NameTypeAnalyzer
      */
     public NameTypeExtractor() {
+        // empty
     }
 
     @Override
@@ -141,5 +142,6 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

@@ -30,6 +30,7 @@ public class ReferenceAgent extends ConnectionAgent {
      * Create the agent.
      */
     public ReferenceAgent() {
+        // empty
     }
 
     /**
@@ -52,7 +53,7 @@ public class ReferenceAgent extends ConnectionAgent {
     private void findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(IModelState modelState, IRecommendationState recommendationState,
             ITextState textState) {
         for (IModelInstance instance : modelState.getInstances()) {
-            ImmutableList<INounMapping> similarToInstanceMappings = getSimilarNounMappings(instance, textState);
+            var similarToInstanceMappings = getSimilarNounMappings(instance, textState);
 
             for (INounMapping similarNameMapping : similarToInstanceMappings) {
                 recommendationState.addRecommendedInstance(similarNameMapping.getReference(), this, probability, similarToInstanceMappings);

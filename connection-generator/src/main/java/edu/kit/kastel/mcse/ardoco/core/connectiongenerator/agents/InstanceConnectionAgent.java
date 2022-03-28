@@ -28,7 +28,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
      * Create the agent.
      */
     public InstanceConnectionAgent() {
-
+        // empty
     }
 
     /**

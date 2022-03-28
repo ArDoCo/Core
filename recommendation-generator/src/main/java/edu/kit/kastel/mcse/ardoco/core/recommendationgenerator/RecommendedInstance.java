@@ -91,7 +91,7 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public double getProbability() {
-        // return probability;
+        // TODO improve!
         return calculateProbability();
     }
 
@@ -100,16 +100,6 @@ public class RecommendedInstance implements IRecommendedInstance {
         var highestTypeProbability = getTypeMappings().collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
 
         return CommonUtilities.harmonicMean(highestNameProbability, highestTypeProbability);
-    }
-
-    /**
-     * Removes nameMappings from this recommended instance.
-     *
-     * @param nameMappings the name mappings to remove
-     */
-    @Override
-    public void removeNounNodeMappingsFromName(ImmutableList<INounMapping> nameMappings) {
-        this.nameMappings.removeAll(nameMappings.castToCollection());
     }
 
     /**

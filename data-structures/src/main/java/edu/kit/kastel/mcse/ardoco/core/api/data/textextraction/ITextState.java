@@ -104,7 +104,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     ImmutableList<INounMapping> getNames();
 
     /**
-     * Returns alltype mappings containing the given node.
+     * Returns all type mappings containing the given node.
      *
      * @param word node to filter for
      * @return a list of alltype mappings containing the given node
