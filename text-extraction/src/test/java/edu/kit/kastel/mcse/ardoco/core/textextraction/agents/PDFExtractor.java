@@ -51,7 +51,7 @@ public class PDFExtractor {
             }
 
             String[] definitions = line.split(":", 2);
-            if (definitions.length == 2 && definitions[1].isBlank()) {
+            if (definitions.length == 2 && (definitions[1].isBlank() || definitions[0].contains("."))) {
                 System.out.println("Skipping: " + line);
                 continue;
             }
