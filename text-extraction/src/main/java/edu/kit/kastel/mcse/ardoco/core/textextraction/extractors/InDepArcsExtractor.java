@@ -27,6 +27,7 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public InDepArcsExtractor() {
+        // empty
     }
 
     @Override
@@ -50,11 +51,14 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
             if (hasNortDependencies(depTag)) {
                 textState.addName(word, this, probability * nameOrTypeWeight);
                 textState.addType(word, this, probability * nameOrTypeWeight);
-            } else if (hasTypeOrNortDependencies(depTag) && WordHelper.hasIndirectDeterminerAsPreWord(word)) {
-                textState.addType(word, this, probability);
+            } else if (hasTypeOrNortDependencies(depTag)) {
+                if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
+                    textState.addType(word, this, probability);
+                }
+
+                textState.addName(word, this, probability * nameOrTypeWeight);
+                textState.addType(word, this, probability * nameOrTypeWeight);
             }
-            textState.addName(word, this, probability * nameOrTypeWeight);
-            textState.addType(word, this, probability * nameOrTypeWeight);
         }
     }
 
@@ -69,5 +73,6 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle delegation
     }
 }

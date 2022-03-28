@@ -28,6 +28,7 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public OutDepArcsExtractor() {
+        // empty
     }
 
     @Override
@@ -52,7 +53,6 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
             if (DependencyTag.AGENT == shortDepTag || DependencyTag.RCMOD == shortDepTag) {
                 textState.addName(word, this, probability * nameOrTypeWeight);
                 textState.addType(word, this, probability * nameOrTypeWeight);
-
             } else if (DependencyTag.NUM == shortDepTag || DependencyTag.PREDET == shortDepTag) {
                 textState.addType(word, this, probability);
             }
@@ -61,5 +61,6 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

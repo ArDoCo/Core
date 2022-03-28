@@ -8,13 +8,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 
 /**
  * This analyzer finds patterns like article type name or article name type.
  *
- * @author Sophie
+ * @author Sophie, Jan
  */
 public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
 
@@ -41,15 +40,12 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
      * @param word word to check
      */
     private boolean checkIfNodeIsName(ITextState textState, IWord word) {
-        var prevNode = word.getPreWord();
-        var previousWordsCheck = prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode);
-
-        if (previousWordsCheck) {
-            var nameMappings = textState.getNameMappingsByWord(word);
-            for (var nameMapping : nameMappings) {
-                nameMapping.addKindWithProbability(MappingKind.NAME, this, probability);
+        if (textState.isWordContainedByNameOrTypeMapping(word)) {
+            var prevNode = word.getPreWord();
+            if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+                textState.addName(word, this, probability);
+                return true;
             }
-            return !nameMappings.isEmpty();
         }
         return false;
     }
@@ -61,13 +57,10 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
      * @param word word to check
      */
     private void checkIfNodeIsType(ITextState textState, IWord word) {
-        var prevNode = word.getPreWord();
-        var previousWordsCheck = prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode);
-
-        if (previousWordsCheck) {
-            var nameMappings = textState.getNameMappingsByWord(word);
-            for (var nameMapping : nameMappings) {
-                nameMapping.addKindWithProbability(MappingKind.TYPE, this, probability);
+        if (textState.isWordContainedByNameOrTypeMapping(word)) {
+            var prevNode = word.getPreWord();
+            if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+                textState.addType(word, this, probability);
             }
         }
     }

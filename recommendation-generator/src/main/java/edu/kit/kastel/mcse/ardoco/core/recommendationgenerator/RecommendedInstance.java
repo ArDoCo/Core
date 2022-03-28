@@ -10,6 +10,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
@@ -31,10 +32,10 @@ public class RecommendedInstance implements IRecommendedInstance {
 
     @Override
     public IRecommendedInstance createCopy() {
-        RecommendedInstance copy = new RecommendedInstance(name, type);
+        var copy = new RecommendedInstance(name, type);
         copy.probability = probability.createCopy();
-        copy.nameMappings.addAll(nameMappings.stream().map(d -> d.createCopy()).toList());
-        copy.typeMappings.addAll(typeMappings.stream().map(d -> d.createCopy()).toList());
+        copy.nameMappings.addAll(nameMappings.stream().map(ICopyable::createCopy).toList());
+        copy.typeMappings.addAll(typeMappings.stream().map(ICopyable::createCopy).toList());
         return copy;
     }
 

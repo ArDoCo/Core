@@ -88,16 +88,6 @@ public class TextState extends AbstractState implements ITextState {
         addNounMapping(word, MappingKind.TYPE, claimant, probability, occurrences);
     }
 
-    /**
-     * Removes a relation mapping from the state.
-     *
-     * @param n relation mapping to remove
-     */
-    @Override
-    public final void removeRelation(IRelationMapping n) {
-        relationMappings.remove(n);
-    }
-
     @Override
     public final ImmutableList<INounMapping> getNounMappings() {
         return nounMappings.toImmutable();
@@ -122,17 +112,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<INounMapping> getNounMappingsByWord(IWord word) {
         return nounMappings.select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
-    }
-
-    /**
-     * Returns all mappings with the exact same reference as given.
-     *
-     * @param ref the reference to search for
-     * @return a list of noun mappings with the given reference.
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNounMappingsWithEqualReference(String ref) {
-        return nounMappings.select(nMapping -> nMapping.getReference().equalsIgnoreCase(ref)).toImmutable();
     }
 
     /**
@@ -199,28 +178,6 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /**
-     * Returns all name mappings containing the given node.
-     *
-     * @param word word to filter for
-     * @return a list of all name mappings containing the given node
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNameMappingsByWord(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(n -> n.getKind() == MappingKind.NAME).toImmutable();
-
-    }
-
-    /**
-     * Returns all relation mappings.
-     *
-     * @return relation mappings as list
-     */
-    @Override
-    public final ImmutableList<IRelationMapping> getRelations() {
-        return Lists.immutable.withAll(relationMappings);
-    }
-
-    /**
      * Returns if a node is contained by the name mappings.
      *
      * @param word node to check
@@ -256,6 +213,11 @@ public class TextState extends AbstractState implements ITextState {
     private Predicate<? super INounMapping> nounMappingIsType() {
         return n -> n.getKind() == MappingKind.TYPE;
 
+    }
+
+    @Override
+    public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getProbabilityForName() > 0 && n.getProbabilityForType() > 0);
     }
 
     @Override
@@ -317,5 +279,6 @@ public class TextState extends AbstractState implements ITextState {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional configuration
     }
 }

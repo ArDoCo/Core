@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -242,13 +241,18 @@ public class NounMapping implements INounMapping {
     }
 
     /**
-     * Returns the kind: name, type, name_or_type.
+     * Returns the kind: name, type.
      *
      * @return the kind
      */
     @Override
     public MappingKind getKind() {
-        return distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).orElseThrow();
+        var probName = distribution.get(MappingKind.NAME).getConfidence();
+        var probType = distribution.get(MappingKind.TYPE).getConfidence();
+        if (probName >= probType) {
+            return MappingKind.NAME;
+        }
+        return MappingKind.TYPE;
     }
 
     /**
