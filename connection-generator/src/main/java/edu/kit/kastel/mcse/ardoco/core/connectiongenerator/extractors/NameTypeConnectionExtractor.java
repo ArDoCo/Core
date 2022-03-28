@@ -155,8 +155,9 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     private void addRecommendedInstanceIfNodeNotNull(//
             IWord currentWord, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState) {
-        if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
-            var nmappings = textExtractionState.getNounMappingsByWord(currentWord);
+        var nounMappingsByCurrentWord = textExtractionState.getNounMappingsByWord(currentWord);
+        if (instance != null && nounMappingsByCurrentWord != null) {
+            var nmappings = nounMappingsByCurrentWord;
             for (INounMapping nmapping : nmappings) {
                 var name = instance.getFullName();
                 var type = nmapping.getReference();

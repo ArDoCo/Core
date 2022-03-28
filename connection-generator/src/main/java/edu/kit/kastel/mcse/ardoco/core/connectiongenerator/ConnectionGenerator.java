@@ -34,6 +34,7 @@ public class ConnectionGenerator extends AbstractExecutionStage {
      * Create the module.
      */
     public ConnectionGenerator() {
+        // empty
     }
 
     @Override

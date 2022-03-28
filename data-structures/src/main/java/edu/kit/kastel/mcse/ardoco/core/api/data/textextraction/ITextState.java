@@ -68,13 +68,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     void removeNounMapping(INounMapping n);
 
     /**
-     * Removes a relation mapping from the state.
-     *
-     * @param n relation mapping to remove
-     */
-    void removeRelation(IRelationMapping n);
-
-    /**
      * Returns all type mappings.
      *
      * @return all type mappings as list
@@ -88,14 +81,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return all mappings containing the given node as list
      */
     ImmutableList<INounMapping> getNounMappingsByWord(IWord n);
-
-    /**
-     * Returns all mappings with the exact same reference as given.
-     *
-     * @param ref the reference to search for
-     * @return a list of noun mappings with the given reference.
-     */
-    ImmutableList<INounMapping> getNounMappingsWithEqualReference(String ref);
 
     /**
      * Returns a list of all references of name mappings.
@@ -127,22 +112,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     ImmutableList<INounMapping> getTypeMappingsByWord(IWord word);
 
     /**
-     * Returns all name mappings containing the given node.
-     *
-     * @param node node to filter for
-     * @return a list of all name mappings containing the given node
-     */
-    ImmutableList<INounMapping> getNameMappingsByWord(IWord node);
-
-    /**
-     * Returns all relation mappings.
-     *
-     * @return relation mappings as list
-     */
-    ImmutableList<IRelationMapping> getRelations();
-
-    // --- isContained section --->
-    /**
      * Returns if a node is contained by the name mappings.
      *
      * @param node node to check
@@ -165,6 +134,14 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return true if the node is contained by type mappings.
      */
     boolean isWordContainedByTypeMapping(IWord node);
+
+    /**
+     * Returns if a node is contained by a mapping that can be both, a name or a type mapping.
+     *
+     * @param word word to check
+     * @return true if the node is contained by name or type mappings.
+     */
+    boolean isWordContainedByNameOrTypeMapping(IWord word);
 
     /**
      * Gets the all noun mappings.
@@ -215,6 +192,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return the mappings that could be a Name or Type
      */
     default ImmutableList<INounMapping> getMappingsThatCouldBeNameOrType(IWord word) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForName() > 0 || mapping.getProbabilityForType() > 0);
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForName() > 0 && mapping.getProbabilityForType() > 0);
     }
+
 }
