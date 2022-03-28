@@ -1,0 +1,2 @@
+A list of PDFs you have to download:
+* https://ieeexplore.ieee.org/document/8016712   <-- 24765-2017 - ISO/IEC/IEEE International Standard - Systems and software engineering--Vocabulary

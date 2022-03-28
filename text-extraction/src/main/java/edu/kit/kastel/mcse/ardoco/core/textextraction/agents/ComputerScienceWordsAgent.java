@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,16 +27,21 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
  */
 public class ComputerScienceWordsAgent extends TextAgent {
 
+    private static final String WIKI = "wiki";
+    private static final String ISO24765 = "ISO24765";
+
     /**
      * This is the probability that will be assigned to found words.
      */
     @Configurable
     private double probabilityOfFoundWords = 0.2;
 
+    private List<String> sources = List.of(WIKI, ISO24765);
+
     private final ImmutableList<String> commonCSWords;
 
     public ComputerScienceWordsAgent() {
-        this.commonCSWords = loadWordsFromJSON();
+        this.commonCSWords = loadWords();
     }
 
     @Override
@@ -67,8 +73,18 @@ public class ComputerScienceWordsAgent extends TextAgent {
         }
     }
 
-    private ImmutableList<String> loadWordsFromJSON() {
+    private ImmutableList<String> loadWords() {
         Set<String> result = new HashSet<>();
+        loadDBPedia(result);
+        loadISO24765(result);
+        return Lists.immutable.withAll(result.stream().map(w -> w.trim().toLowerCase()).toList());
+    }
+
+    private void loadDBPedia(Set<String> result) {
+        if (!this.sources.contains(WIKI))
+            return;
+        logger.debug("Loading words from DBPedia");
+
         JsonNode tree;
         try (InputStream data = this.getClass().getResourceAsStream("/dbpedia/common-cs.json")) {
             ObjectMapper oom = new ObjectMapper();
@@ -82,8 +98,26 @@ public class ComputerScienceWordsAgent extends TextAgent {
         tree.spliterator().forEachRemaining(n -> result.add(n.get("alabel").get("value").textValue()));
 
         result.removeIf(Objects::isNull);
-        logger.debug("Found {} words from DBPedia", result.size());
-        return Lists.immutable.withAll(result.stream().map(w -> w.trim().toLowerCase()).toList());
+        logger.debug("Found {} words by adding DBPedia", result.size());
+    }
+
+    private void loadISO24765(Set<String> result) {
+        if (!this.sources.contains(ISO24765))
+            return;
+        logger.debug("Loading words from ISO24765");
+        List<String> words = new ArrayList<>();
+        try (InputStream data = this.getClass().getResourceAsStream("/pdfs/24765-2017.pdf.words.txt")) {
+            ObjectMapper oom = new ObjectMapper();
+            words = oom.readValue(data, new TypeReference<List<String>>() {
+            });
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new IllegalStateException(e);
+        }
+
+        result.addAll(words);
+        logger.debug("Found {} words by adding ISO24765", result.size());
+
     }
 
     @Override
