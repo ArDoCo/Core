@@ -39,6 +39,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             var recommendationState = data.getRecommendationState(modelState.getMetamodel());
             checkForNameAfterType(data.getTextState(), word, modelState, recommendationState);
             checkForNameBeforeType(data.getTextState(), word, modelState, recommendationState);
+            checkForNortBeforeType(data.getTextState(), word, modelState, recommendationState);
+            checkForNortAfterType(data.getTextState(), word, modelState, recommendationState);
         }
     }
 
@@ -94,6 +96,53 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     }
 
     /**
+     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
+     * state contain the previous node. If that's the case a recommendation for the combination of both is created.
+     */
+    private void checkForNortBeforeType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
+        if (textExtractionState == null || word == null) {
+            return;
+        }
+
+        var pre = word.getPreWord();
+
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+
+        if (!sameLemmaTypes.isEmpty()) {
+            textExtractionState.addType(word, this, probability);
+
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(pre);
+
+            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
+        }
+    }
+
+    /**
+     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
+     * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
+     */
+    private void checkForNortAfterType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
+        if (textExtractionState == null || word == null) {
+            return;
+        }
+
+        var after = word.getNextWord();
+
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        if (!sameLemmaTypes.isEmpty()) {
+            textExtractionState.addType(word, this, probability);
+
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(after);
+
+            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
+        }
+    }
+
+    /**
      * Adds a RecommendedInstance to the recommendation state if the mapping of the current node exists. Otherwise a
      * recommendation is added for each existing mapping.
      *
@@ -109,8 +158,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
             var nmappings = textExtractionState.getNounMappingsByWord(currentWord);
             for (INounMapping nmapping : nmappings) {
-                String name = instance.getFullName();
-                String type = nmapping.getReference();
+                var name = instance.getFullName();
+                var type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
             }
         }

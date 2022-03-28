@@ -36,6 +36,8 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
             var recommendationState = data.getRecommendationState(modelState.getMetamodel());
             addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);
             addRecommendedInstanceIfNameBeforeType(textState, word, modelState, recommendationState);
+            addRecommendedInstanceIfNameOrTypeBeforeType(textState, word, modelState, recommendationState);
+            addRecommendedInstanceIfNameOrTypeAfterType(textState, word, modelState, recommendationState);
         }
     }
 
@@ -85,6 +87,55 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
             var nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getNextWord());
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
+        }
+    }
+
+    /**
+     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
+     * state contain the previous node. If that's the case a recommendation for the combination of both is created.
+     *
+     * @param textExtractionState text extraction state
+     * @param word                the current word
+     */
+    private void addRecommendedInstanceIfNameOrTypeBeforeType(ITextState textExtractionState, IWord word, IModelState modelState,
+            IRecommendationState recommendationState) {
+        if (textExtractionState == null || word == null) {
+            return;
+        }
+
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+
+        if (!sameLemmaTypes.isEmpty()) {
+            textExtractionState.addType(word, this, probability);
+
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(word.getPreWord());
+
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
+        }
+    }
+
+    /**
+     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
+     * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
+     *
+     * @param textExtractionState text extraction state
+     * @param word                the current word
+     */
+    private void addRecommendedInstanceIfNameOrTypeAfterType(ITextState textExtractionState, IWord word, IModelState modelState,
+            IRecommendationState recommendationState) {
+        if (textExtractionState == null || word == null) {
+            return;
+        }
+
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        if (!sameLemmaTypes.isEmpty()) {
+            textExtractionState.addType(word, this, probability);
+
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(word.getNextWord());
+
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
         }
     }
 
