@@ -3,10 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -32,7 +30,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
      * This is the probability that will be assigned to found words.
      */
     @Configurable
-    private double probabilityOfFoundWords = 0.1;
+    private double probabilityOfFoundWords = 0.2;
 
     private final ImmutableList<String> commonCSWords;
 
@@ -58,7 +56,11 @@ public class ComputerScienceWordsAgent extends TextAgent {
             return;
         processed.add(nounMapping);
         // TODO Handle Phrases
-        if (this.commonCSWords.stream().anyMatch(w -> w.contains(word.getText().toLowerCase()))) {
+        Predicate<String> predicate = commonWord -> Arrays.stream(commonWord.split("\\s+"))
+                .anyMatch(partOfCommonWord -> partOfCommonWord.equals(word.getText().toLowerCase()));
+        if (this.commonCSWords.stream().anyMatch(predicate)) {
+            var occurrence = this.commonCSWords.stream().filter(predicate).findFirst().get();
+            logger.debug("Found {} for {}", occurrence, word);
             nounMapping.addKindWithProbability(MappingKind.NAME, this, probabilityOfFoundWords);
             nounMapping.addKindWithProbability(MappingKind.TYPE, this, probabilityOfFoundWords);
             nounMapping.addKindWithProbability(MappingKind.NAME_OR_TYPE, this, probabilityOfFoundWords);
