@@ -40,6 +40,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
     @Configurable
     private List<String> sources = List.of(WIKI, ISO24765, STANDARD_GLOSSARY);
 
+    @Configurable
+    private int maxWikiLevels = 3;
+
     private final ImmutableList<String> commonCSWords;
 
     public ComputerScienceWordsAgent() {
@@ -90,18 +93,19 @@ public class ComputerScienceWordsAgent extends TextAgent {
         int before = result.size();
         logger.debug("Loading words from DBPedia");
 
-        JsonNode tree;
-        try (InputStream data = this.getClass().getResourceAsStream("/dbpedia/common-cs.json")) {
-            ObjectMapper oom = new ObjectMapper();
-            tree = oom.readTree(data);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new IllegalStateException(e);
+        for (int level = 0; level <= maxWikiLevels; level++) {
+            JsonNode tree;
+            try (InputStream data = this.getClass().getResourceAsStream("/dbpedia/common-cs-" + level + ".json")) {
+                ObjectMapper oom = new ObjectMapper();
+                tree = oom.readTree(data);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                throw new IllegalStateException(e);
+            }
+
+            tree = tree.get("results").get("bindings");
+            tree.spliterator().forEachRemaining(n -> result.add(n.get("alabel").get("value").textValue()));
         }
-
-        tree = tree.get("results").get("bindings");
-        tree.spliterator().forEachRemaining(n -> result.add(n.get("alabel").get("value").textValue()));
-
         result.removeIf(Objects::isNull);
         logger.debug("Found {} words by adding DBPedia", result.size() - before);
     }
