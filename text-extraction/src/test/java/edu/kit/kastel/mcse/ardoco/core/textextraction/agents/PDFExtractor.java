@@ -4,26 +4,21 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Not a test, but it extracts the data from the downloaded pdfs.
  */
+@DisabledIfEnvironmentVariable(matches = "true", named = "CI")
 public class PDFExtractor {
-    @BeforeEach
-    public void checkForCI() {
-        Assumptions.assumeFalse(Objects.equals("true", System.getenv("CI")), "Running in CI");
-    }
 
     @Test
     public void extractISO24765() throws IOException {
