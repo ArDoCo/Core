@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 
 /**
@@ -34,33 +35,39 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
     }
 
     /**
-     * If the current node is contained by name-or-type mappings, the previous node is contained by type nodes and the
-     * preprevious an article the node is added as a name mapping.
+     * If the current node is contained by either kind of NounMapping, the previous node is contained by type nodes and
+     * the preprevious an article. The node is then set as a name mapping.
      *
      * @param word word to check
      */
     private boolean checkIfNodeIsName(ITextState textState, IWord word) {
-        if (textState.isWordContainedByNameMapping(word) || textState.isWordContainedByTypeMapping(word)) {
-            var prevNode = word.getPreWord();
-            if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addName(word, this, probability); // TODO change
-                return true;
+        var prevNode = word.getPreWord();
+        var previousWordsCheck = prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode);
+
+        if (previousWordsCheck) {
+            var nameMappings = textState.getNameMappingsByWord(word);
+            for (var nameMapping : nameMappings) {
+                nameMapping.addKindWithProbability(MappingKind.NAME, this, probability);
             }
+            return !nameMappings.isEmpty();
         }
         return false;
     }
 
     /**
-     * If the current node is contained by name-or-type mappings, the previous node is contained by name nodes and the
-     * preprevious an article the node is added as a type mapping.
+     * If the current node is contained by either kind of NounMapping, the previous node is contained by name nodes and
+     * the preprevious an article the node is added as a type mapping.
      *
      * @param word word to check
      */
     private void checkIfNodeIsType(ITextState textState, IWord word) {
-        if (textState.isWordContainedByNameMapping(word) || textState.isWordContainedByTypeMapping(word)) {
-            var prevNode = word.getPreWord();
-            if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addType(word, this, probability); // TODO change
+        var prevNode = word.getPreWord();
+        var previousWordsCheck = prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode);
+
+        if (previousWordsCheck) {
+            var nameMappings = textState.getNameMappingsByWord(word);
+            for (var nameMapping : nameMappings) {
+                nameMapping.addKindWithProbability(MappingKind.TYPE, this, probability);
             }
         }
     }
