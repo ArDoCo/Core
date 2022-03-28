@@ -1,7 +1,11 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -13,6 +17,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 public class ComputerScienceWordsAgentTest {
@@ -28,11 +34,15 @@ public class ComputerScienceWordsAgentTest {
 
     @Test
     public void testSetProbability() {
-        var validWord = new MyWord(data.get(42));
-        var invalidWord = new MyWord("ASDFWJ");
-        MyText text = new MyText(Lists.immutable.of(validWord, invalidWord));
+
+        var validWord = wordToListOfIWord(data.get(0));
+        var nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, null, 1.0, List.copyOf(validWord),
+                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
+        var invalidWord = new MyWord("ASDFWJ", validWord.size());
+        MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
         TextState ts = new TextState(Map.of());
-        ts.addName(validWord, null, 1.0);
+
+        ts.addNounMapping(nounMapping, null);
         ts.addName(invalidWord, null, 1.0);
 
         TextAgentData tad = new TextAgentData() {
@@ -59,12 +69,20 @@ public class ComputerScienceWordsAgentTest {
 
         this.agent.execute(tad);
 
-        Assertions.assertEquals((1.0 + this.modifier) / 2, ts.getNounMappingsByWord(validWord).get(0).getProbability());
+        Assertions.assertEquals((1.0 + this.modifier) / 2, nounMapping.getProbability());
         Assertions.assertEquals(1.0, ts.getNounMappingsByWord(invalidWord).get(0).getProbability());
 
     }
 
-    @SuppressWarnings("unchecked")
+    private List<IWord> wordToListOfIWord(String word) {
+        var words = word.split("\\s+");
+        List<IWord> wordsList = new ArrayList<>();
+        for (int i = 0; i < words.length; i++) {
+            wordsList.add(new MyWord(words[i], i));
+        }
+        return wordsList;
+    }
+
     private void setData() throws NoSuchFieldException, IllegalAccessException {
         var wordsField = this.agent.getClass().getDeclaredField("commonCSWords");
         wordsField.setAccessible(true);
@@ -105,9 +123,11 @@ public class ComputerScienceWordsAgentTest {
 
     private static class MyWord implements IWord {
         private final String word;
+        private final int pos;
 
-        private MyWord(String word) {
+        private MyWord(String word, int pos) {
             this.word = word;
+            this.pos = pos;
         }
 
         @Override
@@ -142,7 +162,7 @@ public class ComputerScienceWordsAgentTest {
 
         @Override
         public int getPosition() {
-            throw new UnsupportedOperationException();
+            return pos;
         }
 
         @Override

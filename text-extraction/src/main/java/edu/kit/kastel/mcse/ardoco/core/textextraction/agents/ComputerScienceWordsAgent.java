@@ -19,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
  * This agent uses data from DBPedia to mark default words in computer science.
@@ -44,6 +45,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     @Configurable
     private int maxWikiLevels = MAX_WIKI_LEVEL;
+
+    @Configurable
+    private double wordSimilarityThreshold = 0.99;
 
     @Configurable
     private List<String> additionalWords = List.of();
@@ -72,8 +76,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
             return;
         processed.add(nounMapping);
         // TODO Handle Phrases
-        Predicate<String> predicate = commonWord -> Arrays.stream(commonWord.split("\\s+"))
-                .anyMatch(partOfCommonWord -> partOfCommonWord.equals(word.getText().toLowerCase()));
+        Predicate<String> predicate = commonWord -> match(nounMapping, commonWord);
         if (this.commonCSWords.stream().anyMatch(predicate)) {
             var occurrence = this.commonCSWords.stream().filter(predicate).findFirst().get();
             logger.debug("Found {} for {}", occurrence, word);
@@ -81,6 +84,39 @@ public class ComputerScienceWordsAgent extends TextAgent {
             nounMapping.addKindWithProbability(MappingKind.TYPE, this, probabilityOfFoundWords);
             nounMapping.addKindWithProbability(MappingKind.NAME_OR_TYPE, this, probabilityOfFoundWords);
         }
+    }
+
+    private boolean match(INounMapping nounMapping, String csWord) {
+        String[] csParts = csWord.split("\\s+");
+        IWord[] nmWords = nounMapping.getWords().toArray(new IWord[0]);
+
+        for (int start = 0; start < nmWords.length; start++) {
+            IWord[] remaining = Arrays.copyOfRange(nmWords, start, nmWords.length);
+            if (remaining.length < csParts.length)
+                return false;
+            // Try to match ..
+            IWord[] wordsToMatch = Arrays.copyOfRange(remaining, 0, csParts.length);
+            boolean match = matchIt(csParts, wordsToMatch);
+            if (match)
+                return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchIt(String[] csParts, IWord[] wordsToMatch) {
+        assert csParts.length == wordsToMatch.length;
+
+        for (int i = 0; i < csParts.length; i++) {
+            String csWord = csParts[0];
+            String word = wordsToMatch[0].getText();
+            // TODO Lemma etc ..
+            if (!SimilarityUtils.areWordsSimilar(csWord, word, wordSimilarityThreshold)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private ImmutableList<String> loadWords() {
