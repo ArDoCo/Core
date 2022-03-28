@@ -11,7 +11,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
@@ -31,9 +30,6 @@ public class TextState extends AbstractState implements ITextState {
      * The relation mappings.
      */
     private MutableList<IRelationMapping> relationMappings;
-
-    @Configurable
-    private double nortProbabilityForNameAndType = 0.05;
 
     /**
      * Creates a new name type relation state
