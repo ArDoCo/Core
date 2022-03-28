@@ -6,6 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
@@ -87,7 +88,7 @@ public interface IConnectionState extends ICopyable<IConnectionState>, IConfigur
      * @param instance                 the model instance
      * @param probability              the probability of the link
      */
-    void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, double probability);
+    void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, IClaimant claimant, double probability);
 
     /**
      * Checks if an instance link is already contained by the state.
@@ -118,10 +119,4 @@ public interface IConnectionState extends ICopyable<IConnectionState>, IConfigur
      */
     void removeAllInstanceLinksWith(IRecommendedInstance instance);
 
-    /**
-     * Adds an instance link to the state.
-     *
-     * @param instanceMapping the instance link to add
-     */
-    void addToLinks(IInstanceLink instanceMapping);
 }

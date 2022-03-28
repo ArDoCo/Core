@@ -44,7 +44,7 @@ public class SeparatedNamesExtractor extends AbstractExtractor<TextAgentData> {
      */
     private void checkForSeparatedNode(ITextState textState, IWord word) {
         if (word.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(word.getText())) {
-            textState.addName(word, probability);
+            textState.addName(word, this, probability);
         }
     }
 

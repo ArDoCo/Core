@@ -50,11 +50,11 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 
             if (DependencyTag.AGENT == shortDepTag || DependencyTag.RCMOD == shortDepTag) {
-                textState.addName(word, probability * nameOrTypeWeight);
-                textState.addType(word, probability * nameOrTypeWeight);
+                textState.addName(word, this, probability * nameOrTypeWeight);
+                textState.addType(word, this, probability * nameOrTypeWeight);
 
             } else if (DependencyTag.NUM == shortDepTag || DependencyTag.PREDET == shortDepTag) {
-                textState.addType(word, probability);
+                textState.addType(word, this, probability);
             }
         }
     }

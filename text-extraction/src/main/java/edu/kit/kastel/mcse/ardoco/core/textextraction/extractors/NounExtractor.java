@@ -51,11 +51,11 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
     private void findSingleNouns(ITextState textState, IWord word) {
         var pos = word.getPosTag();
         if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
-            textState.addName(word, probability * nameOrTypeWeight);
-            textState.addType(word, probability * nameOrTypeWeight);
+            textState.addName(word, this, probability * nameOrTypeWeight);
+            textState.addType(word, this, probability * nameOrTypeWeight);
         }
         if (POSTag.NOUN_PLURAL == pos) {
-            textState.addType(word, probability);
+            textState.addType(word, this, probability);
         }
 
     }

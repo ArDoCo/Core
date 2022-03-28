@@ -48,13 +48,13 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
         for (DependencyTag depTag : incomingDepArcs) {
             if (hasNortDependencies(depTag)) {
-                textState.addName(word, probability * nameOrTypeWeight);
-                textState.addType(word, probability * nameOrTypeWeight);
+                textState.addName(word, this, probability * nameOrTypeWeight);
+                textState.addType(word, this, probability * nameOrTypeWeight);
             } else if (hasTypeOrNortDependencies(depTag) && WordHelper.hasIndirectDeterminerAsPreWord(word)) {
-                textState.addType(word, probability);
+                textState.addType(word, this, probability);
             }
-            textState.addName(word, probability * nameOrTypeWeight);
-            textState.addType(word, probability * nameOrTypeWeight);
+            textState.addName(word, this, probability * nameOrTypeWeight);
+            textState.addType(word, this, probability * nameOrTypeWeight);
         }
     }
 

@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
@@ -74,7 +75,7 @@ public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
      *
      * @param probability the new probability
      */
-    void setProbability(double probability);
+    void setProbability(IClaimant claimant, double probability);
 
     /**
      * Returns the type as string from this recommended instance.

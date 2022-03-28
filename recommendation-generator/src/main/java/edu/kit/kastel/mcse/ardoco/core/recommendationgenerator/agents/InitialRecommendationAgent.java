@@ -4,9 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
@@ -19,10 +16,10 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.NameTy
  */
 public class InitialRecommendationAgent extends RecommendationAgent {
 
-    private final MutableList<AbstractExtractor<RecommendationAgentData>> extractors = Lists.mutable.of(new NameTypeExtractor());
+    private final List<AbstractExtractor<RecommendationAgentData>> extractors = List.of(new NameTypeExtractor());
 
     @Configurable
-    private List<String> enabledExtractors = extractors.collect(e -> e.getClass().getSimpleName());
+    private List<String> enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
 
     /**
      * Prototype constructor.

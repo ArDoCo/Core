@@ -4,9 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
@@ -19,11 +16,11 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.*;
  */
 public class InitialTextAgent extends TextAgent {
 
-    private final MutableList<AbstractExtractor<TextAgentData>> extractors = Lists.mutable.of(new NounExtractor(), new InDepArcsExtractor(),
-            new OutDepArcsExtractor(), new ArticleTypeNameExtractor(), new SeparatedNamesExtractor());
+    private final List<AbstractExtractor<TextAgentData>> extractors = List.of(new NounExtractor(), new InDepArcsExtractor(), new OutDepArcsExtractor(),
+            new ArticleTypeNameExtractor(), new SeparatedNamesExtractor());
 
     @Configurable
-    private List<String> enabledExtractors = extractors.collect(e -> e.getClass().getSimpleName());
+    private List<String> enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
 
     /**
      * Instantiates a new initial text agent.

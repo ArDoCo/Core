@@ -277,8 +277,8 @@ public final class FilePrinter {
         for (INounMapping mapping : textState.getNounMappings()) {
 
             var distribution = mapping.getDistribution();
-            var nameProb = Double.toString(distribution.get(MappingKind.NAME));
-            var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
+            var nameProb = Double.toString(distribution.get(MappingKind.NAME).getConfidence());
+            var typeProb = Double.toString(distribution.get(MappingKind.TYPE).getConfidence());
 
             dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb });
 

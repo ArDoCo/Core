@@ -43,7 +43,7 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
         if (textState.isWordContainedByNameMapping(word) || textState.isWordContainedByTypeMapping(word)) {
             var prevNode = word.getPreWord();
             if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addName(word, probability); // TODO change
+                textState.addName(word, this, probability); // TODO change
                 return true;
             }
         }
@@ -60,7 +60,7 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
         if (textState.isWordContainedByNameMapping(word) || textState.isWordContainedByTypeMapping(word)) {
             var prevNode = word.getPreWord();
             if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addType(word, probability); // TODO change
+                textState.addType(word, this, probability); // TODO change
             }
         }
     }

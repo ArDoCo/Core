@@ -30,7 +30,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     private double probability = 1.0;
 
     public NameTypeConnectionExtractor() {
-
     }
 
     @Override
@@ -57,7 +56,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
             var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
@@ -84,7 +83,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             var nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
@@ -110,9 +109,9 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
             var nmappings = textExtractionState.getNounMappingsByWord(currentWord);
             for (INounMapping nmapping : nmappings) {
-                var name = instance.getFullName();
-                var type = nmapping.getReference();
-                recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
+                String name = instance.getFullName();
+                String type = nmapping.getReference();
+                recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
             }
         }
     }

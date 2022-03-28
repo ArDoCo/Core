@@ -44,7 +44,7 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
         }
         var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
-            textState.addName(word, probability);
+            textState.addName(word, this, probability);
         }
     }
 
@@ -64,7 +64,7 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
     private void searchForType(IModelState modelState, ITextState textState, IWord word) {
         var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
-            textState.addType(word, probability);
+            textState.addType(word, this, probability);
         }
     }
 
