@@ -27,6 +27,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
  */
 public class ComputerScienceWordsAgent extends TextAgent {
 
+    private static final int MAX_WIKI_LEVEL = 3;
+
     private static final String WIKI = "WIKI";
     private static final String ISO24765 = "ISO24765";
     private static final String STANDARD_GLOSSARY = "STANDARD_GLOSSARY";
@@ -41,7 +43,10 @@ public class ComputerScienceWordsAgent extends TextAgent {
     private List<String> sources = List.of(WIKI, ISO24765, STANDARD_GLOSSARY);
 
     @Configurable
-    private int maxWikiLevels = 3;
+    private int maxWikiLevels = MAX_WIKI_LEVEL;
+
+    @Configurable
+    private List<String> additionalWords = List.of();
 
     private final ImmutableList<String> commonCSWords;
 
@@ -83,6 +88,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
         loadDBPedia(result);
         loadISO24765(result);
         loadStandardGlossary(result);
+        result.addAll(additionalWords);
         return Lists.immutable.withAll(result.stream().map(w -> w.trim().toLowerCase()).toList());
     }
 
