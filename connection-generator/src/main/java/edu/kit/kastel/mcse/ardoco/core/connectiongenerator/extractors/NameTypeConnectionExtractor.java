@@ -30,6 +30,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     private double probability = 1.0;
 
     public NameTypeConnectionExtractor() {
+        // empty
     }
 
     @Override
@@ -196,5 +197,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional configuration
     }
 }

@@ -29,12 +29,12 @@ public class InstanceLink implements IInstanceLink {
 
     @Override
     public IInstanceLink createCopy() {
-        InstanceLink copy = new InstanceLink(textualInstance.createCopy(), modelInstance.createCopy());
+        var copy = new InstanceLink(textualInstance.createCopy(), modelInstance.createCopy());
         copy.probability = probability.createCopy();
         return copy;
     }
 
-    public InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance) {
+    private InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance) {
         this.textualInstance = textualInstance;
         this.modelInstance = modelInstance;
         this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
@@ -105,7 +105,7 @@ public class InstanceLink implements IInstanceLink {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        InstanceLink other = (InstanceLink) obj;
+        var other = (InstanceLink) obj;
         return Objects.equals(modelInstance, other.modelInstance) && Objects.equals(textualInstance, other.textualInstance);
     }
 
