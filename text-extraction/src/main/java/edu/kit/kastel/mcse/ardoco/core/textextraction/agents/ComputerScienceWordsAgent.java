@@ -27,7 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
  */
 public class ComputerScienceWordsAgent extends TextAgent {
 
-    private static final String WIKI = "wiki";
+    private static final String WIKI = "WIKI";
     private static final String ISO24765 = "ISO24765";
     private static final String STANDARD_GLOSSARY = "STANDARD_GLOSSARY";
 
