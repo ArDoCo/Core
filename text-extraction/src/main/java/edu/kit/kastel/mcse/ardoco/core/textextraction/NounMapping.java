@@ -38,8 +38,6 @@ public class NounMapping implements INounMapping {
     /* the different surface forms */
     private final MutableList<String> surfaceForms;
 
-    private MappingKind mostProbableKind;
-    private Confidence highestProbability;
     private Map<MappingKind, Confidence> distribution;
 
     private boolean hasPhrase = false;
@@ -52,8 +50,6 @@ public class NounMapping implements INounMapping {
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
         this.surfaceForms = Lists.mutable.withAll(surfaceForms);
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     /**
@@ -68,8 +64,6 @@ public class NounMapping implements INounMapping {
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
         surfaceForms = Lists.mutable.withAll(occurrences);
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     private NounMapping(INounMapping nm) {
@@ -77,8 +71,6 @@ public class NounMapping implements INounMapping {
         initializeDistribution(nm.getDistribution());
         referenceWords = nm.getReferenceWords();
         surfaceForms = Lists.mutable.withAll(nm.getSurfaceForms());
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
@@ -197,16 +189,13 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public void addKindWithProbability(MappingKind kind, IClaimant claimant, double probability) {
-        Confidence currentProbability = distribution.get(kind);
+        var currentProbability = distribution.get(kind);
         currentProbability.addAgentConfidence(claimant, probability);
-
-        mostProbableKind = distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).orElseThrow();
-        highestProbability = distribution.get(mostProbableKind);
     }
 
     @Override
     public INounMapping createCopy() {
-        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, d -> d.createCopy()), referenceWords.toList(),
+        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(),
                 surfaceForms.toImmutable());
         nm.hasPhrase = hasPhrase;
         return nm;
@@ -249,7 +238,7 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public double getProbability() {
-        return highestProbability.getConfidence();
+        return distribution.get(getKind()).getConfidence();
     }
 
     /**
@@ -259,7 +248,7 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public MappingKind getKind() {
-        return mostProbableKind;
+        return distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).orElseThrow();
     }
 
     /**
@@ -293,7 +282,7 @@ public class NounMapping implements INounMapping {
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
-                ", probability=" + highestProbability + ", hasPhrase=" + hasPhrase + "]";
+                ", probability=" + getProbability() + ", hasPhrase=" + hasPhrase + "]";
     }
 
     @Override

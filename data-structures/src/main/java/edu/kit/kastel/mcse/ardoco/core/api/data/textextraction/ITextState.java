@@ -207,4 +207,14 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return a list of noun mappings with the given reference.
      */
     ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref);
+
+    /**
+     * Gets the mappings that could be a Name or Type.
+     *
+     * @param word the word
+     * @return the mappings that could be a Name or Type
+     */
+    default ImmutableList<INounMapping> getMappingsThatCouldBeNameOrType(IWord word) {
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForName() > 0 || mapping.getProbabilityForType() > 0);
+    }
 }
