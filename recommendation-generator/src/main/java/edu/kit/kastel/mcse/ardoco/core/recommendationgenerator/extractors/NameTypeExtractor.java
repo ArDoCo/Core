@@ -3,15 +3,12 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
 import java.util.Map;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
@@ -39,8 +36,6 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
             var recommendationState = data.getRecommendationState(modelState.getMetamodel());
             addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);
             addRecommendedInstanceIfNameBeforeType(textState, word, modelState, recommendationState);
-            addRecommendedInstanceIfNortBeforeType(textState, word, modelState, recommendationState);
-            addRecommendedInstanceIfNortAfterType(textState, word, modelState, recommendationState);
         }
     }
 
@@ -57,13 +52,13 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
             return;
         }
 
-        ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addType(word, probability);
 
-            ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getPreWord());
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getPreWord());
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, probability);
         }
@@ -82,63 +77,14 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
             return;
         }
 
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, probability);
 
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getNextWord());
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getNextWord());
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, probability);
-        }
-    }
-
-    /**
-     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
-     * state contain the previous node. If that's the case a recommendation for the combination of both is created.
-     *
-     * @param textExtractionState text extraction state
-     * @param word                the current word
-     */
-    private void addRecommendedInstanceIfNortBeforeType(ITextState textExtractionState, IWord word, IModelState modelState,
-            IRecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
-
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
-
-        if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
-
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(word.getPreWord());
-
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, probability);
-        }
-    }
-
-    /**
-     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
-     * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
-     *
-     * @param textExtractionState text extraction state
-     * @param word                the current word
-     */
-    private void addRecommendedInstanceIfNortAfterType(ITextState textExtractionState, IWord word, IModelState modelState,
-            IRecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
-
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
-        if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
-
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(word.getNextWord());
-
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, probability);
         }
     }
 

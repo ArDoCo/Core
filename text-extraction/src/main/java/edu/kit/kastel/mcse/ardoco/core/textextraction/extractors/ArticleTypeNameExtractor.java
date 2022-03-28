@@ -37,13 +37,13 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
      * If the current node is contained by name-or-type mappings, the previous node is contained by type nodes and the
      * preprevious an article the node is added as a name mapping.
      *
-     * @param n node to check
+     * @param word word to check
      */
-    private boolean checkIfNodeIsName(ITextState textState, IWord n) {
-        if (textState.isWordContainedByNameOrTypeMapping(n)) {
-            IWord prevNode = n.getPreWord();
+    private boolean checkIfNodeIsName(ITextState textState, IWord word) {
+        if (textState.isWordContainedByNameMapping(word) || textState.isWordContainedByTypeMapping(word)) {
+            var prevNode = word.getPreWord();
             if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addName(n, probability);
+                textState.addName(word, probability); // TODO change
                 return true;
             }
         }
@@ -57,10 +57,10 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
      * @param word word to check
      */
     private void checkIfNodeIsType(ITextState textState, IWord word) {
-        if (textState.isWordContainedByNameOrTypeMapping(word)) {
-            IWord prevNode = word.getPreWord();
+        if (textState.isWordContainedByNameMapping(word) || textState.isWordContainedByTypeMapping(word)) {
+            var prevNode = word.getPreWord();
             if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-                textState.addType(word, probability);
+                textState.addType(word, probability); // TODO change
             }
         }
     }

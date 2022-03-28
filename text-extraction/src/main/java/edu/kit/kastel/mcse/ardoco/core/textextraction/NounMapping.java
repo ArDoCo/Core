@@ -1,7 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -76,7 +81,6 @@ public class NounMapping implements INounMapping {
         this.distribution = new EnumMap<>(distribution);
         this.distribution.putIfAbsent(MappingKind.NAME, 0.0);
         this.distribution.putIfAbsent(MappingKind.TYPE, 0.0);
-        this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, 0.0);
     }
 
     public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, double probability) {
@@ -139,9 +143,8 @@ public class NounMapping implements INounMapping {
     public final String getReference() {
         if (referenceWords.size() == 1) {
             return referenceWords.get(0).getText();
-        } else {
-            return CommonUtilities.createReferenceForPhrase(referenceWords);
         }
+        return CommonUtilities.createReferenceForPhrase(referenceWords);
     }
 
     /**
@@ -197,17 +200,7 @@ public class NounMapping implements INounMapping {
         double currentProbability = distribution.get(kind);
         distribution.put(kind, (currentProbability + newProbability) / 2);
 
-        mostProbableKind = distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).get();
-        if (mostProbableKind == MappingKind.NAME_OR_TYPE) {
-            var threshold = 0;
-            if (distribution.get(MappingKind.NAME) >= threshold || distribution.get(MappingKind.TYPE) >= threshold) {
-                if (distribution.get(MappingKind.NAME) >= distribution.get(MappingKind.TYPE)) {
-                    mostProbableKind = MappingKind.NAME;
-                } else {
-                    mostProbableKind = MappingKind.TYPE;
-                }
-            }
-        }
+        mostProbableKind = distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).orElse(MappingKind.NAME);
         highestProbability = distribution.get(mostProbableKind);
     }
 
@@ -234,7 +227,7 @@ public class NounMapping implements INounMapping {
         MutableList<String> comparables = Lists.mutable.empty();
         for (String occ : surfaceForms) {
             if (CommonUtilities.containsSeparator(occ)) {
-                ImmutableList<String> parts = CommonUtilities.splitAtSeparators(occ);
+                var parts = CommonUtilities.splitAtSeparators(occ);
                 for (String part : parts) {
                     if (SimilarityUtils.areWordsSimilar(getReference(), part)) {
                         comparables.add(part);
@@ -315,7 +308,7 @@ public class NounMapping implements INounMapping {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        INounMapping other = (INounMapping) obj;
+        var other = (INounMapping) obj;
         return Objects.equals(getReference(), other.getReference());
     }
 
@@ -340,11 +333,6 @@ public class NounMapping implements INounMapping {
     @Override
     public double getProbabilityForType() {
         return distribution.get(MappingKind.TYPE);
-    }
-
-    @Override
-    public double getProbabilityForNort() {
-        return distribution.get(MappingKind.NAME_OR_TYPE);
     }
 
     @Override
