@@ -9,6 +9,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
@@ -23,14 +25,25 @@ public class RecommendedInstance implements IRecommendedInstance {
 
     private String type;
     private String name;
-    private double probability;
+    private Confidence probability;
     private final Set<INounMapping> typeMappings;
     private final Set<INounMapping> nameMappings;
 
     @Override
     public IRecommendedInstance createCopy() {
-        return new RecommendedInstance(name, type, probability, Lists.immutable.fromStream(nameMappings.stream().map(INounMapping::createCopy)),
-                Lists.immutable.fromStream(typeMappings.stream().map(INounMapping::createCopy)));
+        RecommendedInstance copy = new RecommendedInstance(name, type);
+        copy.probability = probability.createCopy();
+        copy.nameMappings.addAll(nameMappings.stream().map(d -> d.createCopy()).toList());
+        copy.typeMappings.addAll(typeMappings.stream().map(d -> d.createCopy()).toList());
+        return copy;
+    }
+
+    private RecommendedInstance(String name, String type) {
+        this.type = type;
+        this.name = name;
+        this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
+        nameMappings = new HashSet<>();
+        typeMappings = new HashSet<>();
     }
 
     /**
@@ -42,12 +55,12 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param nameNodes   the involved name mappings
      * @param typeNodes   the involved type mappings
      */
-    public RecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameNodes, ImmutableList<INounMapping> typeNodes) {
-        this.type = type;
-        this.name = name;
-        this.probability = probability;
-        nameMappings = new HashSet<>(nameNodes.castToCollection());
-        typeMappings = new HashSet<>(typeNodes.castToCollection());
+    public RecommendedInstance(String name, String type, IClaimant claimant, double probability, ImmutableList<INounMapping> nameNodes,
+            ImmutableList<INounMapping> typeNodes) {
+        this(name, type);
+        this.probability.addAgentConfidence(claimant, probability);
+        nameMappings.addAll(nameNodes.castToCollection());
+        typeMappings.addAll(typeNodes.castToCollection());
     }
 
     /**
@@ -148,8 +161,9 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param probability the new probability
      */
     @Override
-    public void setProbability(double probability) {
-        this.probability = probability;
+    public void setProbability(IClaimant claimant, double probability) {
+        // TODO: SET != ADD
+        this.probability.addAgentConfidence(claimant, probability);
     }
 
     /**

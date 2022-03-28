@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
@@ -102,9 +103,9 @@ public class ConnectionState extends AbstractState implements IConnectionState {
      * @param probability              the probability of the link
      */
     @Override
-    public void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, double probability) {
+    public void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, IClaimant claimant, double probability) {
 
-        IInstanceLink instancelink = new InstanceLink(recommendedModelInstance, instance, probability);
+        IInstanceLink instancelink = new InstanceLink(recommendedModelInstance, instance, claimant, probability);
         if (!isContainedByInstanceLinks(instancelink)) {
             instanceLinks.add(instancelink);
         } else {
@@ -159,13 +160,4 @@ public class ConnectionState extends AbstractState implements IConnectionState {
         instanceLinks.removeIf(mapping -> mapping.getTextualInstance().equals(instance));
     }
 
-    /**
-     * Adds an instance link to the state.
-     *
-     * @param instanceMapping the instance link to add
-     */
-    @Override
-    public void addToLinks(IInstanceLink instanceMapping) {
-        this.addToLinks(instanceMapping.getTextualInstance(), instanceMapping.getModelInstance(), instanceMapping.getProbability());
-    }
 }

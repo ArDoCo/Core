@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 
 /**
  * @author Jan Keim
- *
  */
 public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest {
 
@@ -24,8 +23,8 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
     void beforeEach() {
         ImmutableList<IWord> words = Lists.immutable.of(new DummyWord());
         ImmutableList<String> occurences = Lists.immutable.of("occurence");
-        var nounMapping = new NounMapping(words, MappingKind.NAME, 1.0, words.toList(), occurences);
-        var recommendedInstance = new RecommendedInstance("name", "type", 1.0, Lists.immutable.of(nounMapping), Lists.immutable.<INounMapping> empty());
+        var nounMapping = new NounMapping(words, MappingKind.NAME, null, 1.0, words.toList(), occurences);
+        var recommendedInstance = new RecommendedInstance("name", "type", null, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.<INounMapping> empty());
         missingModelInstanceInconsistency = new MissingModelInstanceInconsistency(recommendedInstance);
     }
 
@@ -46,14 +45,15 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @Override
     protected IInconsistency getUnequalInconsistency() {
-        var recommendedInstance = new RecommendedInstance("otherName", "otherType", 1.0, Lists.immutable.<INounMapping> empty(),
+        var recommendedInstance = new RecommendedInstance("otherName", "otherType", null, 1.0, Lists.immutable.<INounMapping> empty(),
                 Lists.immutable.<INounMapping> empty());
         return new MissingModelInstanceInconsistency(recommendedInstance);
     }
 
     @Override
     protected IInconsistency getEqualInconsistency() {
-        var recommendedInstance = new RecommendedInstance("name", "type", 1.0, Lists.immutable.<INounMapping> empty(), Lists.immutable.<INounMapping> empty());
+        var recommendedInstance = new RecommendedInstance("name", "type", null, 1.0, Lists.immutable.<INounMapping> empty(),
+                Lists.immutable.<INounMapping> empty());
         return new MissingModelInstanceInconsistency(recommendedInstance);
     }
 

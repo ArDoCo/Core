@@ -55,12 +55,12 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
         var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getPreWord());
             var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, this, probability);
         }
     }
 
@@ -79,12 +79,12 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
+            textExtractionState.addType(word, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
             var nameMappings = textExtractionState.getMappingsThatCouldBeAName(word.getNextWord());
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
         }
     }
 

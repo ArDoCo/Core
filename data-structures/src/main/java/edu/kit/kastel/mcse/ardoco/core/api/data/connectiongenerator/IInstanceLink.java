@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
@@ -22,7 +23,7 @@ public interface IInstanceLink extends ICopyable<IInstanceLink> {
      *
      * @param probability the new probability
      */
-    void setProbability(double probability);
+    void setProbability(IClaimant claimant, double probability);
 
     /**
      * Returns the recommended instance.

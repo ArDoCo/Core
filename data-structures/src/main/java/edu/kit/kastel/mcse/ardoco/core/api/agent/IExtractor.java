@@ -8,7 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
  * The Interface IExtractor defines executable units that run at the beginning of each stage. They operate on word
  * level.
  */
-public interface IExtractor<D extends IData> {
+public interface IExtractor<D extends IData> extends IClaimant {
 
     /**
      * Execute the extractor and apply it on a word.

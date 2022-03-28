@@ -7,6 +7,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IRelationMapping;
@@ -52,7 +53,8 @@ public class RelationMapping implements IRelationMapping {
      * @param mappings more noun mappings to add.
      */
     @Override
-    public void addMappingsToRelation(ImmutableList<INounMapping> mappings) {
+    public void addMappingsToRelation(ImmutableList<INounMapping> mappings, IClaimant claimant, double probability) {
+        // TODO: Handle probability
         for (INounMapping n : mappings) {
             if (!relationNodes.contains(n)) {
                 relationNodes.add(n);
