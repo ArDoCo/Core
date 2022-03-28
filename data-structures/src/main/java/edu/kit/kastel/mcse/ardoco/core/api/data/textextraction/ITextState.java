@@ -30,23 +30,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     void addName(IWord word, double probability);
 
     /**
-     * * Adds a name or type mapping to the state.
-     *
-     * @param word        node of the mapping
-     * @param probability probability to be a name or type mapping
-     */
-    void addNort(IWord word, double probability);
-
-    /**
-     * * Adds a name or type mapping to the state.
-     *
-     * @param word        node of the mapping
-     * @param probability probability to be a name or type mapping
-     * @param occurrences list of the appearances of the mapping
-     */
-    void addNort(IWord word, double probability, ImmutableList<String> occurrences);
-
-    /**
      * * Adds a type mapping to the state.
      *
      * @param word        node of the mapping
@@ -128,13 +111,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     ImmutableList<String> getNameList();
 
     /**
-     * Returns a list of all references of name or type mappings.
-     *
-     * @return all references of name or type mappings as list.
-     */
-    ImmutableList<String> getNortList();
-
-    /**
      * Returns a list of all references of type mappings.
      *
      * @return all references of type mappings as list.
@@ -147,13 +123,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return a list of all name mappings
      */
     ImmutableList<INounMapping> getNames();
-
-    /**
-     * Returns all name or type mappings.
-     *
-     * @return a list of all name or type mappings
-     */
-    ImmutableList<INounMapping> getNameOrTypeMappings();
 
     /**
      * Returns alltype mappings containing the given node.
@@ -172,14 +141,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     ImmutableList<INounMapping> getNameMappingsByWord(IWord node);
 
     /**
-     * Returns all name or type mappings containing the given node.
-     *
-     * @param node node to filter for
-     * @return a list of all name or type mappings containing the given node
-     */
-    ImmutableList<INounMapping> getNortMappingsByWord(IWord node);
-
-    /**
      * Returns all relation mappings.
      *
      * @return relation mappings as list
@@ -187,15 +148,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     ImmutableList<IRelationMapping> getRelations();
 
     // --- isContained section --->
-
-    /**
-     * Returns if a node is contained by the name or type mappings.
-     *
-     * @param node node to check
-     * @return true if the node is contained by name or type mappings.
-     */
-    boolean isWordContainedByNameOrTypeMapping(IWord node);
-
     /**
      * Returns if a node is contained by the name mappings.
      *
@@ -252,16 +204,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     default ImmutableList<INounMapping> getMappingsThatCouldBeAName(IWord word) {
         return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForName() > 0);
-    }
-
-    /**
-     * Gets the mappings that could be A nort.
-     *
-     * @param word the word
-     * @return the mappings that could be A nort
-     */
-    default ImmutableList<INounMapping> getMappingsThatCouldBeANort(IWord word) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForNort() > 0);
     }
 
     /**

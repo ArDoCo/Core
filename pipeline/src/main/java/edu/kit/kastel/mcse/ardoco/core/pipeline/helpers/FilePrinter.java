@@ -119,13 +119,6 @@ public final class FilePrinter {
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        myWriter.write("FoundNORTs as Set: ");
-        myWriter.append(LINE_SEPARATOR);
-        var nortList = ntrState.getNortList().toSortedList().toImmutable();
-        myWriter.write(nortList.toString() + LINE_SEPARATOR);
-        myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-
         myWriter.write("FoundTypes as Set: ");
         myWriter.append(LINE_SEPARATOR);
         var typeList = ntrState.getTypeList().toSortedList().toImmutable();
@@ -265,7 +258,7 @@ public final class FilePrinter {
 
         dataLines.add(new String[] { "Found NounMappings: ", "", "", "" });
         dataLines.add(new String[] { "" });
-        dataLines.add(new String[] { "Reference", "Name", "Type", "NameOrType" });
+        dataLines.add(new String[] { "Reference", "Name", "Type" });
 
         if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMapping)) {
             for (INounMapping mapping : textState.getNounMappings()) {
@@ -274,9 +267,8 @@ public final class FilePrinter {
 
                 var nameProb = Double.toString(kind == MappingKind.NAME ? mapping.getProbability() : 0);
                 var typeProb = Double.toString(kind == MappingKind.TYPE ? mapping.getProbability() : 0);
-                var nortProb = Double.toString(kind == MappingKind.NAME_OR_TYPE ? mapping.getProbability() : 0);
 
-                dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
+                dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb });
 
             }
             return dataLines.toImmutable();
@@ -287,9 +279,8 @@ public final class FilePrinter {
             var distribution = mapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME));
             var typeProb = Double.toString(distribution.get(MappingKind.TYPE));
-            var nortProb = Double.toString(distribution.get(MappingKind.NAME_OR_TYPE));
 
-            dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb, nortProb });
+            dataLines.add(new String[] { mapping.getReference(), nameProb, typeProb });
 
         }
         return dataLines.toImmutable();

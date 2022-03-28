@@ -40,8 +40,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             var recommendationState = data.getRecommendationState(modelState.getMetamodel());
             checkForNameAfterType(data.getTextState(), word, modelState, recommendationState);
             checkForNameBeforeType(data.getTextState(), word, modelState, recommendationState);
-            checkForNortBeforeType(data.getTextState(), word, modelState, recommendationState);
-            checkForNortAfterType(data.getTextState(), word, modelState, recommendationState);
         }
     }
 
@@ -54,17 +52,17 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             return;
         }
 
-        IWord pre = word.getPreWord();
+        var pre = word.getPreWord();
 
-        ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addType(word, probability);
 
-            ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
 
-            IModelInstance instance = tryToIdentify(textExtractionState, similarTypes, pre, modelState);
+            var instance = tryToIdentify(textExtractionState, similarTypes, pre, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
@@ -82,64 +80,17 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             return;
         }
 
-        IWord after = word.getNextWord();
+        var after = word.getNextWord();
 
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, probability);
 
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
 
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
+            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
-        }
-    }
-
-    /**
-     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
-     * state contain the previous node. If that's the case a recommendation for the combination of both is created.
-     */
-    private void checkForNortBeforeType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
-
-        IWord pre = word.getPreWord();
-
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
-
-        if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
-
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
-
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
-        }
-    }
-
-    /**
-     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
-     * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
-     */
-    private void checkForNortAfterType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
-
-        IWord after = word.getNextWord();
-
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
-        if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, probability);
-
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
-
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
 
@@ -157,10 +108,10 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             IWord currentWord, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState) {
         if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
-            ImmutableList<INounMapping> nmappings = textExtractionState.getNounMappingsByWord(currentWord);
+            var nmappings = textExtractionState.getNounMappingsByWord(currentWord);
             for (INounMapping nmapping : nmappings) {
-                String name = instance.getFullName();
-                String type = nmapping.getReference();
+                var name = instance.getFullName();
+                var type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
             }
         }

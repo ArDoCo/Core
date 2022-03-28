@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IRelationMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
@@ -67,17 +66,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final void addName(IWord word, double probability) {
         addName(word, probability, Lists.immutable.with(word.getText()));
-    }
-
-    /***
-     * Adds a name or type mapping to the state
-     *
-     * @param probability probability to be a name or type mapping
-     * @param word        node of the mapping
-     */
-    @Override
-    public final void addNort(IWord word, double probability) {
-        addNort(word, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
@@ -190,21 +178,6 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /**
-     * Returns a list of all references of name or type mappings.
-     *
-     * @return all references of name or type mappings as list.
-     */
-    @Override
-    public final ImmutableList<String> getNortList() {
-        Set<String> norts = new HashSet<>();
-        var nortMappings = getNameOrTypeMappings();
-        for (INounMapping nnm : nortMappings) {
-            norts.add(nnm.getReference());
-        }
-        return Lists.immutable.withAll(norts);
-    }
-
-    /**
      * Returns a list of all references of type mappings.
      *
      * @return all references of type mappings as list.
@@ -227,16 +200,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<INounMapping> getNames() {
         return nounMappings.select(n -> MappingKind.NAME == n.getKind()).toImmutable();
-    }
-
-    /**
-     * Returns all name or type mappings
-     *
-     * @return a list of all name or type mappings
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNameOrTypeMappings() {
-        return nounMappings.select(n -> MappingKind.NAME_OR_TYPE == n.getKind()).toImmutable();
     }
 
     /**
@@ -263,17 +226,6 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /**
-     * Returns all name or type mappings containing the given node.
-     *
-     * @param word word to filter for
-     * @return a list of all name or type mappings containing the given node
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNortMappingsByWord(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(n -> n.getKind() == MappingKind.NAME_OR_TYPE).toImmutable();
-    }
-
-    /**
      * Returns all relation mappings.
      *
      * @return relation mappings as list
@@ -281,17 +233,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<IRelationMapping> getRelations() {
         return Lists.immutable.withAll(relationMappings);
-    }
-
-    /**
-     * Returns if a node is contained by the name or type mappings.
-     *
-     * @param word word to check
-     * @return true if the node is contained by name or type mappings.
-     */
-    @Override
-    public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getKind() == MappingKind.NAME_OR_TYPE);
     }
 
     /**
@@ -367,18 +308,6 @@ public class TextState extends AbstractState implements ITextState {
         existingNounMapping.addKindWithProbability(disposableNounMapping.getKind(), disposableNounMapping.getProbability());
         existingNounMapping.addOccurrence(disposableNounMapping.getSurfaceForms());
         existingNounMapping.addWord(disposableNounMapping.getReferenceWords().get(0));
-    }
-
-    @Override
-    public void addNort(IWord word, double probability, ImmutableList<String> occurrences) {
-        var mapping = addNounMapping(word, MappingKind.NAME_OR_TYPE, probability, occurrences);
-
-        if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
-            mapping.addKindWithProbability(MappingKind.NAME, nortProbabilityForNameAndType);
-        }
-        if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
-            mapping.addKindWithProbability(MappingKind.TYPE, nortProbabilityForNameAndType);
-        }
     }
 
     @Override
