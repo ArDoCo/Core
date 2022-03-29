@@ -1,7 +1,11 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -33,8 +37,6 @@ public class NounMapping implements INounMapping {
     /* the different surface forms */
     private final MutableList<String> surfaceForms;
 
-    private MappingKind mostProbableKind;
-    private Confidence highestProbability;
     private Map<MappingKind, Confidence> distribution;
 
     private boolean hasPhrase = false;
@@ -47,8 +49,6 @@ public class NounMapping implements INounMapping {
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
         this.surfaceForms = Lists.mutable.withAll(surfaceForms);
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     /**
@@ -56,6 +56,8 @@ public class NounMapping implements INounMapping {
      */
     public NounMapping(ImmutableList<IWord> words, MappingKind kind, IClaimant claimant, double probability, List<IWord> referenceWords,
             ImmutableList<String> occurrences) {
+        Objects.requireNonNull(claimant);
+
         distribution = new EnumMap<>(MappingKind.class);
         distribution.put(kind, new Confidence(claimant, probability, Confidence.ConfidenceAggregator.AVERAGE));
 
@@ -63,8 +65,6 @@ public class NounMapping implements INounMapping {
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
         surfaceForms = Lists.mutable.withAll(occurrences);
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     private NounMapping(INounMapping nm) {
@@ -72,15 +72,12 @@ public class NounMapping implements INounMapping {
         initializeDistribution(nm.getDistribution());
         referenceWords = nm.getReferenceWords();
         surfaceForms = Lists.mutable.withAll(nm.getSurfaceForms());
-        mostProbableKind = distribution.keySet().stream().max((p1, p2) -> distribution.get(p1).compareTo(distribution.get(p2))).orElse(null);
-        highestProbability = mostProbableKind != null ? distribution.get(mostProbableKind) : new Confidence(Confidence.ConfidenceAggregator.USE_MOST_RECENT);
     }
 
     private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
         this.distribution = new EnumMap<>(distribution);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
-        this.distribution.putIfAbsent(MappingKind.NAME_OR_TYPE, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
     }
 
     public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IClaimant claimant, double probability) {
@@ -143,9 +140,8 @@ public class NounMapping implements INounMapping {
     public final String getReference() {
         if (referenceWords.size() == 1) {
             return referenceWords.get(0).getText();
-        } else {
-            return CommonUtilities.createReferenceForPhrase(referenceWords);
         }
+        return CommonUtilities.createReferenceForPhrase(referenceWords);
     }
 
     /**
@@ -194,30 +190,13 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public void addKindWithProbability(MappingKind kind, IClaimant claimant, double probability) {
-        Confidence currentProbability = distribution.get(kind);
+        var currentProbability = distribution.get(kind);
         currentProbability.addAgentConfidence(claimant, probability);
-
-        mostProbableKind = distribution.keySet().stream().max(Comparator.comparing(p -> distribution.get(p))).get();
-        if (mostProbableKind == MappingKind.NAME_OR_TYPE) {
-            // TODO: Maybe to config later
-            var threshold = 0;
-            double nameConfidence = distribution.get(MappingKind.NAME).getConfidence();
-            double typeConfidence = distribution.get(MappingKind.TYPE).getConfidence();
-
-            if (Math.max(nameConfidence, typeConfidence) >= threshold) {
-                if (nameConfidence >= typeConfidence) {
-                    mostProbableKind = MappingKind.NAME;
-                } else {
-                    mostProbableKind = MappingKind.TYPE;
-                }
-            }
-        }
-        highestProbability = distribution.get(mostProbableKind);
     }
 
     @Override
     public INounMapping createCopy() {
-        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, d -> d.createCopy()), referenceWords.toList(),
+        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(),
                 surfaceForms.toImmutable());
         nm.hasPhrase = hasPhrase;
         return nm;
@@ -239,7 +218,7 @@ public class NounMapping implements INounMapping {
         MutableList<String> comparables = Lists.mutable.empty();
         for (String occ : surfaceForms) {
             if (CommonUtilities.containsSeparator(occ)) {
-                ImmutableList<String> parts = CommonUtilities.splitAtSeparators(occ);
+                var parts = CommonUtilities.splitAtSeparators(occ);
                 for (String part : parts) {
                     if (SimilarityUtils.areWordsSimilar(getReference(), part)) {
                         comparables.add(part);
@@ -260,17 +239,22 @@ public class NounMapping implements INounMapping {
      */
     @Override
     public double getProbability() {
-        return highestProbability.getConfidence();
+        return distribution.get(getKind()).getConfidence();
     }
 
     /**
-     * Returns the kind: name, type, name_or_type.
+     * Returns the kind: name, type.
      *
      * @return the kind
      */
     @Override
     public MappingKind getKind() {
-        return mostProbableKind;
+        var probName = distribution.get(MappingKind.NAME).getConfidence();
+        var probType = distribution.get(MappingKind.TYPE).getConfidence();
+        if (probName >= probType) {
+            return MappingKind.NAME;
+        }
+        return MappingKind.TYPE;
     }
 
     /**
@@ -304,7 +288,7 @@ public class NounMapping implements INounMapping {
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
-                ", probability=" + highestProbability + ", hasPhrase=" + hasPhrase + "]";
+                ", probability=" + getProbability() + ", hasPhrase=" + hasPhrase + "]";
     }
 
     @Override
@@ -320,7 +304,7 @@ public class NounMapping implements INounMapping {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        INounMapping other = (INounMapping) obj;
+        var other = (INounMapping) obj;
         return Objects.equals(getReference(), other.getReference());
     }
 
@@ -345,11 +329,6 @@ public class NounMapping implements INounMapping {
     @Override
     public double getProbabilityForType() {
         return distribution.get(MappingKind.TYPE).getConfidence();
-    }
-
-    @Override
-    public double getProbabilityForNort() {
-        return distribution.get(MappingKind.NAME_OR_TYPE).getConfidence();
     }
 
     @Override

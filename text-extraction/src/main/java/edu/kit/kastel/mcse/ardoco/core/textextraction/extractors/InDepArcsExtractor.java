@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.util.Map;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
@@ -19,6 +17,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  * @author Sophie
  */
 public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
+    @Configurable
+    private double nameOrTypeWeight = 0.5;
 
     @Configurable
     private double probability = 1.0;
@@ -27,11 +27,12 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public InDepArcsExtractor() {
+        // empty
     }
 
     @Override
     public void exec(TextAgentData data, IWord n) {
-        String nodeValue = n.getText();
+        var nodeValue = n.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
             return;
         }
@@ -44,17 +45,19 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
      */
     private void examineIncomingDepArcs(ITextState textState, IWord word) {
 
-        ImmutableList<DependencyTag> incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
+        var incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
 
         for (DependencyTag depTag : incomingDepArcs) {
             if (hasNortDependencies(depTag)) {
-                textState.addNort(word, this, probability);
+                textState.addName(word, this, probability * nameOrTypeWeight);
+                textState.addType(word, this, probability * nameOrTypeWeight);
             } else if (hasTypeOrNortDependencies(depTag)) {
                 if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
                     textState.addType(word, this, probability);
                 }
 
-                textState.addNort(word, this, probability);
+                textState.addName(word, this, probability * nameOrTypeWeight);
+                textState.addType(word, this, probability * nameOrTypeWeight);
             }
         }
     }
@@ -70,5 +73,6 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle delegation
     }
 }

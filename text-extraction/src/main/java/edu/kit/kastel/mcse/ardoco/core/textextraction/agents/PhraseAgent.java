@@ -29,6 +29,7 @@ public class PhraseAgent extends TextAgent {
      * Instantiates a new initial text agent.
      */
     public PhraseAgent() {
+        // empty
     }
 
     @Override
@@ -60,7 +61,7 @@ public class PhraseAgent extends TextAgent {
         var reference = CommonUtilities.createReferenceForPhrase(phrase);
         var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
         if (similarReferenceNounMappings.isEmpty()) {
-            INounMapping phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, this, phraseConfidence);
+            var phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, this, phraseConfidence);
             textState.addNounMapping(phraseNounMapping, this);
         } else {
             for (var nounMapping : similarReferenceNounMappings) {
@@ -79,5 +80,6 @@ public class PhraseAgent extends TextAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

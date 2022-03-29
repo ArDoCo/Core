@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
 import java.util.Map;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
@@ -12,7 +10,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionS
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
@@ -31,7 +28,7 @@ public class InstanceConnectionAgent extends ConnectionAgent {
      * Create the agent.
      */
     public InstanceConnectionAgent() {
-
+        // empty
     }
 
     /**
@@ -54,26 +51,28 @@ public class InstanceConnectionAgent extends ConnectionAgent {
      */
     private void findNamesOfModelInstancesInSupposedMappings(IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState) {
-        ImmutableList<IRecommendedInstance> ris = recommendationState.getRecommendedInstances();
-        for (IModelInstance i : modelState.getInstances()) {
-            ImmutableList<IRecommendedInstance> mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(i, ris);
+        var recommendedInstances = recommendationState.getRecommendedInstances();
+        for (IModelInstance instance : modelState.getInstances()) {
+            var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
 
-            for (var ri : mostLikelyRi) {
-                var riProbability = ri.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
-                connectionState.addToLinks(ri, i, this, riProbability);
+            for (var recommendedInstance : mostLikelyRi) {
+                var riProbability = recommendedInstance.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
+                connectionState.addToLinks(recommendedInstance, instance, this, riProbability);
             }
         }
     }
 
     private void createLinksForEqualOrSimilarRecommendedInstances(IModelState modelState, IRecommendationState recommendationState,
             IConnectionState connectionState) {
-        for (var ri : recommendationState.getRecommendedInstances()) {
-            var sameInstances = modelState.getInstances().select(i -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(ri, i));
-            sameInstances.forEach(i -> connectionState.addToLinks(ri, i, this, probability));
+        for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
+            var sameInstances = modelState.getInstances()
+                    .select(instance -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
+            sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, probability));
         }
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle config
     }
 }

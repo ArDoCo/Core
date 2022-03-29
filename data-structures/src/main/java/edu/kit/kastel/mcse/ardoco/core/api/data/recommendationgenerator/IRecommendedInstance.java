@@ -34,13 +34,6 @@ public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
     double getProbability();
 
     /**
-     * Removes nameMappings from this recommended instance.
-     *
-     * @param nameMappings the name mappings to remove
-     */
-    void removeNounNodeMappingsFromName(ImmutableList<INounMapping> nameMappings);
-
-    /**
      * Adds a name and type mapping to this recommended instance.
      *
      * @param nameMapping the name mapping to add

@@ -30,6 +30,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     private double probability = 1.0;
 
     public NameTypeConnectionExtractor() {
+        // empty
     }
 
     @Override
@@ -53,17 +54,17 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             return;
         }
 
-        IWord pre = word.getPreWord();
+        var pre = word.getPreWord();
 
-        ImmutableList<String> similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
 
-            IModelInstance instance = tryToIdentify(textExtractionState, similarTypes, pre, modelState);
+            var instance = tryToIdentify(textExtractionState, similarTypes, pre, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
@@ -81,16 +82,16 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             return;
         }
 
-        IWord after = word.getNextWord();
+        var after = word.getNextWord();
 
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
 
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
+            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
@@ -104,17 +105,17 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             return;
         }
 
-        IWord pre = word.getPreWord();
+        var pre = word.getPreWord();
 
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(pre);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(pre);
 
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
+            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
@@ -128,16 +129,16 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             return;
         }
 
-        IWord after = word.getNextWord();
+        var after = word.getNextWord();
 
-        ImmutableList<String> sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            ImmutableList<INounMapping> typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            ImmutableList<INounMapping> nortMappings = textExtractionState.getMappingsThatCouldBeANort(after);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(after);
 
-            IModelInstance instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
+            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
@@ -155,11 +156,12 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     private void addRecommendedInstanceIfNodeNotNull(//
             IWord currentWord, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
             ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState) {
-        if (textExtractionState.getNounMappingsByWord(currentWord) != null && instance != null) {
-            ImmutableList<INounMapping> nmappings = textExtractionState.getNounMappingsByWord(currentWord);
+        var nounMappingsByCurrentWord = textExtractionState.getNounMappingsByWord(currentWord);
+        if (instance != null && nounMappingsByCurrentWord != null) {
+            var nmappings = nounMappingsByCurrentWord;
             for (INounMapping nmapping : nmappings) {
-                String name = instance.getFullName();
-                String type = nmapping.getReference();
+                var name = instance.getFullName();
+                var type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
             }
         }
@@ -195,5 +197,6 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional configuration
     }
 }

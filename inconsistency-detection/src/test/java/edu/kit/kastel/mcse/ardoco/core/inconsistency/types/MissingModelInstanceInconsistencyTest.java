@@ -5,6 +5,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
@@ -15,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 /**
  * @author Jan Keim
  */
-public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest {
+public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements IClaimant {
 
     private MissingModelInstanceInconsistency missingModelInstanceInconsistency;
 
@@ -23,8 +24,8 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
     void beforeEach() {
         ImmutableList<IWord> words = Lists.immutable.of(new DummyWord());
         ImmutableList<String> occurences = Lists.immutable.of("occurence");
-        var nounMapping = new NounMapping(words, MappingKind.NAME, null, 1.0, words.toList(), occurences);
-        var recommendedInstance = new RecommendedInstance("name", "type", null, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.<INounMapping> empty());
+        var nounMapping = new NounMapping(words, MappingKind.NAME, this, 1.0, words.toList(), occurences);
+        var recommendedInstance = new RecommendedInstance("name", "type", this, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.<INounMapping> empty());
         missingModelInstanceInconsistency = new MissingModelInstanceInconsistency(recommendedInstance);
     }
 

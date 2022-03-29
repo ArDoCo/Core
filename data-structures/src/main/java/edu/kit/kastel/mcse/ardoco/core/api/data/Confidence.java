@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
@@ -98,6 +99,23 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         }
 
         return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(agentConfidence, confidenceAggregator);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+        var other = (Confidence) obj;
+        return Objects.equals(agentConfidence, other.agentConfidence) && confidenceAggregator == other.confidenceAggregator;
     }
 
     public enum ConfidenceAggregator implements ToDoubleFunction<Collection<Double>> {

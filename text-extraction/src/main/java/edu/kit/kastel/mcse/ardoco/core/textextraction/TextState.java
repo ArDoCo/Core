@@ -11,14 +11,12 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IRelationMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
@@ -32,9 +30,6 @@ public class TextState extends AbstractState implements ITextState {
      * The relation mappings.
      */
     private MutableList<IRelationMapping> relationMappings;
-
-    @Configurable
-    private double nortProbabilityForNameAndType = 0.05;
 
     /**
      * Creates a new name type relation state
@@ -71,17 +66,6 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /***
-     * Adds a name or type mapping to the state
-     *
-     * @param probability probability to be a name or type mapping
-     * @param word        node of the mapping
-     */
-    @Override
-    public final void addNort(IWord word, IClaimant claimant, double probability) {
-        addNort(word, claimant, probability, Lists.immutable.with(word.getText()));
-    }
-
-    /***
      * Adds a type mapping to the state
      *
      * @param probability probability to be a type mapping
@@ -104,16 +88,6 @@ public class TextState extends AbstractState implements ITextState {
         addNounMapping(word, MappingKind.TYPE, claimant, probability, occurrences);
     }
 
-    /**
-     * Removes a relation mapping from the state.
-     *
-     * @param n relation mapping to remove
-     */
-    @Override
-    public final void removeRelation(IRelationMapping n) {
-        relationMappings.remove(n);
-    }
-
     @Override
     public final ImmutableList<INounMapping> getNounMappings() {
         return nounMappings.toImmutable();
@@ -126,7 +100,7 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getTypes() {
-        return nounMappings.select(n -> MappingKind.TYPE == n.getKind()).toImmutable();
+        return nounMappings.select(nounMappingIsType()).toImmutable();
     }
 
     /**
@@ -138,17 +112,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<INounMapping> getNounMappingsByWord(IWord word) {
         return nounMappings.select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
-    }
-
-    /**
-     * Returns all mappings with the exact same reference as given.
-     *
-     * @param ref the reference to search for
-     * @return a list of noun mappings with the given reference.
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNounMappingsWithEqualReference(String ref) {
-        return nounMappings.select(nMapping -> nMapping.getReference().equalsIgnoreCase(ref)).toImmutable();
     }
 
     /**
@@ -179,21 +142,6 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /**
-     * Returns a list of all references of name or type mappings.
-     *
-     * @return all references of name or type mappings as list.
-     */
-    @Override
-    public final ImmutableList<String> getNortList() {
-        Set<String> norts = new HashSet<>();
-        var nortMappings = getNameOrTypeMappings();
-        for (INounMapping nnm : nortMappings) {
-            norts.add(nnm.getReference());
-        }
-        return Lists.immutable.withAll(norts);
-    }
-
-    /**
      * Returns a list of all references of type mappings.
      *
      * @return all references of type mappings as list.
@@ -219,17 +167,7 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /**
-     * Returns all name or type mappings
-     *
-     * @return a list of all name or type mappings
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNameOrTypeMappings() {
-        return nounMappings.select(n -> MappingKind.NAME_OR_TYPE == n.getKind()).toImmutable();
-    }
-
-    /**
-     * Returns alltype mappings containing the given node.
+     * Returns all type mappings containing the given node.
      *
      * @param word word to filter for
      * @return a list of alltype mappings containing the given node
@@ -237,61 +175,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord word) {
         return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsType()).toImmutable();
-    }
-
-    /**
-     * Returns all name mappings containing the given node.
-     *
-     * @param word word to filter for
-     * @return a list of all name mappings containing the given node
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNameMappingsByWord(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(n -> n.getKind() == MappingKind.NAME).toImmutable();
-
-    }
-
-    /**
-     * Returns all name or type mappings containing the given node.
-     *
-     * @param word word to filter for
-     * @return a list of all name or type mappings containing the given node
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNortMappingsByWord(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(n -> n.getKind() == MappingKind.NAME_OR_TYPE).toImmutable();
-    }
-
-    /**
-     * Returns all relation mappings.
-     *
-     * @return relation mappings as list
-     */
-    @Override
-    public final ImmutableList<IRelationMapping> getRelations() {
-        return Lists.immutable.withAll(relationMappings);
-    }
-
-    /**
-     * Returns if a node is contained by the name or type mappings.
-     *
-     * @param word word to check
-     * @return true if the node is contained by name or type mappings.
-     */
-    @Override
-    public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getKind() == MappingKind.NAME_OR_TYPE);
-    }
-
-    /**
-     * Returns if a node is contained by the name mappings.
-     *
-     * @param word node to check
-     * @return true if the node is contained by name mappings.
-     */
-    @Override
-    public final boolean isWordContainedByNameMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> n.getKind() == MappingKind.NAME);
     }
 
     /**
@@ -303,6 +186,21 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final boolean isWordContainedByNounMappings(IWord word) {
         return nounMappings.anySatisfy(n -> n.getWords().contains(word));
+    }
+
+    /**
+     * Returns if a node is contained by the name mappings.
+     *
+     * @param word node to check
+     * @return true if the node is contained by name mappings.
+     */
+    @Override
+    public final boolean isWordContainedByNameMapping(IWord word) {
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsName());
+    }
+
+    private Predicate<? super INounMapping> nounMappingIsName() {
+        return n -> n.getKind() == MappingKind.NAME;
     }
 
     /**
@@ -318,7 +216,15 @@ public class TextState extends AbstractState implements ITextState {
 
     private Predicate<? super INounMapping> nounMappingIsType() {
         return n -> n.getKind() == MappingKind.TYPE;
+    }
 
+    @Override
+    public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> {
+            var nameProb = n.getProbabilityForName();
+            var typeProb = n.getProbabilityForType();
+            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < NAME_OR_TYPE_MAX_DIFF;
+        });
     }
 
     @Override
@@ -359,18 +265,6 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     @Override
-    public void addNort(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
-        var mapping = addNounMapping(word, MappingKind.NAME_OR_TYPE, claimant, probability, occurrences);
-
-        if (CommonUtilities.valueEqual(mapping.getProbabilityForName(), 0)) {
-            mapping.addKindWithProbability(MappingKind.NAME, claimant, nortProbabilityForNameAndType);
-        }
-        if (CommonUtilities.valueEqual(mapping.getProbabilityForType(), 0)) {
-            mapping.addKindWithProbability(MappingKind.TYPE, claimant, nortProbabilityForNameAndType);
-        }
-    }
-
-    @Override
     public IRelationMapping addRelation(INounMapping node1, INounMapping node2, IClaimant claimant, double probability) {
         IRelationMapping relationMapping = new RelationMapping(node1, node2, probability);
         if (!relationMappings.contains(relationMapping)) {
@@ -392,5 +286,6 @@ public class TextState extends AbstractState implements ITextState {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional configuration
     }
 }
