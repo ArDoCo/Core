@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
@@ -22,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  *
  * @author Sophie
  */
-public class RecommendedInstance implements IRecommendedInstance {
+public class RecommendedInstance implements IRecommendedInstance, IClaimant {
 
     private String type;
     private String name;
@@ -60,8 +59,11 @@ public class RecommendedInstance implements IRecommendedInstance {
             ImmutableList<INounMapping> typeNodes) {
         this(name, type);
         this.probability.addAgentConfidence(claimant, probability);
+
         nameMappings.addAll(nameNodes.castToCollection());
         typeMappings.addAll(typeNodes.castToCollection());
+
+        this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
     }
 
     /**
@@ -91,15 +93,15 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public double getProbability() {
-        // TODO improve!
-        return calculateProbability();
+        return probability.getConfidence();
     }
 
-    private double calculateProbability() {
-        var highestNameProbability = getNameMappings().collectDouble(INounMapping::getProbabilityForName).maxIfEmpty(0);
-        var highestTypeProbability = getTypeMappings().collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
+    private static double calculateMappingProbability(ImmutableList<INounMapping> nameMappings, ImmutableList<INounMapping> typeMappings) {
+        var highestNameProbability = nameMappings.collectDouble(INounMapping::getProbabilityForName).maxIfEmpty(0);
+        var highestTypeProbability = typeMappings.collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
 
-        return CommonUtilities.harmonicMean(highestNameProbability, highestTypeProbability);
+        // var harmonicMean = CommonUtilities.harmonicMean(highestNameProbability, highestTypeProbability);
+        return (highestNameProbability + highestTypeProbability) / 2d;
     }
 
     /**
@@ -144,17 +146,6 @@ public class RecommendedInstance implements IRecommendedInstance {
     @Override
     public void addType(INounMapping typeMapping) {
         typeMappings.add(typeMapping);
-    }
-
-    /**
-     * Sets the probability to a given probability.
-     *
-     * @param probability the new probability
-     */
-    @Override
-    public void setProbability(IClaimant claimant, double probability) {
-        // TODO: SET != ADD
-        this.probability.addAgentConfidence(claimant, probability);
     }
 
     /**
