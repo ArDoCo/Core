@@ -78,11 +78,10 @@ public class ComputerScienceWordsAgent extends TextAgent {
         // TODO Handle Phrases
         Predicate<String> predicate = commonWord -> match(nounMapping, commonWord);
         if (this.commonCSWords.stream().anyMatch(predicate)) {
-            var occurrence = this.commonCSWords.stream().filter(predicate).findFirst().get();
+            var occurrence = this.commonCSWords.stream().filter(predicate).findFirst().orElseThrow();
             logger.debug("Found {} for {}", occurrence, word);
             nounMapping.addKindWithProbability(MappingKind.NAME, this, probabilityOfFoundWords);
             nounMapping.addKindWithProbability(MappingKind.TYPE, this, probabilityOfFoundWords);
-            nounMapping.addKindWithProbability(MappingKind.NAME_OR_TYPE, this, probabilityOfFoundWords);
         }
     }
 
@@ -195,5 +194,6 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // No Delegates
     }
 }
