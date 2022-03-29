@@ -56,6 +56,8 @@ public class NounMapping implements INounMapping {
      */
     public NounMapping(ImmutableList<IWord> words, MappingKind kind, IClaimant claimant, double probability, List<IWord> referenceWords,
             ImmutableList<String> occurrences) {
+        Objects.requireNonNull(claimant);
+
         distribution = new EnumMap<>(MappingKind.class);
         distribution.put(kind, new Confidence(claimant, probability, Confidence.ConfidenceAggregator.AVERAGE));
 
