@@ -9,12 +9,13 @@ import java.util.List;
 public class SubWordUtils {
 
     /**
-     * TODO
-     * @param string
-     * @return
+     * Checks whether the given string contains sub words.
+     *
+     * @param string the string to check
+     * @return Returns {@code true}, if the strings contains sub words.
      */
     public static boolean hasSubWords(String string) {
-        // 1.) Check if string has any normal chars
+        // 1. Check if string has any normal chars
         boolean hasNormalChars = false;
 
         for (int i = 0; i < string.length(); i++) {
@@ -30,7 +31,7 @@ public class SubWordUtils {
             return false;
         }
 
-        // 2.) Check for split characters
+        // 2. Check for split characters
         boolean previousCharWasLowercase = false;
 
         for (int i = 0; i < string.length(); i++) {
@@ -51,9 +52,10 @@ public class SubWordUtils {
     }
 
     /**
-     * TODO
-     * @param string
-     * @return
+     * Retrieves a list of sub words that are contained in the given string.
+     *
+     * @param string the string that maybe contains sub words
+     * @return the list of sub words, or a list containing the string itself if the string does not contain any
      */
     public static List<String> getSubWords(String string) {
         if (!hasSubWords(string)) {
@@ -67,7 +69,7 @@ public class SubWordUtils {
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
 
-            if (c == ' ' || c == '.' || c == '-') {
+            if (c == ' ' || c == '.' || c == '-') { // TODO: Make this configurable?
                 if (!currentSubWord.isEmpty()) {
                     subWordList.add(currentSubWord.toString());
                     currentSubWord.delete(0, currentSubWord.length());

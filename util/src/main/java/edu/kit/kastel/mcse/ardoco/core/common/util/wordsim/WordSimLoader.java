@@ -43,10 +43,6 @@ public class WordSimLoader {
      * @return a list of word similarity measures
      */
     public static List<WordSimMeasure> loadUsingProperties() {
-        if (!CommonTextToolsConfig.INITIAL_LOAD_ENABLED) {
-            return Collections.emptyList();
-        }
-
         try {
             var list = new ArrayList<WordSimMeasure>();
 
@@ -77,7 +73,7 @@ public class WordSimLoader {
 
                 LOGGER.info("Successfully loaded DL4J fastText data source!");
 
-                var measure = new FastTextMeasure(dataSource);
+                var measure = new FastTextMeasure(dataSource, CommonTextToolsConfig.FASTTEXT_SIMILARITY_THRESHOLD);
                 list.add(measure);
             }
 

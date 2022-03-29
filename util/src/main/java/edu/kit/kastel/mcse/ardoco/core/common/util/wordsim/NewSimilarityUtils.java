@@ -32,7 +32,7 @@ public class NewSimilarityUtils {
 
             ComparisonStats.record(measure, similar);
 
-            if (similar) {
+            if (similar) { // TODO: Early return here in the future
                 result = true;
             }
         }

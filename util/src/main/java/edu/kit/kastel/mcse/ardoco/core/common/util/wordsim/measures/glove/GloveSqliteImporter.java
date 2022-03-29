@@ -15,12 +15,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * Reads a file containing pre-trained glove vector representations and inserts them into a sqlite database.
+ * The database must contain a table called {@code words} with two columns: {@code word} and {@code vec}.
+ * The {@code word} column must be a {@code TEXT} column while the {@code vec} column must be a {@code BLOB}.
+ * Vector representations will be inserted as a consecutive sequence of floats.
+ * The amount of floats in a sequence depends on the dimension of the vectors.
+ */
 public class GloveSqliteImporter {
 
+    /**
+     * Executes the import process.
+     * The first string in the args array must be the path to the file containing the vector representations.
+     * The second string in the args array must be the path to the sqlite database file.
+     * The third string in the args array must be the dimension of the vectors.
+     * @param args the args
+     * @throws IOException if an io error occurs
+     * @throws SQLException if a database related error occurs
+     */
     public static void main(String[] args) throws IOException, SQLException {
-        // 2 196 017 lines
-        Path p =      Path.of("C:\\dev\\uni\\bachelor\\Notizen\\wordsim\\data\\glove\\twitter\\glove.twitter.27B.25d.txt");
-        Path dbFile = Path.of("C:\\dev\\uni\\bachelor\\Notizen\\wordsim\\data\\glove\\twitter\\glove_twitter_25d.sqlite");
+        Path vectorFile = Path.of(args[0]);
+        Path dbFile = Path.of(args[1]);
+        int dimension = Integer.parseInt(args[2]);
 
         long lineStart = 0;
         long lineEnd = 3000000;
@@ -37,13 +53,11 @@ public class GloveSqliteImporter {
 
         var skipped = new ArrayList<String>();
 
-        // INSERT
         try (var connection = cfg.createConnection("jdbc:sqlite:" + dbFile.toAbsolutePath())) {
             try (var statement = connection.prepareStatement("INSERT INTO `words` (`word`, `vec`) VALUES (?, ?);")) {
-                try (var in = Files.newInputStream(p)) {
+                try (var in = Files.newInputStream(vectorFile)) {
                     try (var reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
                         try (var bufferedReader = new BufferedReader(reader)) {
-                            int dimension = 300;
                             ByteBuffer buffer = ByteBuffer.allocate(dimension * 4);
 
                             while (bufferedReader.ready()) {
@@ -77,12 +91,12 @@ public class GloveSqliteImporter {
                                 }
 
                                 buffer.clear();
+
                                 for (int i = 0; i < parts.length - 1; i++) {
                                     float value = Float.parseFloat(parts[i + 1]);
                                     buffer.putFloat(value);
                                 }
 
-                                //System.out.println(word.length() + ": " + word);
                                 statement.setString(1, word);
                                 statement.setBytes(2, buffer.array());
                                 statement.execute();
@@ -94,16 +108,14 @@ public class GloveSqliteImporter {
                 }
             }
 
-            System.out.println("=======================================================================================");
-            System.out.println("Inserted: " + inserted);
+            System.out.println("==============================================");
+            System.out.printf("Inserted: %s%n", inserted);
             System.out.println("Skipped:");
 
-            for (String s : skipped) {
-                System.out.println(s.length() + ": " + s);
+            for (String skippedWord : skipped) {
+                System.out.printf("%s: %s%n", skippedWord.length(), skippedWord);
             }
         }
-
-
     }
 
 }

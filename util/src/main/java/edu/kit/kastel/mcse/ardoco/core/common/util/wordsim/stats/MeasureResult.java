@@ -5,6 +5,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 import java.util.Objects;
 
+/**
+ * This class will probably be deleted in the future.
+ */
 public final class MeasureResult {
 
     public final WordSimMeasure measure;

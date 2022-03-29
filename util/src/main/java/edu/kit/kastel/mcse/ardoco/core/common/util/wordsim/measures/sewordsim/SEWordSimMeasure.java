@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +38,12 @@ public class SEWordSimMeasure implements WordSimMeasure {
      * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
      */
     public SEWordSimMeasure(SEWordSimDataSource dataSource, double similarityThreshold) {
-        Objects.requireNonNull(dataSource);
+        this.dataSource = Objects.requireNonNull(dataSource);
+        this.similarityThreshold = similarityThreshold;
 
         if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
             throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
         }
-
-        this.dataSource = dataSource;
-        this.similarityThreshold = similarityThreshold;
     }
 
     @Override
@@ -56,8 +55,9 @@ public class SEWordSimMeasure implements WordSimMeasure {
                 return false; // words are probably missing in the database
             }
 
-            return similarity >= this.similarityThreshold;
+            ComparisonStats.recordScore(similarity);
 
+            return similarity >= this.similarityThreshold;
         } catch (SQLException e) {
             LOGGER.error("Failed to query the SEWordSim database for word comparison: " + ctx, e);
             return false;

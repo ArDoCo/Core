@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
 
 import java.util.Objects;
 
@@ -12,13 +13,15 @@ import java.util.Objects;
  */
 public class NgramMeasure implements WordSimMeasure {
 
+    private static final char LUCENE_PREFIX_CHARACTER = '\n';
+
     /**
      * The variants of this algorithm
      */
     public enum Variant {
         /**
          * This variant matches the algorithm included in apache/lucene which is also positional but deviates from the
-         * original algorithm by using \n as the prefix character and changing the weight for the dN function.
+         * original algorithm by using {@link #LUCENE_PREFIX_CHARACTER} as the prefix character and changing the weight for the dN function.
          */
         LUCENE,
         /**
@@ -45,25 +48,23 @@ public class NgramMeasure implements WordSimMeasure {
      * @param variant             the variant that should be used
      * @param n                   the length of the considered n-grams, must be a positive integer
      * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
+     * @throws IllegalArgumentException if {@code n} or similarityThreshold are invalid
      */
-    public NgramMeasure(Variant variant, int n, double similarityThreshold) {
-        Objects.requireNonNull(variant);
+    public NgramMeasure(Variant variant, int n, double similarityThreshold) throws IllegalArgumentException {
+        this.variant = Objects.requireNonNull(variant);
+        this.n = n;
+        this.similarityThreshold = similarityThreshold;
 
-        if (n < 0) {
+        if (n <= 0) {
             throw new IllegalArgumentException("n must be a positive integer: " + n);
         }
 
         if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
             throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
         }
-
-        this.variant = Objects.requireNonNull(variant);
-        this.n = n;
-        this.similarityThreshold = similarityThreshold;
     }
 
-    @Override
-    public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
 
         double distance = calculateDistance(ctx.firstTerm(), ctx.secondTerm());
@@ -72,9 +73,18 @@ public class NgramMeasure implements WordSimMeasure {
 
         double similarity = 1.0 - normalizedDistance;
 
+        ComparisonStats.recordScore(similarity);
+
         return similarity >= this.similarityThreshold;
     }
 
+    /**
+     * Calculates the distance between the two given strings.
+     *
+     * @param x the first string
+     * @param y the second string
+     * @return the distance
+     */
     public double calculateDistance(String x, String y) {
         Objects.requireNonNull(x);
         Objects.requireNonNull(y);
@@ -89,8 +99,8 @@ public class NgramMeasure implements WordSimMeasure {
 
         for (int u = 1; u <= n - 1; u++) {
             if (variant == Variant.LUCENE) {
-                x = '\n' + x;
-                y = '\n' + y;
+                x = LUCENE_PREFIX_CHARACTER + x;
+                y = LUCENE_PREFIX_CHARACTER + y;
             } else if (variant == Variant.POSITIONAL) {
                 x = x.charAt(0) + x;
                 y = y.charAt(0) + y;
@@ -127,7 +137,7 @@ public class NgramMeasure implements WordSimMeasure {
 
             sum += diff;
 
-            if (variant == Variant.LUCENE && diff == 0 && x.charAt(i + u - 1) == '\n') {
+            if (variant == Variant.LUCENE && diff == 0 && x.charAt(i + u - 1) == LUCENE_PREFIX_CHARACTER) {
                 actualN -= 1.0; // Ignore prefix character in LUCENE mode
             }
         }
