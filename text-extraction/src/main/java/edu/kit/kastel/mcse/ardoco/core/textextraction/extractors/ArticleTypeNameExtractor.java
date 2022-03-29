@@ -16,6 +16,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  * @author Sophie, Jan
  */
 public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
+    @Configurable
+    private boolean enabled = false;
 
     @Configurable
     private double probability = 1.0;
@@ -24,10 +26,14 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public ArticleTypeNameExtractor() {
+        // empty
     }
 
     @Override
     public void exec(TextAgentData data, IWord n) {
+        if (!enabled) {
+            return;
+        }
         if (!checkIfNodeIsName(data.getTextState(), n)) {
             checkIfNodeIsType(data.getTextState(), n);
         }
@@ -67,5 +73,6 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional configuration
     }
 }
