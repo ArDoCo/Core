@@ -32,11 +32,9 @@ public class SEWordSimDataSource implements AutoCloseable {
      * {@link #close()} is called on this instance.
      *
      * @param sqliteFile the path to the sqlite database file
-     * @throws SQLException if connecting to the sqlite fails
+     * @throws SQLException if connecting to the sqlite database fails
      */
     public SEWordSimDataSource(Path sqliteFile) throws SQLException {
-        Objects.requireNonNull(sqliteFile);
-
         if (!Files.exists(sqliteFile)) {
             throw new IllegalArgumentException("sqliteFile does not exist: " + sqliteFile);
         }
@@ -61,6 +59,7 @@ public class SEWordSimDataSource implements AutoCloseable {
      */
     public boolean containsWord(String word) throws SQLException {
         Objects.requireNonNull(word);
+
         if (word.isEmpty()) {
             return false;
         }
@@ -92,8 +91,6 @@ public class SEWordSimDataSource implements AutoCloseable {
     public Optional<Double> getSimilarity(String firstWord, String secondWord) throws SQLException {
         Objects.requireNonNull(firstWord);
         Objects.requireNonNull(secondWord);
-
-        // TODO: Split words
 
         firstWord = PorterStemmer.stem(firstWord);
         secondWord = PorterStemmer.stem(secondWord);

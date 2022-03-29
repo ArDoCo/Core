@@ -8,11 +8,6 @@ import org.eclipse.collections.api.list.ImmutableList;
  */
 public final class CommonTextToolsConfig {
 
-    /**
-     * TODO: REMOVE
-     */
-    public static boolean INITIAL_LOAD_ENABLED = true;
-
     private CommonTextToolsConfig() {
         throw new IllegalAccessError();
     }

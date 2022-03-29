@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents a word similarity measure that is using various algorithms on the WordNet graph to calculate word
+ * A word similarity measure that is using various algorithms on the WordNet graph to calculate word
  * similarity.
  */
 public class WordNetMeasure implements WordSimMeasure {
@@ -37,7 +37,7 @@ public class WordNetMeasure implements WordSimMeasure {
 
             double normalizedSimilarity = (similarity - calculator.getMin()) / calculator.getMax();
 
-            if (normalizedSimilarity > threshold) {
+            if (normalizedSimilarity >= threshold) {
                 return true;
             }
         }

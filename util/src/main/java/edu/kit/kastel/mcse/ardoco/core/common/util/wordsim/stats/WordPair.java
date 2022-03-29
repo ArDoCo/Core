@@ -4,6 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats;
 import java.util.Comparator;
 import java.util.Objects;
 
+/**
+ * This class will probably be deleted in the future.
+ */
 public class WordPair implements Comparable<WordPair> {
 
     public final String firstWord;

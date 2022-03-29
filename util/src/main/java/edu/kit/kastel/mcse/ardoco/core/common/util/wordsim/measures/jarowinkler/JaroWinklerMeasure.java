@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 
 /**
@@ -25,15 +26,24 @@ public class JaroWinklerMeasure implements WordSimMeasure {
     /**
      * Constructs an new {@link JaroWinklerMeasure}.
      * 
-     * @param similarityThreshold the similarity threshold above which word pairs are considered similar
+     * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
+     * @throws IllegalArgumentException if the given threshold is not between 0 and 1
      */
-    public JaroWinklerMeasure(double similarityThreshold) {
+    public JaroWinklerMeasure(double similarityThreshold) throws IllegalArgumentException {
+        if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
+            throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
+        }
+
         this.similarityThreshold = similarityThreshold;
     }
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        return jaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm()) >= this.similarityThreshold;
+        double similarity = this.jaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm());
+
+        ComparisonStats.recordScore(similarity);
+
+        return similarity >= this.similarityThreshold;
     }
 
 }

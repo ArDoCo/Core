@@ -11,6 +11,9 @@ import org.deeplearning4j.text.stopwords.StopWords;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A WordNet based relatedness calculator that calculates similarity based on Ezzikouri et al. 2019
+ */
 public class Ezzikouri extends RelatednessCalculator {
 
     private static final double MIN = 0.0;
@@ -25,27 +28,33 @@ public class Ezzikouri extends RelatednessCalculator {
     }
 
     @Override protected Relatedness calcRelatedness(Concept first, Concept second) {
-        Set<String> firstGloss = stem(clean(getGlossWords(first)));
-        Set<String> secondGloss = stem(clean(getGlossWords(second)));
-        Set<String> firstWords = stem(clean(db.getWords(first)));
-        Set<String> secondWords = stem(clean(db.getWords(second)));
+        if (first.getSynsetID().equals(second.getSynsetID())) {
+            return new Relatedness(1.0);
+        }
 
-        double wordsScore = intersection(firstWords, secondWords) / union(firstWords, secondWords);
-        double glossScore = intersection(firstGloss, secondGloss) / union(firstGloss, secondGloss);
-        double score = (wordsScore + glossScore) / 2.0;
+        Set<String> firstGloss = stem(removeStopWords(getGlossWords(first)));
+        Set<String> secondGloss = stem(removeStopWords(getGlossWords(second)));
+        Set<String> firstWords = stem(removeStopWords(db.getWords(first)));
+        Set<String> secondWords = stem(removeStopWords(db.getWords(second)));
 
-        //double score = (intersection(firstWords, secondWords) + intersection(firstGloss, secondGloss))
-        //                            / (union(firstWords, firstGloss, secondWords, secondGloss));
+        //double wordsScore = intersection(firstWords, secondWords) / union(firstWords, secondWords);
+        //double glossScore = intersection(firstGloss, secondGloss) / union(firstGloss, secondGloss);
+        //double score = (wordsScore + glossScore) / 2.0;
+
+        double score = (intersection(firstWords, secondWords) + intersection(firstGloss, secondGloss))
+                                    / (union(firstWords, firstGloss, secondWords, secondGloss));
 
         return new Relatedness(score);
     }
 
     @Override public List<POS[]> getPOSPairs() { return POS_PAIRS; }
 
-    private double union(Collection<String> first, Collection<String> second) {
+    private double union(Collection<String> first, Collection<String> second, Collection<String> third, Collection<String> fourth) {
         var strings = new HashSet<String>();
         strings.addAll(first);
         strings.addAll(second);
+        strings.addAll(third);
+        strings.addAll(fourth);
         return strings.size();
     }
 
@@ -68,7 +77,7 @@ public class Ezzikouri extends RelatednessCalculator {
                 .collect(Collectors.toSet());
     }
 
-    private Set<String> clean(List<String> strings) {
+    private Set<String> removeStopWords(List<String> strings) {
         var stopWords = StopWords.getStopWords();
 
         return strings.stream()
