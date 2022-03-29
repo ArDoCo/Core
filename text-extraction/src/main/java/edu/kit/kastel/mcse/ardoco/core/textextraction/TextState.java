@@ -223,7 +223,7 @@ public class TextState extends AbstractState implements ITextState {
         return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> {
             var nameProb = n.getProbabilityForName();
             var typeProb = n.getProbabilityForType();
-            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < 0.1;
+            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < NAME_OR_TYPE_MAX_DIFF;
         });
     }
 

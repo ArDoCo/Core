@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  *
  * @author Sophie, Jan
  */
+@Deprecated(since = "Currently Not Operational")
 public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
     @Configurable
     private boolean enabled = false;

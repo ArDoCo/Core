@@ -14,6 +14,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 public interface ITextState extends ICopyable<ITextState>, IConfigurable {
 
     /**
+     * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
+     * 
+     * @see #getMappingsThatCouldBeNameOrType(IWord)
+     * @see #isWordContainedByNameOrTypeMapping(IWord)
+     */
+    double NAME_OR_TYPE_MAX_DIFF = 0.1;
+
+    /**
      * * Adds a name mapping to the state.
      *
      * @param n           node of the mapping
@@ -195,7 +203,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
         return getNounMappingsByWord(word).select(n -> {
             var nameProb = n.getProbabilityForName();
             var typeProb = n.getProbabilityForType();
-            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < 0.1;
+            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < NAME_OR_TYPE_MAX_DIFF;
         });
     }
 

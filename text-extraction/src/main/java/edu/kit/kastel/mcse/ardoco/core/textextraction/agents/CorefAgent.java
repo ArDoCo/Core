@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
+@Deprecated(since = "Currently Not Operational")
 public class CorefAgent extends TextAgent {
 
     @Configurable
