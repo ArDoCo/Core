@@ -14,6 +14,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 public interface ITextState extends ICopyable<ITextState>, IConfigurable {
 
     /**
+     * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
+     * 
+     * @see #getMappingsThatCouldBeNameOrType(IWord)
+     * @see #isWordContainedByNameOrTypeMapping(IWord)
+     */
+    double NAME_OR_TYPE_MAX_DIFF = 0.1;
+
+    /**
      * * Adds a name mapping to the state.
      *
      * @param n           node of the mapping
@@ -29,23 +37,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param probability probability to be a name mapping
      */
     void addName(IWord word, IClaimant claimant, double probability);
-
-    /**
-     * * Adds a name or type mapping to the state.
-     *
-     * @param word        node of the mapping
-     * @param probability probability to be a name or type mapping
-     */
-    void addNort(IWord word, IClaimant claimant, double probability);
-
-    /**
-     * * Adds a name or type mapping to the state.
-     *
-     * @param word        node of the mapping
-     * @param probability probability to be a name or type mapping
-     * @param occurrences list of the appearances of the mapping
-     */
-    void addNort(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a type mapping to the state.
@@ -85,13 +76,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     void removeNounMapping(INounMapping n);
 
     /**
-     * Removes a relation mapping from the state.
-     *
-     * @param n relation mapping to remove
-     */
-    void removeRelation(IRelationMapping n);
-
-    /**
      * Returns all type mappings.
      *
      * @return all type mappings as list
@@ -107,26 +91,11 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     ImmutableList<INounMapping> getNounMappingsByWord(IWord n);
 
     /**
-     * Returns all mappings with the exact same reference as given.
-     *
-     * @param ref the reference to search for
-     * @return a list of noun mappings with the given reference.
-     */
-    ImmutableList<INounMapping> getNounMappingsWithEqualReference(String ref);
-
-    /**
      * Returns a list of all references of name mappings.
      *
      * @return all references of name mappings as list.
      */
     ImmutableList<String> getNameList();
-
-    /**
-     * Returns a list of all references of name or type mappings.
-     *
-     * @return all references of name or type mappings as list.
-     */
-    ImmutableList<String> getNortList();
 
     /**
      * Returns a list of all references of type mappings.
@@ -143,52 +112,12 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     ImmutableList<INounMapping> getNames();
 
     /**
-     * Returns all name or type mappings.
-     *
-     * @return a list of all name or type mappings
-     */
-    ImmutableList<INounMapping> getNameOrTypeMappings();
-
-    /**
-     * Returns alltype mappings containing the given node.
+     * Returns all type mappings containing the given node.
      *
      * @param word node to filter for
      * @return a list of alltype mappings containing the given node
      */
     ImmutableList<INounMapping> getTypeMappingsByWord(IWord word);
-
-    /**
-     * Returns all name mappings containing the given node.
-     *
-     * @param node node to filter for
-     * @return a list of all name mappings containing the given node
-     */
-    ImmutableList<INounMapping> getNameMappingsByWord(IWord node);
-
-    /**
-     * Returns all name or type mappings containing the given node.
-     *
-     * @param node node to filter for
-     * @return a list of all name or type mappings containing the given node
-     */
-    ImmutableList<INounMapping> getNortMappingsByWord(IWord node);
-
-    /**
-     * Returns all relation mappings.
-     *
-     * @return relation mappings as list
-     */
-    ImmutableList<IRelationMapping> getRelations();
-
-    // --- isContained section --->
-
-    /**
-     * Returns if a node is contained by the name or type mappings.
-     *
-     * @param node node to check
-     * @return true if the node is contained by name or type mappings.
-     */
-    boolean isWordContainedByNameOrTypeMapping(IWord node);
 
     /**
      * Returns if a node is contained by the name mappings.
@@ -213,6 +142,14 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return true if the node is contained by type mappings.
      */
     boolean isWordContainedByTypeMapping(IWord node);
+
+    /**
+     * Returns if a node is contained by a mapping that can be both, a name or a type mapping.
+     *
+     * @param word word to check
+     * @return true if the node is contained by name or type mappings.
+     */
+    boolean isWordContainedByNameOrTypeMapping(IWord word);
 
     /**
      * Gets the all noun mappings.
@@ -249,20 +186,25 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     }
 
     /**
-     * Gets the mappings that could be A nort.
-     *
-     * @param word the word
-     * @return the mappings that could be A nort
-     */
-    default ImmutableList<INounMapping> getMappingsThatCouldBeANort(IWord word) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForNort() > 0);
-    }
-
-    /**
      * Returns all mappings with a similar reference as given.
      *
      * @param ref the reference to search for
      * @return a list of noun mappings with the given reference.
      */
     ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref);
+
+    /**
+     * Gets the mappings that could be a Name or Type.
+     *
+     * @param word the word
+     * @return the mappings that could be a Name or Type
+     */
+    default ImmutableList<INounMapping> getMappingsThatCouldBeNameOrType(IWord word) {
+        return getNounMappingsByWord(word).select(n -> {
+            var nameProb = n.getProbabilityForName();
+            var typeProb = n.getProbabilityForType();
+            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < NAME_OR_TYPE_MAX_DIFF;
+        });
+    }
+
 }

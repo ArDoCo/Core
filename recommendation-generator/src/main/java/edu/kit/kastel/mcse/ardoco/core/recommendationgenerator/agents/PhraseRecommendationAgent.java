@@ -26,6 +26,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
     private double confidence = 0.8;
 
     public PhraseRecommendationAgent() {
+        // empty
     }
 
     @Override
@@ -154,5 +155,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

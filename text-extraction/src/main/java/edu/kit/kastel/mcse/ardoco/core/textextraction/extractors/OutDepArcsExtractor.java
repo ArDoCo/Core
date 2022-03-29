@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.util.Map;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
@@ -20,6 +18,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  */
 
 public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
+    @Configurable
+    private double nameOrTypeWeight = 0.5;
 
     @Configurable
     private double probability = 0.8;
@@ -28,12 +28,13 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public OutDepArcsExtractor() {
+        // empty
     }
 
     @Override
     public void exec(TextAgentData data, IWord n) {
 
-        String nodeValue = n.getText();
+        var nodeValue = n.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
             return;
         }
@@ -45,26 +46,21 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
      */
     private void examineOutgoingDepArcs(ITextState textState, IWord word) {
 
-        ImmutableList<DependencyTag> outgoingDepArcs = WordHelper.getOutgoingDependencyTags(word);
+        var outgoingDepArcs = WordHelper.getOutgoingDependencyTags(word);
 
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 
-            if (DependencyTag.AGENT == shortDepTag) {
-                textState.addNort(word, this, probability);
-
-            } else if (DependencyTag.NUM == shortDepTag) {
+            if (DependencyTag.AGENT == shortDepTag || DependencyTag.RCMOD == shortDepTag) {
+                textState.addName(word, this, probability * nameOrTypeWeight);
+                textState.addType(word, this, probability * nameOrTypeWeight);
+            } else if (DependencyTag.NUM == shortDepTag || DependencyTag.PREDET == shortDepTag) {
                 textState.addType(word, this, probability);
-
-            } else if (DependencyTag.PREDET == shortDepTag) {
-                textState.addType(word, this, probability);
-
-            } else if (DependencyTag.RCMOD == shortDepTag) {
-                textState.addNort(word, this, probability);
             }
         }
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

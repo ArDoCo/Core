@@ -50,7 +50,7 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
     }
 
     private boolean checkProbabilityOfBeingRecommendedInstance(IRecommendedInstance recommendedInstance) {
-        return recommendedInstance.getProbability() > 0.3;
+        return recommendedInstance.getProbability() > 0.0;
     }
 
     /**
@@ -84,6 +84,9 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
     private boolean checkTwo(IRecommendedInstance recommendedInstance) {
         // TODO
         return true;
+
+        // - more than one instance in the text for a recommendedInstance
+        // - filter words / NounMappings that are common expressions
     }
 
     @Override
