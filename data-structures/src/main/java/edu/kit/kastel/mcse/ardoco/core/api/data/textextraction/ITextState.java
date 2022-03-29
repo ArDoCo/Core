@@ -192,7 +192,11 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return the mappings that could be a Name or Type
      */
     default ImmutableList<INounMapping> getMappingsThatCouldBeNameOrType(IWord word) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForName() > 0 && mapping.getProbabilityForType() > 0);
+        return getNounMappingsByWord(word).select(n -> {
+            var nameProb = n.getProbabilityForName();
+            var typeProb = n.getProbabilityForType();
+            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < 0.1;
+        });
     }
 
 }
