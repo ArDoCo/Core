@@ -85,6 +85,28 @@ public class VectorUtils {
     }
 
     /**
+     * Checks whether the given vector contains any non-zero numbers.
+     *
+     * @param vector the vector to check
+     * @return {@code true} if the given vector either has no entries or if the only entries are zero
+     */
+    public static boolean isZero(float[] vector) {
+        Objects.requireNonNull(vector);
+
+        if (vector.length <= 0) {
+            return true;
+        }
+
+        for (float entry : vector) {
+            if (entry != 0.0f) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Adds the given vectors together and stores the resulting vector in the first argument. The two given vectors must
      * have the same length.
      *
