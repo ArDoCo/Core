@@ -1,8 +1,11 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.util.List;
-
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.NewSimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.logging.log4j.CloseableThreadContext.Instance;
@@ -10,10 +13,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import java.util.List;
 
 /**
  * This class is a utility class.
@@ -143,7 +143,8 @@ public final class SimilarityUtils {
     public static boolean areWordsSimilar(IWord word1, IWord word2) {
         var word1Text = word1.getText();
         var word2Text = word2.getText();
-        return areWordsSimilar(word1Text, word2Text);
+        //return areWordsSimilar(word1Text, word2Text);
+        return NewSimilarityUtils.areWordsSimilar(word1, word2);
     }
 
     /**
@@ -167,9 +168,11 @@ public final class SimilarityUtils {
             return false;
         }
 
-        var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test, similarityThreshold);
-        var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
-        return isJaroWinklerSimilar || isLevenshteinSimilar;
+        //var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test, similarityThreshold);
+        //var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
+        //return isJaroWinklerSimilar || isLevenshteinSimilar;
+
+        return NewSimilarityUtils.areWordsSimilar(original, word2test);
     }
 
     private static boolean jaroWinklerSimilarityTest(String original, String word2test, Double threshold) {
