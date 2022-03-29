@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
@@ -63,7 +64,10 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         if (agentConfidence.isEmpty()) {
             return 0;
         }
-        return confidenceAggregator.applyAsDouble(agentConfidence.stream().map(Pair::getTwo).toList());
+        var groupAggregator = ConfidenceAggregator.MAX;
+        var claimantGroupings = agentConfidence.stream().collect(Collectors.groupingBy(Pair::getOne)).values();
+        var claimantConfidences = claimantGroupings.stream().map(l -> l.stream().map(Pair::getTwo).toList()).map(groupAggregator::applyAsDouble).toList();
+        return confidenceAggregator.applyAsDouble(claimantConfidences);
     }
 
     /**
