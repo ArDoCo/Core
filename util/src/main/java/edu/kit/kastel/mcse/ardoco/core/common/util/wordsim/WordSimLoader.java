@@ -5,10 +5,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.DL4JFastTextDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.FastTextMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.SEWordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet.Ezzikouri;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet.WordNetMeasure;
 import edu.mit.jwi.IRAMDictionary;
 import edu.mit.jwi.RAMDictionary;
@@ -110,11 +112,15 @@ public class WordSimLoader {
                 }
 
                 if (CommonTextToolsConfig.WORDNET_ALGO_EZZIKOURI_ENABLED) {
-                    // TODO: Implement EZZIKOURI
+                    calculatorThresholdMap.put(new Ezzikouri(database), CommonTextToolsConfig.WORDNET_ALGO_EZZIKOURI_THRESHOLD);
                 }
 
                 var measure = new WordNetMeasure(calculatorThresholdMap);
                 list.add(measure);
+            }
+
+            if (CommonTextToolsConfig.GLOVE_ENABLED) {
+                list.add(new GloveMeasure());
             }
 
             return list;
