@@ -44,7 +44,7 @@ public class SubWordUtils {
                 return true;
             }
 
-            previousCharWasLowercase = !Character.isUpperCase(c);
+            previousCharWasLowercase = !Character.isUpperCase(c) && !Character.isDigit(c);
         }
 
         return false;
@@ -71,8 +71,9 @@ public class SubWordUtils {
                 if (!currentSubWord.isEmpty()) {
                     subWordList.add(currentSubWord.toString());
                     currentSubWord.delete(0, currentSubWord.length());
+                    previousCharWasLowercase = false;
                 } else {
-                    currentSubWord.append(c);
+                    previousCharWasLowercase = false;
                 }
             } else {
                 if (Character.isUpperCase(c) && previousCharWasLowercase) {
@@ -88,7 +89,7 @@ public class SubWordUtils {
                     }
                 } else {
                     currentSubWord.append(c);
-                    previousCharWasLowercase = !Character.isUpperCase(c);
+                    previousCharWasLowercase = !Character.isUpperCase(c) && !Character.isDigit(c);
                 }
             }
         }
