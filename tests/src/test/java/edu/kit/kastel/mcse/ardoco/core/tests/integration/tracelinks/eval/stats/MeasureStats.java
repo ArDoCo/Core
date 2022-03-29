@@ -4,25 +4,30 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.Comparison;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class MeasureStats implements Comparable<MeasureStats> {
 
     public final WordSimMeasure measure;
     public final String measureId;
-    public final List<Comparison> accepted = new ArrayList<>();
-    public final List<Comparison> denied = new ArrayList<>();
-    public final List<Comparison> uniquelyAccepted = new ArrayList<>();
+    public final Set<Comparison> accepted = new HashSet<>();
+    public final Set<Comparison> denied = new HashSet<>();
+    public final Set<Comparison> uniquelyAccepted = new HashSet<>();
 
     public MeasureStats(WordSimMeasure measure) {
         this.measure = measure;
         this.measureId = measure.getClass().getSimpleName();
     }
 
-    @Override
-    public boolean equals(Object o) {
+    public void addFrom(MeasureStats other) {
+        this.accepted.addAll(other.accepted);
+        this.denied.addAll(other.denied);
+        this.uniquelyAccepted.addAll(other.uniquelyAccepted);
+    }
+
+    @Override public boolean equals(Object o) {
         if (this == o)
             return true;
         if (!(o instanceof MeasureStats))
@@ -31,13 +36,11 @@ public class MeasureStats implements Comparable<MeasureStats> {
         return measureId.equals(that.measureId);
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         return Objects.hash(measureId);
     }
 
-    @Override
-    public int compareTo(MeasureStats o) {
+    @Override public int compareTo(MeasureStats o) {
         return this.measureId.compareTo(o.measureId);
     }
 

@@ -38,13 +38,13 @@ public class ComparisonStatGroup {
         // 1.) Remove any duplicate comparisons
         Map<WordPair, Comparison> comparisonMap = new HashMap<>();
         for (Comparison comparison : inputComparisons) {
-            comparisonMap.put(new WordPair(comparison.ctx().firstString(), comparison.ctx().secondString()), comparison);
+            comparisonMap.put(new WordPair(comparison.firstWord(), comparison.secondWord()), comparison);
         }
         this.comparisons = comparisonMap.values().stream().sorted().toList();
 
         // 2.) Analyze comparisons for gold standard stats
         this.comparisonCount = comparisons.size();
-        this.wordCount = Stream.concat(comparisons.stream().map(c -> c.ctx().firstString()), comparisons.stream().map(c -> c.ctx().secondString()))
+        this.wordCount = Stream.concat(comparisons.stream().map(Comparison::firstWord), comparisons.stream().map(Comparison::secondWord))
                 .collect(toSet())
                 .size();
 
