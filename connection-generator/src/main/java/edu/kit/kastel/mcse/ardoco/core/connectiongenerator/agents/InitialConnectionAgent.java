@@ -26,6 +26,7 @@ public class InitialConnectionAgent extends ConnectionAgent {
      * Create the agent.
      */
     public InitialConnectionAgent() {
+        // empty
     }
 
     @Override

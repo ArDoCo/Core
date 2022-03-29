@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionS
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
 /**
  * The connection state encapsulates all connections between the model extraction state and the recommendation state.
@@ -105,16 +103,16 @@ public class ConnectionState extends AbstractState implements IConnectionState {
     @Override
     public void addToLinks(IRecommendedInstance recommendedModelInstance, IModelInstance instance, IClaimant claimant, double probability) {
 
-        IInstanceLink instancelink = new InstanceLink(recommendedModelInstance, instance, claimant, probability);
-        if (!isContainedByInstanceLinks(instancelink)) {
-            instanceLinks.add(instancelink);
+        var newInstanceLink = new InstanceLink(recommendedModelInstance, instance, claimant, probability);
+        if (!isContainedByInstanceLinks(newInstanceLink)) {
+            instanceLinks.add(newInstanceLink);
         } else {
-            Optional<IInstanceLink> optionalInstanceLink = instanceLinks.stream().filter(il -> il.equals(instancelink)).findFirst();
+            var optionalInstanceLink = instanceLinks.stream().filter(il -> il.equals(newInstanceLink)).findFirst();
             if (optionalInstanceLink.isPresent()) {
-                IInstanceLink instanceLink = optionalInstanceLink.get();
-                ImmutableList<INounMapping> nameMappings = instancelink.getTextualInstance().getNameMappings();
-                ImmutableList<INounMapping> typeMappings = instancelink.getTextualInstance().getTypeMappings();
-                instanceLink.getTextualInstance().addMappings(nameMappings, typeMappings);
+                var existingInstanceLink = optionalInstanceLink.get();
+                var newNameMappings = newInstanceLink.getTextualInstance().getNameMappings();
+                var newTypeMappings = newInstanceLink.getTextualInstance().getTypeMappings();
+                existingInstanceLink.getTextualInstance().addMappings(newNameMappings, newTypeMappings);
             }
         }
     }

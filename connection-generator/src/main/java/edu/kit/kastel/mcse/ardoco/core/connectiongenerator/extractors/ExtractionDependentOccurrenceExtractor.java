@@ -23,14 +23,15 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
     private double probability = 1.0;
 
     public ExtractionDependentOccurrenceExtractor() {
+        // empty
     }
 
     @Override
-    public void exec(ConnectionAgentData data, IWord n) {
+    public void exec(ConnectionAgentData data, IWord word) {
         for (var model : data.getModelIds()) {
             // TODO revisit and check if we want to check something different than only words as well
-            searchForName(data.getModelState(model), data.getTextState(), n);
-            searchForType(data.getModelState(model), data.getTextState(), n);
+            searchForName(data.getModelState(model), data.getTextState(), word);
+            searchForType(data.getModelState(model), data.getTextState(), word);
         }
     }
 
@@ -70,5 +71,6 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

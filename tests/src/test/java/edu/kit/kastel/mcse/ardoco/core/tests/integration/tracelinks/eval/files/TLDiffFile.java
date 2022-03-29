@@ -49,7 +49,11 @@ public class TLDiffFile {
         // Append project specific details
         for (TLProjectEvalResult oldResult : oldResults) {
             var project = oldResult.getProject();
-            var newResult = newResults.stream().filter(r -> r.getProject().equals(project)).findAny().orElseThrow();
+            var newResultOptional = newResults.stream().filter(r -> r.getProject().equals(project)).findAny();
+            if (newResultOptional.isEmpty()) {
+                continue;
+            }
+            var newResult = newResultOptional.get();
             var data = dataMap.get(project);
 
             builder.append("# ").append(project.name()).append("\n\n");
