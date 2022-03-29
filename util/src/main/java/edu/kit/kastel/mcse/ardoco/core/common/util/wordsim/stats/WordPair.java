@@ -9,10 +9,6 @@ public class WordPair implements Comparable<WordPair> {
     public final String firstWord;
     public final String secondWord;
 
-    public WordPair(Comparison comparison) {
-        this(comparison.ctx().firstString(), comparison.ctx().secondString());
-    }
-
     public WordPair(String firstWord, String secondWord) {
         Objects.requireNonNull(firstWord);
         Objects.requireNonNull(secondWord);

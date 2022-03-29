@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.Comparison;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalUtils;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatGroup;
@@ -14,12 +13,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 public class TLStatsFile {
+
+    private static final DecimalFormat PCT_FORMAT = new DecimalFormat("##.00%");
 
     public static void save(Path targetFile, Map<Project, ComparisonStatGroup> statsMap, Map<Project, AgentDatastructure> dataMap) throws IOException {
         if (statsMap.isEmpty()) {
@@ -89,38 +91,18 @@ public class TLStatsFile {
 
         for (WordSimMeasure rowMeasure : measures) {
             builder.append("| **").append(rowMeasure.getClass().getSimpleName()).append("** \t| ");
+            float max = matrix.get(rowMeasure, rowMeasure);
 
             for (WordSimMeasure colMeasure : measures) {
-                int count = matrix.get(rowMeasure, colMeasure);
-                builder.append(count).append(" \t| ");
+                float count = matrix.get(rowMeasure, colMeasure);
+                float percentage = count / max;
+                builder.append(PCT_FORMAT.format(percentage)).append(" \t| ");
             }
 
             builder.append("\n");
         }
 
         builder.append("\n");
-
-        // --------------------------------------------------------------------
-
-        builder.append("# In detail: Uniquely accepted\n\n");
-
-        for (MeasureStats measureStats : sumGroup.getMeasureStats()) {
-            if (!measureStats.uniquelyAccepted.isEmpty()) {
-                builder.append("### ").append(measureStats.measureId).append("\n\n");
-
-                for (Comparison comparison : measureStats.uniquelyAccepted) {
-                    builder.append("- ").append(comparison.ctx().firstString()).append(" & ").append(comparison.ctx().secondString()).append('\n');
-                }
-
-                builder.append('\n');
-            }
-
-            builder.append('\n');
-        }
-
-        builder.append('\n');
-
-        // --------------------------------------------------------------------
 
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }

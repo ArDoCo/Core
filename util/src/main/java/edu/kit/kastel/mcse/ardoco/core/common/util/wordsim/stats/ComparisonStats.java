@@ -12,14 +12,15 @@ public class ComparisonStats {
     public static boolean ENABLED = true;
 
     private static final List<Comparison> COMPARISONS = new ArrayList<>();
-    private static ComparisonContext PENDING_CONTEXT = null;
+    private static WordPair PENDING_WORD_PAIR = null;
     private static final List<MeasureResult> PENDING_MEASURES = new ArrayList<>();
+    private static double PENDING_SCORE = Double.NaN;
 
     public static void begin(ComparisonContext ctx) {
         if (!ENABLED) {
             return;
         }
-        PENDING_CONTEXT = ctx;
+        PENDING_WORD_PAIR = new WordPair(ctx.firstTerm(), ctx.secondTerm());
         PENDING_MEASURES.clear();
     }
 
@@ -27,24 +28,29 @@ public class ComparisonStats {
         if (!ENABLED) {
             return;
         }
-        var measureResult = new MeasureResult(measure, accepted);
+        var measureResult = new MeasureResult(measure, accepted, PENDING_SCORE);
         PENDING_MEASURES.add(measureResult);
+        PENDING_SCORE = Double.NaN;
+    }
+
+    public static void recordScore(double score) {
+        PENDING_SCORE = score;
     }
 
     public static void end(boolean finalResult) {
         if (!ENABLED) {
             return;
         }
-        var comparison = new Comparison(PENDING_CONTEXT, new ArrayList<>(PENDING_MEASURES), finalResult);
+        var comparison = new Comparison(PENDING_WORD_PAIR, new ArrayList<>(PENDING_MEASURES), finalResult);
 
         COMPARISONS.add(comparison);
 
-        PENDING_CONTEXT = null;
+        PENDING_WORD_PAIR = null;
         PENDING_MEASURES.clear();
     }
 
     public static void reset() {
-        PENDING_CONTEXT = null;
+        PENDING_WORD_PAIR = null;
         PENDING_MEASURES.clear();
         COMPARISONS.clear();
     }
