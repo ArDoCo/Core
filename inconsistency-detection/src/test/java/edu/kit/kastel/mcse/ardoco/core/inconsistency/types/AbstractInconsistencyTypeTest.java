@@ -62,6 +62,7 @@ public abstract class AbstractInconsistencyTypeTest {
                 });
     }
 
+    @Disabled("Disabled for now as the (expected) values might change regularly")
     @Test
     void getReasonTest() {
         var expectedReason = getReasonString();
