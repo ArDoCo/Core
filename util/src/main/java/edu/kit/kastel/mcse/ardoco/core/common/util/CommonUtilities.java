@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -50,6 +51,85 @@ public final class CommonUtilities {
      */
     public static double harmonicMean(double first, double second) {
         return 2 * first * second / (first + second);
+    }
+
+    /**
+     * Calculate the harmonic mean between all given values.
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the harmonic mean of the given values
+     */
+    public static double harmonicMean(List<Double> values) {
+        var quotient = values.stream().mapToDouble(d -> 1.0 / d).sum();
+        return values.size() / quotient;
+    }
+
+    /**
+     * Calculates the root mean square between two given values
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @return the root mean square of the given values
+     */
+    public static double rootMeanSquare(double first, double second) {
+        return Math.sqrt((Math.pow(first, 2) + Math.pow(second, 2)) / 2);
+    }
+
+    /**
+     * Calculates the root mean square between the given values
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the root mean square of the given values
+     */
+    public static double rootMeanSquare(List<Double> values) {
+        var squaredValuesSum = values.stream().mapToDouble(d -> Math.pow(d, 2)).sum();
+        return Math.sqrt(squaredValuesSum / values.size());
+    }
+
+    /**
+     * Calculates the cubic mean between two given values
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @return the root mean square of the given values
+     */
+    public static double cubicMean(double first, double second) {
+        return Math.cbrt((Math.pow(first, 3) + Math.pow(second, 3)) / 2);
+    }
+
+    /**
+     * Calculates the cubic mean between the given values
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the root mean square of the given values
+     */
+    public static double cubicMean(List<Double> values) {
+        var cubedValuesSum = values.stream().mapToDouble(d -> Math.pow(d, 3)).sum();
+        return Math.cbrt(cubedValuesSum / values.size());
+    }
+
+    /**
+     * Calculates the power mean (or generalized mean) between the given values
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @param power  the power to use
+     * @return the power mean (or generalized mean) of the given values
+     */
+    public static double powerMean(double first, double second, double power) {
+        return Math.pow((Math.pow(first, power) + Math.pow(second, power)) / 2, 1 / power);
+    }
+
+    /**
+     * Calculates the power mean (or generalized mean) between the given values
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @param power  the power to use
+     * @return the power mean (or generalized mean) of the given values
+     */
+    public static double powerMean(List<Double> values, double power) {
+        var poweredValuesSum = values.stream().mapToDouble(d -> Math.pow(d, power)).sum();
+        return Math.pow(poweredValuesSum / values.size(), 1 / power);
     }
 
     /**

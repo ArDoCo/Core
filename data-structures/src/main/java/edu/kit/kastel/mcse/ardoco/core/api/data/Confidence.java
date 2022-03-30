@@ -111,7 +111,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         var other = (Confidence) obj;
@@ -135,6 +135,16 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         HARMONIC(s -> {
             var quotient = s.stream().mapToDouble(d -> 1.0 / d).sum();
             return s.size() / quotient;
+        }),
+
+        ROOTMEANSQUARED(s -> {
+            var squaredValuesSum = s.stream().mapToDouble(d -> Math.pow(d, 2)).sum();
+            return Math.sqrt(squaredValuesSum / s.size());
+        }),
+
+        CUBICMEAN(s -> {
+            var squaredValuesSum = s.stream().mapToDouble(d -> Math.pow(d, 3)).sum();
+            return Math.cbrt(squaredValuesSum / s.size());
         }),
 
         USE_MOST_RECENT(s -> s.stream().reduce((first, second) -> second).orElse(0.0)),
