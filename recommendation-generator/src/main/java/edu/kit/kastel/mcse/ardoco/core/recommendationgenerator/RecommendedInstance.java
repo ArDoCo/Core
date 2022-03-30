@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
@@ -63,7 +64,14 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
         nameMappings.addAll(nameNodes.castToCollection());
         typeMappings.addAll(typeNodes.castToCollection());
 
-        // this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
+        this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
+    }
+
+    private static double calculateMappingProbability(ImmutableList<INounMapping> nameMappings, ImmutableList<INounMapping> typeMappings) {
+        var highestNameProbability = nameMappings.collectDouble(INounMapping::getProbabilityForName).maxIfEmpty(0);
+        var highestTypeProbability = typeMappings.collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
+
+        return CommonUtilities.rootMeanSquare(highestNameProbability, highestTypeProbability);
     }
 
     /**
@@ -94,13 +102,6 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
     @Override
     public double getProbability() {
         return probability.getConfidence();
-    }
-
-    private static double calculateMappingProbability(ImmutableList<INounMapping> nameMappings, ImmutableList<INounMapping> typeMappings) {
-        var highestNameProbability = nameMappings.collectDouble(INounMapping::getProbabilityForName).maxIfEmpty(0);
-        var highestTypeProbability = typeMappings.collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
-
-        return (highestNameProbability + highestTypeProbability) / 2d;
     }
 
     /**
