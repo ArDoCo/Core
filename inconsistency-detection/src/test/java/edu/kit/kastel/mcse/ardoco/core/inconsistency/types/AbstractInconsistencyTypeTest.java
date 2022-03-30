@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
@@ -45,6 +46,7 @@ public abstract class AbstractInconsistencyTypeTest {
         Assertions.assertEquals(getTypeString(), getInconsistency().getType());
     }
 
+    @Disabled("Disabled for now as the (expected) values might change regularly")
     @Test
     void toFileOutputTest() {
         var fileOutput = getInconsistency().toFileOutput();
