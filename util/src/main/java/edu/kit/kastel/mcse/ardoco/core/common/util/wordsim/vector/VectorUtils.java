@@ -10,6 +10,8 @@ public class VectorUtils {
 
     /**
      * Calculates the cosine similarity between the two given vectors.
+     * If both vectors are zero, the resulting similarity is 1.0.
+     * If only one of the vectors is zero, the resulting similarity is 0.0.
      *
      * @param firstVec  the first vector
      * @param secondVec the second vector
@@ -22,6 +24,14 @@ public class VectorUtils {
 
         if (firstVec.length != secondVec.length) {
             throw new IllegalArgumentException("vector length does not match!");
+        }
+
+        if (isZero(firstVec) && isZero(secondVec)) {
+            return 1.0; // similarity between 0 and 0 should probably be 1.0
+        }
+
+        if (isZero(firstVec) || isZero(secondVec)) {
+            return 0.0; // similarity between 0 and something else should probably be 0.0
         }
 
         double dotProduct = 0.0, firstNorm = 0.0, secondNorm = 0.0;
@@ -49,6 +59,14 @@ public class VectorUtils {
 
         if (firstVec.length != secondVec.length) {
             throw new IllegalArgumentException("vector length does not match!");
+        }
+
+        if (isZero(firstVec) && isZero(secondVec)) {
+            return 1.0; // similarity between 0 and 0 should probably be 1.0
+        }
+
+        if (isZero(firstVec) || isZero(secondVec)) {
+            return 0.0; // similarity between 0 and something else should probably be 0.0
         }
 
         double dotProduct = 0.0, firstNorm = 0.0, secondNorm = 0.0;
