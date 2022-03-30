@@ -43,6 +43,27 @@ public final class CommonUtilities {
     }
 
     /**
+     * Calculate the arithmetic mean (average) between two given values.
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @return the arithmetic mean (average) of the two given values
+     */
+    public static double arithmeticMean(double first, double second) {
+        return arithmeticMean(List.of(first, second));
+    }
+
+    /**
+     * Calculate the arithmetic mean (average) between the given values.
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the arithmetic mean (average) of the given values
+     */
+    public static double arithmeticMean(List<Double> values) {
+        return values.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+    }
+
+    /**
      * Calculate the harmonic mean between two given values.
      *
      * @param first  the first value
