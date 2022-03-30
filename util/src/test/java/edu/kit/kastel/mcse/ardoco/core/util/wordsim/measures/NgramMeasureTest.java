@@ -3,9 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.util.wordsim.measures;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
-import edu.kit.kastel.mcse.ardoco.core.util.wordsim.TestUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class NgramMeasureTest {
 
+    private static final List<String> RANDOM_WORDS = List.of("acidic", "identify", "downtown", "elbow", "remove", "itch", "dirt",
+            "a b c d e f g h i j k l m n o p", "welcome", "insect", "smoke", "change");
+
     @Test
     public void testUnigramDistance() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 1, 1.0);
@@ -21,8 +25,8 @@ public class NgramMeasureTest {
 
         assertEquals(1.0, measure.calculateDistance("Hello", "Hella"), 0.01);
 
-        for (String firstWord : TestUtils.RANDOM_WORDS) {
-            for (String secondWord : TestUtils.RANDOM_WORDS) {
+        for (String firstWord : RANDOM_WORDS) {
+            for (String secondWord : RANDOM_WORDS) {
                 double levenshteinResult = levenshteinDistance.apply(firstWord, secondWord);
                 double ngramResult = measure.calculateDistance(firstWord, secondWord);
 
