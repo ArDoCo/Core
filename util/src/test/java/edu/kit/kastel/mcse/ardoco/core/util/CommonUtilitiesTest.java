@@ -25,6 +25,40 @@ class CommonUtilitiesTest {
     }
 
     @Test
+    void arithmeticMeanTest() {
+        Assertions.assertAll(//
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(0.5, 0.5), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(0, 1), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(1, 0), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(0.2, 0.8), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(0.8, 0.2), 1e-8), //
+                () -> Assertions.assertEquals(0.15, CommonUtilities.arithmeticMean(0.1, 0.2), 1e-8), //
+                () -> Assertions.assertEquals(0.85, CommonUtilities.arithmeticMean(0.8, 0.9), 1e-8), //
+                () -> Assertions.assertEquals(0.3, CommonUtilities.arithmeticMean(0.0, 0.6), 1e-8) //
+        );
+    }
+
+    @Test
+    void arithmeticMeanListTest() {
+        Assertions.assertAll(//
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(List.of(0.5, 0.5)), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(List.of(0d, 1d)), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(List.of(1d, 0d)), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(List.of(0.2, 0.8)), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(List.of(0.8, 0.2)), 1e-8), //
+                () -> Assertions.assertEquals(0.15, CommonUtilities.arithmeticMean(List.of(0.1, 0.2)), 1e-8), //
+                () -> Assertions.assertEquals(0.85, CommonUtilities.arithmeticMean(List.of(0.8, 0.9)), 1e-8), //
+                () -> Assertions.assertEquals(0.3, CommonUtilities.arithmeticMean(List.of(0.0, 0.6)), 1e-8), //
+                () -> Assertions.assertEquals(0.5, CommonUtilities.arithmeticMean(List.of(0.5, 0.5, 0.5)), 1e-8), //
+                () -> Assertions.assertEquals(1d / 3d, CommonUtilities.arithmeticMean(List.of(0d, 0d, 1d)), 1e-8), //
+                () -> Assertions.assertEquals(1d / 3d, CommonUtilities.arithmeticMean(List.of(1d, 0d, 0d)), 1e-8), //
+                () -> Assertions.assertEquals(0.6, CommonUtilities.arithmeticMean(List.of(0.2, 0.8, 0.8)), 1e-8), //
+                () -> Assertions.assertEquals(0.6, CommonUtilities.arithmeticMean(List.of(0.8, 0.8, 0.2)), 1e-8), //
+                () -> Assertions.assertEquals(0.4, CommonUtilities.arithmeticMean(List.of(0.1, 0.5, 0.6)), 1e-8) //
+        );
+    }
+
+    @Test
     void harmonicMeanTest() {
         Assertions.assertAll(//
                 () -> Assertions.assertEquals(0.5, CommonUtilities.harmonicMean(0.5, 0.5), 1e-8), //
