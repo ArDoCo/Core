@@ -63,7 +63,7 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
         nameMappings.addAll(nameNodes.castToCollection());
         typeMappings.addAll(typeNodes.castToCollection());
 
-        this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
+        // this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
     }
 
     /**
@@ -100,7 +100,6 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
         var highestNameProbability = nameMappings.collectDouble(INounMapping::getProbabilityForName).maxIfEmpty(0);
         var highestTypeProbability = typeMappings.collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
 
-        // var harmonicMean = CommonUtilities.harmonicMean(highestNameProbability, highestTypeProbability);
         return (highestNameProbability + highestTypeProbability) / 2d;
     }
 
