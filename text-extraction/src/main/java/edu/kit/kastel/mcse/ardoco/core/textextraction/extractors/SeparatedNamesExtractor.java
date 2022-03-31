@@ -27,6 +27,7 @@ public class SeparatedNamesExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public SeparatedNamesExtractor() {
+        // empty
     }
 
     /***
@@ -50,5 +51,6 @@ public class SeparatedNamesExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

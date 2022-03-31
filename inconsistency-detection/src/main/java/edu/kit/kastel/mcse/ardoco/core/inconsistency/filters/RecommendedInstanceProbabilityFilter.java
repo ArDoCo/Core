@@ -15,6 +15,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStat
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
+/**
+ * Filters {@link IRecommendedInstance}s that have low probabilities of being an entity. This can either be because the
+ * probability of being a {@link IRecommendedInstance} is low or because the probability of having a mapping for a name
+ * and/or type is low.
+ *
+ * @author Jan Keim
+ *
+ */
 public class RecommendedInstanceProbabilityFilter extends AbstractFilter<InconsistencyAgentData> {
     @Configurable
     private double thresholdNameAndTypeProbability = 0.4;
