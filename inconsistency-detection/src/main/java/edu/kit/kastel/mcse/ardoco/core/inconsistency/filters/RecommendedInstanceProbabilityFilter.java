@@ -25,12 +25,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
  */
 public class RecommendedInstanceProbabilityFilter extends AbstractFilter<InconsistencyAgentData> {
     @Configurable
-    private double thresholdNameAndTypeProbability = 0.4;
+    private double thresholdNameAndTypeProbability = 0.3;
     @Configurable
-    private double thresholdNameOrTypeProbability = 0.7;
+    private double thresholdNameOrTypeProbability = 0.8;
 
     @Configurable
-    private double threshold = 0.5d;
+    private double threshold = 0.6d;
 
     @Configurable
     private boolean dynamicThreshold = true;
