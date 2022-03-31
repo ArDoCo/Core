@@ -41,13 +41,11 @@ public class OccasionFilter extends AbstractFilter<InconsistencyAgentData> {
         var filteredRecommendedInstances = Lists.mutable.<IRecommendedInstance> empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
-        logger.debug("#RIs={}", recommendedInstances.size());
         for (var recommendedInstance : recommendedInstances) {
             if (recommendedInstanceHasMultipleOccasions(recommendedInstance)) {
                 filteredRecommendedInstances.add(recommendedInstance);
             }
         }
-        logger.debug("#RIs={}", filteredRecommendedInstances.size());
         inconsistencyState.setRecommendedInstances(filteredRecommendedInstances);
     }
 
