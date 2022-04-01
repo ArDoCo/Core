@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
@@ -39,6 +40,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
      */
     @Configurable
     private double probabilityOfFoundWords = 0.2;
+
+    @Configurable
+    private CSWAgentMode mode = CSWAgentMode.ADD_PROBABILITY;
 
     @Configurable
     private List<String> sources = List.of(WIKI, ISO24765, STANDARD_GLOSSARY);
@@ -67,22 +71,37 @@ public class ComputerScienceWordsAgent extends TextAgent {
         for (var word : text.getWords()) {
             var nounMappings = textState.getNounMappingsByWord(word);
             for (var nounMapping : nounMappings)
-                processNounMapping(word, nounMapping, processed);
+                processNounMapping(textState, word, nounMapping, processed);
         }
     }
 
-    private void processNounMapping(IWord word, INounMapping nounMapping, Set<INounMapping> processed) {
+    private void processNounMapping(ITextState textState, IWord word, INounMapping nounMapping, Set<INounMapping> processed) {
         if (processed.contains(nounMapping))
             return;
         processed.add(nounMapping);
         // TODO Handle Phrases
         Predicate<String> predicate = commonWord -> match(nounMapping, commonWord);
         if (this.commonCSWords.stream().anyMatch(predicate)) {
-            var occurrence = this.commonCSWords.stream().filter(predicate).findFirst().orElseThrow();
-            logger.debug("Found {} for {}", occurrence, word);
-            nounMapping.addKindWithProbability(MappingKind.NAME, this, probabilityOfFoundWords);
-            nounMapping.addKindWithProbability(MappingKind.TYPE, this, probabilityOfFoundWords);
+            if (logger.isTraceEnabled()) {
+                var occurrence = this.commonCSWords.stream().filter(predicate).findFirst().orElseThrow();
+                logger.trace("Found {} for {}", occurrence, word);
+            }
+
+            switch (mode) {
+            case ADD_PROBABILITY -> addProbability(nounMapping);
+            case DELETE_OCCURENCE -> deleteOccurrence(textState, nounMapping);
+            }
+
         }
+    }
+
+    private void addProbability(INounMapping nounMapping) {
+        nounMapping.addKindWithProbability(MappingKind.NAME, this, probabilityOfFoundWords);
+        nounMapping.addKindWithProbability(MappingKind.TYPE, this, probabilityOfFoundWords);
+    }
+
+    private void deleteOccurrence(ITextState textState, INounMapping nounMapping) {
+        textState.removeNounMapping(nounMapping);
     }
 
     private boolean match(INounMapping nounMapping, String csWord) {
@@ -107,14 +126,16 @@ public class ComputerScienceWordsAgent extends TextAgent {
         assert csParts.length == wordsToMatch.length;
 
         for (int i = 0; i < csParts.length; i++) {
-            String csWord = csParts[0];
-            String word = wordsToMatch[0].getText();
-            // TODO Lemma etc ..
+            String csWord = csParts[i];
+            String word = wordsToMatch[i].getText();
+            // TODO Maybe Lemma etc ..
             if (!SimilarityUtils.areWordsSimilar(csWord, word, wordSimilarityThreshold)) {
                 return false;
             }
         }
-
+        if (logger.isDebugEnabled())
+            logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts),
+                    String.join(" ", Arrays.stream(wordsToMatch).map(IWord::getText).toList()));
         return true;
     }
 
@@ -195,5 +216,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         // No Delegates
+    }
+
+    private enum CSWAgentMode {
+        ADD_PROBABILITY, DELETE_OCCURENCE
     }
 }

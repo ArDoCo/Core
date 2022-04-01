@@ -51,7 +51,7 @@ public class ConfigurationTest {
     public void testBasicConfigurable() throws Exception {
         Map<String, String> configs = new TreeMap<>();
         processConfigurationOfClass(configs, TestConfigurable.class);
-        Assertions.assertEquals(4, configs.size());
+        Assertions.assertEquals(5, configs.size());
 
         TestConfigurable t = new TestConfigurable();
 
@@ -63,6 +63,8 @@ public class ConfigurationTest {
         Assertions.assertTrue(t.testBoolNo);
         Assertions.assertEquals(List.of("A", "B", "C"), t.testList);
         Assertions.assertEquals(List.of("A", "B", "C"), t.testListNo);
+        Assertions.assertEquals(TestConfigurable.MyEnum.A, t.testEnum);
+        Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
         //@formatter:off
 		configs = Map.of(//
@@ -73,7 +75,10 @@ public class ConfigurationTest {
 				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBool", "false", //
 				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBoolNo", "false", //
 				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testList", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testListNo", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z") //
+				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testListNo", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
+                TestConfigurable.class.getSimpleName()+AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR+"testEnum", TestConfigurable.MyEnum.C.name(), //
+                TestConfigurable.class.getSimpleName()+AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR+"testEnumNo", TestConfigurable.MyEnum.C.name()
+
 		);
 		//@formatter:on
 
@@ -86,6 +91,8 @@ public class ConfigurationTest {
         Assertions.assertTrue(t.testBoolNo);
         Assertions.assertEquals(List.of("X", "Y", "Z"), t.testList);
         Assertions.assertEquals(List.of("A", "B", "C"), t.testListNo);
+        Assertions.assertEquals(TestConfigurable.MyEnum.C, t.testEnum);
+        Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
     }
 
@@ -119,6 +126,8 @@ public class ConfigurationTest {
             return String.valueOf(b);
         if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String))
             return s.stream().map(Object::toString).collect(Collectors.joining(AbstractConfigurable.LIST_SEPARATOR));
+        if (rawValue instanceof Enum<?> e)
+            return e.name();
 
         throw new IllegalArgumentException("RawValue has no type that may be transformed to an Configuration" + rawValue + "[" + rawValue.getClass() + "]");
     }
@@ -162,11 +171,14 @@ public class ConfigurationTest {
         private boolean testBool = true;
         @Configurable
         private List<String> testList = List.of("A", "B", "C");
+        @Configurable
+        private MyEnum testEnum = MyEnum.A;
 
         private int testIntNo = 24;
         private double testDoubleNo = 2.0;
         private boolean testBoolNo = true;
         private List<String> testListNo = List.of("A", "B", "C");
+        private MyEnum testEnumNo = MyEnum.B;
 
         public TestConfigurable() {
             // NOP
@@ -174,6 +186,10 @@ public class ConfigurationTest {
 
         @Override
         protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        }
+
+        private enum MyEnum {
+            A, B, C
         }
     }
 }
