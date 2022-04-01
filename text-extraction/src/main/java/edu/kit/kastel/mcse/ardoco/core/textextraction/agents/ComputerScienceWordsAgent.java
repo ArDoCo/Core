@@ -52,6 +52,8 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     @Configurable
     private double wordSimilarityThreshold = 0.99;
+    @Configurable
+    private double wordMinLengthForSimilarity = 4;
 
     @Configurable
     private List<String> additionalWords = List.of();
@@ -126,9 +128,13 @@ public class ComputerScienceWordsAgent extends TextAgent {
         assert csParts.length == wordsToMatch.length;
 
         for (int i = 0; i < csParts.length; i++) {
+            // TODO Maybe Lemma etc ..
             String csWord = csParts[i];
             String word = wordsToMatch[i].getText();
-            // TODO Maybe Lemma etc ..
+
+            if (Math.min(csWord.length(), word.length()) < wordMinLengthForSimilarity && !csWord.equalsIgnoreCase(word)) {
+                return false;
+            }
             if (!SimilarityUtils.areWordsSimilar(csWord, word, wordSimilarityThreshold)) {
                 return false;
             }
