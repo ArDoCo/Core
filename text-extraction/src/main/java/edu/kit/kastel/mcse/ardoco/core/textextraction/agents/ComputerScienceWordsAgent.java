@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -151,6 +152,8 @@ public class ComputerScienceWordsAgent extends TextAgent {
         loadISO24765(result);
         loadStandardGlossary(result);
         result.addAll(additionalWords);
+        // Remove after bracket (
+        result = result.stream().map(e -> e.split("\\(")[0].trim()).collect(Collectors.toSet());
         return Lists.immutable.withAll(result.stream().map(w -> w.trim().toLowerCase()).toList());
     }
 
