@@ -225,6 +225,6 @@ public class ComputerScienceWordsAgent extends TextAgent {
     }
 
     private enum CSWAgentMode {
-        ADD_PROBABILITY, DELETE_OCCURENCE
+        ADD_PROBABILITY, DELETE_OCCURRENCE
     }
 }
