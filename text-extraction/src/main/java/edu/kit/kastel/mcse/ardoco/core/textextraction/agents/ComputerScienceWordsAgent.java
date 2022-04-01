@@ -40,7 +40,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
      * This is the probability that will be assigned to found words.
      */
     @Configurable
-    private double probabilityOfFoundWords = 0.2;
+    private double probabilityOfFoundWords = 1E-8;
 
     @Configurable
     private CSWAgentMode mode = CSWAgentMode.ADD_PROBABILITY;
