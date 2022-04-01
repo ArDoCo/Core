@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
@@ -21,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
-public class ComputerScienceWordsAgentTest {
+public class ComputerScienceWordsAgentTest implements IClaimant {
     private ComputerScienceWordsAgent agent;
     private ImmutableList<String> data;
     private double modifier;
@@ -36,14 +37,14 @@ public class ComputerScienceWordsAgentTest {
     public void testSetProbability() {
 
         var validWord = wordToListOfIWord(data.get(0));
-        var nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, null, 1.0, List.copyOf(validWord),
+        var nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),
                 Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
         var invalidWord = new MyWord("ASDFWJ", validWord.size());
         MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
         TextState ts = new TextState(Map.of());
 
-        ts.addNounMapping(nounMapping, null);
-        ts.addName(invalidWord, null, 1.0);
+        ts.addNounMapping(nounMapping, this);
+        ts.addName(invalidWord, this, 1.0);
 
         TextAgentData tad = new TextAgentData() {
             @Override
