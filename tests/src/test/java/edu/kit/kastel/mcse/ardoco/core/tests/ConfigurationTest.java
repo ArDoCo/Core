@@ -20,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
  * @author Dominik Fuchss
  * @see AbstractConfigurable
  */
-public class ConfigurationTest {
+class ConfigurationTest {
     /**
      * This test verifies that all configurable values are able to be configured. It also prints all configurable values
      * as they should be contained in a configuration file.
@@ -28,7 +28,7 @@ public class ConfigurationTest {
      * @throws Exception if anything goes wrong
      */
     @Test
-    public void showCurrentConfiguration() throws Exception {
+    void showCurrentConfiguration() throws Exception {
         Map<String, String> configs = new TreeMap<>();
         var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
@@ -48,7 +48,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testBasicConfigurable() throws Exception {
+    void testBasicConfigurable() throws Exception {
         Map<String, String> configs = new TreeMap<>();
         processConfigurationOfClass(configs, TestConfigurable.class);
         Assertions.assertEquals(5, configs.size());

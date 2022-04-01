@@ -91,7 +91,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
             switch (mode) {
             case ADD_PROBABILITY -> addProbability(nounMapping);
-            case DELETE_OCCURENCE -> deleteOccurrence(textState, nounMapping);
+            case DELETE_OCCURRENCE -> deleteOccurrence(textState, nounMapping);
             }
 
         }
