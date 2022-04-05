@@ -1,8 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.Comparison;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.WordPair;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Comparison;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.WordPair;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatGroup;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.MeasureStats;
