@@ -49,22 +49,6 @@ public record ComparisonContext(@Nonnull String firstString, @Nonnull String sec
         return findAppropriateTerm(secondString, secondWord);
     }
 
-    /**
-     * TODO
-     * @return
-     */
-    public List<String> firstTerms() {
-        return SubWordUtils.getSubWords(firstTerm());
-    }
-
-    /**
-     * TODO
-     * @return
-     */
-    public List<String> secondTerms() {
-        return SubWordUtils.getSubWords(secondTerm());
-    }
-
     private String findAppropriateTerm(@Nonnull String string, @Nullable IWord word) {
         Objects.requireNonNull(string);
 
