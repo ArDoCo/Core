@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.Comparison;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Comparison;
 
 import java.util.HashSet;
 import java.util.Objects;

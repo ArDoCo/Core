@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats;
+package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;

@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats;
+package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater;
 
 import java.util.Comparator;
 import java.util.Objects;

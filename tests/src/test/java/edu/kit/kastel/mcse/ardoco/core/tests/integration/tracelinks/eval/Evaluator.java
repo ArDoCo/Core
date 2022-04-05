@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.NewSimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.stats.ComparisonStats;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
