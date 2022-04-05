@@ -1,6 +1,6 @@
-package edu.kit.kastel.mcse.ardoco.core.util.wordsim.vector;
+package edu.kit.kastel.mcse.ardoco.core.util;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.VectorUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
