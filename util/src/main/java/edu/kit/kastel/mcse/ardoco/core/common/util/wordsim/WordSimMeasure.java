@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 /**
- * A measure that can determine whether two words in a {@link ComparisonContext} are similar.
+ * A measure that can determine whether two words from a {@link ComparisonContext} are similar.
  */
 public interface WordSimMeasure {
 
