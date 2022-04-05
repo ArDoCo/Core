@@ -36,6 +36,7 @@ Each word similarity measure implements the `WordSimMeasure` interface and is lo
 inside the `measures` subpackage.
 
 - `edu.kit.kastel.mcse.ardoco.core.common.util.wordsim`
+    - ...
     - `measures`
         - `equality`
             - `EqualityMeasure.java`
@@ -46,14 +47,13 @@ inside the `measures` subpackage.
         - `ngram`
         - `sewordsim`
         - `wordnet`
-    - ...
 
 #### ComparisonContext
 
 A `ComparisonContext` is meant to contain all neccessary information to recognize whether two words are similar.
-Not all comparisons are made between two `IWord` instances. 
-However, since an `IWord` instance can provide additional information (like context or the  corresponding sentence), 
-the `firstWord` and `secondWord` fields are accessible although nullable.
+The `firstWord: IWord` and `secondWord: IWord` fields are nullable since some comparisons do not contain any `IWord` instances.
+However, since an `IWord` instance can provide additional information (like the corresponding sentence), these fields
+are available so that word similarity measures can utilize them if possible.
 The `lemmatize` field decides whether the word similarity measures should use the lemmatized version of the words.
 
 #### NewSimilarityUtils
