@@ -69,7 +69,6 @@ Calls to the `setMeasures(...)` method changes which measures are used for simil
 On startup, `NewSimilarityUtils` will load measures by calling the `loadUsingProperties()` method from the 
 `WordSimLoader` class. Which measures are loaded depends on the `CommonTextToolsConfig.properties` file.
 
-
 #### VectorUtils
 
 Some word similarity measures use vector representations of words and compares them using cosine similarity.
