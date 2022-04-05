@@ -48,7 +48,7 @@ inside the `measures` subpackage.
         - `wordnet`
     - ...
 
-##### ComparisonContext
+#### ComparisonContext
 
 A `ComparisonContext` is meant to contain all neccessary information to recognize whether two words are similar.
 Not all comparisons are made between two `IWord` instances. 
