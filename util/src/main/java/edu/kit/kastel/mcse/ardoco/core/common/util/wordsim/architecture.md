@@ -12,7 +12,7 @@ The `edu.kit.kastel.mcse.ardoco.core.common.util.wordsim` package consists of a
                                                          │ + firstWord: IWord     │ 
                                                          │ + secondWord: IWord    │ 
 ┌───────────────────────────────────────────────┐        │ + lemmatize: boolean   │ 
-│ WordSimLoader                                 │        ├────────────────────────┤ 
+│ <<static>> WordSimLoader                      │        ├────────────────────────┤ 
 ├───────────────────────────────────────────────┤        │ + firstTerm(): String  │ 
 │ + loadUsingProperties(): List<WordSimMeasure> │        │ + secondTerm(): String │ 
 └───────────────────────────────────────────────┘        └────────────────────────┘
