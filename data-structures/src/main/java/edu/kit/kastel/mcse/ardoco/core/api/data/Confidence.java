@@ -64,6 +64,10 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         if (agentConfidence.isEmpty()) {
             return 0;
         }
+        if (confidenceAggregator == ConfidenceAggregator.ROLLING_AVERAGE) {
+            // No aggregate
+            return confidenceAggregator.applyAsDouble(agentConfidence.stream().map(Pair::getTwo).toList());
+        }
         var groupAggregator = ConfidenceAggregator.MAX;
         var claimantGroupings = agentConfidence.stream().collect(Collectors.groupingBy(Pair::getOne)).values();
         var claimantConfidences = claimantGroupings.stream().map(l -> l.stream().map(Pair::getTwo).toList()).map(groupAggregator::applyAsDouble).toList();
@@ -153,6 +157,8 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
          * Use the average of the scores as final score.
          */
         AVERAGE(s -> s.stream().mapToDouble(d -> d).average().getAsDouble()),
+
+        ROLLING_AVERAGE(s -> s.stream().mapToDouble(d -> d).reduce((a, b) -> (a + b) / 2).getAsDouble()),
 
         /**
          * Use the max value of the scores as final score.
