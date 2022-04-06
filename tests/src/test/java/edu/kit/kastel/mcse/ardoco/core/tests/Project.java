@@ -16,6 +16,11 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
+/**
+ *
+ * @author Jan Keim
+ *
+ */
 public enum Project {
     MEDIASTORE(//
             "src/test/resources/benchmark/mediastore/mediastore.owl", //

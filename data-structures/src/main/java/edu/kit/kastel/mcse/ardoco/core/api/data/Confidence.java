@@ -8,21 +8,30 @@ import java.util.Objects;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 
+/**
+ *
+ *
+ * @author Sophie Schulz
+ * @author Dominik Fuchß
+ * @author Jan Keim
+ *
+ */
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
     private final ConfidenceAggregator confidenceAggregator;
 
-    private List<Pair<IClaimant, Double>> agentConfidence;
+    private List<Pair<IClaimant, Double>> agentConfidences;
 
     public Confidence(ConfidenceAggregator confidenceAggregator) {
         this.confidenceAggregator = confidenceAggregator;
-        this.agentConfidence = new ArrayList<>();
+        this.agentConfidences = new ArrayList<>();
     }
 
     public Confidence(IClaimant claimant, double probability, ConfidenceAggregator confidenceAggregator) {
@@ -32,12 +41,12 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
     private Confidence(ConfidenceAggregator confidenceAggregator, List<Pair<IClaimant, Double>> agentConfidence) {
         this(confidenceAggregator);
-        this.agentConfidence = agentConfidence;
+        this.agentConfidences = agentConfidence;
     }
 
     @Override
     public Confidence createCopy() {
-        return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidence));
+        return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidences));
     }
 
     public void addAgentConfidence(IClaimant claimant, double confidence) {
@@ -47,7 +56,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
          * IllegalArgumentException("The agent has already set the confidence of this data: " + claimant); }
          */
 
-        agentConfidence.add(Tuples.pair(claimant, confidence));
+        agentConfidences.add(Tuples.pair(claimant, confidence));
     }
 
     @Override
@@ -61,15 +70,15 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     }
 
     public double getConfidence() {
-        if (agentConfidence.isEmpty()) {
+        if (agentConfidences.isEmpty()) {
             return 0;
         }
         if (confidenceAggregator == ConfidenceAggregator.ROLLING_AVERAGE) {
             // No aggregate
-            return confidenceAggregator.applyAsDouble(agentConfidence.stream().map(Pair::getTwo).toList());
+            return confidenceAggregator.applyAsDouble(agentConfidences.stream().map(Pair::getTwo).toList());
         }
         var groupAggregator = ConfidenceAggregator.MAX;
-        var claimantGroupings = agentConfidence.stream().collect(Collectors.groupingBy(Pair::getOne)).values();
+        var claimantGroupings = agentConfidences.stream().collect(Collectors.groupingBy(Pair::getOne)).values();
         var claimantConfidences = claimantGroupings.stream().map(l -> l.stream().map(Pair::getTwo).toList()).map(groupAggregator::applyAsDouble).toList();
         return confidenceAggregator.applyAsDouble(claimantConfidences);
     }
@@ -86,8 +95,8 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     public static Confidence merge(Confidence a, Confidence b, ConfidenceAggregator globalAggregator, ConfidenceAggregator localAggregator) {
         var result = new Confidence(globalAggregator);
 
-        for (var aConf : a.agentConfidence) {
-            var bConf = b.agentConfidence.stream().filter(p -> p.getOne().equals(aConf.getOne())).findFirst().orElse(null);
+        for (var aConf : a.agentConfidences) {
+            var bConf = b.agentConfidences.stream().filter(p -> p.getOne().equals(aConf.getOne())).findFirst().orElse(null);
             if (bConf == null) {
                 result.addAgentConfidence(aConf.getOne(), aConf.getTwo());
             } else {
@@ -95,8 +104,8 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
             }
         }
 
-        for (var bConf : b.agentConfidence) {
-            var aConf = a.agentConfidence.stream().anyMatch(p -> p.getOne().equals(bConf.getOne()));
+        for (var bConf : b.agentConfidences) {
+            var aConf = a.agentConfidences.stream().anyMatch(p -> p.getOne().equals(bConf.getOne()));
             if (!aConf) {
                 result.addAgentConfidence(bConf.getOne(), bConf.getTwo());
             }
@@ -107,7 +116,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
     @Override
     public int hashCode() {
-        return Objects.hash(agentConfidence, confidenceAggregator);
+        return Objects.hash(agentConfidences, confidenceAggregator);
     }
 
     @Override
@@ -119,7 +128,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
             return false;
         }
         var other = (Confidence) obj;
-        return Objects.equals(agentConfidence, other.agentConfidence) && confidenceAggregator == other.confidenceAggregator;
+        return Objects.equals(agentConfidences, other.agentConfidences) && confidenceAggregator == other.confidenceAggregator;
     }
 
     public enum ConfidenceAggregator implements ToDoubleFunction<Collection<Double>> {
@@ -183,7 +192,15 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
         @Override
         public double applyAsDouble(Collection<Double> value) {
-            return this.function.applyAsDouble(value);
+            var filteredValues = filterZeroValues(value);
+            if (filteredValues.isEmpty()) {
+                return 0.0;
+            }
+            return this.function.applyAsDouble(filteredValues);
+        }
+
+        public static Collection<Double> filterZeroValues(Collection<Double> values) {
+            return Lists.mutable.ofAll(values).select(d -> Math.abs(d) > 1e-5);
         }
     }
 

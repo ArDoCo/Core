@@ -47,6 +47,10 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.T
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSummaryFile;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
+/**
+ * @author Jan Keim
+ *
+ */
 class TracelinksIT {
     private static Logger logger = null;
 
