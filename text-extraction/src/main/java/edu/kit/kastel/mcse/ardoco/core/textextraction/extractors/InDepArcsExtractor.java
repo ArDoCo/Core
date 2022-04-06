@@ -14,11 +14,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 /**
  * The analyzer examines the incoming dependency arcs of the current node.
  *
- * @author Sophie
+ * @author Sophie Schulz
+ * @author Jan Keim
  */
 public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
-    @Configurable
-    private double nameOrTypeWeight = 0.5;
+
+    private static final double ZERO = 0.0;
 
     @Configurable
     private double probability = 1.0;
@@ -49,15 +50,15 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
         for (DependencyTag depTag : incomingDepArcs) {
             if (hasNortDependencies(depTag)) {
-                textState.addName(word, this, probability * nameOrTypeWeight);
-                textState.addType(word, this, probability * nameOrTypeWeight);
+                textState.addName(word, this, 0.0);
+                textState.addType(word, this, 0.0);
             } else if (hasTypeOrNortDependencies(depTag)) {
                 if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
                     textState.addType(word, this, probability);
                 }
 
-                textState.addName(word, this, probability * nameOrTypeWeight);
-                textState.addType(word, this, probability * nameOrTypeWeight);
+                textState.addName(word, this, ZERO);
+                textState.addType(word, this, ZERO);
             }
         }
     }

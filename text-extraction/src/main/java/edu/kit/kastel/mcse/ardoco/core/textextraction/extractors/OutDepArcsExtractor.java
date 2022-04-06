@@ -18,8 +18,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  */
 
 public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
-    @Configurable
-    private double nameOrTypeWeight = 0.5;
+
+    private static final double ZERO = 0.0;
 
     @Configurable
     private double probability = 0.8;
@@ -51,8 +51,8 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
         for (DependencyTag shortDepTag : outgoingDepArcs) {
 
             if (DependencyTag.AGENT == shortDepTag || DependencyTag.RCMOD == shortDepTag) {
-                textState.addName(word, this, probability * nameOrTypeWeight);
-                textState.addType(word, this, probability * nameOrTypeWeight);
+                textState.addName(word, this, ZERO);
+                textState.addType(word, this, ZERO);
             } else if (DependencyTag.NUM == shortDepTag || DependencyTag.PREDET == shortDepTag) {
                 textState.addType(word, this, probability);
             }
