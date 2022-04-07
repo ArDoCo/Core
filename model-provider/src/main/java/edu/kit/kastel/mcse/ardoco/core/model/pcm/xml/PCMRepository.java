@@ -13,7 +13,7 @@ import org.fuchss.xmlobjectmapper.annotation.XMLValue;
 public final class PCMRepository {
     @XMLValue
     private String id;
-    @XMLValue
+    @XMLValue(mandatory = false)
     private String entityName;
     @XMLList(name = "components__Repository", elementType = PCMComponent.class)
     private List<PCMComponent> components;
