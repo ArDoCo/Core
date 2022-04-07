@@ -15,6 +15,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.fuchss</groupId>
+      <artifactId>xml-object-mapper</artifactId>
+      <version>0.1</version>
+    </dependency>
+
+    <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
       <artifactId>data-structures</artifactId>
     </dependency>
@@ -33,4 +39,13 @@
       <type>pom</type>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <!-- TODO Remove as soon as published to Maven Central -->
+    <repository>
+      <id>gh-fuchss</id>
+      <name>GitHub Maven Packages</name>
+      <url>https://packages.fuchss.org/github/releases/raw/branch/releases/</url>
+    </repository>
+  </repositories>
 </project>
