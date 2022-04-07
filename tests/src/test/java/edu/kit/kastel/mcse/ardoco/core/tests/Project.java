@@ -23,7 +23,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(1.0, .620, .765), //
-            new EvaluationResults(.99, .586, .739)//
+            new EvaluationResults(.0, .0, .0)//
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/teammates.owl", //
@@ -31,7 +31,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new EvaluationResults(.889, .879, .884), //
-            new EvaluationResults(.895, .830, .861)//
+            new EvaluationResults(.0, .0, .0)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/teastore.owl", //
@@ -39,14 +39,14 @@ public enum Project {
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.99, .713, .832), //
-            new EvaluationResults(.99, .713, .832)),
+            new EvaluationResults(.0, .0, .0)),
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/bbb.owl", //
             "src/test/resources/benchmark/bigbluebutton/bbb_w_text.owl", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
-            new EvaluationResults(.856, .839, .847), //
-            new EvaluationResults(.856, .839, .847));
+            new EvaluationResults(.877, .826, .850), //
+            new EvaluationResults(.0, .0, .0));
 
     private final String model;
     private final String textOntology;
