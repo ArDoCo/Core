@@ -22,6 +22,12 @@
 
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
+      <artifactId>java-model</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
       <artifactId>data-structures</artifactId>
     </dependency>
     <dependency>
