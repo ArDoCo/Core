@@ -92,7 +92,7 @@ class JSONWordTest {
         // Images (71)
         word = connector.getAnnotatedText().getWords().get(72);
 
-        var deps = word.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ);
+        var deps = word.getIncomingDependencyWordsWithType(DependencyTag.NSUBJ);
         Assertions.assertEquals(1, deps.size());
 
         var depText = deps.get(0).getText();
@@ -105,7 +105,7 @@ class JSONWordTest {
         // rankings (595)
         word = connector.getAnnotatedText().getWords().get(596);
 
-        var deps = word.getWordsThatAreDependencyOfThis(DependencyTag.NMOD);
+        var deps = word.getOutgoingDependencyWordsWithType(DependencyTag.NMOD);
         Assertions.assertEquals(2, deps.size());
 
         var depTextList = deps.stream().map(IWord::getText).toList();

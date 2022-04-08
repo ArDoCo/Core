@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.json;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 public class JsonText implements IText, Serializable {
+    @Serial
+    private static final long serialVersionUID = -5241473387561096811L;
+
     @JsonProperty
     private List<JsonWord> words = new ArrayList<>();
     @JsonProperty
@@ -62,11 +66,13 @@ public class JsonText implements IText, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        JsonText jsonText = (JsonText) o;
+        }
+        var jsonText = (JsonText) o;
         return Objects.equals(words, jsonText.words) && Objects.equals(sentences, jsonText.sentences) && Objects.equals(corefClusters, jsonText.corefClusters);
     }
 

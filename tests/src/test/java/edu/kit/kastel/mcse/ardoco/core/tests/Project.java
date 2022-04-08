@@ -66,6 +66,10 @@ public enum Project {
         return new File(textFile);
     }
 
+    public File getPreprocessedTextFile() {
+        return new File(this.textFile + ".json");
+    }
+
     public File getGoldStandardFile() {
         return new File(goldStandard);
     }
@@ -91,7 +95,7 @@ public enum Project {
 
     public IText getTextPreprocessed() {
         try {
-            ITextConnector textConnector = JsonTextProvider.loadFromFile(new File(this.textFile + ".json"));
+            ITextConnector textConnector = JsonTextProvider.loadFromFile(getPreprocessedTextFile());
             return textConnector.getAnnotatedText();
         } catch (Exception e) {
             e.printStackTrace();

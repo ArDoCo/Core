@@ -7,12 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.fuchss.xmlobjectmapper.XML2Object;
-import org.xml.sax.SAXException;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
@@ -26,12 +23,12 @@ public class PcmXMLModelConnector implements IModelConnector {
 
     private final PCMRepository repository;
 
-    public PcmXMLModelConnector(File file) throws IOException, ReflectiveOperationException, ParserConfigurationException, SAXException {
+    public PcmXMLModelConnector(File file) throws IOException, ReflectiveOperationException {
         this(new FileInputStream(file));
     }
 
-    public PcmXMLModelConnector(InputStream is) throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
-        XML2Object xom = new XML2Object();
+    public PcmXMLModelConnector(InputStream is) throws ReflectiveOperationException, IOException {
+        var xom = new XML2Object();
         xom.registerClasses(PCMRepository.class, PCMComponent.class);
         this.repository = Objects.requireNonNull(xom.parseXML(is, PCMRepository.class));
     }

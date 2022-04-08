@@ -119,12 +119,12 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
         }
 

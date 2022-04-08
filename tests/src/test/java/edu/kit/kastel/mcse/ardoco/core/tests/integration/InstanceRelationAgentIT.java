@@ -11,10 +11,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.junit.jupiter.api.*;
-import org.xml.sax.SAXException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
@@ -32,6 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
+@Disabled("Disabled as it is not used for now")
 class InstanceRelationAgentIT {
 
     private static final String TEXT = "src/test/resources/benchmark/mediastore/mediastore.txt";
@@ -39,16 +42,17 @@ class InstanceRelationAgentIT {
 
     @BeforeEach
     void beforeEach() {
+        // emtpy
     }
 
     @AfterEach
     void afterEach() {
+        // empty
     }
 
-    // @Disabled("Disabled as it is not used for now")
     @Test
     @DisplayName("Test execution of InstanceRelationAgent")
-    void instanceRelationIT() throws IOException, ReflectiveOperationException, ParserConfigurationException, SAXException {
+    void instanceRelationIT() throws IOException, ReflectiveOperationException {
         var inputText = ensureFile(TEXT, false);
         var inputModel = ensureFile(MODEL, false);
 
@@ -62,7 +66,7 @@ class InstanceRelationAgentIT {
         var annotatedText = textConnector.getAnnotatedText();
 
         IModelConnector pcmModel = new PcmXMLModelConnector(new File(inputModel.getAbsolutePath()));
-        ModelProvider modelExtractor = new ModelProvider(pcmModel);
+        var modelExtractor = new ModelProvider(pcmModel);
         var modelState = modelExtractor.execute(Map.of());
         var extractorData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), modelState));
 

@@ -30,6 +30,7 @@ public class TextExtraction extends AbstractExecutionStage {
      * Instantiates a new text extractor.
      */
     public TextExtraction() {
+        // empty
     }
 
     @Override

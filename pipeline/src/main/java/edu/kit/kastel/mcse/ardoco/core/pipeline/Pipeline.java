@@ -13,11 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xml.sax.SAXException;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
@@ -59,7 +56,7 @@ public final class Pipeline {
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
     public static DataStructure run(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File additionalConfigs)
-            throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
+            throws ReflectiveOperationException, IOException {
         return runAndSave(name, inputText, preprocessedText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
@@ -76,9 +73,9 @@ public final class Pipeline {
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
     public static DataStructure runAndSave(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File inputCodeModel,
-            File additionalConfigsFile, File outputDir) throws IOException, ReflectiveOperationException, ParserConfigurationException, SAXException {
+            File additionalConfigsFile, File outputDir) throws IOException, ReflectiveOperationException {
         logger.info("Loading additional configs ..");
-        Map<String, String> additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
+        var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
@@ -147,11 +144,12 @@ public final class Pipeline {
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
         Map<String, String> additionalConfigs = new HashMap<>();
         if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
-            try (Scanner scanner = new Scanner(additionalConfigsFile)) {
+            try (var scanner = new Scanner(additionalConfigsFile)) {
                 while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    if (line == null || line.isBlank())
+                    var line = scanner.nextLine();
+                    if (line == null || line.isBlank()) {
                         continue;
+                    }
                     var values = line.split(KEY_VALUE_CONNECTOR, 2);
                     if (values.length != 2) {
                         logger.error("Found config line \"{}\". Layout has to be: 'KEY" + KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName"
@@ -209,7 +207,7 @@ public final class Pipeline {
     }
 
     private static IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> additionalConfigs) {
-        ModelProvider modelExtractor = new ModelProvider(modelConnector);
+        var modelExtractor = new ModelProvider(modelConnector);
         return modelExtractor.execute(additionalConfigs);
     }
 

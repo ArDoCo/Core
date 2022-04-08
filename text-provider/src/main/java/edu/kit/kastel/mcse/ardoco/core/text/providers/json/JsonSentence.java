@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.json;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -13,6 +14,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 public class JsonSentence implements ISentence, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 7633202824798737860L;
 
     @JsonProperty
     private int sentenceNumber;
@@ -36,8 +40,9 @@ public class JsonSentence implements ISentence, Serializable {
 
         var firstWord = sentence.getWords().getFirstOptional();
         var lastWord = sentence.getWords().getLastOptional();
-        if (firstWord.isEmpty() || lastWord.isEmpty())
+        if (firstWord.isEmpty() || lastWord.isEmpty()) {
             throw new IllegalArgumentException("A sentence has must have a word!");
+        }
         this.startIndexInclude = source.getWords().indexOf(firstWord.get());
         this.endIndexInclude = source.getWords().indexOf(lastWord.get());
     }
@@ -63,11 +68,13 @@ public class JsonSentence implements ISentence, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        JsonSentence that = (JsonSentence) o;
+        }
+        var that = (JsonSentence) o;
         return sentenceNumber == that.sentenceNumber && startIndexInclude == that.startIndexInclude && endIndexInclude == that.endIndexInclude
                 && Objects.equals(text, that.text);
     }

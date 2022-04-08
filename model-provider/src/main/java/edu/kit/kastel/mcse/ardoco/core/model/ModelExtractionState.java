@@ -43,7 +43,6 @@ public class ModelExtractionState extends AbstractState implements IModelState {
     }
 
     // For generation of configuration
-    @SuppressWarnings("unused")
     private ModelExtractionState() {
         super(Map.of());
         this.modelId = null;
