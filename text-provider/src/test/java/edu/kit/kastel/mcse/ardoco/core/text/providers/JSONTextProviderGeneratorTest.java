@@ -21,10 +21,4 @@ class JSONTextProviderGeneratorTest {
         Assertions.assertNotNull(jsonText);
         jtp.saveTexts(new File("./src/test/resources/teastore.json"));
     }
-
-    @Test
-    void printText() throws Exception {
-        var pp = JsonTextProvider.loadFromFile(new File("./src/test/resources/teastore.json"));
-        System.out.println(pp.getAnnotatedText().getWords().collect(w -> w.getText()).makeString(" "));
-    }
 }
