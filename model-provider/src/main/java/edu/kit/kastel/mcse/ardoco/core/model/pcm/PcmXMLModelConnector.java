@@ -11,7 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.fuchss.xmlobjectmapper.XMLObjectMapper;
+import org.fuchss.xmlobjectmapper.XML2Object;
 import org.xml.sax.SAXException;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
@@ -31,7 +31,7 @@ public class PcmXMLModelConnector implements IModelConnector {
     }
 
     public PcmXMLModelConnector(InputStream is) throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
-        XMLObjectMapper xom = new XMLObjectMapper();
+        XML2Object xom = new XML2Object();
         xom.registerClasses(PCMRepository.class, PCMComponent.class);
         this.repository = Objects.requireNonNull(xom.parseXML(is, PCMRepository.class));
     }
