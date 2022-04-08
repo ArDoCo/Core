@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.json;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +17,14 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 
 public final class JsonTextProvider implements ITextConnector, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1888754797397675739L;
+
     @JsonProperty
     private Map<String, JsonText> texts = new HashMap<>();
 
     public IText addNewText(String name, IText text) {
-        JsonText jText = new JsonText(text);
+        var jText = new JsonText(text);
         texts.put(name, jText);
         return jText;
     }
@@ -31,10 +35,12 @@ public final class JsonTextProvider implements ITextConnector, Serializable {
 
     @Override
     public IText getAnnotatedText() {
-        if (texts.isEmpty())
+        if (texts.isEmpty()) {
             return null;
-        if (texts.size() > 1)
+        }
+        if (texts.size() > 1) {
             throw new IllegalStateException("Multiple texts are defined. Use this::getAnnotatedText(String)");
+        }
         return texts.values().iterator().next();
     }
 
@@ -54,7 +60,7 @@ public final class JsonTextProvider implements ITextConnector, Serializable {
     }
 
     private static ObjectMapper getMapper() {
-        ObjectMapper oom = new ObjectMapper();
+        var oom = new ObjectMapper();
         oom.setVisibility(oom.getSerializationConfig()
                 .getDefaultVisibilityChecker() //
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)//

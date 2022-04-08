@@ -92,8 +92,8 @@ public class ParseConverter {
                 var arcAttributeValue = String.valueOf(arc.getAttributeValue("relationShort"));
                 if (dependencyMap.containsKey(arcAttributeValue)) {
                     DependencyTag depTag = dependencyMap.get(arcAttributeValue);
-                    sourceWord.wordsThatAreDependenciesOfThis.get(depTag).add(targetWord);
-                    targetWord.wordsThatAreDependentOnThis.get(depTag).add(sourceWord);
+                    sourceWord.outgoingDependencyWords.get(depTag).add(targetWord);
+                    targetWord.incomingDependencyWords.get(depTag).add(sourceWord);
                 }
             }
         }
@@ -141,9 +141,9 @@ public class ParseConverter {
         private final POSTag posTag;
         private final String lemma;
 
-        private final Map<DependencyTag, MutableList<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values())
+        private final Map<DependencyTag, MutableList<IWord>> outgoingDependencyWords = Arrays.stream(DependencyTag.values())
                 .collect(Collectors.toMap(t -> t, v -> Lists.mutable.empty()));
-        private final Map<DependencyTag, MutableList<IWord>> wordsThatAreDependentOnThis = Arrays.stream(DependencyTag.values())
+        private final Map<DependencyTag, MutableList<IWord>> incomingDependencyWords = Arrays.stream(DependencyTag.values())
                 .collect(Collectors.toMap(t -> t, v -> Lists.mutable.empty()));
 
         private IText parent;
@@ -192,13 +192,13 @@ public class ParseConverter {
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
-            return wordsThatAreDependenciesOfThis.get(dependencyTag).toImmutable();
+        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
+            return outgoingDependencyWords.get(dependencyTag).toImmutable();
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
-            return wordsThatAreDependentOnThis.get(dependencyTag).toImmutable();
+        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
+            return incomingDependencyWords.get(dependencyTag).toImmutable();
         }
 
         @Override

@@ -12,17 +12,18 @@ import org.junit.jupiter.params.provider.EnumSource;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 
-class GenerateTextModels {
-    @Disabled
+@Disabled("Disabled for CI, only enable if you need to generate text models.")
+class GenerateTextModelsTest {
+
     @ParameterizedTest(name = "Generating {0} (Text)")
     @EnumSource(value = Project.class)
     void generateTextModels(Project project) throws Exception {
         var textFile = project.getTextFile();
-        ParseProvider pp = new ParseProvider(new FileInputStream(textFile));
+        var pp = new ParseProvider(new FileInputStream(textFile));
         var text = pp.getAnnotatedText();
         Assertions.assertNotNull(text);
 
-        JsonTextProvider jtp = new JsonTextProvider();
+        var jtp = new JsonTextProvider();
         jtp.addNewText(project.name(), text);
         jtp.saveTexts(new File(textFile.getAbsolutePath() + ".json"));
     }
