@@ -1,40 +1,37 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.text.providers.ontology;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.json;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.io.File;
 
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
+import org.junit.jupiter.api.*;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 
-class OntologyTextTest {
-    protected static String ontologyPath = "src/test/resources/teastore_w_text.owl";
+class JSONTextTest {
+    protected static String path = "src/test/resources/teastore.json";
 
-    protected OntologyConnector ontologyConnector;
-    protected IText ontologyText;
+    protected JsonTextProvider connector;
+    protected IText text;
 
     @BeforeEach
-    void beforeEach() {
-        ontologyConnector = new OntologyConnector(ontologyPath);
-        ontologyText = OntologyText.get(ontologyConnector);
+    void beforeEach() throws Exception {
+        connector = JsonTextProvider.loadFromFile(new File(path));
+        text = connector.getAnnotatedText();
     }
 
     @AfterEach
     void afterEach() {
-        ontologyConnector = null;
-        ontologyText = null;
+        connector = null;
+        text = null;
     }
 
     @Test
     @DisplayName("Test retrieval of words")
     void getWordsTest() {
-        var words = ontologyText.getWords();
+        var words = text.getWords();
         Assertions.assertNotNull(words);
 
-        var expectedWords = 763;
+        var expectedWords = 764;
         Assertions.assertEquals(expectedWords, words.size());
 
         // test order
@@ -48,15 +45,15 @@ class OntologyTextTest {
     @Test
     @DisplayName("Test getLength()")
     void getLengthTest() {
-        var length = ontologyText.getLength();
-        var expectedWords = 763;
+        var length = text.getLength();
+        var expectedWords = 764;
         Assertions.assertEquals(expectedWords, length);
     }
 
     @Test
     @DisplayName("Test retrieval of start node")
     void getFirstWordTest() {
-        var startNode = ontologyText.getFirstWord();
+        var startNode = text.getFirstWord();
         Assertions.assertNotNull(startNode);
 
         var startNodeText = startNode.getText();
@@ -67,7 +64,7 @@ class OntologyTextTest {
     @Test
     @DisplayName("Test retrieval of CorefClusters")
     void getCorefClustersTest() {
-        var clusters = ontologyText.getCorefClusters();
+        var clusters = text.getCorefClusters();
         Assertions.assertNotNull(clusters);
 
         var expectedNumberOfClusters = 16;
@@ -77,7 +74,7 @@ class OntologyTextTest {
     @Test
     @DisplayName("Test retrieval of sentences")
     void getSentencesTest() {
-        var sentences = ontologyText.getSentences();
+        var sentences = text.getSentences();
         Assertions.assertEquals(43, sentences.size());
     }
 }
