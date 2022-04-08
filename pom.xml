@@ -148,11 +148,6 @@
       <name>GitHub ArDoCo/Core Apache Maven Packages</name>
       <url>https://maven.pkg.github.com/ArDoCo/Core</url>
     </repository>
-    <repository>
-      <id>github-informalin</id>
-      <name>GitHub Informalin Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/InFormALin/Ontology-Connector</url>
-    </repository>
   </repositories>
 
   <build>

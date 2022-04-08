@@ -50,31 +50,32 @@ public final class Pipeline {
     private static final Logger logger = LogManager.getLogger(Pipeline.class);
 
     /**
-     * Run the approach equally to {@link #runAndSave(String, File, boolean, File, File, File, File)} but without saving
-     * the output to the file system.
+     * Run the approach with the given parameters and save the output to the file system.
      *
-     * @param name              Name of the run
-     * @param inputText         File of the input text. Can
-     * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
-     * @param additionalConfigs File with the additional or overwriting config parameters that should be used
+     * @param name                   Name of the run
+     * @param inputText              File of the input text.
+     * @param preprocessedText       indicator whether this file is already preprocessed text.
+     * @param inputArchitectureModel File of the input model (PCM)
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure run(String name, File inputText, boolean providedAnalyzedText, File inputModel, File additionalConfigs)
+    public static DataStructure run(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File additionalConfigs)
             throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
-        return runAndSave(name, inputText, providedAnalyzedText, inputModel, null, additionalConfigs, null);
+        return runAndSave(name, inputText, preprocessedText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
     /**
      * Run the approach with the given parameters and save the output to the file system.
      *
-     * @param name                  Name of the run
-     * @param inputText             File of the input text. Can
-     * @param inputModel            File of the input model (ontology). If inputText is null, needs to contain the text.
-     * @param additionalConfigsFile File with the additional or overwriting config parameters that should be used
-     * @param outputDir             File that represents the output directory where the results should be written to
+     * @param name                   Name of the run
+     * @param inputText              File of the input text.
+     * @param preprocessedText       indicator whether this file is already preprocessed text.
+     * @param inputArchitectureModel File of the input model (PCM)
+     * @param inputCodeModel         File of the input model (Java Code JSON)
+     * @param additionalConfigsFile  File with the additional or overwriting config parameters that should be used
+     * @param outputDir              File that represents the output directory where the results should be written to
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure runAndSave(String name, File inputText, boolean providedAnalyzedText, File inputModel, File inputCodeModel,
+    public static DataStructure runAndSave(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File inputCodeModel,
             File additionalConfigsFile, File outputDir) throws IOException, ReflectiveOperationException, ParserConfigurationException, SAXException {
         logger.info("Loading additional configs ..");
         Map<String, String> additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
@@ -83,7 +84,7 @@ public final class Pipeline {
         var startTime = System.currentTimeMillis();
 
         logger.info("Preparing and preprocessing text input.");
-        var annotatedText = getAnnotatedText(inputText, providedAnalyzedText);
+        var annotatedText = getAnnotatedText(inputText, preprocessedText);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
@@ -92,7 +93,7 @@ public final class Pipeline {
         logger.info("Starting process to generate Trace Links");
         var prevStartTime = System.currentTimeMillis();
         Map<String, IModelState> models = new HashMap<>();
-        IModelConnector pcmModel = new PcmXMLModelConnector(inputModel);
+        IModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
         models.put(pcmModel.getModelId(), runModelExtractor(pcmModel, additionalConfigs));
 
         if (inputCodeModel != null) {
@@ -168,7 +169,6 @@ public final class Pipeline {
 
     private static void logTiming(long startTime, String step) {
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-
         logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
