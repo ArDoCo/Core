@@ -22,7 +22,15 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore_w_text.owl", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(.99, .620, .765), //
+            new EvaluationResults(1.0, .620, .765), //
+            new EvaluationResults(.0, .0, .0)//
+    ), //
+    TEAMMATES( //
+            "src/test/resources/benchmark/teammates/teammates.owl", //
+            "src/test/resources/benchmark/teammates/teammates_w_text.owl", //
+            "src/test/resources/benchmark/teammates/teammates.txt", //
+            "src/test/resources/benchmark/teammates/goldstandard.csv", //
+            new EvaluationResults(.889, .879, .884), //
             new EvaluationResults(.0, .0, .0)//
     ), //
     TEASTORE( //
@@ -32,14 +40,6 @@ public enum Project {
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.99, .713, .832), //
             new EvaluationResults(.0, .0, .0)),
-    TEAMMATES( //
-            "src/test/resources/benchmark/teammates/teammates.owl", //
-            "src/test/resources/benchmark/teammates/teammates_w_text.owl", //
-            "src/test/resources/benchmark/teammates/teammates.txt", //
-            "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.0, .0, .0)//
-    ), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/bbb.owl", //
             "src/test/resources/benchmark/bigbluebutton/bbb_w_text.owl", //
