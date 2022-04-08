@@ -73,4 +73,4 @@ On startup, `NewSimilarityUtils` will load measures by calling the `loadUsingPro
 
 Some word similarity measures use vector representations of words and compares them using cosine similarity.
 The `VectorUtils` class next to the `wordsim` package provides helper methods for calculating the cosine similarity
-or other basic vector arithmetic.
+and other basic vector arithmetic.
