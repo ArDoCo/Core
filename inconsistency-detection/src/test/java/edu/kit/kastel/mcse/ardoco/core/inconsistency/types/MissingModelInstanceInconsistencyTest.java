@@ -25,7 +25,7 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
         ImmutableList<IWord> words = Lists.immutable.of(new DummyWord());
         ImmutableList<String> occurences = Lists.immutable.of("occurence");
         var nounMapping = new NounMapping(words, MappingKind.NAME, this, 1.0, words.toList(), occurences);
-        var recommendedInstance = new RecommendedInstance("name", "type", this, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.<INounMapping> empty());
+        var recommendedInstance = new RecommendedInstance("name", "type", this, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.empty());
         missingModelInstanceInconsistency = new MissingModelInstanceInconsistency(recommendedInstance);
     }
 
@@ -46,15 +46,13 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @Override
     protected IInconsistency getUnequalInconsistency() {
-        var recommendedInstance = new RecommendedInstance("otherName", "otherType", null, 1.0, Lists.immutable.<INounMapping> empty(),
-                Lists.immutable.<INounMapping> empty());
+        var recommendedInstance = new RecommendedInstance("otherName", "otherType", null, 1.0, Lists.immutable.empty(), Lists.immutable.<INounMapping> empty());
         return new MissingModelInstanceInconsistency(recommendedInstance);
     }
 
     @Override
     protected IInconsistency getEqualInconsistency() {
-        var recommendedInstance = new RecommendedInstance("name", "type", null, 1.0, Lists.immutable.<INounMapping> empty(),
-                Lists.immutable.<INounMapping> empty());
+        var recommendedInstance = new RecommendedInstance("name", "type", null, 1.0, Lists.immutable.empty(), Lists.immutable.empty());
         return new MissingModelInstanceInconsistency(recommendedInstance);
     }
 

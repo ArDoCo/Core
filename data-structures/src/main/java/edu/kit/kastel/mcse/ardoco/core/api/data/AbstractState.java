@@ -15,5 +15,6 @@ public abstract class AbstractState extends AbstractConfigurable {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // By Default Nothing To Do
     }
 }

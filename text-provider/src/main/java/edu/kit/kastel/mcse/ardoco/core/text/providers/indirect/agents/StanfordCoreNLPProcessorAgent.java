@@ -1,13 +1,7 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
@@ -30,11 +24,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.AnnotatorImplementations;
-import edu.stanford.nlp.pipeline.AnnotatorPool;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.pipeline.WordsToSentencesAnnotator;
+import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.BasicDependenciesAnnotation;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.EnhancedDependenciesAnnotation;
@@ -46,11 +36,10 @@ import edu.stanford.nlp.util.CoreMap;
 /**
  * Agent to process the input text with Stanford CoreNLP. Processes different Stanford pipeline processes like NER,
  * DepParse, and Coref.
- *
+ * <p>
  * The DepParse was originally created by Tobias Hey.
  *
  * @author Jan Keim, Tobias Hey
- *
  */
 @MetaInfServices(AbstractAgent.class)
 public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
@@ -241,7 +230,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
         doc.set(CoreAnnotations.SentencesAnnotation.class, result);
     }
 
-    private final class Sentence {
+    private static final class Sentence {
         final String words;
         final List<CoreLabel> tokens;
         final int sentenceIndex;
@@ -267,7 +256,7 @@ public class StanfordCoreNLPProcessorAgent extends AbstractAgent {
     }
 
     private void extendTokenNodeType() {
-        INodeType nodeType = null;
+        INodeType nodeType;
         if (graph.hasNodeType(TOKEN_TYPE_NAME)) {
             nodeType = graph.getNodeType(TOKEN_TYPE_NAME);
             if (!nodeType.containsAttribute(SENTENCE_NUMBER, INT_TYPE)) {

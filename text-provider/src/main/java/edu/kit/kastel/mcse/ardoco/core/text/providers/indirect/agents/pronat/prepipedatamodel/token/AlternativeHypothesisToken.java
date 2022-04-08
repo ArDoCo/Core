@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token;
 
 /**
@@ -23,11 +23,9 @@ public class AlternativeHypothesisToken extends AbstractHypothesisToken {
 
     @Override
     public int hashCode() {
-        if (hash != 0) {
-            return hash;
-        } else {
+        if (hash == 0) {
             hash = super.hashCode();
-            return hash;
         }
+        return hash;
     }
 }

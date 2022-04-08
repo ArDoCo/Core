@@ -23,8 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 class PcmXMLModelConnectorTest {
     private static final Logger logger = LogManager.getLogger();
 
-    private static PcmXMLModelConnector loadModel(String modelFile)
-            throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
+    private static PcmXMLModelConnector loadModel(String modelFile) throws ReflectiveOperationException, IOException {
         return new PcmXMLModelConnector(new File(modelFile));
     }
 

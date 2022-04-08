@@ -1,13 +1,8 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.ParseUtil;
@@ -59,7 +54,7 @@ public class Stanford {
         return newLemmas;
     }
 
-    private class Lemma {
+    private static class Lemma {
         private final String prev;
         private final String pos;
         private final String value;
@@ -92,7 +87,7 @@ public class Stanford {
      */
     String[] posTag(List<String> text) {
 
-        List<HasWord> sent = SentenceUtils.toWordList(text.toArray(new String[text.size()]));
+        List<HasWord> sent = SentenceUtils.toWordList(text.toArray(new String[0]));
         List<TaggedWord> taggedSent = tagger.tagSentence(sent);
         var result = new String[taggedSent.size()];
         for (var i = 0; i < taggedSent.size(); i++) {

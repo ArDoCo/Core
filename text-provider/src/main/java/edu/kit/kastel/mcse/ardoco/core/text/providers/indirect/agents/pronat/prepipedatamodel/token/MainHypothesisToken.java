@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token;
 
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class MainHypothesisToken extends AbstractHypothesisToken {
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj.getClass() == this.getClass()) {
-            final MainHypothesisToken other = (MainHypothesisToken) obj;
+            MainHypothesisToken other = (MainHypothesisToken) obj;
             if (alternatives.size() != other.getAlternatives().size()) {
                 return false;
             }
@@ -86,9 +86,7 @@ public class MainHypothesisToken extends AbstractHypothesisToken {
 
     @Override
     public int hashCode() {
-        if (hash != 0) {
-            return hash;
-        } else {
+        if (hash == 0) {
             if (alternatives.isEmpty()) {
                 hash = super.hashCode();
             } else {
@@ -96,7 +94,7 @@ public class MainHypothesisToken extends AbstractHypothesisToken {
                     hash = 31 * hash + alternative.hashCode();
                 }
             }
-            return hash;
         }
+        return hash;
     }
 }
