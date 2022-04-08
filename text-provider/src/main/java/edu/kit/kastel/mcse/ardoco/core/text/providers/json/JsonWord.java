@@ -43,6 +43,7 @@ public class JsonWord implements IWord, Serializable {
         this.posTag = word.getPosTag();
         this.position = word.getPosition();
         this.lemma = word.getLemma();
+        // TODO RENAME
         for (var type : DependencyTag.values()) {
             var wordsThatAreDependencyOfThisList = word.getWordsThatAreDependencyOfThis(type).collect(w -> source.getWords().indexOf(w)).stream().toList();
             if (!wordsThatAreDependencyOfThisList.isEmpty())
