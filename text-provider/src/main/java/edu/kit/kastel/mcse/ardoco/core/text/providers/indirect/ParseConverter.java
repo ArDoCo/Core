@@ -1,10 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -14,12 +11,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 /**
@@ -77,7 +69,7 @@ public class ParseConverter {
             instances.put(token, word);
         }
 
-        orderedWords.sort((w1, w2) -> w1.position - w2.position);
+        orderedWords.sort(Comparator.comparingInt(w -> w.position));
     }
 
     private void createDeps() {
@@ -150,10 +142,10 @@ public class ParseConverter {
 
         Word(INode node) {
             text = String.valueOf(node.getAttributeValue("value"));
-            position = Integer.valueOf(String.valueOf(node.getAttributeValue("position")));
+            position = Integer.parseInt(String.valueOf(node.getAttributeValue("position")));
             lemma = String.valueOf(node.getAttributeValue("lemma"));
             posTag = getPosTag(node);
-            sentence = Integer.valueOf(String.valueOf(node.getAttributeValue("sentenceNumber")));
+            sentence = Integer.parseInt(String.valueOf(node.getAttributeValue("sentenceNumber")));
         }
 
         private static POSTag getPosTag(INode node) {
@@ -280,6 +272,6 @@ public class ParseConverter {
 
     }
 
-    private static final record CorefCluster(int id, String representativeMention, ImmutableList<ImmutableList<IWord>> mentions) implements ICorefCluster {
+    private record CorefCluster(int id, String representativeMention, ImmutableList<ImmutableList<IWord>> mentions) implements ICorefCluster {
     }
 }

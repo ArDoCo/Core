@@ -6,9 +6,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
 public interface IFilter<D extends IData> {
 
     /**
-     * Execute the extractor and apply it on a word.
+     * Execute the filter and apply it on a data object.
      *
-     * @param word the word
+     * @param data the data to operate on
      */
     void exec(D data);
 

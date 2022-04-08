@@ -48,7 +48,7 @@ public enum Project {
     private final String goldStandard;
     private final EvaluationResults expectedTraceLinkResults;
     private final EvaluationResults expectedInconsistencyResults;
-    private IModelConnector modelConnector = null;
+    private volatile IModelConnector modelConnector = null;
 
     Project(String model, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults, EvaluationResults expectedInconsistencyResults) {
         this.model = model;

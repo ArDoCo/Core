@@ -65,11 +65,10 @@ class InconsistencyIT {
 
         var outFile = String.format("%s%sinconsistency-eval-%s.txt", OUTPUT, File.separator, name.toLowerCase());
 
-        try (PrintStream os = new PrintStream(new File(outFile))) {
-            var results = run(project, eval1, os);
-            return results;
+        try (PrintStream os = new PrintStream(outFile)) {
+            return run(project, eval1, os);
         } catch (FileNotFoundException e) {
-            Assertions.assertTrue(false, "Could not find file.");
+            Assertions.fail("Could not find file.");
         }
         return null;
     }

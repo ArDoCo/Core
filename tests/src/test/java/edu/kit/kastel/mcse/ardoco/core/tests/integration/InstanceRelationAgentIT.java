@@ -11,9 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,21 +38,11 @@ class InstanceRelationAgentIT {
     private static final String TEXT = "src/test/resources/benchmark/mediastore/mediastore.txt";
     private static final String MODEL = "src/test/resources/benchmark/mediastore/original_model/ms.repository";
 
-    @BeforeEach
-    void beforeEach() {
-        // emtpy
-    }
-
-    @AfterEach
-    void afterEach() {
-        // empty
-    }
-
     @Test
     @DisplayName("Test execution of InstanceRelationAgent")
     void instanceRelationIT() throws IOException, ReflectiveOperationException {
-        var inputText = ensureFile(TEXT, false);
-        var inputModel = ensureFile(MODEL, false);
+        var inputText = ensureFile(TEXT);
+        var inputModel = ensureFile(MODEL);
 
         ITextConnector textConnector;
         try {
@@ -112,16 +100,15 @@ class InstanceRelationAgentIT {
     }
 
     /**
-     * Ensure that a file exists (or create if allowed by parameter).
+     * Ensure that a file exists.
      *
-     * @param path   the path to the file
-     * @param create indicates whether creation is allowed
+     * @param path the path to the file
      * @return the file
      * @throws IOException if something went wrong
      */
-    private static File ensureFile(String path, boolean create) throws IOException {
+    private static File ensureFile(String path) throws IOException {
         var file = new File(path);
-        if (file.exists() || create && file.createNewFile()) {
+        if (file.exists()) {
             return file;
         }
         // File not available
