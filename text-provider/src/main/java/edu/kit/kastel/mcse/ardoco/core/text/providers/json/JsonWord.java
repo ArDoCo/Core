@@ -80,15 +80,17 @@ public class JsonWord implements IWord, Serializable {
 
     @Override
     public IWord getPreWord() {
-        if (position == 0)
+        if (position <= 0)
             return null;
-        assert parent.getWords().get(position) == this;
-        return parent.getWords().get(position - 1);
+        var words = parent.getWords();
+        assert words.get(position) == this;
+        return words.get(position - 1);
     }
 
     @Override
     public IWord getNextWord() {
-        if (position >= parent.getWords().size())
+        var words = parent.getWords();
+        if (position >= words.size() - 1)
             return null;
         assert parent.getWords().get(position) == this;
         return parent.getWords().get(position + 1);
