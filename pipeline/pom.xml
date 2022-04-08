@@ -51,7 +51,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline</mainClass>
+              <mainClass>edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCoCLI</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

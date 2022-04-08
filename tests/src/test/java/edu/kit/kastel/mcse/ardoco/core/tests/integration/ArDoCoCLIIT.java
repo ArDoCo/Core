@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCoCLI;
 
-class PipelineIT {
+class ArDoCoCLIIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String TEXT = "src/test/resources/benchmark/teastore/teastore.txt";
@@ -25,7 +25,7 @@ class PipelineIT {
     void pipelineWithTextIT() {
         String[] args = { "-n", NAME, "-ma", MODEL, "-t", TEXT, "-o", OUTPUT };
         Assertions.assertNotNull(args);
-        Pipeline.main(args);
+        ArDoCoCLI.main(args);
     }
 
     @Test
@@ -33,7 +33,7 @@ class PipelineIT {
     void pipelineWithProvidedWrongTextOntologyIT() {
         String[] args = { "-n", NAME, "-ma", MODEL, "-p", "-o", OUTPUT };
         Assertions.assertNotNull(args);
-        Pipeline.main(args);
+        ArDoCoCLI.main(args);
     }
 
     @Test
@@ -41,7 +41,7 @@ class PipelineIT {
     void pipelineWithNonexistentTextIT() {
         String[] args = { "-n", NAME, "-ma", MODEL, "-t", "NONEXISTENT", "-o", OUTPUT };
         Assertions.assertNotNull(args);
-        Pipeline.main(args);
+        ArDoCoCLI.main(args);
     }
 
     @Test
@@ -49,7 +49,7 @@ class PipelineIT {
     void pipelineWithNonexistentModelIT() {
         String[] args = { "-n", NAME, "-ma", "NONEXISTENT", "-t", TEXT, "-o", OUTPUT };
         Assertions.assertNotNull(args);
-        Pipeline.main(args);
+        ArDoCoCLI.main(args);
     }
 
 }
