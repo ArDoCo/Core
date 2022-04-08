@@ -17,7 +17,7 @@
     <dependency>
       <groupId>org.fuchss</groupId>
       <artifactId>xml-object-mapper</artifactId>
-      <version>0.1</version>
+      <version>0.2</version>
     </dependency>
 
     <dependency>
@@ -33,16 +33,6 @@
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
       <artifactId>util</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>edu.kit.kastel.informalin</groupId>
-      <artifactId>ontology-connector</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <type>pom</type>
     </dependency>
   </dependencies>
 

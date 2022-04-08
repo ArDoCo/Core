@@ -15,12 +15,11 @@ class JavaJsonModelConnectorTest {
     @Test
     @DisplayName("Simply test loading of TEASTORE")
     void testLoading() throws IOException {
-        InputStream is = Objects.requireNonNull(JavaJsonModelConnectorTest.class.getResourceAsStream("/TeaStore.json"));
+        InputStream is = Objects.requireNonNull(JavaJsonModelConnectorTest.class.getResourceAsStream("/teastore-code.json"));
         JavaJsonModelConnector jjmc = new JavaJsonModelConnector(is);
         Assertions.assertEquals(192, jjmc.getInstances().size());
         // NIY
         Assertions.assertEquals(0, jjmc.getRelations().size());
         Assertions.assertEquals(Metamodel.CODE, jjmc.getMetamodel());
-
     }
 }

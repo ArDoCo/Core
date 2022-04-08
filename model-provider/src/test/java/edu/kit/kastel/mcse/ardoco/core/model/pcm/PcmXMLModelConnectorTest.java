@@ -72,8 +72,7 @@ class PcmXMLModelConnectorTest {
             logger.debug("\n");
         }
 
-        // TODO Was 13. But only 12 Components are in the model
-        int expectedNumberOfInstances = 13;
+        int expectedNumberOfInstances = 11;
         Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "The number of expected and found instances differs!");
 
     }
