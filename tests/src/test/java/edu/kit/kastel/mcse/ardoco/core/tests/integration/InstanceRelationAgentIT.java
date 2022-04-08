@@ -11,11 +11,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.jupiter.api.*;
+import org.xml.sax.SAXException;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -23,7 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
@@ -33,7 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 class InstanceRelationAgentIT {
 
     private static final String TEXT = "src/test/resources/benchmark/mediastore/mediastore.txt";
-    private static final String MODEL = "src/test/resources/benchmark/mediastore/mediastore.owl";
+    private static final String MODEL = "src/test/resources/benchmark/mediastore/original_model/ms.repository";
 
     @BeforeEach
     void beforeEach() {
@@ -43,14 +45,12 @@ class InstanceRelationAgentIT {
     void afterEach() {
     }
 
-    @Disabled("Disabled as it is not used for now")
+    // @Disabled("Disabled as it is not used for now")
     @Test
     @DisplayName("Test execution of InstanceRelationAgent")
-    void instanceRelationIT() throws IOException {
+    void instanceRelationIT() throws IOException, ReflectiveOperationException, ParserConfigurationException, SAXException {
         var inputText = ensureFile(TEXT, false);
         var inputModel = ensureFile(MODEL, false);
-
-        var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
 
         ITextConnector textConnector;
         try {
@@ -61,7 +61,7 @@ class InstanceRelationAgentIT {
         }
         var annotatedText = textConnector.getAnnotatedText();
 
-        IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
+        IModelConnector pcmModel = new PcmXMLModelConnector(new File(inputModel.getAbsolutePath()));
         ModelProvider modelExtractor = new ModelProvider(pcmModel);
         var modelState = modelExtractor.execute(Map.of());
         var extractorData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), modelState));

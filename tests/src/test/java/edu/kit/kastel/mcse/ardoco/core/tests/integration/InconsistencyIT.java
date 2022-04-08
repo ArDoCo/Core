@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -23,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResu
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model.DeleteOneModelElementEval;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class InconsistencyIT {
     private static Logger logger = null;
@@ -34,13 +32,6 @@ class InconsistencyIT {
     public static void beforeAll() {
         System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
         logger = LogManager.getLogger(InconsistencyIT.class);
-    }
-
-    @BeforeEach
-    void beforeEach() {
-        // set the cache to true (default setting)
-        // if another tests does not want to have a cache they can manipulate themselves
-        OntologyTextProvider.enableCache(true);
     }
 
     @DisplayName("Evaluate Inconsistency Analyses")

@@ -10,13 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
@@ -25,14 +27,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.java.JavaOntologyModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.java.JavaJsonModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 /**
@@ -48,12 +50,12 @@ public final class Pipeline {
 
     private static final String CMD_HELP = "h";
     private static final String CMD_NAME = "n";
-    private static final String CMD_MODEL = "m";
+    private static final String CMD_MODEL_ARCHITECTURE = "ma";
+    private static final String CMD_MODEL_CODE = "mc";
     private static final String CMD_TEXT = "t";
     private static final String CMD_PROVIDED = "p";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
-    private static final String CMD_IMPLEMENTATION = "i";
 
     private static Options options;
 
@@ -66,12 +68,12 @@ public final class Pipeline {
         // Parameters:
         // -h : Help
         // -n : Name of the Run
-        // -m : Model Path
+        // -ma : Model Path (Architecture)
+        // -mc : Model Path (Java Code)
         // -t : Text Path (either this or -p)
-        // -p : Flag to make use of provided ontology to load preprocessed text
+        // -p : Flag to make use of provided JSONText to load preprocessed text
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
-        // -i : Model contains Code Model
 
         CommandLine cmd;
         try {
@@ -88,21 +90,25 @@ public final class Pipeline {
         }
 
         File inputText = null;
-        File inputModel;
+        File inputModelArchitecture;
+        File inputModelCode;
         File additionalConfigs = null;
         File outputDir;
 
-        var providedTextOntology = cmd.hasOption(CMD_PROVIDED);
-        if (!providedTextOntology && !cmd.hasOption(CMD_TEXT)) {
+        var providedAnalyzedText = cmd.hasOption(CMD_PROVIDED);
+        if (!providedAnalyzedText && !cmd.hasOption(CMD_TEXT)) {
             printUsage();
             return;
         }
 
         try {
-            if (!providedTextOntology) {
+            if (!providedAnalyzedText) {
                 inputText = ensureFile(cmd.getOptionValue(CMD_TEXT));
+            } else {
+                inputText = ensureFile(cmd.getOptionValue(CMD_PROVIDED));
             }
-            inputModel = ensureFile(cmd.getOptionValue(CMD_MODEL));
+            inputModelArchitecture = ensureFile(cmd.getOptionValue(CMD_MODEL_ARCHITECTURE));
+            inputModelCode = cmd.hasOption(CMD_MODEL_CODE) ? ensureFile(cmd.getOptionValue(CMD_MODEL_ARCHITECTURE)) : null;
             if (cmd.hasOption(CMD_CONF)) {
                 additionalConfigs = ensureFile(cmd.getOptionValue(CMD_CONF));
             }
@@ -119,10 +125,11 @@ public final class Pipeline {
             logger.error("Name does not match [A-Za-z0-9_]+");
             return;
         }
-
-        var hasJavaModel = cmd.hasOption(CMD_IMPLEMENTATION);
-
-        runAndSave(name, inputText, inputModel, additionalConfigs, outputDir, hasJavaModel);
+        try {
+            runAndSave(name, inputText, providedAnalyzedText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     private static void printUsage() {
@@ -131,8 +138,8 @@ public final class Pipeline {
     }
 
     /**
-     * Run the approach equally to {@link #runAndSave(String, File, File, File, File, boolean)} but without saving the
-     * output to the file system.
+     * Run the approach equally to {@link #runAndSave(String, File, boolean, File, File, File, File)} but without saving
+     * the output to the file system.
      *
      * @param name              Name of the run
      * @param inputText         File of the input text. Can
@@ -140,23 +147,9 @@ public final class Pipeline {
      * @param additionalConfigs File with the additional or overwriting config parameters that should be used
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure run(String name, File inputText, File inputModel, File additionalConfigs) {
-        return runAndSave(name, inputText, inputModel, additionalConfigs, null, false);
-    }
-
-    /**
-     * Run the approach equally to {@link #runAndSave(String, File, File, File, File, boolean)} but without saving the
-     * output to the file system.
-     *
-     * @param name              Name of the run
-     * @param inputText         File of the input text. Can
-     * @param inputModel        File of the input model (ontology). If inputText is null, needs to contain the text.
-     * @param additionalConfigs File with the additional or overwriting config parameters that should be used
-     * @param hasCodeModel      indicate that the model contains a code model
-     * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
-     */
-    public static DataStructure run(String name, File inputText, File inputModel, File additionalConfigs, boolean hasCodeModel) {
-        return runAndSave(name, inputText, inputModel, additionalConfigs, null, hasCodeModel);
+    public static DataStructure run(String name, File inputText, boolean providedAnalyzedText, File inputModel, File additionalConfigs)
+            throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
+        return runAndSave(name, inputText, providedAnalyzedText, inputModel, null, additionalConfigs, null);
     }
 
     /**
@@ -167,20 +160,18 @@ public final class Pipeline {
      * @param inputModel            File of the input model (ontology). If inputText is null, needs to contain the text.
      * @param additionalConfigsFile File with the additional or overwriting config parameters that should be used
      * @param outputDir             File that represents the output directory where the results should be written to
-     * @param hasCodeModel          indicate that the model contains a code model
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure runAndSave(String name, File inputText, File inputModel, File additionalConfigsFile, File outputDir, boolean hasCodeModel) {
+    public static DataStructure runAndSave(String name, File inputText, boolean providedAnalyzedText, File inputModel, File inputCodeModel,
+            File additionalConfigsFile, File outputDir) throws IOException, ReflectiveOperationException, ParserConfigurationException, SAXException {
         logger.info("Loading additional configs ..");
         Map<String, String> additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
-        var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
-
         logger.info("Preparing and preprocessing text input.");
-        var annotatedText = getAnnotatedText(inputText, ontoConnector);
+        var annotatedText = getAnnotatedText(inputText, providedAnalyzedText);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
@@ -189,11 +180,11 @@ public final class Pipeline {
         logger.info("Starting process to generate Trace Links");
         var prevStartTime = System.currentTimeMillis();
         Map<String, IModelState> models = new HashMap<>();
-        IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
+        IModelConnector pcmModel = new PcmXMLModelConnector(inputModel);
         models.put(pcmModel.getModelId(), runModelExtractor(pcmModel, additionalConfigs));
 
-        if (hasCodeModel) {
-            IModelConnector javaModel = new JavaOntologyModelConnector(ontoConnector);
+        if (inputCodeModel != null) {
+            IModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
             var codeModelState = runModelExtractor(javaModel, additionalConfigs);
             models.put(javaModel.getModelId(), codeModelState);
         }
@@ -233,8 +224,6 @@ public final class Pipeline {
 
             for (String modelId : data.getModelIds()) {
                 printResultsInFiles(outputDir, modelId, name, data, duration);
-                var ontoSaveFile = getOntologyOutputFile(outputDir, inputModel.getName());
-                ontoConnector.save(ontoSaveFile);
             }
             logTiming(prevStartTime, "Saving");
         }
@@ -272,40 +261,24 @@ public final class Pipeline {
         logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
-    private static IText getAnnotatedText(File inputText, OntologyConnector ontoConnector) {
-        var ontologyTextProvider = OntologyTextProvider.get(ontoConnector);
-
-        IText annotatedText;
-        if (inputText != null) {
+    private static IText getAnnotatedText(File inputText, boolean providedAnalyzedText) {
+        if (providedAnalyzedText) {
             try {
-                ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
-                annotatedText = textConnector.getAnnotatedText();
-            } catch (IOException | LunaRunException | LunaInitException e) {
+                return JsonTextProvider.loadFromFile(inputText).getAnnotatedText();
+            } catch (IOException e) {
                 logger.error(e.getMessage(), e);
                 return null;
             }
-
-            ontologyTextProvider.removeExistingTexts();
-            ontologyTextProvider.addText(annotatedText, inputText.getName());
-        } else {
-            try {
-                annotatedText = ontologyTextProvider.getAnnotatedText();
-            } catch (IllegalStateException e) {
-                logger.warn(e.getMessage());
-                return null;
-            }
-
         }
-        return annotatedText;
-    }
 
-    private static String getOntologyOutputFile(File outputDir, String name) {
-        var outName = name.replace(".owl", "_processed.owl");
-        if (!outName.endsWith(".owl")) {
-            outName = outName + "_processed.owl";
+        try {
+            ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
+            return textConnector.getAnnotatedText();
+        } catch (IOException | LunaRunException | LunaInitException e) {
+            logger.error(e.getMessage(), e);
+            return null;
         }
-        var outFile = Path.of(outputDir.getAbsolutePath(), outName).toFile();
-        return outFile.getAbsolutePath();
+
     }
 
     private static void printResultsInFiles(File outputDir, String modelId, String name, DataStructure data, Duration duration) {
@@ -357,6 +330,9 @@ public final class Pipeline {
      * @throws IOException if something went wrong
      */
     private static File ensureFile(String path) throws IOException {
+        if (path == null || path.isBlank()) {
+            throw new IOException("The specified file does not exist and/or could not be created: " + path);
+        }
         var file = new File(path);
         if (file.exists()) {
             return file;
@@ -395,8 +371,13 @@ public final class Pipeline {
         opt.setType(String.class);
         options.addOption(opt);
 
-        opt = new Option(CMD_MODEL, "model", true, "path to the owl model");
+        opt = new Option(CMD_MODEL_ARCHITECTURE, "model-architecture", true, "path to the architecture model");
         opt.setRequired(true);
+        opt.setType(String.class);
+        options.addOption(opt);
+
+        opt = new Option(CMD_MODEL_CODE, "model-code", true, "path to the architecture model");
+        opt.setRequired(false);
         opt.setType(String.class);
         options.addOption(opt);
 
@@ -405,9 +386,9 @@ public final class Pipeline {
         opt.setType(String.class);
         options.addOption(opt);
 
-        opt = new Option(CMD_PROVIDED, "provided", false, "flag to show that ontology has text already provided");
+        opt = new Option(CMD_PROVIDED, "provided", false, "path to a JSON Text (already analyzed)");
         opt.setRequired(false);
-        opt.setType(Boolean.class);
+        opt.setType(String.class);
         options.addOption(opt);
 
         opt = new Option(CMD_CONF, "conf", true, "path to the additional config file");
@@ -418,11 +399,6 @@ public final class Pipeline {
         opt = new Option(CMD_OUT_DIR, "out", true, "path to the output directory");
         opt.setRequired(true);
         opt.setType(String.class);
-        options.addOption(opt);
-
-        opt = new Option(CMD_IMPLEMENTATION, "withimplementation", false, "indicate that the model contains the code model");
-        opt.setRequired(false);
-        opt.setType(Boolean.class);
         options.addOption(opt);
 
         CommandLineParser parser = new DefaultParser();
