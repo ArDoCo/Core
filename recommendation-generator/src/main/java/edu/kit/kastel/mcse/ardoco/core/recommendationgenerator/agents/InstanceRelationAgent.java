@@ -123,15 +123,15 @@ public class InstanceRelationAgent extends RecommendationAgent {
 
     private static List<IWord> getNounDepOn(IWord word) {
         List<IWord> dependencies = new ArrayList<>();
-        dependencies.addAll(word.getWordsThatAreDependentOnThis(DependencyTag.OBJ).castToList());
-        dependencies.addAll(word.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ).castToList());
+        dependencies.addAll(word.getIncomingDependencyWordsWithType(DependencyTag.OBJ).castToList());
+        dependencies.addAll(word.getIncomingDependencyWordsWithType(DependencyTag.NSUBJ).castToList());
         return dependencies;
     }
 
     private static List<IWord> getNounDepOf(IWord word) {
         List<IWord> dependencies = new ArrayList<>();
-        dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.OBJ).castToList());
-        dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.NSUBJ).castToList());
+        dependencies.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.OBJ).castToList());
+        dependencies.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.NSUBJ).castToList());
         return dependencies;
     }
 

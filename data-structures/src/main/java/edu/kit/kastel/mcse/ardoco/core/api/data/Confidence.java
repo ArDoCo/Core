@@ -41,12 +41,6 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     }
 
     public void addAgentConfidence(IClaimant claimant, double confidence) {
-        // TODO Decide how to handle same claimants.
-        /*
-         * if (agentConfidence.stream().anyMatch(p -> p.getOne().equals(claimant))) { throw new
-         * IllegalArgumentException("The agent has already set the confidence of this data: " + claimant); }
-         */
-
         agentConfidence.add(Tuples.pair(claimant, confidence));
     }
 

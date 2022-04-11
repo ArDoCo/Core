@@ -75,7 +75,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      *
      * @param textExtractionState text extraction state
      * @param word                the current word
-     * @param modelState
+     * @param modelState          the current model state
+     * @param recommendationState the current recommendation state
      */
     private void checkForNameAfterType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
@@ -158,8 +159,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState) {
         var nounMappingsByCurrentWord = textExtractionState.getNounMappingsByWord(currentWord);
         if (instance != null && nounMappingsByCurrentWord != null) {
-            var nmappings = nounMappingsByCurrentWord;
-            for (INounMapping nmapping : nmappings) {
+            for (INounMapping nmapping : nounMappingsByCurrentWord) {
                 var name = instance.getFullName();
                 var type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
