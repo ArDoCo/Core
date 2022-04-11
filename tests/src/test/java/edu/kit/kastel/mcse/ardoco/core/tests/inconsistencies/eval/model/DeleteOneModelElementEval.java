@@ -46,7 +46,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
         os.println("Overall: ");
         os.println("Weighted: " + evaluator.getWeightedAveragePRF1());
-        os.println("Average:  " + evaluator.getAveragePRF1());
+        os.println("Average:  " + evaluator.getMacroAveragePRF1());
         return evaluator.getWeightedAveragePRF1();
     }
 
