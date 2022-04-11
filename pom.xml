@@ -40,10 +40,12 @@
   </distributionManagement>
 
   <properties>
+    <project.source.encoding>UTF-8</project.source.encoding>
     <eclipse-collections.version>11.0.0</eclipse-collections.version>
     <log4j.version>2.17.2</log4j.version>
-    <spotless.version>2.21.0</spotless.version>
+    <spotless.version>2.22.0</spotless.version>
     <error-prone.version>2.10.0</error-prone.version>
+    <jackson.version>2.13.2</jackson.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
@@ -146,11 +148,6 @@
       <name>GitHub ArDoCo/Core Apache Maven Packages</name>
       <url>https://maven.pkg.github.com/ArDoCo/Core</url>
     </repository>
-    <repository>
-      <id>github-informalin</id>
-      <name>GitHub Informalin Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/InFormALin/Ontology-Connector</url>
-    </repository>
   </repositories>
 
   <build>
@@ -159,7 +156,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M5</version>
+          <version>3.0.0-M6</version>
           <configuration>
             <skipTests>${skipTests}</skipTests>
           </configuration>
@@ -197,7 +194,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M5</version>
+          <version>3.0.0-M6</version>
           <configuration></configuration>
           <executions>
             <execution>
@@ -212,7 +209,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.7</version>
+          <version>0.8.8</version>
         </plugin>
       </plugins>
     </pluginManagement>

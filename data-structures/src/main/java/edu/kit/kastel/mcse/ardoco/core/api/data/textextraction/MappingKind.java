@@ -10,13 +10,11 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 public enum MappingKind {
 
     /**
-     * A noun mapping can be identified as an identifier {@link #NAME}, a potential type {@link #TYPE}, or a noun that
-     * can not be clearly sorted to one of them {@link #NAME_OR_TYPE}
+     * A noun mapping can be identified as an identifier {@link #NAME}, a potential type {@link #TYPE}
      */
     NAME,
     /**
-     * A noun mapping can be identified as an identifier {@link #NAME}, a potential type {@link #TYPE}, or a noun that
-     * can not be clearly sorted to one of them {@link #NAME_OR_TYPE}
+     * A noun mapping can be identified as an identifier {@link #NAME}, a potential type {@link #TYPE}
      */
     TYPE
 

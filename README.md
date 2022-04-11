@@ -18,15 +18,15 @@ The model can also contain a (java) code model that you can insert using the [Co
 ### Usage
 ```
 usage: java -jar ardoco-core-pipeline.jar
--c,--conf <arg>           path to the additional config file
--h,--help                 show this message
--i,--withimplementation   indicate that the model contains the code model
--m,--model <arg>          path to the owl model
--n,--name <arg>           name of the run
--o,--out <arg>            path to the output directory
--p,--provided             flag to show that ontology has text already
-						provided
--t,--text <arg>           path to the text file
+-c,--conf <arg>                  path to the additional config file
+-h,--help                        show this message
+-ma,--model-architecture <arg>   path to the architecture model
+-mc,--model-code <arg>           path to the java code model
+-n,--name <arg>                  name of the run
+-o,--out <arg>                   path to the output directory
+-p,--provided <arg>              path to a JSON Text (already
+								preprocessed)
+-t,--text <arg>                  path to the text file
 ```
 
 ### Wiki

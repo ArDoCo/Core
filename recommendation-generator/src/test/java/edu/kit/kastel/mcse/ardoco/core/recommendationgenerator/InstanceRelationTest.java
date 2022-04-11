@@ -126,12 +126,12 @@ class InstanceRelationTest {
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             return null;
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
             return null;
         }
 

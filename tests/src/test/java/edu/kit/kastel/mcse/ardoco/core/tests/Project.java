@@ -7,59 +7,51 @@ import java.io.FileNotFoundException;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 
 public enum Project {
     MEDIASTORE(//
-            "src/test/resources/benchmark/mediastore/mediastore.owl", //
-            "src/test/resources/benchmark/mediastore/mediastore_w_text.owl", //
+            "src/test/resources/benchmark/mediastore/original_model/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(.99, .620, .765), //
+            new EvaluationResults(1.0, .620, .765), //
+            new EvaluationResults(.0, .0, .0)//
+    ), //
+    TEAMMATES( //
+            "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
+            "src/test/resources/benchmark/teammates/teammates.txt", //
+            "src/test/resources/benchmark/teammates/goldstandard.csv", //
+            new EvaluationResults(.889, .879, .884), //
             new EvaluationResults(.0, .0, .0)//
     ), //
     TEASTORE( //
-            "src/test/resources/benchmark/teastore/teastore.owl", //
-            "src/test/resources/benchmark/teastore/teastore_w_text.owl", //
+            "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.99, .713, .832), //
             new EvaluationResults(.0, .0, .0)),
-    TEAMMATES( //
-            "src/test/resources/benchmark/teammates/teammates.owl", //
-            "src/test/resources/benchmark/teammates/teammates_w_text.owl", //
-            "src/test/resources/benchmark/teammates/teammates.txt", //
-            "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.0, .0, .0)//
-    ), //
     BIGBLUEBUTTON( //
-            "src/test/resources/benchmark/bigbluebutton/bbb.owl", //
-            "src/test/resources/benchmark/bigbluebutton/bbb_w_text.owl", //
+            "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
             new EvaluationResults(.0, .0, .0));
 
     private final String model;
-    private final String textOntology;
     private final String textFile;
     private final String goldStandard;
     private final EvaluationResults expectedTraceLinkResults;
     private final EvaluationResults expectedInconsistencyResults;
-    private IModelConnector modelConnector = null;
+    private volatile IModelConnector modelConnector = null;
 
-    Project(String model, String textOntology, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults,
-            EvaluationResults expectedInconsistencyResults) {
+    Project(String model, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults, EvaluationResults expectedInconsistencyResults) {
         this.model = model;
-        this.textOntology = textOntology;
         this.textFile = textFile;
         this.goldStandard = goldStandard;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
@@ -70,12 +62,12 @@ public enum Project {
         return new File(model);
     }
 
-    public File getTextOntologyFile() {
-        return new File(textOntology);
-    }
-
     public File getTextFile() {
         return new File(textFile);
+    }
+
+    public File getPreprocessedTextFile() {
+        return new File(this.textFile + ".json");
     }
 
     public File getGoldStandardFile() {
@@ -86,8 +78,11 @@ public enum Project {
         if (modelConnector == null) {
             synchronized (this) {
                 if (modelConnector == null) {
-                    var ontoConnector = new OntologyConnector(getModelFile().getAbsolutePath());
-                    modelConnector = new PcmOntologyModelConnector(ontoConnector);
+                    try {
+                        modelConnector = new PcmXMLModelConnector(getModelFile());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
@@ -95,16 +90,20 @@ public enum Project {
     }
 
     public IText getText() {
-        return getTextViaOntology();
+        return getTextPreprocessed();
     }
 
-    public IText getTextViaOntology() {
-        var connector = new OntologyConnector(getTextOntologyFile().getAbsolutePath());
-        return OntologyTextProvider.get(connector).getAnnotatedText();
+    public IText getTextPreprocessed() {
+        try {
+            ITextConnector textConnector = JsonTextProvider.loadFromFile(getPreprocessedTextFile());
+            return textConnector.getAnnotatedText();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public IText getTextViaFile() {
-
         try {
             ITextConnector textConnector = new ParseProvider(new FileInputStream(getTextFile()));
             return textConnector.getAnnotatedText();
