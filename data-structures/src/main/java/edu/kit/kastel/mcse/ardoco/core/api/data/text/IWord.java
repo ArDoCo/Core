@@ -70,7 +70,7 @@ public interface IWord {
      * @param dependencyTag the dependency tag
      * @return the words that are dependency of this
      */
-    ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag);
+    ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag);
 
     /**
      * Gets the words that are dependent on this.
@@ -78,5 +78,5 @@ public interface IWord {
      * @param dependencyTag the dependency tag
      * @return the words that are dependent on this
      */
-    ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag);
+    ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag);
 }

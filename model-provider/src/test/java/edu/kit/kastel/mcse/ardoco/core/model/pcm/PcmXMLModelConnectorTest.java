@@ -1,8 +1,13 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,27 +15,22 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 
-class PcmOntologyModelConnectorTest {
+class PcmXMLModelConnectorTest {
     private static final Logger logger = LogManager.getLogger();
 
-    private static PcmOntologyModelConnector loadModel(String modelFile) {
-        File file = new File(modelFile);
-
-        String absolutePath = file.getAbsolutePath();
-        return new PcmOntologyModelConnector(absolutePath);
+    private static PcmXMLModelConnector loadModel(String modelFile) throws ReflectiveOperationException, IOException {
+        return new PcmXMLModelConnector(new File(modelFile));
     }
 
     @Test
-    @DisplayName("Get all instances from MediaStore ontology")
-    void getInstancesFromMediaStoreTest() {
-        PcmOntologyModelConnector connectorMediaStore = loadModel("src/test/resources/mediastore.owl");
-        if (connectorMediaStore == null) {
-            logger.debug("connector is null");
-            Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
-        }
+    @DisplayName("Get all instances from MediaStore")
+    void getInstancesFromMediaStoreTest() throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
+        var connectorMediaStore = loadModel("src/test/resources/mediastore.repository");
         ImmutableList<IModelInstance> instances = connectorMediaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
@@ -53,18 +53,12 @@ class PcmOntologyModelConnectorTest {
             String name = instance.getFullName();
             Assertions.assertTrue(expectedInstancesNames.contains(name), "Found instance does not match one of the expected instances!");
         }
-
-        connectorMediaStore = null;
     }
 
     @Test
-    @DisplayName("Get all instances from TeaStore ontology")
-    void getInstancesFromTeaStoreTest() {
-        PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teastore.owl");
-        if (connectorTeaStore == null) {
-            logger.debug("connector is null");
-            Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
-        }
+    @DisplayName("Get all instances from TeaStore")
+    void getInstancesFromTeaStoreTest() throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
+        var connectorTeaStore = loadModel("src/test/resources/teastore.repository");
         ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
@@ -77,20 +71,15 @@ class PcmOntologyModelConnectorTest {
             logger.debug("\n");
         }
 
-        int expectedNumberOfInstances = 13;
+        int expectedNumberOfInstances = 11;
         Assertions.assertEquals(expectedNumberOfInstances, instances.size(), "The number of expected and found instances differs!");
 
-        connectorTeaStore = null;
     }
 
     @Test
-    @DisplayName("Get all instances from TEAMMATES ontology")
-    void getInstancesFromTeammatesTest() {
-        PcmOntologyModelConnector connectorTeaStore = loadModel("src/test/resources/teammates.owl");
-        if (connectorTeaStore == null) {
-            logger.debug("connector is null");
-            Assertions.assertTrue(false, "Connector is null, thus the model was not loaded.");
-        }
+    @DisplayName("Get all instances from TEAMMATES")
+    void getInstancesFromTeammatesTest() throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
+        var connectorTeaStore = loadModel("src/test/resources/teammates.repository");
         ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
 
         Assertions.assertFalse(instances.isEmpty(), "There need to be some instances contained in the model.");
@@ -105,7 +94,22 @@ class PcmOntologyModelConnectorTest {
             logger.debug("\n");
         }
 
-        connectorTeaStore = null;
+    }
+
+    @Test
+    @DisplayName("Simply test loading of MEDIASTORE")
+    void testLoadMediaStore() throws Exception {
+        InputStream is = Objects.requireNonNull(PcmXMLModelConnectorTest.class.getResourceAsStream("/mediastore.repository"));
+        PcmXMLModelConnector connector = new PcmXMLModelConnector(is);
+        is.close();
+
+        Assertions.assertEquals("_7zbcYHDhEeSqnN80MQ2uGw", connector.getModelId());
+        Assertions.assertEquals(Metamodel.ARCHITECTURE, connector.getMetamodel());
+        Assertions.assertEquals(14, connector.getInstances().size());
+        Assertions.assertTrue(connector.getInstances().allSatisfy(i -> i.getFullType().equals("BasicComponent")));
+        // NIY
+        Assertions.assertEquals(0, connector.getRelations().size());
+
     }
 
 }

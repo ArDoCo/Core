@@ -322,7 +322,7 @@ public final class CommonUtilities {
 
     public static ImmutableList<IWord> getCompoundPhrase(IWord word) {
         var deps = Lists.mutable.of(word);
-        deps.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.COMPOUND).toList());
+        deps.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(IWord::getPosition);
         if (deps.size() < 2) {
             return Lists.immutable.empty();

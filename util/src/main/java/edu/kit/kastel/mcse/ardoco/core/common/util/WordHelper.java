@@ -52,7 +52,7 @@ public final class WordHelper {
      * @return the incoming dependency tags
      */
     public static ImmutableList<DependencyTag> getIncomingDependencyTags(IWord word) {
-        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getWordsThatAreDependentOnThis(d).isEmpty());
+        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getIncomingDependencyWordsWithType(d).isEmpty());
     }
 
     /**
@@ -62,7 +62,7 @@ public final class WordHelper {
      * @return the outgoing dependency tags
      */
     public static ImmutableList<DependencyTag> getOutgoingDependencyTags(IWord word) {
-        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty());
+        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getOutgoingDependencyWordsWithType(d).isEmpty());
     }
 
     public static boolean isVerb(IWord word) {
