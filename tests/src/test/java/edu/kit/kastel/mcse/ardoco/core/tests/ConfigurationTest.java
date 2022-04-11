@@ -4,7 +4,12 @@ package edu.kit.kastel.mcse.ardoco.core.tests;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
  * @author Dominik Fuchss
  * @see AbstractConfigurable
  */
-public class ConfigurationTest {
+class ConfigurationTest {
     /**
      * This test verifies that all configurable values are able to be configured. It also prints all configurable values
      * as they should be contained in a configuration file.
@@ -30,7 +35,7 @@ public class ConfigurationTest {
      * @throws Exception if anything goes wrong
      */
     @Test
-    public void showCurrentConfiguration() throws Exception {
+    void showCurrentConfiguration() throws Exception {
         Map<String, String> configs = new TreeMap<>();
         var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
@@ -38,8 +43,9 @@ public class ConfigurationTest {
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();
-        for (var clazz : classesThatMayBeConfigured)
+        for (var clazz : classesThatMayBeConfigured) {
             processConfigurationOfClass(configs, clazz);
+        }
         Assertions.assertFalse(configs.isEmpty());
 
         System.out.println("-".repeat(50));
@@ -50,12 +56,12 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testBasicConfigurable() throws Exception {
+    void testBasicConfigurable() throws Exception {
         Map<String, String> configs = new TreeMap<>();
         processConfigurationOfClass(configs, TestConfigurable.class);
         Assertions.assertEquals(4, configs.size());
 
-        TestConfigurable t = new TestConfigurable();
+        var t = new TestConfigurable();
 
         Assertions.assertEquals(24, t.testInt);
         Assertions.assertEquals(24, t.testIntNo);
@@ -113,25 +119,31 @@ public class ConfigurationTest {
     }
 
     private String getValue(Object rawValue) {
-        if (rawValue instanceof Integer i)
+        if (rawValue instanceof Integer i) {
             return Integer.toString(i);
-        if (rawValue instanceof Double d)
+        }
+        if (rawValue instanceof Double d) {
             return String.format(Locale.ENGLISH, "%f", d);
-        if (rawValue instanceof Boolean b)
+        }
+        if (rawValue instanceof Boolean b) {
             return String.valueOf(b);
-        if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String))
+        }
+        if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String)) {
             return s.stream().map(Object::toString).collect(Collectors.joining(AbstractConfigurable.LIST_SEPARATOR));
+        }
 
         throw new IllegalArgumentException("RawValue has no type that may be transformed to an Configuration" + rawValue + "[" + rawValue.getClass() + "]");
     }
 
     private void findImportantFields(Class<?> clazz, List<Field> fields) {
-        if (clazz == Object.class || clazz == AbstractConfigurable.class)
+        if (clazz == Object.class || clazz == AbstractConfigurable.class) {
             return;
+        }
 
         for (var field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Configurable.class))
+            if (field.isAnnotationPresent(Configurable.class)) {
                 fields.add(field);
+            }
         }
         findImportantFields(clazz.getSuperclass(), fields);
     }
@@ -179,6 +191,7 @@ public class ConfigurationTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static class Dummy implements IAgent<IData> {
 
         @Override

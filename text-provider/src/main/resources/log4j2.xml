@@ -23,8 +23,5 @@
 		<Logger name="org.apache" level="warn" additivity="false">
 			<AppenderRef ref="Console" />
 		</Logger>
-		<Logger name="org.apache.jena.riot" level="error" additivity="false">
-			<AppenderRef ref="Console" />
-		</Logger>
 	</Loggers>
 </Configuration>

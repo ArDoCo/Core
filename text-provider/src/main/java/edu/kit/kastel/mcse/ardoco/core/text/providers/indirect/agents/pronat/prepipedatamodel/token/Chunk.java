@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token;
 
 import java.util.Objects;
@@ -18,7 +18,7 @@ public class Chunk {
     private int hash = -1;
 
     public Chunk[] convertIOB(String[] iob) {
-        final var result = new Chunk[iob.length];
+        var result = new Chunk[iob.length];
 
         setChunkNameAndCalculatePredecessors(iob, result);
 
@@ -26,25 +26,22 @@ public class Chunk {
         return result;
     }
 
-    private static void calculateNumberOfSuccessors(String[] iob, final Chunk[] result) {
+    private static void calculateNumberOfSuccessors(String[] iob, Chunk[] result) {
         // calculate the number of successors
         var tmp = 0;
         for (int i = iob.length - 1; i >= 0; i--) {
             if (i < iob.length - 1) {
                 if ((iob[i].startsWith("B") || iob[i].startsWith("I")) && iob[i + 1].startsWith("I") && iob[i].substring(2).equals(iob[i + 1].substring(2))) {
                     tmp++;
-                    result[i].successor = tmp;
                 } else {
                     tmp = 0;
-                    result[i].successor = tmp;
                 }
-            } else {
-                result[i].successor = tmp;
             }
+            result[i].successor = tmp;
         }
     }
 
-    private static void setChunkNameAndCalculatePredecessors(String[] iob, final Chunk[] result) {
+    private static void setChunkNameAndCalculatePredecessors(String[] iob, Chunk[] result) {
         var tmp = 0;
         for (var i = 0; i < iob.length; i++) {
             result[i] = new Chunk();
@@ -57,11 +54,10 @@ public class Chunk {
 
             if (iob[i].startsWith("I") && ((iob[i - 1].startsWith("B") || iob[i - 1].startsWith("I")) && iob[i - 1].substring(2).equals(iob[i].substring(2)))) {
                 tmp++;
-                result[i].predecessor = tmp;
             } else {
                 tmp = 0;
-                result[i].predecessor = tmp;
             }
+            result[i].predecessor = tmp;
         }
     }
 
@@ -92,7 +88,7 @@ public class Chunk {
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj.getClass() == this.getClass()) {
-            final Chunk other = (Chunk) obj;
+            Chunk other = (Chunk) obj;
             return Objects.equals(getName(), other.getName()) && getPredecessor() == other.getPredecessor() && getSuccessor() == other.getSuccessor();
         }
         return false;
@@ -100,13 +96,11 @@ public class Chunk {
 
     @Override
     public int hashCode() {
-        if (hash != 0) {
-            return hash;
-        } else {
+        if (hash == 0) {
             hash = name.hashCode();
             hash = 31 * hash + getPredecessor();
             hash = 31 * hash + getSuccessor();
-            return hash;
         }
+        return hash;
     }
 }
