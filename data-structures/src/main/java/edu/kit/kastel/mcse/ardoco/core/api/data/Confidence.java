@@ -50,7 +50,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     }
 
     public void addAgentConfidence(IClaimant claimant, double confidence) {
-        agentConfidence.add(Tuples.pair(claimant, confidence));
+        agentConfidences.add(Tuples.pair(claimant, confidence));
     }
 
     @Override
