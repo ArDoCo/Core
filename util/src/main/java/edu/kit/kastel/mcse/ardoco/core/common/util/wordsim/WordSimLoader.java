@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.Fas
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.NasariMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.SEWordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet.Ezzikouri;
@@ -118,6 +119,10 @@ public class WordSimLoader {
             if (CommonTextToolsConfig.GLOVE_ENABLED) {
                 list.add(new GloveMeasure());
             }
+
+			if (CommonTextToolsConfig.NASARI_ENABLED) {
+				list.add(new NasariMeasure());
+			}
 
             return list;
         } catch (Exception e) {
