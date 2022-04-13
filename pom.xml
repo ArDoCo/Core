@@ -45,7 +45,7 @@
     <log4j.version>2.17.2</log4j.version>
     <spotless.version>2.22.1</spotless.version>
     <error-prone.version>2.10.0</error-prone.version>
-    <jackson.version>2.13.2</jackson.version>
+    <jackson.version>2.13.2.2</jackson.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
