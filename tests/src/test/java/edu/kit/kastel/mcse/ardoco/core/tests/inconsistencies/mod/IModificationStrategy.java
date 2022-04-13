@@ -1,11 +1,11 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod;
 
 import java.util.Iterator;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 public interface IModificationStrategy {
     Iterator<ModifiedElement<IModelConnector, IModelInstance>> getModifiedModelInstances();

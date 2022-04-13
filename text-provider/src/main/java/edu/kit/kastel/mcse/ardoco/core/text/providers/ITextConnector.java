@@ -1,7 +1,7 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers;
 
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 
 /**
  * The Interface ITextConnector defines a provider for annotated texts.

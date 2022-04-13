@@ -1,20 +1,30 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
+
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+
 /**
  * @author Jan Keim
- *
  */
-public class InconsistencyState implements IInconsistencyState {
+public class InconsistencyState extends AbstractState implements IInconsistencyState {
 
+    private MutableList<IRecommendedInstance> recommendedInstances;
     private MutableList<IInconsistency> inconsistencies;
 
-    public InconsistencyState() {
+    public InconsistencyState(Map<String, String> configs) {
+        super(configs);
         inconsistencies = Lists.mutable.empty();
+        recommendedInstances = Lists.mutable.empty();
     }
 
     /**
@@ -42,10 +52,37 @@ public class InconsistencyState implements IInconsistencyState {
     }
 
     @Override
-    public InconsistencyState createCopy() {
-        var newInconsistencyState = new InconsistencyState();
+    public IInconsistencyState createCopy() {
+        var newInconsistencyState = new InconsistencyState(this.configs);
         newInconsistencyState.inconsistencies = inconsistencies.collect(IInconsistency::createCopy);
         return newInconsistencyState;
+    }
+
+    @Override
+    public boolean addRecommendedInstance(IRecommendedInstance recommendedInstance) {
+        return this.recommendedInstances.add(recommendedInstance);
+    }
+
+    @Override
+    public boolean removeRecommendedInstance(IRecommendedInstance recommendedInstance) {
+        return this.recommendedInstances.remove(recommendedInstance);
+    }
+
+    /**
+     * @return the recommendedInstances
+     */
+    @Override
+    public MutableList<IRecommendedInstance> getRecommendedInstances() {
+        return recommendedInstances;
+    }
+
+    /**
+     * @param recommendedInstances the recommendedInstances to set
+     */
+    @Override
+    public void setRecommendedInstances(List<IRecommendedInstance> recommendedInstances) {
+        this.recommendedInstances = Lists.mutable.empty();
+        this.recommendedInstances.addAll(recommendedInstances);
     }
 
 }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.indirect;
 
 import java.util.ArrayList;
@@ -15,13 +15,9 @@ import edu.kit.ipd.parse.luna.data.PipelineDataCastException;
 import edu.kit.ipd.parse.luna.pipeline.IPipelineStage;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.parsebios.Facade;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.PrePipelineData;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.AbstractHypothesisToken;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Chunk;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.ChunkIOB;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.MainHypothesisToken;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.*;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token.Token.TokenBuilder;
 
 @MetaInfServices(IPipelineStage.class)
@@ -75,7 +71,7 @@ public class TextSNLP implements IPipelineStage {
             throw new PipelineStageException("Word Tokens and POS Tokens differ in size");
         }
 
-        String[] chunks = biosFacade.parse(words.toArray(new String[words.size()]), pos);
+        String[] chunks = biosFacade.parse(words.toArray(new String[0]), pos);
         if (chunks.length != words.size()) {
             TextSNLP.logger.error("Word Tokens and CHUNK Tokens differ in size");
             throw new PipelineStageException("Word Tokens and CHUNK Tokens differ in size");

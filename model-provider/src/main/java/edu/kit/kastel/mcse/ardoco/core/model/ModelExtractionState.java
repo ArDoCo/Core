@@ -2,38 +2,59 @@
 package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+
 /**
  * This state contains all from the model extracted information. This are the extracted instances and relations. For
  * easier handling, the occurring types and names are stored additionally.
  *
  * @author Sophie
- *
  */
-public class ModelExtractionState implements IModelState {
+public class ModelExtractionState extends AbstractState implements IModelState {
 
-    private String modelId;
-    private Metamodel metamodelType;
-    private Set<String> instanceTypes;
-    private Set<String> relationTypes;
-    private Set<String> names;
+    private final String modelId;
+    private final Metamodel metamodelType;
+    private final Set<String> instanceTypes;
+    private final Set<String> relationTypes;
+    private final Set<String> names;
     private ImmutableList<IModelInstance> instances;
     private ImmutableList<IModelRelation> relations;
+
+    @Configurable
+    private int minTypeParts = 2;
 
     @Override
     public IModelState createCopy() {
         return new ModelExtractionState(modelId, metamodelType, instanceTypes, relationTypes, names, //
                 instances.collect(IModelInstance::createCopy), //
-                relations.collect(IModelRelation::createCopy));
+                relations.collect(IModelRelation::createCopy), this.configs);
+    }
+
+    // For generation of configuration
+    private ModelExtractionState() {
+        super(Map.of());
+        this.modelId = null;
+        this.metamodelType = null;
+        this.instanceTypes = null;
+        this.relationTypes = null;
+        this.names = null;
     }
 
     private ModelExtractionState(String modelId, Metamodel metamodelType, Set<String> instanceTypes, Set<String> relationTypes, Set<String> names,
-            ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations) {
+            ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations, Map<String, String> configs) {
+        super(configs);
         this.modelId = modelId;
         this.metamodelType = metamodelType;
         this.instanceTypes = instanceTypes;
@@ -50,7 +71,9 @@ public class ModelExtractionState implements IModelState {
      * @param instances instances of this model extraction state
      * @param relations relations of this model extraction state
      */
-    public ModelExtractionState(String modelId, Metamodel metamodelType, ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations) {
+    public ModelExtractionState(String modelId, Metamodel metamodelType, ImmutableList<IModelInstance> instances, ImmutableList<IModelRelation> relations,
+            Map<String, String> configs) {
+        super(configs);
         this.modelId = Objects.requireNonNull(modelId);
         this.metamodelType = metamodelType;
         this.instances = instances;
@@ -69,7 +92,7 @@ public class ModelExtractionState implements IModelState {
         for (IModelRelation r : relations) {
             relationTypes.add(r.getType());
             ImmutableList<String> typeParts = Lists.immutable.with(r.getType().split(" "));
-            if (typeParts.size() >= ModelExtractionStateConfig.EXTRACTION_STATE_MIN_TYPE_PARTS) {
+            if (typeParts.size() >= minTypeParts) {
                 relationTypes.addAll(typeParts.castToCollection());
             }
         }
@@ -180,11 +203,11 @@ public class ModelExtractionState implements IModelState {
     public String toString() {
         var output = new StringBuilder("Instances:\n");
         for (IModelInstance i : instances) {
-            output.append(i.toString() + "\n");
+            output.append(i.toString()).append("\n");
         }
         output.append("Relations:\n");
         for (IModelRelation r : relations) {
-            output.append(r.toString() + "\n");
+            output.append(r.toString()).append("\n");
         }
         return output.toString();
     }

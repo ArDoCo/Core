@@ -1,47 +1,43 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
+
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
+@Deprecated(since = "Currently Not Operational")
 public class CorefAgent extends TextAgent {
 
-    private boolean enabled;
-    private static boolean doMerging = false;
+    @Configurable
+    private boolean enabled = false;
+    @Configurable
+    private boolean doMerging = false;
 
     /**
      * Prototype constructor.
      */
     public CorefAgent() {
-        super(GenericTextConfig.class);
-    }
-
-    private CorefAgent(IText text, ITextState textState, GenericTextConfig config) {
-        super(GenericTextConfig.class, text, textState);
-        enabled = config.corefEnable;
     }
 
     @Override
-    public TextAgent create(IText text, ITextState textState, Configuration config) {
-        return new CorefAgent(text, textState, (GenericTextConfig) config);
-    }
-
-    @Override
-    public void exec() {
+    public void execute(TextAgentData data) {
         if (!enabled) {
             return;
         }
+
+        var text = data.getText();
+        var textState = data.getTextState();
         var corefClusters = text.getCorefClusters();
 
         for (var corefCluster : corefClusters) {
@@ -59,13 +55,13 @@ public class CorefAgent extends TextAgent {
         }
     }
 
-    private static void mergeNounMappings(MutableSet<INounMapping> nounMappings, ITextState textState) {
+    private void mergeNounMappings(MutableSet<INounMapping> nounMappings, ITextState textState) {
         INounMapping mergedNounMapping = null;
         for (var nounMapping : nounMappings) {
             mergedNounMapping = nounMapping.merge(mergedNounMapping);
             textState.removeNounMapping(nounMapping);
         }
-        textState.addNounMapping(mergedNounMapping);
+        textState.addNounMapping(mergedNounMapping, this);
     }
 
     private static void addWordsToNounMappingsAsCoreferences(MutableSet<INounMapping> nounMappings, ImmutableList<IWord> words) {
@@ -93,4 +89,7 @@ public class CorefAgent extends TextAgent {
         return corefCluster.mentions().flatCollect(mention -> mention);
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

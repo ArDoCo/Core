@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.HashSet;
@@ -9,27 +9,42 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
  * measured by the probability. Every recommended instance has a unique name.
  *
  * @author Sophie
- *
  */
-public class RecommendedInstance implements IRecommendedInstance {
+public class RecommendedInstance implements IRecommendedInstance, IClaimant {
 
     private String type;
     private String name;
-    private double probability;
-    private Set<INounMapping> typeMappings;
-    private Set<INounMapping> nameMappings;
+    private Confidence probability;
+    private final Set<INounMapping> typeMappings;
+    private final Set<INounMapping> nameMappings;
 
     @Override
     public IRecommendedInstance createCopy() {
-        return new RecommendedInstance(name, type, probability, Lists.immutable.fromStream(nameMappings.stream().map(INounMapping::createCopy)),
-                Lists.immutable.fromStream(typeMappings.stream().map(INounMapping::createCopy)));
+        var copy = new RecommendedInstance(name, type);
+        copy.probability = probability.createCopy();
+        copy.nameMappings.addAll(nameMappings.stream().map(ICopyable::createCopy).toList());
+        copy.typeMappings.addAll(typeMappings.stream().map(ICopyable::createCopy).toList());
+        return copy;
+    }
+
+    private RecommendedInstance(String name, String type) {
+        this.type = type;
+        this.name = name;
+        this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
+        nameMappings = new HashSet<>();
+        typeMappings = new HashSet<>();
     }
 
     /**
@@ -41,12 +56,22 @@ public class RecommendedInstance implements IRecommendedInstance {
      * @param nameNodes   the involved name mappings
      * @param typeNodes   the involved type mappings
      */
-    public RecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameNodes, ImmutableList<INounMapping> typeNodes) {
-        this.type = type;
-        this.name = name;
-        this.probability = probability;
-        nameMappings = new HashSet<>(nameNodes.castToCollection());
-        typeMappings = new HashSet<>(typeNodes.castToCollection());
+    public RecommendedInstance(String name, String type, IClaimant claimant, double probability, ImmutableList<INounMapping> nameNodes,
+            ImmutableList<INounMapping> typeNodes) {
+        this(name, type);
+        this.probability.addAgentConfidence(claimant, probability);
+
+        nameMappings.addAll(nameNodes.castToCollection());
+        typeMappings.addAll(typeNodes.castToCollection());
+
+        this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
+    }
+
+    private static double calculateMappingProbability(ImmutableList<INounMapping> nameMappings, ImmutableList<INounMapping> typeMappings) {
+        var highestNameProbability = nameMappings.collectDouble(INounMapping::getProbabilityForName).maxIfEmpty(0);
+        var highestTypeProbability = typeMappings.collectDouble(INounMapping::getProbabilityForType).maxIfEmpty(0);
+
+        return CommonUtilities.rootMeanSquare(highestNameProbability, highestTypeProbability);
     }
 
     /**
@@ -76,17 +101,7 @@ public class RecommendedInstance implements IRecommendedInstance {
      */
     @Override
     public double getProbability() {
-        return probability;
-    }
-
-    /**
-     * Removes nameMappings from this recommended instance.
-     *
-     * @param nameMappings the name mappings to remove
-     */
-    @Override
-    public void removeNounNodeMappingsFromName(ImmutableList<INounMapping> nameMappings) {
-        this.nameMappings.removeAll(nameMappings.castToCollection());
+        return probability.getConfidence();
     }
 
     /**
@@ -131,16 +146,6 @@ public class RecommendedInstance implements IRecommendedInstance {
     @Override
     public void addType(INounMapping typeMapping) {
         typeMappings.add(typeMapping);
-    }
-
-    /**
-     * Sets the probability to a given probability.
-     *
-     * @param probability the new probability
-     */
-    @Override
-    public void setProbability(double probability) {
-        this.probability = probability;
     }
 
     /**
@@ -220,7 +225,7 @@ public class RecommendedInstance implements IRecommendedInstance {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        RecommendedInstance other = (RecommendedInstance) obj;
+        var other = (RecommendedInstance) obj;
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
     }
 

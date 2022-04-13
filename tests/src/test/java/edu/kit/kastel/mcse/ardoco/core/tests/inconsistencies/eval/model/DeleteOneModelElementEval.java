@@ -10,21 +10,20 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.InconsistencyHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1Evaluator;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model.DeleteOneElementEach;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
@@ -39,22 +38,25 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var evaluator = new PRF1Evaluator();
 
         var modelId = originalModel.getModelId();
+        var originalInconsistencyState = result.get(null).getInconsistencyState(modelId);
 
         for (var r : result.entrySet()) {
-            this.evaluate(result.get(null).getInconsistencyState(modelId), r, modelId, gs, evaluator, os);
+            this.evaluate(originalInconsistencyState, r, modelId, gs, evaluator, os);
         }
 
-        os.println("Overall: " + evaluator.getOverallPRF1());
-        return evaluator.getOverallPRF1();
+        os.println("Overall: ");
+        os.println("Weighted: " + evaluator.getWeightedAveragePRF1());
+        os.println("Average:  " + evaluator.getAveragePRF1());
+        return evaluator.getWeightedAveragePRF1();
     }
 
-    private static Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> process(Project project, IModelConnector pcmModel,
-            IText annotatedText, IModificationStrategy strategy) {
-        Map<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> results = new HashMap<>();
+    private static Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> process(Project project, IModelConnector pcmModel, IText annotatedText,
+            IModificationStrategy strategy) {
+        var configurations = new HashMap<String, String>();
+        Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> results = new HashMap<>();
 
-        var originalData = new AgentDatastructure(annotatedText, null, runModelExtractor(pcmModel), null, null, null);
+        var originalData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), runModelExtractor(pcmModel, configurations)));
 
-        var configurations = getTextExtractionConfigurations(project);
         runTextExtractor(originalData, configurations);
         var original = runRecommendationConnectionInconsistency(originalData);
         results.put(null, original);
@@ -63,7 +65,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         while (iter.hasNext()) {
             var modification = iter.next();
             var model = modification.getArtifact();
-            var data = new AgentDatastructure(annotatedText, null, runModelExtractor(model), null, null, null);
+            var data = new DataStructure(annotatedText, Map.of(model.getModelId(), runModelExtractor(model, configurations)));
             runTextExtractor(data, configurations);
             var result = runRecommendationConnectionInconsistency(data);
             results.put(modification, result);
@@ -72,9 +74,8 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         return results;
     }
 
-    private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, AgentDatastructure> r, String modelId,
+    private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> r, String modelId,
             GoldStandard gs, PRF1Evaluator evaluator, PrintStream os) {
-
         os.println("-----------------------------------");
 
         if (r.getKey() == null) {
@@ -86,7 +87,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
                     .select(MissingModelInstanceInconsistency.class::isInstance)
                     .collect(MissingModelInstanceInconsistency.class::cast)
                     .flatCollect(this::foundSentences)
-                    .distinct();
+                    .toSet();
             var outputString = "ORIGINAL: Number of False Positives (assuming consistency for original): " + inconsistencySentences.size();
             os.println(outputString);
             return;
@@ -95,23 +96,17 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var deletedElement = r.getKey().getElement();
         os.println("DEL " + deletedElement);
 
-        var inconsistencyDiff = InconsistencyHelper.getDiff(originalState, r.getValue().getInconsistencyState(modelId));
-        var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedList().toImmutable();
+        var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedSet().toImmutable();
 
-        var newInconsistencies = inconsistencyDiff.getNewInconsistencies();
-        var newImportantInconsistencies = newInconsistencies //
+        var newInconsistencies = r.getValue().getInconsistencyState(modelId).getInconsistencies();
+        var newMissingModelInstanceInconsistencies = newInconsistencies //
                 .select(MissingModelInstanceInconsistency.class::isInstance) //
                 .collect(MissingModelInstanceInconsistency.class::cast);
 
-        if (newInconsistencies.size() >= 2) {
-            os.println("----- IMPORTANT CASE --> Manual Check ------");
-        }
+        os.println("Stats: New: " + newInconsistencies.size() + ", New MissingModelInstanceInconsistencies: " + newMissingModelInstanceInconsistencies.size());
 
-        os.println("Stats: New: " + newInconsistencies.size() + ", Important (New): " + newImportantInconsistencies.size());
+        var foundSentencesWithDuplicatesOverInconsistencies = newMissingModelInstanceInconsistencies.flatCollect(this::foundSentences).toSortedSet();
 
-        var foundSentencesWithDuplicatesOverInconsistencies = newImportantInconsistencies.flatCollect(this::foundSentences).toSortedList();
-
-        os.println("Instances: " + String.join(", ", newImportantInconsistencies.collect(i -> i.getTextualInstance().getName())));
         os.println("Is   : " + foundSentencesWithDuplicatesOverInconsistencies);
         os.println("Shall: " + sentencesAnnotatedWithElement);
 
@@ -119,9 +114,9 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var fp = foundSentencesWithDuplicatesOverInconsistencies.select(i -> !sentencesAnnotatedWithElement.contains(i));
         var fn = sentencesAnnotatedWithElement.select(i -> !foundSentencesWithDuplicatesOverInconsistencies.contains(i));
 
-        var eval = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
+        var result = evaluator.nextEvaluation(tp.size(), fp.size(), fn.size());
 
-        os.println(eval);
+        os.println(result);
         os.println("-----------------------------------");
     }
 
@@ -130,7 +125,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         for (var nouns : newImportantInconsistency.getTextualInstance().getNameMappings()) {
             sentences.addAll(nouns.getMappingSentenceNo().castToCollection());
         }
-        return sentences.toSet().toList().toImmutable();
+        return sentences.distinct().toImmutable();
     }
 
 }
