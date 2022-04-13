@@ -7,11 +7,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.Fas
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveSqliteDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.NasariMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.BabelNetDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.SEWordSimDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.SEWordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet.Ezzikouri;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet.WordNetMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorSqliteDatabase;
 import edu.mit.jwi.IRAMDictionary;
 import edu.mit.jwi.RAMDictionary;
 import edu.mit.jwi.data.ILoadPolicy;
@@ -57,6 +60,7 @@ public class Evaluation {
         boolean fastText = false;
         boolean wordNetWP = false, wordNetLC = false, wordNetJC = false, wordNetLesk = false, wordNetEzzikouri = false;
         boolean glove = false;
+		boolean nasari = false;
 
         String fastTextModelName = "";
         DL4JFastTextDataSource fastTextDataSource = null;
@@ -87,6 +91,15 @@ public class Evaluation {
         if (glove) {
             gloveDataSource = new GloveSqliteDataSource(Path.of(CommonTextToolsConfig.GLOVE_DB_FILE_PATH));
         }
+
+	    BabelNetDataSource babelNetDataSource = null;
+	    VectorSqliteDatabase nasariVectorDatabase = null;
+		if (nasari) {
+			babelNetDataSource = new BabelNetDataSource(
+				CommonTextToolsConfig.BABELNET_API_KEY, Path.of(CommonTextToolsConfig.BABELNET_CACHE_FILE_PATH)
+			);
+			nasariVectorDatabase = new VectorSqliteDatabase(Path.of(CommonTextToolsConfig.NASARI_DB_FILE_PATH));
+		}
 
         for (int b = 1; b <= 2; b++) {
             for (int t = 0; t <= 100; t += 5) {
@@ -139,9 +152,15 @@ public class Evaluation {
                     plans.add(new EvalPlan("wordNet_Ezzi", b, t, new WordNetMeasure(Map.of(new Ezzikouri(wordNetDB), threshold))));
                 }
 
+				// GloVe
                 if (glove) {
                     plans.add(new EvalPlan("glove_cc_300d", b, t, new GloveMeasure(gloveDataSource, threshold)));
                 }
+
+				// Nasari
+	            if (nasari) {
+					plans.add(new EvalPlan("nasari", b, t, new NasariMeasure(babelNetDataSource, nasariVectorDatabase, threshold)));
+	            }
             }
         }
 
