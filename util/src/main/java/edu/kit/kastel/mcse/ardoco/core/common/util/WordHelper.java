@@ -1,12 +1,12 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 /**
  * The Class WordHelper contains some helper methods to work with words.
@@ -52,7 +52,7 @@ public final class WordHelper {
      * @return the incoming dependency tags
      */
     public static ImmutableList<DependencyTag> getIncomingDependencyTags(IWord word) {
-        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getWordsThatAreDependentOnThis(d).isEmpty());
+        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getIncomingDependencyWordsWithType(d).isEmpty());
     }
 
     /**
@@ -62,7 +62,7 @@ public final class WordHelper {
      * @return the outgoing dependency tags
      */
     public static ImmutableList<DependencyTag> getOutgoingDependencyTags(IWord word) {
-        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getWordsThatAreDependencyOfThis(d).isEmpty());
+        return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getOutgoingDependencyWordsWithType(d).isEmpty());
     }
 
     public static boolean isVerb(IWord word) {

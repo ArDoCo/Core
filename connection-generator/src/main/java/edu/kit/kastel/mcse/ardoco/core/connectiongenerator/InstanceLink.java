@@ -9,25 +9,35 @@ import java.util.Set;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
 /**
  * Represents a trace link between an instance of the extracted model and a recommended instance.
  *
  * @author Sophie
- *
  */
 public class InstanceLink implements IInstanceLink {
 
-    private IRecommendedInstance textualInstance;
-    private IModelInstance modelInstance;
-    private double probability;
+    private final IRecommendedInstance textualInstance;
+    private final IModelInstance modelInstance;
+    private Confidence probability;
 
     @Override
     public IInstanceLink createCopy() {
-        return new InstanceLink(textualInstance.createCopy(), modelInstance.createCopy(), probability);
+        var copy = new InstanceLink(textualInstance.createCopy(), modelInstance.createCopy());
+        copy.probability = probability.createCopy();
+        return copy;
+    }
+
+    private InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance) {
+        this.textualInstance = textualInstance;
+        this.modelInstance = modelInstance;
+        this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
     }
 
     /**
@@ -37,10 +47,9 @@ public class InstanceLink implements IInstanceLink {
      * @param modelInstance   the extracted instance
      * @param probability     the probability of this link
      */
-    public InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance, double probability) {
-        this.textualInstance = textualInstance;
-        this.modelInstance = modelInstance;
-        this.probability = probability;
+    public InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance, IClaimant claimant, double probability) {
+        this(textualInstance, modelInstance);
+        this.probability.addAgentConfidence(claimant, probability);
     }
 
     /**
@@ -50,7 +59,7 @@ public class InstanceLink implements IInstanceLink {
      */
     @Override
     public double getProbability() {
-        return probability;
+        return probability.getConfidence();
     }
 
     /**
@@ -59,8 +68,8 @@ public class InstanceLink implements IInstanceLink {
      * @param probability the new probability
      */
     @Override
-    public void setProbability(double probability) {
-        this.probability = probability;
+    public void setProbability(IClaimant claimant, double probability) {
+        this.probability.addAgentConfidence(claimant, probability);
     }
 
     /**
@@ -96,7 +105,7 @@ public class InstanceLink implements IInstanceLink {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        InstanceLink other = (InstanceLink) obj;
+        var other = (InstanceLink) obj;
         return Objects.equals(modelInstance, other.modelInstance) && Objects.equals(textualInstance, other.textualInstance);
     }
 
@@ -106,7 +115,7 @@ public class InstanceLink implements IInstanceLink {
      * @return all names of the recommended instances
      */
     @Override
-    public String getNameOccurencesAsString() {
+    public String getNameOccurrencesAsString() {
         Set<String> names = new HashSet<>();
         MutableList<Integer> namePositions = Lists.mutable.empty();
         for (INounMapping nameMapping : textualInstance.getNameMappings()) {
@@ -114,7 +123,7 @@ public class InstanceLink implements IInstanceLink {
             namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
 
-        return "name=" + textualInstance.getName() + "occurrences= " + "NameVariants: " + names.size() + ": " + names.toString() + //
+        return "name=" + textualInstance.getName() + "occurrences= " + "NameVariants: " + names.size() + ": " + names + //
                 " sentences{" + Arrays.toString(namePositions.toArray()) + "}";
     }
 
@@ -136,7 +145,7 @@ public class InstanceLink implements IInstanceLink {
         return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getFullName() + //
                 ", as=" + String.join(", ", modelInstance.getFullType()) + ", probability=" + probability + ", FOUND: " + //
                 textualInstance.getName() + " : " + getTextualInstance().getType() + ", occurrences= " + //
-                "NameVariants: " + names.size() + ": " + names.toString() + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
-                ", TypeVariants: " + types.size() + ": " + types.toString() + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";
+                "NameVariants: " + names.size() + ": " + names + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
+                ", TypeVariants: " + types.size() + ": " + types + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";
     }
 }

@@ -1,104 +1,79 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
 
 /**
  * This analyzer finds patterns like article type name or article name type.
  *
- * @author Sophie
- *
+ * @author Sophie, Jan
  */
-@MetaInfServices(TextExtractionExtractor.class)
-public class ArticleTypeNameExtractor extends TextExtractionExtractor {
+@Deprecated(since = "Currently Not Operational")
+public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
+    @Configurable
+    private boolean enabled = false;
 
-    private double probability;
-
-    @Override
-    public TextExtractionExtractor create(ITextState textState, Configuration config) {
-        return new ArticleTypeNameExtractor(textState, (GenericTextConfig) config);
-    }
+    @Configurable
+    private double probability = 1.0;
 
     /**
      * Prototype constructor.
      */
     public ArticleTypeNameExtractor() {
-        this(null);
-    }
-
-    /**
-     * Instantiates a new article type name extractor.
-     *
-     * @param textState the text state
-     */
-    public ArticleTypeNameExtractor(ITextState textState) {
-        this(textState, GenericTextConfig.DEFAULT_CONFIG);
-    }
-
-    /**
-     * Creates a new article type name analyzer.
-     *
-     * @param textState the text extraction state
-     * @param config    the module configuration
-     */
-    public ArticleTypeNameExtractor(ITextState textState, GenericTextConfig config) {
-        super(textState);
-        probability = config.articleTypeNameAnalyzerProbability;
+        // empty
     }
 
     @Override
-    public void exec(IWord n) {
-
-        if (!checkIfNodeIsName(n)) {
-            checkIfNodeIsType(n);
+    public void exec(TextAgentData data, IWord n) {
+        if (!enabled) {
+            return;
+        }
+        if (!checkIfNodeIsName(data.getTextState(), n)) {
+            checkIfNodeIsType(data.getTextState(), n);
         }
     }
 
     /**
-     * If the current node is contained by name-or-type mappings, the previous node is contained by type nodes and the
-     * preprevious an article the node is added as a name mapping.
-     *
-     * @param n node to check
-     */
-    private boolean checkIfNodeIsName(IWord n) {
-        if (textState.isWordContainedByNameOrTypeMapping(n)) {
-
-            IWord prevNode = n.getPreWord();
-            if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-
-                textState.addName(n, probability);
-                return true;
-
-            }
-        }
-        return false;
-    }
-
-    /**
-     * If the current node is contained by name-or-type mappings, the previous node is contained by name nodes and the
-     * preprevious an article the node is added as a type mapping.
+     * If the current node is contained by either kind of NounMapping, the previous node is contained by type nodes and
+     * the preprevious an article. The node is then set as a name mapping.
      *
      * @param word word to check
      */
-    private boolean checkIfNodeIsType(IWord word) {
+    private boolean checkIfNodeIsName(ITextState textState, IWord word) {
         if (textState.isWordContainedByNameOrTypeMapping(word)) {
-
-            IWord prevNode = word.getPreWord();
-            if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
-
-                textState.addType(word, probability);
+            var prevNode = word.getPreWord();
+            if (prevNode != null && textState.isWordContainedByTypeMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+                textState.addName(word, this, probability);
                 return true;
             }
-
         }
         return false;
+    }
 
+    /**
+     * If the current node is contained by either kind of NounMapping, the previous node is contained by name nodes and
+     * the preprevious an article the node is added as a type mapping.
+     *
+     * @param word word to check
+     */
+    private void checkIfNodeIsType(ITextState textState, IWord word) {
+        if (textState.isWordContainedByNameOrTypeMapping(word)) {
+            var prevNode = word.getPreWord();
+            if (prevNode != null && textState.isWordContainedByNameMapping(prevNode) && WordHelper.hasDeterminerAsPreWord(prevNode)) {
+                textState.addType(word, this, probability);
+            }
+        }
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional configuration
     }
 }

@@ -2,22 +2,26 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.text;
 
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.NameInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 public class SimplyGetItNaming extends AbstractEvalStrategy {
 
     @Override
     public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
-        var originalData = new AgentDatastructure(originalText, null, runModelExtractor(originalModel), null, null, null);
-        runTextExtractor(originalData, getTextExtractionConfigurations(p));
+        var configs = new HashMap<String, String>();
+        var modelState = runModelExtractor(originalModel, configs);
+        var originalData = new DataStructure(originalText, Map.of(originalModel.getModelId(), modelState));
+        runTextExtractor(originalData, configs);
         var original = runRecommendationConnectionInconsistency(originalData);
 
         var inconsistencies = original.getInconsistencyState(originalModel.getModelId()).getInconsistencies();

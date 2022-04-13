@@ -12,19 +12,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
 
 public class TLSummaryFile {
 
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void save(Path targetFile, Collection<TLProjectEvalResult> results, Map<Project, AgentDatastructure> dataMap) throws IOException {
+    public static void save(Path targetFile, Collection<TLProjectEvalResult> results, Map<Project, DataStructure> dataMap) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
 
@@ -66,7 +66,7 @@ public class TLSummaryFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static String createFalseLinksOutput(String type, List<TestLink> falseLinks, AgentDatastructure data, IText text) {
+    private static String createFalseLinksOutput(String type, List<TestLink> falseLinks, DataStructure data, IText text) {
         var builder = new StringBuilder();
         builder.append(type).append(":\n");
 
@@ -78,7 +78,7 @@ public class TLSummaryFile {
         return builder.toString();
     }
 
-    private static String createFalseLinkOutput(AgentDatastructure data, IText text, TestLink falseLink) {
+    private static String createFalseLinkOutput(DataStructure data, IText text, TestLink falseLink) {
         var builder = new StringBuilder();
         for (var modelId : data.getModelIds()) {
             var datamodel = data.getModelState(modelId);

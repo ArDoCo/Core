@@ -1,7 +1,6 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -12,19 +11,19 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
 /**
  * General helper class for outsourced, common methods.
  *
  * @author Sophie
- *
  */
 public final class CommonUtilities {
 
@@ -44,38 +43,114 @@ public final class CommonUtilities {
     }
 
     /**
-     * Creates a cartesian product out of the current list and the parts.
+     * Calculate the arithmetic mean (average) between two given values.
      *
-     * @param <T>         generic type of list elements
-     * @param currentList the list to start with
-     * @param parts       the list of lists with possibilities to add.
-     * @return list of different combinations
+     * @param first  the first value
+     * @param second the second value
+     * @return the arithmetic mean (average) of the two given values
      */
-    public static <T> ImmutableList<ImmutableList<T>> cartesianProduct(ImmutableList<T> currentList, ImmutableList<ImmutableList<T>> parts) {
-        List<T> cl = currentList.toList();
-        List<List<T>> pl = parts.collect(l -> (List<T>) l.toList()).toList();
-
-        return Lists.immutable.fromStream(privateCartesianProduct(cl, pl).stream()).collect(Lists.immutable::withAll);
+    public static double arithmeticMean(double first, double second) {
+        return arithmeticMean(List.of(first, second));
     }
 
-    private static <T> List<List<T>> privateCartesianProduct(List<T> currentList, List<List<T>> parts) {
-        List<List<T>> result = new ArrayList<>();
+    /**
+     * Calculate the arithmetic mean (average) between the given values.
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the arithmetic mean (average) of the given values
+     */
+    public static double arithmeticMean(List<Double> values) {
+        return values.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+    }
 
-        if (parts.isEmpty()) {
+    /**
+     * Calculate the harmonic mean between two given values.
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @return the harmonic mean of the two given values
+     */
+    public static double harmonicMean(double first, double second) {
+        return 2 * first * second / (first + second);
+    }
 
-            result.add(currentList);
-            return result;
-        }
+    /**
+     * Calculate the harmonic mean between all given values.
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the harmonic mean of the given values
+     */
+    public static double harmonicMean(List<Double> values) {
+        var quotient = values.stream().mapToDouble(d -> 1.0 / d).sum();
+        return values.size() / quotient;
+    }
 
-        List<List<T>> cloneParts = new ArrayList<>(parts);
-        cloneParts.remove(parts.get(0));
+    /**
+     * Calculates the root mean square between two given values
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @return the root mean square of the given values
+     */
+    public static double rootMeanSquare(double first, double second) {
+        return Math.sqrt((Math.pow(first, 2) + Math.pow(second, 2)) / 2);
+    }
 
-        for (T si : parts.get(0)) {
-            currentList.add(si);
-            result.addAll(privateCartesianProduct(new ArrayList<>(currentList), cloneParts));
-            currentList.remove(si);
-        }
-        return result;
+    /**
+     * Calculates the root mean square between the given values
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the root mean square of the given values
+     */
+    public static double rootMeanSquare(List<Double> values) {
+        var squaredValuesSum = values.stream().mapToDouble(d -> Math.pow(d, 2)).sum();
+        return Math.sqrt(squaredValuesSum / values.size());
+    }
+
+    /**
+     * Calculates the cubic mean between two given values
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @return the root mean square of the given values
+     */
+    public static double cubicMean(double first, double second) {
+        return Math.cbrt((Math.pow(first, 3) + Math.pow(second, 3)) / 2);
+    }
+
+    /**
+     * Calculates the cubic mean between the given values
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @return the root mean square of the given values
+     */
+    public static double cubicMean(List<Double> values) {
+        var cubedValuesSum = values.stream().mapToDouble(d -> Math.pow(d, 3)).sum();
+        return Math.cbrt(cubedValuesSum / values.size());
+    }
+
+    /**
+     * Calculates the power mean (or generalized mean) between the given values
+     *
+     * @param first  the first value
+     * @param second the second value
+     * @param power  the power to use
+     * @return the power mean (or generalized mean) of the given values
+     */
+    public static double powerMean(double first, double second, double power) {
+        return Math.pow((Math.pow(first, power) + Math.pow(second, power)) / 2, 1 / power);
+    }
+
+    /**
+     * Calculates the power mean (or generalized mean) between the given values
+     *
+     * @param values List of doubles that should be used to calculate their mean
+     * @param power  the power to use
+     * @return the power mean (or generalized mean) of the given values
+     */
+    public static double powerMean(List<Double> values, double power) {
+        var poweredValuesSum = values.stream().mapToDouble(d -> Math.pow(d, power)).sum();
+        return Math.pow(poweredValuesSum / values.size(), 1 / power);
     }
 
     /**
@@ -85,7 +160,7 @@ public final class CommonUtilities {
      * @return reference with whitespaces instead of separators
      */
     public static ImmutableList<String> splitAtSeparators(String reference) {
-        String ref = reference;
+        var ref = reference;
         for (String sep : CommonTextToolsConfig.SEPARATORS_TO_SPLIT) {
             ref = ref.replaceAll(sep, " ");
         }
@@ -119,11 +194,11 @@ public final class CommonUtilities {
      * @param probability         the probability that should be annotated
      */
     public static void addRecommendedInstancesFromNounMappings(ImmutableList<String> similarTypes, ImmutableList<INounMapping> nameMappings,
-            ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState, double probability) {
+            ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState, IClaimant claimant, double probability) {
         for (var nameMapping : nameMappings) {
             var name = nameMapping.getReference();
             for (var type : similarTypes) {
-                recommendationState.addRecommendedInstance(name, type, probability, nameMappings, typeMappings);
+                recommendationState.addRecommendedInstance(name, type, claimant, probability, nameMappings, typeMappings);
             }
         }
     }
@@ -136,7 +211,7 @@ public final class CommonUtilities {
      * @return List of type names in the model state that are similar to the given word
      */
     public static ImmutableList<String> getSimilarTypes(IWord word, IModelState modelState) {
-        Set<String> identifiers = getTypeIdentifiers(modelState);
+        var identifiers = getTypeIdentifiers(modelState);
         return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
     }
 
@@ -166,7 +241,7 @@ public final class CommonUtilities {
      * @return the name split at snake and kebab case
      */
     public static String splitSnakeAndKebabCase(String name) {
-        StringJoiner joiner = new StringJoiner(" ");
+        var joiner = new StringJoiner(" ");
         for (String namePart : name.split("[-_]")) {
             joiner.add(namePart);
         }
@@ -180,7 +255,7 @@ public final class CommonUtilities {
      * @return the name split at camel case
      */
     public static String splitCamelCase(String name) {
-        StringJoiner joiner = new StringJoiner(" ");
+        var joiner = new StringJoiner(" ");
         for (String namePart : name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")) {
             joiner.add(namePart);
         }
@@ -205,7 +280,7 @@ public final class CommonUtilities {
      */
     public static boolean nameIsCamelCased(String name) {
         var unCamelCased = CommonUtilities.splitCamelCase(name);
-        return (name.length() < unCamelCased.length());
+        return name.length() < unCamelCased.length();
     }
 
     /**
@@ -216,7 +291,7 @@ public final class CommonUtilities {
      */
     public static boolean nameIsSnakeCased(String name) {
         var split = name.split("_");
-        return (split.length > 1);
+        return split.length > 1;
     }
 
     /**
@@ -227,27 +302,7 @@ public final class CommonUtilities {
      */
     public static boolean nameIsKebabCased(String name) {
         var split = name.split("-");
-        return (split.length > 1);
-    }
-
-    /**
-     * Calculates the probability given the current probability and the update value
-     *
-     * @param currentProbability current probability
-     * @param newProbability     update value
-     * @return the new probability
-     */
-    public static double calcNewProbabilityValue(double currentProbability, double newProbability) {
-        if (valueEqual(currentProbability, 1.0)) {
-            return 1.0;
-        }
-        if (valueEqual(newProbability, 1.0)) {
-            return 1.0;
-        } else if (currentProbability >= newProbability) {
-            return currentProbability + (newProbability * (1 - currentProbability));
-        } else {
-            return (currentProbability + newProbability) * 0.5;
-        }
+        return split.length > 1;
     }
 
     /**
@@ -258,7 +313,7 @@ public final class CommonUtilities {
      */
     public static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
         var sortedPhrase = phrase.toSortedListBy(IWord::getPosition);
-        StringJoiner referenceJoiner = new StringJoiner(" ");
+        var referenceJoiner = new StringJoiner(" ");
         for (var w : sortedPhrase) {
             referenceJoiner.add(w.getText());
         }
@@ -267,13 +322,12 @@ public final class CommonUtilities {
 
     public static ImmutableList<IWord> getCompoundPhrase(IWord word) {
         var deps = Lists.mutable.of(word);
-        deps.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.COMPOUND).toList());
+        deps.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(IWord::getPosition);
         if (deps.size() < 2) {
             return Lists.immutable.empty();
-        } else {
-            return Lists.immutable.ofAll(sortedWords);
         }
+        return Lists.immutable.ofAll(sortedWords);
     }
 
     public static ImmutableList<IWord> filterWordsOfTypeMappings(ImmutableList<IWord> words, ITextState textState) {
@@ -298,6 +352,24 @@ public final class CommonUtilities {
             return false;
         }
         return word.length() > 4 && nameIsCamelCased(word);
+    }
+
+    /**
+     * Checks a given list of {@link IWord words} to find out if there are words that the given recommendedInstance has
+     * in its {@link INounMapping NounMappings}.
+     *
+     * @param wordList            the word list to check
+     * @param recommendedInstance the RecommendedInstance in question
+     * @return true if at least one word is also covered by the RecommendedInstance, else false
+     */
+    public static boolean wordListContainsAnyWordFromRecommendedInstance(ImmutableList<IWord> wordList, IRecommendedInstance recommendedInstance) {
+        var recommendedInstanceWords = recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
+        for (var recommendedInstanceWord : recommendedInstanceWords) {
+            if (wordList.contains(recommendedInstanceWord)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

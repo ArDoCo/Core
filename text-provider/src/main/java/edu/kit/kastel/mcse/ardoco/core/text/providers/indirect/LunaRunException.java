@@ -1,14 +1,14 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
+
+import java.io.Serial;
 
 /**
  * @author Sebastian Weigelt
  */
 public class LunaRunException extends RuntimeException {
 
-    /**
-     *
-     */
+    @Serial
     private static final long serialVersionUID = 5462825340872288175L;
 
     public LunaRunException() {

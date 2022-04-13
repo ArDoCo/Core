@@ -1,10 +1,7 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -14,12 +11,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.ICorefCluster;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 /**
@@ -77,7 +69,7 @@ public class ParseConverter {
             instances.put(token, word);
         }
 
-        orderedWords.sort((w1, w2) -> w1.position - w2.position);
+        orderedWords.sort(Comparator.comparingInt(w -> w.position));
     }
 
     private void createDeps() {
@@ -92,8 +84,8 @@ public class ParseConverter {
                 var arcAttributeValue = String.valueOf(arc.getAttributeValue("relationShort"));
                 if (dependencyMap.containsKey(arcAttributeValue)) {
                     DependencyTag depTag = dependencyMap.get(arcAttributeValue);
-                    sourceWord.wordsThatAreDependenciesOfThis.get(depTag).add(targetWord);
-                    targetWord.wordsThatAreDependentOnThis.get(depTag).add(sourceWord);
+                    sourceWord.outgoingDependencyWords.get(depTag).add(targetWord);
+                    targetWord.incomingDependencyWords.get(depTag).add(sourceWord);
                 }
             }
         }
@@ -141,19 +133,19 @@ public class ParseConverter {
         private final POSTag posTag;
         private final String lemma;
 
-        private final Map<DependencyTag, MutableList<IWord>> wordsThatAreDependenciesOfThis = Arrays.stream(DependencyTag.values())
+        private final Map<DependencyTag, MutableList<IWord>> outgoingDependencyWords = Arrays.stream(DependencyTag.values())
                 .collect(Collectors.toMap(t -> t, v -> Lists.mutable.empty()));
-        private final Map<DependencyTag, MutableList<IWord>> wordsThatAreDependentOnThis = Arrays.stream(DependencyTag.values())
+        private final Map<DependencyTag, MutableList<IWord>> incomingDependencyWords = Arrays.stream(DependencyTag.values())
                 .collect(Collectors.toMap(t -> t, v -> Lists.mutable.empty()));
 
         private IText parent;
 
         Word(INode node) {
             text = String.valueOf(node.getAttributeValue("value"));
-            position = Integer.valueOf(String.valueOf(node.getAttributeValue("position")));
+            position = Integer.parseInt(String.valueOf(node.getAttributeValue("position")));
             lemma = String.valueOf(node.getAttributeValue("lemma"));
             posTag = getPosTag(node);
-            sentence = Integer.valueOf(String.valueOf(node.getAttributeValue("sentenceNumber")));
+            sentence = Integer.parseInt(String.valueOf(node.getAttributeValue("sentenceNumber")));
         }
 
         private static POSTag getPosTag(INode node) {
@@ -192,13 +184,13 @@ public class ParseConverter {
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
-            return wordsThatAreDependenciesOfThis.get(dependencyTag).toImmutable();
+        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
+            return outgoingDependencyWords.get(dependencyTag).toImmutable();
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
-            return wordsThatAreDependentOnThis.get(dependencyTag).toImmutable();
+        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
+            return incomingDependencyWords.get(dependencyTag).toImmutable();
         }
 
         @Override
@@ -280,6 +272,6 @@ public class ParseConverter {
 
     }
 
-    private static final record CorefCluster(int id, String representativeMention, ImmutableList<ImmutableList<IWord>> mentions) implements ICorefCluster {
+    private record CorefCluster(int id, String representativeMention, ImmutableList<ImmutableList<IWord>> mentions) implements ICorefCluster {
     }
 }

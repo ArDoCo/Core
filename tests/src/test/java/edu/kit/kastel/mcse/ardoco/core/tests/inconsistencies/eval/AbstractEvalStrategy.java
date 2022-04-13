@@ -1,22 +1,18 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionConfig;
 
 public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
 
@@ -24,55 +20,41 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
         super();
     }
 
-    protected static AgentDatastructure runRecommendationConnectionInconsistency(AgentDatastructure data) {
+    protected static DataStructure runRecommendationConnectionInconsistency(DataStructure data) {
+        Map<String, String> config = new HashMap<>();
         // Model Extractor has been executed & textExtractor does not depend on model changes
-        data.overwrite(runRecommendationGenerator(data));
-        data.overwrite(runConnectionGenerator(data));
-        data.overwrite(runInconsistencyChecker(data));
+        runRecommendationGenerator(data, config);
+        runConnectionGenerator(data, config);
+        runInconsistencyChecker(data, config);
         return data;
     }
 
-    protected static IModelState runModelExtractor(IModelConnector modelConnector) {
-        IExecutionStage modelExtractor = new ModelProvider(modelConnector);
-        modelExtractor.exec();
-        return modelExtractor.getBlackboard().getModelState(modelConnector.getModelId());
+    protected static IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> configs) {
+        ModelProvider modelExtractor = new ModelProvider(modelConnector);
+        return modelExtractor.execute(configs);
     }
 
-    protected static AgentDatastructure runTextExtractor(AgentDatastructure data, Map<String, String> configs) {
-        IExecutionStage textModule = new TextExtraction(data);
-        if (configs != null && !configs.isEmpty()) {
-            textModule = textModule.create(data, configs);
-        }
-        textModule.exec();
-        return textModule.getBlackboard();
+    protected static DataStructure runTextExtractor(DataStructure data, Map<String, String> configs) {
+        IExecutionStage textModule = new TextExtraction();
+        textModule.execute(data, configs);
+        return data;
     }
 
-    private static AgentDatastructure runRecommendationGenerator(AgentDatastructure data) {
-        IExecutionStage recommendationModule = new RecommendationGenerator(data);
-        recommendationModule.exec();
-        return recommendationModule.getBlackboard();
+    private static DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> configs) {
+        IExecutionStage recommendationModule = new RecommendationGenerator();
+        recommendationModule.execute(data, configs);
+        return data;
     }
 
-    private static AgentDatastructure runConnectionGenerator(AgentDatastructure data) {
-        IExecutionStage connectionGenerator = new ConnectionGenerator(data);
-        connectionGenerator.exec();
-        return connectionGenerator.getBlackboard();
+    private static DataStructure runConnectionGenerator(DataStructure data, Map<String, String> configs) {
+        IExecutionStage connectionGenerator = new ConnectionGenerator();
+        connectionGenerator.execute(data, configs);
+        return data;
     }
 
-    private static AgentDatastructure runInconsistencyChecker(AgentDatastructure data) {
-        IExecutionStage inconsistencyChecker = new InconsistencyChecker(data);
-        inconsistencyChecker.exec();
-        return inconsistencyChecker.getBlackboard();
-    }
-
-    protected static Map<String, String> getTextExtractionConfigurations(Project project) {
-        Map<String, String> configurations = new HashMap<>();
-
-        Configuration.mergeConfigToMap(configurations, TextExtractionConfig.DEFAULT_CONFIG);
-        Configuration.mergeConfigToMap(configurations, GenericTextConfig.DEFAULT_CONFIG);
-
-        // more config options would come here...
-
-        return configurations;
+    private static DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
+        IExecutionStage inconsistencyChecker = new InconsistencyChecker();
+        inconsistencyChecker.execute(data, configs);
+        return data;
     }
 }

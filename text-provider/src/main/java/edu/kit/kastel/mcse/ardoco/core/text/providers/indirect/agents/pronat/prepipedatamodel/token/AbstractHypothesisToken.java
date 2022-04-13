@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token;
 
 import java.util.Objects;
@@ -149,20 +149,18 @@ public class AbstractHypothesisToken {
 
     @Override
     public int hashCode() {
-        if (hash != 0) {
-            return hash;
-        } else {
+        if (hash == 0) {
             hash = getWord().hashCode();
             hash = 31 * hash + getPosition();
             hash = (int) (31 * hash + getConfidence());
-            return hash;
         }
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj.getClass() == this.getClass()) {
-            final AbstractHypothesisToken other = (AbstractHypothesisToken) obj;
+            AbstractHypothesisToken other = (AbstractHypothesisToken) obj;
             return getPosition() == other.getPosition() && compareDouble(getConfidence(), other.getConfidence()) && Objects.equals(getWord(), other.getWord())
                     && getType() == other.getType() && compareDouble(getStartTime(), other.getStartTime()) && compareDouble(getEndTime(), other.getEndTime());
         }

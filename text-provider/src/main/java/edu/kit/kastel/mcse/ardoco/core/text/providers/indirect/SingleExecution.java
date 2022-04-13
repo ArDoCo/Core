@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
 import java.io.InputStream;
@@ -21,7 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.pre
  *
  * @author Dominik Fuchss
  * @author Sophie Schulz
- *
  */
 class SingleExecution implements IPARSEExecution {
 
@@ -56,7 +55,7 @@ class SingleExecution implements IPARSEExecution {
      *
      * @param input input text to run on
      * @return data of the preprocessing
-     * @throws Exception if a step of the preprocessing fails
+     * @throws LunaRunException if a step of the preprocessing fails
      */
     private static PrePipelineData init(String input) throws LunaRunException {
 
@@ -94,9 +93,7 @@ class SingleExecution implements IPARSEExecution {
      *
      * @param graph graph to run on
      * @param agent agent to run
-     * @throws SecurityException
-     * @throws NoSuchMethodException
-     * @throws Exception             if agent fails
+     * @throws LunaRunException if agent fails
      */
     private static void execute(IGraph graph, AbstractAgent agent) throws LunaRunException {
         agent.init();

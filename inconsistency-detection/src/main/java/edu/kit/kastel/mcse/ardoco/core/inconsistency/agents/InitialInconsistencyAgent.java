@@ -1,38 +1,41 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
-import org.kohsuke.MetaInfServices;
+import java.util.List;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.filters.OccasionFilter;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.filters.RecommendedInstanceProbabilityFilter;
 
-@MetaInfServices(InconsistencyAgent.class)
 public class InitialInconsistencyAgent extends InconsistencyAgent {
+    private final List<AbstractFilter<InconsistencyAgentData>> filters = List.of(new RecommendedInstanceProbabilityFilter(), new OccasionFilter());
+
+    @Configurable
+    private List<String> enabledFilters = filters.stream().map(e -> e.getClass().getSimpleName()).toList();
 
     public InitialInconsistencyAgent() {
-        super(GenericInconsistencyConfig.class);
-    }
-
-    private InitialInconsistencyAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState) {
-        super(GenericInconsistencyConfig.class, text, textState, modelState, recommendationState, connectionState, inconsistencyState);
+        // empty
     }
 
     @Override
-    public InconsistencyAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState, IInconsistencyState inconsistencyState, Configuration config) {
-        return new InitialInconsistencyAgent(text, textState, modelState, recommendationState, connectionState, inconsistencyState);
+    public void execute(InconsistencyAgentData data) {
+        for (var model : data.getModelIds()) {
+            var inconsistencyState = data.getInconsistencyState(model);
+            var recommendationState = data.getRecommendationState(data.getModelState(model).getMetamodel());
+            inconsistencyState.addRecommendedInstances(recommendationState.getRecommendedInstances().toList());
+        }
+
+        for (var filter : findByClassName(enabledFilters, filters)) {
+            filter.exec(data);
+        }
     }
 
     @Override
-    public void exec() {
-        // TODO
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
-
 }
