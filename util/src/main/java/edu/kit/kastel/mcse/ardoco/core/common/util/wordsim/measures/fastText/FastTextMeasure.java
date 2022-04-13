@@ -5,7 +5,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
-import edu.kit.kastel.mcse.ardoco.core.common.util.VectorUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils;
 
 import java.nio.file.Path;
 import java.util.HashMap;

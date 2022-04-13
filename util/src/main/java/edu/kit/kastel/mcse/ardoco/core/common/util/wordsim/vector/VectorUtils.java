@@ -1,10 +1,10 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.common.util;
+package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import java.util.Objects;
 
 /**
- * Some utility functions for double vectors.
+ * Some utility functions for double and float vectors.
  */
 public class VectorUtils {
 
