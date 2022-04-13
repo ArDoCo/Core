@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.VectorUtils.isZero;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.isZero;
 
 /**
  * Provides the functionality of fastText using the DL4J (JFastText) native wrapper.
