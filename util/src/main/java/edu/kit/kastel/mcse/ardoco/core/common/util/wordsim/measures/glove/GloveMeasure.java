@@ -21,6 +21,8 @@ import java.util.Objects;
  */
 public class GloveMeasure implements WordSimMeasure {
 
+	// TODO: Extend from VectorBasedWordSimMeasure
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GloveMeasure.class);
     private static final float[] ZERO_VECTOR = new float[0];
 
