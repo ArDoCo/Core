@@ -101,56 +101,56 @@ public class Evaluation {
 			nasariVectorDatabase = new VectorSqliteDatabase(Path.of(CommonTextToolsConfig.NASARI_DB_FILE_PATH));
 		}
 
-        for (int b = 1; b <= 2; b++) {
-            for (int t = 0; t <= 100; t += 5) {
-                double threshold = t / 100.0;
+	    for (Baseline b : Baseline.values()) {
+		    for (int t = 0; t <= 100; t += 5) {
+			    double threshold = t / 100.0;
 
-                // Jaro Winkler
-                if (jaroWinkler && b == 1) {
-                    plans.add(new EvalPlan("jaroWinkler", b, t, new JaroWinklerMeasure(threshold)));
-                }
+			    // Jaro Winkler
+			    if (jaroWinkler && b == Baseline.FIRST) {
+				    plans.add(new EvalPlan("jaroWinkler", b, t, new JaroWinklerMeasure(threshold)));
+			    }
 
-                // Levenshtein
-                if (levenshtein && b == 1) {
-                    throw new UnsupportedOperationException();
-                }
+			    // Levenshtein
+			    if (levenshtein && b == Baseline.FIRST) {
+				    throw new UnsupportedOperationException();
+			    }
 
-                // Ngram
-                if (ngram) {
-                    plans.add(new EvalPlan("bigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 2, threshold)));
-                    plans.add(new EvalPlan("trigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 3, threshold)));
-                    plans.add(new EvalPlan("4gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 4, threshold)));
-                    plans.add(new EvalPlan("5gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 5, threshold)));
-                    plans.add(new EvalPlan("6gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 6, threshold)));
-                    plans.add(new EvalPlan("7gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 7, threshold)));
-                }
+			    // Ngram
+			    if (ngram) {
+				    plans.add(new EvalPlan("bigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 2, threshold)));
+				    plans.add(new EvalPlan("trigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 3, threshold)));
+				    plans.add(new EvalPlan("4gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 4, threshold)));
+				    plans.add(new EvalPlan("5gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 5, threshold)));
+				    plans.add(new EvalPlan("6gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 6, threshold)));
+				    plans.add(new EvalPlan("7gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 7, threshold)));
+			    }
 
-                // SEWordSim
-                if (sewordsim) {
-                    plans.add(new EvalPlan("sewsim", b, t, new SEWordSimMeasure(seWordSimDataSource, threshold)));
-                }
+			    // SEWordSim
+			    if (sewordsim) {
+				    plans.add(new EvalPlan("sewsim", b, t, new SEWordSimMeasure(seWordSimDataSource, threshold)));
+			    }
 
-                // fastText
-                if (fastText) {
-                    plans.add(new EvalPlan("fastText_" + fastTextModelName, b, t, new FastTextMeasure(fastTextDataSource, threshold)));
-                }
+			    // fastText
+			    if (fastText) {
+				    plans.add(new EvalPlan("fastText_" + fastTextModelName, b, t, new FastTextMeasure(fastTextDataSource, threshold)));
+			    }
 
-                // WordNet
-                if (wordNetWP) {
-                    plans.add(new EvalPlan("wordNet_WP", b, t, new WordNetMeasure(Map.of(new WuPalmer(wordNetDB), threshold))));
-                }
-                if (wordNetLC) {
-                    plans.add(new EvalPlan("wordNet_LC", b, t, new WordNetMeasure(Map.of(new LeacockChodorow(wordNetDB), threshold))));
-                }
-                if (wordNetJC) {
-                    plans.add(new EvalPlan("wordNet_JC", b, t, new WordNetMeasure(Map.of(new JiangConrath(wordNetDB), threshold))));
-                }
-                if (wordNetLesk) {
-                    plans.add(new EvalPlan("wordNet_Lesk", b, t, new WordNetMeasure(Map.of(new Lesk(wordNetDB), threshold))));
-                }
-                if (wordNetEzzikouri) {
-                    plans.add(new EvalPlan("wordNet_Ezzi", b, t, new WordNetMeasure(Map.of(new Ezzikouri(wordNetDB), threshold))));
-                }
+			    // WordNet
+			    if (wordNetWP) {
+				    plans.add(new EvalPlan("wordNet_WP", b, t, new WordNetMeasure(Map.of(new WuPalmer(wordNetDB), threshold))));
+			    }
+			    if (wordNetLC) {
+				    plans.add(new EvalPlan("wordNet_LC", b, t, new WordNetMeasure(Map.of(new LeacockChodorow(wordNetDB), threshold))));
+			    }
+			    if (wordNetJC) {
+				    plans.add(new EvalPlan("wordNet_JC", b, t, new WordNetMeasure(Map.of(new JiangConrath(wordNetDB), threshold))));
+			    }
+			    if (wordNetLesk) {
+				    plans.add(new EvalPlan("wordNet_Lesk", b, t, new WordNetMeasure(Map.of(new Lesk(wordNetDB), threshold))));
+			    }
+			    if (wordNetEzzikouri) {
+				    plans.add(new EvalPlan("wordNet_Ezzi", b, t, new WordNetMeasure(Map.of(new Ezzikouri(wordNetDB), threshold))));
+			    }
 
 				// GloVe
                 if (glove) {

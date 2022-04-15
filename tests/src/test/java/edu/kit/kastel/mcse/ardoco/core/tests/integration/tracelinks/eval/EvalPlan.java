@@ -2,9 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,41 +13,36 @@ import java.util.List;
 public class EvalPlan {
 
     private final String group;
-    private final int base;
+    private final Baseline baseline;
     private final int threshold;
     private final List<WordSimMeasure> measures;
 
-    public EvalPlan(String group, int base, int threshold) {
+    public EvalPlan(String group, Baseline base, int threshold) {
         this(group, base, threshold, Collections.emptyList());
     }
 
-    public EvalPlan(String group, int base, int threshold, WordSimMeasure measure) {
-        this(group, base, threshold, base == 2 ? List.of(measure, new JaroWinklerMeasure(), new LevenshteinMeasure()) : List.of(measure));
+    public EvalPlan(String group, Baseline base, int threshold, WordSimMeasure measure) {
+        this(group, base, threshold, List.of(measure));
     }
 
-    public EvalPlan(String group, int base, int threshold, List<WordSimMeasure> measures) {
+    public EvalPlan(String group, Baseline base, int threshold, List<WordSimMeasure> measures) {
         this.group = group;
-        this.base = base;
+        this.baseline = base;
         this.threshold = threshold;
         this.measures = new ArrayList<>(measures);
-        this.measures.add(new EqualityMeasure()); // ALWAYS use equality measure (this is how WordSimLoader works too!)
-
-        if (base == 2) {
-            this.measures.add(new JaroWinklerMeasure());
-            this.measures.add(new LevenshteinMeasure());
-        }
+	    this.measures.addAll(base.getMeasures());
     }
 
     public String getId() {
-        return getGroup() + "_b" + getBase() + "_t" + getThreshold();
+        return group + "_b" + baseline.getId() + "_t" + threshold;
     }
 
     public String getGroup() {
         return group;
     }
 
-    public int getBase() {
-        return base;
+    public Baseline getBaseline() {
+        return baseline;
     }
 
     public int getThreshold() {
