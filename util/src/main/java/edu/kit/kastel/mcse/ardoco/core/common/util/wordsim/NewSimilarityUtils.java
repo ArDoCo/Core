@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
 
 import java.util.ArrayList;
@@ -15,44 +15,47 @@ import java.util.Objects;
 public class NewSimilarityUtils {
 
     private static List<WordSimMeasure> MEASURES = WordSimLoader.loadUsingProperties();
+	private static ComparisonStrategy DEFAULT_STRATEGY = ComparisonStrategy.AT_LEAST_ONE;
 
-    public static void setMeasures(Collection<WordSimMeasure> measures) {
-        MEASURES = new ArrayList<>(measures);
-    }
+    public static void setMeasures(Collection<WordSimMeasure> measures) { MEASURES = new ArrayList<>(measures); }
 
-    public static boolean areWordsSimilar(ComparisonContext ctx) {
+	public static void setStrategy(ComparisonStrategy strategy) { DEFAULT_STRATEGY = strategy; }
+
+    public static boolean areWordsSimilar(ComparisonContext ctx, ComparisonStrategy strategy) {
         Objects.requireNonNull(ctx);
+		Objects.requireNonNull(strategy);
 
-        ComparisonStats.begin(ctx);
-
-        boolean result = false;
-
-        for (WordSimMeasure measure : MEASURES) {
-            boolean similar = measure.areWordsSimilar(ctx);
-
-            ComparisonStats.record(measure, similar);
-
-            if (similar) { // TODO: Early return here in the future
-                result = true;
-            }
-        }
-
-        ComparisonStats.end(result);
-
-        return result;
+		return strategy.areWordsSimilar(ctx, MEASURES);
     }
+
+	public static boolean areWordsSimilar(ComparisonContext ctx) {
+		Objects.requireNonNull(ctx);
+		return areWordsSimilar(ctx, DEFAULT_STRATEGY);
+	}
 
     public static boolean areWordsSimilar(String firstWord, String secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false));
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), DEFAULT_STRATEGY);
     }
+
+	public static boolean areWordsSimilar(String firstWord, String secondWord, ComparisonStrategy strategy) {
+		return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
+	}
 
     public static boolean areWordsSimilar(IWord firstWord, IWord secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false));
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), DEFAULT_STRATEGY);
     }
 
+	public static boolean areWordsSimilar(IWord firstWord, IWord secondWord, ComparisonStrategy strategy) {
+		return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
+	}
+
     public static boolean areWordsSimilar(String firstWord, IWord secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false));
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), DEFAULT_STRATEGY);
     }
+
+	public static boolean areWordsSimilar(String firstWord, IWord secondWord, ComparisonStrategy strategy) {
+		return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
+	}
 
     private NewSimilarityUtils() {
     }
