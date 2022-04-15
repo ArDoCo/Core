@@ -66,4 +66,6 @@ public class TLPreviousFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE);
     }
 
+	private TLPreviousFile() { }
+
 }

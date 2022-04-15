@@ -54,4 +54,6 @@ public class TLComparisonsFile {
         }
     }
 
+	private TLComparisonsFile() { }
+
 }

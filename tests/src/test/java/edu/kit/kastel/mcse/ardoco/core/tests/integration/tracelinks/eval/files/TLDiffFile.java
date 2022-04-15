@@ -105,4 +105,6 @@ public class TLDiffFile {
         builder.append('\n');
     }
 
+	private TLDiffFile() { }
+
 }

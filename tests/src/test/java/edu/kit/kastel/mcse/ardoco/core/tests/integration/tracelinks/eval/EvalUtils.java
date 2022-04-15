@@ -16,4 +16,6 @@ public class EvalUtils {
         return data.getModelIds().stream().flatMap(id -> data.getModelState(id).getInstances().stream()).toList();
     }
 
+	private EvalUtils() { }
+
 }

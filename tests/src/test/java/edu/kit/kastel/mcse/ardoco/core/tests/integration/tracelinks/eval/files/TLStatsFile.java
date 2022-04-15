@@ -107,4 +107,6 @@ public class TLStatsFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
+	private TLStatsFile() { }
+
 }

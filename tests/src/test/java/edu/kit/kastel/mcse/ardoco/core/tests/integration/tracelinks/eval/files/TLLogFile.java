@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.ProjectAlias;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 
 import java.io.IOException;
@@ -31,12 +32,7 @@ public class TLLogFile {
         builder.append(String.format("[`Ø`  %s  %s  %s]", NUMBER_FORMAT.format(avgPrecision), NUMBER_FORMAT.format(avgRecall), NUMBER_FORMAT.format(avgF1)));
 
         for (TLProjectEvalResult result : sortedResults) {
-            String alias = switch (result.getProject()) {
-            case BIGBLUEBUTTON -> "BBB";
-            case MEDIASTORE -> "MS";
-            case TEAMMATES -> "TM";
-            case TEASTORE -> "TS";
-            };
+            String alias = ProjectAlias.getAlias(result.getProject());
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());
             String recall = NUMBER_FORMAT.format(result.getRecall());
@@ -68,5 +64,7 @@ public class TLLogFile {
         lines.set(lines.size() - 1, lastLine);
         Files.write(targetFile, lines, StandardOpenOption.TRUNCATE_EXISTING);
     }
+
+	private TLLogFile() { }
 
 }
