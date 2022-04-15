@@ -131,4 +131,6 @@ public class WordSimLoader {
         }
     }
 
+	private WordSimLoader() { }
+
 }

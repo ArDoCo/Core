@@ -97,7 +97,7 @@ public class Evaluator {
     }
 
     private void saveResults(EvalPlan plan, EvaluationResults results) throws IOException {
-        var filePrefix = plan.getGroup() + "_b" + plan.getBase();
+        var filePrefix = plan.getGroup() + "_b" + plan.getBaseline().getId();
 
         var f1File = resultDir.resolve(filePrefix + "_f1.dat");
         var precisionFile = resultDir.resolve(filePrefix + "_precision.dat");

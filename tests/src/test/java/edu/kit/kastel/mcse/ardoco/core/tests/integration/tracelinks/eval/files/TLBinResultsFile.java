@@ -47,4 +47,6 @@ public class TLBinResultsFile {
         return map;
     }
 
+	private TLBinResultsFile() { }
+
 }

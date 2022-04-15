@@ -49,4 +49,6 @@ public class TLComparisonDir {
         }
     }
 
+	private TLComparisonDir() { }
+
 }

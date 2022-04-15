@@ -104,4 +104,6 @@ public class TLSummaryFile {
         return String.format("%s ⇔ %s [%s,%s]", modelStr, sentenceStr, link.modelId(), link.sentenceNr());
     }
 
+	private TLSummaryFile() { }
+
 }
