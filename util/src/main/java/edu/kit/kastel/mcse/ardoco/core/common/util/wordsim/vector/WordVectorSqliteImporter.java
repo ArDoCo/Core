@@ -156,7 +156,11 @@ public class WordVectorSqliteImporter {
 									break;
 								}
 
-								String word = parts[0];
+                                if (parts.length - 1 != this.dimension) {
+                                    throw new IllegalStateException("importer has read line with invalid vector dimension: \"" + line + "\"");
+                                }
+
+                                String word = parts[0];
 
 								if (word.length() > MAX_WORD_LENGTH) {
 									// Filter out weird words from dataset
