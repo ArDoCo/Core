@@ -48,20 +48,23 @@ public class SEWordSimMeasure implements WordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        try {
-            double similarity = this.dataSource.getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
+		double similarity = Double.NaN;
 
-            if (Double.isNaN(similarity)) {
-                return false; // words are probably missing in the database
-            }
+		try {
+			similarity = this.dataSource.getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
+		}
+		catch (SQLException e) {
+			LOGGER.error("Failed to query the SEWordSim database for word comparison: " + ctx, e);
+			return false;
+		}
 
-            ComparisonStats.recordScore(similarity);
+		if (Double.isNaN(similarity)) {
+			return false; // words are probably missing from the database
+		}
 
-            return similarity >= this.similarityThreshold;
-        } catch (SQLException e) {
-            LOGGER.error("Failed to query the SEWordSim database for word comparison: " + ctx, e);
-            return false;
-        }
+	    ComparisonStats.recordScore(similarity);
+
+		return similarity >= this.similarityThreshold;
     }
 
 }
