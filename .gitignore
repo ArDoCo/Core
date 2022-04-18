@@ -8,6 +8,9 @@ tmp*
 
 tests/eval_results/
 
+tests/babelnet_cache.json
+babelnet_cache.json
+
 ### ignore log files
 *.log
 
