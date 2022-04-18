@@ -3,8 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babe
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception.BabelNetInvalidKeyException;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception.BabelNetRequestLimitException;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,10 +18,10 @@ import java.util.Objects;
 public class BabelNetDataSource {
 
 	// TODO: Remove
-	public static void main(String[] args) throws IOException, InterruptedException {
-		var dataSource = new BabelNetDataSource(System.getenv("babelnet_key"), Path.of("babelnet_cache.json"));
+	public static void main(String[] args) throws IOException, InterruptedException, BabelNetRequestLimitException, BabelNetInvalidKeyException {
+		var dataSource = new BabelNetDataSource(args[0], Path.of("babelnet_cache.json"));
 
-		var senses = dataSource.getSensesOfLemma("hood");
+		var senses = dataSource.getSensesOfLemma("Dodecanol");
 
 		for (BabelNetSynsetId sense : senses) {
 			System.out.println("- " + sense);
@@ -50,23 +51,24 @@ public class BabelNetDataSource {
 	 * @throws IOException if an I/O error occurs while communicating with the BabelNet API or the cache
 	 * @throws InterruptedException if the communication with the BabelNet HTTP API is interrupted
 	 */
-    public List<BabelNetSynsetId> getSensesOfLemma(String lemma) throws IOException, InterruptedException {
+    public List<BabelNetSynsetId> getSensesOfLemma(String lemma) throws IOException, InterruptedException, BabelNetInvalidKeyException, BabelNetRequestLimitException {
 	    Objects.requireNonNull(lemma);
 
         String response = this.cache.get(lemma).orElse(null);
 
         if (response == null) {
             response = this.httpApi.querySynsetIdsOfLemma(lemma);
+
             this.cache.insert(lemma, response);
 			this.cache.saveToFile();
         }
 
         var list = new ArrayList<BabelNetSynsetId>();
 
-	    for (JsonElement jsonElement : GSON.fromJson(response, JsonArray.class)) {
-		    var id = new BabelNetSynsetId(jsonElement.getAsJsonObject().get("id").getAsString());
-			list.add(id);
-	    }
+        for (JsonElement jsonElement : GSON.fromJson(response, JsonArray.class)) {
+            var id = new BabelNetSynsetId(jsonElement.getAsJsonObject().get("id").getAsString());
+            list.add(id);
+        }
 
         return list;
     }

@@ -4,6 +4,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.BabelNetDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.BabelNetSynsetId;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception.BabelNetInvalidKeyException;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception.BabelNetRequestLimitException;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorBasedWordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorSqliteDatabase;
 import org.slf4j.Logger;
@@ -78,7 +80,7 @@ public class NasariMeasure extends VectorBasedWordSimMeasure {
 				}
 			}
 		}
-		catch (IOException | InterruptedException | SQLException e) {
+		catch (IOException | InterruptedException | SQLException | BabelNetInvalidKeyException | BabelNetRequestLimitException e) {
 			LOGGER.error("Failed to get babelnet senses", e);
 		}
 
