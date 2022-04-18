@@ -29,6 +29,10 @@ import java.util.Locale;
  */
 public class WordVectorSqliteImporter {
 
+    // TODO: Make this class more customizable (through extending)
+    // TODO: Use logger
+    // and move this class to tests?
+
 	/**
 	 * Launches an import process.
 	 * The first string in the args array must be the path to the file containing the vector representations.
@@ -172,10 +176,7 @@ public class WordVectorSqliteImporter {
 									word = word.toLowerCase(Locale.ROOT);
 								}
 
-								if (stem) {
-									word = PorterStemmer.stem(word);
-								}
-
+                                // Insert into database
 								buffer.clear();
 
 								for (int i = 0; i < parts.length - 1; i++) {
@@ -188,6 +189,9 @@ public class WordVectorSqliteImporter {
 									statement.setBytes(2, buffer.array());
 									statement.execute();
 								}
+                                else {
+                                    System.out.println("Would have inserted: " + word);
+                                }
 
 								inserted++;
 							}
@@ -213,5 +217,17 @@ public class WordVectorSqliteImporter {
 	private PreparedStatement prepareSelect(Connection conn) throws SQLException {
 		return conn.prepareStatement("INSERT INTO `words` (`word`, `vec`) VALUES (?, ?);");
 	}
+
+    protected String processWord(String word) {
+        if (this.lowercase) {
+            word = word.toLowerCase(Locale.ROOT);
+        }
+
+        if (this.stem) {
+            word = PorterStemmer.stem(word);
+        }
+
+        return word;
+    }
 
 }
