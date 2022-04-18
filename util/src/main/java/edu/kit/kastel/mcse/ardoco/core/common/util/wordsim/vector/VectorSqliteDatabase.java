@@ -15,11 +15,11 @@ import java.util.Optional;
 /**
  * Manages a connection to a sqlite database that contains vector word embeddings
  * using a very specific schema:
- *
+ * <p>
  * A table {@code words} has to exist with two columns: {@code word} and {@code vec}.
  * The {@code word} column must be a unique {@code TEXT} column while the
  * {@code vec} column must be a non-nullable {@code BLOB}.
- *
+ * <p>
  * Vector blobs must be stored as a consecutive sequence of floats.
  * The amount of floats in a sequence depends on the dimension of the vectors.
  */
@@ -80,7 +80,8 @@ public class VectorSqliteDatabase implements AutoCloseable {
 		return Optional.empty();
 	}
 
-	@Override public void close() throws Exception {
+	@Override
+	public void close() throws Exception {
 		this.selectStatement.close();
 		this.connection.close();
 	}
