@@ -40,6 +40,10 @@ public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 		Objects.requireNonNull(firstWord);
 		Objects.requireNonNull(secondWord);
 
+        if (firstWord.equals(secondWord)) {
+            return 1.0;
+        }
+
 		float[] firstVec = getVectorFromCacheOrDatabase(firstWord);
 
 		if (VectorUtils.isZero(firstVec)) {
