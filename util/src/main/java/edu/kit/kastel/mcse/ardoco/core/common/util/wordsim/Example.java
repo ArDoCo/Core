@@ -9,7 +9,7 @@ public class Example {
 		NewSimilarityUtils.areWordsSimilar("hello", "hallo");
 		NewSimilarityUtils.areWordsSimilar("hello", "hallo", ComparisonStrategy.AT_LEAST_ONE);
 		NewSimilarityUtils.areWordsSimilar("hello", "hallo", ComparisonStrategy.MAJORITY);
-		NewSimilarityUtils.areWordsSimilar("hello", "hallo", ComparisonStrategy.THRESHOLD(0.5));
+		NewSimilarityUtils.areWordsSimilar("hello", "hallo", ComparisonStrategy.threshold(0.5));
 
 		NewSimilarityUtils.setStrategy((ctx, measures) -> {
 			return measures.stream().anyMatch(measure -> measure.areWordsSimilar(ctx));
