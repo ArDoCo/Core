@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -23,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 
 public class JavaJsonModelConnector implements IModelConnector {
-    private final String modelId;
     private final JavaProject javaProject;
 
     public JavaJsonModelConnector(File file) throws IOException {
@@ -39,13 +37,11 @@ public class JavaJsonModelConnector implements IModelConnector {
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
         this.javaProject = Objects.requireNonNull(oom.readValue(is, JavaProject.class));
-        // TODO: Extract id from model.
-        this.modelId = UUID.randomUUID().toString();
     }
 
     @Override
     public String getModelId() {
-        return modelId;
+        return this.javaProject.getId();
     }
 
     @Override
