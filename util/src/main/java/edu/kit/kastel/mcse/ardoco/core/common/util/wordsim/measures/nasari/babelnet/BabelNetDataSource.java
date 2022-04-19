@@ -17,17 +17,6 @@ import java.util.Objects;
  */
 public class BabelNetDataSource {
 
-	// TODO: Remove
-	public static void main(String[] args) throws IOException, InterruptedException, BabelNetRequestLimitException, BabelNetInvalidKeyException {
-		var dataSource = new BabelNetDataSource(args[0], Path.of("babelnet_cache.json"));
-
-		var senses = dataSource.getSensesOfLemma("Dodecanol");
-
-		for (BabelNetSynsetId sense : senses) {
-			System.out.println("- " + sense);
-		}
-	}
-
 	private static final Gson GSON = new Gson();
 
     private final BabelNetCache cache;
@@ -51,8 +40,10 @@ public class BabelNetDataSource {
 	 * @throws IOException if an I/O error occurs while communicating with the BabelNet API or the cache
 	 * @throws InterruptedException if the communication with the BabelNet HTTP API is interrupted
 	 */
-    public List<BabelNetSynsetId> getSensesOfLemma(String lemma) throws IOException, InterruptedException, BabelNetInvalidKeyException, BabelNetRequestLimitException {
-	    Objects.requireNonNull(lemma);
+    public List<BabelNetSynsetId> getSensesOfLemma(String lemma) throws IOException, InterruptedException,
+	    BabelNetInvalidKeyException, BabelNetRequestLimitException {
+
+		Objects.requireNonNull(lemma);
 
         String response = this.cache.get(lemma).orElse(null);
 

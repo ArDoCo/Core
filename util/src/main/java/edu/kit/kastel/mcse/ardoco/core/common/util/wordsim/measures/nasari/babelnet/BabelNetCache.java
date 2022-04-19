@@ -14,7 +14,7 @@ import java.util.Optional;
 
 /**
  * A persistent cache that stores responses from BabelNet queries.
- * The contents of this cache can be stored in a file by using the {@link #saveToFile()} method.
+ * Use the {@link #saveToFile()} method to save the current contents of the cache to the file system.
  */
 public class BabelNetCache {
 
