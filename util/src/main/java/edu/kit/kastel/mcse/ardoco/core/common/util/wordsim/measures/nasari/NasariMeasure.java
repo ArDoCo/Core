@@ -66,22 +66,34 @@ public class NasariMeasure extends VectorBasedWordSimMeasure {
 
 	@Override
 	public boolean areWordsSimilar(ComparisonContext ctx) {
+		List<BabelNetSynsetId> firstSenses;
+		List<BabelNetSynsetId> secondSenses;
+
 		try {
-			List<BabelNetSynsetId> firstSenses = this.babelNetData.getSensesOfLemma(ctx.firstTerm());
-			List<BabelNetSynsetId> secondSenses = this.babelNetData.getSensesOfLemma(ctx.secondTerm());
+			firstSenses = this.babelNetData.getSensesOfLemma(ctx.firstTerm());
+			secondSenses = this.babelNetData.getSensesOfLemma(ctx.secondTerm());
+		}
+		catch (IOException | InterruptedException | BabelNetInvalidKeyException | BabelNetRequestLimitException e) {
+			LOGGER.error("Failed to get babelnet senses", e);
+			return false;
+		}
 
-			for (BabelNetSynsetId firstSense : firstSenses) {
-				for (BabelNetSynsetId secondSense : secondSenses) {
-					double similarity = super.compareVectors(firstSense.toString(), secondSense.toString());
+		for (BabelNetSynsetId firstSense : firstSenses) {
+			for (BabelNetSynsetId secondSense : secondSenses) {
+				double similarity;
 
-					if (similarity >= this.similarityThreshold) {
-						return true;
-					}
+				try {
+					similarity = compareVectors(firstSense.toString(), secondSense.toString());
+				}
+				catch (SQLException e) {
+					LOGGER.error("Failed to compare nasari vectors", e);
+					return false;
+				}
+
+				if (similarity >= this.similarityThreshold) {
+					return true;
 				}
 			}
-		}
-		catch (IOException | InterruptedException | SQLException | BabelNetInvalidKeyException | BabelNetRequestLimitException e) {
-			LOGGER.error("Failed to get babelnet senses", e);
 		}
 
 		return false;
