@@ -115,7 +115,8 @@ public class WordVectorSqliteImporter {
 	 * @param dryRun        whether this importer should actually insert. Use {@code false} to run this importer without
 	 *                      actually inserting anything
 	 */
-	public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension, int maxWordLength, boolean stem, boolean lowercase,
+	public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension,
+	                                int maxWordLength, boolean stem, boolean lowercase,
 	                                long startLine, long endLine, boolean dryRun) {
 		this.vectorFile = vectorFile;
 		this.dbFile = dbFile;

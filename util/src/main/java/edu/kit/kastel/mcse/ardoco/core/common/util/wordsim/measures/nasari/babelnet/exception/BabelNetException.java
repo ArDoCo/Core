@@ -1,5 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception;
 
+/**
+ * A babelnet related exception.
+ */
 public class BabelNetException extends Exception {
 
     public BabelNetException() {
