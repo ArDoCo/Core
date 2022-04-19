@@ -15,11 +15,11 @@ import java.util.Objects;
 public class NewSimilarityUtils {
 
     private static List<WordSimMeasure> MEASURES = WordSimLoader.loadUsingProperties();
-	private static ComparisonStrategy DEFAULT_STRATEGY = ComparisonStrategy.AT_LEAST_ONE;
+	private static ComparisonStrategy STRATEGY = ComparisonStrategy.AT_LEAST_ONE; // TODO: load default from properties?
 
     public static void setMeasures(Collection<WordSimMeasure> measures) { MEASURES = new ArrayList<>(measures); }
 
-	public static void setStrategy(ComparisonStrategy strategy) { DEFAULT_STRATEGY = strategy; }
+	public static void setStrategy(ComparisonStrategy strategy) { STRATEGY = strategy; }
 
     public static boolean areWordsSimilar(ComparisonContext ctx, ComparisonStrategy strategy) {
         Objects.requireNonNull(ctx);
@@ -30,11 +30,11 @@ public class NewSimilarityUtils {
 
 	public static boolean areWordsSimilar(ComparisonContext ctx) {
 		Objects.requireNonNull(ctx);
-		return areWordsSimilar(ctx, DEFAULT_STRATEGY);
+		return areWordsSimilar(ctx, STRATEGY);
 	}
 
     public static boolean areWordsSimilar(String firstWord, String secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), DEFAULT_STRATEGY);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), STRATEGY);
     }
 
 	public static boolean areWordsSimilar(String firstWord, String secondWord, ComparisonStrategy strategy) {
@@ -42,7 +42,7 @@ public class NewSimilarityUtils {
 	}
 
     public static boolean areWordsSimilar(IWord firstWord, IWord secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), DEFAULT_STRATEGY);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), STRATEGY);
     }
 
 	public static boolean areWordsSimilar(IWord firstWord, IWord secondWord, ComparisonStrategy strategy) {
@@ -50,7 +50,7 @@ public class NewSimilarityUtils {
 	}
 
     public static boolean areWordsSimilar(String firstWord, IWord secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), DEFAULT_STRATEGY);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), STRATEGY);
     }
 
 	public static boolean areWordsSimilar(String firstWord, IWord secondWord, ComparisonStrategy strategy) {
