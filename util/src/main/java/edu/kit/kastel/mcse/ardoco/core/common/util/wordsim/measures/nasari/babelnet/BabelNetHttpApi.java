@@ -48,8 +48,8 @@ public class BabelNetHttpApi {
 	 * @throws InterruptedException if the operation is interrupted
 	 */
     public String querySynsetIdsOfLemma(String lemma) throws IOException, InterruptedException, BabelNetRequestLimitException, BabelNetInvalidKeyException {
-        if (System.currentTimeMillis() - lastQuery < 2000) {
-            Thread.sleep(2000);
+        if (System.currentTimeMillis() - lastQuery < 5000) { // TODO: Find better solution
+            Thread.sleep(5000);
         }
 
         lastQuery = System.currentTimeMillis();
@@ -72,7 +72,7 @@ public class BabelNetHttpApi {
         try {
             var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
-            var body = response.body();
+            String body = response.body();
 
             // Do some basic error checking with known error messages
             if (body.toLowerCase(Locale.ROOT).contains(INVALID_KEY_ERROR)) {
