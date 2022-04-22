@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.model.pcm;
+package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,13 +11,11 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.fuchss.xmlobjectmapper.XML2Object;
 
+import edu.kit.kastel.informalin.framework.models.pcm.PCMComponent;
+import edu.kit.kastel.informalin.framework.models.pcm.PCMRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.Instance;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.xml.PCMComponent;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.xml.PCMRepository;
 
 public class PcmXMLModelConnector implements IModelConnector {
 
@@ -45,7 +43,7 @@ public class PcmXMLModelConnector implements IModelConnector {
 
     @Override
     public ImmutableList<IModelInstance> getInstances() {
-        return repository.getComponents().collect(e -> new Instance(e.getEntityName(), e.getType(), e.getId()));
+        return Lists.immutable.withAll(repository.getComponents()).collect(e -> new Instance(e.getEntityName(), e.getType(), e.getId()));
     }
 
     @Override

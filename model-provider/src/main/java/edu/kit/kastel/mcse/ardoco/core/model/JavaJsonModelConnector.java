@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.model.java;
+package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,13 +13,11 @@ import org.eclipse.collections.api.list.ImmutableList;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.codemodelextractor.java.model.JavaClassOrInterface;
-import edu.kit.kastel.mcse.ardoco.codemodelextractor.java.model.JavaProject;
+import edu.kit.kastel.informalin.framework.models.java.JavaClassOrInterface;
+import edu.kit.kastel.informalin.framework.models.java.JavaProject;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 
 public class JavaJsonModelConnector implements IModelConnector {
     private final JavaProject javaProject;

@@ -9,6 +9,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
@@ -42,7 +43,7 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
     private RecommendedInstance(String name, String type) {
         this.type = type;
         this.name = name;
-        this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
+        this.probability = new Confidence(AggregationFunctions.AVERAGE);
         nameMappings = new HashSet<>();
         typeMappings = new HashSet<>();
     }
