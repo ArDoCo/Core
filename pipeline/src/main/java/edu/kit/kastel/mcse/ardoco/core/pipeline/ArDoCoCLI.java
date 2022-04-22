@@ -1,20 +1,20 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline.runAndSave;
+import org.apache.commons.cli.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.cli.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import static edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline.runAndSave;
 
 /**
  * A simple CLI for execution of the agents.
  */
 public final class ArDoCoCLI {
-    private static final Logger logger = LogManager.getLogger(ArDoCoCLI.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArDoCoCLI.class);
 
     private static final String CMD_HELP = "h";
     private static final String CMD_NAME = "n";

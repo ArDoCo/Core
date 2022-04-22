@@ -1,28 +1,26 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.model.pcm;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
-
 class PcmXMLModelConnectorTest {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LoggerFactory.getLogger(PcmXMLModelConnectorTest.class);
 
     private static PcmXMLModelConnector loadModel(String modelFile) throws ReflectiveOperationException, IOException {
         return new PcmXMLModelConnector(new File(modelFile));
@@ -39,7 +37,7 @@ class PcmXMLModelConnectorTest {
             for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
-                logger.debug(instance.getNameParts());
+                logger.debug(String.valueOf(instance.getNameParts()));
             }
             logger.debug("\n");
         }
@@ -67,7 +65,7 @@ class PcmXMLModelConnectorTest {
             for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
-                logger.debug(instance.getNameParts());
+                logger.debug(String.valueOf(instance.getNameParts()));
             }
             logger.debug("\n");
         }
@@ -90,7 +88,7 @@ class PcmXMLModelConnectorTest {
             for (IModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
-                logger.debug(instance.getNameParts());
+                logger.debug(String.valueOf(instance.getNameParts()));
             }
             logger.debug("\n");
         }

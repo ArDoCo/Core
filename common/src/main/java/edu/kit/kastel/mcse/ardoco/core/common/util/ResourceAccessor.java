@@ -1,15 +1,15 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * The Class ResourceAccessor defines an accessor to configuration resources.
@@ -17,7 +17,7 @@ import org.eclipse.collections.impl.factory.Lists;
 public final class ResourceAccessor {
 
     private final Properties prop = new Properties();
-    private static final Logger logger = LogManager.getLogger(ResourceAccessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResourceAccessor.class);
 
     /**
      * Instantiates a new resource accessor.

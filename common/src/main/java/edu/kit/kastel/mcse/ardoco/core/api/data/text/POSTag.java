@@ -1,8 +1,8 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.text;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class represents all valid part-of-speech (pos) tags
@@ -24,7 +24,7 @@ public enum POSTag {
 	HYPH("HYPH"), NFP("NFP"), ADD("ADD"), AFX("AFX"), GW("GW"), XX("XX");
 	//@formatter:on
 
-    private static final Logger logger = LogManager.getLogger(POSTag.class);
+    private static final Logger logger = LoggerFactory.getLogger(POSTag.class);
 
     private final String tag;
 

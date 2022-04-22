@@ -1,21 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
@@ -34,6 +19,20 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
 
 /**
  * The Pipeline defines the execution of the agents.
@@ -44,7 +43,7 @@ public final class Pipeline {
         throw new IllegalAccessError();
     }
 
-    private static final Logger logger = LogManager.getLogger(Pipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(Pipeline.class);
 
     /**
      * Run the approach with the given parameters and save the output to the file system.
