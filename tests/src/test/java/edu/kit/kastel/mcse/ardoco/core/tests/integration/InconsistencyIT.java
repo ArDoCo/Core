@@ -1,6 +1,18 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.Locale;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -9,17 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResu
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model.DeleteOneModelElementEval;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.util.Locale;
 
 class InconsistencyIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyIT.class);

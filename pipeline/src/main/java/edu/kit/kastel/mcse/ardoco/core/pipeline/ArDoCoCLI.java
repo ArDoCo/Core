@@ -1,14 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline.runAndSave;
 
 import java.io.File;
 import java.io.IOException;
 
-import static edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline.runAndSave;
+import org.apache.commons.cli.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple CLI for execution of the agents.

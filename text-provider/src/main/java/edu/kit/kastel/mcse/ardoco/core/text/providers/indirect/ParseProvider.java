@@ -1,15 +1,16 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
+import java.io.InputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
 
 /**
  * The Class ParseProvider defines an {@link ITextConnector} for that uses PARSE.
