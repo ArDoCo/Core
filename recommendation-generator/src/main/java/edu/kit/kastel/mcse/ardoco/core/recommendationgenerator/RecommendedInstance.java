@@ -9,8 +9,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;

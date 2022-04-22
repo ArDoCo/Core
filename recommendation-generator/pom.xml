@@ -16,16 +16,17 @@
   <dependencies>
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>data-structures</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>util</artifactId>
+      <artifactId>common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kohsuke.metainf-services</groupId>
       <artifactId>metainf-services</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

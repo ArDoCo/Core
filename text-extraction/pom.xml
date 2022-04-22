@@ -16,11 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>data-structures</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>util</artifactId>
+      <artifactId>common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kohsuke.metainf-services</groupId>

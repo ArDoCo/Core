@@ -5,7 +5,7 @@
   <parent>
     <groupId>edu.kit.kastel.mcse.ardoco</groupId>
     <artifactId>parent</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>core</artifactId>
@@ -17,12 +17,11 @@
     <module>text-extraction</module>
     <module>text-provider</module>
     <module>recommendation-generator</module>
-    <module>data-structures</module>
+    <module>common</module>
     <module>pipeline</module>
     <module>connection-generator</module>
     <module>inconsistency-detection</module>
     <module>model-provider</module>
-    <module>util</module>
     <module>tests</module>
   </modules>
 
@@ -74,7 +73,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>data-structures</artifactId>
+        <artifactId>common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -95,11 +94,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>inconsistency-detection</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>util</artifactId>
         <version>${project.version}</version>
       </dependency>
 

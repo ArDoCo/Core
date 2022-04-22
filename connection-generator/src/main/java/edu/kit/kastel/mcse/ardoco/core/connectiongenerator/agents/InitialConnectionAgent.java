@@ -4,10 +4,10 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ExtractionDependentOccurrenceExtractor;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.NameTypeConnectionExtractor;

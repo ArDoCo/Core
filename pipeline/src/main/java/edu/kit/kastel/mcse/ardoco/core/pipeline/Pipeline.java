@@ -1,8 +1,8 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
-import static edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable.KEY_VALUE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -10,8 +10,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.common.util.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
