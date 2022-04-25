@@ -3,10 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data;
 
 import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
@@ -26,7 +23,7 @@ public final class DataStructure implements IData, IModelData, ITextData, IRecom
     private final Map<String, IModelState> modelStates;
 
     private ITextState textState;
-    private Map<Metamodel, IRecommendationState> recommendationStates = new HashMap<>();
+    private Map<Metamodel, IRecommendationState> recommendationStates = new EnumMap<>(Metamodel.class);
     private Map<String, IConnectionState> connectionStates = new HashMap<>();
     private Map<String, IInconsistencyState> inconsistencyStates = new HashMap<>();
 
