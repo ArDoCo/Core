@@ -218,6 +218,7 @@
           <!-- define a language-specific format -->
           <java>
             <eclipse>
+              <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
             </eclipse>
 
@@ -226,6 +227,7 @@
             </importOrder>
             <removeUnusedImports></removeUnusedImports>
             <licenseHeader>
+              <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/license-header</file>
             </licenseHeader>
           </java>
