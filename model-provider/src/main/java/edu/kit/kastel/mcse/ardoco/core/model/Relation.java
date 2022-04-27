@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
  *
  * @author Sophie
  */
-public class Relation implements IModelRelation {
+class Relation implements IModelRelation {
 
     private final MutableList<IModelInstance> instances;
     private final String type;

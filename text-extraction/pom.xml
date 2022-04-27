@@ -16,16 +16,11 @@
   <dependencies>
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>data-structures</artifactId>
+      <artifactId>common</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kohsuke.metainf-services</groupId>
-      <artifactId>metainf-services</artifactId>
-      <optional>true</optional>
+      <groupId>edu.kit.kastel.informalin</groupId>
+      <artifactId>configuration</artifactId>
     </dependency>
   </dependencies>
 </project>

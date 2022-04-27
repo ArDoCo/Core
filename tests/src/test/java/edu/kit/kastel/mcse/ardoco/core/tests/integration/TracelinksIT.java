@@ -9,14 +9,14 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
@@ -30,7 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProje
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 
 class TracelinksIT {
-    private static Logger logger = null;
+    private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
@@ -42,12 +42,6 @@ class TracelinksIT {
     private File inputModel;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
-
-    @BeforeAll
-    public static void beforeAll() {
-        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
-        logger = LogManager.getLogger(TracelinksIT.class);
-    }
 
     @AfterAll
     public static void afterAll() throws IOException {
