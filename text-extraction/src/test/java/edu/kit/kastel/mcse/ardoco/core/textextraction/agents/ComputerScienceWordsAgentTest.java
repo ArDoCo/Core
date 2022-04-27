@@ -22,19 +22,19 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
-public class ComputerScienceWordsAgentTest implements IClaimant {
+class ComputerScienceWordsAgentTest implements IClaimant {
     private ComputerScienceWordsAgent agent;
     private ImmutableList<String> data;
     private double modifier;
 
     @BeforeEach
-    public void setup() throws NoSuchFieldException, IllegalAccessException {
+    void setup() throws NoSuchFieldException, IllegalAccessException {
         this.agent = new ComputerScienceWordsAgent();
         setData();
     }
 
     @Test
-    public void testSetProbability() {
+    void testSetProbability() {
 
         var validWord = wordToListOfIWord(data.get(0));
         var nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),

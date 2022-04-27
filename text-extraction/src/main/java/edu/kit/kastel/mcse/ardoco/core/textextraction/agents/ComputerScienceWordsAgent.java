@@ -170,7 +170,6 @@ public class ComputerScienceWordsAgent extends TextAgent {
                 ObjectMapper oom = new ObjectMapper();
                 tree = oom.readTree(data);
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
                 throw new IllegalStateException(e);
             }
 
@@ -193,7 +192,6 @@ public class ComputerScienceWordsAgent extends TextAgent {
             words = oom.readValue(data, new TypeReference<List<String>>() {
             });
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
             throw new IllegalStateException(e);
         }
 
@@ -214,7 +212,6 @@ public class ComputerScienceWordsAgent extends TextAgent {
             words = oom.readValue(data, new TypeReference<List<String>>() {
             });
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
             throw new IllegalStateException(e);
         }
 
