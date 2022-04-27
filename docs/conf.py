@@ -59,4 +59,5 @@ html_title = " "
 html_theme_options = {
     "light_logo": "ArDoCo-light.png",
     "dark_logo": "ArDoCo-dark.png",
+    "navigation_with_keys": True,
 }
