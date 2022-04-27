@@ -9,6 +9,7 @@ import java.util.Set;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
@@ -37,7 +38,7 @@ public class InstanceLink implements IInstanceLink {
     private InstanceLink(IRecommendedInstance textualInstance, IModelInstance modelInstance) {
         this.textualInstance = textualInstance;
         this.modelInstance = modelInstance;
-        this.probability = new Confidence(Confidence.ConfidenceAggregator.AVERAGE);
+        this.probability = new Confidence(AggregationFunctions.AVERAGE);
     }
 
     /**
