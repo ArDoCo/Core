@@ -1,19 +1,18 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
+import edu.kit.kastel.informalin.framework.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.common.util.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
@@ -39,6 +38,8 @@ public class NounMapping implements INounMapping {
 
     private Map<MappingKind, Confidence> distribution;
 
+    private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
+
     private boolean hasPhrase = false;
 
     /**
@@ -59,7 +60,7 @@ public class NounMapping implements INounMapping {
         Objects.requireNonNull(claimant);
 
         distribution = new EnumMap<>(MappingKind.class);
-        distribution.put(kind, new Confidence(claimant, probability, Confidence.ConfidenceAggregator.AVERAGE));
+        distribution.put(kind, new Confidence(claimant, probability, DEFAULT_AGGREGATOR));
 
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
@@ -76,8 +77,8 @@ public class NounMapping implements INounMapping {
 
     private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
         this.distribution = new EnumMap<>(distribution);
-        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
-        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(Confidence.ConfidenceAggregator.AVERAGE));
+        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
+        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
     }
 
     public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IClaimant claimant, double probability) {
@@ -341,8 +342,7 @@ public class NounMapping implements INounMapping {
         Map<MappingKind, Confidence> newDistribution = new EnumMap<>(MappingKind.class);
 
         for (MappingKind mk : MappingKind.values()) {
-            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), Confidence.ConfidenceAggregator.AVERAGE,
-                    Confidence.ConfidenceAggregator.MAX));
+            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), DEFAULT_AGGREGATOR, AggregationFunctions.MAX));
         }
 
         var newSurfaceForms = Lists.mutable.ofAll(surfaceForms);

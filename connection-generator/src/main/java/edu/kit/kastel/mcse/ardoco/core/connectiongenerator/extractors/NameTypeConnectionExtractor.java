@@ -7,9 +7,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
@@ -75,7 +75,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      *
      * @param textExtractionState text extraction state
      * @param word                the current word
-     * @param modelState
+     * @param modelState          the current model state
+     * @param recommendationState the current recommendation state
      */
     private void checkForNameAfterType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
@@ -158,8 +159,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
             ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState) {
         var nounMappingsByCurrentWord = textExtractionState.getNounMappingsByWord(currentWord);
         if (instance != null && nounMappingsByCurrentWord != null) {
-            var nmappings = nounMappingsByCurrentWord;
-            for (INounMapping nmapping : nmappings) {
+            for (INounMapping nmapping : nounMappingsByCurrentWord) {
                 var name = instance.getFullName();
                 var type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);

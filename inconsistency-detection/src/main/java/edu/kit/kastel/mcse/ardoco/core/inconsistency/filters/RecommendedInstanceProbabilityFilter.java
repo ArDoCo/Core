@@ -9,26 +9,45 @@ import org.eclipse.collections.api.factory.SortedBags;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
+/**
+ * Filters {@link IRecommendedInstance}s that have low probabilities of being an entity. This can either be because the
+ * probability of being a {@link IRecommendedInstance} is low or because the probability of having a mapping for a name
+ * and/or type is low.
+ *
+ * @author Jan Keim
+ *
+ */
 public class RecommendedInstanceProbabilityFilter extends AbstractFilter<InconsistencyAgentData> {
-    private static final double THRESHOLD_NAME_AND_TYPE_PROBABILITY = 0.3;
-    private static final double THRESHOLD_TYPE_OR_TYPE_PROBABILITY = 0.6;
+    @Configurable
+    private double thresholdNameAndTypeProbability = 0.3;
+    @Configurable
+    private double thresholdNameOrTypeProbability = 0.8;
 
-    private double threshold = 0.4d;
+    @Configurable
+    private double threshold = 0.6d;
+
+    @Configurable
+    private boolean dynamicThreshold = true;
+    @Configurable
+    private double dynamicThresholdFactor = 0.7;
 
     private MutableSortedBag<Double> probabilities = SortedBags.mutable.empty();
+
+    public RecommendedInstanceProbabilityFilter() {
+        // empty
+    }
 
     @Override
     public void exec(InconsistencyAgentData data) {
         for (var model : data.getModelIds()) {
             var inconsistencyState = data.getInconsistencyState(model);
-            var recommendationState = data.getRecommendationState(data.getModelState(model).getMetamodel());
-            inconsistencyState.addRecommendedInstances(recommendationState.getRecommendedInstances().toList());
             filterRecommendedInstances(inconsistencyState);
         }
     }
@@ -40,9 +59,12 @@ public class RecommendedInstanceProbabilityFilter extends AbstractFilter<Inconsi
         var filteredRecommendedInstances = Lists.mutable.<IRecommendedInstance> empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
-        if (logger.isDebugEnabled()) {
-            analyzeProbabilitiesofRecommendedInstances(recommendedInstances);
+        if (dynamicThreshold) {
+            var highestProbability = analyzeProbabilitiesofRecommendedInstances(recommendedInstances);
+            this.threshold = dynamicThresholdFactor * highestProbability;
         }
+
+        logger.debug("Threshold for RecommendedInstances: {}", threshold);
 
         for (var recommendedInstance : recommendedInstances) {
             if (performHeuristicsAndChecks(recommendedInstance)) {
@@ -98,8 +120,8 @@ public class RecommendedInstanceProbabilityFilter extends AbstractFilter<Inconsi
         var highestTypeProbability = getHighestTypeProbability(recommendedInstance.getTypeMappings());
         var highestNameProbability = getHighestNameProbability(recommendedInstance.getTypeMappings());
 
-        return highestTypeProbability > THRESHOLD_NAME_AND_TYPE_PROBABILITY && highestNameProbability > THRESHOLD_NAME_AND_TYPE_PROBABILITY
-                || highestTypeProbability > THRESHOLD_TYPE_OR_TYPE_PROBABILITY || highestNameProbability > THRESHOLD_TYPE_OR_TYPE_PROBABILITY;
+        return highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability
+                || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
 
     }
 

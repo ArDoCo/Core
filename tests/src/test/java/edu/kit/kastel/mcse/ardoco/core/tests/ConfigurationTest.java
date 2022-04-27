@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
-import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
+import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 
 /**
  * This test class deals with the configurations.
@@ -36,8 +36,9 @@ class ConfigurationTest {
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();
-        for (var clazz : classesThatMayBeConfigured)
+        for (var clazz : classesThatMayBeConfigured) {
             processConfigurationOfClass(configs, clazz);
+        }
         Assertions.assertFalse(configs.isEmpty());
 
         System.out.println("-".repeat(50));
@@ -53,7 +54,7 @@ class ConfigurationTest {
         processConfigurationOfClass(configs, TestConfigurable.class);
         Assertions.assertEquals(5, configs.size());
 
-        TestConfigurable t = new TestConfigurable();
+        var t = new TestConfigurable();
 
         Assertions.assertEquals(24, t.testInt);
         Assertions.assertEquals(24, t.testIntNo);
@@ -67,20 +68,20 @@ class ConfigurationTest {
         Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
         //@formatter:off
-		configs = Map.of(//
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDoubleNo", "48", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBool", "false", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBoolNo", "false", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testList", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testListNo", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
-                TestConfigurable.class.getSimpleName()+AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR+"testEnum", TestConfigurable.MyEnum.C.name(), //
-                TestConfigurable.class.getSimpleName()+AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR+"testEnumNo", TestConfigurable.MyEnum.C.name()
+        configs = Map.of(//
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDoubleNo", "48", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBool", "false", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBoolNo", "false", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testList", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testListNo", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnum", TestConfigurable.MyEnum.C.name(), //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnumNo", TestConfigurable.MyEnum.C.name()
 
-		);
-		//@formatter:on
+        );
+        //@formatter:on
 
         t.applyConfiguration(configs);
         Assertions.assertEquals(42, t.testInt);
@@ -118,27 +119,35 @@ class ConfigurationTest {
     }
 
     private String getValue(Object rawValue) {
-        if (rawValue instanceof Integer i)
+        if (rawValue instanceof Integer i) {
             return Integer.toString(i);
-        if (rawValue instanceof Double d)
+        }
+        if (rawValue instanceof Double d) {
             return String.format(Locale.ENGLISH, "%f", d);
-        if (rawValue instanceof Boolean b)
+        }
+        if (rawValue instanceof Boolean b) {
             return String.valueOf(b);
-        if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String))
+        }
+        if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String)) {
             return s.stream().map(Object::toString).collect(Collectors.joining(AbstractConfigurable.LIST_SEPARATOR));
-        if (rawValue instanceof Enum<?> e)
+        }
+        if (rawValue instanceof Enum<?> e) {
             return e.name();
+        }
 
         throw new IllegalArgumentException("RawValue has no type that may be transformed to an Configuration" + rawValue + "[" + rawValue.getClass() + "]");
+
     }
 
     private void findImportantFields(Class<?> clazz, List<Field> fields) {
-        if (clazz == Object.class || clazz == AbstractConfigurable.class)
+        if (clazz == Object.class || clazz == AbstractConfigurable.class) {
             return;
+        }
 
         for (var field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Configurable.class))
+            if (field.isAnnotationPresent(Configurable.class)) {
                 fields.add(field);
+            }
         }
         findImportantFields(clazz.getSuperclass(), fields);
     }

@@ -16,21 +16,16 @@
   <dependencies>
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>data-structures</artifactId>
+      <artifactId>common</artifactId>
     </dependency>
-    <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>util</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>edu.kit.kastel.informalin</groupId>
-      <artifactId>ontology-connector</artifactId>
+      <artifactId>models</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <type>pom</type>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

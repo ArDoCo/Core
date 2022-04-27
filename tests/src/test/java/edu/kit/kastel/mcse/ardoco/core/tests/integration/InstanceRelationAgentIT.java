@@ -11,11 +11,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -23,34 +25,24 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmOntologyModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
+@Disabled("Disabled as it is not used for now")
 class InstanceRelationAgentIT {
 
     private static final String TEXT = "src/test/resources/benchmark/mediastore/mediastore.txt";
-    private static final String MODEL = "src/test/resources/benchmark/mediastore/mediastore.owl";
+    private static final String MODEL = "src/test/resources/benchmark/mediastore/original_model/ms.repository";
 
-    @BeforeEach
-    void beforeEach() {
-    }
-
-    @AfterEach
-    void afterEach() {
-    }
-
-    @Disabled("Disabled as it is not used for now")
     @Test
     @DisplayName("Test execution of InstanceRelationAgent")
-    void instanceRelationIT() throws IOException {
-        var inputText = ensureFile(TEXT, false);
-        var inputModel = ensureFile(MODEL, false);
-
-        var ontoConnector = new OntologyConnector(inputModel.getAbsolutePath());
+    void instanceRelationIT() throws IOException, ReflectiveOperationException {
+        var inputText = ensureFile(TEXT);
+        var inputModel = ensureFile(MODEL);
 
         ITextConnector textConnector;
         try {
@@ -61,8 +53,8 @@ class InstanceRelationAgentIT {
         }
         var annotatedText = textConnector.getAnnotatedText();
 
-        IModelConnector pcmModel = new PcmOntologyModelConnector(ontoConnector);
-        ModelProvider modelExtractor = new ModelProvider(pcmModel);
+        IModelConnector pcmModel = new PcmXMLModelConnector(new File(inputModel.getAbsolutePath()));
+        var modelExtractor = new ModelProvider(pcmModel);
         var modelState = modelExtractor.execute(Map.of());
         var extractorData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), modelState));
 
@@ -108,16 +100,15 @@ class InstanceRelationAgentIT {
     }
 
     /**
-     * Ensure that a file exists (or create if allowed by parameter).
+     * Ensure that a file exists.
      *
-     * @param path   the path to the file
-     * @param create indicates whether creation is allowed
+     * @param path the path to the file
      * @return the file
      * @throws IOException if something went wrong
      */
-    private static File ensureFile(String path, boolean create) throws IOException {
+    private static File ensureFile(String path) throws IOException {
         var file = new File(path);
-        if (file.exists() || create && file.createNewFile()) {
+        if (file.exists()) {
             return file;
         }
         // File not available

@@ -17,11 +17,11 @@
   <dependencies>
     <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>data-structures</artifactId>
+      <artifactId>common</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.kit.kastel.informalin</groupId>
-      <artifactId>ontology-connector</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <!-- PARSE / INDIRECT -->
