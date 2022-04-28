@@ -151,7 +151,7 @@ public final class SimilarityUtils {
         return areWordsSimilar(word1, word2, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
     }
 
-    private static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
+    public static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
         if (original == null || word2test == null) {
             return false;
         }
