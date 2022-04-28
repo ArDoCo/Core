@@ -2,3 +2,5 @@
 venv/
 _build/
 *.iml
+!bin
+!bin/plantuml.jar
