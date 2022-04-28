@@ -1,18 +1,27 @@
 Command Line Interface
 =============
 
-.. warning:: This site is deprecated
+`ArDoCo Core <https://github.com/ArDoCo/Core>`_ contains a CLI that supports the execution of ArDoCo.
 
-The `core of ArDoCo <https://github.com/ArDoCo/Core>`_ contains a CLI that currently supports to find trace links between :abbr:`PCM (Palladio Component Model)`, an architectural model, and textual software architecture documentation.
-The model can also contain a (java) code model that you can insert using the `CodeModelExtractors <https://github.com/ArDoCo/CodeModelExtractors>`_.
+It is necessary to specify an input model as well as a textual documentation.
+Usually, our model is an architectural model.
+However, the model can also contain a (Java) code model that you can insert using the `CodeModelExtractors <https://github.com/ArDoCo/CodeModelExtractors>`_.
 
-The `CLI <https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoCLI.java>`_ is part of the `pipeline module <https://github.com/ArDoCo/Core/tree/main/pipeline>`_ of this project.
+All results (trace links, inconsistencies, etc. between the input model and documentation) are written to the specified output location.
 
-.. note:: In previous versions, we imported models as ontologies converted by `Ecore2OWL <https://github.com/kit-sdq/Ecore2OWL>`_.
+The `CLI <https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoCLI.java>`_ is part of the `pipeline module <https://github.com/ArDoCo/Core/tree/main/pipeline>`_ of ArDoCo.
 
+.. note::
+
+    In previous versions, we imported models as ontologies converted by `Ecore2OWL <https://github.com/kit-sdq/Ecore2OWL>`_.
 
 Usage
 ----------
+
+If not changed, the :doc:`standard configuration <standardConfiguration>` will be used.
+
+CLI Parameters
+^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -26,3 +35,4 @@ Usage
         -o,--out <arg>                   path to the output directory
         -p,--provided <arg>              path to a JSON Text (already preprocessed)
         -t,--text <arg>                  path to the text file
+

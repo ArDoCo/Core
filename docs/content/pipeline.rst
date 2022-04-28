@@ -10,6 +10,7 @@ These parts can be seen as a pipeline:
 .. image:: images/pipeline2.png
     :alt: center
 
+
 The image shows the idea and theoretical processing of the approach.
 Based on the architecture documentation and the architecture model on the left side links between them should be found.
 Therefore, the elements of both artifacts have to be recognized and extracted.
@@ -59,7 +60,7 @@ The default implementation of these theoretical steps has more dependencies:
 Stages
 -------
 
-Text Connector
+Text Preprocessing
 ^^^^^^^^^^^^
 The first step on the informal artifact, is the preprocessing of the architecture documentation (yellow).
 The architecture documentation is given via a .txt file in resources and has to be entered in the configuration file.
@@ -70,14 +71,23 @@ Notice, that some agents of the project are dependent on some preprocessing step
 The results of the preprocessing are stored as an annotated text.
 This text is then used as base for the rest of the approach (except for the model extractor (blue)).
 
-Text Extractor
+Text Extraction
 ^^^^^^^^
 The text extractor (orange) is dependent on the annotated text and is equivalent to the information extraction of the theoretical pipeline.
 In this step, possible objects, subjects, and relations are searched. This project applies the principle of thinning out unnecessary information.
 Thus, in this stage, it is more important to extract information with a high recall than a high precision.
 The results of this stage are stored in the text state.
 
-Recommendation Generator
+
+Model Extraction
+^^^^^^^^^^
+The model extractor (blue) is equal to the element extraction of the theoretical pipeline.
+Currently, the only available model connector is the hard coded model connector.
+The model information can be provided via a helper class (like a model of TEAMMATES).
+The hard coded model is fetched from the model extractor (via the connector) and loaded in the model state.
+Since the formal artifact (the model) does not need to be preprocessed a separation of the connector and extractor is not necessary (in contrast to the informal side of the approach).
+
+Recommendation Generation
 ^^^^^^^^^^^^^^
 The goal of the recommendation generator (red) is to build potential elements that could occure in the model, based on the extracted textual information.
 The properties of the elements depend on the underlying model (respectively the properties of the elements in this model).
@@ -86,15 +96,7 @@ The elements can be objects (e.g. UML classes), as well as relations between obj
 The recommendation generator represents the element generation of the theoretical pipline.
 Its results are stored in the recommendation state.
 
-Model Extractor
-^^^^^^^^^^
-The model extractor (blue) is equal to the element extraction of the theoretical pipeline.
-Currently, the only available model connector is the hard coded model connector.
-The model information can be provided via a helper class (like a model of TEAMMATES).
-The hard coded model is fetched from the model extractor (via the connector) and loaded in the model state.
-Since the formal artifact (the model) does not need to be preprocessed a separation of the connector and extractor is not necessary (in contrast to the informal side of the approach).
-
-Connection Generator
+Connection Generation
 ^^^^^^^^^^
 The connection generator (green) is the last step of the approach and connects the potential, from the recommendation generator extracted elements to the elements of the given model.
 Therefore, links are created between elements found in the text and elements of the model.

@@ -2,10 +2,9 @@
 Save Actions
 =========
 
-.. warning:: This site is deprecated
+Go to your Eclipse Workspace folder and open the file ``.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs``.
 
-Go to your Eclipse Workspace folder and change the file ``.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs``.
-There exchange all the ``sp_cleanup.`` properties to the following:
+There, exchange all the ``sp_cleanup.`` properties to the following:
 
 
 .. code-block::

@@ -1,24 +1,14 @@
-.. ArDoCo documentation master file, created by
-   sphinx-quickstart on Thu Apr 21 19:49:05 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-
-
-
 ArDoCo
 ======
 
-.. warning:: This documentation is currently built up. `Here <https://github.com/ArDoCo/Core/wiki>`_ you find the deprecated documentation.
-
-
-ArDoCo is a framework to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies).
+ArDoCo (Architecture Documentation Consistency) is a framework to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies).
 An element can be any representable item of the model, like a component or a relation.
 To do so, ArDoCo first creates trace links and then makes use of them and other information to identify inconsistencies.
 
 You can find `ArDoCo on GitHub <https://github.com/ArDoCo>`_.
 
 Before contributing, please read the :doc:`quickstart guide </content/quickstart>`.
+
 
 Case Studies & Benchmarks
 ---------
