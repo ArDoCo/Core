@@ -1,0 +1,393 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Agents" href="../agents/" /><link rel="prev" title="Save Actions" href="../quickstart/saveActions/" />
+
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+        <title>Pipeline - </title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../"><div class="brand"> </div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/ArDoCo-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/ArDoCo-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text"> </span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../quickstart/">Quickstart</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart/cli/">Command Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart/standardConfiguration/">Standard Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart/saveActions/">Save Actions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Pipeline</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../agents/">Agents</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../agents/modelExtractor/">Model Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../agents/textAgent/">Text Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../agents/recommendationAgent/">Recommendation Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../agents/connectionAgent/">Connection Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../agents/inconsistencyAgent/">Inconstistency Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datastructures/">Agent Data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../data/textData/">Text Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/textextractionData/">Extracted Text Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/modelData/">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/recommendationData/">Recommendation Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/connectionData/">Connection Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/inconsistencyData/">Inconsistency Data</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="pipeline">
+<h1>Pipeline<a class="headerlink" href="#pipeline" title="Permalink to this headline">#</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This site is deprecated</p>
+</div>
+<p>The project is divided into multiple parts.
+These parts can be seen as a pipeline:</p>
+<img alt="center" src="../../_images/pipeline2.png"/>
+<p>The image shows the idea and theoretical processing of the approach.
+Based on the architecture documentation and the architecture model on the left side links between them should be found.
+Therefore, the elements of both artifacts have to be recognized and extracted.
+Obviously, this is much more complicated in natural language than in a formal model.
+On the side of the formal model only the elements have to be extracted (blue).
+On the other side, the process of extracting elements is divided in three steps:
+The preprocessing (yellow), the extraction of information, and the generation of elements.
+The goal of the preprocessing is to analyse the text and annotate additional language information to it.
+These could be dependencies, name-tags, or found relations between words.
+In the next step, the information extraction (orange), all semantically information should be collected that could help to identify elements and relations between them.
+This includes for example potential types and names of model elements.
+Ideally, the element generation (red) can combine these information to build elements.
+Since these textual identified elements should be compared and linked to model elements, they should have a similar structure as the model elements (e.g. name, type).</p>
+<p>In this project this pipeline is built out of multiple maven modules.
+In the following, the highest level will be explained.</p>
+<img alt="center" src="../../_images/ModelArchitecture-ModulesOverview.png"/>
+<p>The agile design enables to rearrange or replace each step of the pipeline.
+Thereby, the pipeline (or parts of it) could be reused in other ways.
+The Pipeline is located in its own module.
+To process the input artifacts to an internal representation, the pipeline requires the TextProviders and ModelProviders modules.
+These models are subdivided in submodules, that enable to exchange or extend the present providers.
+Thereby, both modules contain a module that defines the interface, as well as one with an examplary implementation.
+The other steps of the pipeline are internally called Modules.
+They can be arranged freely in the pipeline (regarding the inter-dependencies).
+The modules module is subdivided in multiple modules respective their use case.
+Every module requires the DataStructures module, since they work on the structures defined in them.
+Since the modules are internally, substructered in the different stages of the pipeline, the datastructures provides different structures for each stage.
+Through the decapsulation, models are freely combinable with structures.
+For reduced imports the datastructures module is divided into abstract definitions and implementations (for example default implementations).
+Internally of modules, AgentsAndExtractors are executed.
+Every agent has a specific goal (e.g. the detection of named entities).
+To fulfill this task an agent can have multiple extractors.
+Extractors run over the annotated text and extract needed information for the current stage.
+The difference between agents and extractors will be explained in more detail in the further wiki entries.</p>
+<p>The default pipeline consists of multiple inter-dependent steps (as you can see in the first image).
+The default implementation of these theoretical steps has more dependencies:</p>
+<a class="reference internal image-reference" href="../../_images/dependencies2.png"><img alt="center" src="../../_images/dependencies2.png" style="width: 400px;"/></a>
+<div class="section" id="stages">
+<h2>Stages<a class="headerlink" href="#stages" title="Permalink to this headline">#</a></h2>
+<div class="section" id="text-preprocessing">
+<h3>Text Preprocessing<a class="headerlink" href="#text-preprocessing" title="Permalink to this headline">#</a></h3>
+<p>The first step on the informal artifact, is the preprocessing of the architecture documentation (yellow).
+The architecture documentation is given via a .txt file in resources and has to be entered in the configuration file.
+It should not contain any images, tables, or listings.
+The approach is started via the Pipeline.
+There, INDIRECT runs over the text and preprocesses it.
+Notice, that some agents of the project are dependent on some preprocessing steps!
+The results of the preprocessing are stored as an annotated text.
+This text is then used as base for the rest of the approach (except for the model extractor (blue)).</p>
+</div>
+<div class="section" id="text-extraction">
+<h3>Text Extraction<a class="headerlink" href="#text-extraction" title="Permalink to this headline">#</a></h3>
+<p>The text extractor (orange) is dependent on the annotated text and is equivalent to the information extraction of the theoretical pipeline.
+In this step, possible objects, subjects, and relations are searched. This project applies the principle of thinning out unnecessary information.
+Thus, in this stage, it is more important to extract information with a high recall than a high precision.
+The results of this stage are stored in the text state.</p>
+</div>
+<div class="section" id="model-extraction">
+<h3>Model Extraction<a class="headerlink" href="#model-extraction" title="Permalink to this headline">#</a></h3>
+<p>The model extractor (blue) is equal to the element extraction of the theoretical pipeline.
+Currently, the only available model connector is the hard coded model connector.
+The model information can be provided via a helper class (like a model of TEAMMATES).
+The hard coded model is fetched from the model extractor (via the connector) and loaded in the model state.
+Since the formal artifact (the model) does not need to be preprocessed a separation of the connector and extractor is not necessary (in contrast to the informal side of the approach).</p>
+</div>
+<div class="section" id="recommendation-generation">
+<h3>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this headline">#</a></h3>
+<p>The goal of the recommendation generator (red) is to build potential elements that could occure in the model, based on the extracted textual information.
+The properties of the elements depend on the underlying model (respectively the properties of the elements in this model).
+Thereby, the recommendation generator is dependent on some general model knowledge.
+The elements can be objects (e.g. UML classes), as well as relations between objects.
+The recommendation generator represents the element generation of the theoretical pipline.
+Its results are stored in the recommendation state.</p>
+</div>
+<div class="section" id="connection-generation">
+<h3>Connection Generation<a class="headerlink" href="#connection-generation" title="Permalink to this headline">#</a></h3>
+<p>The connection generator (green) is the last step of the approach and connects the potential, from the recommendation generator extracted elements to the elements of the given model.
+Therefore, links are created between elements found in the text and elements of the model.
+The links are stored in the connection state.
+This step is equal to the link generation of the theoretical pipeline.</p>
+</div>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../agents/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Agents</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../quickstart/saveActions/">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Save Actions</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Sophie Corallo, Jan Keim, Dominik Fuchß
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Pipeline</a><ul>
+<li><a class="reference internal" href="#stages">Stages</a><ul>
+<li><a class="reference internal" href="#text-preprocessing">Text Preprocessing</a></li>
+<li><a class="reference internal" href="#text-extraction">Text Extraction</a></li>
+<li><a class="reference internal" href="#model-extraction">Model Extraction</a></li>
+<li><a class="reference internal" href="#recommendation-generation">Recommendation Generation</a></li>
+<li><a class="reference internal" href="#connection-generation">Connection Generation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    </body>
+</html>
