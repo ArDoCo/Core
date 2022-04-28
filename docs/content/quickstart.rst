@@ -35,7 +35,18 @@ Please use the provided `formatter <https://github.com/ArDoCo/Core/blob/main/for
 
 Additionally, make use of the spotless-plugin for maven to format your code. You can run it via ``mvn spotless:apply`` (`more info <https://github.com/diffplug/spotless/tree/main/plugin-maven>`_).
 
+Documentation
+------
 
+Please update the documentation.
+
+This wiki is written in restructured Text. Here, you find more `information and guidelines <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_.
+
+We use `PlantUML <https://plantuml.com/de/>`_ for the diagrams.
+This is a good `installation guide <https://sphinxcontrib-needs.readthedocs.io/en/latest/installation.html>`_.
+`This <https://chiplicity.readthedocs.io/en/latest/Using_Sphinx/UsingGraphicsAndDiagramsInSphinx.html>`_ is another helpful website with many examples.
+
+More information about the used theme are available on the `website of Furo <https://pradyunsg.me/furo/>`_.
 
 
 .. toctree::
