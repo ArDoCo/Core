@@ -4,7 +4,6 @@ Pipeline
 .. warning:: This site is deprecated
 
 
-
 The project is divided into multiple parts.
 These parts can be seen as a pipeline:
 
