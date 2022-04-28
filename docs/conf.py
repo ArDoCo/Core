@@ -16,6 +16,7 @@
 
 
 # -- Project information -----------------------------------------------------
+import os
 
 project = 'ArDoCo'
 copyright = '2022, Sophie Corallo, Jan Keim, Dominik Fuchß'
@@ -30,6 +31,8 @@ release = '0.3'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+'sphinxcontrib.needs',
+'sphinxcontrib.plantuml'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,3 +64,12 @@ html_theme_options = {
     "dark_logo": "ArDoCo-dark.png",
     "navigation_with_keys": True,
 }
+
+
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+if on_rtd:
+    plantuml = 'java -Djava.awt.headless=true -jar /usr/share/plantuml/plantuml.jar'
+else:
+    plantuml = 'java -jar %s' % os.path.join(os.path.dirname(__file__), "utils", "plantuml.jar")
+
+plantuml_output_format = 'png'
