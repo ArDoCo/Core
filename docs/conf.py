@@ -64,8 +64,8 @@ html_static_path = ['_static']
 html_title = " "
 
 html_theme_options = {
-    "light_logo": "ArDoCo-light.png",
-    "dark_logo": "ArDoCo-dark.png",
+    "light_logo": "ArDoCo-light.svg",
+    "dark_logo": "ArDoCo-dark.svg",
     "navigation_with_keys": True,
 }
 
