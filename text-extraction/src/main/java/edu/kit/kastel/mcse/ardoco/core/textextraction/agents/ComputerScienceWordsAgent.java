@@ -186,18 +186,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
         int before = result.size();
         logger.debug("Loading words from ISO24765");
-        List<String> words;
-        try (InputStream data = this.getClass().getResourceAsStream("/pdfs/24765-2017.pdf.words.txt")) {
-            ObjectMapper oom = new ObjectMapper();
-            words = oom.readValue(data, new TypeReference<List<String>>() {
-            });
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
+        List<String> words = loadWordsFromResource("/pdfs/24765-2017.pdf.words.txt");
         result.addAll(words);
         logger.debug("Found {} words by adding ISO24765", result.size() - before);
-
     }
 
     private void loadStandardGlossary(Set<String> result) {
@@ -206,17 +197,19 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
         int before = result.size();
         logger.debug("Loading words from STANDARD_GLOSSARY");
-        List<String> words;
-        try (InputStream data = this.getClass().getResourceAsStream("/pdfs/Standard_glossary_of_terms_used_in_Software_Engineering_1.0.pdf.words.txt")) {
+        List<String> words = loadWordsFromResource("/pdfs/Standard_glossary_of_terms_used_in_Software_Engineering_1.0.pdf.words.txt");
+        result.addAll(words);
+        logger.debug("Found {} words by adding STANDARD_GLOSSARY", result.size() - before);
+    }
+
+    private List<String> loadWordsFromResource(String path) {
+        try (InputStream data = this.getClass().getResourceAsStream(path)) {
             ObjectMapper oom = new ObjectMapper();
-            words = oom.readValue(data, new TypeReference<List<String>>() {
+            return oom.readValue(data, new TypeReference<List<String>>() {
             });
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-
-        result.addAll(words);
-        logger.debug("Found {} words by adding STANDARD_GLOSSARY", result.size() - before);
     }
 
     @Override
