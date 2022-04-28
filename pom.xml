@@ -42,8 +42,8 @@
     <project.source.encoding>UTF-8</project.source.encoding>
     <eclipse-collections.version>11.0.0</eclipse-collections.version>
     <spotless.version>2.22.0</spotless.version>
-    <error-prone.version>2.10.0</error-prone.version>
     <jackson.version>2.13.2</jackson.version>
+    <error-prone.version>2.10.0</error-prone.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
@@ -96,6 +96,21 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
