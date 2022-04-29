@@ -1,5 +1,5 @@
 
-Agents
+Stages
 ======
 
 .. warning:: This site is deprecated
@@ -46,8 +46,9 @@ The dependency type encodes the states on which an agent is dependent.
 .. toctree::
    :hidden:
 
-   agents/modelExtractor
-   agents/textAgent
-   agents/recommendationAgent
-   agents/connectionAgent
-   agents/inconsistencyAgent
+   stages/textPreprocessing
+   stages/textExtraction
+   stages/modelExtraction
+   stages/recommendationGeneration
+   stages/connectionGeneration
+   stages/inconsistencyGeneration

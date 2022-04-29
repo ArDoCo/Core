@@ -1,5 +1,5 @@
-Agent Data
-====
+Data Structures
+=================
 
 .. toctree::
    :hidden:
