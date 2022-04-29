@@ -1,19 +1,19 @@
-Text Agent
-========
+Text Extractor
+=================
 
 
 .. warning:: This site is deprecated
 
 
 Preprocessing
-------------
+---------------
 As described in the `Overview <https://github.com/ArDoCo/Core/wiki/Overview>`_ the goal of the Text Extraction is to extract all possibly relevant information from the text.
 The text is preprocessed by INDIRECT.
 Further analysis depends on some linguistic information (e.g. dependencies).
 To add this information to the PARSE graph, the corresponding INDIRECT agents have to be executed in the preprocessing.
 
 Text Extraction Agent
-------------
+------------------------
 The interface for the text extraction is the `Text Extraction Agent <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/TextExtractionAgent.java>`_.
 The agent has a state and multiple analyzers/ solvers.
 The analyzer/ solvers and their parameters can be specified in the `configuration <https://github.com/ArDoCo/Core/blob/main/src/main/resources/config.properties>`_.
@@ -29,10 +29,10 @@ Thereby, the results of this step can be corrected by further analysis in later 
 
 
 Analyzers
---------
+-----------
 
 NounAnalyzer
-^^^^^^^^
+^^^^^^^^^^^^^^^^
 `Noun Analyzer <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/NounAnalyzer.java>`_:
 The goal of the Noun Analyzer is to find and extract the nouns.
 For this, it uses the POS (Part Of Speech) tags of the PARSE graph.
@@ -49,7 +49,7 @@ For this, the edges have to be created first by the Dependency Parser of INDIREC
 
 
 Separated Names Analyzer
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Separated Names Analyzer <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/SeparatedNamesAnalyzer.java>`_:
 The separated names analyzer identifies nodes containing separators.
 Then it adds it as noun mapping of kind name to the extraction state.
@@ -58,7 +58,7 @@ Then, the method adds each part is separately to the text extraction state.
 The separators for that process are stored in a configuration file.
 
 Article-Type-Name Analyzer
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Article-Type-Name Analyzer <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/ArticleTypeNameAnalyzer.java>`_:
 This analyzer checks the current node and its surrounding for two specified patterns.
 In both cases the current node has to be previously classified as a nort (or more specific kind).
@@ -75,7 +75,7 @@ For example “The ai component is ...”
 Solvers
 --------
 Multiple Part Solver
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 `Multiple Part Solver <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/solvers/MultiplePartSolver.java>`_:
 This solver identifies terms in the current extraction state.
 

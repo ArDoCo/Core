@@ -1,5 +1,5 @@
 Quickstart
-======
+=============
 
 The ArDoCo-Core is a maven project and can be embedded by using its specs (from the `pom <https://github.com/ArDoCo/Core/blob/main/pom.xml>`_).
 
@@ -9,7 +9,7 @@ Please acknowledge the `code of conduct <https://github.com/ArDoCo/Core/blob/mai
 
 
 Forking the project & submitting pull requests
--------------
+------------------------------------------------
 
 This project uses Sonarcloud to check code quality.
 There are Github Actions that automatically verify the build and generate a Sonarcloud-report.
@@ -29,14 +29,14 @@ Follow the following steps to do so:
 
 
 Formatter
-^^^^^^
+^^^^^^^^^^^^^^
 
 Please use the provided `formatter <https://github.com/ArDoCo/Core/blob/main/formatter.xml>`_ when contributing.
 
 Additionally, make use of the spotless-plugin for maven to format your code. You can run it via ``mvn spotless:apply`` (`more info <https://github.com/diffplug/spotless/tree/main/plugin-maven>`_).
 
 Documentation
-------
+----------------
 
 Please update the documentation.
 

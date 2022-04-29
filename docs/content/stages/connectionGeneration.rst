@@ -1,4 +1,4 @@
-Connection Agent
+Connection Generation
 ===============
 
 .. warning:: This site is deprecated
