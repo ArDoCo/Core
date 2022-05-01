@@ -7,6 +7,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.Fas
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveSqliteDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.NasariMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.BabelNetDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
@@ -49,9 +50,6 @@ public class Evaluation {
 
     public static List<EvalPlan> getPlans() throws IOException, SQLException {
         var plans = new ArrayList<EvalPlan>();
-
-        // TODO:
-        // - Levenshtein
 
         boolean jaroWinkler = false;
         boolean levenshtein = false;
@@ -112,7 +110,12 @@ public class Evaluation {
 
 			    // Levenshtein
 			    if (levenshtein && b == Baseline.FIRST) {
-				    throw new UnsupportedOperationException();
+                    for (int minLength = 0; minLength < 10; minLength++) {
+                        for (int maxDistance = 0; maxDistance < 10; maxDistance++) {
+                            var group = String.format("levenshtein_%sl_%sd", minLength, maxDistance);
+                            plans.add(new EvalPlan(group, b, t, new LevenshteinMeasure(minLength, maxDistance, threshold)));
+                        }
+                    }
 			    }
 
 			    // Ngram
