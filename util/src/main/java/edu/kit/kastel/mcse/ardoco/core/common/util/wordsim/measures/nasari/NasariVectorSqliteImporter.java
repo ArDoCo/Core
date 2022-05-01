@@ -1,0 +1,31 @@
+package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.WordVectorSqliteImporter;
+
+import java.nio.file.Path;
+
+/**
+ * Reads Nasari vectors and imports them into a sqlite database.
+ * The sqlite database must conform to the requirements explained in {@link WordVectorSqliteImporter}.
+ */
+public class NasariVectorSqliteImporter extends WordVectorSqliteImporter {
+
+    private static final int NASARI_VECTORS_DIMENSION = 300;
+
+    public NasariVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension, boolean stem, boolean lowercase, long startLine, long endLine,
+            boolean dryRun) {
+        super(vectorFile, dbFile, dimension, NASARI_VECTORS_DIMENSION, stem, lowercase, startLine, endLine, dryRun);
+    }
+
+    @Override protected String processWord(String word) {
+        word = super.processWord(word);
+
+        // Nasari words look like this: bn:00000003n__.22_Long_Rifle
+        // We only need the id (the part before __)
+
+        word = word.split("__")[0];
+
+        return word;
+    }
+
+}
