@@ -10,18 +10,24 @@ import java.util.Objects;
  */
 public final class MeasureResult {
 
+    public final WordPair wordPair;
     public final WordSimMeasure measure;
     public final boolean accepted;
     public final double score;
 
-    public MeasureResult(WordSimMeasure measure, boolean accepted) {
-        this(measure, accepted, Double.NaN);
+    public MeasureResult(WordPair wordPair, WordSimMeasure measure, boolean accepted) {
+        this(wordPair, measure, accepted, Double.NaN);
     }
 
-    public MeasureResult(WordSimMeasure measure, boolean accepted, double score) {
+    public MeasureResult(WordPair wordPair, WordSimMeasure measure, boolean accepted, double score) {
+        this.wordPair = wordPair;
         this.measure = measure;
         this.accepted = accepted;
         this.score = score;
+    }
+
+    public WordPair wordPair() {
+        return wordPair;
     }
 
     public WordSimMeasure measure() {
