@@ -31,7 +31,7 @@ public class ComparisonStats {
         if (!ENABLED) {
             return;
         }
-        var measureResult = new MeasureResult(measure, accepted, PENDING_SCORE);
+        var measureResult = new MeasureResult(PENDING_WORD_PAIR, measure, accepted, PENDING_SCORE);
         PENDING_MEASURES.add(measureResult);
         PENDING_SCORE = Double.NaN;
     }
