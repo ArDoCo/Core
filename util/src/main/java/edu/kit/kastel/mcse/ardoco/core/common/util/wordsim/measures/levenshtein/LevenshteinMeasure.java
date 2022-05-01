@@ -6,39 +6,86 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
+import java.util.Locale;
+
 /**
  * This word similarity measure uses the levenshtein distance (also sometimes called edit distance) algorithm to
- * calculate word similarity.
+ * calculate word similarity. This measure is configurable through three configuration options:
+ *
+ * <ul>
+ *     <li>
+ *         <b>maxDistance:</b>
+ *         Word pairs with a levenshtein distance above this configuration value will not be considered similar.
+ *         Must be a non-negative integer.
+ *     </li>
+ *     <li>
+ *         <b>minLength:</b>
+ *         If one of the words is shorter than this configured value, an additional condition must be met for the word
+ *         pair to be considered similar. This condition being, that one word must contain the other.
+ *         Must be a non-negative integer.
+ *     </li>
+ *     <li>
+ *         <b>threshold:</b>
+ *         A number between 0 and 1 that serves as a word-dependent distance limit. The levenshtein distance between
+ *         the words must be lower than the threshold multiplied by the length of the shorter word.
+ *     </li>
+ * </ul>
  */
 public class LevenshteinMeasure implements WordSimMeasure {
 
     private final LevenshteinDistance distance = new LevenshteinDistance();
+    private final int minLength;
+    private final int maxDistance;
+    private final double threshold;
 
-    @Override
-    public boolean areWordsSimilar(ComparisonContext ctx) {
-        String original = ctx.firstTerm();
-        String word2test = ctx.secondTerm();
-        double threshold = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD; // should probably be changed in the
-                                                                                   // future
+    /**
+     * Constructs a new {@link LevenshteinMeasure} using the settings provided by {@link CommonTextToolsConfig}.
+     */
+    public LevenshteinMeasure() {
+        this(CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH, CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE, CommonTextToolsConfig.LEVENSHTEIN_THRESHOLD);
+    }
 
-        String originalLowerCase = original.toLowerCase();
-        String word2TestLowerCase = word2test.toLowerCase();
+    /**
+     * Constructs a new {@link LevenshteinMeasure}.
+     * The necessary arguments for this constructor are explained {@link LevenshteinMeasure here}.
+     *
+     * @param minLength the min length
+     * @param maxDistance the max distance
+     * @param threshold the threshold
+     */
+    public LevenshteinMeasure(int minLength, int maxDistance, double threshold) {
+        this.minLength = minLength;
+        this.maxDistance = maxDistance;
+        this.threshold = threshold;
 
-        int areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
-        int areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
-        int maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, threshold * Math.min(original.length(), word2test.length()));
-
-        int levenshteinDistance = distance.apply(originalLowerCase, word2TestLowerCase);
-
-        if (original.length() <= areWordsSimilarMinLength) {
-            var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
-            if (levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation) {
-                return true;
-            }
-        } else if (levenshteinDistance <= maxLevenshteinDistance) {
-            return true;
+        if (minLength < 0) {
+            throw new IllegalArgumentException("minLength must be a non-negative integer: " + minLength);
         }
-        return false;
+
+        if (maxDistance < 0) {
+            throw new IllegalArgumentException("maxDistance must be a non-negative integer: " + maxDistance);
+        }
+
+        if (threshold < 0.0 || threshold > 1.0) {
+            throw new IllegalArgumentException("threshold outside of valid range: " + threshold);
+        }
+    }
+
+    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+        String firstWord = ctx.firstTerm().toLowerCase(Locale.ROOT);
+        String secondWord = ctx.secondTerm().toLowerCase(Locale.ROOT);
+
+        int maxDynamicDistance = (int) Math.min(this.maxDistance, this.threshold * Math.min(firstWord.length(), secondWord.length()));
+
+        int distance = this.distance.apply(firstWord, secondWord);
+
+        if (firstWord.length() <= this.minLength) {
+            boolean wordsHaveContainmentRelation = secondWord.contains(firstWord) || firstWord.contains(secondWord);
+
+            return distance <= this.maxDistance && wordsHaveContainmentRelation;
+        } else {
+            return distance <= maxDynamicDistance;
+        }
     }
 
 }

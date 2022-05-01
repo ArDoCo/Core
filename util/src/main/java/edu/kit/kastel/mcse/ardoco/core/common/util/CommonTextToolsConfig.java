@@ -35,6 +35,10 @@ public final class CommonTextToolsConfig {
      * Int for the maximal levensthein distance for two words to be similar for methods in SimilarityUtils.
      */
     public static final int LEVENSHTEIN_MAX_DISTANCE = CONFIG.getPropertyAsInt("levenshtein_MaxDistance");
+    /**
+     * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts as a dynamic distance limit.
+     */
+    public static final int LEVENSHTEIN_THRESHOLD = CONFIG.getPropertyAsInt("levenshtein_Threshold");
 
     /**
      * Decides whether the JaroWinkler similarity measure should be used.
