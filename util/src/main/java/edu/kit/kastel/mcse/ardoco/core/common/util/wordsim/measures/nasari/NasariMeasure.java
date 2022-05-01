@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.BabelNetDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.BabelNetSynsetId;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception.BabelNetInvalidKeyException;
@@ -91,6 +92,7 @@ public class NasariMeasure extends VectorBasedWordSimMeasure {
 				}
 
 				if (similarity >= this.similarityThreshold) {
+                    ComparisonStats.recordScore(similarity);
 					return true;
 				}
 			}
