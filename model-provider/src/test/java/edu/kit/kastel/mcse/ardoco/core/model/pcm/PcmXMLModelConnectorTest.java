@@ -30,7 +30,7 @@ class PcmXMLModelConnectorTest {
 
     @Test
     @DisplayName("Get all instances from MediaStore")
-    void getInstancesFromMediaStoreTest() throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
+    void getInstancesFromMediaStoreTest() throws ReflectiveOperationException, IOException {
         var connectorMediaStore = loadModel("src/test/resources/mediastore.repository");
         ImmutableList<IModelInstance> instances = connectorMediaStore.getInstances();
 
