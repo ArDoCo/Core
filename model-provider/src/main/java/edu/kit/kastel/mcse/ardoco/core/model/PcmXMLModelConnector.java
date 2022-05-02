@@ -9,9 +9,8 @@ import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.fuchss.xmlobjectmapper.XML2Object;
 
-import edu.kit.kastel.informalin.framework.models.pcm.PCMComponent;
+import edu.kit.kastel.informalin.framework.models.pcm.PCMModel;
 import edu.kit.kastel.informalin.framework.models.pcm.PCMRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
@@ -21,14 +20,13 @@ public class PcmXMLModelConnector implements IModelConnector {
 
     private final PCMRepository repository;
 
-    public PcmXMLModelConnector(File file) throws IOException, ReflectiveOperationException {
+    public PcmXMLModelConnector(File file) throws IOException {
         this(new FileInputStream(file));
     }
 
-    public PcmXMLModelConnector(InputStream is) throws ReflectiveOperationException, IOException {
-        var xom = new XML2Object();
-        xom.registerClasses(PCMRepository.class, PCMComponent.class);
-        this.repository = Objects.requireNonNull(xom.parseXML(is, PCMRepository.class));
+    public PcmXMLModelConnector(InputStream is) {
+        PCMModel pcmModel = new PCMModel(is);
+        this.repository = Objects.requireNonNull(pcmModel.getRepository());
     }
 
     @Override
