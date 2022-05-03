@@ -1,23 +1,23 @@
 Text Data
-=========
+================
 
 .. note:: This documentation is currently built up
 
 
 Word
-_____
+____________
 
 Sentence
-______
+______________
 
 PosTags
-_____
+_____________
 
 Dependencies
-______
+_______________
 
 Coreferences
-______
+_________________
 
 
 
