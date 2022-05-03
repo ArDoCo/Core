@@ -1,10 +1,10 @@
 Recommendation Data
-==========
+====================
 
 .. warning:: This site is deprecated
 
 Recommendation State
--------
+-------------------------
 The `Recommendation State <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/state/RecommendationState.java>`_ contains all model elements that were found by the text extraction and are certain to occur in the goal model.
 The goal model represents the current state of the system.
 This approach tries to create this goal model through recommendations.
@@ -26,8 +26,8 @@ The probability is chosen analogously to the of Recommended Instances.
 
 
 Recommended Instance
-_____
+__________________________
 
 Recommended Relation
-_____
+________________________
 
