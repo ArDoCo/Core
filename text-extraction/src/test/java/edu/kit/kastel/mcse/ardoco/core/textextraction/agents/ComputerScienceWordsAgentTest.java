@@ -84,7 +84,13 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         return wordsList;
     }
 
+    @SuppressWarnings("unchecked")
     private void setData() throws NoSuchFieldException, IllegalAccessException {
+        // FORCE ENABLE
+        var enabledField = this.agent.getClass().getDeclaredField("enabled");
+        enabledField.setAccessible(true);
+        enabledField.set(this.agent, true);
+
         var wordsField = this.agent.getClass().getDeclaredField("commonCSWords");
         wordsField.setAccessible(true);
         this.data = (ImmutableList<String>) wordsField.get(this.agent);
