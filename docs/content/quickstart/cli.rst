@@ -9,7 +9,7 @@ However, the model can also contain a (Java) code model that you can insert usin
 
 All results (trace links, inconsistencies, etc. between the input model and documentation) are written to the specified output location.
 
-The `CLI <https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoCLI.java>`_ is part of the `pipeline module <https://github.com/ArDoCo/Core/tree/main/pipeline>`_ of ArDoCo.
+The `CLI <https://github.com/ArDoCo/Core/blob/main/cli/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoCLI.java>`_ is part of the `cli module <https://github.com/ArDoCo/Core/tree/main/cli>`_ of ArDoCo.
 
 .. note::
 
