@@ -1,18 +1,15 @@
-/* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.integration;
+/* Licensed under MIT 2022. */
+package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCoCLI;
-
-class ArDoCoCLIIT {
-
+class ArDoCoCLITest {
     private static final String OUTPUT = "src/test/resources/testout";
-    private static final String TEXT = "src/test/resources/benchmark/teastore/teastore.txt";
-    private static final String MODEL = "src/test/resources/benchmark/teastore/original_model/teastore.repository";
+    private static final String TEXT = "../tests/src/test/resources/benchmark/teastore/teastore.txt";
+    private static final String MODEL = "../tests/src/test/resources/benchmark/teastore/original_model/teastore.repository";
     private static final String NAME = "test_teastore";
 
     @BeforeAll
@@ -51,5 +48,4 @@ class ArDoCoCLIIT {
         Assertions.assertNotNull(args);
         ArDoCoCLI.main(args);
     }
-
 }

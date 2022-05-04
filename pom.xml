@@ -23,6 +23,7 @@
     <module>inconsistency-detection</module>
     <module>model-provider</module>
     <module>tests</module>
+    <module>cli</module>
   </modules>
 
   <distributionManagement>
