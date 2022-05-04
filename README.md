@@ -29,9 +29,9 @@ usage: java -jar ardoco-core-pipeline.jar
 -t,--text <arg>                  path to the text file
 ```
 
-### Wiki
-For more information about the setup or the architecture have a look on the [wiki](https://github.com/ArDoCo/Core/wiki/Overview).
-The wiki is at some points deprecated, the general overview and setup should still hold.
+### Documentation
+For more information about the setup or the architecture have a look on the [docs](https://ardoco.github.io/Core).
+The docs are at some points deprecated, the general overview and setup should still hold.
 
 ### Case Studies / Benchmarks
 To test the Core, you could use case studies and benchmarks provided in ..
