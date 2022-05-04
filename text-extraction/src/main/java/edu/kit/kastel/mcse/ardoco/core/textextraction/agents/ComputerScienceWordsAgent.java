@@ -59,6 +59,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
     @Configurable
     private List<String> additionalWords = List.of();
 
+    @Configurable
+    private boolean enabled = false;
+
     private final ImmutableList<String> commonCSWords;
 
     public ComputerScienceWordsAgent() {
@@ -67,6 +70,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     @Override
     public void execute(TextAgentData data) {
+        if (!enabled)
+            return;
+
         var text = data.getText();
         var textState = data.getTextState();
 
