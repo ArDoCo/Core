@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
@@ -18,6 +19,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 
 public class InstanceRelationAgent extends RecommendationAgent {
 
+    @Configurable
+    private boolean enabled = false;
+
     /**
      * Default constructor
      */
@@ -29,6 +33,8 @@ public class InstanceRelationAgent extends RecommendationAgent {
      */
     @Override
     public void execute(RecommendationAgentData data) {
+        if (!enabled)
+            return;
         for (var model : data.getModelIds()) {
             getRelations(data.getRecommendationState(data.getModelState(model).getMetamodel()));
         }
