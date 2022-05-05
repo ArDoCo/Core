@@ -15,37 +15,22 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.fuchss</groupId>
-      <artifactId>xml-object-mapper</artifactId>
-      <version>0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <dependency>
       <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>java-model</artifactId>
-      <version>0.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>data-structures</artifactId>
+      <artifactId>common</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-      <artifactId>util</artifactId>
+      <groupId>edu.kit.kastel.informalin</groupId>
+      <artifactId>models</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <!-- TODO Remove as soon as published to Maven Central -->
-    <repository>
-      <id>gh-fuchss</id>
-      <name>GitHub Maven Packages</name>
-      <url>https://packages.fuchss.org/github/releases/raw/branch/releases/</url>
-    </repository>
-  </repositories>
 </project>

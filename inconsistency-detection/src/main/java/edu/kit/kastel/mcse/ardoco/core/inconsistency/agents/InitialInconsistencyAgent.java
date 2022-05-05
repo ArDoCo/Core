@@ -4,10 +4,10 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.filters.OccasionFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.filters.RecommendedInstanceProbabilityFilter;
 

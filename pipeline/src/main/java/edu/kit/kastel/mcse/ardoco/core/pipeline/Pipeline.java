@@ -1,8 +1,8 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
-import static edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable.KEY_VALUE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
@@ -25,9 +25,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.java.JavaJsonModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
@@ -44,7 +44,7 @@ public final class Pipeline {
         throw new IllegalAccessError();
     }
 
-    private static final Logger logger = LogManager.getLogger(Pipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(Pipeline.class);
 
     /**
      * Run the approach with the given parameters and save the output to the file system.
