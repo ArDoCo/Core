@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Save Actions" href="../saveActions/" /><link rel="prev" title="Command Line Interface" href="../cli/" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Data Structures" href="../../datastructures/" /><link rel="prev" title="Connection Generation" href="../connectionGeneration/" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Standard Configuration - </title>
+        <title>Inconstistency Generation - </title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -158,20 +158,20 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Quickstart</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../cli/">Command Line Interface</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Standard Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../saveActions/">Save Actions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../quickstart/">Quickstart</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart/cli/">Command Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart/standardConfiguration/">Standard Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart/saveActions/">Save Actions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../pipeline/">Pipeline</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../stages/">Stages</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../stages/textPreprocessing/">Text Preprocessing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../stages/textExtraction/">Text Extractor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../stages/modelExtraction/">Model Extractor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../stages/recommendationGeneration/">Recommendation Generation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../stages/connectionGeneration/">Connection Generation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../stages/inconsistencyGeneration/">Inconstistency Generation</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Stages</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../textPreprocessing/">Text Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../textExtraction/">Text Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modelExtraction/">Model Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recommendationGeneration/">Recommendation Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connectionGeneration/">Connection Generation</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Inconstistency Generation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../datastructures/">Data Structures</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -215,47 +215,11 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="standard-configuration">
-<h1>Standard Configuration<a class="headerlink" href="#standard-configuration" title="Permalink to this headline">#</a></h1>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ArticleTypeNameExtractor</span><span class="p">::</span><span class="n">enabled</span><span class="o">=</span><span class="n">false</span>
-<span class="n">ArticleTypeNameExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">1.000000</span>
-<span class="n">ConnectionGenerator</span><span class="p">::</span><span class="n">enabledAgents</span><span class="o">=</span><span class="n">InitialConnectionAgent</span><span class="p">,</span><span class="n">ReferenceAgent</span><span class="p">,</span><span class="n">InstanceConnectionAgent</span>
-<span class="n">CorefAgent</span><span class="p">::</span><span class="n">doMerging</span><span class="o">=</span><span class="n">false</span>
-<span class="n">CorefAgent</span><span class="p">::</span><span class="n">enabled</span><span class="o">=</span><span class="n">false</span>
-<span class="n">ExtractionDependentOccurrenceExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">1.000000</span>
-<span class="n">InDepArcsExtractor</span><span class="p">::</span><span class="n">nameOrTypeWeight</span><span class="o">=</span><span class="mf">0.500000</span>
-<span class="n">InDepArcsExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">1.000000</span>
-<span class="n">InconsistencyChecker</span><span class="p">::</span><span class="n">enabledAgents</span><span class="o">=</span><span class="n">InitialInconsistencyAgent</span><span class="p">,</span><span class="n">MissingModelElementInconsistencyAgent</span><span class="p">,</span><span class="n">MissingTextForModelElementInconsistencyAgent</span>
-<span class="n">InitialConnectionAgent</span><span class="p">::</span><span class="n">enabledExtractors</span><span class="o">=</span><span class="n">NameTypeConnectionExtractor</span><span class="p">,</span><span class="n">ExtractionDependentOccurrenceExtractor</span>
-<span class="n">InitialInconsistencyAgent</span><span class="p">::</span><span class="n">enabledFilters</span><span class="o">=</span><span class="n">RecommendedInstanceProbabilityFilter</span><span class="p">,</span><span class="n">OccasionFilter</span>
-<span class="n">InitialRecommendationAgent</span><span class="p">::</span><span class="n">enabledExtractors</span><span class="o">=</span><span class="n">NameTypeExtractor</span>
-<span class="n">InitialTextAgent</span><span class="p">::</span><span class="n">enabledExtractors</span><span class="o">=</span><span class="n">NounExtractor</span><span class="p">,</span><span class="n">InDepArcsExtractor</span><span class="p">,</span><span class="n">OutDepArcsExtractor</span><span class="p">,</span><span class="n">ArticleTypeNameExtractor</span><span class="p">,</span><span class="n">SeparatedNamesExtractor</span>
-<span class="n">InstanceConnectionAgent</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">1.000000</span>
-<span class="n">InstanceConnectionAgent</span><span class="p">::</span><span class="n">probabilityWithoutType</span><span class="o">=</span><span class="mf">0.800000</span>
-<span class="n">MissingModelElementInconsistencyAgent</span><span class="p">::</span><span class="n">minSupport</span><span class="o">=</span><span class="mf">1.000000</span>
-<span class="n">MissingTextForModelElementInconsistencyAgent</span><span class="p">::</span><span class="n">types</span><span class="o">=</span><span class="n">BasicComponent</span><span class="p">,</span><span class="n">CompositeComponent</span>
-<span class="n">MissingTextForModelElementInconsistencyAgent</span><span class="p">::</span><span class="n">whitelist</span><span class="o">=</span><span class="n">DummyRecommender</span><span class="p">,</span><span class="n">Cache</span>
-<span class="n">ModelExtractionState</span><span class="p">::</span><span class="n">minTypeParts</span><span class="o">=</span><span class="mi">2</span>
-<span class="n">NameTypeConnectionExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">1.000000</span>
-<span class="n">NameTypeExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">1.000000</span>
-<span class="n">NounExtractor</span><span class="p">::</span><span class="n">nameOrTypeWeight</span><span class="o">=</span><span class="mf">0.500000</span>
-<span class="n">NounExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">0.200000</span>
-<span class="n">OccasionFilter</span><span class="p">::</span><span class="n">expectedAppearances</span><span class="o">=</span><span class="mi">2</span>
-<span class="n">OutDepArcsExtractor</span><span class="p">::</span><span class="n">nameOrTypeWeight</span><span class="o">=</span><span class="mf">0.500000</span>
-<span class="n">OutDepArcsExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">0.800000</span>
-<span class="n">PhraseAgent</span><span class="p">::</span><span class="n">phraseConfidence</span><span class="o">=</span><span class="mf">0.600000</span>
-<span class="n">PhraseAgent</span><span class="p">::</span><span class="n">specialNamedEntityConfidence</span><span class="o">=</span><span class="mf">0.600000</span>
-<span class="n">PhraseRecommendationAgent</span><span class="p">::</span><span class="n">confidence</span><span class="o">=</span><span class="mf">0.800000</span>
-<span class="n">RecommendationGenerator</span><span class="p">::</span><span class="n">enabledAgents</span><span class="o">=</span><span class="n">InitialRecommendationAgent</span><span class="p">,</span><span class="n">PhraseRecommendationAgent</span><span class="p">,</span><span class="n">InstanceRelationAgent</span>
-<span class="n">RecommendedInstanceProbabilityFilter</span><span class="p">::</span><span class="n">dynamicThreshold</span><span class="o">=</span><span class="n">true</span>
-<span class="n">RecommendedInstanceProbabilityFilter</span><span class="p">::</span><span class="n">dynamicThresholdFactor</span><span class="o">=</span><span class="mf">0.700000</span>
-<span class="n">RecommendedInstanceProbabilityFilter</span><span class="p">::</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.600000</span>
-<span class="n">RecommendedInstanceProbabilityFilter</span><span class="p">::</span><span class="n">thresholdNameAndTypeProbability</span><span class="o">=</span><span class="mf">0.300000</span>
-<span class="n">RecommendedInstanceProbabilityFilter</span><span class="p">::</span><span class="n">thresholdNameOrTypeProbability</span><span class="o">=</span><span class="mf">0.800000</span>
-<span class="n">ReferenceAgent</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">0.750000</span>
-<span class="n">SeparatedNamesExtractor</span><span class="p">::</span><span class="n">probability</span><span class="o">=</span><span class="mf">0.800000</span>
-<span class="n">TextExtraction</span><span class="p">::</span><span class="n">enabledAgents</span><span class="o">=</span><span class="n">InitialTextAgent</span><span class="p">,</span><span class="n">PhraseAgent</span><span class="p">,</span><span class="n">CorefAgent</span>
-</pre></div>
+          <div class="section" id="inconstistency-generation">
+<h1>Inconstistency Generation<a class="headerlink" href="#inconstistency-generation" title="Permalink to this headline">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This documentation is currently built up</p>
 </div>
 </div>
 
@@ -264,23 +228,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../saveActions/">
+          <a class="next-page" href="../../datastructures/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Save Actions</div>
+                <div class="title">Data Structures</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../cli/">
+          <a class="prev-page" href="../connectionGeneration/">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Command Line Interface</div>
+                <div class="title">Connection Generation</div>
                 
               </div>
             </a>

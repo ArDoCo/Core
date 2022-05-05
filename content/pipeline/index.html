@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Agents" href="../agents/" /><link rel="prev" title="Save Actions" href="../quickstart/saveActions/" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Stages" href="../stages/" /><link rel="prev" title="Save Actions" href="../quickstart/saveActions/" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
         <title>Pipeline - </title>
@@ -165,15 +165,16 @@
 </ul>
 </li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Pipeline</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../agents/">Agents</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../agents/modelExtractor/">Model Extractor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../agents/textAgent/">Text Agent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../agents/recommendationAgent/">Recommendation Agent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../agents/connectionAgent/">Connection Agent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../agents/inconsistencyAgent/">Inconstistency Agent</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../stages/">Stages</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stages/textPreprocessing/">Text Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/textExtraction/">Text Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/modelExtraction/">Model Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/recommendationGeneration/">Recommendation Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/connectionGeneration/">Connection Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/inconsistencyGeneration/">Inconstistency Generation</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../datastructures/">Agent Data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datastructures/">Data Structures</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../data/textData/">Text Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../data/textextractionData/">Extracted Text Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../data/modelData/">Model</a></li>
@@ -216,93 +217,125 @@
         <article role="main">
           <div class="section" id="pipeline">
 <h1>Pipeline<a class="headerlink" href="#pipeline" title="Permalink to this headline">#</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This site is deprecated</p>
-</div>
-<p>The project is divided into multiple parts.
-These parts can be seen as a pipeline:</p>
+<p>ArDoCo recognizes inconsistencies between a model and a documentation.
+Therefore, it is divided into multiple steps that can be seen as pipeline:</p>
 <img alt="center" src="../../_images/pipeline2.png"/>
-<p>The image shows the idea and theoretical processing of the approach.
-Based on the architecture documentation and the architecture model on the left side links between them should be found.
-Therefore, the elements of both artifacts have to be recognized and extracted.
-Obviously, this is much more complicated in natural language than in a formal model.
-On the side of the formal model only the elements have to be extracted (blue).
-On the other side, the process of extracting elements is divided in three steps:
-The preprocessing (yellow), the extraction of information, and the generation of elements.
+<p>The image shows the idea and processing of the approach.
+Text and models are given as input.</p>
+<p>If the text is not yet preprocessed, it is done via <a class="reference external" href="https://ps.ipd.kit.edu/176_indirect.php">INDIRECT</a>.
 The goal of the preprocessing is to analyse the text and annotate additional language information to it.
-These could be dependencies, name-tags, or found relations between words.
-In the next step, the information extraction (orange), all semantically information should be collected that could help to identify elements and relations between them.
-This includes for example potential types and names of model elements.
-Ideally, the element generation (red) can combine these information to build elements.
-Since these textual identified elements should be compared and linked to model elements, they should have a similar structure as the model elements (e.g. name, type).</p>
-<p>In this project this pipeline is built out of multiple maven modules.
-In the following, the highest level will be explained.</p>
-<img alt="center" src="../../_images/ModelArchitecture-ModulesOverview.png"/>
-<p>The agile design enables to rearrange or replace each step of the pipeline.
-Thereby, the pipeline (or parts of it) could be reused in other ways.
-The Pipeline is located in its own module.
-To process the input artifacts to an internal representation, the pipeline requires the TextProviders and ModelProviders modules.
-These models are subdivided in submodules, that enable to exchange or extend the present providers.
-Thereby, both modules contain a module that defines the interface, as well as one with an examplary implementation.
-The other steps of the pipeline are internally called Modules.
-They can be arranged freely in the pipeline (regarding the inter-dependencies).
-The modules module is subdivided in multiple modules respective their use case.
-Every module requires the DataStructures module, since they work on the structures defined in them.
-Since the modules are internally, substructered in the different stages of the pipeline, the datastructures provides different structures for each stage.
-Through the decapsulation, models are freely combinable with structures.
-For reduced imports the datastructures module is divided into abstract definitions and implementations (for example default implementations).
-Internally of modules, AgentsAndExtractors are executed.
-Every agent has a specific goal (e.g. the detection of named entities).
-To fulfill this task an agent can have multiple extractors.
-Extractors run over the annotated text and extract needed information for the current stage.
-The difference between agents and extractors will be explained in more detail in the further wiki entries.</p>
-<p>The default pipeline consists of multiple inter-dependent steps (as you can see in the first image).
-The default implementation of these theoretical steps has more dependencies:</p>
-<a class="reference internal image-reference" href="../../_images/dependencies2.png"><img alt="center" src="../../_images/dependencies2.png" style="width: 400px;"/></a>
-<div class="section" id="stages">
-<h2>Stages<a class="headerlink" href="#stages" title="Permalink to this headline">#</a></h2>
-<div class="section" id="text-preprocessing">
-<h3>Text Preprocessing<a class="headerlink" href="#text-preprocessing" title="Permalink to this headline">#</a></h3>
-<p>The first step on the informal artifact, is the preprocessing of the architecture documentation (yellow).
-The architecture documentation is given via a .txt file in resources and has to be entered in the configuration file.
+These could be dependencies, name-tags, or found relations between words.</p>
+<p>Based on the given documentation ArDoCo first extracts potential entity names, entity types and relations from the text.
+This stage is called <em>text extraction</em>.</p>
+<p>After it, the <em>recommendation generation</em> begins.
+In this stage, the entity names and types are combined.
+To increase the hit rate, we use the meta model as additional input for this phase.
+Thereby, potential types are easier to detect.
+The name-type combinations are traded as instances on the textual site.
+Thereby, ArDoCo is able to recommend textual instances as potential trace links without knowledge of the instantiated model.</p>
+<p>In the following <em>connection generation</em>, ArDoCo has access to the instantiated model and creates trace links between the recommended instances/ relations and the entities in the models.</p>
+<p>The last stage is the <em>inconsistency generation</em>.
+In this stage, ArDoCo identifies entities without trace links as inconsistent states.</p>
+<p>The respective <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/Pipeline.java">pipeline class</a> is located in the <a class="reference external" href="https://github.com/ArDoCo/Core/">core module</a>.</p>
+<div class="section" id="input">
+<h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">#</a></h2>
+<p>The pipeline works with a single data structure for all steps: the <a class="reference internal" href="../datastructures/"><span class="doc">data structure</span></a>.
+The <em>data structure</em> is filled with the information of the executed steps.
+Then it is passed on through the pipeline.
+Therefore, when the pipeline is instantiated, the prerequisites, a text in natural language and a readable model, have to be loaded into it.
+The pipeline is executed via the method <a class="reference external" href="https://github.com/ArDoCo/Core/blob/3b62cc78f0a9d4c60dc75796a401d83665f219f1/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/Pipeline.java#L75">runAndSave</a>).</p>
+<div class="section" id="text">
+<h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">#</a></h3>
+<p>In a first step, the text should be given via a .txt file.
 It should not contain any images, tables, or listings.
-The approach is started via the Pipeline.
-There, INDIRECT runs over the text and preprocesses it.
-Notice, that some agents of the project are dependent on some preprocessing steps!
+It is preprocessed via <a class="reference external" href="https://ps.ipd.kit.edu/176_indirect.php">INDIRECT</a>.
 The results of the preprocessing are stored as an annotated text.
-This text is then used as base for the rest of the approach (except for the model extractor (blue)).</p>
+This text is then used as base for the rest of the approach</p>
+<p>If you want to enter a preprocessed text, it should be stored in <a class="reference external" href="https://en.wikipedia.org/wiki/JSON#:~:text=JSON%20(JavaScript%20Object%20Notation%2C%20pronounced,(or%20other%20serializable%20values).">JSON</a> format.
+so that the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/3b62cc78f0a9d4c60dc75796a401d83665f219f1/text-provider/src/main/java/edu/kit/kastel/mcse/ardoco/core/text/providers/json/JsonTextProvider.java#L52">JsonTextProvider</a> is able to extract the text and the annotations.
+Notice, that some steps of the project depend on specific annotations, like pos-tags, dependencies, etc.!</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For more information read the documentation about <a class="reference internal" href="../data/textData/"><span class="doc">the textual data</span></a>.</p>
+</div>
+</div>
+<div class="section" id="models">
+<h3>Models<a class="headerlink" href="#models" title="Permalink to this headline">#</a></h3>
+<p>ArDoCo can handle architectural and code models.
+Models are read out using the suitable <em>model connector</em>.</p>
+<p>In case of architectural models, this is the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/3b62cc78f0a9d4c60dc75796a401d83665f219f1/model-provider/src/main/java/edu/kit/kastel/mcse/ardoco/core/model/pcm/PcmXMLModelConnector.java#L22">PCM model connector</a>.
+The connector requires a <a class="reference external" href="https://www.palladio-simulator.com/science/palladio_component_model/">PCM (Palladio Component Model)</a> in XML format.
+Other connectors, for example, for other types of architectural models, can be defined analogously.</p>
+<p>In case of code models, the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/3b62cc78f0a9d4c60dc75796a401d83665f219f1/model-provider/src/main/java/edu/kit/kastel/mcse/ardoco/core/model/java/JavaJsonModelConnector.java#L25">Java model connector</a> extracts the classes and interfaces of the model.
+Please note that we currently focus rather on instances than on relations.
+Thereby, the extraction between the classes/ interfaces are currently not implemented.
+Just like for architectural models, other code models can be used if additional connectors are provided.</p>
+<p>The recognized instances and relations are written to the output directory if one was specified in the <a class="reference internal" href="../quickstart/cli/"><span class="doc">CLI</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For more information read the documentation about the <a class="reference internal" href="../stages/modelExtraction/"><span class="doc">model connectors</span></a> and <a class="reference internal" href="../data/modelData/"><span class="doc">the model data</span></a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="pipeline-stages">
+<h2>Pipeline Stages<a class="headerlink" href="#pipeline-stages" title="Permalink to this headline">#</a></h2>
+<p>The agile design enables to rearrange or replace each step of the pipeline.
+Thereby, the parts of it can be exchanged or reused in other ways.</p>
+<p>After the initial <em>data structure</em> was created, the other steps of the pipeline are executed.
+Every stage is executed as an <em>execution stage</em>.
+Every <em>execution stage</em> uses different <em>agents</em> to fulfill its function.</p>
+<p>Every agent has a specific goal (e.g. the detection of named entities).
+To fulfill this task an agent can have multiple <em>extractors</em>.
+Extractors run over the annotated text and extract needed information for the current stage.</p>
+<p>In contrast to them, general <em>agents</em> base only on the extracted data of previous stages, but do not go over the whole text.
+However, some stages (esp. the text extraction) need to look on the preprocessed text.
+Therefore, these stages have agents that contain extractors.
+To ensure that these extractors run before every other (maybe) on their result basing agents, they are commonly named <em>initialAgent</em> and executed before any other agents.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>This should be refactored for the 0.4 release</p>
 </div>
 <div class="section" id="text-extraction">
 <h3>Text Extraction<a class="headerlink" href="#text-extraction" title="Permalink to this headline">#</a></h3>
-<p>The text extractor (orange) is dependent on the annotated text and is equivalent to the information extraction of the theoretical pipeline.
-In this step, possible objects, subjects, and relations are searched. This project applies the principle of thinning out unnecessary information.
-Thus, in this stage, it is more important to extract information with a high recall than a high precision.
-The results of this stage are stored in the text state.</p>
-</div>
-<div class="section" id="model-extraction">
-<h3>Model Extraction<a class="headerlink" href="#model-extraction" title="Permalink to this headline">#</a></h3>
-<p>The model extractor (blue) is equal to the element extraction of the theoretical pipeline.
-Currently, the only available model connector is the hard coded model connector.
-The model information can be provided via a helper class (like a model of TEAMMATES).
-The hard coded model is fetched from the model extractor (via the connector) and loaded in the model state.
-Since the formal artifact (the model) does not need to be preprocessed a separation of the connector and extractor is not necessary (in contrast to the informal side of the approach).</p>
+<p>The <a class="reference internal" href="../stages/textExtraction/"><span class="doc">text extractor</span></a> depends on the annotated input text.
+It uses PosTags, DependencyTags, and other information, as described in the <a class="reference internal" href="../stages/textPreprocessing/"><span class="doc">preprocessing section</span></a>
+Currently most agents of this stage use heuristics to detect possible instances and relations.</p>
+<p>The extracted information are stored in the <a class="reference internal" href="../data/textextractionData/"><span class="doc">text extraction state</span></a>.</p>
+<p>The text extraction should thin out unnecessary information by extracting all possibly relevant instances and relations.
+However, since the later steps rely on this step, the recall of this step should be kept high, whereas a high precision is less important.</p>
 </div>
 <div class="section" id="recommendation-generation">
 <h3>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this headline">#</a></h3>
-<p>The goal of the recommendation generator (red) is to build potential elements that could occure in the model, based on the extracted textual information.
-The properties of the elements depend on the underlying model (respectively the properties of the elements in this model).
-Thereby, the recommendation generator is dependent on some general model knowledge.
-The elements can be objects (e.g. UML classes), as well as relations between objects.
-The recommendation generator represents the element generation of the theoretical pipline.
-Its results are stored in the recommendation state.</p>
+<p>The <a class="reference internal" href="../stages/recommendationGeneration/"><span class="doc">recommendation generator</span></a> requires the <a class="reference internal" href="../data/textData/"><span class="doc">annotated text</span></a>, the <a class="reference internal" href="../data/textData/"><span class="doc">extracted text data</span></a>, and the <a class="reference internal" href="../data/modelData/"><span class="doc">metamodel</span></a>.
+The goal of the recommendation generation is to build potential elements that could occur in the model.
+The properties of the elements depend on the underlying meta model (respectively the properties of its elements).
+The elements can be instances (e.g. UML classes), as well as relations between instances.
+The recommendation generator represents the element generation of the theoretical pipeline.
+Its results are stored in the <a class="reference internal" href="../data/recommendationData/"><span class="doc">recommendation state</span></a> of the <a class="reference internal" href="../datastructures/"><span class="doc">data structure</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For more information read the documentation about <a class="reference internal" href="../stages/recommendationGeneration/"><span class="doc">the recommendation generator</span></a>.</p>
+</div>
 </div>
 <div class="section" id="connection-generation">
 <h3>Connection Generation<a class="headerlink" href="#connection-generation" title="Permalink to this headline">#</a></h3>
-<p>The connection generator (green) is the last step of the approach and connects the potential, from the recommendation generator extracted elements to the elements of the given model.
-Therefore, links are created between elements found in the text and elements of the model.
-The links are stored in the connection state.
-This step is equal to the link generation of the theoretical pipeline.</p>
+<p>The connection generation connects the recommended entities to the entities of the given model.
+Thus, it creates trace links between the input text and model.
+The links are stored in the <a class="reference internal" href="../data/connectionData/"><span class="doc">connection state</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For more information read the documentation about <a class="reference internal" href="../stages/connectionGeneration/"><span class="doc">the connection generator</span></a>.</p>
+</div>
+</div>
+<div class="section" id="inconsistency-generation">
+<h3>Inconsistency Generation<a class="headerlink" href="#inconsistency-generation" title="Permalink to this headline">#</a></h3>
+<p>The inconsistency generation is the last stage of the pipeline.
+It makes a comparison between the found trace links and the entities of the model.
+Thereby, it recognizes inconsistencies caused by missing mentions of model entities.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For more information read the documentation about the <a class="reference internal" href="../stages/inconsistencyGeneration/"><span class="doc">inconsistency generator</span></a>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -312,12 +345,12 @@ This step is equal to the link generation of the theoretical pipeline.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../agents/">
+          <a class="next-page" href="../stages/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Agents</div>
+                <div class="title">Stages</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -345,6 +378,11 @@ This step is equal to the link generation of the theoretical pipeline.</p>
           </div>
           <div class="right-details">
             <div class="icons">
+              <a class="muted-link " href="https://github.com/ArDoCo/Core" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
               
             </div>
           </div>
@@ -365,12 +403,16 @@ This step is equal to the link generation of the theoretical pipeline.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Pipeline</a><ul>
-<li><a class="reference internal" href="#stages">Stages</a><ul>
-<li><a class="reference internal" href="#text-preprocessing">Text Preprocessing</a></li>
+<li><a class="reference internal" href="#input">Input</a><ul>
+<li><a class="reference internal" href="#text">Text</a></li>
+<li><a class="reference internal" href="#models">Models</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pipeline-stages">Pipeline Stages</a><ul>
 <li><a class="reference internal" href="#text-extraction">Text Extraction</a></li>
-<li><a class="reference internal" href="#model-extraction">Model Extraction</a></li>
 <li><a class="reference internal" href="#recommendation-generation">Recommendation Generation</a></li>
 <li><a class="reference internal" href="#connection-generation">Connection Generation</a></li>
+<li><a class="reference internal" href="#inconsistency-generation">Inconsistency Generation</a></li>
 </ul>
 </li>
 </ul>

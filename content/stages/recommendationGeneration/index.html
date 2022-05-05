@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Recommendation Agent" href="../recommendationAgent/" /><link rel="prev" title="Model Extractor" href="../modelExtractor/" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Connection Generation" href="../connectionGeneration/" /><link rel="prev" title="Model Extractor" href="../modelExtraction/" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Text Agent - </title>
+        <title>Recommendation Generation - </title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -165,15 +165,16 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../pipeline/">Pipeline</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Agents</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../modelExtractor/">Model Extractor</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Text Agent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../recommendationAgent/">Recommendation Agent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../connectionAgent/">Connection Agent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inconsistencyAgent/">Inconstistency Agent</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Stages</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../textPreprocessing/">Text Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../textExtraction/">Text Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modelExtraction/">Model Extractor</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Recommendation Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connectionGeneration/">Connection Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inconsistencyGeneration/">Inconstistency Generation</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../datastructures/">Agent Data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../datastructures/">Data Structures</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../data/textData/">Text Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../data/textextractionData/">Extracted Text Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../data/modelData/">Model</a></li>
@@ -214,75 +215,67 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="text-agent">
-<h1>Text Agent<a class="headerlink" href="#text-agent" title="Permalink to this headline">#</a></h1>
+          <div class="section" id="recommendation-generation">
+<h1>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this headline">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This site is deprecated</p>
 </div>
-<div class="section" id="preprocessing">
-<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">#</a></h2>
-<p>As described in the <a class="reference external" href="https://github.com/ArDoCo/Core/wiki/Overview">Overview</a> the goal of the Text Extraction is to extract all possibly relevant information from the text.
-The text is preprocessed by INDIRECT.
-Further analysis depends on some linguistic information (e.g. dependencies).
-To add this information to the PARSE graph, the corresponding INDIRECT agents have to be executed in the preprocessing.</p>
-</div>
-<div class="section" id="text-extraction-agent">
-<h2>Text Extraction Agent<a class="headerlink" href="#text-extraction-agent" title="Permalink to this headline">#</a></h2>
-<p>The interface for the text extraction is the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/TextExtractionAgent.java">Text Extraction Agent</a>.
+<p>As described in the <a class="reference external" href="https://github.com/ArDoCo/Core/wiki/Overview">Overview</a>, the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/RecommendationAgent.java">Recommendation Agent</a> creates recommendations for model elements based on the textual knowledge.
+Herefore, it has access to the extracted model.
+However, in this layer, the agent should not connect textual elements and model elements but can use model information to increase the certainty of some elements (e.g. by meta-model information).
 The agent has a state and multiple analyzers/ solvers.
 The analyzer/ solvers and their parameters can be specified in the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/resources/config.properties">configuration</a>.
-The <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/state/TextExtractionState.java">Text Extraction State</a> follows the blackboard principle and stores all results of the Text Extraction Agent.
-It can be changed by the analyzers/ solvers of the Text Extraction State, as well as dependent analyzers/ solvers.
-Thereby, the results of this step can be corrected by further analysis in later steps.</p>
-<img alt="center" src="../../../_images/TextExtraction.png"/>
-</div>
+The <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/state/RecommendationState.java">Recommendation State</a> is a blackboard and stores all results of the analyzers/ solvers of the agent.</p>
+<img alt="center" src="../../../_images/RecommendationGeneration.PNG"/>
 <div class="section" id="analyzers">
 <h2>Analyzers<a class="headerlink" href="#analyzers" title="Permalink to this headline">#</a></h2>
-<div class="section" id="nounanalyzer">
-<h3>NounAnalyzer<a class="headerlink" href="#nounanalyzer" title="Permalink to this headline">#</a></h3>
-<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/NounAnalyzer.java">Noun Analyzer</a>:
-The goal of the Noun Analyzer is to find and extract the nouns.
-For this, it uses the POS (Part Of Speech) tags of the PARSE graph.
-INDIRECT uses the nltk tagset.</p>
+<div class="section" id="extraction-dependent-occurrence-analyzer">
+<h3>Extraction Dependent Occurrence Analyzer<a class="headerlink" href="#extraction-dependent-occurrence-analyzer" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractionDependentOccurrenceAnalyzer.java">Extraction Dependent Occurrence Analyzer</a>:
+This analyzer uses model information to find referenced model instances.
+For every node is checked, whether it could be a name or a type of a model instance.
+If similar model instance names (or types) are found, they are added as noun mappings of their kind to the text extraction state.
+This analyzer should run before any other analyzers or solvers are processed since it extends the underlying knowledge base.</p>
 </div>
-<div class="section" id="dependency-analyzers">
-<h3>Dependency Analyzers<a class="headerlink" href="#dependency-analyzers" title="Permalink to this headline">#</a></h3>
-<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/InDepArcsAnalyzer.java">Incoming Dependency Arcs Analyzer</a>:
-The Incoming Dependency Arcs Analyzer checks the incoming dependency edges of the PARSE graph, created with the Dependency Parser agent of INDIRECT.</p>
-<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/OutDepArcsAnalyzer.java">Outgoing Dependency Arcs Analyzer</a>:
-This analyzer checks the outgoing dependency edges of a node.
-For this, the edges have to be created first by the Dependency Parser of INDIRECT.</p>
+<div class="section" id="name-type-analyzer">
+<h3>Name Type Analyzer<a class="headerlink" href="#name-type-analyzer" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/NameTypeAnalyzer.java">Name Type Analyzer</a>:
+The NameTypeAnalyzer searches for patterns of name and types.
+If these patterns occur, it creates recommendations out of the combination.
+In general, the analyzer should not question the results of the text extractor.
+For that reason, only combinations between names and types (and no types and types, or names and names) are built up to RecommendedInstances.
+However, the analyzers can use norts in exchange for names.
+The use of norts does not doubt the classification of the text extraction state, since it could not unambiguously classify the nort as name or type.
+Current combinations are: <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">nort</span> <span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">name</span></code>, and <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">nort</span></code>.</p>
 </div>
-<div class="section" id="separated-names-analyzer">
-<h3>Separated Names Analyzer<a class="headerlink" href="#separated-names-analyzer" title="Permalink to this headline">#</a></h3>
-<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/SeparatedNamesAnalyzer.java">Separated Names Analyzer</a>:
-The separated names analyzer identifies nodes containing separators.
-Then it adds it as noun mapping of kind name to the extraction state.
-Examples for this would be: intelligence::ai or car.wheel.
-Then, the method adds each part is separately to the text extraction state.
-The separators for that process are stored in a configuration file.</p>
-</div>
-<div class="section" id="article-type-name-analyzer">
-<h3>Article-Type-Name Analyzer<a class="headerlink" href="#article-type-name-analyzer" title="Permalink to this headline">#</a></h3>
-<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/ArticleTypeNameAnalyzer.java">Article-Type-Name Analyzer</a>:
-This analyzer checks the current node and its surrounding for two specified patterns.
-In both cases the current node has to be previously classified as a nort (or more specific kind).
-After the classification, a noun mapping of the concluded mapping kind is created.</p>
-<p>Article Type Name:
-If the previous node of the input is a type and the predecessor of that one is an article, the current node is classified as a name.
-For example “The component a is …”</p>
-<p>Article Name Type:
-If the previous node is a name and the predecessor of that is an article, the current node is classified as a type.
-For example “The ai component is …”</p>
+<div class="section" id="extracted-terms-analyzer">
+<h3>Extracted Terms Analyzer<a class="headerlink" href="#extracted-terms-analyzer" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractedTermsAnalyzer.java">Extracted Terms Analyzer</a>:
+This analyzer uses terms of the text extraction state to create recommendation names and types of multiple words, like <code class="docutils literal notranslate"><span class="pre">car</span> <span class="pre">wheel</span></code> of type <code class="docutils literal notranslate"><span class="pre">common</span> <span class="pre">component</span></code>.
+For more information have a look at the sources.</p>
 </div>
 </div>
 <div class="section" id="solvers">
 <h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this headline">#</a></h2>
-<div class="section" id="multiple-part-solver">
-<h3>Multiple Part Solver<a class="headerlink" href="#multiple-part-solver" title="Permalink to this headline">#</a></h3>
-<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/solvers/MultiplePartSolver.java">Multiple Part Solver</a>:
-This solver identifies terms in the current extraction state.</p>
+<div class="section" id="reference-solver">
+<h3>Reference Solver<a class="headerlink" href="#reference-solver" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/ReferenceSolver.java">Reference Solver</a>:
+The ReferenceSolver combines information from textual and model resources.
+As textual resources, the noun mappings of the text extraction state are used.
+Their reference represents a unified term for all words stored in the mapping.
+As a model equivalent, instances from the model extraction state are used.</p>
+</div>
+<div class="section" id="separated-relations-solver">
+<h3>Separated Relations Solver<a class="headerlink" href="#separated-relations-solver" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/SeparatedRelationsSolver.java">Separated Relations Solver</a>:
+The SeparatedRelationsSolver is a solver that creates RecommendedRelations.
+Sometimes, punctuation marks occur in architecture documentation to specify the location of an element.
+For example: “Component c is contained by layer.ai”.
+In this case, component c is part of ai that lies in a layer.
+In the context of this work, these specific punctuation marks are called separators.
+They can be defined in a configuration file.
+For each, the solver checks if an included name noun mapping contains an occurrence with a separator.</p>
 </div>
 </div>
 </div>
@@ -292,16 +285,16 @@ This solver identifies terms in the current extraction state.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../recommendationAgent/">
+          <a class="next-page" href="../connectionGeneration/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Recommendation Agent</div>
+                <div class="title">Connection Generation</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../modelExtractor/">
+          <a class="prev-page" href="../modelExtraction/">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
@@ -325,6 +318,11 @@ This solver identifies terms in the current extraction state.</p>
           </div>
           <div class="right-details">
             <div class="icons">
+              <a class="muted-link " href="https://github.com/ArDoCo/Core" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
               
             </div>
           </div>
@@ -344,18 +342,16 @@ This solver identifies terms in the current extraction state.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Text Agent</a><ul>
-<li><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
-<li><a class="reference internal" href="#text-extraction-agent">Text Extraction Agent</a></li>
+<li><a class="reference internal" href="#">Recommendation Generation</a><ul>
 <li><a class="reference internal" href="#analyzers">Analyzers</a><ul>
-<li><a class="reference internal" href="#nounanalyzer">NounAnalyzer</a></li>
-<li><a class="reference internal" href="#dependency-analyzers">Dependency Analyzers</a></li>
-<li><a class="reference internal" href="#separated-names-analyzer">Separated Names Analyzer</a></li>
-<li><a class="reference internal" href="#article-type-name-analyzer">Article-Type-Name Analyzer</a></li>
+<li><a class="reference internal" href="#extraction-dependent-occurrence-analyzer">Extraction Dependent Occurrence Analyzer</a></li>
+<li><a class="reference internal" href="#name-type-analyzer">Name Type Analyzer</a></li>
+<li><a class="reference internal" href="#extracted-terms-analyzer">Extracted Terms Analyzer</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#solvers">Solvers</a><ul>
-<li><a class="reference internal" href="#multiple-part-solver">Multiple Part Solver</a></li>
+<li><a class="reference internal" href="#reference-solver">Reference Solver</a></li>
+<li><a class="reference internal" href="#separated-relations-solver">Separated Relations Solver</a></li>
 </ul>
 </li>
 </ul>
