@@ -1,11 +1,11 @@
 
 Extracted Text Data
-==========
+====================
 
 .. warning:: This site is deprecated
 
 Text Extraction State
--------------
+------------------------
 The `Text Extraction State <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/state/TextExtractionState.java>`_ stores all possibly relevant textual information, that could indicate model elements.
 Currently, this information is stored in `Noun Mappings <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/state/NounMapping.java>`_, `Term Mappings <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/state/TermMapping.java>`_, and `Relation Mappings <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/state/RelationMapping.java>`_.
 
@@ -30,8 +30,8 @@ The probability of a RelationMapping is the probability that the NounMappings ha
 
 
 Entity Mapping
-________
+_____________________
 
 Relation Mapping
-_________
+__________________________________
 
