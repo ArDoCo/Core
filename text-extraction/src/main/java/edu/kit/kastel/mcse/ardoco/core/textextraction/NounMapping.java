@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import static edu.kit.kastel.mcse.ardoco.core.api.data.Confidence.ConfidenceAggregator.AVERAGE;
+import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,8 +10,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
+import edu.kit.kastel.informalin.framework.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.common.util.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
@@ -37,7 +38,7 @@ public class NounMapping implements INounMapping {
 
     private Map<MappingKind, Confidence> distribution;
 
-    private static final Confidence.ConfidenceAggregator DEFAULT_AGGREGATOR = AVERAGE;
+    private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
 
     private boolean hasPhrase = false;
 
@@ -341,8 +342,7 @@ public class NounMapping implements INounMapping {
         Map<MappingKind, Confidence> newDistribution = new EnumMap<>(MappingKind.class);
 
         for (MappingKind mk : MappingKind.values()) {
-            newDistribution.put(mk,
-                    Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), DEFAULT_AGGREGATOR, Confidence.ConfidenceAggregator.MAX));
+            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), DEFAULT_AGGREGATOR, AggregationFunctions.MAX));
         }
 
         var newSurfaceForms = Lists.mutable.ofAll(surfaceForms);

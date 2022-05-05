@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
 import java.io.InputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.ipd.parse.luna.LunaInitException;
 import edu.kit.ipd.parse.luna.LunaRunException;
@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
  */
 public class ParseProvider implements ITextConnector {
 
-    private static final Logger logger = LogManager.getLogger(ParseProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParseProvider.class);
 
     private IText annotatedText;
 

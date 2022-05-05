@@ -4,22 +4,15 @@ package edu.kit.kastel.mcse.ardoco.core.tests;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
+import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 
 /**
  * This test class deals with the configurations.
@@ -59,7 +52,7 @@ class ConfigurationTest {
     void testBasicConfigurable() throws Exception {
         Map<String, String> configs = new TreeMap<>();
         processConfigurationOfClass(configs, TestConfigurable.class);
-        Assertions.assertEquals(4, configs.size());
+        Assertions.assertEquals(5, configs.size());
 
         var t = new TestConfigurable();
 
@@ -71,19 +64,24 @@ class ConfigurationTest {
         Assertions.assertTrue(t.testBoolNo);
         Assertions.assertEquals(List.of("A", "B", "C"), t.testList);
         Assertions.assertEquals(List.of("A", "B", "C"), t.testListNo);
+        Assertions.assertEquals(TestConfigurable.MyEnum.A, t.testEnum);
+        Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
         //@formatter:off
-		configs = Map.of(//
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDoubleNo", "48", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBool", "false", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBoolNo", "false", //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testList", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
-				TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testListNo", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z") //
-		);
-		//@formatter:on
+        configs = Map.of(//
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDoubleNo", "48", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBool", "false", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testBoolNo", "false", //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testList", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testListNo", String.join(AbstractConfigurable.LIST_SEPARATOR, "X", "Y", "Z"), //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnum", TestConfigurable.MyEnum.C.name(), //
+                TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnumNo", TestConfigurable.MyEnum.C.name()
+
+        );
+        //@formatter:on
 
         t.applyConfiguration(configs);
         Assertions.assertEquals(42, t.testInt);
@@ -94,6 +92,8 @@ class ConfigurationTest {
         Assertions.assertTrue(t.testBoolNo);
         Assertions.assertEquals(List.of("X", "Y", "Z"), t.testList);
         Assertions.assertEquals(List.of("A", "B", "C"), t.testListNo);
+        Assertions.assertEquals(TestConfigurable.MyEnum.C, t.testEnum);
+        Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
     }
 
@@ -131,8 +131,12 @@ class ConfigurationTest {
         if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String)) {
             return s.stream().map(Object::toString).collect(Collectors.joining(AbstractConfigurable.LIST_SEPARATOR));
         }
+        if (rawValue instanceof Enum<?> e) {
+            return e.name();
+        }
 
         throw new IllegalArgumentException("RawValue has no type that may be transformed to an Configuration" + rawValue + "[" + rawValue.getClass() + "]");
+
     }
 
     private void findImportantFields(Class<?> clazz, List<Field> fields) {
@@ -176,11 +180,14 @@ class ConfigurationTest {
         private boolean testBool = true;
         @Configurable
         private List<String> testList = List.of("A", "B", "C");
+        @Configurable
+        private MyEnum testEnum = MyEnum.A;
 
         private int testIntNo = 24;
         private double testDoubleNo = 2.0;
         private boolean testBoolNo = true;
         private List<String> testListNo = List.of("A", "B", "C");
+        private MyEnum testEnumNo = MyEnum.B;
 
         public TestConfigurable() {
             // NOP
@@ -189,15 +196,9 @@ class ConfigurationTest {
         @Override
         protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         }
-    }
 
-    @SuppressWarnings("unused")
-    private static class Dummy implements IAgent<IData> {
-
-        @Override
-        public void execute(IData data) {
-            // NOP
+        private enum MyEnum {
+            A, B, C
         }
     }
-
 }

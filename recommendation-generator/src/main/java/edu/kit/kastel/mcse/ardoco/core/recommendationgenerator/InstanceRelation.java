@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
@@ -36,7 +37,7 @@ public class InstanceRelation implements IInstanceRelation {
         this.fromInstance = fromInstance;
         this.toInstance = toInstance;
         localRelations = new ArrayList<>();
-        probability = new Confidence(Confidence.ConfidenceAggregator.SUM);
+        probability = new Confidence(AggregationFunctions.SUM);
     }
 
     public InstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to,

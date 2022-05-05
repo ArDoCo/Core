@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;

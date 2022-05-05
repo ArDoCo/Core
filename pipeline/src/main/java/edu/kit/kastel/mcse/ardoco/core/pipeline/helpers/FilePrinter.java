@@ -13,11 +13,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
@@ -41,7 +41,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 public final class FilePrinter {
     private static final String DELIMITER = ",";
 
-    private static final Logger logger = LogManager.getLogger(FilePrinter.class);
+    private static final Logger logger = LoggerFactory.getLogger(FilePrinter.class);
 
     private static final String GENERIC_ERROR = "An error occurred.";
     private static final String SUCCESS_WRITE = "Successfully wrote to the file.";
