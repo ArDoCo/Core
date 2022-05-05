@@ -38,7 +38,7 @@ public final class CommonTextToolsConfig {
     /**
      * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts as a dynamic distance limit.
      */
-    public static final int LEVENSHTEIN_THRESHOLD = CONFIG.getPropertyAsInt("levenshtein_Threshold");
+    public static final double LEVENSHTEIN_THRESHOLD = CONFIG.getPropertyAsDouble("levenshtein_Threshold");
 
     /**
      * Decides whether the JaroWinkler similarity measure should be used.
