@@ -1,6 +1,6 @@
 
 Save Actions
-=========
+==================
 
 Go to your Eclipse Workspace folder and open the file ``.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs``.
 

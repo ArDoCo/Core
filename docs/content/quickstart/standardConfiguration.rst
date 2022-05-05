@@ -1,5 +1,5 @@
 Standard Configuration
-==============
+=========================
 
 .. code-block::
 

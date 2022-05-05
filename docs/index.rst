@@ -1,5 +1,5 @@
 ArDoCo
-======
+===========
 
 ArDoCo (Architecture Documentation Consistency) is a framework to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies).
 An element can be any representable item of the model, like a component or a relation.
@@ -11,7 +11,7 @@ Before contributing, please read the :doc:`quickstart guide </content/quickstart
 
 
 Case Studies & Benchmarks
----------
+-----------------------------
 
 You can test ArDoCo using our case studies and benchmarks provided in ...
 
@@ -20,7 +20,7 @@ You can test ArDoCo using our case studies and benchmarks provided in ...
 
 
 Publications
-------
+---------------
 
 Trace Link Recovery for Software Architecture Documentation
 Keim, J.; Schulz, S.; Fuchß, D.; Kocher, C.; Speit, J.; Koziolek, A.
@@ -32,7 +32,7 @@ ArDoCo is based on the master thesis `Linking Software Architecture Documentatio
 
 
 Contact
------
+------------
 
 This project is currently developed by researchers of the Karlsruhe Institute of Technology.
 
@@ -49,5 +49,5 @@ You find us on our websites: `Jan Keim <https://mcse.kastel.kit.edu/staff_Keim_J
 
    content/quickstart
    content/pipeline
-   content/agents
+   content/stages
    content/datastructures

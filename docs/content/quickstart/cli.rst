@@ -1,5 +1,5 @@
 Command Line Interface
-=============
+===========================
 
 `ArDoCo Core <https://github.com/ArDoCo/Core>`_ contains a CLI that supports the execution of ArDoCo.
 

@@ -1,5 +1,5 @@
-Recommendation Agent
-============
+Recommendation Generation
+===========================
 
 
 .. warning:: This site is deprecated
@@ -19,11 +19,11 @@ The `Recommendation State <https://github.com/ArDoCo/Core/blob/main/src/main/jav
 
 
 Analyzers
--------
+-------------
 
 
 Extraction Dependent Occurrence Analyzer
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Extraction Dependent Occurrence Analyzer <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractionDependentOccurrenceAnalyzer.java>`_:
 This analyzer uses model information to find referenced model instances.
 For every node is checked, whether it could be a name or a type of a model instance.
@@ -32,7 +32,7 @@ This analyzer should run before any other analyzers or solvers are processed sin
 
 
 Name Type Analyzer
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 `Name Type Analyzer <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/NameTypeAnalyzer.java>`_:
 The NameTypeAnalyzer searches for patterns of name and types.
 If these patterns occur, it creates recommendations out of the combination.
@@ -44,16 +44,16 @@ Current combinations are: ``name type``, ``nort type``, ``type name``, and ``typ
 
 
 Extracted Terms Analyzer
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Extracted Terms Analyzer <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractedTermsAnalyzer.java>`_:
-This analyzer uses terms of the text extraction state to create recommendation names and types of multiple words, like car _wheel_ of type _common component_.
+This analyzer uses terms of the text extraction state to create recommendation names and types of multiple words, like ``car wheel`` of type ``common component``.
 For more information have a look at the sources.
 
 Solvers
 ---------
 
 Reference Solver
-^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 `Reference Solver <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/ReferenceSolver.java>`_:
 The ReferenceSolver combines information from textual and model resources.
 As textual resources, the noun mappings of the text extraction state are used.
@@ -61,7 +61,7 @@ Their reference represents a unified term for all words stored in the mapping.
 As a model equivalent, instances from the model extraction state are used.
 
 Separated Relations Solver
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Separated Relations Solver <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/SeparatedRelationsSolver.java>`_:
 The SeparatedRelationsSolver is a solver that creates RecommendedRelations.
 Sometimes, punctuation marks occur in architecture documentation to specify the location of an element.

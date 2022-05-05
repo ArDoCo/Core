@@ -1,5 +1,5 @@
-Connection Agent
-===============
+Connection Generation
+===========================
 
 .. warning:: This site is deprecated
 
@@ -17,13 +17,13 @@ The `Connection State <https://github.com/ArDoCo/Core/blob/main/src/main/java/mo
     :alt: center
 
 Analyzers
----------
+---------------
 Currently, the Connection Generator has no analyzers.
 
 Solvers
 ---------
 Instance Connection Solver
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Instance Connection Solver <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/connectionGenerator/solvers/InstanceConnectionSolver.java>`_:
 This solver connects recommended instances and model instances.
 For this, it runs through the model instances of the model extraction state.
@@ -34,7 +34,7 @@ For recommended instances, without a specified type, the probability is decrease
 Thus, instance links that include a type specification are preferred.
 
 Relation Connection Solver
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Relation Connection Solver <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/connectionGenerator/solvers/RelationConnectionSolver.java>`_:
 The relation connection solver works similar to the instance connection solver.
 Instead of connecting instances, it connects relations.
