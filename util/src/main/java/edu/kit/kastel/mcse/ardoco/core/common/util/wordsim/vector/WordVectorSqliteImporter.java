@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import com.google.common.collect.ImmutableList;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.PorterStemmer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
@@ -20,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Reads a file containing word vector embeddings and inserts them into a sqlite database.
@@ -30,16 +28,13 @@ import java.util.Locale;
  * Vector representations will be inserted as a consecutive sequence of floats.
  * The amount of floats in a sequence depends on the dimension of the vectors.
  * <p>
- * This class is customizable by extending it and overriding the {@link #processWord(String)} method.
- * This method will be called for each word and allows modifying the word before it is inserted into the database.
+ * This class can be customized by extending it and overriding the {@link #processWord(String)} and {@link #filterWord(String)} methods.
+ * Both methods are called for each word and allow filtering/modifying words before they are inserted into the databse.
  */
 public class WordVectorSqliteImporter {
 
 	private static final int DEFAULT_MAX_WORD_LENGTH = 300;
 	private static final Logger LOGGER = LoggerFactory.getLogger(WordVectorSqliteImporter.class);
-
-	// TODO: Make this class more customizable (through extending)
-	// and move this class to tests?
 
 	/**
 	 * Launches an import process.
@@ -72,8 +67,6 @@ public class WordVectorSqliteImporter {
 	private final long startLine;
 	private final long endLine;
 	private final int maxWordLength;
-	private final boolean stem;
-	private final boolean lowercase;
 	private final boolean dryRun;
 
 	/**
@@ -84,20 +77,7 @@ public class WordVectorSqliteImporter {
 	 * @param dimension  the dimension of the vectors
 	 */
 	public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension) {
-		this(vectorFile, dbFile, dimension, DEFAULT_MAX_WORD_LENGTH, false, false, 0L, -1L, false);
-	}
-
-	/**
-	 * Constructs a new {@link WordVectorSqliteImporter} instance.
-	 *
-	 * @param vectorFile the path ot the file that contains the vector representations for each word
-	 * @param dbFile     the path to the sqlite database into which the vector representations will be inserted
-	 * @param dimension  the dimension of the vectors
-	 * @param stem       whether to stem a word before inserting it into the database
-	 * @param lowercase  whether to lowercase a word before inserting it into the database
-	 */
-	public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension, boolean stem, boolean lowercase) {
-		this(vectorFile, dbFile, dimension, DEFAULT_MAX_WORD_LENGTH, stem, lowercase, 0L, -1L, false);
+		this(vectorFile, dbFile, dimension, DEFAULT_MAX_WORD_LENGTH, 0, -1L, false);
 	}
 
 	/**
@@ -108,22 +88,17 @@ public class WordVectorSqliteImporter {
 	 * @param dbFile        the path to the sqlite database into which the vector representations will be inserted
 	 * @param dimension     the dimension of the vectors
 	 * @param maxWordLength the maximum length a word is allowed to have to be inserted into the database
-	 * @param stem          whether to stem a word before inserting it into the database
-	 * @param lowercase     whether to lowercase a word before inserting it into the database
 	 * @param startLine     at which line of the {@code vectorFile} this importer will start inserting
 	 * @param endLine       at which line of the {@code vectorFile} this importer will stop inserting
 	 * @param dryRun        whether this importer should actually insert. Use {@code false} to run this importer without
 	 *                      actually inserting anything
 	 */
-	public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension,
-	                                int maxWordLength, boolean stem, boolean lowercase,
+	public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension, int maxWordLength,
 	                                long startLine, long endLine, boolean dryRun) {
 		this.vectorFile = vectorFile;
 		this.dbFile = dbFile;
 		this.dimension = dimension;
 		this.maxWordLength = maxWordLength;
-		this.stem = stem;
-		this.lowercase = lowercase;
 		this.startLine = startLine;
 		this.endLine = endLine;
 		this.dryRun = dryRun;
@@ -135,6 +110,10 @@ public class WordVectorSqliteImporter {
 		if (!Files.exists(dbFile)) {
 			throw new IllegalStateException("dbFile does not exist: " + dbFile);
 		}
+
+        if (this.maxWordLength < 0) {
+            throw new IllegalArgumentException("maxWordLength must be a non-negative integer");
+        }
 	}
 
 	/**
@@ -147,7 +126,8 @@ public class WordVectorSqliteImporter {
 	 */
 	public ImportResult beginImport() throws SQLException, IOException, IllegalStateException {
 		final List<String> skippedWords = new ArrayList<>();
-		long linesRead = 0;
+
+        long linesRead = 0;
 		long inserted = 0;
 
 		try (Connection connection = connect()) {
@@ -184,13 +164,10 @@ public class WordVectorSqliteImporter {
 									continue;
 								}
 
-								if (this.lowercase) {
-									word = word.toLowerCase(Locale.ROOT);
-								}
-
-								if (this.stem) {
-									word = PorterStemmer.stem(word);
-								}
+                                if (!filterWord(word)) {
+                                    skippedWords.add(word);
+                                    continue;
+                                }
 
 								word = processWord(word);
 
@@ -247,5 +224,13 @@ public class WordVectorSqliteImporter {
 	protected String processWord(String word) {
 		return word;
 	}
+
+    /**
+     * This method is called for each word that is read from the vector file.
+     * It allows filtering which words are inserted into database and which words are skipped.
+     * @param word the word
+     * @return returns {@code true} if the should should be inserted into the database, {@code false} if not.
+     */
+    protected boolean filterWord(String word) { return true; }
 
 }
