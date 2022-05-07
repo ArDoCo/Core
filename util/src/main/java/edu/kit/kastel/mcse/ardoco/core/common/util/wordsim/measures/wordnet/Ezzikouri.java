@@ -1,11 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim.PorterStemmer;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.Relatedness;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
+import opennlp.tools.stemmer.PorterStemmer;
 import org.deeplearning4j.text.stopwords.StopWords;
 
 import java.util.*;
@@ -22,6 +22,7 @@ public class Ezzikouri extends RelatednessCalculator {
             new POS[] { POS.NOUN, POS.NOUN },
             new POS[] { POS.VERB, POS.VERB }
     );
+    private static final PorterStemmer STEMMER = new PorterStemmer();
 
     public Ezzikouri(ILexicalDatabase db) {
         super(db, MIN, MAX);
@@ -73,7 +74,7 @@ public class Ezzikouri extends RelatednessCalculator {
 
     private Set<String> stem(Set<String> strings) {
         return strings.stream()
-                .map(PorterStemmer::stem)
+                .map(STEMMER::stem)
                 .collect(Collectors.toSet());
     }
 

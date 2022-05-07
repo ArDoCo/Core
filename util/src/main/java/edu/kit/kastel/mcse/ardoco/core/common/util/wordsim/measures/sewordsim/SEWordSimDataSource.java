@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
+import opennlp.tools.stemmer.PorterStemmer;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
@@ -26,6 +27,7 @@ public class SEWordSimDataSource implements AutoCloseable {
 
     private final Connection connection;
     private final PreparedStatement selectStatement;
+    private final PorterStemmer stemmer = new PorterStemmer();
 
     /**
      * Construct a new {@link SEWordSimDataSource}. Once instantiated, a connection to the file will be kept open until
@@ -64,7 +66,7 @@ public class SEWordSimDataSource implements AutoCloseable {
             return false;
         }
 
-        word = PorterStemmer.stem(word);
+        word = this.stemmer.stem(word);
 
         try (var statement = this.connection.prepareStatement(EXISTS_QUERY)) {
             statement.setString(1, word);
@@ -92,8 +94,8 @@ public class SEWordSimDataSource implements AutoCloseable {
         Objects.requireNonNull(firstWord);
         Objects.requireNonNull(secondWord);
 
-        firstWord = PorterStemmer.stem(firstWord);
-        secondWord = PorterStemmer.stem(secondWord);
+        firstWord = this.stemmer.stem(firstWord);
+        secondWord = this.stemmer.stem(secondWord);
 
         this.selectStatement.setString(1, firstWord);
         this.selectStatement.setString(2, secondWord);
