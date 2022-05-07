@@ -12,9 +12,9 @@ public class NasariVectorSqliteImporter extends WordVectorSqliteImporter {
 
     private static final int NASARI_VECTORS_DIMENSION = 300;
 
-    public NasariVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension, boolean stem, boolean lowercase, long startLine, long endLine,
+    public NasariVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension, long startLine, long endLine,
             boolean dryRun) {
-        super(vectorFile, dbFile, dimension, NASARI_VECTORS_DIMENSION, stem, lowercase, startLine, endLine, dryRun);
+        super(vectorFile, dbFile, dimension, NASARI_VECTORS_DIMENSION, startLine, endLine, dryRun);
     }
 
     @Override protected String processWord(String word) {
