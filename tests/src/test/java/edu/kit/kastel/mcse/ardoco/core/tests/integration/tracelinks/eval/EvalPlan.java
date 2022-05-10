@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,16 +16,12 @@ public class EvalPlan {
     private final int threshold;
     private final List<WordSimMeasure> measures;
 
-    public EvalPlan(String group, Baseline base, int threshold) {
-        this(group, base, threshold, Collections.emptyList());
+    public EvalPlan(String groupPrefix, Baseline base, int threshold, WordSimMeasure measure) {
+        this(groupPrefix, base, threshold, List.of(measure));
     }
 
-    public EvalPlan(String group, Baseline base, int threshold, WordSimMeasure measure) {
-        this(group, base, threshold, List.of(measure));
-    }
-
-    public EvalPlan(String group, Baseline base, int threshold, List<WordSimMeasure> measures) {
-        this.group = group;
+    public EvalPlan(String groupPrefix, Baseline base, int threshold, List<WordSimMeasure> measures) {
+        this.group = groupPrefix + "_b" + base.getId();
         this.baseline = base;
         this.threshold = threshold;
         this.measures = new ArrayList<>(measures);
@@ -34,7 +29,7 @@ public class EvalPlan {
     }
 
     public String getId() {
-        return group + "_b" + baseline.getId() + "_t" + threshold;
+        return getGroup() + "_t" + getThreshold();
     }
 
     public String getGroup() {
@@ -51,11 +46,6 @@ public class EvalPlan {
 
     public List<WordSimMeasure> getMeasures() {
         return measures;
-    }
-
-    public EvalPlan with(WordSimMeasure measure) {
-        this.measures.add(measure);
-        return this;
     }
 
 }
