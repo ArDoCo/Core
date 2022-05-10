@@ -5,7 +5,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.DL4JFastTextDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.FastTextMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveSqliteDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.NasariMeasure;
@@ -41,18 +40,21 @@ public class Evaluation {
     @Test
     @Disabled
     public void run() throws IOException, SQLException {
+        var overwriteExistingResults = false;
         var plans = getPlans();
-        var resultDir = Path.of("eval_results");
-        var evaluator = new Evaluator(plans, resultDir);
+        var resultDir = Path.of("eval_results/");
+        var latexDir = Path.of("latex_outputs/");
 
-        evaluator.execute();
+        new Evaluator(plans, resultDir, overwriteExistingResults).execute();
+
+        new LatexOutputGenerator(resultDir, latexDir).run();
     }
 
     public static List<EvalPlan> getPlans() throws IOException, SQLException {
         var plans = new ArrayList<EvalPlan>();
 
         boolean jaroWinkler = false;
-        boolean levenshtein = false;
+        boolean levenshtein = true;
         boolean ngram = false;
         boolean sewordsim = false;
         boolean fastText = false;
@@ -60,6 +62,9 @@ public class Evaluation {
         boolean glove = false;
 		boolean nasari = false;
 
+        // 1.) Load models/resources
+
+        // fastText
         String fastTextModelName = "";
         DL4JFastTextDataSource fastTextDataSource = null;
         if (fastText) {
@@ -68,6 +73,7 @@ public class Evaluation {
             fastTextDataSource = new DL4JFastTextDataSource(modelPath);
         }
 
+        // WordNet
         ILexicalDatabase wordNetDB = null;
         if (wordNetWP || wordNetLC || wordNetJC || wordNetLesk || wordNetEzzikouri) {
             WS4JConfiguration.getInstance().setCache(true);
@@ -80,16 +86,22 @@ public class Evaluation {
             wordNetDB = new MITWordNet(dictionary);
         }
 
+        // SEWordSim
         SEWordSimDataSource seWordSimDataSource = null;
         if (sewordsim) {
             seWordSimDataSource = new SEWordSimDataSource(Path.of(CommonTextToolsConfig.SEWORDSIM_DB_FILE_PATH));
         }
 
-        GloveSqliteDataSource gloveDataSource = null;
+        // GloVe
+        VectorSqliteDatabase gloveDataSource = null;
+        String gloveDataSourceName = "";
         if (glove) {
-            gloveDataSource = new GloveSqliteDataSource(Path.of(CommonTextToolsConfig.GLOVE_DB_FILE_PATH));
+            var dbPath = Path.of(CommonTextToolsConfig.GLOVE_DB_FILE_PATH);
+            gloveDataSourceName = dbPath.getFileName().toString().replace(".sqlite", "");
+            gloveDataSource = new VectorSqliteDatabase(dbPath);
         }
 
+        // Nasari
 	    BabelNetDataSource babelNetDataSource = null;
 	    VectorSqliteDatabase nasariVectorDatabase = null;
 		if (nasari) {
@@ -99,8 +111,10 @@ public class Evaluation {
 			nasariVectorDatabase = new VectorSqliteDatabase(Path.of(CommonTextToolsConfig.NASARI_DB_FILE_PATH));
 		}
 
+        // 2.) Construct plans
+
 	    for (Baseline b : Baseline.values()) {
-		    for (int t = 0; t <= 100; t += 5) {
+		    for (int t = 0; t <= 100; t += 10) {
 			    double threshold = t / 100.0;
 
 			    // Jaro Winkler
@@ -110,22 +124,20 @@ public class Evaluation {
 
 			    // Levenshtein
 			    if (levenshtein && b == Baseline.FIRST) {
-                    for (int minLength = 0; minLength < 10; minLength++) {
-                        for (int maxDistance = 0; maxDistance < 10; maxDistance++) {
-                            var group = String.format("levenshtein_%sl_%sd", minLength, maxDistance);
+                    for (int minLength = 0; minLength < 13; minLength++) {
+                        for (int maxDistance = 0; maxDistance < 13; maxDistance++) {
+                            var group = String.format("levenshtein_%sL_%sD", minLength, maxDistance);
                             plans.add(new EvalPlan(group, b, t, new LevenshteinMeasure(minLength, maxDistance, threshold)));
                         }
-                    }
+                   }
 			    }
 
 			    // Ngram
 			    if (ngram) {
-				    plans.add(new EvalPlan("bigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 2, threshold)));
-				    plans.add(new EvalPlan("trigram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 3, threshold)));
-				    plans.add(new EvalPlan("4gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 4, threshold)));
-				    plans.add(new EvalPlan("5gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 5, threshold)));
-				    plans.add(new EvalPlan("6gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 6, threshold)));
-				    plans.add(new EvalPlan("7gram", b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, 7, threshold)));
+                    for (int n = 2; n <= 3; n++) {
+                        var group = String.format("ngram_n%s", n);
+                        plans.add(new EvalPlan(group, b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, n, threshold)));
+                    }
 			    }
 
 			    // SEWordSim
@@ -157,7 +169,7 @@ public class Evaluation {
 
 				// GloVe
                 if (glove) {
-                    plans.add(new EvalPlan("glove_cc_300d", b, t, new GloveMeasure(gloveDataSource, threshold)));
+                    plans.add(new EvalPlan("glove_" + gloveDataSourceName, b, t, new GloveMeasure(gloveDataSource, threshold)));
                 }
 
 				// Nasari
