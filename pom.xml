@@ -44,7 +44,7 @@
     <eclipse-collections.version>11.0.0</eclipse-collections.version>
     <jackson.version>2.13.2</jackson.version>
     <error-prone.version>2.10.0</error-prone.version>
-    <spotless.version>2.22.4</spotless.version>
+    <spotless.version>2.22.5</spotless.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
