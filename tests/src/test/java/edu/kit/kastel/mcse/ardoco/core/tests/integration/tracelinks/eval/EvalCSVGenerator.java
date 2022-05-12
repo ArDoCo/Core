@@ -12,14 +12,19 @@ import java.util.function.Function;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-public class LatexOutputGenerator {
+/**
+ * Creates .csv files that present various evaluation metrics at various thresholds.
+ * Each csv file has two columns.
+ * The first column represents the threshold and the second column represents the value of some metric.
+ */
+public class EvalCSVGenerator {
 
     record ThresholdFile(Path filePath, String group, int threshold) { }
 
     private final Path sourceDir;
     private final Path targetDir;
 
-    public LatexOutputGenerator(Path sourceDir, Path targetDir) {
+    public EvalCSVGenerator(Path sourceDir, Path targetDir) {
         this.sourceDir = sourceDir;
         this.targetDir = targetDir;
     }
@@ -49,38 +54,36 @@ public class LatexOutputGenerator {
                     .sorted(Comparator.comparing(f -> f.threshold))
                     .toList();
 
-            createMetricFile(group, files, "f1", EvalResult::getF1Score);
-            createMetricFile(group, files, "precision", EvalResult::getPrecision);
-            createMetricFile(group, files, "recall", EvalResult::getRecall);
-            createMetricFile(group, files, "accuracy", EvalResult::getAccuracy);
+            createFractionalMetricFile(group, files, "f1", EvalResult::getF1Score);
+            createFractionalMetricFile(group, files, "precision", EvalResult::getPrecision);
+            createFractionalMetricFile(group, files, "recall", EvalResult::getRecall);
+            createFractionalMetricFile(group, files, "accuracy", EvalResult::getAccuracy);
+            createIntMetricFile(group, files, "tp", EvalResult::getTruePositiveCount);
+            createIntMetricFile(group, files, "fp", EvalResult::getFalsePositiveCount);
+            createIntMetricFile(group, files, "tn", EvalResult::getTrueNegativeCount);
+            createIntMetricFile(group, files, "fn", EvalResult::getFalseNegativeCount);
         }
     }
 
-//    private void appendToMetricFile(Path filePath, String metricId, double threshold, double metricValue) throws IOException {
-//        //var filePath = directory.resolve(filePrefix + "_" + metricId + ".csv");
-//        var fileContent = ((int) threshold * 100) + " " + ((int) (metricValue * 100)) + "\n";
-//
-//        if (Files.notExists(filePath)) {
-//            Files.writeString(filePath, "threshold " + metricId + "\n", CREATE);
-//        }
-//
-//        Files.writeString(filePath, fileContent, CREATE, APPEND);
-//    }
-
-    private void createMetricFile(String group, List<ThresholdFile> files, String metricId, Function<EvalResult, Double> metric) throws IOException {
+    private void createIntMetricFile(String group, List<ThresholdFile> files, String metricId, Function<EvalResult, Integer> metric) throws IOException {
         var fileName = String.format("%s_%s.csv", group, metricId);
         var filePath = targetDir.resolve(group).resolve(fileName);
         var fileContent = new StringBuilder("threshold ").append(metricId).append('\n');
 
         for (ThresholdFile file : files) {
             EvalResult result = EvalResult.fromJsonString(Files.readString(file.filePath));
-            double metricValue = metric.apply(result);
-            int roundedValue = (int) (metricValue * 100);
+            int metricValue = metric.apply(result);
 
-            fileContent.append(file.threshold).append(' ').append(roundedValue).append('\n');
+            fileContent.append(file.threshold).append(' ').append(metricValue).append('\n');
         }
 
         Files.writeString(filePath, fileContent, CREATE, TRUNCATE_EXISTING);
+    }
+
+    private void createFractionalMetricFile(String group, List<ThresholdFile> files, String metricId, Function<EvalResult, Double> metric) throws IOException {
+        createIntMetricFile(group, files, metricId,
+                (evalResult) -> (int) (metric.apply(evalResult) * 100) // turn fraction into integer
+        );
     }
 
 }
