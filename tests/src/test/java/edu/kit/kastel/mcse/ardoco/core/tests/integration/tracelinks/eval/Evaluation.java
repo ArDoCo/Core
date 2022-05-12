@@ -104,11 +104,14 @@ public class Evaluation {
         // Nasari
 	    BabelNetDataSource babelNetDataSource = null;
 	    VectorSqliteDatabase nasariVectorDatabase = null;
+        String nasariVectorDBName = "";
 		if (nasari) {
 			babelNetDataSource = new BabelNetDataSource(
 				CommonTextToolsConfig.BABELNET_API_KEY, Path.of(CommonTextToolsConfig.BABELNET_CACHE_FILE_PATH)
 			);
-			nasariVectorDatabase = new VectorSqliteDatabase(Path.of(CommonTextToolsConfig.NASARI_DB_FILE_PATH));
+            var dbPath = Path.of(CommonTextToolsConfig.NASARI_DB_FILE_PATH);
+            nasariVectorDBName = dbPath.getFileName().toString().replace(".sqlite", "");
+			nasariVectorDatabase = new VectorSqliteDatabase(dbPath);
 		}
 
         // 2.) Construct plans
@@ -134,7 +137,7 @@ public class Evaluation {
 
 			    // Ngram
 			    if (ngram) {
-                    for (int n = 2; n <= 3; n++) {
+                    for (int n = 2; n <= 10; n++) {
                         var group = String.format("ngram_n%s", n);
                         plans.add(new EvalPlan(group, b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, n, threshold)));
                     }
@@ -174,7 +177,7 @@ public class Evaluation {
 
 				// Nasari
 	            if (nasari) {
-					plans.add(new EvalPlan("nasari", b, t, new NasariMeasure(babelNetDataSource, nasariVectorDatabase, threshold)));
+					plans.add(new EvalPlan("nasari_" + nasariVectorDBName, b, t, new NasariMeasure(babelNetDataSource, nasariVectorDatabase, threshold)));
 	            }
             }
         }
