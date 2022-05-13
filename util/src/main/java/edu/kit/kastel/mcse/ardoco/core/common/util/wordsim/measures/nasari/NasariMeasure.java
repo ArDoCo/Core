@@ -7,6 +7,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babel
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.BabelNetSynsetId;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception.BabelNetInvalidKeyException;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet.exception.BabelNetRequestLimitException;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.RetrieveVectorException;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorBasedWordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorSqliteDatabase;
 import org.slf4j.Logger;
@@ -86,7 +87,7 @@ public class NasariMeasure extends VectorBasedWordSimMeasure {
 				try {
 					similarity = compareVectors(firstSense.toString(), secondSense.toString());
 				}
-				catch (SQLException e) {
+				catch (RetrieveVectorException e) {
 					LOGGER.error("Failed to compare nasari vectors", e);
 					return false;
 				}
