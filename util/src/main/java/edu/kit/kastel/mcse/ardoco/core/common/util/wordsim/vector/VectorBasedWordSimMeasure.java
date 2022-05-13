@@ -2,29 +2,28 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * A vector based word similarity measure uses vector embeddings of words to compare their similarity.
- * To get vector embeddings of passed words, a {@link VectorSqliteDatabase} is necessary.
+ * To get vector embeddings of passed words, a {@link WordVectorDataSource} is required.
  * Instances of this class additionally manage a cache to improve lookup speeds.
  */
 public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 
 	private static final float[] ZERO_VECTOR = new float[0];
 
-	private final VectorSqliteDatabase vectorDatabase;
+	private final WordVectorDataSource vectorDataSource;
 	private final Map<String, float[]> vectorCache = new HashMap<>();
 
 	/**
 	 * Constructs a new {@link VectorBasedWordSimMeasure} instance
-	 * @param vectorDatabase the vector database used to get vector representations for words
+	 * @param vectorDataSource the vector database used to get vector representations for words
 	 */
-	protected VectorBasedWordSimMeasure(VectorSqliteDatabase vectorDatabase) {
-		this.vectorDatabase = Objects.requireNonNull(vectorDatabase);
+	protected VectorBasedWordSimMeasure(WordVectorDataSource vectorDataSource) {
+		this.vectorDataSource = Objects.requireNonNull(vectorDataSource);
 	}
 
 	/**
@@ -34,9 +33,9 @@ public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 	 * @param firstWord the first word
 	 * @param secondWord the second word
 	 * @return returns the similarity score between the two words, between 0.0 and 1.0 (inclusive)
-	 * @throws SQLException if an error occurs while accessing the vector database
+	 * @throws RetrieveVectorException if an error occurs while retrieving the word vectors
 	 */
-	public double compareVectors(String firstWord, String secondWord) throws SQLException {
+	public double compareVectors(String firstWord, String secondWord) throws RetrieveVectorException {
 		Objects.requireNonNull(firstWord);
 		Objects.requireNonNull(secondWord);
 
@@ -59,11 +58,11 @@ public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 		return VectorUtils.cosineSimilarity(firstVec, secondVec);
 	}
 
-	private float[] getVectorFromCacheOrDatabase(String word) throws SQLException {
+	private float[] getVectorFromCacheOrDatabase(String word) throws RetrieveVectorException {
 		float[] vector = this.vectorCache.getOrDefault(word, null);
 
 		if (vector == null) {
-			vector = this.vectorDatabase.getWordVector(word).orElse(ZERO_VECTOR);
+			vector = this.vectorDataSource.getWordVector(word).orElse(ZERO_VECTOR);
 			this.vectorCache.put(word, vector);
 		}
 

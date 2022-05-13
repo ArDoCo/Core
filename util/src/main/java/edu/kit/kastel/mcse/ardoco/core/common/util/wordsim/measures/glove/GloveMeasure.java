@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.RetrieveVectorException;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorBasedWordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorSqliteDatabase;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class GloveMeasure extends VectorBasedWordSimMeasure {
 
         try {
             similarity = this.compareVectors(ctx.firstTerm(), ctx.secondTerm());
-        } catch (SQLException e) {
+        } catch (RetrieveVectorException e) {
             LOGGER.error("Failed to compare glove vectors: " + ctx, e);
         }
 

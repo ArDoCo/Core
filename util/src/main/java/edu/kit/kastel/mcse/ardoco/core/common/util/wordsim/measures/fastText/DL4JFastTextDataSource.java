@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.WordVectorDataSource;
 import org.deeplearning4j.models.fasttext.FastText;
 
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorU
  * Provides the functionality of fastText using the DL4J (JFastText) native wrapper.
  * Instances of this class keep a loaded fastText binary model active until {@link #close()} is called.
  */
-public class DL4JFastTextDataSource implements AutoCloseable {
+public class DL4JFastTextDataSource implements WordVectorDataSource, AutoCloseable {
 
     private final FastText fastText;
 
@@ -39,12 +40,21 @@ public class DL4JFastTextDataSource implements AutoCloseable {
      * @param word the word
      * @return the word vector, or {@link Optional#empty()} if no vector representation for the given word exists.
      */
-    public Optional<double[]> getWordVector(String word) {
+    public Optional<float[]> getWordVector(String word) {
         Objects.requireNonNull(word);
 
-        double[] vector = this.fastText.getWordVector(word);
+        double[] doubleVector = this.fastText.getWordVector(word);
 
-        return isZero(vector) ? Optional.empty() : Optional.of(vector);
+		if (isZero(doubleVector)) { return Optional.empty(); }
+
+		// Convert double vector to float vector
+		float[] floatVector = new float[doubleVector.length];
+
+	    for (int i = 0; i < floatVector.length; i++) {
+		    floatVector[i] = (float) doubleVector[i];
+	    }
+
+        return Optional.of(floatVector);
     }
 
     /**
