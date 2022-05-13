@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
@@ -41,9 +40,6 @@ class CoreNLPTextTest {
                 () -> Assertions.assertEquals(POSTag.NOUN, word.getPosTag()), //
                 () -> Assertions.assertEquals("test", word.getLemma()), //
                 () -> Assertions.assertEquals(41, word.getSentenceNo()));
-        // TODO test dependencies
-        var deps = word.getIncomingDependencyWordsWithType(DependencyTag.COMPOUND);
-        System.out.println(deps.size());
     }
 
     @Test
