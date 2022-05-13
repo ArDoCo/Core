@@ -23,7 +23,7 @@ import java.util.Optional;
  * Vector blobs must be stored as a consecutive sequence of floats.
  * The amount of floats in a sequence depends on the dimension of the vectors.
  */
-public class VectorSqliteDatabase implements AutoCloseable {
+public class VectorSqliteDatabase implements WordVectorDataSource, AutoCloseable {
 
 	private static final int BYTES_PER_FLOAT = 4;
 	private static final String SELECT_QUERY = "SELECT `vec` FROM `words` WHERE `word` = ?";
@@ -59,26 +59,36 @@ public class VectorSqliteDatabase implements AutoCloseable {
 	 *
 	 * @param word the word
 	 * @return the vector representation, or {@link Optional#empty()} if no representation exists in the database.
-	 * @throws SQLException if a database access error occurs
+	 * @throws RetrieveVectorException if a database access error occurs
 	 */
-	public Optional<float[]> getWordVector(String word) throws SQLException {
-		this.selectStatement.setString(1, word);
+	public Optional<float[]> getWordVector(String word) throws RetrieveVectorException {
+		try {
+			this.selectStatement.setString(1, word);
+		}
+		catch (SQLException e) {
+			throw new RetrieveVectorException("unable to pass word to the database: " + word, e);
+		}
+
+		ByteBuffer bytes = null;
 
 		try (ResultSet result = this.selectStatement.executeQuery()) {
 			if (result.next()) {
-				ByteBuffer bytes = ByteBuffer.wrap(result.getBytes("vec"));
-				float[] vec = new float[bytes.capacity() / BYTES_PER_FLOAT];
-
-				for (int i = 0; i < vec.length; i++) {
-					vec[i] = bytes.getFloat();
-				}
-
-				return Optional.of(vec);
+				bytes = ByteBuffer.wrap(result.getBytes("vec"));
 			}
 		}
+		catch (SQLException e) {
+			throw new RetrieveVectorException("unable to execute query for word:" + word, e);
+		}
 
-		return Optional.empty();
-	}
+		if (bytes == null) { return Optional.empty(); }
+
+		float[] vec = new float[bytes.capacity() / BYTES_PER_FLOAT];
+
+		for (int i = 0; i < vec.length; i++) {
+			vec[i] = bytes.getFloat();
+		}
+
+		return Optional.of(vec);	}
 
 	@Override
 	public void close() throws Exception {
