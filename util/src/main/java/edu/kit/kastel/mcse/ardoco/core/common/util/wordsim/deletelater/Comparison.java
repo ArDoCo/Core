@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 import java.util.List;
@@ -12,11 +13,13 @@ import java.util.Optional;
 public final class Comparison implements Comparable<Comparison> {
 
     public final WordPair wordPair;
+	public final ComparisonContext context;
     public final List<MeasureResult> results;
     public final boolean accepted;
 
-    public Comparison(WordPair wordPair, List<MeasureResult> results, boolean accepted) {
+    public Comparison(WordPair wordPair, ComparisonContext context, List<MeasureResult> results, boolean accepted) {
         this.wordPair = wordPair;
+		this.context = context;
         this.results = results;
         this.accepted = accepted;
     }
@@ -29,7 +32,9 @@ public final class Comparison implements Comparable<Comparison> {
         return wordPair.secondWord;
     }
 
-    public Optional<MeasureResult> getResultBy(WordSimMeasure measure) {
+	public ComparisonContext context() { return context; }
+
+	public Optional<MeasureResult> getResultBy(WordSimMeasure measure) {
         return results.stream().filter(mr -> mr.measure().equals(measure)).findAny();
     }
 
