@@ -23,13 +23,15 @@ public class EvalCSVGenerator {
 
     private final Path sourceDir;
     private final Path targetDir;
+    private final boolean overwriteExisting;
 
-    public EvalCSVGenerator(Path sourceDir, Path targetDir) {
+    public EvalCSVGenerator(Path sourceDir, Path targetDir, boolean overwriteExisting) {
         this.sourceDir = sourceDir;
         this.targetDir = targetDir;
+        this.overwriteExisting = overwriteExisting;
     }
 
-    private ThresholdFile parseThresholdFile(Path filePath) {
+    static ThresholdFile parseThresholdFile(Path filePath) {
         var fileName = filePath.getFileName().toString().replace(".json", "");
         var data = fileName.split("_");
         var thresholdStr = data[data.length - 1].replace("t", "");
@@ -46,11 +48,10 @@ public class EvalCSVGenerator {
 
         for (Path sourceGroupDir : groupDirs) {
             String group = sourceGroupDir.getFileName().toString();
-            Files.createDirectories(targetDir.resolve(group));
 
             List<ThresholdFile> files = Files.list(sourceGroupDir).filter(Files::isRegularFile)
                     .filter(p -> p.getFileName().toString().endsWith(".json"))
-                    .map(this::parseThresholdFile)
+                    .map(EvalCSVGenerator::parseThresholdFile)
                     .sorted(Comparator.comparing(f -> f.threshold))
                     .toList();
 
@@ -67,8 +68,12 @@ public class EvalCSVGenerator {
 
     private void createIntMetricFile(String group, List<ThresholdFile> files, String metricId, Function<EvalResult, Integer> metric) throws IOException {
         var fileName = String.format("%s_%s.csv", group, metricId);
-        var filePath = targetDir.resolve(group).resolve(fileName);
+        var filePath = targetDir.resolve(fileName);
         var fileContent = new StringBuilder("threshold ").append(metricId).append('\n');
+
+        if (!overwriteExisting && Files.exists(filePath)) {
+            return;
+        }
 
         for (ThresholdFile file : files) {
             EvalResult result = EvalResult.fromJsonString(Files.readString(file.filePath));
