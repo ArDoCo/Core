@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MeasureMatrix {
@@ -10,8 +12,8 @@ public class MeasureMatrix {
     private final List<WordSimMeasure> measureList;
     private final int[][] matrix;
 
-    public MeasureMatrix(List<WordSimMeasure> measures) {
-        this.measureList = measures;
+    public MeasureMatrix(Collection<WordSimMeasure> measures) {
+        this.measureList = new ArrayList<>(measures);
         this.matrix = new int[measures.size()][measures.size()];
     }
 
