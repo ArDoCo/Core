@@ -52,6 +52,7 @@ public class Evaluation {
 
     public static List<EvalPlan> getPlans() throws IOException, SQLException {
         var plans = new ArrayList<EvalPlan>();
+        var globalPrefix = "";
 
         boolean jaroWinkler = false;
         boolean levenshtein = true;
@@ -182,7 +183,9 @@ public class Evaluation {
             }
         }
 
-        return plans;
+        return plans.stream()
+                .map(plan -> new EvalPlan(globalPrefix + plan.getGroupPrefix(), plan.getBaseline(), plan.getThreshold(), plan.getMeasures()))
+                .toList();
     }
 
 }
