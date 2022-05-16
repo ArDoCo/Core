@@ -116,6 +116,8 @@ public class Evaluation {
 		}
 
         // 2.) Construct plans
+        plans.add(new EvalPlan("base", Baseline.FIRST, 100, new EqualityMeasure()));
+        plans.add(new EvalPlan("base", Baseline.SECOND, 100, new EqualityMeasure()));
 
 	    for (Baseline b : Baseline.values()) {
 		    for (int t = 0; t <= 100; t += 10) {
