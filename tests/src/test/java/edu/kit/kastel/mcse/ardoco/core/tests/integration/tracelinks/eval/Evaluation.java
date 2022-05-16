@@ -47,7 +47,7 @@ public class Evaluation {
 
         new Evaluator(plans, resultDir, overwriteExistingResults).execute();
 
-        new EvalCSVGenerator(resultDir, latexDir).run();
+        new EvalCSVGenerator(resultDir, latexDir, overwriteExistingResults).run();
     }
 
     public static List<EvalPlan> getPlans() throws IOException, SQLException {
