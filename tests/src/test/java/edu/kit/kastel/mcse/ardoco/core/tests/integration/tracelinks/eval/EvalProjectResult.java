@@ -35,7 +35,10 @@ public class EvalProjectResult implements Comparable<EvalProjectResult> {
     public EvalProjectResult(Project project, AgentDatastructure data) throws IOException {
         this(
                 project,
-                data.getAllConnectionStates().values().stream().flatMap(c -> c.getTraceLinks().stream()).map(TestLink::new).toList(),
+                data.getAllConnectionStates().values().stream()
+	                .flatMap(c -> c.getTraceLinks().stream())
+	                .map(TestLink::new)
+	                .toList(),
                 TLGoldStandardFile.loadLinks(project),
                 data.getText().getSentences().size(),
                 (int) data.getModelIds().stream().flatMap(m -> data.getModelState(m).getInstances().stream()).count()
@@ -87,6 +90,7 @@ public class EvalProjectResult implements Comparable<EvalProjectResult> {
         Collections.sort(this.truePositives);
         Collections.sort(this.falsePositives);
         Collections.sort(this.falseNegatives);
+	    // ^ sorting these lists ensures that they are always in the same order when viewed
     }
 
     public Project getProject() {
