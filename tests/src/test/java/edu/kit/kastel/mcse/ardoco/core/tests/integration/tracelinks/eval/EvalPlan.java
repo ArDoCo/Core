@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class EvalPlan {
 
+    private final String groupPrefix;
     private final String group;
     private final Baseline baseline;
     private final int threshold;
@@ -21,6 +22,7 @@ public class EvalPlan {
     }
 
     public EvalPlan(String groupPrefix, Baseline base, int threshold, List<WordSimMeasure> measures) {
+        this.groupPrefix = groupPrefix;
         this.group = groupPrefix + "_b" + base.getId();
         this.baseline = base;
         this.threshold = threshold;
@@ -35,6 +37,8 @@ public class EvalPlan {
     public String getGroup() {
         return group;
     }
+
+    public String getGroupPrefix() { return groupPrefix; }
 
     public Baseline getBaseline() {
         return baseline;
