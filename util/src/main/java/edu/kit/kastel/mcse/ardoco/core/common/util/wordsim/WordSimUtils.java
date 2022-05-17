@@ -12,10 +12,10 @@ import java.util.Objects;
 /**
  * A static class that provides various utility methods to calculate similarity between different kinds of objects.
  */
-public class NewSimilarityUtils {
+public class WordSimUtils {
 
     private static List<WordSimMeasure> MEASURES = WordSimLoader.loadUsingProperties();
-	private static ComparisonStrategy STRATEGY = ComparisonStrategy.AT_LEAST_ONE; // TODO: load default from properties?
+	private static ComparisonStrategy STRATEGY = ComparisonStrategy.AT_LEAST_ONE;
 
     public static void setMeasures(Collection<WordSimMeasure> measures) { MEASURES = new ArrayList<>(measures); }
 
@@ -57,7 +57,7 @@ public class NewSimilarityUtils {
 		return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
 	}
 
-    private NewSimilarityUtils() {
+    private WordSimUtils() {
     }
 
 }

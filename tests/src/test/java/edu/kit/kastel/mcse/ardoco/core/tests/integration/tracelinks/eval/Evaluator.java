@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.NewSimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -88,7 +88,7 @@ public class Evaluator {
 
     private EvalPlanResult evaluatePlan(EvalPlan plan) throws IOException {
         ComparisonStats.ENABLED = false;
-        NewSimilarityUtils.setMeasures(plan.getMeasures());
+        WordSimUtils.setMeasures(plan.getMeasures());
 
         var projectResults = new ArrayList<EvalProjectResult>();
 

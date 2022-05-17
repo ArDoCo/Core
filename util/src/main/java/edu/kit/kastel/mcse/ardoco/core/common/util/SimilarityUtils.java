@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.NewSimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.text.IWord;
@@ -144,7 +144,7 @@ public final class SimilarityUtils {
         var word1Text = word1.getText();
         var word2Text = word2.getText();
         //return areWordsSimilar(word1Text, word2Text);
-        return NewSimilarityUtils.areWordsSimilar(word1, word2);
+        return WordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**
@@ -172,7 +172,7 @@ public final class SimilarityUtils {
         //var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
         //return isJaroWinklerSimilar || isLevenshteinSimilar;
 
-        return NewSimilarityUtils.areWordsSimilar(original, word2test);
+        return WordSimUtils.areWordsSimilar(original, word2test);
     }
 
     private static boolean jaroWinklerSimilarityTest(String original, String word2test, Double threshold) {
