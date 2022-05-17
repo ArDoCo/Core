@@ -10,8 +10,18 @@ import java.util.List;
  * word similarity measures accept the word pair as similar.
  */
 public class MajorityStrategy implements ComparisonStrategy {
+
 	@Override
 	public boolean areWordsSimilar(ComparisonContext ctx, List<WordSimMeasure> measures) {
-		return false; // TODO
+		int acceptances = 0;
+
+		for (WordSimMeasure measure : measures) {
+			if (measure.areWordsSimilar(ctx)) {
+				acceptances++;
+			}
+		}
+
+		return acceptances > (measures.size() / 2);
 	}
+
 }
