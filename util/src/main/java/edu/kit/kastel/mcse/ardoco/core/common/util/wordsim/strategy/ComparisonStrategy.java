@@ -6,7 +6,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import java.util.List;
 
 /**
- * TODO
+ * A comparison strategy determines how the verdicts of multiple WSMs regarding a specific comparison are combined.
  */
 public interface ComparisonStrategy {
 
@@ -14,13 +14,13 @@ public interface ComparisonStrategy {
 
 	ComparisonStrategy MAJORITY = new MajorityStrategy();
 
-	static ComparisonStrategy threshold(double threshold) { return null; } // ?
-
 	/**
-	 * TODO
-	 * @param ctx
-	 * @param measures
-	 * @return
+	 * Evaluates whether the words from the given {@link ComparisonContext} are similar by combining the verdicts
+	 * of the specified word similarity measures.
+	 *
+	 * @param ctx      the context containing the words
+	 * @param measures the measures to use
+	 * @return Returns {@code true} if the words are similar.
 	 */
 	boolean areWordsSimilar(ComparisonContext ctx, List<WordSimMeasure> measures);
 

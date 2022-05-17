@@ -5,6 +5,10 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 import java.util.List;
 
+/**
+ * This comparison strategy accepts any word pair as similar if the majority of specified
+ * word similarity measures accept the word pair as similar.
+ */
 public class MajorityStrategy implements ComparisonStrategy {
 	@Override
 	public boolean areWordsSimilar(ComparisonContext ctx, List<WordSimMeasure> measures) {
