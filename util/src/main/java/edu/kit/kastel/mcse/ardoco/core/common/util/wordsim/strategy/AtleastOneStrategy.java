@@ -5,8 +5,11 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * This comparison strategy accepts any word pair as similar if at least one of the specified
+ * word similarity measures also accept that word pair as similar.
+ */
 public class AtleastOneStrategy implements ComparisonStrategy {
 
 	@Override
