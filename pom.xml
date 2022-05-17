@@ -42,7 +42,7 @@
   <properties>
     <project.source.encoding>UTF-8</project.source.encoding>
     <eclipse-collections.version>11.0.0</eclipse-collections.version>
-    <jackson.version>2.13.2</jackson.version>
+    <jackson.version>2.13.3</jackson.version>
     <error-prone.version>2.10.0</error-prone.version>
     <spotless.version>2.22.5</spotless.version>
 
