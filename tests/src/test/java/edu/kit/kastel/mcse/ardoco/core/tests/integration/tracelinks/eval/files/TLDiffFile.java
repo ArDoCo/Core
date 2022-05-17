@@ -1,6 +1,13 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
+import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalUtils;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,38 +15,29 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
 
 public class TLDiffFile {
 
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("+##0.00%;-##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void save(Path targetFile, Collection<TLProjectEvalResult> newResults, Collection<TLProjectEvalResult> oldResults,
-            Map<Project, AgentDatastructure> dataMap) throws IOException {
+    public static void save(Path targetFile, EvalResult newResults, EvalResult oldResults,
+                            Map<Project, AgentDatastructure> dataMap) throws IOException {
         // Assumption: Both collections contain the same projects
-
-        newResults = newResults.stream().sorted().toList();
-        oldResults = oldResults.stream().sorted().toList();
 
         var builder = new StringBuilder();
 
         builder.append("Time of evaluation: `").append(DATE_FORMATTER.format(LocalDateTime.now())).append("`\n");
 
         // Append average differences in precision, recall, f1
-        var oldAvgPrecision = oldResults.stream().mapToDouble(TLProjectEvalResult::getPrecision).average().orElse(Double.NaN);
-        var oldAvgRecall = oldResults.stream().mapToDouble(TLProjectEvalResult::getRecall).average().orElse(Double.NaN);
-        var oldAvgF1 = oldResults.stream().mapToDouble(TLProjectEvalResult::getF1).average().orElse(Double.NaN);
-        var newAvgPrecision = newResults.stream().mapToDouble(TLProjectEvalResult::getPrecision).average().orElse(Double.NaN);
-        var newAvgRecall = newResults.stream().mapToDouble(TLProjectEvalResult::getRecall).average().orElse(Double.NaN);
-        var newAvgF1 = newResults.stream().mapToDouble(TLProjectEvalResult::getF1).average().orElse(Double.NaN);
+        var oldAvgPrecision = oldResults.getPrecision();
+        var oldAvgRecall = oldResults.getRecall();
+        var oldAvgF1 = oldResults.getF1Score();
+        var newAvgPrecision = newResults.getPrecision();
+        var newAvgRecall = newResults.getRecall();
+        var newAvgF1 = newResults.getF1Score();
 
         builder.append("Ø ");
         builder.append(NUMBER_FORMAT.format(newAvgPrecision - oldAvgPrecision)).append(" Precision,  ");
@@ -47,16 +45,17 @@ public class TLDiffFile {
         builder.append(NUMBER_FORMAT.format(newAvgF1 - oldAvgF1)).append(" F1\n\n");
 
         // Append project specific details
-        for (TLProjectEvalResult oldResult : oldResults) {
+        for (EvalProjectResult oldResult : oldResults.getProjectResults().stream().sorted().toList()) {
             var project = oldResult.getProject();
-            var newResult = newResults.stream().filter(r -> r.getProject().equals(project)).findAny().orElseThrow();
+            var newResult = newResults.getProjectResults().stream()
+	            .filter(r -> r.getProject().equals(project)).findAny().orElseThrow();
             var data = dataMap.get(project);
 
             builder.append("# ").append(project.name()).append("\n\n");
 
             builder.append(NUMBER_FORMAT.format(newResult.getPrecision() - oldResult.getPrecision())).append(" Precision,  ");
             builder.append(NUMBER_FORMAT.format(newResult.getRecall() - oldResult.getRecall())).append(" Recall,  ");
-            builder.append(NUMBER_FORMAT.format(newResult.getF1() - oldResult.getF1())).append(" F1\n\n");
+            builder.append(NUMBER_FORMAT.format(newResult.getF1Score() - oldResult.getF1Score())).append(" F1\n\n");
 
             var newTruePositives = findNewLinks(oldResult.getTruePositives(), newResult.getTruePositives());
             appendList(builder, "New true positives", newTruePositives, data);
@@ -93,13 +92,10 @@ public class TLDiffFile {
         builder.append(description).append(":\n");
 
         for (TestLink link : links) {
-            for (var modelId : data.getModelIds()) {
-                var datamodel = data.getModelState(modelId);
-                var line = TLSummaryFile.format(link, text, datamodel);
-                if (line != null && !line.isBlank()) {
-                    builder.append("- ").append(line).append('\n');
-                }
-            }
+	        var line = EvalUtils.formatLink(link, data);
+	        if (line != null && !line.isBlank()) {
+		        builder.append("- ").append(line).append('\n');
+	        }
         }
 
         builder.append('\n');
