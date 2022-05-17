@@ -9,10 +9,12 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.ComparisonAnalysis;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons.TLComparisonDir;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatGroup;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatsAnalysis;
 import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 import org.apache.logging.log4j.LogManager;
@@ -33,14 +35,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+
 public class TracelinksIT {
     private static Logger logger = null;
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
-    private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
+    private static final List<EvalProjectResult> RESULTS = new ArrayList<>();
     private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
-    private static final Map<Project, ComparisonStatGroup> COMP_MAP = new HashMap<>();
+    private static final Map<Project, ComparisonStatsAnalysis> COMP_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
     private File inputText;
@@ -60,15 +65,26 @@ public class TracelinksIT {
             var evalDir = Path.of(OUTPUT).resolve("tl_eval");
             Files.createDirectories(evalDir);
 
-            TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
+			ComparisonAnalysis.analyze(COMP_MAP);
+
+	        EvalResult evalResult = new EvalResult(RESULTS);
+	        Path previousResultPath = evalDir.resolve("previous_result.json");
+
+	        if (Files.exists(previousResultPath)) {
+		        EvalResult previousResult = EvalResult.fromJsonString(Files.readString(previousResultPath));
+				TLDiffFile.save(evalDir.resolve("diff.md"), evalResult, previousResult, DATA_MAP);
+	        }
+			else {
+				Files.writeString(previousResultPath, evalResult.toJsonString());
+	        }
+
+			TLSummaryFile.save(evalDir.resolve("summary.md"), evalResult, DATA_MAP);
             TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
             TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-            TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
-            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
-            TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
-            TLStatsFile.save(evalDir.resolve("stats.md"), COMP_MAP, DATA_MAP);
-            TLBinResultsFile.save(evalDir.resolve("results.bin"), RESULTS);
-            TLComparisonDir.save(evalDir.resolve("comparisons"), COMP_MAP, DATA_MAP);
+			TLComparisonDir.save(evalDir.resolve("comparisons"), COMP_MAP, DATA_MAP);
+            TLLogFile.append(evalDir.resolve("log.md"), evalResult);
+
+			Files.writeString(evalDir.resolve("result.json"), evalResult.toJsonString(), CREATE, TRUNCATE_EXISTING);
         }
 
         RESULTS.clear();
@@ -148,11 +164,12 @@ public class TracelinksIT {
 
             if (detailedDebug) {
                 printDetailedDebug(results, data);
+
                 try {
-                    RESULTS.add(new TLProjectEvalResult(project, data));
+                    RESULTS.add(new EvalProjectResult(project, data));
                     DATA_MAP.put(project, data);
-                    COMP_MAP.put(project, new ComparisonStatGroup(project, data, ComparisonStats.getComparisons()));
-                    ComparisonStats.reset();
+					COMP_MAP.put(project, new ComparisonStatsAnalysis(ComparisonStats.getComparisons()));
+					ComparisonStats.reset();
                 } catch (IOException e) {
                     e.printStackTrace(); // failing to save project results is irrelevant for test success
                 }
