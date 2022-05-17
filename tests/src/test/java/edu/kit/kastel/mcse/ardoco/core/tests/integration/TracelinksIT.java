@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.ComparisonAnalysis;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
