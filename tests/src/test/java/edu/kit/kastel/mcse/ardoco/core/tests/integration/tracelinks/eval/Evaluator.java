@@ -50,7 +50,7 @@ public class Evaluator {
      * 
      * @throws IOException if the evaluation encounters an exception
      */
-    public void execute() throws IOException {
+    public void execute() throws IOException, ReflectiveOperationException {
         Files.createDirectories(this.resultDir);
 
         long totalStart = System.currentTimeMillis();
@@ -86,7 +86,7 @@ public class Evaluator {
         LOGGER.info("Entire multi plan evaluation took {} seconds", totalDuration / 1000);
     }
 
-    private EvalPlanResult evaluatePlan(EvalPlan plan) throws IOException {
+    private EvalPlanResult evaluatePlan(EvalPlan plan) throws IOException, ReflectiveOperationException {
         ComparisonStats.ENABLED = false;
         WordSimUtils.setMeasures(plan.getMeasures());
 
@@ -106,10 +106,17 @@ public class Evaluator {
         return new EvalPlanResult(plan, evalResult);
     }
 
-    private EvalProjectResult evaluateProject(Project project) throws IOException {
-        File modelFile = project.getTextOntologyFile();
+    private EvalProjectResult evaluateProject(Project project) throws IOException, ReflectiveOperationException {
+        File modelFile = project.getModelFile();
+        File textFile = project.getPreprocessedTextFile();
+        boolean usePreprocessedText = true;
 
-        var data = Pipeline.run("test_" + project.name(), null, modelFile, null);
+        if (!textFile.exists()) {
+            textFile = project.getTextFile();
+            usePreprocessedText = false;
+        }
+
+        var data = Pipeline.run("test_" + project.name(), textFile, usePreprocessedText, modelFile, null);
 
         return new EvalProjectResult(project, data);
     }

@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.DL4JFastTextDataSource;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.FastTextMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove.GloveMeasure;
@@ -39,7 +40,7 @@ public class Evaluation {
 
     @Test
     @Disabled
-    public void run() throws IOException, SQLException {
+    public void run() throws IOException, SQLException, ReflectiveOperationException {
         var overwriteExistingResults = false;
         var plans = getPlans();
         var resultDir = Path.of("eval_results/");
