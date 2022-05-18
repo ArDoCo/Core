@@ -1,9 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,18 +13,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 class CoreNLPTextTest {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPTextTest.class);
-    protected static String inputText = "src/test/resources/teastore.txt";
-
     private static IText text;
 
     @BeforeAll
     static void beforeAll() {
-        try {
-            var coreNLPProvider = new CoreNLPProvider(new FileInputStream(inputText));
-            text = coreNLPProvider.getAnnotatedText();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        var coreNLPProvider = CoreNLPProviderTest.getCoreNLPProvider();
+        text = coreNLPProvider.getAnnotatedText();
     }
 
     @Test
