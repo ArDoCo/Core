@@ -1,7 +1,11 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -11,7 +15,12 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 
 /**
@@ -20,7 +29,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.Sentence;
 public class ParseConverter {
 
     private IText annotatedText;
-    private IGraph graph;
+    private final IGraph graph;
 
     private Map<INode, Word> instances;
     private MutableList<Word> orderedWords;
@@ -237,8 +246,8 @@ public class ParseConverter {
 
     private static final class Text implements IText {
 
-        private ImmutableList<IWord> words;
-        private ImmutableList<ICorefCluster> corefClusters;
+        private final ImmutableList<IWord> words;
+        private final ImmutableList<ICorefCluster> corefClusters;
         private ImmutableList<ISentence> sentences = null;
 
         private Text(ImmutableList<Word> orderedWords, ImmutableList<ICorefCluster> corefClusters) {

@@ -19,7 +19,7 @@ public class ParseProvider implements ITextConnector {
 
     private static final Logger logger = LoggerFactory.getLogger(ParseProvider.class);
 
-    private IText annotatedText;
+    private final IText annotatedText;
 
     /**
      * Instantiates a new parses the provider.

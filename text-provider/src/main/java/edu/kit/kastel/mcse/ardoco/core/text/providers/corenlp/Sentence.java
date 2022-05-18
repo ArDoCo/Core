@@ -18,7 +18,7 @@ class Sentence implements ISentence {
 
     private ImmutableList<IWord> words = Lists.immutable.empty();
 
-    private CoreSentence coreSentence;
+    private final CoreSentence coreSentence;
     private int sentenceNumber = -1;
 
     public Sentence(CoreSentence coreSentence, int sentenceNumber) {
