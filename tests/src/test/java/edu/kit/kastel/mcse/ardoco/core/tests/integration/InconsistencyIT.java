@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
@@ -6,15 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Locale;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
@@ -22,26 +21,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResu
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model.DeleteOneModelElementEval;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
 
 class InconsistencyIT {
-    private static Logger logger = null;
+    private static final Logger logger = LoggerFactory.getLogger(InconsistencyIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
-
-    @BeforeAll
-    public static void beforeAll() {
-        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
-        logger = LogManager.getLogger(InconsistencyIT.class);
-    }
-
-    @BeforeEach
-    void beforeEach() {
-        // set the cache to true (default setting)
-        // if another tests does not want to have a cache they can manipulate themselves
-        OntologyTextProvider.enableCache(true);
-    }
 
     @DisplayName("Evaluate Inconsistency Analyses")
     @ParameterizedTest(name = "Evaluating {0}")
@@ -74,11 +58,10 @@ class InconsistencyIT {
 
         var outFile = String.format("%s%sinconsistency-eval-%s.txt", OUTPUT, File.separator, name.toLowerCase());
 
-        try (PrintStream os = new PrintStream(new File(outFile))) {
-            var results = run(project, eval1, os);
-            return results;
+        try (PrintStream os = new PrintStream(outFile)) {
+            return run(project, eval1, os);
         } catch (FileNotFoundException e) {
-            Assertions.assertTrue(false, "Could not find file.");
+            Assertions.fail("Could not find file.");
         }
         return null;
     }

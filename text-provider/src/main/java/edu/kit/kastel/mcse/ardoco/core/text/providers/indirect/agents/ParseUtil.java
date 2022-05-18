@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents;
 
 import java.util.List;
@@ -8,18 +8,9 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.ipd.parse.luna.graph.IArc;
-import edu.kit.ipd.parse.luna.graph.IArcType;
-import edu.kit.ipd.parse.luna.graph.IGraph;
-import edu.kit.ipd.parse.luna.graph.INode;
-import edu.kit.ipd.parse.luna.graph.INodeType;
-import edu.kit.ipd.parse.luna.graph.ParseGraph;
+import edu.kit.ipd.parse.luna.graph.*;
 import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.DocIDAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.IsNewlineAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 
@@ -45,11 +36,10 @@ public final class ParseUtil {
      * @return Sorted List of "token"-INodes
      */
     public static List<INode> getINodesInOrder(IGraph graph) {
-        if (!(graph instanceof ParseGraph)) {
+        if (!(graph instanceof ParseGraph parseGraph)) {
             logger.error("Graph cannot be processed!");
             return Lists.mutable.empty();
         }
-        var parseGraph = (ParseGraph) graph;
         IArcType arcType = graph.getArcType(ARC_TYPE_NAME);
 
         MutableList<INode> orderedNodes = Lists.mutable.empty();
@@ -136,7 +126,7 @@ public final class ParseUtil {
         return graph.hasNodeType(TOKEN_NODE_TYPE) ? graph.getNodeType(TOKEN_NODE_TYPE) : graph.createNodeType(TOKEN_NODE_TYPE);
     }
 
-    public static Annotation createDocument(final int beginOffset, int endOffset, List<CoreLabel> tokens, String input) {
+    public static Annotation createDocument(int beginOffset, int endOffset, List<CoreLabel> tokens, String input) {
         var doc = new Annotation(input);
         doc.set(DocIDAnnotation.class, "0");
         doc.set(TokensAnnotation.class, tokens);

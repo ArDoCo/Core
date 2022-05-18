@@ -1,10 +1,28 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -14,36 +32,17 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalRes
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons.TLComparisonDir;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatsAnalysis;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.OntologyTextProvider;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-public class TracelinksIT {
-    private static Logger logger = null;
+class TracelinksIT {
+    private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<EvalProjectResult> RESULTS = new ArrayList<>();
-    private static final Map<Project, AgentDatastructure> DATA_MAP = new HashMap<>();
+    private static final Map<Project, DataStructure> DATA_MAP = new HashMap<>();
     private static final Map<Project, ComparisonStatsAnalysis> COMP_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
@@ -52,19 +51,11 @@ public class TracelinksIT {
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
-    @BeforeAll
-    public static void beforeAll() {
-        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
-        logger = LogManager.getLogger(TracelinksIT.class);
-    }
-
     @AfterAll
     public static void afterAll() throws IOException {
         if (detailedDebug) {
             var evalDir = Path.of(OUTPUT).resolve("tl_eval");
             Files.createDirectories(evalDir);
-
-			ComparisonAnalysis.analyze(COMP_MAP);
 
 	        EvalResult evalResult = new EvalResult(RESULTS);
 	        Path previousResultPath = evalDir.resolve("previous_result.json");
@@ -91,13 +82,6 @@ public class TracelinksIT {
         COMP_MAP.clear();
     }
 
-    @BeforeEach
-    void beforeEach() {
-        // set the cache to true (default setting)
-        // if another tests does not want to have a cache they can manipulate themselves
-        OntologyTextProvider.enableCache(true);
-    }
-
     @AfterEach
     void afterEach() {
         if (ADDITIONAL_CONFIG != null) {
@@ -119,38 +103,41 @@ public class TracelinksIT {
     @ParameterizedTest(name = "Evaluating {0} (Onto)")
     @EnumSource(value = Project.class)
     void compareTraceLinksIT(Project project) {
-        compareOntologyBased(project);
+        compare(project, true);
     }
 
-    @Disabled("Disabled for CI. Enable for local test only!")
+    @Disabled("Disabled for CI. Enable for local test only and only if needed!")
     @DisplayName("Evaluate TLR (Text-based)")
     @ParameterizedTest(name = "Evaluating {0} (Text)")
     @EnumSource(value = Project.class)
     void compareTraceLinksTextIT(Project project) {
-        compareTextBased(project);
+        compare(project, false);
     }
 
-    private void compareOntologyBased(Project project) {
-        inputText = null;
-        inputModel = project.getTextOntologyFile();
-
-        compare(project);
-    }
-
-    private void compareTextBased(Project project) {
-        inputText = project.getTextFile();
+    private void compare(Project project, boolean usePreprocessedText) {
+        var name = project.name().toLowerCase();
         inputModel = project.getModelFile();
 
-        compare(project);
-    }
+        // get text file
+        if (usePreprocessedText) {
+            inputText = project.getPreprocessedTextFile();
+        } else {
+            inputText = project.getTextFile();
+        }
 
-    private void compare(Project project) {
-        var name = project.name().toLowerCase();
-        var data = Pipeline.runAndSave("test_" + name, inputText, inputModel, additionalConfigs, outputDir, false);
+        // execute pipeline
+        DataStructure data = null;
+        try {
+            data = Pipeline.runAndSave("test_" + name, inputText, usePreprocessedText, inputModel, null, additionalConfigs, outputDir);
+        } catch (ReflectiveOperationException | IOException e) {
+            Assertions.fail("Exception during execution occurred");
+        }
+
         Assertions.assertNotNull(data);
         Assertions.assertEquals(1, data.getModelIds().size());
         var modelId = data.getModelIds().get(0);
 
+        // calculate results and compare to expected results
         var results = calculateResults(project, data, modelId);
         var expectedResults = project.getExpectedTraceLinkResults();
 
@@ -170,7 +157,8 @@ public class TracelinksIT {
 					COMP_MAP.put(project, new ComparisonStatsAnalysis(ComparisonStats.getComparisons()));
 					ComparisonStats.reset();
                 } catch (IOException e) {
-                    e.printStackTrace(); // failing to save project results is irrelevant for test success
+                    // failing to save project results is irrelevant for test success
+                    logger.warn(e.getMessage(), e.getCause());
                 }
             }
         }
@@ -185,7 +173,7 @@ public class TracelinksIT {
 
     }
 
-    private void printDetailedDebug(EvaluationResults results, AgentDatastructure data) {
+    private void printDetailedDebug(EvaluationResults results, DataStructure data) {
         var falseNegatives = results.getFalseNegative().stream().map(Object::toString);
         var falsePositives = results.getFalsePositives().stream().map(Object::toString);
 
@@ -199,10 +187,10 @@ public class TracelinksIT {
 
             logger.debug("Model: \n{}", modelId);
             if (!falseNegativeOutput.isEmpty()) {
-                logger.debug("False negatives:\n{}", falseNegativeOutput.stream().collect(Collectors.joining("\n")));
+                logger.debug("False negatives:\n{}", String.join("\n", falseNegativeOutput));
             }
             if (!falsePositivesOutput.isEmpty()) {
-                logger.debug("False positives:\n{}", falsePositivesOutput.stream().collect(Collectors.joining("\n")));
+                logger.debug("False positives:\n{}", String.join("\n", falsePositivesOutput));
             }
         }
 
@@ -236,7 +224,7 @@ public class TracelinksIT {
         return outputList;
     }
 
-    private EvaluationResults calculateResults(Project project, AgentDatastructure data, String modelId) {
+    private EvaluationResults calculateResults(Project project, DataStructure data, String modelId) {
         var connectionState = data.getConnectionState(modelId);
         var traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());

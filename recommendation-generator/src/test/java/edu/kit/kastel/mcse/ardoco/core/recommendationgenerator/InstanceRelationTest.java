@@ -12,10 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 class InstanceRelationTest {
 
@@ -33,17 +35,17 @@ class InstanceRelationTest {
 
     @BeforeEach
     void beforeEach() {
-        instance1 = new RecommendedInstance("i1.name", "i1.type", 1, Lists.immutable.empty(), Lists.immutable.empty());
-        instance2 = new RecommendedInstance("i2.name", "i2.type", 1, Lists.immutable.empty(), Lists.immutable.empty());
-        instance3 = new RecommendedInstance("i3.name", "i3.type", 1, Lists.immutable.empty(), Lists.immutable.empty());
+        instance1 = new RecommendedInstance("i1.name", "i1.type", null, 1, Lists.immutable.empty(), Lists.immutable.empty());
+        instance2 = new RecommendedInstance("i2.name", "i2.type", null, 1, Lists.immutable.empty(), Lists.immutable.empty());
+        instance3 = new RecommendedInstance("i3.name", "i3.type", null, 1, Lists.immutable.empty(), Lists.immutable.empty());
         relator1 = new DummyWord();
         relator2 = new DummyWord();
         from1 = Collections.singletonList(new DummyWord());
         to1 = Collections.singletonList(new DummyWord());
         from2 = Collections.singletonList(new DummyWord());
         to2 = Collections.singletonList(new DummyWord());
-        relation1 = new InstanceRelation(instance1, instance2, relator1, from1, to1);
-        relation2 = new InstanceRelation(instance2, instance3, relator2, from2, to2);
+        relation1 = new InstanceRelation(instance1, instance2, relator1, from1, to1, null);
+        relation2 = new InstanceRelation(instance2, instance3, relator2, from2, to2, null);
     }
 
     @AfterEach
@@ -65,10 +67,10 @@ class InstanceRelationTest {
     @DisplayName("Test adding new link to InstanceRelation/adding already present links")
     void addLinkTest() {
         var rel1Size = relation1.getSize();
-        Assertions.assertFalse(relation1.addLink(relator1, from1, to1));
+        Assertions.assertFalse(relation1.addLink(relator1, from1, to1, null));
         Assertions.assertEquals(rel1Size, relation1.getSize());
 
-        Assertions.assertTrue(relation1.addLink(relator2, from2, to2));
+        Assertions.assertTrue(relation1.addLink(relator2, from2, to2, null));
         Assertions.assertEquals(rel1Size + 1, relation1.getSize());
     }
 
@@ -124,12 +126,12 @@ class InstanceRelationTest {
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             return null;
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
             return null;
         }
 

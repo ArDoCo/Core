@@ -1,68 +1,41 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.common.Loader;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.GenericInconsistencyConfig;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
-public class InconsistencyChecker implements IExecutionStage {
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingModelElementInconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingTextForModelElementInconsistencyAgent;
 
-    private AgentDatastructure data;
-    private List<IAgent> agents = new ArrayList<>();
-    private InconsistencyCheckerConfig config;
-    private GenericInconsistencyConfig agentConfig;
+public class InconsistencyChecker extends AbstractExecutionStage {
 
-    public InconsistencyChecker(AgentDatastructure data) {
-        this(data, InconsistencyCheckerConfig.DEFAULT_CONFIG, GenericInconsistencyConfig.DEFAULT_CONFIG);
-    }
+    private final MutableList<InconsistencyAgent> agents = Lists.mutable.of(new InitialInconsistencyAgent(), new MissingModelElementInconsistencyAgent(),
+            new MissingTextForModelElementInconsistencyAgent());
 
-    public InconsistencyChecker(AgentDatastructure data, InconsistencyCheckerConfig config, GenericInconsistencyConfig agentConfig) {
-        this.data = data;
-        this.config = config;
-        this.agentConfig = agentConfig;
-        for (String modelId : data.getModelIds()) {
-            data.setInconsistencyState(modelId, new InconsistencyState());
-        }
-        initializeAgents();
-    }
+    @Configurable
+    private List<String> enabledAgents = agents.collect(IAgent::getId);
 
-    private void initializeAgents() {
-        Map<String, InconsistencyAgent> myAgents = Loader.loadLoadable(InconsistencyAgent.class);
-
-        for (String inconsistencyAgent : config.inconsistencyAgents) {
-            if (!myAgents.containsKey(inconsistencyAgent)) {
-                throw new IllegalArgumentException("InconsistencyAgent " + inconsistencyAgent + " not found");
-            }
-            for (String modelId : data.getModelIds()) {
-                agents.add(myAgents.get(inconsistencyAgent).create(modelId, data, agentConfig));
-            }
-        }
+    public InconsistencyChecker() {
     }
 
     @Override
-    public void exec() {
-        runAgents();
-    }
+    public void execute(DataStructure data, Map<String, String> additionalSettings) {
+        // Init new connection states
+        data.getModelIds().forEach(mid -> data.setInconsistencyState(mid, new InconsistencyState(additionalSettings)));
 
-    @Override
-    public AgentDatastructure getBlackboard() {
-        return data;
-    }
-
-    @Override
-    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
-        return new InconsistencyChecker(data, new InconsistencyCheckerConfig(configs), new GenericInconsistencyConfig(configs));
-    }
-
-    private void runAgents() {
-        for (IAgent agent : agents) {
-            agent.exec();
+        this.applyConfiguration(additionalSettings);
+        for (InconsistencyAgent agent : findByClassName(enabledAgents, agents)) {
+            agent.applyConfiguration(additionalSettings);
+            agent.execute(data);
         }
     }
 

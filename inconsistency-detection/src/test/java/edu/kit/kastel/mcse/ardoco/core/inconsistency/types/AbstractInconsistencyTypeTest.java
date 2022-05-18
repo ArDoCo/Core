@@ -6,13 +6,14 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 /**
  * @author Jan Keim
@@ -45,6 +46,7 @@ public abstract class AbstractInconsistencyTypeTest {
         Assertions.assertEquals(getTypeString(), getInconsistency().getType());
     }
 
+    @Disabled("Disabled for now as the (expected) values might change regularly")
     @Test
     void toFileOutputTest() {
         var fileOutput = getInconsistency().toFileOutput();
@@ -60,6 +62,7 @@ public abstract class AbstractInconsistencyTypeTest {
                 });
     }
 
+    @Disabled("Disabled for now as the (expected) values might change regularly")
     @Test
     void getReasonTest() {
         var expectedReason = getReasonString();
@@ -116,12 +119,12 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependencyOfThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
         }
 
         @Override
-        public ImmutableList<IWord> getWordsThatAreDependentOnThis(DependencyTag dependencyTag) {
+        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
         }
 

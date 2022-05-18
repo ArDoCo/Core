@@ -1,22 +1,21 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 /**
  * @author Jan Keim
- *
  */
 public class Sentence implements ISentence {
 
-    private int sentenceNumber;
-    private ImmutableList<IWord> words;
+    private final int sentenceNumber;
+    private final ImmutableList<IWord> words;
     private String text = null;
 
     public Sentence(int sentenceNumber, ImmutableList<IWord> words) {
@@ -69,7 +68,7 @@ public class Sentence implements ISentence {
             return true;
         }
         var text = word.getText();
-        return text.equals(")") || text.equals(".") || text.equals(",") || text.equals(";") || text.equals("-") || text.equals("\"") || text.equals("\'");
+        return text.equals(")") || text.equals(".") || text.equals(",") || text.equals(";") || text.equals("-") || text.equals("\"") || text.equals("'");
     }
 
     private static boolean needsNoSpaceAfter(IWord word) {

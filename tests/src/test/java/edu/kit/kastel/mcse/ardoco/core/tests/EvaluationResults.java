@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.util.ArrayList;
@@ -68,10 +68,9 @@ public class EvaluationResults {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof EvaluationResults)) {
+        if (!(obj instanceof EvaluationResults other)) {
             return false;
         }
-        EvaluationResults other = (EvaluationResults) obj;
         return Double.doubleToLongBits(f1) == Double.doubleToLongBits(other.f1)
                 && Double.doubleToLongBits(precision) == Double.doubleToLongBits(other.precision)
                 && Double.doubleToLongBits(recall) == Double.doubleToLongBits(other.recall);

@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
@@ -27,7 +27,7 @@ public class TLSummaryFile {
 	private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-	public static void save(Path targetFile, EvalResult result, Map<Project, AgentDatastructure> dataMap)
+	public static void save(Path targetFile, EvalResult result, Map<Project, DataStructure> dataMap)
 		throws IOException {
 
 		var file = new StringBuilder();
@@ -49,7 +49,6 @@ public class TLSummaryFile {
 				projectResult.getTruePositives().size(), projectResult.getTrueNegativeCount()
 			);
 
-
 			if (!projectResult.getFalsePositives().isEmpty()) {
 				file.append("\nFalse Positives:\n");
 				appendLinks(file, projectResult.getFalsePositives(), dataMap.get(projectResult.getProject()));
@@ -64,7 +63,7 @@ public class TLSummaryFile {
 		Files.writeString(targetFile, file.toString(), UTF_8, CREATE, TRUNCATE_EXISTING);
 	}
 
-	private static void appendLinks(StringBuilder file, List<TestLink> links, AgentDatastructure data) {
+	private static void appendLinks(StringBuilder file, List<TestLink> links, DataStructure data) {
 		for (TestLink link : links) {
 			file.append("- ");
 			String str = EvalUtils.formatLink(link, data);
