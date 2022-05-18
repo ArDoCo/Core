@@ -1,32 +1,37 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
 
 /**
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
  * contained by the model by their probability.
  *
  * @author Sophie
- *
  */
-public class RecommendationState implements IRecommendationState {
+public class RecommendationState extends AbstractState implements IRecommendationState {
 
     private MutableList<IRecommendedInstance> recommendedInstances;
     private MutableList<IInstanceRelation> instanceRelations;
 
     @Override
     public IRecommendationState createCopy() {
-        var recommendationState = new RecommendationState();
+        var recommendationState = new RecommendationState(this.configs);
         recommendationState.recommendedInstances = recommendedInstances.collect(IRecommendedInstance::createCopy);
         recommendationState.instanceRelations = instanceRelations.collect(IInstanceRelation::createCopy);
         return recommendationState;
@@ -35,7 +40,8 @@ public class RecommendationState implements IRecommendationState {
     /**
      * Creates a new recommendation state.
      */
-    public RecommendationState() {
+    public RecommendationState(Map<String, String> configs) {
+        super(configs);
         recommendedInstances = Lists.mutable.empty();
         instanceRelations = Lists.mutable.empty();
     }
@@ -70,8 +76,9 @@ public class RecommendationState implements IRecommendationState {
      * @param to           target nodes of the instance relation
      */
     @Override
-    public void addInstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to) {
-        instanceRelations.add(new InstanceRelation(fromInstance, toInstance, relator, from, to));
+    public void addInstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to,
+            IClaimant claimant) {
+        instanceRelations.add(new InstanceRelation(fromInstance, toInstance, relator, from, to, claimant));
     }
 
     /**
@@ -82,8 +89,8 @@ public class RecommendationState implements IRecommendationState {
      * @param nameMappings name mappings representing that recommended instance
      */
     @Override
-    public void addRecommendedInstance(String name, double probability, ImmutableList<INounMapping> nameMappings) {
-        this.addRecommendedInstance(name, "", probability, nameMappings, Lists.immutable.empty());
+    public void addRecommendedInstance(String name, IClaimant claimant, double probability, ImmutableList<INounMapping> nameMappings) {
+        this.addRecommendedInstance(name, "", claimant, probability, nameMappings, Lists.immutable.empty());
     }
 
     /**
@@ -97,9 +104,9 @@ public class RecommendationState implements IRecommendationState {
      * @return the added recommended instance
      */
     @Override
-    public IRecommendedInstance addRecommendedInstance(String name, String type, double probability, ImmutableList<INounMapping> nameMappings,
-            ImmutableList<INounMapping> typeMappings) {
-        var recommendedInstance = new RecommendedInstance(name, type, probability, //
+    public IRecommendedInstance addRecommendedInstance(String name, String type, IClaimant claimant, double probability,
+            ImmutableList<INounMapping> nameMappings, ImmutableList<INounMapping> typeMappings) {
+        var recommendedInstance = new RecommendedInstance(name, type, claimant, probability, //
                 Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),
                 Lists.immutable.withAll(new HashSet<>(typeMappings.castToCollection())));
         this.addRecommendedInstance(recommendedInstance);
@@ -111,24 +118,20 @@ public class RecommendationState implements IRecommendationState {
      * Adds a recommended instance to the state. If the in the stored instance an instance with the same name and type
      * is contained it is extended. If an recommendedInstance with the same name can be found it is extended. Elsewhere
      * a new recommended instance is created.
-     *
-     * @param ri
      */
     private void addRecommendedInstance(IRecommendedInstance ri) {
         if (recommendedInstances.contains(ri)) {
             return;
         }
 
-        ImmutableList<IRecommendedInstance> risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable();
-        ImmutableList<IRecommendedInstance> risWithExactNameAndType = risWithExactName.select(r -> r.getType().equalsIgnoreCase(ri.getType()));
+        var risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable();
+        var risWithExactNameAndType = risWithExactName.select(r -> r.getType().equalsIgnoreCase(ri.getType()));
 
         if (risWithExactNameAndType.isEmpty()) {
             processRecommendedInstancesWithNoExactNameAndType(ri, risWithExactName);
         } else {
             risWithExactNameAndType.get(0).addMappings(ri.getNameMappings(), ri.getTypeMappings());
-
         }
-
     }
 
     private void processRecommendedInstancesWithNoExactNameAndType(IRecommendedInstance ri, ImmutableList<IRecommendedInstance> risWithExactName) {
@@ -138,7 +141,7 @@ public class RecommendationState implements IRecommendationState {
             var added = false;
 
             for (IRecommendedInstance riWithExactName : risWithExactName) {
-                boolean areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType());
+                var areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType());
                 if (areWordsSimilar || recommendedInstancesHasEmptyType(ri, riWithExactName)) {
                     riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());
                     added = true;

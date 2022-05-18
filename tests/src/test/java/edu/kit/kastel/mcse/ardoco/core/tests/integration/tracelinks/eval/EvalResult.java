@@ -10,7 +10,7 @@ import java.util.List;
 public class EvalResult {
 
     private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(TestLink.class, new TestLink.TestLinkSerde())
+            .registerTypeAdapter(TestLink.class, new TestLinkSerialization())
             .create();
 
     public static EvalResult fromJsonString(String jsonStr) {

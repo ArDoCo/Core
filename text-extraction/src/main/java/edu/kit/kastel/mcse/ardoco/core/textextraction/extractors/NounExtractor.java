@@ -1,57 +1,31 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
-import org.kohsuke.MetaInfServices;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.GenericTextConfig;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtractionExtractor;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
 /**
  * The analyzer classifies nouns.
  *
  * @author Sophie
- *
  */
+public class NounExtractor extends AbstractExtractor<TextAgentData> {
+    @Configurable
+    private double nameOrTypeWeight = 0.5;
 
-@MetaInfServices(TextExtractionExtractor.class)
-public class NounExtractor extends TextExtractionExtractor {
-
-    private double probability;
+    @Configurable
+    private double probability = 0.2;
 
     /**
      * Prototype constructor.
      */
     public NounExtractor() {
-        this(null);
-    }
-
-    /**
-     * Instantiates a new noun extractor.
-     *
-     * @param textExtractionState the text extraction state
-     */
-    public NounExtractor(ITextState textExtractionState) {
-        this(textExtractionState, GenericTextConfig.DEFAULT_CONFIG);
-    }
-
-    /**
-     * Creates a new NounAnalyzer.
-     *
-     * @param textExtractionState the text extraction state
-     * @param config              the module configuration
-     */
-    public NounExtractor(ITextState textExtractionState, GenericTextConfig config) {
-        super(textExtractionState);
-        probability = config.nounAnalyzerProbability;
-    }
-
-    @Override
-    public TextExtractionExtractor create(ITextState textExtractionState, Configuration config) {
-        return new NounExtractor(textExtractionState, (GenericTextConfig) config);
     }
 
     /**
@@ -60,31 +34,33 @@ public class NounExtractor extends TextExtractionExtractor {
      * @param n the n
      */
     @Override
-    public void exec(IWord n) {
+    public void exec(TextAgentData data, IWord n) {
 
-        String nodeValue = n.getText();
+        var nodeValue = n.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
             return;
         }
 
-        findSingleNouns(n);
+        findSingleNouns(data.getTextState(), n);
 
     }
 
     /**
      * Finds all nouns and adds them as name-or-type mappings (and types) to the text extraction state.
-     *
-     * @param word word to check
      */
-    private void findSingleNouns(IWord word) {
-        POSTag pos = word.getPosTag();
+    private void findSingleNouns(ITextState textState, IWord word) {
+        var pos = word.getPosTag();
         if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
-            textState.addNort(word, probability);
+            textState.addName(word, this, probability * nameOrTypeWeight);
+            textState.addType(word, this, probability * nameOrTypeWeight);
         }
         if (POSTag.NOUN_PLURAL == pos) {
-            textState.addType(word, probability);
+            textState.addType(word, this, probability);
         }
 
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    }
 }

@@ -1,12 +1,7 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents a Token describing an action recognized by the semantic role labeler including Information about the
@@ -54,7 +49,7 @@ public class SRLToken extends Token {
         if (dependentTokens.containsKey(role)) {
             ArrayList<Token> tokens = dependentTokens.get(role);
             tokens.add(token);
-            tokens.sort((arg0, arg1) -> Integer.compare(arg0.getPosition(), arg1.getPosition()));
+            tokens.sort(Comparator.comparingInt(AbstractHypothesisToken::getPosition));
 
         } else {
             ArrayList<Token> tokens = new ArrayList<>();

@@ -1,107 +1,49 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.common.Loader;
-import edu.kit.kastel.mcse.ardoco.core.model.Metamodel;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InitialRecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InstanceRelationAgent;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseRecommendationAgent;
 
 /**
  * The Class RecommendationGenerator defines the recommendation stage.
  */
-public class RecommendationGenerator implements IExecutionStage {
+public class RecommendationGenerator extends AbstractExecutionStage {
 
-    private AgentDatastructure data;
-    private MutableList<IAgent> recommendationAgents = Lists.mutable.empty();
-    private MutableList<IAgent> dependencyAgents = Lists.mutable.empty();
+    private final MutableList<RecommendationAgent> agents = Lists.mutable.of(new InitialRecommendationAgent(), new PhraseRecommendationAgent(),
+            new InstanceRelationAgent());
 
-    private RecommendationGeneratorConfig config;
-    private GenericRecommendationConfig agentConfig;
+    @Configurable
+    private List<String> enabledAgents = agents.collect(IAgent::getId);
 
     /**
      * Creates a new model connection agent with the given extraction state and ntr state.
-     *
-     * @param data the data
-     */
-    public RecommendationGenerator(AgentDatastructure data) {
-        this(data, RecommendationGeneratorConfig.DEFAULT_CONFIG, GenericRecommendationConfig.DEFAULT_CONFIG);
-    }
-
-    /**
-     * Instantiates a new recommendation generator.
-     *
-     * @param data        the data
-     * @param config      the config
-     * @param agentConfig the agent config
-     */
-    public RecommendationGenerator(AgentDatastructure data, RecommendationGeneratorConfig config, GenericRecommendationConfig agentConfig) {
-        this.data = data;
-        this.config = config;
-        this.agentConfig = agentConfig;
-
-        for (Metamodel metamodelType : data.getMetamodelTypes()) {
-            data.setRecommendationState(metamodelType, new RecommendationState());
-        }
-
-        initializeAgents();
-    }
-
-    /**
-     * Instantiates a new recommendation generator.
      */
     public RecommendationGenerator() {
     }
 
     @Override
-    public void exec() {
-        for (IAgent agent : recommendationAgents) {
-            agent.exec();
+    public void execute(DataStructure data, Map<String, String> additionalSettings) {
+        // Init new connection states
+        Arrays.stream(Metamodel.values()).forEach(mm -> data.setRecommendationState(mm, new RecommendationState(additionalSettings)));
+
+        this.applyConfiguration(additionalSettings);
+        for (RecommendationAgent agent : findByClassName(enabledAgents, agents)) {
+            agent.applyConfiguration(additionalSettings);
+            agent.execute(data);
         }
-        for (IAgent agent : dependencyAgents) {
-            agent.exec();
-        }
-    }
-
-    /**
-     * Initializes graph dependent analyzers.
-     */
-    private void initializeAgents() {
-
-        Map<String, RecommendationAgent> recommendationAgentsList = Loader.loadLoadable(RecommendationAgent.class);
-
-        for (String recommendationAgent : config.recommendationAgents) {
-            if (!recommendationAgentsList.containsKey(recommendationAgent)) {
-                throw new IllegalArgumentException("RecommendationAgent " + recommendationAgent + " not found");
-            }
-            for (String modelId : data.getModelIds()) {
-                recommendationAgents.add(recommendationAgentsList.get(recommendationAgent).create(modelId, data, agentConfig));
-            }
-        }
-
-        Map<String, DependencyAgent> dependencyAgentsList = Loader.loadLoadable(DependencyAgent.class);
-        for (String dependencyAgent : config.dependencyAgents) {
-            if (!dependencyAgentsList.containsKey(dependencyAgent)) {
-                throw new IllegalArgumentException("DependencyAgent " + dependencyAgent + " not found");
-            }
-            for (String modelId : data.getModelIds()) {
-                dependencyAgents.add(dependencyAgentsList.get(dependencyAgent).create(modelId, data, agentConfig));
-            }
-        }
-    }
-
-    @Override
-    public AgentDatastructure getBlackboard() {
-        return data;
-    }
-
-    @Override
-    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
-        return new RecommendationGenerator(data, new RecommendationGeneratorConfig(configs), new GenericRecommendationConfig(configs));
     }
 }

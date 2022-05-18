@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
 
 import java.util.Locale;
@@ -12,6 +12,12 @@ public class PRF1 implements EvaluationResult {
         precision = 1.0 * tp / (tp + fp);
         recall = 1.0 * tp / (tp + fn);
         f1 = 2 * precision * recall / (precision + recall);
+    }
+
+    PRF1(double precision, double recall, double f1) {
+        this.precision = precision;
+        this.recall = recall;
+        this.f1 = f1;
     }
 
     @Override

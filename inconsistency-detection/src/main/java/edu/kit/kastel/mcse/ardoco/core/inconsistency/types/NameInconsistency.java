@@ -8,9 +8,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 public class NameInconsistency implements IInconsistency {
 
@@ -18,9 +18,9 @@ public class NameInconsistency implements IInconsistency {
 
     private static final String REASON_FORMAT_STRING = "Inconsistent naming in trace link between textual occurence \"%s\" (sentence %d) and model element \"%s\" (%s)";
 
-    private IModelInstance modelInstance;
-    private IWord word;
-    private int sentenceNo;
+    private final IModelInstance modelInstance;
+    private final IWord word;
+    private final int sentenceNo;
 
     public NameInconsistency(IModelInstance modelInstance, IWord word) {
         this.modelInstance = modelInstance;

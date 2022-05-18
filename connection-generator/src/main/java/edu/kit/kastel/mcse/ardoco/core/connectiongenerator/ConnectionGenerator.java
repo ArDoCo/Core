@@ -1,15 +1,20 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.common.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.common.IExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.common.Loader;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent;
 
 /**
  * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as
@@ -17,78 +22,30 @@ import edu.kit.kastel.mcse.ardoco.core.common.Loader;
  * been made.
  *
  * @author Sophie
- *
  */
-public class ConnectionGenerator implements IExecutionStage {
+public class ConnectionGenerator extends AbstractExecutionStage {
 
-    private AgentDatastructure data;
+    private final MutableList<ConnectionAgent> agents = Lists.mutable.of(new InitialConnectionAgent(), new ReferenceAgent(), new InstanceConnectionAgent());
 
-    private MutableList<IAgent> agents = Lists.mutable.empty();
-
-    private ConnectionGeneratorConfig config;
-    private GenericConnectionConfig agentConfig;
+    @Configurable
+    private List<String> enabledAgents = agents.collect(IAgent::getId);
 
     /**
      * Create the module.
      */
     public ConnectionGenerator() {
-    }
-
-    /**
-     * Creates a new model connection agent with the given extraction states.
-     *
-     * @param data the blackboard with all the data
-     */
-    public ConnectionGenerator(AgentDatastructure data) {
-        this(data, ConnectionGeneratorConfig.DEFAULT_CONFIG, GenericConnectionConfig.DEFAULT_CONFIG);
-    }
-
-    /**
-     * Creates a new model connection agent with the given extraction states.
-     *
-     * @param data        the blackboard with all the data
-     * @param config      the configuration of the module
-     * @param agentConfig the configuration of the agents
-     */
-    public ConnectionGenerator(AgentDatastructure data, ConnectionGeneratorConfig config, GenericConnectionConfig agentConfig) {
-        this.data = data;
-        this.config = config;
-        this.agentConfig = agentConfig;
-        for (String modelId : data.getModelIds()) {
-            data.setConnectionState(modelId, new ConnectionState());
-        }
-        initializeAgents();
+        // empty
     }
 
     @Override
-    public void exec() {
-        for (IAgent agent : agents) {
-            agent.exec();
+    public void execute(DataStructure data, Map<String, String> additionalSettings) {
+        // Init new connection states
+        data.getModelIds().forEach(mid -> data.setConnectionState(mid, new ConnectionState(additionalSettings)));
+
+        this.applyConfiguration(additionalSettings);
+        for (ConnectionAgent agent : findByClassName(enabledAgents, agents)) {
+            agent.applyConfiguration(additionalSettings);
+            agent.execute(data);
         }
-    }
-
-    /**
-     * Initializes graph dependent analyzers.
-     */
-    private void initializeAgents() {
-        Map<String, ConnectionAgent> myAgents = Loader.loadLoadable(ConnectionAgent.class);
-        for (String connectionAnalyzer : config.connectionAgents) {
-            if (!myAgents.containsKey(connectionAnalyzer)) {
-                throw new IllegalArgumentException("ConnectionAnalyzer " + connectionAnalyzer + " not found");
-            }
-            for (String modelId : data.getModelIds()) {
-                agents.add(myAgents.get(connectionAnalyzer).create(modelId, data, agentConfig));
-            }
-        }
-    }
-
-    @Override
-    public AgentDatastructure getBlackboard() {
-        return data;
-    }
-
-    @Override
-    public IExecutionStage create(AgentDatastructure data, Map<String, String> configs) {
-        return new ConnectionGenerator(data, new ConnectionGeneratorConfig(configs), new GenericConnectionConfig(configs));
     }
 }

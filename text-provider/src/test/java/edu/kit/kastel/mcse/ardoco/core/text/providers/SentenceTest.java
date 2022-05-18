@@ -1,28 +1,29 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers;
+
+import java.io.File;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.informalin.ontology.OntologyConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ontology.CachedOntologyText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 
 /**
  * @author Jan Keim
  *
  */
 class SentenceTest {
-    private static String ontologyPath = "src/test/resources/teastore_w_text.owl";
+    private static final String textPath = "src/test/resources/teastore.json";
 
     private static ImmutableList<ISentence> sentences;
 
     @BeforeAll
-    static void beforeAll() {
-        var ontologyConnector = new OntologyConnector(ontologyPath);
-        var ontologyText = CachedOntologyText.get(ontologyConnector);
+    static void beforeAll() throws Exception {
+        var connector = JsonTextProvider.loadFromFile(new File(textPath));
+        var ontologyText = connector.getAnnotatedText();
         sentences = ontologyText.getSentences();
     }
 

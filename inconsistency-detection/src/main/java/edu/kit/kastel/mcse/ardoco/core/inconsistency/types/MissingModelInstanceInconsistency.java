@@ -1,26 +1,22 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
-import java.util.Locale;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.StringJoiner;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 
 public class MissingModelInstanceInconsistency implements IInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
 
     private static final String REASON_FORMAT_STRING = "Text indicates (confidence: %.2f) that \"%s\" should be contained in the model(s) but could not be found. Sentences: %s";
 
-    private IRecommendedInstance textualInstance;
+    private final IRecommendedInstance textualInstance;
 
     public MissingModelInstanceInconsistency(IRecommendedInstance textualInstance) {
         this.textualInstance = textualInstance;

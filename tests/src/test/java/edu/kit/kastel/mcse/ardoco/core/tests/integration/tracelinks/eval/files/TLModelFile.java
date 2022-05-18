@@ -7,13 +7,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 
 public class TLModelFile {
 
-    public static void save(Path targetFile, Map<Project, AgentDatastructure> dataMap) throws IOException {
+    public static void save(Path targetFile, Map<Project, DataStructure> dataMap) throws IOException {
         var projects = dataMap.keySet().stream().sorted().toList();
         var builder = new StringBuilder();
 

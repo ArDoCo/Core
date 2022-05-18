@@ -2,7 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class EvalProjectResult implements Comparable<EvalProjectResult> {
 
     private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(TestLink.class, new TestLink.TestLinkSerde())
+            .registerTypeAdapter(TestLink.class, new TestLinkSerialization())
             .create();
 
     public static EvalProjectResult fromJsonString(String jsonStr) {
@@ -31,17 +31,15 @@ public class EvalProjectResult implements Comparable<EvalProjectResult> {
 
     private final double precision, recall, f1Score, accuracy;
     private final int sentenceCount, modelInstanceCount, truePositiveCount, trueNegativeCount, falsePositiveCount, falseNegativeCount;
+    // ^ unused fields exist for json serialization/deserialization
 
-    public EvalProjectResult(Project project, AgentDatastructure data) throws IOException {
+    public EvalProjectResult(Project project, DataStructure data) throws IOException {
         this(
                 project,
-                data.getAllConnectionStates().values().stream()
-	                .flatMap(c -> c.getTraceLinks().stream())
-	                .map(TestLink::new)
-	                .toList(),
+                EvalUtils.getTraceLinks(data).stream().map(TestLink::new).toList(),
                 TLGoldStandardFile.loadLinks(project),
                 data.getText().getSentences().size(),
-                (int) data.getModelIds().stream().flatMap(m -> data.getModelState(m).getInstances().stream()).count()
+                EvalUtils.getInstances(data).size()
         );
     }
 

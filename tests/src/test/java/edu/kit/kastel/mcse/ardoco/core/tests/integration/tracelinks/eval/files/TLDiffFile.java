@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
@@ -24,7 +24,8 @@ public class TLDiffFile {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static void save(Path targetFile, EvalResult newResults, EvalResult oldResults,
-                            Map<Project, AgentDatastructure> dataMap) throws IOException {
+                            Map<Project, DataStructure> dataMap) throws IOException {
+
         // Assumption: Both collections contain the same projects
 
         var builder = new StringBuilder();
@@ -47,8 +48,16 @@ public class TLDiffFile {
         // Append project specific details
         for (EvalProjectResult oldResult : oldResults.getProjectResults().stream().sorted().toList()) {
             var project = oldResult.getProject();
+
             var newResult = newResults.getProjectResults().stream()
-	            .filter(r -> r.getProject().equals(project)).findAny().orElseThrow();
+                    .filter(r -> r.getProject().equals(project))
+                    .findAny()
+                    .orElse(null);
+
+            if (newResult == null) {
+                continue;
+            }
+
             var data = dataMap.get(project);
 
             builder.append("# ").append(project.name()).append("\n\n");
@@ -83,7 +92,7 @@ public class TLDiffFile {
         return oldLinks.stream().filter(link -> !newLinks.contains(link)).toList();
     }
 
-    private static void appendList(StringBuilder builder, String description, List<TestLink> links, AgentDatastructure data) {
+    private static void appendList(StringBuilder builder, String description, List<TestLink> links, DataStructure data) {
         var text = data.getText();
         if (links.isEmpty()) {
             return;

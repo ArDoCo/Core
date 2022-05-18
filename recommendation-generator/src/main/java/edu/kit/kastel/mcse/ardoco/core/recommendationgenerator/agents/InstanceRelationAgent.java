@@ -1,83 +1,51 @@
-/* Licensed under MIT 2021. */
+/* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.common.Configuration;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.DependencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.GenericRecommendationConfig;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IInstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.InstanceRelation;
-import edu.kit.kastel.mcse.ardoco.core.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.ITextState;
 
-/**
- * Adds
- *
- * @see InstanceRelation instances to {@link InstanceRelationAgent#recommendationState}
- */
-public class InstanceRelationAgent extends DependencyAgent {
+public class InstanceRelationAgent extends RecommendationAgent {
+
+    @Configurable
+    private boolean enabled = false;
 
     /**
      * Default constructor
      */
     public InstanceRelationAgent() {
-        super(GenericRecommendationConfig.class);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param text                annotated text
-     * @param textState           state of text
-     * @param modelState          model state
-     * @param recommendationState state of recommendations
-     */
-    public InstanceRelationAgent(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState) {
-        super(GenericRecommendationConfig.class, text, textState, modelState, recommendationState);
-    }
-
-    /**
-     * Create a new InstanceRelationAgent from passed parameters
-     *
-     * @param text                annotated text
-     * @param textState           state of text
-     * @param modelState          model state
-     * @param recommendationState state of recommendations
-     * @param config              configuration
-     * @return new InstanceRelationAgent instance
-     */
-    @Override
-    public InstanceRelationAgent create(IText text, ITextState textState, IModelState modelState, IRecommendationState recommendationState,
-            Configuration config) {
-        return new InstanceRelationAgent(text, textState, modelState, recommendationState);
     }
 
     /**
      * Agent execution function
      */
     @Override
-    public void exec() {
-        getRelations();
+    public void execute(RecommendationAgentData data) {
+        if (!enabled)
+            return;
+        for (var model : data.getModelIds()) {
+            getRelations(data.getRecommendationState(data.getModelState(model).getMetamodel()));
+        }
     }
 
     /**
      * Search for relations between RecommendedInstances
-     *
-     * @return list of recommended relations
      */
-    private void getRelations() {
+    private void getRelations(IRecommendationState recommendationState) {
         for (IRecommendedInstance instance : recommendationState.getRecommendedInstances()) {
-            processRecommendedInstance(instance);
+            processRecommendedInstance(recommendationState, instance);
         }
 
         if (logger.isDebugEnabled()) {
@@ -85,13 +53,13 @@ public class InstanceRelationAgent extends DependencyAgent {
         }
     }
 
-    private void processRecommendedInstance(IRecommendedInstance instance) {
+    private void processRecommendedInstance(IRecommendationState recommendationState, IRecommendedInstance instance) {
         for (IWord word : getInstanceWords(instance)) {
-            processVersOn(instance, word);
+            processVersOn(recommendationState, instance, word);
         }
     }
 
-    private void processVersOn(IRecommendedInstance instance, IWord word) {
+    private void processVersOn(IRecommendationState recommendationState, IRecommendedInstance instance, IWord word) {
         for (IWord verbOn : getVerbsOn(word)) {
             for (IWord secondWord : getNounDepOf(verbOn)) {
                 if (word.getSentenceNo() != verbOn.getSentenceNo() || secondWord.getSentenceNo() != verbOn.getSentenceNo()) {
@@ -100,29 +68,31 @@ public class InstanceRelationAgent extends DependencyAgent {
                 }
                 IWord from = word.getPosition() < secondWord.getPosition() ? word : secondWord;
                 IWord to = word.getPosition() < secondWord.getPosition() ? secondWord : word;
-                processWithSecondInstance(instance, word, verbOn, secondWord, from, to);
+                processWithSecondInstance(recommendationState, instance, word, verbOn, secondWord, from, to);
             }
         }
     }
 
-    private void processWithSecondInstance(IRecommendedInstance instance, IWord word, IWord verbOn, IWord secondWord, IWord from, IWord to) {
+    private void processWithSecondInstance(IRecommendationState recommendationState, IRecommendedInstance instance, IWord word, IWord verbOn, IWord secondWord,
+            IWord from, IWord to) {
         for (IRecommendedInstance secondInstance : recommendationState.getRecommendedInstances()) {
 
             if (getInstanceWords(secondInstance).contains(secondWord) && !instance.equals(secondInstance) && !word.equals(secondWord)) {
-                boolean newInstance = checkForNewInstance(instance, word, verbOn, secondWord, from, to, secondInstance);
+                boolean newInstance = checkForNewInstance(recommendationState, instance, word, verbOn, secondWord, from, to, secondInstance);
                 if (newInstance) {
                     /*
                      * Add new relation if not found previously
                      */
                     logger.debug("Add new InstanceRelation from {} over {} to {}", word.getText(), verbOn.getText(), secondWord.getText());
-                    recommendationState.addInstanceRelation(instance, secondInstance, verbOn, Collections.singletonList(from), Collections.singletonList(to));
+                    recommendationState.addInstanceRelation(instance, secondInstance, verbOn, Collections.singletonList(from), Collections.singletonList(to),
+                            this);
                 }
             }
         }
     }
 
-    private boolean checkForNewInstance(IRecommendedInstance instance, IWord word, IWord verbOn, IWord secondWord, IWord from, IWord to,
-            IRecommendedInstance secondInstance) {
+    private boolean checkForNewInstance(IRecommendationState recommendationState, IRecommendedInstance instance, IWord word, IWord verbOn, IWord secondWord,
+            IWord from, IWord to, IRecommendedInstance secondInstance) {
         boolean newInstance = true;
         for (IInstanceRelation relation : recommendationState.getInstanceRelations()) {
             if (relation.isIn(verbOn, Collections.singletonList(from), Collections.singletonList(to))) {
@@ -136,7 +106,7 @@ public class InstanceRelationAgent extends DependencyAgent {
                  */
                 newInstance = false;
                 logger.debug("Add to existing InstanceRelation from {} over {} to {}", word.getText(), verbOn.getText(), secondWord.getText());
-                relation.addLink(verbOn, Collections.singletonList(from), Collections.singletonList(to));
+                relation.addLink(verbOn, Collections.singletonList(from), Collections.singletonList(to), this);
             }
             if (!newInstance) {
                 break;
@@ -159,15 +129,19 @@ public class InstanceRelationAgent extends DependencyAgent {
 
     private static List<IWord> getNounDepOn(IWord word) {
         List<IWord> dependencies = new ArrayList<>();
-        dependencies.addAll(word.getWordsThatAreDependentOnThis(DependencyTag.OBJ).castToList());
-        dependencies.addAll(word.getWordsThatAreDependentOnThis(DependencyTag.NSUBJ).castToList());
+        dependencies.addAll(word.getIncomingDependencyWordsWithType(DependencyTag.OBJ).castToList());
+        dependencies.addAll(word.getIncomingDependencyWordsWithType(DependencyTag.NSUBJ).castToList());
         return dependencies;
     }
 
     private static List<IWord> getNounDepOf(IWord word) {
         List<IWord> dependencies = new ArrayList<>();
-        dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.OBJ).castToList());
-        dependencies.addAll(word.getWordsThatAreDependencyOfThis(DependencyTag.NSUBJ).castToList());
+        dependencies.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.OBJ).castToList());
+        dependencies.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.NSUBJ).castToList());
         return dependencies;
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
     }
 }
