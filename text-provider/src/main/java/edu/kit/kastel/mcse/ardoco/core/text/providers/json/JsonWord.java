@@ -35,9 +35,9 @@ public class JsonWord implements IWord, Serializable {
     @JsonProperty
     private String lemma;
     @JsonProperty
-    private Map<DependencyTag, List<Integer>> outgoingDependencyWords = new EnumMap<>(DependencyTag.class);
+    private final Map<DependencyTag, List<Integer>> outgoingDependencyWords = new EnumMap<>(DependencyTag.class);
     @JsonProperty
-    private Map<DependencyTag, List<Integer>> incomingDependencyWords = new EnumMap<>(DependencyTag.class);
+    private final Map<DependencyTag, List<Integer>> incomingDependencyWords = new EnumMap<>(DependencyTag.class);
 
     private transient JsonText parent;
 

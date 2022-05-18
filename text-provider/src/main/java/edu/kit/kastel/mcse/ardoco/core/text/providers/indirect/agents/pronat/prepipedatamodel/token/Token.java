@@ -25,7 +25,7 @@ public class Token extends MainHypothesisToken implements Comparable<Token> {
     private int sentenceNumber;
 
     public static class TokenBuilder {
-        private Token token;
+        private final Token token;
 
         public TokenBuilder(String word, int position) {
             token = new Token(word, position);

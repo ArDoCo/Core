@@ -16,8 +16,6 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.ipd.parse.luna.LunaInitException;
-import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
@@ -31,7 +29,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
@@ -181,9 +179,9 @@ public final class Pipeline {
         }
 
         try {
-            ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
+            ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(inputText));
             return textConnector.getAnnotatedText();
-        } catch (IOException | LunaRunException | LunaInitException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
             return null;
         }

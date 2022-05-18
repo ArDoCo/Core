@@ -21,7 +21,7 @@ public final class JsonTextProvider implements ITextConnector, Serializable {
     private static final long serialVersionUID = 1888754797397675739L;
 
     @JsonProperty
-    private Map<String, JsonText> texts = new HashMap<>();
+    private final Map<String, JsonText> texts = new HashMap<>();
 
     public IText addNewText(String name, IText text) {
         var jText = new JsonText(text);

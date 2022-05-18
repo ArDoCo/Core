@@ -1,7 +1,13 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.agents.pronat.prepipedatamodel.token;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents a Token describing an action recognized by the semantic role labeler including Information about the
@@ -13,9 +19,9 @@ import java.util.*;
  */
 public class SRLToken extends Token {
 
-    private HashMap<String, ArrayList<Token>> dependentTokens;
+    private final HashMap<String, ArrayList<Token>> dependentTokens;
 
-    private HashMap<String, String[]> roleDescription;
+    private final HashMap<String, String[]> roleDescription;
 
     private String correspondingVerb;
     private Double roleConfidence;

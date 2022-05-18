@@ -18,13 +18,40 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 public class CoreNLPProvider implements ITextConnector {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
     private static final List<String> COREF_ALGORITHMS = List.of("fastneural", "neural", "statistical", "clustering");
-
+    private final InputStream text;
     private IText annotatedText;
-    private InputStream text;
 
     public CoreNLPProvider(InputStream text) {
         annotatedText = null;
         this.text = text;
+    }
+
+    private static Properties getStanfordProperties(Properties properties) {
+        if (properties == null) {
+            throw new IllegalArgumentException("Properties are null");
+        }
+        var allStanfordProperties = new Properties(properties);
+        allStanfordProperties.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,depparse,coref");
+
+        if (!allStanfordProperties.containsValue("parse.type")) {
+            allStanfordProperties.put("parse.type", "stanford");
+        }
+
+        if (!allStanfordProperties.containsKey("depparse")) {
+            allStanfordProperties.put("depparse", "EnhancedPlusPlusDependenciesAnnotation");
+        }
+        if (!allStanfordProperties.containsKey("depparse.model")) {
+            allStanfordProperties.put("depparse.model", "edu/stanford/nlp/models/parser/nndep/english_UD.gz");
+        }
+
+        String corefAlgorithm = allStanfordProperties.getProperty("coref.algorithm", COREF_ALGORITHMS.get(0));
+        if (!COREF_ALGORITHMS.contains(corefAlgorithm)) {
+            logger.warn("Provided CoRef-Algorithm not found. Selecting default.");
+            corefAlgorithm = COREF_ALGORITHMS.get(0);
+        }
+        allStanfordProperties.put("coref.algorithm", corefAlgorithm);
+
+        return allStanfordProperties;
     }
 
     @Override
@@ -56,30 +83,5 @@ public class CoreNLPProvider implements ITextConnector {
         String inputText = scanner.next();
         scanner.close();
         return inputText;
-    }
-
-    private static Properties getStanfordProperties(Properties properties) {
-        var allStanfordProperties = new Properties(properties);
-        allStanfordProperties.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,depparse,coref");
-
-        if (!allStanfordProperties.containsValue("parse.type")) {
-            allStanfordProperties.put("parse.type", "stanford");
-        }
-
-        if (!allStanfordProperties.containsKey("depparse")) {
-            allStanfordProperties.put("depparse", "EnhancedPlusPlusDependenciesAnnotation");
-        }
-        if (!allStanfordProperties.containsKey("depparse.model")) {
-            allStanfordProperties.put("depparse.model", "edu/stanford/nlp/models/parser/nndep/english_UD.gz");
-        }
-
-        String corefAlgorithm = allStanfordProperties.getProperty("coref.algorithm", COREF_ALGORITHMS.get(0));
-        if (!COREF_ALGORITHMS.contains(corefAlgorithm)) {
-            logger.warn("Provided CoRef-Algorithm not found. Selecting default.");
-            corefAlgorithm = COREF_ALGORITHMS.get(0);
-        }
-        allStanfordProperties.put("coref.algorithm", corefAlgorithm);
-
-        return allStanfordProperties;
     }
 }
