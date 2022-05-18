@@ -1,28 +1,11 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -32,6 +15,22 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalRes
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons.TLComparisonDir;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatsAnalysis;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -71,7 +70,7 @@ class TracelinksIT {
 			TLSummaryFile.save(evalDir.resolve("summary.md"), evalResult, DATA_MAP);
             TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
             TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-			TLComparisonDir.save(evalDir.resolve("comparisons"), COMP_MAP, DATA_MAP);
+			TLComparisonDir.save(evalDir.resolve("comparisons"), COMP_MAP);
             TLLogFile.append(evalDir.resolve("log.md"), evalResult);
 
 			Files.writeString(evalDir.resolve("result.json"), evalResult.toJsonString(), CREATE, TRUNCATE_EXISTING);

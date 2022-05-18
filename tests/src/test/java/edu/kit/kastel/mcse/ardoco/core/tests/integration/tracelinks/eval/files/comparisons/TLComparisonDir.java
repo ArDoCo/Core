@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AgentDatastructure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Comparison;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.WordPair;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 public class TLComparisonDir {
 
-    public static void save(Path targetDir, Map<Project, ComparisonStatsAnalysis> statsMap, Map<Project, AgentDatastructure> dataMap) throws IOException {
+    public static void save(Path targetDir, Map<Project, ComparisonStatsAnalysis> statsMap) throws IOException {
         if (!Files.exists(targetDir)) {
             Files.createDirectories(targetDir);
         }
