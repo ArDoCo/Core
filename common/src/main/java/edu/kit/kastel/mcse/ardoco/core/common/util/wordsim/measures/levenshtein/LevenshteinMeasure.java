@@ -1,12 +1,13 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein;
 
+import java.util.Locale;
+
+import org.apache.commons.text.similarity.LevenshteinDistance;
+
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import org.apache.commons.text.similarity.LevenshteinDistance;
-
-import java.util.Locale;
 
 /**
  * This word similarity measure uses the levenshtein distance (also sometimes called edit distance) algorithm to

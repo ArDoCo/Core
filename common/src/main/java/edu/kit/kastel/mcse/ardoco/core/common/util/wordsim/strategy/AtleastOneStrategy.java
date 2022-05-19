@@ -1,11 +1,11 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy;
 
+import java.util.List;
+
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
-
-import java.util.List;
 
 /**
  * This comparison strategy accepts any word pair as similar if at least one of the specified word similarity measures

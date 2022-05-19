@@ -1,16 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
+import java.nio.file.Path;
+import java.sql.SQLException;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.file.Path;
-import java.sql.SQLException;
-import java.util.Objects;
 
 /**
  * This word similarity measures utilizes the SEWordSim database from Tian et al. 2014

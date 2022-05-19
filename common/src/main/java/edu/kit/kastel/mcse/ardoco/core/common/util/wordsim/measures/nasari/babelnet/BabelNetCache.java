@@ -1,9 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari.babelnet;
 
-import org.nd4j.shade.jackson.core.type.TypeReference;
-import org.nd4j.shade.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.nd4j.shade.jackson.core.type.TypeReference;
+import org.nd4j.shade.jackson.databind.ObjectMapper;
 
 /**
  * A persistent cache that stores responses from BabelNet queries. Use the {@link #saveToFile()} method to save the

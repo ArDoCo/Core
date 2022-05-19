@@ -1,6 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
+import java.nio.file.Path;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.DL4JFastTextDataSource;
@@ -24,11 +30,6 @@ import edu.uniba.di.lacam.kdde.ws4j.similarity.LeacockChodorow;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.Lesk;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.WuPalmer;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.file.Path;
-import java.util.*;
 
 /**
  * Responsible for loading the word similarity measures that should be enabled according to the

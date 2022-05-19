@@ -1,11 +1,11 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**
  * A vector based word similarity measure uses vector embeddings of words to compare their similarity. To get vector

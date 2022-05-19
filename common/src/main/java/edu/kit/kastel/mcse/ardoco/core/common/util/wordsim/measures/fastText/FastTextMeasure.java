@@ -1,15 +1,16 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
 
+import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.RetrieveVectorException;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorBasedWordSimMeasure;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.file.Path;
 
 /**
  * A word similarity measure based on the fastText neural network. It grabs the vectors for each word and compares them
