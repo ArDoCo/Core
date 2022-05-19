@@ -107,11 +107,8 @@ class Sentence implements ISentence {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || !(o instanceof Sentence))
-            return false;
-
-        if (o instanceof Sentence sentence) {
-            return sentenceNumber == sentence.sentenceNumber && sentence.getText().equals(this.getText());
+        if (o instanceof ISentence sentence) {
+            return isEqualTo(sentence);
         }
         return false;
     }

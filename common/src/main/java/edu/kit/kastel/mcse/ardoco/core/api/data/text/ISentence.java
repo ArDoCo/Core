@@ -32,4 +32,8 @@ public interface ISentence {
      */
     String getText();
 
+    default boolean isEqualTo(ISentence other) {
+        return other != null && this.getSentenceNumber() == other.getSentenceNumber() && other.getText().equals(this.getText());
+    }
+
 }
