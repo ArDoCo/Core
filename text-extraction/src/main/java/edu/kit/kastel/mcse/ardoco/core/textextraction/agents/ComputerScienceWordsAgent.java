@@ -1,9 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import static edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent.CSWAgentMode.ADD_PROBABILITY;
-import static edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent.CSWAgentMode.DELETE_OCCURRENCE;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -51,7 +48,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
     private double probabilityOfFoundWords = 1E-8;
 
     @Configurable
-    private CSWAgentMode mode = ADD_PROBABILITY;
+    private CSWAgentMode mode = CSWAgentMode.ADD_PROBABILITY;
 
     @Configurable
     private List<String> sources = List.of(WIKI, ISO24765, STANDARD_GLOSSARY);
@@ -104,9 +101,9 @@ public class ComputerScienceWordsAgent extends TextAgent {
                 logger.trace("Found {} for {}", occurrence, word);
             }
 
-            if (mode == ADD_PROBABILITY) {
+            if (mode == CSWAgentMode.ADD_PROBABILITY) {
                 addProbability(nounMapping);
-            } else if (mode == DELETE_OCCURRENCE) {
+            } else if (mode == CSWAgentMode.DELETE_OCCURRENCE) {
                 deleteOccurrence(textState, nounMapping);
             }
 

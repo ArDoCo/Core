@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers;
 
+import java.util.Objects;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -10,6 +12,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 /**
+ * Class representing a sentence.
+ * 
  * @author Jan Keim
  */
 public class Sentence implements ISentence {
@@ -106,6 +110,24 @@ public class Sentence implements ISentence {
         sentences.add(sentence);
 
         return sentences.toImmutable();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || !(o instanceof Sentence))
+            return false;
+
+        if (o instanceof Sentence sentence) {
+            return sentenceNumber == sentence.sentenceNumber && sentence.getText().equals(this.getText());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sentenceNumber, getText());
     }
 
 }

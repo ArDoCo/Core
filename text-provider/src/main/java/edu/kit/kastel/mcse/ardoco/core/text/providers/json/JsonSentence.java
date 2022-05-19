@@ -71,12 +71,14 @@ public class JsonSentence implements ISentence, Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || !(o instanceof JsonSentence)) {
             return false;
         }
-        var that = (JsonSentence) o;
-        return sentenceNumber == that.sentenceNumber && startIndexInclude == that.startIndexInclude && endIndexInclude == that.endIndexInclude
-                && Objects.equals(text, that.text);
+        if (o instanceof JsonSentence that) {
+            return sentenceNumber == that.sentenceNumber && startIndexInclude == that.startIndexInclude && endIndexInclude == that.endIndexInclude
+                    && Objects.equals(text, that.text);
+        }
+        return false;
     }
 
     @Override
