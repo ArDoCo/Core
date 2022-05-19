@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 /**
  * This analyzer finds patterns like article type name or article name type.
  * 
- * @deprecated
+ * @deprecated Currently Not Operational
  * @author Sophie, Jan
  */
 @Deprecated(since = "Currently Not Operational")

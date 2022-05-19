@@ -87,7 +87,6 @@ class PDFExtractor {
     private void extract(String in, String out, BiConsumer<String, Set<String>> processor) throws IOException {
         var file = new File(in);
         var pdf = Loader.loadPDF(file);
-        var maxPages = pdf.getNumberOfPages();
         Set<String> foundWords = new LinkedHashSet<>();
         PDFTextStripper pts = new PDFTextStripper();
         var text = pts.getText(pdf);

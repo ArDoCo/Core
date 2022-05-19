@@ -7,6 +7,7 @@ import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigur
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public final class Pipeline {
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
     public static DataStructure run(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File additionalConfigs)
-            throws ReflectiveOperationException, IOException {
+            throws IOException {
         return runAndSave(name, inputText, preprocessedText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
@@ -142,7 +143,7 @@ public final class Pipeline {
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
         Map<String, String> additionalConfigs = new HashMap<>();
         if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
-            try (var scanner = new Scanner(additionalConfigsFile)) {
+            try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8.name())) {
                 while (scanner.hasNextLine()) {
                     var line = scanner.nextLine();
                     if (line == null || line.isBlank()) {

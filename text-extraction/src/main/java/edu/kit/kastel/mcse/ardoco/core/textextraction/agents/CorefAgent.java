@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
 /**
- * @deprecated
+ * @deprecated Currently Not Operational
  */
 @Deprecated(since = "Currently Not Operational")
 public class CorefAgent extends TextAgent {

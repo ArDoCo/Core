@@ -23,23 +23,23 @@ public record MissingModelInstanceInconsistency(IRecommendedInstance textualInst
     @Override
     public String getReason() {
         var name = textualInstance.getName();
-        var occurences = getOccurencesString();
+        var occurrences = getOccurrencesString();
 
         var confidence = textualInstance.getProbability();
-        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, occurences);
+        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, occurrences);
     }
 
-    private String getOccurencesString() {
-        SortedSet<Integer> occurences = new TreeSet<>();
+    private String getOccurrencesString() {
+        SortedSet<Integer> occurrences = new TreeSet<>();
         for (var nameMapping : textualInstance.getNameMappings()) {
-            occurences.addAll(nameMapping.getMappingSentenceNo().castToCollection());
+            occurrences.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
 
-        var occurenceJoiner = new StringJoiner(",");
-        for (var sentence : occurences) {
-            occurenceJoiner.add(Integer.toString(sentence));
+        var occurrenceJoiner = new StringJoiner(",");
+        for (var sentence : occurrences) {
+            occurrenceJoiner.add(Integer.toString(sentence));
         }
-        return occurenceJoiner.toString();
+        return occurrenceJoiner.toString();
     }
 
     @Override
@@ -84,10 +84,9 @@ public record MissingModelInstanceInconsistency(IRecommendedInstance textualInst
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof MissingModelInstanceInconsistency other)) {
             return false;
         }
-        var other = (MissingModelInstanceInconsistency) obj;
         return Objects.equals(textualInstance, other.textualInstance);
     }
 
