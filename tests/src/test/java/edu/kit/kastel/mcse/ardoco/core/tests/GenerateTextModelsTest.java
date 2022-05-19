@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 
 @Disabled("Disabled for CI, only enable if you need to generate text models.")
@@ -19,8 +19,8 @@ class GenerateTextModelsTest {
     @EnumSource(value = Project.class)
     void generateTextModels(Project project) throws Exception {
         var textFile = project.getTextFile();
-        var pp = new ParseProvider(new FileInputStream(textFile));
-        var text = pp.getAnnotatedText();
+        var coreNLPProvider = new CoreNLPProvider(new FileInputStream(textFile));
+        var text = coreNLPProvider.getAnnotatedText();
         Assertions.assertNotNull(text);
 
         var jtp = new JsonTextProvider();
