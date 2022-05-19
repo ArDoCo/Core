@@ -7,18 +7,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 
 class JSONTextProviderGeneratorTest {
     @Test
     @Disabled("Only a generator")
     void generateJSONText() throws Exception {
-        ParseProvider pp = new ParseProvider(JSONTextProviderGeneratorTest.class.getResourceAsStream("/teastore.txt"));
-        var text = pp.getAnnotatedText();
-        JsonTextProvider jtp = new JsonTextProvider();
-        var jsonText = jtp.addNewText("teastore", text);
+        CoreNLPProvider textProvider = new CoreNLPProvider(JSONTextProviderGeneratorTest.class.getResourceAsStream("/teastore.txt"));
+        var text = textProvider.getAnnotatedText();
+        JsonTextProvider jsonTextProvider = new JsonTextProvider();
+        var jsonText = jsonTextProvider.addNewText("teastore", text);
         Assertions.assertNotNull(jsonText);
-        jtp.saveTexts(new File("./src/test/resources/teastore.json"));
+        jsonTextProvider.saveTexts(new File("./src/test/resources/teastore.json"));
     }
 }

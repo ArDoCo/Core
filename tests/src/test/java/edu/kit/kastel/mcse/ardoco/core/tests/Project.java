@@ -5,14 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import edu.kit.ipd.parse.luna.LunaInitException;
-import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 
 public enum Project {
@@ -105,9 +103,9 @@ public enum Project {
 
     public IText getTextViaFile() {
         try {
-            ITextConnector textConnector = new ParseProvider(new FileInputStream(getTextFile()));
+            ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(getTextFile()));
             return textConnector.getAnnotatedText();
-        } catch (FileNotFoundException | LunaRunException | LunaInitException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
         }
