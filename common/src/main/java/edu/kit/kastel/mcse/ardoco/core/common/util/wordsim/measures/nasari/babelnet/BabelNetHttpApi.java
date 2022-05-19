@@ -31,6 +31,10 @@ public class BabelNetHttpApi {
 		"&targetLang={targetLang}" +
 		"&key={key}";
 
+	// ^ This query just fetches the ids of the found synsets.
+	// BabelNet allows another query that directly fetches all information about the found synsets.
+	// This may be useful in the future do discard synsets that are irrelevant for the current context.
+
 	private final String apiKey;
 
 	/**
