@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
@@ -18,17 +19,15 @@ public class Ezzikouri extends RelatednessCalculator {
 
     private static final double MIN = 0.0;
     private static final double MAX = 1.0;
-    private static final List<POS[]> POS_PAIRS = List.of(
-            new POS[] { POS.NOUN, POS.NOUN },
-            new POS[] { POS.VERB, POS.VERB }
-    );
+    private static final List<POS[]> POS_PAIRS = List.of(new POS[] { POS.NOUN, POS.NOUN }, new POS[] { POS.VERB, POS.VERB });
     private static final PorterStemmer STEMMER = new PorterStemmer();
 
     public Ezzikouri(ILexicalDatabase db) {
         super(db, MIN, MAX);
     }
 
-    @Override protected Relatedness calcRelatedness(Concept first, Concept second) {
+    @Override
+    protected Relatedness calcRelatedness(Concept first, Concept second) {
         if (first.getSynsetID().equals(second.getSynsetID())) {
             return new Relatedness(1.0);
         }
@@ -38,17 +37,20 @@ public class Ezzikouri extends RelatednessCalculator {
         Set<String> firstWords = stem(removeStopWords(db.getWords(first)));
         Set<String> secondWords = stem(removeStopWords(db.getWords(second)));
 
-        //double wordsScore = intersection(firstWords, secondWords) / union(firstWords, secondWords);
-        //double glossScore = intersection(firstGloss, secondGloss) / union(firstGloss, secondGloss);
-        //double score = (wordsScore + glossScore) / 2.0;
+        // double wordsScore = intersection(firstWords, secondWords) / union(firstWords, secondWords);
+        // double glossScore = intersection(firstGloss, secondGloss) / union(firstGloss, secondGloss);
+        // double score = (wordsScore + glossScore) / 2.0;
 
         double score = (intersection(firstWords, secondWords) + intersection(firstGloss, secondGloss))
-                                    / (union(firstWords, firstGloss, secondWords, secondGloss));
+                / (union(firstWords, firstGloss, secondWords, secondGloss));
 
         return new Relatedness(score);
     }
 
-    @Override public List<POS[]> getPOSPairs() { return POS_PAIRS; }
+    @Override
+    public List<POS[]> getPOSPairs() {
+        return POS_PAIRS;
+    }
 
     private double union(Collection<String> first, Collection<String> second, Collection<String> third, Collection<String> fourth) {
         var strings = new HashSet<String>();
@@ -73,24 +75,17 @@ public class Ezzikouri extends RelatednessCalculator {
     }
 
     private Set<String> stem(Set<String> strings) {
-        return strings.stream()
-                .map(STEMMER::stem)
-                .collect(Collectors.toSet());
+        return strings.stream().map(STEMMER::stem).collect(Collectors.toSet());
     }
 
     private Set<String> removeStopWords(List<String> strings) {
         var stopWords = StopWords.getStopWords();
 
-        return strings.stream()
-                .filter(str -> !stopWords.contains(str))
-                .collect(Collectors.toSet());
+        return strings.stream().filter(str -> !stopWords.contains(str)).collect(Collectors.toSet());
     }
 
     private List<String> getGlossWords(Concept concept) {
-        return Arrays.stream(db.getGloss(concept, null)
-                .get(0)
-                .split(" "))
-                .toList();
+        return Arrays.stream(db.getGloss(concept, null).get(0).split(" ")).toList();
     }
 
 }

@@ -13,13 +13,13 @@ import java.util.Optional;
 public final class Comparison implements Comparable<Comparison> {
 
     public final WordPair wordPair;
-	public final ComparisonContext context;
+    public final ComparisonContext context;
     public final List<MeasureResult> results;
     public final boolean accepted;
 
     public Comparison(WordPair wordPair, ComparisonContext context, List<MeasureResult> results, boolean accepted) {
         this.wordPair = wordPair;
-		this.context = context;
+        this.context = context;
         this.results = results;
         this.accepted = accepted;
     }
@@ -32,9 +32,11 @@ public final class Comparison implements Comparable<Comparison> {
         return wordPair.secondWord;
     }
 
-	public ComparisonContext context() { return context; }
+    public ComparisonContext context() {
+        return context;
+    }
 
-	public Optional<MeasureResult> getResultBy(WordSimMeasure measure) {
+    public Optional<MeasureResult> getResultBy(WordSimMeasure measure) {
         return results.stream().filter(mr -> mr.measure().equals(measure)).findAny();
     }
 
@@ -46,11 +48,13 @@ public final class Comparison implements Comparable<Comparison> {
         return (int) results.stream().filter(MeasureResult::accepted).count();
     }
 
-    @Override public int compareTo(Comparison o) {
+    @Override
+    public int compareTo(Comparison o) {
         return wordPair.compareTo(o.wordPair);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Comparison{" + "wordPair=" + wordPair + ", results=" + results + ", accepted=" + accepted + '}';
     }
 
@@ -66,7 +70,8 @@ public final class Comparison implements Comparable<Comparison> {
         return accepted;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o)
             return true;
         if (!(o instanceof Comparison))
@@ -77,7 +82,8 @@ public final class Comparison implements Comparable<Comparison> {
         return wordPair.equals(that.wordPair);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return wordPair.hashCode();
     }
 }

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 /**
@@ -5,6 +6,8 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
  */
 public class RetrieveVectorException extends Exception {
 
-	public RetrieveVectorException(String message, Throwable cause) { super(message, cause); }
+    public RetrieveVectorException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

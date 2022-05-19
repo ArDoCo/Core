@@ -12,16 +12,16 @@ import java.util.Optional;
 import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.isZero;
 
 /**
- * Provides the functionality of fastText using the DL4J (JFastText) native wrapper.
- * Instances of this class keep a loaded fastText binary model active until {@link #close()} is called.
+ * Provides the functionality of fastText using the DL4J (JFastText) native wrapper. Instances of this class keep a
+ * loaded fastText binary model active until {@link #close()} is called.
  */
 public class DL4JFastTextDataSource implements WordVectorDataSource, AutoCloseable {
 
     private final FastText fastText;
 
     /**
-     * Instantiates the {@link DL4JFastTextDataSource}.
-     * Once instantiated, the loaded fastText model will be kept open until {@link #close()} is called.
+     * Instantiates the {@link DL4JFastTextDataSource}. Once instantiated, the loaded fastText model will be kept open
+     * until {@link #close()} is called.
      *
      * @param modelPath the path to the binary fastText model
      */
@@ -45,14 +45,16 @@ public class DL4JFastTextDataSource implements WordVectorDataSource, AutoCloseab
 
         double[] doubleVector = this.fastText.getWordVector(word);
 
-		if (isZero(doubleVector)) { return Optional.empty(); }
+        if (isZero(doubleVector)) {
+            return Optional.empty();
+        }
 
-		// Convert double vector to float vector
-		float[] floatVector = new float[doubleVector.length];
+        // Convert double vector to float vector
+        float[] floatVector = new float[doubleVector.length];
 
-	    for (int i = 0; i < floatVector.length; i++) {
-		    floatVector[i] = (float) doubleVector[i];
-	    }
+        for (int i = 0; i < floatVector.length; i++) {
+            floatVector[i] = (float) doubleVector[i];
+        }
 
         return Optional.of(floatVector);
     }
@@ -60,7 +62,8 @@ public class DL4JFastTextDataSource implements WordVectorDataSource, AutoCloseab
     /**
      * Unloads the binary model from this data source.
      */
-    @Override public void close() {
+    @Override
+    public void close() {
         this.fastText.unloadBinaryModel();
     }
 

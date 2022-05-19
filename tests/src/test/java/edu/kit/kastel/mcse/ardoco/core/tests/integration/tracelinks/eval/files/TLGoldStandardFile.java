@@ -25,6 +25,7 @@ public class TLGoldStandardFile {
                 .toList();
     }
 
-	private TLGoldStandardFile() { }
+    private TLGoldStandardFile() {
+    }
 
 }

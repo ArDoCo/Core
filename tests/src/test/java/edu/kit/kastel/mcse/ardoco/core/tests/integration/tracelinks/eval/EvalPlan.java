@@ -1,10 +1,10 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**
  * Represents an evaluation plan.
@@ -27,7 +27,7 @@ public class EvalPlan {
         this.baseline = base;
         this.threshold = threshold;
         this.measures = new ArrayList<>(measures);
-	    this.measures.addAll(base.getMeasures());
+        this.measures.addAll(base.getMeasures());
     }
 
     public String getId() {
@@ -38,7 +38,9 @@ public class EvalPlan {
         return group;
     }
 
-    public String getGroupPrefix() { return groupPrefix; }
+    public String getGroupPrefix() {
+        return groupPrefix;
+    }
 
     public Baseline getBaseline() {
         return baseline;

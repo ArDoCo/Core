@@ -10,8 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A word similarity measure that is using various algorithms on the WordNet graph to calculate word
- * similarity.
+ * A word similarity measure that is using various algorithms on the WordNet graph to calculate word similarity.
  */
 public class WordNetMeasure implements WordSimMeasure {
 

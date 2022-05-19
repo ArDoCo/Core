@@ -1,12 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Comparison;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Comparison;
 
 public class MeasureStats implements Comparable<MeasureStats> {
 
@@ -27,7 +27,8 @@ public class MeasureStats implements Comparable<MeasureStats> {
         this.uniquelyAccepted.addAll(other.uniquelyAccepted);
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o)
             return true;
         if (!(o instanceof MeasureStats))
@@ -36,11 +37,13 @@ public class MeasureStats implements Comparable<MeasureStats> {
         return measureId.equals(that.measureId);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(measureId);
     }
 
-    @Override public int compareTo(MeasureStats o) {
+    @Override
+    public int compareTo(MeasureStats o) {
         return this.measureId.compareTo(o.measureId);
     }
 

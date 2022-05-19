@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
@@ -78,6 +79,5 @@ class NgramMeasureTest {
         new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 12345, 1.0);
         new NgramMeasure(NgramMeasure.Variant.POSITIONAL, Integer.MAX_VALUE, 1.0);
     }
-
 
 }

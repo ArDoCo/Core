@@ -120,9 +120,9 @@ public class WordSimLoader {
                 list.add(new GloveMeasure());
             }
 
-			if (CommonTextToolsConfig.NASARI_ENABLED) {
-				list.add(new NasariMeasure());
-			}
+            if (CommonTextToolsConfig.NASARI_ENABLED) {
+                list.add(new NasariMeasure());
+            }
 
             return list;
         } catch (Exception e) {
@@ -131,6 +131,7 @@ public class WordSimLoader {
         }
     }
 
-	private WordSimLoader() { }
+    private WordSimLoader() {
+    }
 
 }

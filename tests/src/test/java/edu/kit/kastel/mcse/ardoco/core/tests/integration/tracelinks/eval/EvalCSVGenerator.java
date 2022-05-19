@@ -1,6 +1,8 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
-import org.apache.commons.lang.StringUtils;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,17 +11,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Creates .csv files that present various evaluation metrics at various thresholds.
- * Each csv file has two columns.
- * The first column represents the threshold and the second column represents the value of some metric.
+ * Creates .csv files that present various evaluation metrics at various thresholds. Each csv file has two columns. The
+ * first column represents the threshold and the second column represents the value of some metric.
  */
 public class EvalCSVGenerator {
 
-    record ThresholdFile(Path filePath, String group, int threshold) { }
+    record ThresholdFile(Path filePath, String group, int threshold) {
+    }
 
     private final Path sourceDir;
     private final Path targetDir;
@@ -36,7 +37,7 @@ public class EvalCSVGenerator {
         var data = fileName.split("_");
         var thresholdStr = data[data.length - 1].replace("t", "");
         var threshold = Integer.parseInt(thresholdStr);
-        var group = StringUtils.join(data, "_" , 0, data.length - 1);
+        var group = StringUtils.join(data, "_", 0, data.length - 1);
 
         return new ThresholdFile(filePath, group, threshold);
     }
@@ -49,7 +50,8 @@ public class EvalCSVGenerator {
         for (Path sourceGroupDir : groupDirs) {
             String group = sourceGroupDir.getFileName().toString();
 
-            List<ThresholdFile> files = Files.list(sourceGroupDir).filter(Files::isRegularFile)
+            List<ThresholdFile> files = Files.list(sourceGroupDir)
+                    .filter(Files::isRegularFile)
                     .filter(p -> p.getFileName().toString().endsWith(".json"))
                     .map(EvalCSVGenerator::parseThresholdFile)
                     .sorted(Comparator.comparing(f -> f.threshold))
@@ -86,8 +88,10 @@ public class EvalCSVGenerator {
     }
 
     private void createFractionalMetricFile(String group, List<ThresholdFile> files, String metricId, Function<EvalResult, Double> metric) throws IOException {
-        createIntMetricFile(group, files, metricId,
-                (evalResult) -> (int) (metric.apply(evalResult) * 100) // turn fraction into integer
+        createIntMetricFile(group, files, metricId, (evalResult) -> (int) (metric.apply(evalResult) * 100) // turn
+                                                                                                           // fraction
+                                                                                                           // into
+                                                                                                           // integer
         );
     }
 

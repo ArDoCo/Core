@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.glove;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
@@ -13,9 +14,9 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 
 /**
- * This word similarity measures utilizes GloVe trained word vector representations to calculate word similarity.
- * It retrieves vectors for each word and compares them using cosine similarity.
- * This measure additionally manages a cache to improve lookup speeds.
+ * This word similarity measures utilizes GloVe trained word vector representations to calculate word similarity. It
+ * retrieves vectors for each word and compares them using cosine similarity. This measure additionally manages a cache
+ * to improve lookup speeds.
  */
 public class GloveMeasure extends VectorBasedWordSimMeasure {
 
@@ -49,7 +50,8 @@ public class GloveMeasure extends VectorBasedWordSimMeasure {
         }
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         double similarity = Double.NaN;
 
         try {

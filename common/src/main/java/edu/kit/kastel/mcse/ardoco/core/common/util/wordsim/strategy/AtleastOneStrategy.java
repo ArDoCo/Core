@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
@@ -7,30 +8,30 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Compariso
 import java.util.List;
 
 /**
- * This comparison strategy accepts any word pair as similar if at least one of the specified
- * word similarity measures also accept that word pair as similar.
+ * This comparison strategy accepts any word pair as similar if at least one of the specified word similarity measures
+ * also accept that word pair as similar.
  */
 public class AtleastOneStrategy implements ComparisonStrategy {
 
-	@Override
-	public boolean areWordsSimilar(ComparisonContext ctx, List<WordSimMeasure> measures) {
-		ComparisonStats.begin(ctx);
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx, List<WordSimMeasure> measures) {
+        ComparisonStats.begin(ctx);
 
-		boolean result = false;
+        boolean result = false;
 
-		for (WordSimMeasure measure : measures) {
-			boolean similar = measure.areWordsSimilar(ctx);
+        for (WordSimMeasure measure : measures) {
+            boolean similar = measure.areWordsSimilar(ctx);
 
-			ComparisonStats.record(measure, similar);
+            ComparisonStats.record(measure, similar);
 
-			if (similar) { // TODO: Early return here in the future
-				result = true;
-			}
-		}
+            if (similar) { // TODO: Early return here in the future
+                result = true;
+            }
+        }
 
-		ComparisonStats.end(result);
+        ComparisonStats.end(result);
 
-		return result;
-	}
+        return result;
+    }
 
 }

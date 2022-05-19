@@ -12,54 +12,52 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 
 /**
- * A word similarity measure based on the fastText neural network.
- * It grabs the vectors for each word and compares them using cosine similarity.
- * This measure additionally manages a cache to improve lookup speeds.
+ * A word similarity measure based on the fastText neural network. It grabs the vectors for each word and compares them
+ * using cosine similarity. This measure additionally manages a cache to improve lookup speeds.
  */
 public class FastTextMeasure extends VectorBasedWordSimMeasure {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FastTextMeasure.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FastTextMeasure.class);
 
-	private final double similarityThreshold;
+    private final double similarityThreshold;
 
-	/**
-	 * Constructs a new {@link FastTextMeasure} using the settings provided by
-	 * {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
-	 */
-	public FastTextMeasure() {
-		this(new DL4JFastTextDataSource(Path.of(CommonTextToolsConfig.FASTTEXT_MODEL_FILE_PATH)), CommonTextToolsConfig.FASTTEXT_SIMILARITY_THRESHOLD);
-	}
+    /**
+     * Constructs a new {@link FastTextMeasure} using the settings provided by
+     * {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
+     */
+    public FastTextMeasure() {
+        this(new DL4JFastTextDataSource(Path.of(CommonTextToolsConfig.FASTTEXT_MODEL_FILE_PATH)), CommonTextToolsConfig.FASTTEXT_SIMILARITY_THRESHOLD);
+    }
 
-	/**
-	 * Constructs a new {@link FastTextMeasure} instance.
-	 *
-	 * @param dataSource          the data source from which word vectors are loaded
-	 * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
-	 * @throws IllegalArgumentException if the given threshold is not between 0 and 1
-	 */
-	public FastTextMeasure(DL4JFastTextDataSource dataSource, double similarityThreshold) throws IllegalArgumentException {
-		super(dataSource);
-		this.similarityThreshold = similarityThreshold;
+    /**
+     * Constructs a new {@link FastTextMeasure} instance.
+     *
+     * @param dataSource          the data source from which word vectors are loaded
+     * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
+     * @throws IllegalArgumentException if the given threshold is not between 0 and 1
+     */
+    public FastTextMeasure(DL4JFastTextDataSource dataSource, double similarityThreshold) throws IllegalArgumentException {
+        super(dataSource);
+        this.similarityThreshold = similarityThreshold;
 
-		if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
-			throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
-		}
-	}
+        if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
+            throw new IllegalArgumentException("similarityThreshold outside of valid range: " + similarityThreshold);
+        }
+    }
 
-	@Override
-	public boolean areWordsSimilar(ComparisonContext ctx) {
-		double similarity = Double.NaN;
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
+        double similarity = Double.NaN;
 
-		try {
-			similarity = compareVectors(ctx.firstTerm(), ctx.secondTerm());
-		}
-		catch (RetrieveVectorException e) {
-			LOGGER.error("failed to compare fastText vectors: " + ctx, e);
-		}
+        try {
+            similarity = compareVectors(ctx.firstTerm(), ctx.secondTerm());
+        } catch (RetrieveVectorException e) {
+            LOGGER.error("failed to compare fastText vectors: " + ctx, e);
+        }
 
-		ComparisonStats.recordScore(similarity);
+        ComparisonStats.recordScore(similarity);
 
-		return similarity >= this.similarityThreshold;
-	}
+        return similarity >= this.similarityThreshold;
+    }
 
 }
