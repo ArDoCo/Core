@@ -18,21 +18,21 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/original_model/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(1.0, .620, .765), //
+            new EvaluationResults(.999, .620, .765), //
             new EvaluationResults(.0, .0, .0)//
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new EvaluationResults(.889, .879, .884), //
+            new EvaluationResults(.913, .880, .896), //
             new EvaluationResults(.0, .0, .0)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
-            new EvaluationResults(.99, .713, .832), //
+            new EvaluationResults(.999, .713, .832), //
             new EvaluationResults(.0, .0, .0)),
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //

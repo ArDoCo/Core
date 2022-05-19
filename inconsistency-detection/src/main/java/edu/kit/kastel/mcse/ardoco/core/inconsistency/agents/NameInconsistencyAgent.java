@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -72,7 +73,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
     private static boolean partOfDividerEqualsModelInstance(IModelInstance modelInstance, IWord word) {
         String text = word.getText();
         String modelName = modelInstance.getFullName();
-        for (String part : text.split(REGEX_DIVIDER)) {
+        for (String part : Pattern.compile(REGEX_DIVIDER).split(text)) {
             // NOTE: employ other/better String comparison instead of exact equals?
             if (part.equalsIgnoreCase(modelName)) {
                 return true;

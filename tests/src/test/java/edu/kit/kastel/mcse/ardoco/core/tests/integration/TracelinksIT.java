@@ -119,7 +119,7 @@ class TracelinksIT {
         DataStructure data = null;
         try {
             data = Pipeline.runAndSave("test_" + name, inputText, usePreprocessedText, inputModel, null, additionalConfigs, outputDir);
-        } catch (ReflectiveOperationException | IOException e) {
+        } catch (IOException e) {
             Assertions.fail("Exception during execution occurred");
         }
 
