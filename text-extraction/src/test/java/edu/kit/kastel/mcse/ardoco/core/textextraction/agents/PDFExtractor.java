@@ -19,10 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Not a test, but it extracts the data from the downloaded pdfs.
  */
 @DisabledIfEnvironmentVariable(matches = "true", named = "CI")
-public class PDFExtractor {
+class PDFExtractor {
 
     @Test
-    public void extractStandardGlossary() throws IOException {
+    void extractStandardGlossary() throws IOException {
         extract("./src/main/resources/pdfs/Standard_glossary_of_terms_used_in_Software_Engineering_1.0.pdf",
                 "./src/main/resources/pdfs/Standard_glossary_of_terms_used_in_Software_Engineering_1.0.pdf.words.txt", this::processTextStandardGlossary);
 
@@ -63,7 +63,7 @@ public class PDFExtractor {
     }
 
     @Test
-    public void extractISO24765() throws IOException {
+    void extractISO24765() throws IOException {
         extract("./src/main/resources/pdfs/24765-2017.pdf", "./src/main/resources/pdfs/24765-2017.pdf.words.txt", this::processTextISO24765);
     }
 

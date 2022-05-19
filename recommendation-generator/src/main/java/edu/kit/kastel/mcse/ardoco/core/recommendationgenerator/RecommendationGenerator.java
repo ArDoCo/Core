@@ -33,6 +33,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
      * Creates a new model connection agent with the given extraction state and ntr state.
      */
     public RecommendationGenerator() {
+        // empty
     }
 
     @Override

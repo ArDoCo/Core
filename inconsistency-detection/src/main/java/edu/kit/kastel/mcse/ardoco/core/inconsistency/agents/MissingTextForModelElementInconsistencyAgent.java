@@ -23,6 +23,7 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
     private List<String> types = Lists.mutable.of("BasicComponent", "CompositeComponent");
 
     public MissingTextForModelElementInconsistencyAgent() {
+        // empty
     }
 
     @Override
@@ -91,5 +92,6 @@ public class MissingTextForModelElementInconsistencyAgent extends InconsistencyA
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // empty
     }
 }

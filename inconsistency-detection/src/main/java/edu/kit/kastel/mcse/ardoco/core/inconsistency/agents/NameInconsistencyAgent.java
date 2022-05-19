@@ -19,6 +19,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
     private static final String REGEX_DIVIDER = "[.:]";
 
     public NameInconsistencyAgent() {
+        // empty
     }
 
     @Override
@@ -82,5 +83,7 @@ public class NameInconsistencyAgent extends InconsistencyAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // empty
+
     }
 }

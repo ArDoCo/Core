@@ -1,9 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import static edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent.CSWAgentMode.ADD_PROBABILITY;
+import static edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent.CSWAgentMode.DELETE_OCCURRENCE;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -43,7 +51,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
     private double probabilityOfFoundWords = 1E-8;
 
     @Configurable
-    private CSWAgentMode mode = CSWAgentMode.ADD_PROBABILITY;
+    private CSWAgentMode mode = ADD_PROBABILITY;
 
     @Configurable
     private List<String> sources = List.of(WIKI, ISO24765, STANDARD_GLOSSARY);
@@ -96,9 +104,10 @@ public class ComputerScienceWordsAgent extends TextAgent {
                 logger.trace("Found {} for {}", occurrence, word);
             }
 
-            switch (mode) {
-            case ADD_PROBABILITY -> addProbability(nounMapping);
-            case DELETE_OCCURRENCE -> deleteOccurrence(textState, nounMapping);
+            if (mode == ADD_PROBABILITY) {
+                addProbability(nounMapping);
+            } else if (mode == DELETE_OCCURRENCE) {
+                deleteOccurrence(textState, nounMapping);
             }
 
         }

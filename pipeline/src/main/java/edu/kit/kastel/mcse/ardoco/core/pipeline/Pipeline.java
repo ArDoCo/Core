@@ -71,7 +71,7 @@ public final class Pipeline {
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
     public static DataStructure runAndSave(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File inputCodeModel,
-            File additionalConfigsFile, File outputDir) throws IOException, ReflectiveOperationException {
+            File additionalConfigsFile, File outputDir) throws IOException {
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
