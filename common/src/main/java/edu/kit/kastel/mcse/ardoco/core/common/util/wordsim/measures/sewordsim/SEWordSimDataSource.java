@@ -1,10 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
-import opennlp.tools.stemmer.PorterStemmer;
-import org.sqlite.SQLiteConfig;
-import org.sqlite.SQLiteOpenMode;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -14,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import opennlp.tools.stemmer.PorterStemmer;
+
+import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteOpenMode;
 
 /**
  * Provides access to the SEWordSim sqlite database. Instances of this class keep an open connection to the sqlite file

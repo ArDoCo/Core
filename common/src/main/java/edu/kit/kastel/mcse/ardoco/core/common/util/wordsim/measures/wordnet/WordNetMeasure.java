@@ -1,13 +1,13 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
+import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 
 /**
  * A word similarity measure that is using various algorithms on the WordNet graph to calculate word similarity.

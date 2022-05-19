@@ -1,16 +1,18 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.wordnet;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import opennlp.tools.stemmer.PorterStemmer;
+
+import org.deeplearning4j.text.stopwords.StopWords;
+
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.Relatedness;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
-import opennlp.tools.stemmer.PorterStemmer;
-import org.deeplearning4j.text.stopwords.StopWords;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A WordNet based relatedness calculator that calculates similarity based on Ezzikouri et al. 2019

@@ -1,13 +1,13 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**
  * This class will probably be deleted in the future.

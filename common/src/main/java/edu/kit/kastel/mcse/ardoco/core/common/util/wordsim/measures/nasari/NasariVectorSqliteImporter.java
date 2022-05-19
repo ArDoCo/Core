@@ -1,9 +1,9 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.nasari;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.WordVectorSqliteImporter;
-
 import java.nio.file.Path;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.WordVectorSqliteImporter;
 
 /**
  * Reads Nasari vectors and imports them into a sqlite database. The sqlite database must conform to the requirements

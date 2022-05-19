@@ -5,13 +5,21 @@ import java.util.Comparator;
 import java.util.Objects;
 
 /**
- * This class will probably be deleted in the future.
+ * A lexicographically sorted pair of words.
  */
 public class WordPair implements Comparable<WordPair> {
 
     public final String firstWord;
     public final String secondWord;
 
+    /**
+     * Constructs a new {@link WordPair} instance. Note that word pair instances are sorted. This means that depending
+     * on the lexicographical order of the two given words, the second word might end up being the first word of this
+     * word pair.
+     *
+     * @param firstWord  one word of this pair
+     * @param secondWord the other word of pair
+     */
     public WordPair(String firstWord, String secondWord) {
         Objects.requireNonNull(firstWord);
         Objects.requireNonNull(secondWord);
@@ -29,9 +37,8 @@ public class WordPair implements Comparable<WordPair> {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof WordPair))
+        if (!(o instanceof WordPair wordPair))
             return false;
-        WordPair wordPair = (WordPair) o;
         return firstWord.equals(wordPair.firstWord) && secondWord.equals(wordPair.secondWord);
     }
 

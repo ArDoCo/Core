@@ -1,11 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 /**
  * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur

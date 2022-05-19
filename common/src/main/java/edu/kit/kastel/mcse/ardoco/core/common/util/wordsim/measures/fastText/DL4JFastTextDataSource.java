@@ -1,15 +1,16 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.WordVectorDataSource;
-import org.deeplearning4j.models.fasttext.FastText;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.isZero;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.isZero;
+import org.deeplearning4j.models.fasttext.FastText;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.WordVectorDataSource;
 
 /**
  * Provides the functionality of fastText using the DL4J (JFastText) native wrapper. Instances of this class keep a
