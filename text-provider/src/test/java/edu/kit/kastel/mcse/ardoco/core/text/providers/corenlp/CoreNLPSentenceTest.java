@@ -35,4 +35,10 @@ class CoreNLPSentenceTest {
     void getSentenceNoTest() {
         Assertions.assertEquals(41, sentence.getSentenceNumber());
     }
+
+    @Test
+    void getPhrasesTest() {
+        var phrases = sentence.getPhrases();
+        Assertions.assertEquals(5, phrases.size());
+    }
 }

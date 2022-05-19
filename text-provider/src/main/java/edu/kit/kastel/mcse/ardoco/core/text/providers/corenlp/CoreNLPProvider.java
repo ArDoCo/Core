@@ -18,6 +18,7 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 public class CoreNLPProvider implements ITextConnector {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
     private static final List<String> COREF_ALGORITHMS = List.of("fastneural", "neural", "statistical", "clustering");
+    public static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,depparse"; // add ",coref" later
     private final InputStream text;
     private IText annotatedText;
 
@@ -31,7 +32,7 @@ public class CoreNLPProvider implements ITextConnector {
             throw new IllegalArgumentException("Properties are null");
         }
         var allStanfordProperties = new Properties(properties);
-        allStanfordProperties.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,depparse,coref");
+        allStanfordProperties.setProperty("annotators", ANNOTATORS);
 
         if (!allStanfordProperties.containsValue("parse.type")) {
             allStanfordProperties.put("parse.type", "stanford");

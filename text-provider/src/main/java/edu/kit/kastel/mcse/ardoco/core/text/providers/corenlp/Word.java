@@ -64,8 +64,8 @@ class Word implements IWord {
     public IWord getPreWord() {
         int preWordIndex = index - 1;
         if (preWord == null && preWordIndex > 0) {
-            var token = coreDocument.tokens().get(preWordIndex);
-            preWord = new Word(token, preWordIndex, coreDocument);
+            var coreDocumentToken = coreDocument.tokens().get(preWordIndex);
+            preWord = new Word(coreDocumentToken, preWordIndex, coreDocument);
         }
         return preWord;
     }
@@ -75,9 +75,8 @@ class Word implements IWord {
         int nextWordIndex = index + 1;
         var tokens = coreDocument.tokens();
         if (nextWord == null && nextWordIndex < tokens.size()) {
-            // TODO
-            var token = tokens.get(nextWordIndex);
-            nextWord = new Word(token, nextWordIndex, coreDocument);
+            var coreDocumentToken = tokens.get(nextWordIndex);
+            nextWord = new Word(coreDocumentToken, nextWordIndex, coreDocument);
         }
         return nextWord;
     }
@@ -85,6 +84,14 @@ class Word implements IWord {
     @Override
     public int getPosition() {
         return index;
+    }
+
+    protected int getPositionInSentence() {
+        return this.token.index();
+    }
+
+    protected int getBeginCharPosition() {
+        return this.token.beginPosition();
     }
 
     @Override
