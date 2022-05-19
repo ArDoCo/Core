@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * A eval result represents the result of an entire evaluation.
+ * It contains the results of each evaluated project.
+ */
 public class EvalResult {
 
     private static final Gson GSON = new GsonBuilder()

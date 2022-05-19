@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The evaluation result of a specific project.
+ */
 public class EvalProjectResult implements Comparable<EvalProjectResult> {
 
     private static final Gson GSON = new GsonBuilder()
