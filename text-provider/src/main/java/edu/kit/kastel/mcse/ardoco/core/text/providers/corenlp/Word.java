@@ -151,12 +151,12 @@ class Word implements IWord {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || !(o instanceof Word))
             return false;
-
-        Word word = (Word) o;
-
-        return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag();
+        if (o instanceof Word word) {
+            return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag();
+        }
+        return false;
     }
 
     @Override
