@@ -9,9 +9,8 @@ import java.util.Objects;
 public class VectorUtils {
 
     /**
-     * Calculates the cosine similarity between the two given vectors.
-     * If both vectors are zero, the resulting similarity is 1.0.
-     * If only one of the vectors is zero, the resulting similarity is 0.0.
+     * Calculates the cosine similarity between the two given vectors. If both vectors are zero, the resulting
+     * similarity is 1.0. If only one of the vectors is zero, the resulting similarity is 0.0.
      *
      * @param firstVec  the first vector
      * @param secondVec the second vector
@@ -158,6 +157,7 @@ public class VectorUtils {
         }
     }
 
-	private VectorUtils() { }
+    private VectorUtils() {
+    }
 
 }

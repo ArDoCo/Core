@@ -1,10 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.ProjectAlias;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +8,10 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.ProjectAlias;
 
 public class TLLogFile {
 
@@ -46,6 +46,7 @@ public class TLLogFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 
-	private TLLogFile() { }
+    private TLLogFile() {
+    }
 
 }

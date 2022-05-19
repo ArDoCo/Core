@@ -1,6 +1,26 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
@@ -15,25 +35,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalRes
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons.TLComparisonDir;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatsAnalysis;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 class TracelinksIT {
     private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
@@ -56,24 +57,23 @@ class TracelinksIT {
             var evalDir = Path.of(OUTPUT).resolve("tl_eval");
             Files.createDirectories(evalDir);
 
-	        EvalResult evalResult = new EvalResult(RESULTS);
-	        Path previousResultPath = evalDir.resolve("previous_result.json");
+            EvalResult evalResult = new EvalResult(RESULTS);
+            Path previousResultPath = evalDir.resolve("previous_result.json");
 
-	        if (Files.exists(previousResultPath)) {
-		        EvalResult previousResult = EvalResult.fromJsonString(Files.readString(previousResultPath));
-				TLDiffFile.save(evalDir.resolve("diff.md"), evalResult, previousResult, DATA_MAP);
-	        }
-			else {
-				Files.writeString(previousResultPath, evalResult.toJsonString());
-	        }
+            if (Files.exists(previousResultPath)) {
+                EvalResult previousResult = EvalResult.fromJsonString(Files.readString(previousResultPath));
+                TLDiffFile.save(evalDir.resolve("diff.md"), evalResult, previousResult, DATA_MAP);
+            } else {
+                Files.writeString(previousResultPath, evalResult.toJsonString());
+            }
 
-			TLSummaryFile.save(evalDir.resolve("summary.md"), evalResult, DATA_MAP);
+            TLSummaryFile.save(evalDir.resolve("summary.md"), evalResult, DATA_MAP);
             TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
             TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-			TLComparisonDir.save(evalDir.resolve("comparisons"), COMP_MAP);
+            TLComparisonDir.save(evalDir.resolve("comparisons"), COMP_MAP);
             TLLogFile.append(evalDir.resolve("log.md"), evalResult);
 
-			Files.writeString(evalDir.resolve("result.json"), evalResult.toJsonString(), CREATE, TRUNCATE_EXISTING);
+            Files.writeString(evalDir.resolve("result.json"), evalResult.toJsonString(), CREATE, TRUNCATE_EXISTING);
         }
 
         RESULTS.clear();
@@ -153,8 +153,8 @@ class TracelinksIT {
                 try {
                     RESULTS.add(new EvalProjectResult(project, data));
                     DATA_MAP.put(project, data);
-					COMP_MAP.put(project, new ComparisonStatsAnalysis(ComparisonStats.getComparisons()));
-					ComparisonStats.reset();
+                    COMP_MAP.put(project, new ComparisonStatsAnalysis(ComparisonStats.getComparisons()));
+                    ComparisonStats.reset();
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn(e.getMessage(), e.getCause());

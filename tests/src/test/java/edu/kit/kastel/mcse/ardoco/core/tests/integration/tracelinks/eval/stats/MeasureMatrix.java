@@ -1,11 +1,11 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 public class MeasureMatrix {
 

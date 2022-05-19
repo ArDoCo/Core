@@ -1,6 +1,16 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText.DL4JFastTextDataSource;
@@ -26,15 +36,6 @@ import edu.uniba.di.lacam.kdde.ws4j.similarity.LeacockChodorow;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.Lesk;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.WuPalmer;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class Evaluation {
 
@@ -62,7 +63,7 @@ public class Evaluation {
         boolean fastText = false;
         boolean wordNetWP = false, wordNetLC = false, wordNetJC = false, wordNetLesk = false, wordNetEzzikouri = false;
         boolean glove = false;
-		boolean nasari = false;
+        boolean nasari = false;
 
         // 1.) Load models/resources
 
@@ -104,85 +105,83 @@ public class Evaluation {
         }
 
         // Nasari
-	    BabelNetDataSource babelNetDataSource = null;
-	    VectorSqliteDatabase nasariVectorDatabase = null;
+        BabelNetDataSource babelNetDataSource = null;
+        VectorSqliteDatabase nasariVectorDatabase = null;
         String nasariVectorDBName = "";
-		if (nasari) {
-			babelNetDataSource = new BabelNetDataSource(
-				CommonTextToolsConfig.BABELNET_API_KEY, Path.of(CommonTextToolsConfig.BABELNET_CACHE_FILE_PATH)
-			);
+        if (nasari) {
+            babelNetDataSource = new BabelNetDataSource(CommonTextToolsConfig.BABELNET_API_KEY, Path.of(CommonTextToolsConfig.BABELNET_CACHE_FILE_PATH));
             var dbPath = Path.of(CommonTextToolsConfig.NASARI_DB_FILE_PATH);
             nasariVectorDBName = dbPath.getFileName().toString().replace(".sqlite", "");
-			nasariVectorDatabase = new VectorSqliteDatabase(dbPath);
-		}
+            nasariVectorDatabase = new VectorSqliteDatabase(dbPath);
+        }
 
         // 2.) Construct plans
         plans.add(new EvalPlan("base", Baseline.FIRST, 100, new EqualityMeasure()));
         plans.add(new EvalPlan("base", Baseline.SECOND, 100, new EqualityMeasure()));
 
-	    for (Baseline b : Baseline.values()) {
-		    for (int t = 0; t <= 100; t += 10) {
-			    double threshold = t / 100.0;
+        for (Baseline b : Baseline.values()) {
+            for (int t = 0; t <= 100; t += 10) {
+                double threshold = t / 100.0;
 
-			    // Jaro Winkler
-			    if (jaroWinkler && b == Baseline.FIRST) {
-				    plans.add(new EvalPlan("jaroWinkler", b, t, new JaroWinklerMeasure(threshold)));
-			    }
+                // Jaro Winkler
+                if (jaroWinkler && b == Baseline.FIRST) {
+                    plans.add(new EvalPlan("jaroWinkler", b, t, new JaroWinklerMeasure(threshold)));
+                }
 
-			    // Levenshtein
-			    if (levenshtein && b == Baseline.FIRST) {
+                // Levenshtein
+                if (levenshtein && b == Baseline.FIRST) {
                     for (int minLength = 0; minLength < 13; minLength++) {
                         for (int maxDistance = 0; maxDistance < 13; maxDistance++) {
                             var group = String.format("levenshtein_%sL_%sD", minLength, maxDistance);
                             plans.add(new EvalPlan(group, b, t, new LevenshteinMeasure(minLength, maxDistance, threshold)));
                         }
-                   }
-			    }
+                    }
+                }
 
-			    // Ngram
-			    if (ngram) {
+                // Ngram
+                if (ngram) {
                     for (int n = 2; n <= 10; n++) {
                         var group = String.format("ngram_n%s", n);
                         plans.add(new EvalPlan(group, b, t, new NgramMeasure(NgramMeasure.Variant.LUCENE, n, threshold)));
                     }
-			    }
+                }
 
-			    // SEWordSim
-			    if (sewordsim) {
-				    plans.add(new EvalPlan("sewsim", b, t, new SEWordSimMeasure(seWordSimDataSource, threshold)));
-			    }
+                // SEWordSim
+                if (sewordsim) {
+                    plans.add(new EvalPlan("sewsim", b, t, new SEWordSimMeasure(seWordSimDataSource, threshold)));
+                }
 
-			    // fastText
-			    if (fastText) {
-				    plans.add(new EvalPlan("fastText_" + fastTextModelName, b, t, new FastTextMeasure(fastTextDataSource, threshold)));
-			    }
+                // fastText
+                if (fastText) {
+                    plans.add(new EvalPlan("fastText_" + fastTextModelName, b, t, new FastTextMeasure(fastTextDataSource, threshold)));
+                }
 
-			    // WordNet
-			    if (wordNetWP) {
-				    plans.add(new EvalPlan("wordNet_WP", b, t, new WordNetMeasure(Map.of(new WuPalmer(wordNetDB), threshold))));
-			    }
-			    if (wordNetLC) {
-				    plans.add(new EvalPlan("wordNet_LC", b, t, new WordNetMeasure(Map.of(new LeacockChodorow(wordNetDB), threshold))));
-			    }
-			    if (wordNetJC) {
-				    plans.add(new EvalPlan("wordNet_JC", b, t, new WordNetMeasure(Map.of(new JiangConrath(wordNetDB), threshold))));
-			    }
-			    if (wordNetLesk) {
-				    plans.add(new EvalPlan("wordNet_Lesk", b, t, new WordNetMeasure(Map.of(new Lesk(wordNetDB), threshold))));
-			    }
-			    if (wordNetEzzikouri) {
-				    plans.add(new EvalPlan("wordNet_Ezzi", b, t, new WordNetMeasure(Map.of(new Ezzikouri(wordNetDB), threshold))));
-			    }
+                // WordNet
+                if (wordNetWP) {
+                    plans.add(new EvalPlan("wordNet_WP", b, t, new WordNetMeasure(Map.of(new WuPalmer(wordNetDB), threshold))));
+                }
+                if (wordNetLC) {
+                    plans.add(new EvalPlan("wordNet_LC", b, t, new WordNetMeasure(Map.of(new LeacockChodorow(wordNetDB), threshold))));
+                }
+                if (wordNetJC) {
+                    plans.add(new EvalPlan("wordNet_JC", b, t, new WordNetMeasure(Map.of(new JiangConrath(wordNetDB), threshold))));
+                }
+                if (wordNetLesk) {
+                    plans.add(new EvalPlan("wordNet_Lesk", b, t, new WordNetMeasure(Map.of(new Lesk(wordNetDB), threshold))));
+                }
+                if (wordNetEzzikouri) {
+                    plans.add(new EvalPlan("wordNet_Ezzi", b, t, new WordNetMeasure(Map.of(new Ezzikouri(wordNetDB), threshold))));
+                }
 
-				// GloVe
+                // GloVe
                 if (glove) {
                     plans.add(new EvalPlan("glove_" + gloveDataSourceName, b, t, new GloveMeasure(gloveDataSource, threshold)));
                 }
 
-				// Nasari
-	            if (nasari) {
-					plans.add(new EvalPlan("nasari_" + nasariVectorDBName, b, t, new NasariMeasure(babelNetDataSource, nasariVectorDatabase, threshold)));
-	            }
+                // Nasari
+                if (nasari) {
+                    plans.add(new EvalPlan("nasari_" + nasariVectorDBName, b, t, new NasariMeasure(babelNetDataSource, nasariVectorDatabase, threshold)));
+                }
             }
         }
 

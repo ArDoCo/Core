@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import org.junit.jupiter.api.Test;
@@ -8,19 +9,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class VectorUtilsTest {
 
-    record Example(float[] firstVec, float[] secondVec, double expectedCosineSimil) { }
+    record Example(float[] firstVec, float[] secondVec, double expectedCosineSimil) {
+    }
 
-    private static final List<Example> EXAMPLES = List.of(
-            new Example(new float[0], new float[0], 1.0),
-            new Example(new float[] { 0.0f, 0.0f }, new float[] { 0.0f, 0.0f }, 1.0),
-            new Example(new float[] { 0.0f, 0.0f }, new float[] { 1.0f, 0.0f }, 0.0),
+    private static final List<Example> EXAMPLES = List.of(new Example(new float[0], new float[0], 1.0),
+            new Example(new float[] { 0.0f, 0.0f }, new float[] { 0.0f, 0.0f }, 1.0), new Example(new float[] { 0.0f, 0.0f }, new float[] { 1.0f, 0.0f }, 0.0),
             new Example(new float[] { 0.0f, 0.0f }, new float[] { 0.0f, 1.0f }, 0.0),
             new Example(new float[] { 1.0f, 2.0f }, new float[] { 3.0f, 4.0f }, 0.9838699),
             new Example(new float[] { 345.54521f, 759.4141432f }, new float[] { 9563.325f, 43562.5325f }, 0.9778399523249),
             new Example(new float[] { 0.321f, 0.05f }, new float[] { 331.32f, 7.343f }, 0.99125289),
             new Example(new float[] { 1.0f, 0.0f }, new float[] { 0.0f, 1.0f }, 0.0),
-            new Example(new float[] { 1.0f, 0.5f }, new float[] { 0.0f, 1.0f }, 0.44721359)
-    );
+            new Example(new float[] { 1.0f, 0.5f }, new float[] { 0.0f, 1.0f }, 0.44721359));
 
     @Test
     public void testFloatCosineSimilarity() {
@@ -83,7 +82,7 @@ class VectorUtilsTest {
     }
 
     @Test
-    public     void testScale() {
+    public void testScale() {
         assertThrows(NullPointerException.class, () -> VectorUtils.scale(null, 1.0));
 
         double[] result = new double[] { 1.0, 2.0 };

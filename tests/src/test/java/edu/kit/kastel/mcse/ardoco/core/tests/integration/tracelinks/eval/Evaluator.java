@@ -1,12 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +11,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 
 /**
  * Evaluates multiple {@link EvalPlan} instances one after another. Saves evaluation results to a specified directory.
@@ -97,8 +98,8 @@ public class Evaluator {
 
             projectResults.add(result);
 
-            LOGGER.info("{} on {}: {} Precision, {} Recall, {} F1, {} Accuracy",
-                    plan.getId(), project.name().toUpperCase(), result.getPrecision(), result.getRecall(), result.getF1Score(), result.getAccuracy());
+            LOGGER.info("{} on {}: {} Precision, {} Recall, {} F1, {} Accuracy", plan.getId(), project.name().toUpperCase(), result.getPrecision(),
+                    result.getRecall(), result.getF1Score(), result.getAccuracy());
         }
 
         var evalResult = new EvalResult(projectResults);

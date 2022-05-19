@@ -36,7 +36,8 @@ public final class CommonTextToolsConfig {
      */
     public static final int LEVENSHTEIN_MAX_DISTANCE = CONFIG.getPropertyAsInt("levenshtein_MaxDistance");
     /**
-     * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts as a dynamic distance limit.
+     * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts
+     * as a dynamic distance limit.
      */
     public static final double LEVENSHTEIN_THRESHOLD = CONFIG.getPropertyAsDouble("levenshtein_Threshold");
 
@@ -162,7 +163,6 @@ public final class CommonTextToolsConfig {
      */
     public static double WORDNET_ALGO_EZZIKOURI_THRESHOLD = CONFIG.getPropertyAsDouble("wordNet_Algo_Ezzikouri_Threshold");
 
-
     /**
      * Decides whether the GloVe similarity measure should be used.
      */
@@ -176,26 +176,26 @@ public final class CommonTextToolsConfig {
      */
     public static final String GLOVE_DB_FILE_PATH = CONFIG.getProperty("glove_DatabaseFilePath");
 
-	/**
-	 * Decides whether the Nasari similarity measure should be used.
-	 */
-	public static final boolean NASARI_ENABLED = CONFIG.isPropertyEnabled("nasari_Enabled");
-	/**
-	 * The threshold for the Nasari similarity measure above which words are considered similar.
-	 */
-	public static final double NASARI_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("nasari_SimilarityThreshold");
-	/**
-	 * The path to the sqlite database file used by the Nasari word similarity measure.
-	 */
-	public static final String NASARI_DB_FILE_PATH = CONFIG.getProperty("nasari_DatabaseFilePath");
-	/**
-	 * The API key used to access information from BabelNet.
-	 */
-	public static final String BABELNET_API_KEY = CONFIG.getProperty("babelNet_ApiKey");
-	/**
-	 * The path to the BabelNet cache.
-	 */
-	public static final String BABELNET_CACHE_FILE_PATH = CONFIG.getProperty("babelNet_CacheFilePath");
+    /**
+     * Decides whether the Nasari similarity measure should be used.
+     */
+    public static final boolean NASARI_ENABLED = CONFIG.isPropertyEnabled("nasari_Enabled");
+    /**
+     * The threshold for the Nasari similarity measure above which words are considered similar.
+     */
+    public static final double NASARI_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("nasari_SimilarityThreshold");
+    /**
+     * The path to the sqlite database file used by the Nasari word similarity measure.
+     */
+    public static final String NASARI_DB_FILE_PATH = CONFIG.getProperty("nasari_DatabaseFilePath");
+    /**
+     * The API key used to access information from BabelNet.
+     */
+    public static final String BABELNET_API_KEY = CONFIG.getProperty("babelNet_ApiKey");
+    /**
+     * The path to the BabelNet cache.
+     */
+    public static final String BABELNET_CACHE_FILE_PATH = CONFIG.getProperty("babelNet_CacheFilePath");
 
     private static ResourceAccessor loadParameters(String filePath) {
         return new ResourceAccessor(filePath, true);

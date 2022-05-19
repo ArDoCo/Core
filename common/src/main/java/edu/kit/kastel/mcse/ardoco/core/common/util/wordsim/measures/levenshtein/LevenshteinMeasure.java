@@ -13,22 +13,13 @@ import java.util.Locale;
  * calculate word similarity. This measure is configurable through three configuration options:
  *
  * <ul>
- *     <li>
- *         <b>maxDistance:</b>
- *         Word pairs with a levenshtein distance above this configuration value will not be considered similar.
- *         Must be a non-negative integer.
- *     </li>
- *     <li>
- *         <b>minLength:</b>
- *         If one of the words is shorter than this configured value, an additional condition must be met for the word
- *         pair to be considered similar. This condition being, that one word must contain the other.
- *         Must be a non-negative integer.
- *     </li>
- *     <li>
- *         <b>threshold:</b>
- *         A number between 0 and 1 that serves as a word-dependent distance limit. The levenshtein distance between
- *         the words must be lower than the threshold multiplied by the length of the shorter word.
- *     </li>
+ * <li><b>maxDistance:</b> Word pairs with a levenshtein distance above this configuration value will not be considered
+ * similar. Must be a non-negative integer.</li>
+ * <li><b>minLength:</b> If one of the words is shorter than this configured value, an additional condition must be met
+ * for the word pair to be considered similar. This condition being, that one word must contain the other. Must be a
+ * non-negative integer.</li>
+ * <li><b>threshold:</b> A number between 0 and 1 that serves as a word-dependent distance limit. The levenshtein
+ * distance between the words must be lower than the threshold multiplied by the length of the shorter word.</li>
  * </ul>
  */
 public class LevenshteinMeasure implements WordSimMeasure {
@@ -46,12 +37,12 @@ public class LevenshteinMeasure implements WordSimMeasure {
     }
 
     /**
-     * Constructs a new {@link LevenshteinMeasure}.
-     * The necessary arguments for this constructor are explained {@link LevenshteinMeasure here}.
+     * Constructs a new {@link LevenshteinMeasure}. The necessary arguments for this constructor are explained
+     * {@link LevenshteinMeasure here}.
      *
-     * @param minLength the min length
+     * @param minLength   the min length
      * @param maxDistance the max distance
-     * @param threshold the threshold
+     * @param threshold   the threshold
      */
     public LevenshteinMeasure(int minLength, int maxDistance, double threshold) {
         this.minLength = minLength;
@@ -71,7 +62,8 @@ public class LevenshteinMeasure implements WordSimMeasure {
         }
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         String firstWord = ctx.firstTerm().toLowerCase(Locale.ROOT);
         String secondWord = ctx.secondTerm().toLowerCase(Locale.ROOT);
 

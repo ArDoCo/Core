@@ -21,7 +21,8 @@ public class NgramMeasure implements WordSimMeasure {
     public enum Variant {
         /**
          * This variant matches the algorithm included in apache/lucene which is also positional but deviates from the
-         * original algorithm by using {@link #LUCENE_PREFIX_CHARACTER} as the prefix character and changing the weight for the dN function.
+         * original algorithm by using {@link #LUCENE_PREFIX_CHARACTER} as the prefix character and changing the weight
+         * for the dN function.
          */
         LUCENE,
         /**
@@ -64,7 +65,8 @@ public class NgramMeasure implements WordSimMeasure {
         }
     }
 
-    @Override public boolean areWordsSimilar(ComparisonContext ctx) {
+    @Override
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
 
         double distance = calculateDistance(ctx.firstTerm(), ctx.secondTerm());

@@ -141,7 +141,7 @@ public final class SimilarityUtils {
      * @return true, if the test string is similar to the original; false if not.
      */
     public static boolean areWordsSimilar(String word1, String word2) {
-		return WordSimUtils.areWordsSimilar(word1, word2);
+        return WordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**

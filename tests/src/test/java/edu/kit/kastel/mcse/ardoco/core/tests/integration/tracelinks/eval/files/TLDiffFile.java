@@ -1,13 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalUtils;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,13 +11,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalUtils;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
+
 public class TLDiffFile {
 
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("+##0.00%;-##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void save(Path targetFile, EvalResult newResults, EvalResult oldResults,
-                            Map<Project, DataStructure> dataMap) throws IOException {
+    public static void save(Path targetFile, EvalResult newResults, EvalResult oldResults, Map<Project, DataStructure> dataMap) throws IOException {
 
         // Assumption: Both collections contain the same projects
 
@@ -49,10 +48,7 @@ public class TLDiffFile {
         for (EvalProjectResult oldResult : oldResults.getProjectResults().stream().sorted().toList()) {
             var project = oldResult.getProject();
 
-            var newResult = newResults.getProjectResults().stream()
-                    .filter(r -> r.getProject().equals(project))
-                    .findAny()
-                    .orElse(null);
+            var newResult = newResults.getProjectResults().stream().filter(r -> r.getProject().equals(project)).findAny().orElse(null);
 
             if (newResult == null) {
                 continue;
@@ -101,15 +97,16 @@ public class TLDiffFile {
         builder.append(description).append(":\n");
 
         for (TestLink link : links) {
-	        var line = EvalUtils.formatLink(link, data);
-	        if (line != null && !line.isBlank()) {
-		        builder.append("- ").append(line).append('\n');
-	        }
+            var line = EvalUtils.formatLink(link, data);
+            if (line != null && !line.isBlank()) {
+                builder.append("- ").append(line).append('\n');
+            }
         }
 
         builder.append('\n');
     }
 
-	private TLDiffFile() { }
+    private TLDiffFile() {
+    }
 
 }

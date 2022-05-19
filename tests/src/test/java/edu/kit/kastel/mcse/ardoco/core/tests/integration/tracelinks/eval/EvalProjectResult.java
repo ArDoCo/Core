@@ -1,24 +1,25 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
 
 /**
  * The evaluation result of a specific project.
  */
 public class EvalProjectResult implements Comparable<EvalProjectResult> {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(TestLink.class, new TestLinkSerialization())
-            .create();
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(TestLink.class, new TestLinkSerialization()).create();
 
     public static EvalProjectResult fromJsonString(String jsonStr) {
         return GSON.fromJson(jsonStr, EvalProjectResult.class);
@@ -37,13 +38,8 @@ public class EvalProjectResult implements Comparable<EvalProjectResult> {
     // ^ unused fields exist for json serialization/deserialization
 
     public EvalProjectResult(Project project, DataStructure data) throws IOException {
-        this(
-                project,
-                EvalUtils.getTraceLinks(data).stream().map(TestLink::new).toList(),
-                TLGoldStandardFile.loadLinks(project),
-                data.getText().getSentences().size(),
-                EvalUtils.getInstances(data).size()
-        );
+        this(project, EvalUtils.getTraceLinks(data).stream().map(TestLink::new).toList(), TLGoldStandardFile.loadLinks(project),
+                data.getText().getSentences().size(), EvalUtils.getInstances(data).size());
     }
 
     public EvalProjectResult(Project project, List<TestLink> foundLinks, List<TestLink> correctLinks, int sentenceCount, int modelInstanceCount) {
@@ -91,7 +87,7 @@ public class EvalProjectResult implements Comparable<EvalProjectResult> {
         Collections.sort(this.truePositives);
         Collections.sort(this.falsePositives);
         Collections.sort(this.falseNegatives);
-	    // ^ sorting these lists ensures that they are always in the same order when viewed
+        // ^ sorting these lists ensures that they are always in the same order when viewed
     }
 
     public Project getProject() {
@@ -146,7 +142,8 @@ public class EvalProjectResult implements Comparable<EvalProjectResult> {
         return trueNegativeCount;
     }
 
-    @Override public int compareTo(@NotNull EvalProjectResult o) {
+    @Override
+    public int compareTo(@NotNull EvalProjectResult o) {
         return this.project.name().compareTo(o.project.name());
     }
 

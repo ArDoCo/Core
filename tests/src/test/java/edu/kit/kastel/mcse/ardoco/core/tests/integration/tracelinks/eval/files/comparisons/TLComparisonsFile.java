@@ -1,7 +1,8 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Comparison;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.MeasureResult;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.Comparison;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.MeasureResult;
 
 public class TLComparisonsFile {
 
@@ -54,6 +55,7 @@ public class TLComparisonsFile {
         }
     }
 
-	private TLComparisonsFile() { }
+    private TLComparisonsFile() {
+    }
 
 }

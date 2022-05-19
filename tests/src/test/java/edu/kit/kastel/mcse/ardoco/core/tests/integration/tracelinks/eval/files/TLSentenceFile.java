@@ -34,6 +34,7 @@ public class TLSentenceFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-	private TLSentenceFile() { }
+    private TLSentenceFile() {
+    }
 
 }

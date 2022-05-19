@@ -14,6 +14,7 @@ public class ProjectAlias {
         };
     }
 
-	private ProjectAlias() { }
+    private ProjectAlias() {
+    }
 
 }

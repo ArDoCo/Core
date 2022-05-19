@@ -1,8 +1,9 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
-import com.google.gson.*;
-
 import java.lang.reflect.Type;
+
+import com.google.gson.*;
 
 public class TestLinkSerialization implements JsonSerializer<TestLink>, JsonDeserializer<TestLink> {
 
@@ -11,10 +12,7 @@ public class TestLinkSerialization implements JsonSerializer<TestLink>, JsonDese
         var testLinkStr = jsonElement.getAsString();
         var data = testLinkStr.split("⇔");
 
-        return new TestLink(
-                data[0],
-                Integer.parseInt(data[1])
-        );
+        return new TestLink(data[0], Integer.parseInt(data[1]));
 
     }
 
