@@ -26,6 +26,7 @@ public class InstanceRelationAgent extends RecommendationAgent {
      * Default constructor
      */
     public InstanceRelationAgent() {
+        // empty
     }
 
     /**
@@ -143,5 +144,6 @@ public class InstanceRelationAgent extends RecommendationAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // empty
     }
 }

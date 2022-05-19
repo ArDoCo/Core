@@ -68,5 +68,6 @@ public class ReferenceAgent extends ConnectionAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // empty
     }
 }

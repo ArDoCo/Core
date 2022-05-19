@@ -16,6 +16,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
+/**
+ * @deprecated
+ */
 @Deprecated(since = "Currently Not Operational")
 public class CorefAgent extends TextAgent {
 
@@ -28,6 +31,7 @@ public class CorefAgent extends TextAgent {
      * Prototype constructor.
      */
     public CorefAgent() {
+        super();
     }
 
     @Override
@@ -91,5 +95,6 @@ public class CorefAgent extends TextAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // empty
     }
 }

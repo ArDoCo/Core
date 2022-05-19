@@ -10,7 +10,6 @@ public interface IPhrase {
 
     String getText();
 
-    // TODO create an enum with label types?
     PhraseType getPhraseType();
 
     List<IWord> getContainedWords();
