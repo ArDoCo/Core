@@ -2,10 +2,9 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.json;
 
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.base.PhraseTest;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.base.WordTest;
 
-class JsonPhraseTest extends PhraseTest {
-
+class JsonWordTest extends WordTest {
     @Override
     protected ITextConnector getProvider() {
         return JsonTextProviderTest.getTextProvider();

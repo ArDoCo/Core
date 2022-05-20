@@ -2,58 +2,31 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.json;
 
 import java.io.File;
+import java.io.IOException;
 
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Assertions;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.base.ProviderTest;
 
-@TestMethodOrder(OrderAnnotation.class)
-class JsonTextProviderTest {
+class JsonTextProviderTest extends ProviderTest {
     protected static String path = "src/test/resources/teastore.json";
 
-    private JsonTextProvider textProvider;
+    private static JsonTextProvider textProvider;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
-        textProvider = JsonTextProvider.loadFromFile(new File(path));
+    public static synchronized JsonTextProvider getTextProvider() {
+        if (textProvider != null)
+            return textProvider;
+        try {
+            textProvider = JsonTextProvider.loadFromFile(new File(path));
+        } catch (IOException e) {
+            Assertions.fail(e.getMessage());
+        }
+        return textProvider;
     }
 
-    @AfterEach
-    void afterEach() {
-        textProvider = null;
+    @Override
+    protected ITextConnector getProvider() {
+        return JsonTextProviderTest.getTextProvider();
     }
-
-    /**
-     * Repeated test to be able to look at the performance a little bit better. First run is usually slower as parts of
-     * the ontology still need to be loaded/cached. Subsequent runs are generally faster
-     */
-    @Order(1)
-    @RepeatedTest(3)
-    @DisplayName("Test retrieval of text")
-    void getAnnotatedTextTest() {
-        var text = textProvider.getAnnotatedText();
-        Assertions.assertNotNull(text);
-    }
-
-    @Order(2)
-    @Test
-    void addTextTest() {
-        IText text = textProvider.getAnnotatedText();
-        Assertions.assertNotNull(text);
-
-        textProvider.addNewText("test", text);
-        IText newText = textProvider.getAnnotatedText("test");
-        Assertions.assertEquals(text.getLength(), newText.getLength());
-        Assertions.assertEquals(text.getFirstWord(), newText.getFirstWord());
-    }
-
-    @Order(3)
-    @Test
-    void removeExistingTextsTest() {
-        textProvider.removeExistingTexts();
-        var text = textProvider.getAnnotatedText();
-        Assertions.assertNull(text);
-    }
-
 }

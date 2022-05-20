@@ -84,15 +84,14 @@ public class JsonSentence implements ISentence, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof JsonSentence that)) {
+        if (!(o instanceof ISentence sentence)) {
             return false;
         }
-        return sentenceNumber == that.sentenceNumber && startIndexInclude == that.startIndexInclude && endIndexInclude == that.endIndexInclude
-                && Objects.equals(text, that.text);
+        return isEqualTo(sentence);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sentenceNumber, text, startIndexInclude, endIndexInclude);
+        return Objects.hash(sentenceNumber, text);
     }
 }
