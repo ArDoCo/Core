@@ -32,4 +32,5 @@ public interface ISentence {
      */
     String getText();
 
+    ImmutableList<IPhrase> getPhrases();
 }

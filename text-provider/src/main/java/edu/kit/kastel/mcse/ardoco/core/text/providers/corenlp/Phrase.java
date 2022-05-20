@@ -81,11 +81,8 @@ class Phrase implements IPhrase {
         } else {
             var currText = getText();
             var otherText = other.getText();
-            if (currText.contains(otherText) && currText.length() != otherText.length()) {
-                return true;
-            }
+            return currText.contains(otherText) && currText.length() != otherText.length();
         }
-        return false;
     }
 
     @Override
@@ -95,10 +92,7 @@ class Phrase implements IPhrase {
         } else {
             var currText = getText();
             var otherText = other.getText();
-            if (otherText.contains(currText) && currText.length() != otherText.length()) {
-                return true;
-            }
+            return otherText.contains(currText) && currText.length() != otherText.length();
         }
-        return false;
     }
 }

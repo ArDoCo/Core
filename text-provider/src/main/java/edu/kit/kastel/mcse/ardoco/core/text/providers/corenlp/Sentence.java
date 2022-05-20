@@ -61,6 +61,7 @@ class Sentence implements ISentence {
         return coreSentence.text();
     }
 
+    @Override
     public ImmutableList<IPhrase> getPhrases() {
         if (phrases.isEmpty()) {
             MutableList<IPhrase> newPhrases = Lists.mutable.empty();
