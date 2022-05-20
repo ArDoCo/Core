@@ -3,12 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.json;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -26,6 +29,8 @@ public class JsonSentence implements ISentence, Serializable {
     private int startIndexInclude;
     @JsonProperty
     private int endIndexInclude;
+    @JsonProperty
+    private List<JsonPhrase> phrases;
 
     private transient JsonText parent;
 
@@ -45,10 +50,13 @@ public class JsonSentence implements ISentence, Serializable {
         }
         this.startIndexInclude = source.getWords().indexOf(firstWord.get());
         this.endIndexInclude = source.getWords().indexOf(lastWord.get());
+
+        this.phrases = sentence.getPhrases().stream().map(p -> new JsonPhrase(source, parent, p)).toList();
     }
 
     public void init(JsonText jsonText) {
         this.parent = jsonText;
+        this.phrases.forEach(p -> p.init(jsonText));
     }
 
     @Override
@@ -67,18 +75,20 @@ public class JsonSentence implements ISentence, Serializable {
     }
 
     @Override
+    public ImmutableList<IPhrase> getPhrases() {
+        return Lists.immutable.withAll(phrases);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || !(o instanceof JsonSentence)) {
+        if (!(o instanceof JsonSentence that)) {
             return false;
         }
-        if (o instanceof JsonSentence that) {
-            return sentenceNumber == that.sentenceNumber && startIndexInclude == that.startIndexInclude && endIndexInclude == that.endIndexInclude
-                    && Objects.equals(text, that.text);
-        }
-        return false;
+        return sentenceNumber == that.sentenceNumber && startIndexInclude == that.startIndexInclude && endIndexInclude == that.endIndexInclude
+                && Objects.equals(text, that.text);
     }
 
     @Override
