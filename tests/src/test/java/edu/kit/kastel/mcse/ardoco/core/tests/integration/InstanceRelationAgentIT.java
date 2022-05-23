@@ -16,8 +16,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.ipd.parse.luna.LunaInitException;
-import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IInstanceRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -25,11 +23,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 @Disabled("Disabled as it is not used for now")
@@ -46,8 +44,8 @@ class InstanceRelationAgentIT {
 
         ITextConnector textConnector;
         try {
-            textConnector = new ParseProvider(new FileInputStream(inputText));
-        } catch (FileNotFoundException | LunaRunException | LunaInitException e) {
+            textConnector = new CoreNLPProvider(new FileInputStream(inputText));
+        } catch (FileNotFoundException e) {
             Assertions.fail("Found exception when initialising ParseProvider");
             return;
         }

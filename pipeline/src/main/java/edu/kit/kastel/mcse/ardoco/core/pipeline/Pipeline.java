@@ -1,23 +1,22 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
-import static edu.kit.kastel.mcse.ardoco.core.api.common.AbstractConfigurable.KEY_VALUE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import edu.kit.ipd.parse.luna.LunaInitException;
-import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
@@ -25,14 +24,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.java.JavaJsonModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.provider.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 /**
@@ -44,20 +42,18 @@ public final class Pipeline {
         throw new IllegalAccessError();
     }
 
-    private static final Logger logger = LogManager.getLogger(Pipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(Pipeline.class);
 
     /**
      * Run the approach with the given parameters and save the output to the file system.
      *
      * @param name                   Name of the run
      * @param inputText              File of the input text.
-     * @param preprocessedText       indicator whether this file is already preprocessed text.
      * @param inputArchitectureModel File of the input model (PCM)
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure run(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File additionalConfigs)
-            throws ReflectiveOperationException, IOException {
-        return runAndSave(name, inputText, preprocessedText, inputArchitectureModel, null, additionalConfigs, null);
+    public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
+        return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
     /**
@@ -65,15 +61,14 @@ public final class Pipeline {
      *
      * @param name                   Name of the run
      * @param inputText              File of the input text.
-     * @param preprocessedText       indicator whether this file is already preprocessed text.
      * @param inputArchitectureModel File of the input model (PCM)
      * @param inputCodeModel         File of the input model (Java Code JSON)
      * @param additionalConfigsFile  File with the additional or overwriting config parameters that should be used
      * @param outputDir              File that represents the output directory where the results should be written to
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure runAndSave(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File inputCodeModel,
-            File additionalConfigsFile, File outputDir) throws IOException, ReflectiveOperationException {
+    public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
+            File outputDir) throws IOException {
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
@@ -81,7 +76,7 @@ public final class Pipeline {
         var startTime = System.currentTimeMillis();
 
         logger.info("Preparing and preprocessing text input.");
-        var annotatedText = getAnnotatedText(inputText, preprocessedText);
+        var annotatedText = getAnnotatedText(inputText);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
@@ -144,7 +139,7 @@ public final class Pipeline {
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
         Map<String, String> additionalConfigs = new HashMap<>();
         if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
-            try (var scanner = new Scanner(additionalConfigsFile)) {
+            try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8.name())) {
                 while (scanner.hasNextLine()) {
                     var line = scanner.nextLine();
                     if (line == null || line.isBlank()) {
@@ -170,20 +165,11 @@ public final class Pipeline {
         logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
-    private static IText getAnnotatedText(File inputText, boolean providedAnalyzedText) {
-        if (providedAnalyzedText) {
-            try {
-                return JsonTextProvider.loadFromFile(inputText).getAnnotatedText();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                return null;
-            }
-        }
-
+    private static IText getAnnotatedText(File inputText) {
         try {
-            ITextConnector textConnector = new ParseProvider(new FileInputStream(inputText));
+            ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(inputText));
             return textConnector.getAnnotatedText();
-        } catch (IOException | LunaRunException | LunaInitException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
             return null;
         }

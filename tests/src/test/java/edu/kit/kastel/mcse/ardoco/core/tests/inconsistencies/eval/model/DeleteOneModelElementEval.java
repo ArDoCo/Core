@@ -11,7 +11,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
@@ -33,15 +32,14 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     @Override
     public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
-        var result = process(project, originalModel, originalText, strategy);
+        var result = process(originalModel, originalText, strategy);
 
         var evaluator = new PRF1Evaluator();
 
         var modelId = originalModel.getModelId();
-        var originalInconsistencyState = result.get(null).getInconsistencyState(modelId);
 
         for (var r : result.entrySet()) {
-            this.evaluate(originalInconsistencyState, r, modelId, gs, evaluator, os);
+            this.evaluate(r, modelId, gs, evaluator, os);
         }
 
         os.println("Overall: ");
@@ -50,7 +48,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         return evaluator.getWeightedAveragePRF1();
     }
 
-    private static Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> process(Project project, IModelConnector pcmModel, IText annotatedText,
+    private static Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> process(IModelConnector pcmModel, IText annotatedText,
             IModificationStrategy strategy) {
         var configurations = new HashMap<String, String>();
         Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> results = new HashMap<>();
@@ -74,8 +72,8 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         return results;
     }
 
-    private void evaluate(IInconsistencyState originalState, Entry<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> r, String modelId,
-            GoldStandard gs, PRF1Evaluator evaluator, PrintStream os) {
+    private void evaluate(Entry<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> r, String modelId, GoldStandard gs, PRF1Evaluator evaluator,
+            PrintStream os) {
         os.println("-----------------------------------");
 
         if (r.getKey() == null) {
