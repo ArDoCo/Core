@@ -31,7 +31,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 /**
@@ -50,13 +49,11 @@ public final class Pipeline {
      *
      * @param name                   Name of the run
      * @param inputText              File of the input text.
-     * @param preprocessedText       indicator whether this file is already preprocessed text.
      * @param inputArchitectureModel File of the input model (PCM)
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure run(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File additionalConfigs)
-            throws IOException {
-        return runAndSave(name, inputText, preprocessedText, inputArchitectureModel, null, additionalConfigs, null);
+    public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
+        return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
     /**
@@ -64,15 +61,14 @@ public final class Pipeline {
      *
      * @param name                   Name of the run
      * @param inputText              File of the input text.
-     * @param preprocessedText       indicator whether this file is already preprocessed text.
      * @param inputArchitectureModel File of the input model (PCM)
      * @param inputCodeModel         File of the input model (Java Code JSON)
      * @param additionalConfigsFile  File with the additional or overwriting config parameters that should be used
      * @param outputDir              File that represents the output directory where the results should be written to
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure runAndSave(String name, File inputText, boolean preprocessedText, File inputArchitectureModel, File inputCodeModel,
-            File additionalConfigsFile, File outputDir) throws IOException {
+    public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
+            File outputDir) throws IOException {
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
@@ -80,7 +76,7 @@ public final class Pipeline {
         var startTime = System.currentTimeMillis();
 
         logger.info("Preparing and preprocessing text input.");
-        var annotatedText = getAnnotatedText(inputText, preprocessedText);
+        var annotatedText = getAnnotatedText(inputText);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
@@ -169,16 +165,7 @@ public final class Pipeline {
         logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
-    private static IText getAnnotatedText(File inputText, boolean providedAnalyzedText) {
-        if (providedAnalyzedText) {
-            try {
-                return JsonTextProvider.loadFromFile(inputText).getAnnotatedText();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                return null;
-            }
-        }
-
+    private static IText getAnnotatedText(File inputText) {
         try {
             ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(inputText));
             return textConnector.getAnnotatedText();

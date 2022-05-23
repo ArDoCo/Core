@@ -11,7 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
 
 public enum Project {
     MEDIASTORE(//
@@ -64,10 +63,6 @@ public enum Project {
         return new File(textFile);
     }
 
-    public File getPreprocessedTextFile() {
-        return new File(this.textFile + ".json");
-    }
-
     public File getGoldStandardFile() {
         return new File(goldStandard);
     }
@@ -88,17 +83,7 @@ public enum Project {
     }
 
     public IText getText() {
-        return getTextPreprocessed();
-    }
-
-    public IText getTextPreprocessed() {
-        try {
-            ITextConnector textConnector = JsonTextProvider.loadFromFile(getPreprocessedTextFile());
-            return textConnector.getAnnotatedText();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return getTextViaFile();
     }
 
     public IText getTextViaFile() {

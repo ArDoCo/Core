@@ -33,6 +33,5 @@ CLI Parameters
         -mc,--model-code <arg>           path to the java code model
         -n,--name <arg>                  name of the run
         -o,--out <arg>                   path to the output directory
-        -p,--provided <arg>              path to a JSON Text (already preprocessed)
         -t,--text <arg>                  path to the text file
 
