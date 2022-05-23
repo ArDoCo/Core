@@ -18,7 +18,8 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 public class CoreNLPProvider implements ITextConnector {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
     private static final List<String> COREF_ALGORITHMS = List.of("fastneural", "neural", "statistical", "clustering");
-    public static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,depparse"; // add ",coref" later
+    private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
+    private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
     private final InputStream text;
     private IText annotatedText;
 
@@ -34,15 +35,11 @@ public class CoreNLPProvider implements ITextConnector {
         var allStanfordProperties = new Properties(properties);
         allStanfordProperties.setProperty("annotators", ANNOTATORS);
 
-        if (!allStanfordProperties.containsValue("parse.type")) {
-            allStanfordProperties.put("parse.type", "stanford");
+        if (!allStanfordProperties.containsKey("parse")) {
+            allStanfordProperties.put("parse", DEPENDENCIES_ANNOTATION);
         }
-
         if (!allStanfordProperties.containsKey("depparse")) {
-            allStanfordProperties.put("depparse", "EnhancedPlusPlusDependenciesAnnotation");
-        }
-        if (!allStanfordProperties.containsKey("depparse.model")) {
-            allStanfordProperties.put("depparse.model", "edu/stanford/nlp/models/parser/nndep/english_UD.gz");
+            allStanfordProperties.put("depparse", DEPENDENCIES_ANNOTATION);
         }
 
         String corefAlgorithm = allStanfordProperties.getProperty("coref.algorithm", COREF_ALGORITHMS.get(0));
