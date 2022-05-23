@@ -21,7 +21,6 @@ public final class ArDoCoCLI {
     private static final String CMD_MODEL_ARCHITECTURE = "ma";
     private static final String CMD_MODEL_CODE = "mc";
     private static final String CMD_TEXT = "t";
-    private static final String CMD_PROVIDED = "p";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
 
@@ -42,8 +41,7 @@ public final class ArDoCoCLI {
         // -n : Name of the Run
         // -ma : Model Path (Architecture)
         // -mc : Model Path (Java Code)
-        // -t : Text Path (either this or -p)
-        // -p : Flag to make use of provided JSONText to load preprocessed text
+        // -t : Path to Text File
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
 
@@ -67,18 +65,13 @@ public final class ArDoCoCLI {
         File additionalConfigs = null;
         File outputDir;
 
-        var providedAnalyzedText = cmd.hasOption(CMD_PROVIDED);
-        if (!providedAnalyzedText && !cmd.hasOption(CMD_TEXT)) {
+        if (!cmd.hasOption(CMD_TEXT)) {
             printUsage();
             return;
         }
 
         try {
-            if (!providedAnalyzedText) {
-                inputText = ensureFile(cmd.getOptionValue(CMD_TEXT));
-            } else {
-                inputText = ensureFile(cmd.getOptionValue(CMD_PROVIDED));
-            }
+            inputText = ensureFile(cmd.getOptionValue(CMD_TEXT));
             inputModelArchitecture = ensureFile(cmd.getOptionValue(CMD_MODEL_ARCHITECTURE));
             inputModelCode = cmd.hasOption(CMD_MODEL_CODE) ? ensureFile(cmd.getOptionValue(CMD_MODEL_ARCHITECTURE)) : null;
             if (cmd.hasOption(CMD_CONF)) {
@@ -98,7 +91,7 @@ public final class ArDoCoCLI {
             return;
         }
         try {
-            runAndSave(name, inputText, providedAnalyzedText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir);
+            runAndSave(name, inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -168,11 +161,6 @@ public final class ArDoCoCLI {
         options.addOption(opt);
 
         opt = new Option(CMD_TEXT, "text", true, "path to the text file");
-        opt.setRequired(false);
-        opt.setType(String.class);
-        options.addOption(opt);
-
-        opt = new Option(CMD_PROVIDED, "provided", true, "path to a JSON Text (already preprocessed)");
         opt.setRequired(false);
         opt.setType(String.class);
         options.addOption(opt);

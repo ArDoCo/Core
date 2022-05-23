@@ -28,7 +28,7 @@ class ArDoCoCLITest {
     @Test
     @DisplayName("Integration Test without provided text file")
     void pipelineWithProvidedWrongTextOntologyIT() {
-        String[] args = { "-n", NAME, "-ma", MODEL, "-p", "-o", OUTPUT };
+        String[] args = { "-n", NAME, "-ma", MODEL, "-o", OUTPUT };
         Assertions.assertNotNull(args);
         ArDoCoCLI.main(args);
     }

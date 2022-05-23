@@ -26,6 +26,7 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public NounExtractor() {
+        // empty
     }
 
     /**
@@ -62,5 +63,6 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // empty
     }
 }

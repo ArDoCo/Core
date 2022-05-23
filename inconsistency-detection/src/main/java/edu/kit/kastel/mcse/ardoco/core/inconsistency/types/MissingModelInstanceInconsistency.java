@@ -1,7 +1,11 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
-import java.util.*;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.StringJoiner;
+import java.util.TreeSet;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
@@ -11,37 +15,31 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 
-public class MissingModelInstanceInconsistency implements IInconsistency {
+public record MissingModelInstanceInconsistency(IRecommendedInstance textualInstance) implements IInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
 
     private static final String REASON_FORMAT_STRING = "Text indicates (confidence: %.2f) that \"%s\" should be contained in the model(s) but could not be found. Sentences: %s";
 
-    private final IRecommendedInstance textualInstance;
-
-    public MissingModelInstanceInconsistency(IRecommendedInstance textualInstance) {
-        this.textualInstance = textualInstance;
-    }
-
     @Override
     public String getReason() {
         var name = textualInstance.getName();
-        var occurences = getOccurencesString();
+        var occurrences = getOccurrencesString();
 
         var confidence = textualInstance.getProbability();
-        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, occurences);
+        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, occurrences);
     }
 
-    private String getOccurencesString() {
-        SortedSet<Integer> occurences = new TreeSet<>();
+    private String getOccurrencesString() {
+        SortedSet<Integer> occurrences = new TreeSet<>();
         for (var nameMapping : textualInstance.getNameMappings()) {
-            occurences.addAll(nameMapping.getMappingSentenceNo().castToCollection());
+            occurrences.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
 
-        var occurenceJoiner = new StringJoiner(",");
-        for (var sentence : occurences) {
-            occurenceJoiner.add(Integer.toString(sentence));
+        var occurrenceJoiner = new StringJoiner(",");
+        for (var sentence : occurrences) {
+            occurrenceJoiner.add(Integer.toString(sentence));
         }
-        return occurenceJoiner.toString();
+        return occurrenceJoiner.toString();
     }
 
     @Override
@@ -86,10 +84,9 @@ public class MissingModelInstanceInconsistency implements IInconsistency {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof MissingModelInstanceInconsistency other)) {
             return false;
         }
-        var other = (MissingModelInstanceInconsistency) obj;
         return Objects.equals(textualInstance, other.textualInstance);
     }
 

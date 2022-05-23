@@ -27,6 +27,7 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     private double minSupport = 1;
 
     public MissingModelElementInconsistencyAgent() {
+        // empty
     }
 
     @Override
@@ -122,5 +123,6 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // empty
     }
 }
