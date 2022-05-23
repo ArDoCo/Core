@@ -6,12 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -20,7 +15,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -36,12 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLDiffFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLLogFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLModelFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLPreviousFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSentenceFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSummaryFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 
 class TracelinksIT {
     private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
@@ -89,36 +78,22 @@ class TracelinksIT {
     // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
     // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
-    @DisplayName("Evaluate TLR (Ontology-based)")
-    @ParameterizedTest(name = "Evaluating {0} (Onto)")
-    @EnumSource(value = Project.class)
-    void compareTraceLinksIT(Project project) {
-        compare(project, true);
-    }
-
-    @Disabled("Direct text processing disabled for CI. Iff needed, enable locally only!")
     @DisplayName("Evaluate TLR (Text-based)")
     @ParameterizedTest(name = "Evaluating {0} (Text)")
     @EnumSource(value = Project.class)
     void compareTraceLinksTextIT(Project project) {
-        compare(project, false);
+        compare(project);
     }
 
-    private void compare(Project project, boolean usePreprocessedText) {
+    private void compare(Project project) {
         var name = project.name().toLowerCase();
         inputModel = project.getModelFile();
-
-        // get text file
-        if (usePreprocessedText) {
-            inputText = project.getPreprocessedTextFile();
-        } else {
-            inputText = project.getTextFile();
-        }
+        inputText = project.getTextFile();
 
         // execute pipeline
         DataStructure data = null;
         try {
-            data = Pipeline.runAndSave("test_" + name, inputText, usePreprocessedText, inputModel, null, additionalConfigs, outputDir);
+            data = Pipeline.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
         } catch (IOException e) {
             Assertions.fail("Exception during execution occurred");
         }
