@@ -76,14 +76,16 @@ public final class Pipeline {
         var startTime = System.currentTimeMillis();
 
         logger.info("Preparing and preprocessing text input.");
+        var prevStartTime = System.currentTimeMillis();
         var annotatedText = getAnnotatedText(inputText);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
         }
+        logTiming(prevStartTime, "Text preprocessing");
 
         logger.info("Starting process to generate Trace Links");
-        var prevStartTime = System.currentTimeMillis();
+        prevStartTime = System.currentTimeMillis();
         Map<String, IModelState> models = new HashMap<>();
         IModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
         models.put(pcmModel.getModelId(), runModelExtractor(pcmModel, additionalConfigs));
