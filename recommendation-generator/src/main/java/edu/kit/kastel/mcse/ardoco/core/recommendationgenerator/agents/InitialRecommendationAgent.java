@@ -25,6 +25,7 @@ public class InitialRecommendationAgent extends RecommendationAgent {
      * Prototype constructor.
      */
     public InitialRecommendationAgent() {
+        // empty
     }
 
     @Override
