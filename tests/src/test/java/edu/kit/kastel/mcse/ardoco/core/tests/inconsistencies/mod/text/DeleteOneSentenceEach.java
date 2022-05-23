@@ -20,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationSt
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.Modifications;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 public class DeleteOneSentenceEach implements IModificationStrategy {
 
@@ -67,7 +67,7 @@ public class DeleteOneSentenceEach implements IModificationStrategy {
             try {
                 File tmp = File.createTempFile(this.getClass().getSimpleName(), ".txt");
                 write(tmp, deleted);
-                ITextConnector textConnector = new ParseProvider(new FileInputStream(tmp));
+                ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(tmp));
                 IText newText = textConnector.getAnnotatedText();
                 return ModifiedElement.of(newText, deleted + 1, Modifications.DELETE_SENTENCE);
             } catch (Exception e) {

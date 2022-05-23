@@ -8,9 +8,9 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.common.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
@@ -33,6 +33,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
      * Creates a new model connection agent with the given extraction state and ntr state.
      */
     public RecommendationGenerator() {
+        // empty
     }
 
     @Override

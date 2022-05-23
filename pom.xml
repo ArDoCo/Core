@@ -5,7 +5,7 @@
   <parent>
     <groupId>edu.kit.kastel.mcse.ardoco</groupId>
     <artifactId>parent</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>core</artifactId>
@@ -17,13 +17,13 @@
     <module>text-extraction</module>
     <module>text-provider</module>
     <module>recommendation-generator</module>
-    <module>data-structures</module>
+    <module>common</module>
     <module>pipeline</module>
     <module>connection-generator</module>
     <module>inconsistency-detection</module>
     <module>model-provider</module>
-    <module>util</module>
     <module>tests</module>
+    <module>cli</module>
   </modules>
 
   <distributionManagement>
@@ -42,10 +42,9 @@
   <properties>
     <project.source.encoding>UTF-8</project.source.encoding>
     <eclipse-collections.version>11.0.0</eclipse-collections.version>
-    <log4j.version>2.17.2</log4j.version>
-    <spotless.version>2.22.0</spotless.version>
+    <jackson.version>2.13.3</jackson.version>
     <error-prone.version>2.10.0</error-prone.version>
-    <jackson.version>2.13.2</jackson.version>
+    <spotless.version>2.22.5</spotless.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
@@ -74,7 +73,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>data-structures</artifactId>
+        <artifactId>common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -97,12 +96,22 @@
         <artifactId>inconsistency-detection</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>util</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
@@ -123,17 +132,6 @@
       <groupId>org.eclipse.collections</groupId>
       <artifactId>eclipse-collections</artifactId>
       <version>${eclipse-collections.version}</version>
-    </dependency>
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>${log4j.version}</version>
     </dependency>
     <!-- Apache Commons Lang -->
     <dependency>
@@ -192,6 +190,31 @@
           </configuration>
         </plugin>
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>1.2.7</version>
+          <configuration>
+            <updatePomFile>true</updatePomFile>
+            <flattenMode>resolveCiFriendliesOnly</flattenMode>
+          </configuration>
+          <executions>
+            <execution>
+              <id>flatten</id>
+              <goals>
+                <goal>flatten</goal>
+              </goals>
+              <phase>process-resources</phase>
+            </execution>
+            <execution>
+              <id>flatten.clean</id>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+              <phase>clean</phase>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.0.0-M6</version>
@@ -213,6 +236,7 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
@@ -236,6 +260,7 @@
           <!-- define a language-specific format -->
           <java>
             <eclipse>
+              <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
             </eclipse>
 
@@ -244,6 +269,7 @@
             </importOrder>
             <removeUnusedImports></removeUnusedImports>
             <licenseHeader>
+              <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/license-header</file>
             </licenseHeader>
           </java>
@@ -257,6 +283,17 @@
           </pom>
           <ratchetFrom>origin/main</ratchetFrom>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

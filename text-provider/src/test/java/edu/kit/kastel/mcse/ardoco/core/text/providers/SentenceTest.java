@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers;
 
-import java.io.File;
+import java.io.FileInputStream;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
@@ -9,20 +9,20 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 /**
  * @author Jan Keim
  *
  */
 class SentenceTest {
-    private static final String textPath = "src/test/resources/teastore.json";
+    private static final String textPath = "src/test/resources/teastore.txt";
 
     private static ImmutableList<ISentence> sentences;
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        var connector = JsonTextProvider.loadFromFile(new File(textPath));
+        var connector = new CoreNLPProvider(new FileInputStream(textPath));
         var ontologyText = connector.getAnnotatedText();
         sentences = ontologyText.getSentences();
     }

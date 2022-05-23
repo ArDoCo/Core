@@ -5,15 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import edu.kit.ipd.parse.luna.LunaInitException;
-import edu.kit.ipd.parse.luna.LunaRunException;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.pcm.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.indirect.ParseProvider;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.json.JsonTextProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 /**
  *
@@ -25,21 +22,21 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/original_model/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(1.0, .620, .765), //
+            new EvaluationResults(.999, .620, .765), //
             new EvaluationResults(.0, .0, .0)//
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new EvaluationResults(.889, .879, .884), //
+            new EvaluationResults(.913, .880, .896), //
             new EvaluationResults(.0, .0, .0)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
-            new EvaluationResults(.99, .713, .832), //
+            new EvaluationResults(.999, .713, .832), //
             new EvaluationResults(.0, .0, .0)),
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
@@ -71,10 +68,6 @@ public enum Project {
         return new File(textFile);
     }
 
-    public File getPreprocessedTextFile() {
-        return new File(this.textFile + ".json");
-    }
-
     public File getGoldStandardFile() {
         return new File(goldStandard);
     }
@@ -95,24 +88,14 @@ public enum Project {
     }
 
     public IText getText() {
-        return getTextPreprocessed();
-    }
-
-    public IText getTextPreprocessed() {
-        try {
-            ITextConnector textConnector = JsonTextProvider.loadFromFile(getPreprocessedTextFile());
-            return textConnector.getAnnotatedText();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return getTextViaFile();
     }
 
     public IText getTextViaFile() {
         try {
-            ITextConnector textConnector = new ParseProvider(new FileInputStream(getTextFile()));
+            ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(getTextFile()));
             return textConnector.getAnnotatedText();
-        } catch (FileNotFoundException | LunaRunException | LunaInitException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
         }

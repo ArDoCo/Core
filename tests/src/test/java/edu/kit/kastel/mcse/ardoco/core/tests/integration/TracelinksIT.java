@@ -9,14 +9,17 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
@@ -34,7 +37,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*
  *
  */
 class TracelinksIT {
-    private static Logger logger = null;
+    private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
@@ -46,12 +49,6 @@ class TracelinksIT {
     private File inputModel;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
-
-    @BeforeAll
-    public static void beforeAll() {
-        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
-        logger = LogManager.getLogger(TracelinksIT.class);
-    }
 
     @AfterAll
     public static void afterAll() throws IOException {
@@ -85,37 +82,23 @@ class TracelinksIT {
     // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
     // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
-    @DisplayName("Evaluate TLR (Ontology-based)")
-    @ParameterizedTest(name = "Evaluating {0} (Onto)")
-    @EnumSource(value = Project.class)
-    void compareTraceLinksIT(Project project) {
-        compare(project, true);
-    }
-
-    @Disabled("Disabled for CI. Enable for local test only and only if needed!")
     @DisplayName("Evaluate TLR (Text-based)")
     @ParameterizedTest(name = "Evaluating {0} (Text)")
     @EnumSource(value = Project.class)
     void compareTraceLinksTextIT(Project project) {
-        compare(project, false);
+        compare(project);
     }
 
-    private void compare(Project project, boolean usePreprocessedText) {
+    private void compare(Project project) {
         var name = project.name().toLowerCase();
         inputModel = project.getModelFile();
-
-        // get text file
-        if (usePreprocessedText) {
-            inputText = project.getPreprocessedTextFile();
-        } else {
-            inputText = project.getTextFile();
-        }
+        inputText = project.getTextFile();
 
         // execute pipeline
         DataStructure data = null;
         try {
-            data = Pipeline.runAndSave("test_" + name, inputText, usePreprocessedText, inputModel, null, additionalConfigs, outputDir);
-        } catch (ReflectiveOperationException | IOException e) {
+            data = Pipeline.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
+        } catch (IOException e) {
             Assertions.fail("Exception during execution occurred");
         }
 
