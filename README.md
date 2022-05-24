@@ -3,8 +3,10 @@
 
 [![Maven Verify](https://github.com/ArDoCo/Core/workflows/Maven%20Verify/badge.svg)](https://github.com/ArDoCo/Core/actions?query=workflow%3A%22Maven+Verify%22)
 
+[![](https://jitpack.io/v/ArDoCo/Core.svg)](https://jitpack.io/#ArDoCo/Core)
 
-The goal of this project is to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies).
+The goal of this project is to connect architecture documentation and models while identifying missing or deviating
+elements (inconsistencies).
 An element can be any representable item of the model, like a component or a relation.
 To do so, we first create trace links and then make use of them and other information to identify inconsistencies.
 
