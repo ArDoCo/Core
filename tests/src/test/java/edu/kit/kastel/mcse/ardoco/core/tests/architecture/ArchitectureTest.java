@@ -26,13 +26,6 @@ public class ArchitectureTest {
             .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..tests..");
 
     @ArchTest
-    public static final ArchRule modelRelationsOnlyAfterRecommendationGenerator = classes().that()
-            .haveSimpleName("IModelRelation")
-            .should()
-            .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..");
-
-    @ArchTest
     public static final ArchRule linksOnlyAfterConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()

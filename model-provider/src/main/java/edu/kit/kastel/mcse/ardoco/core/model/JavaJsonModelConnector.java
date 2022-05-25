@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.kastel.informalin.framework.models.java.JavaClassOrInterface;
 import edu.kit.kastel.informalin.framework.models.java.JavaProject;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 
 public class JavaJsonModelConnector implements IModelConnector {
@@ -57,11 +56,5 @@ public class JavaJsonModelConnector implements IModelConnector {
         var identifier = javaClassOrInterface.getFullyQualifiedName();
         var type = javaClassOrInterface.isInterface() ? "Interface" : "Class";
         return new Instance(name, type, identifier);
-    }
-
-    @Override
-    public ImmutableList<IModelRelation> getRelations() {
-        // NOT YET IMPLEMENTED!
-        return Lists.immutable.empty();
     }
 }
