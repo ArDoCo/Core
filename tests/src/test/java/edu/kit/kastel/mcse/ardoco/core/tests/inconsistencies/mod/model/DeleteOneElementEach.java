@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
@@ -22,12 +21,10 @@ public class DeleteOneElementEach implements IModificationStrategy {
 
     private final IModelConnector model;
     private final ImmutableList<IModelInstance> originalModelElements;
-    private final ImmutableList<IModelRelation> originalModelRelations;
 
     public DeleteOneElementEach(IModelConnector model) {
         this.model = model;
         originalModelElements = this.model.getInstances();
-        originalModelRelations = this.model.getRelations();
     }
 
     @Override
@@ -69,15 +66,6 @@ public class DeleteOneElementEach implements IModificationStrategy {
             var instances = originalModelElements.toList();
             instances.remove(skip);
             return instances.toImmutable();
-        }
-
-        @Override
-        public ImmutableList<IModelRelation> getRelations() {
-            var relations = originalModelRelations.toList();
-            var skippedElement = originalModelElements.get(skip);
-            relations.removeIf(r -> r.getInstances().contains(skippedElement));
-            return relations.toImmutable();
-
         }
 
         @Override

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 0.5 (Current Development)
+* Removed not used Relations Code (NIY)
 
 ## Version 0.4
 
