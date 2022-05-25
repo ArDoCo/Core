@@ -142,7 +142,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
             if (Math.min(csWord.length(), word.length()) < wordMinLengthForSimilarity && !csWord.equalsIgnoreCase(word)) {
                 return false;
             }
-            if (!SimilarityUtils.areWordsSimilar(csWord, word, wordSimilarityThreshold)) {
+            if (!SimilarityUtils.areWordsSimilar(csWord, word)) { // TODO: Check how to use wordSimilarityThreshold here
                 return false;
             }
         }
