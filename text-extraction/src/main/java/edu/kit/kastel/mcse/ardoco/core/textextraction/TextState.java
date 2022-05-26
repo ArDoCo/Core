@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IRelationMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -30,11 +29,6 @@ public class TextState extends AbstractState implements ITextState {
     private MutableList<INounMapping> nounMappings;
 
     /**
-     * The relation mappings.
-     */
-    private MutableList<IRelationMapping> relationMappings;
-
-    /**
      * Creates a new name type relation state
      *
      * @param configs any additional configuration
@@ -42,7 +36,6 @@ public class TextState extends AbstractState implements ITextState {
     public TextState(Map<String, String> configs) {
         super(configs);
         nounMappings = Lists.mutable.empty();
-        relationMappings = Lists.mutable.empty();
     }
 
     /***
@@ -180,7 +173,6 @@ public class TextState extends AbstractState implements ITextState {
     public ITextState createCopy() {
         var textExtractionState = new TextState(this.configs);
         textExtractionState.nounMappings = Lists.mutable.ofAll(nounMappings);
-        textExtractionState.relationMappings = relationMappings.collect(IRelationMapping::createCopy);
         return textExtractionState;
     }
 
@@ -207,23 +199,13 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     @Override
-    public IRelationMapping addRelation(INounMapping node1, INounMapping node2, IClaimant claimant, double probability) {
-        IRelationMapping relationMapping = new RelationMapping(node1, node2, probability);
-        if (!relationMappings.contains(relationMapping)) {
-            relationMappings.add(relationMapping);
-        }
-        return relationMapping;
-    }
-
-    @Override
     public void removeNounMapping(INounMapping n) {
         nounMappings.remove(n);
     }
 
     @Override
     public String toString() {
-        return "TextExtractionState [nounMappings=" + String.join("\n", nounMappings.toString()) + ", relationNodes="
-                + String.join("\n", relationMappings.toString()) + "]";
+        return "TextExtractionState [nounMappings=" + String.join("\n", nounMappings.toString()) + ", relationNodes=" + "]";
     }
 
     @Override
