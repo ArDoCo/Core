@@ -6,10 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
@@ -84,7 +80,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
                     .getInconsistencies()
                     .select(MissingModelInstanceInconsistency.class::isInstance)
                     .collect(MissingModelInstanceInconsistency.class::cast)
-                    .flatCollect(this::foundSentences)
+                    .collect(MissingModelInstanceInconsistency::sentence)
                     .toSet();
             var outputString = "ORIGINAL: Number of False Positives (assuming consistency for original): " + inconsistencySentences.size();
             os.println(outputString);
@@ -103,7 +99,8 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
         os.println("Stats: New: " + newInconsistencies.size() + ", New MissingModelInstanceInconsistencies: " + newMissingModelInstanceInconsistencies.size());
 
-        var foundSentencesWithDuplicatesOverInconsistencies = newMissingModelInstanceInconsistencies.flatCollect(this::foundSentences).toSortedSet();
+        var foundSentencesWithDuplicatesOverInconsistencies = newMissingModelInstanceInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
+                .toSortedSet();
 
         os.println("Is   : " + foundSentencesWithDuplicatesOverInconsistencies);
         os.println("Shall: " + sentencesAnnotatedWithElement);
@@ -116,14 +113,6 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
         os.println(result);
         os.println("-----------------------------------");
-    }
-
-    private ImmutableList<Integer> foundSentences(MissingModelInstanceInconsistency newImportantInconsistency) {
-        MutableList<Integer> sentences = Lists.mutable.empty();
-        for (var nouns : newImportantInconsistency.getTextualInstance().getNameMappings()) {
-            sentences.addAll(nouns.getMappingSentenceNo().castToCollection());
-        }
-        return sentences.distinct().toImmutable();
     }
 
 }

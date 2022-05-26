@@ -129,7 +129,13 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         for (var candidate : candidates) {
             var support = candidate.getAmountOfSupport();
             if (support >= minSupport) {
-                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(candidate.getRecommendedInstance()));
+                IRecommendedInstance recommendedInstance = candidate.getRecommendedInstance();
+                double confidence = recommendedInstance.getProbability();
+                for (var word : recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords).distinct()) {
+                    var sentenceNo = word.getSentenceNo() + 1;
+                    var wordText = word.getText();
+                    inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
+                }
             }
         }
     }
