@@ -30,6 +30,14 @@ public interface IInconsistencyState extends ICopyable<IInconsistencyState>, ICo
      */
     boolean addInconsistency(IInconsistency inconsistency);
 
+    /**
+     * Remove an Inconsistency from this state
+     *
+     * @param inconsistency the inconsistency to remove
+     * @return true if removed successfully
+     */
+    boolean removeInconsistency(IInconsistency inconsistency);
+
     default boolean addRecommendedInstances(List<IRecommendedInstance> recommendedInstances) {
         var success = true;
         for (var recommendedInstance : recommendedInstances) {
