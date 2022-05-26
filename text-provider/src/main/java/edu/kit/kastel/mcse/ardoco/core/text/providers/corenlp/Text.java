@@ -5,7 +5,6 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ICorefCluster;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -62,11 +61,6 @@ class Text implements IText {
 
         sentences = sentenceList.toImmutable();
         words = wordList.toImmutable();
-    }
-
-    @Override
-    public ImmutableList<ICorefCluster> getCorefClusters() {
-        return Lists.immutable.empty();
     }
 
 }
