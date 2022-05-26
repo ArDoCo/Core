@@ -1,14 +1,11 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
-import java.util.List;
-
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
 /**
@@ -22,16 +19,6 @@ public interface IRecommendationState extends ICopyable<IRecommendationState>, I
      * @return all recommended instances as list
      */
     ImmutableList<IRecommendedInstance> getRecommendedInstances();
-
-    /**
-     * Returns all instance relations.
-     *
-     * @return all instance relations as list
-     */
-    ImmutableList<IInstanceRelation> getInstanceRelations();
-
-    void addInstanceRelation(IRecommendedInstance fromInstance, IRecommendedInstance toInstance, IWord relator, List<IWord> from, List<IWord> to,
-            IClaimant claimant);
 
     /**
      * Adds a recommended instance without a type.

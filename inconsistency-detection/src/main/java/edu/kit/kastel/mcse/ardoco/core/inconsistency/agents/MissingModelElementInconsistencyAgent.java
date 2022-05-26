@@ -50,18 +50,6 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
                 addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
             }
 
-            // find out those elements that are in the same sentence as a traced element
-            // need checking!
-            for (var relation : recommendationState.getInstanceRelations()) {
-                var fromInstance = relation.getFromInstance();
-                var toInstance = relation.getToInstance();
-                if (linkedRecommendedInstances.contains(fromInstance) && candidateElements.contains(toInstance)) {
-                    addToCandidates(candidates, toInstance, MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT);
-                } else if (linkedRecommendedInstances.contains(toInstance) && candidateElements.contains(fromInstance)) {
-                    addToCandidates(candidates, fromInstance, MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT);
-                }
-            }
-
             // methods for other kinds of support
             // NONE
 
