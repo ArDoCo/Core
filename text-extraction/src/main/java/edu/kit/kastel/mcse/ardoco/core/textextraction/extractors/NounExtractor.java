@@ -17,7 +17,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
  * @author Jan Keim
  */
 public class NounExtractor extends AbstractExtractor<TextAgentData> {
-    private static final double ZERO = 0.0;
+    @Configurable
+    private double nameOrTypeWeight = 0.5;
 
     @Configurable
     private double probability = 0.2;
@@ -52,8 +53,8 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
     private void findSingleNouns(ITextState textState, IWord word) {
         var pos = word.getPosTag();
         if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
-            textState.addName(word, this, ZERO);
-            textState.addType(word, this, ZERO);
+            textState.addName(word, this, probability * nameOrTypeWeight);
+            textState.addType(word, this, probability * nameOrTypeWeight);
         }
         if (POSTag.NOUN_PLURAL == pos) {
             textState.addType(word, this, probability);

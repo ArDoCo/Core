@@ -16,8 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  * @deprecated Currently Not Operational
  * @author Sophie, Jan
  */
-//TODO make operation again
-// enable getting NORTs (prob for name = prob for type) and then perform these heuristics
 @Deprecated(since = "Currently Not Operational")
 public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
     @Configurable
@@ -26,9 +24,6 @@ public class ArticleTypeNameExtractor extends AbstractExtractor<TextAgentData> {
     @Configurable
     private double probability = 1.0;
 
-    /**
-     * Prototype constructor.
-     */
     public ArticleTypeNameExtractor() {
         // empty
     }
