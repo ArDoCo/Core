@@ -15,10 +15,23 @@ public class EvaluationResults {
     private List<Object> falsePositives = new ArrayList<>();
 
     public EvaluationResults(double precision, double recall, double f1) {
-        super();
-        this.precision = precision;
-        this.recall = recall;
-        this.f1 = f1;
+        if (Double.isNaN(precision)) {
+            this.precision = 0.0;
+        } else {
+            this.precision = precision;
+        }
+
+        if (Double.isNaN(recall)) {
+            this.recall = 0.0;
+        } else {
+            this.recall = recall;
+        }
+
+        if (Double.isNaN(f1)) {
+            this.f1 = 0.0;
+        } else {
+            this.f1 = f1;
+        }
     }
 
     public double getPrecision() {
@@ -68,12 +81,12 @@ public class EvaluationResults {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof EvaluationResults other)) {
-            return false;
+        if (obj instanceof EvaluationResults other) {
+            return Double.doubleToLongBits(f1) == Double.doubleToLongBits(other.f1)
+                    && Double.doubleToLongBits(precision) == Double.doubleToLongBits(other.precision)
+                    && Double.doubleToLongBits(recall) == Double.doubleToLongBits(other.recall);
         }
-        return Double.doubleToLongBits(f1) == Double.doubleToLongBits(other.f1)
-                && Double.doubleToLongBits(precision) == Double.doubleToLongBits(other.precision)
-                && Double.doubleToLongBits(recall) == Double.doubleToLongBits(other.recall);
+        return false;
     }
 
 }

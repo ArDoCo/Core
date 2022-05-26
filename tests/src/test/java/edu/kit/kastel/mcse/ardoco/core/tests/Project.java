@@ -12,6 +12,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
+/**
+ *
+ * @author Jan Keim
+ *
+ */
 public enum Project {
     MEDIASTORE(//
             "src/test/resources/benchmark/mediastore/original_model/ms.repository", //

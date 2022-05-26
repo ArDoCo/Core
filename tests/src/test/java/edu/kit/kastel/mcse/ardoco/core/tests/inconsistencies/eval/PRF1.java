@@ -9,9 +9,26 @@ public class PRF1 implements EvaluationResult {
     private final double f1;
 
     PRF1(int tp, int fp, int fn) {
-        precision = 1.0 * tp / (tp + fp);
-        recall = 1.0 * tp / (tp + fn);
-        f1 = 2 * precision * recall / (precision + recall);
+        var calculatedPrecision = 1.0 * tp / (tp + fp);
+        if (Double.isNaN(calculatedPrecision)) {
+            this.precision = 0.0;
+        } else {
+            this.precision = calculatedPrecision;
+        }
+
+        var calculatedRecall = 1.0 * tp / (tp + fn);
+        if (Double.isNaN(calculatedRecall)) {
+            this.recall = 0.0;
+        } else {
+            this.recall = calculatedRecall;
+        }
+
+        var calculatedF1 = 2 * precision * recall / (precision + recall);
+        if (Double.isNaN(calculatedF1)) {
+            this.f1 = 0.0;
+        } else {
+            this.f1 = calculatedF1;
+        }
     }
 
     PRF1(double precision, double recall, double f1) {

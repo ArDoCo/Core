@@ -14,9 +14,11 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 /**
  * The analyzer examines the incoming dependency arcs of the current node.
  *
- * @author Sophie
+ * @author Sophie Schulz
+ * @author Jan Keim
  */
 public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
+
     @Configurable
     private double nameOrTypeWeight = 0.5;
 
