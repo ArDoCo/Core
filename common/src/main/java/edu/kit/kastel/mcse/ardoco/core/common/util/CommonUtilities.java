@@ -19,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 
 /**
  * General helper class for outsourced, common methods.
@@ -333,7 +334,7 @@ public final class CommonUtilities {
     public static ImmutableList<IWord> filterWordsOfTypeMappings(ImmutableList<IWord> words, ITextState textState) {
         MutableList<IWord> filteredWords = Lists.mutable.empty();
         for (var word : words) {
-            if (!textState.isWordContainedByTypeMapping(word)) {
+            if (!textState.isWordContainedByMappingKind(word, MappingKind.TYPE)) {
                 filteredWords.add(word);
             }
         }

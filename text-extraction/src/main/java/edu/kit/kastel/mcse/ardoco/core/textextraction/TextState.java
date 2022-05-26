@@ -48,35 +48,29 @@ public class TextState extends AbstractState implements ITextState {
     /***
      * Adds a name mapping to the state
      *
+     * @param kind        mapping kind of the future noun mapping
      * @param probability probability to be a name mapping
      * @param occurrences list of the appearances of the mapping
      * @param word        node of the mapping
      */
     @Override
-    public final void addName(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(word, MappingKind.NAME, claimant, probability, occurrences);
+    public final void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
+        var words = Lists.immutable.with(word);
+        INounMapping nounMapping = new NounMapping(words, kind, claimant, probability, words.castToList(), occurrences);
+        addNounMappingOrAppendToSimilarNounMapping(nounMapping, claimant);
+
     }
 
     /***
      * Adds a name mapping to the state
      *
      * @param word        word of the mapping
+     * @param kind        mapping kind of the future noun mapping
      * @param probability probability to be a name mapping
      */
     @Override
-    public final void addName(IWord word, IClaimant claimant, double probability) {
-        addName(word, claimant, probability, Lists.immutable.with(word.getText()));
-    }
-
-    /***
-     * Adds a type mapping to the state
-     *
-     * @param probability probability to be a type mapping
-     * @param word        node of the mapping
-     */
-    @Override
-    public final void addType(IWord word, IClaimant claimant, double probability) {
-        addType(word, claimant, probability, Lists.immutable.with(word.getText()));
+    public final void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability) {
+        addNounMapping(word, kind, claimant, probability, Lists.immutable.with(word.getText()));
     }
 
     /***
@@ -87,7 +81,7 @@ public class TextState extends AbstractState implements ITextState {
      * @param word        node of the mapping
      */
     @Override
-    public final void addType(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
+    public final void addNounMapping(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
         addNounMapping(word, MappingKind.TYPE, claimant, probability, occurrences);
     }
 
@@ -98,12 +92,13 @@ public class TextState extends AbstractState implements ITextState {
 
     /**
      * Returns all type mappings.
-     *
+     * 
+     * @param kind searched mappingKind
      * @return all type mappings as list
      */
     @Override
-    public final ImmutableList<INounMapping> getTypes() {
-        return nounMappings.select(nounMappingIsType()).toImmutable();
+    public final ImmutableList<INounMapping> getNounMappingsOfKind(MappingKind kind) {
+        return nounMappings.select(nounMappingIsOfKind(kind)).toImmutable();
     }
 
     /**
@@ -129,44 +124,18 @@ public class TextState extends AbstractState implements ITextState {
     }
 
     /**
-     * Returns a list of all references of name mappings.
-     *
-     * @return all references of name mappings as list.
-     */
-    @Override
-    public final ImmutableList<String> getNameList() {
-
-        Set<String> names = new HashSet<>();
-        var nameMappings = getNames();
-        for (INounMapping nnm : nameMappings) {
-            names.add(nnm.getReference());
-        }
-        return Lists.immutable.withAll(names);
-    }
-
-    /**
-     * Returns a list of all references of type mappings.
+     * Returns a list of all references of kind mappings.
      *
      * @return all references of type mappings as list.
      */
     @Override
-    public final ImmutableList<String> getTypeList() {
-        Set<String> types = new HashSet<>();
-        var typeMappings = getTypes();
-        for (INounMapping nnm : typeMappings) {
-            types.add(nnm.getReference());
+    public final ImmutableList<String> getListOfReferences(MappingKind kind) {
+        Set<String> referencesOfKind = new HashSet<>();
+        var kindMappings = getNounMappingsOfKind(kind);
+        for (INounMapping nnm : kindMappings) {
+            referencesOfKind.add(nnm.getReference());
         }
-        return Lists.immutable.withAll(types);
-    }
-
-    /**
-     * Returns all name mappings
-     *
-     * @return a list of all name mappings
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNames() {
-        return nounMappings.select(n -> MappingKind.NAME == n.getKind()).toImmutable();
+        return Lists.immutable.withAll(referencesOfKind);
     }
 
     /**
@@ -176,8 +145,8 @@ public class TextState extends AbstractState implements ITextState {
      * @return a list of alltype mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsType()).toImmutable();
+    public final ImmutableList<INounMapping> getNounMappingsByWordAndKind(IWord word, MappingKind kind) {
+        return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsOfKind(kind)).toImmutable();
     }
 
     /**
@@ -194,40 +163,17 @@ public class TextState extends AbstractState implements ITextState {
     /**
      * Returns if a node is contained by the name mappings.
      *
-     * @param word node to check
+     * @param word        node to check
+     * @param mappingKind mappingKind to check for
      * @return true if the node is contained by name mappings.
      */
     @Override
-    public final boolean isWordContainedByNameMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsName());
+    public final boolean isWordContainedByMappingKind(IWord word, MappingKind mappingKind) {
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsOfKind(mappingKind));
     }
 
-    private Predicate<? super INounMapping> nounMappingIsName() {
-        return n -> n.getKind() == MappingKind.NAME;
-    }
-
-    /**
-     * Returns if a node is contained by the type mappings.
-     *
-     * @param word node to check
-     * @return true if the node is contained by type mappings.
-     */
-    @Override
-    public final boolean isWordContainedByTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsType());
-    }
-
-    private Predicate<? super INounMapping> nounMappingIsType() {
-        return n -> n.getKind() == MappingKind.TYPE;
-    }
-
-    @Override
-    public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> {
-            var nameProb = n.getProbabilityForName();
-            var typeProb = n.getProbabilityForType();
-            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < NAME_OR_TYPE_MAX_DIFF;
-        });
+    private Predicate<? super INounMapping> nounMappingIsOfKind(MappingKind mappingKind) {
+        return n -> n.getKind() == mappingKind;
     }
 
     @Override
@@ -241,13 +187,6 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public void addNounMapping(INounMapping nounMapping, IClaimant claimant) {
         addNounMappingOrAppendToSimilarNounMapping(nounMapping, claimant);
-    }
-
-    private INounMapping addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
-        var words = Lists.immutable.with(word);
-        INounMapping nounMapping = new NounMapping(words, kind, claimant, probability, words.castToList(), occurrences);
-
-        return addNounMappingOrAppendToSimilarNounMapping(nounMapping, claimant);
     }
 
     private INounMapping addNounMappingOrAppendToSimilarNounMapping(INounMapping nounMapping, IClaimant claimant) {
