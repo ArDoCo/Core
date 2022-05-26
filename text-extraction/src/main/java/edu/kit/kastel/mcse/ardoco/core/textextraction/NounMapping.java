@@ -89,8 +89,8 @@ public class NounMapping implements INounMapping {
     }
 
     public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IClaimant claimant, double probability) {
-        var occurences = phrase.collect(IWord::getText);
-        var nm = new NounMapping(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurences);
+        var occurrences = phrase.collect(IWord::getText);
+        var nm = new NounMapping(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurrences);
         nm.hasPhrase = true;
         return nm;
     }
