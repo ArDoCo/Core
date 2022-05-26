@@ -11,6 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 
@@ -74,7 +75,7 @@ public class PhraseAgent extends TextAgent {
     private void createNounMappingIfSpecialNamedEntity(IWord word, ITextState textState) {
         var text = word.getText();
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
-            textState.addName(word, this, specialNamedEntityConfidence);
+            textState.addNounMapping(word, MappingKind.NAME, this, specialNamedEntityConfidence);
         }
     }
 

@@ -48,7 +48,7 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         TextState ts = new TextState(Map.of());
 
         ts.addNounMapping(nounMapping, this);
-        ts.addName(invalidWord, this, 1.0);
+        ts.addNounMapping(invalidWord, MappingKind.NAME, this, 1.0);
 
         TextAgentData tad = new TextAgentData() {
             @Override

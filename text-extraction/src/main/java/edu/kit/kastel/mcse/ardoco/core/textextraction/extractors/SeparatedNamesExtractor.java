@@ -9,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
@@ -45,7 +46,7 @@ public class SeparatedNamesExtractor extends AbstractExtractor<TextAgentData> {
      */
     private void checkForSeparatedNode(ITextState textState, IWord word) {
         if (word.getPosTag() != POSTag.FOREIGN_WORD && CommonUtilities.containsSeparator(word.getText())) {
-            textState.addName(word, this, probability);
+            textState.addNounMapping(word, MappingKind.NAME, this, probability);
         }
     }
 
