@@ -9,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 
 /**
@@ -19,62 +20,63 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  */
 public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
-    @Configurable
-    private double nameOrTypeWeight = 0.5;
+	@Configurable
+	private double nameOrTypeWeight = 0.5;
 
-    @Configurable
-    private double probability = 1.0;
+	@Configurable
+	private double probability = 1.0;
 
-    /**
-     * Prototype constructor.
-     */
-    public InDepArcsExtractor() {
-        // empty
-    }
+	/**
+	 * Prototype constructor.
+	 */
+	public InDepArcsExtractor() {
+		// empty
+	}
 
-    @Override
-    public void exec(TextAgentData data, IWord n) {
-        var nodeValue = n.getText();
-        if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
-            return;
-        }
+	@Override
+	public void exec(TextAgentData data, IWord n) {
+		var nodeValue = n.getText();
+		if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
+			return;
+		}
 
-        examineIncomingDepArcs(data.getTextState(), n);
-    }
+		examineIncomingDepArcs(data.getTextState(), n);
+	}
 
-    /**
-     * Examines the incoming dependency arcs from the PARSE graph.
-     */
-    private void examineIncomingDepArcs(ITextState textState, IWord word) {
+	/**
+	 * Examines the incoming dependency arcs from the PARSE graph.
+	 */
+	private void examineIncomingDepArcs(ITextState textState, IWord word) {
 
-        var incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
+		var incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
 
-        for (DependencyTag depTag : incomingDepArcs) {
-            if (hasNortDependencies(depTag)) {
-                textState.addName(word, this, probability * nameOrTypeWeight);
-                textState.addType(word, this, probability * nameOrTypeWeight);
-            } else if (hasTypeOrNortDependencies(depTag)) {
-                if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
-                    textState.addType(word, this, probability);
-                }
+		for (DependencyTag depTag : incomingDepArcs) {
+			if (hasNortDependencies(depTag)) {
+				textState.addNounMapping(word, MappingKind.NAME, this, probability * nameOrTypeWeight);
+				textState.addNounMapping(word, MappingKind.TYPE, this, probability * nameOrTypeWeight);
+			} else if (hasTypeOrNortDependencies(depTag)) {
+				if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
+					textState.addNounMapping(word, MappingKind.TYPE, this, probability);
+				}
 
-                textState.addName(word, this, probability * nameOrTypeWeight);
-                textState.addType(word, this, probability * nameOrTypeWeight);
-            }
-        }
-    }
+				textState.addNounMapping(word, MappingKind.NAME, this, probability * nameOrTypeWeight);
+				textState.addNounMapping(word, MappingKind.TYPE, this, probability * nameOrTypeWeight);
+			}
+		}
+	}
 
-    private static boolean hasTypeOrNortDependencies(DependencyTag depTag) {
-        var hasObjectDependencies = DependencyTag.OBJ == depTag || DependencyTag.IOBJ == depTag || DependencyTag.POBJ == depTag;
-        return hasObjectDependencies || DependencyTag.NMOD == depTag || DependencyTag.NSUBJPASS == depTag;
-    }
+	private static boolean hasTypeOrNortDependencies(DependencyTag depTag) {
+		var hasObjectDependencies = DependencyTag.OBJ == depTag || DependencyTag.IOBJ == depTag
+				|| DependencyTag.POBJ == depTag;
+		return hasObjectDependencies || DependencyTag.NMOD == depTag || DependencyTag.NSUBJPASS == depTag;
+	}
 
-    private static boolean hasNortDependencies(DependencyTag depTag) {
-        return DependencyTag.APPOS == depTag || DependencyTag.NSUBJ == depTag || DependencyTag.POSS == depTag;
-    }
+	private static boolean hasNortDependencies(DependencyTag depTag) {
+		return DependencyTag.APPOS == depTag || DependencyTag.NSUBJ == depTag || DependencyTag.POSS == depTag;
+	}
 
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // handle delegation
-    }
+	@Override
+	protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+		// handle delegation
+	}
 }

@@ -114,14 +114,14 @@ public final class FilePrinter {
 
         myWriter.write("FoundNames as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        var nameList = ntrState.getNameList().toSortedList().toImmutable();
+        var nameList = ntrState.getListOfReferences(MappingKind.NAME).toSortedList().toImmutable();
         myWriter.write(nameList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         myWriter.write("FoundTypes as Set: ");
         myWriter.append(LINE_SEPARATOR);
-        var typeList = ntrState.getTypeList().toSortedList().toImmutable();
+        var typeList = ntrState.getListOfReferences(MappingKind.TYPE).toSortedList().toImmutable();
         myWriter.write(typeList.toString() + LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);

@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
-import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
@@ -61,7 +60,7 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
         var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getPreWord(), MappingKind.NAME);
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
@@ -85,7 +84,7 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getNextWord(), MappingKind.NAME);
@@ -110,10 +109,10 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getPreWord(), List.of(MappingKind.NAME, MappingKind.TYPE));
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getPreWord(), MappingKind.NAME, MappingKind.TYPE);
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
         }
@@ -134,10 +133,10 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getNextWord(), List.of(MappingKind.NAME, MappingKind.TYPE));
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getNextWord(), MappingKind.NAME, MappingKind.TYPE);
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
         }

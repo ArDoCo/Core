@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -61,7 +60,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(pre, MappingKind.NAME);
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
@@ -89,7 +88,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(after, MappingKind.NAME);
@@ -113,10 +112,10 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(pre, List.of(MappingKind.NAME, MappingKind.TYPE));
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(pre, MappingKind.NAME, MappingKind.TYPE);
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
@@ -136,10 +135,10 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addType(word, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(after, List.of(MappingKind.NAME, MappingKind.TYPE));
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(after, MappingKind.NAME, MappingKind.TYPE);
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
