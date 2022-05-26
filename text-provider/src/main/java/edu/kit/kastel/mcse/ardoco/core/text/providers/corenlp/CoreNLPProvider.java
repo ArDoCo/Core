@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -17,7 +16,6 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 public class CoreNLPProvider implements ITextConnector {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
-    private static final List<String> COREF_ALGORITHMS = List.of("fastneural", "neural", "statistical", "clustering");
     private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
     private final InputStream text;
@@ -35,19 +33,9 @@ public class CoreNLPProvider implements ITextConnector {
         var allStanfordProperties = new Properties(properties);
         allStanfordProperties.setProperty("annotators", ANNOTATORS);
 
-        if (!allStanfordProperties.containsKey("parse")) {
-            allStanfordProperties.put("parse", DEPENDENCIES_ANNOTATION);
-        }
-        if (!allStanfordProperties.containsKey("depparse")) {
-            allStanfordProperties.put("depparse", DEPENDENCIES_ANNOTATION);
-        }
-
-        String corefAlgorithm = allStanfordProperties.getProperty("coref.algorithm", COREF_ALGORITHMS.get(0));
-        if (!COREF_ALGORITHMS.contains(corefAlgorithm)) {
-            logger.warn("Provided CoRef-Algorithm not found. Selecting default.");
-            corefAlgorithm = COREF_ALGORITHMS.get(0);
-        }
-        allStanfordProperties.put("coref.algorithm", corefAlgorithm);
+        allStanfordProperties.put("parse", DEPENDENCIES_ANNOTATION);
+        allStanfordProperties.put("depparse", DEPENDENCIES_ANNOTATION);
+        allStanfordProperties.put("coref.algorithm", "fastneural");
 
         return allStanfordProperties;
     }

@@ -32,13 +32,6 @@ public interface IText {
     ImmutableList<IWord> getWords();
 
     /**
-     * Get all Coreference Clusters that the text has
-     *
-     * @return the coreference clusters
-     */
-    ImmutableList<ICorefCluster> getCorefClusters();
-
-    /**
      * Returns the sentences of the text, ordered by appearance.
      *
      * @return the sentences of the text, ordered by appearance.
