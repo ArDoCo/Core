@@ -64,7 +64,8 @@ public class ReferenceAgent extends ConnectionAgent {
     }
 
     private ImmutableList<INounMapping> getSimilarNounMappings(IModelInstance instance, ITextState textState) {
-        return textState.getNounMappingsOfKind(MappingKind.NAME).select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
+        return textState.getNounMappingsOfKind(MappingKind.NAME)
+                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
     }
 
     @Override

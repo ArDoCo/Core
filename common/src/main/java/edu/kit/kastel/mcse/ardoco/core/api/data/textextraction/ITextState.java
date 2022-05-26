@@ -15,175 +15,171 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
  */
 public interface ITextState extends ICopyable<ITextState>, IConfigurable {
 
-	/**
-	 * Minimum difference that need to shall not be reached to identify a
-	 * NounMapping as NameOrType.
-	 * 
-	 * @see #getMappingsThatCouldBeNameOrType(IWord)
-	 * @see #isWordContainedByNameOrTypeMapping(IWord)
-	 */
-	double MAPPINGKIND_MAX_DIFF = 0.1;
+    /**
+     * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
+     * 
+     * @see #getMappingsThatCouldBeNameOrType(IWord)
+     * @see #isWordContainedByNameOrTypeMapping(IWord)
+     */
+    double MAPPINGKIND_MAX_DIFF = 0.1;
 
-	/**
-	 * * Adds a name mapping to the state.
-	 *
-	 * @param word        word of the mapping
-	 * @param kind        the kind of the mapping
-	 * @param probability probability to be a name mapping
-	 */
-	void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability);
+    /**
+     * * Adds a name mapping to the state.
+     *
+     * @param word        word of the mapping
+     * @param kind        the kind of the mapping
+     * @param probability probability to be a name mapping
+     */
+    void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability);
 
-	/**
-	 * * Adds a name mapping to the state.
-	 *
-	 * @param word        word of the mapping
-	 * @param kind        the kind of the mapping
-	 * @param probability probability to be a name mapping
-	 * @param occurrences list of the appearances of the mapping
-	 */
-	void addNounMapping(IWord n, MappingKind kind, IClaimant claimant, double probability,
-			ImmutableList<String> occurrences);
+    /**
+     * * Adds a name mapping to the state.
+     *
+     * @param word        word of the mapping
+     * @param kind        the kind of the mapping
+     * @param probability probability to be a name mapping
+     * @param occurrences list of the appearances of the mapping
+     */
+    void addNounMapping(IWord n, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences);
 
-	/**
-	 * * Adds a type mapping to the state.
-	 *
-	 * @param word        word of the mapping
-	 * @param probability probability to be a type mapping
-	 * @param occurrences list of the appearances of the mapping
-	 */
-	void addNounMapping(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences);
+    /**
+     * * Adds a type mapping to the state.
+     *
+     * @param word        word of the mapping
+     * @param probability probability to be a type mapping
+     * @param occurrences list of the appearances of the mapping
+     */
+    void addNounMapping(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences);
 
-	/**
-	 * Creates a new relation mapping and adds it to the state. More end points, as
-	 * well as a preposition can be added afterwards.
-	 *
-	 * @param word1       first relation end point
-	 * @param word2       second relation end point
-	 * @param probability probability of being a relation
-	 * @return the added relation mapping
-	 */
-	IRelationMapping addRelation(INounMapping word1, INounMapping word2, IClaimant claimant, double probability);
+    /**
+     * Creates a new relation mapping and adds it to the state. More end points, as well as a preposition can be added
+     * afterwards.
+     *
+     * @param word1       first relation end point
+     * @param word2       second relation end point
+     * @param probability probability of being a relation
+     * @return the added relation mapping
+     */
+    IRelationMapping addRelation(INounMapping word1, INounMapping word2, IClaimant claimant, double probability);
 
-	// --- remove section --->
+    // --- remove section --->
 
-	/**
-	 * Removes a noun mapping from the state.
-	 *
-	 * @param word noun mapping to remove
-	 */
-	void removeNounMapping(INounMapping word);
+    /**
+     * Removes a noun mapping from the state.
+     *
+     * @param word noun mapping to remove
+     */
+    void removeNounMapping(INounMapping word);
 
-	/**
-	 * Returns all mappings containing the given word.
-	 *
-	 * @param word the given word
-	 * @return all mappings containing the given word as list
-	 */
-	ImmutableList<INounMapping> getNounMappingsByWord(IWord word);
+    /**
+     * Returns all mappings containing the given word.
+     *
+     * @param word the given word
+     * @return all mappings containing the given word as list
+     */
+    ImmutableList<INounMapping> getNounMappingsByWord(IWord word);
 
-	/**
-	 * Returns a list of all references of noun mappings.
-	 * 
-	 * @param kind of references that shall be collected
-	 * @return all references of noun mappings with the specified kind as list.
-	 */
-	ImmutableList<String> getListOfReferences(MappingKind kind);
+    /**
+     * Returns a list of all references of noun mappings.
+     * 
+     * @param kind of references that shall be collected
+     * @return all references of noun mappings with the specified kind as list.
+     */
+    ImmutableList<String> getListOfReferences(MappingKind kind);
 
-	/**
-	 * Returns all type mappings containing the given word.
-	 *
-	 * @param word word to filter for
-	 * @return a list of all type mappings containing the given word
-	 */
-	ImmutableList<INounMapping> getNounMappingsByWordAndKind(IWord word, MappingKind kind);
+    /**
+     * Returns all type mappings containing the given word.
+     *
+     * @param word word to filter for
+     * @return a list of all type mappings containing the given word
+     */
+    ImmutableList<INounMapping> getNounMappingsByWordAndKind(IWord word, MappingKind kind);
 
-	/**
-	 * Returns if a word is contained by the name mappings.
-	 *
-	 * @param word        word to check
-	 * @param mappingKind mappingKind to check
-	 * @return true if the word is contained by name mappings.
-	 */
-	boolean isWordContainedByMappingKind(IWord word, MappingKind mappingKind);
+    /**
+     * Returns if a word is contained by the name mappings.
+     *
+     * @param word        word to check
+     * @param mappingKind mappingKind to check
+     * @return true if the word is contained by name mappings.
+     */
+    boolean isWordContainedByMappingKind(IWord word, MappingKind mappingKind);
 
-	/**
-	 * Returns if a word is contained by the mappings.
-	 *
-	 * @param word word to check
-	 * @return true if the word is contained by mappings.
-	 */
-	boolean isWordContainedByNounMappings(IWord word);
+    /**
+     * Returns if a word is contained by the mappings.
+     *
+     * @param word word to check
+     * @return true if the word is contained by mappings.
+     */
+    boolean isWordContainedByNounMappings(IWord word);
 
-	/**
-	 * Gets the all noun mappings.
-	 *
-	 * @return the all mappings
-	 */
-	ImmutableList<INounMapping> getNounMappings();
+    /**
+     * Gets the all noun mappings.
+     *
+     * @return the all mappings
+     */
+    ImmutableList<INounMapping> getNounMappings();
 
-	/**
-	 * Adds the noun mapping.
-	 *
-	 * @param nounMapping the noun mapping.
-	 */
-	void addNounMapping(INounMapping nounMapping, IClaimant claimant);
+    /**
+     * Adds the noun mapping.
+     *
+     * @param nounMapping the noun mapping.
+     */
+    void addNounMapping(INounMapping nounMapping, IClaimant claimant);
 
-	/**
-	 * Gets the mappings that could be a type.
-	 *
-	 * @param word        the word
-	 * @param mappingKind the mapping kind that
-	 * @return the mappings that could be a type
-	 */
-	default ImmutableList<INounMapping> getMappingsThatCouldBeOfKind(IWord word, MappingKind mappingKind) {
-		return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(mappingKind) > 0);
-	}
+    /**
+     * Gets the mappings that could be a type.
+     *
+     * @param word        the word
+     * @param mappingKind the mapping kind that
+     * @return the mappings that could be a type
+     */
+    default ImmutableList<INounMapping> getMappingsThatCouldBeOfKind(IWord word, MappingKind mappingKind) {
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(mappingKind) > 0);
+    }
 
-	/**
-	 * Returns all mappings with a similar reference as given.
-	 *
-	 * @param ref the reference to search for
-	 * @return a list of noun mappings with the given reference.
-	 */
-	ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref);
+    /**
+     * Returns all mappings with a similar reference as given.
+     *
+     * @param ref the reference to search for
+     * @return a list of noun mappings with the given reference.
+     */
+    ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref);
 
-	/**
-	 * Gets the mappings that could be a Name or Type.
-	 *
-	 * @param word  the word
-	 * @param kinds the required mappingKindso
-	 * @return the mappings that could be a Name or Type
-	 */
-	default ImmutableList<INounMapping> getMappingsThatCouldBeMultipleKinds(IWord word, MappingKind... kinds) {
-		if (kinds.length == 0) {
-			throw new IllegalArgumentException("You need to provide some mapping kinds!");
-		}
+    /**
+     * Gets the mappings that could be a Name or Type.
+     *
+     * @param word  the word
+     * @param kinds the required mappingKindso
+     * @return the mappings that could be a Name or Type
+     */
+    default ImmutableList<INounMapping> getMappingsThatCouldBeMultipleKinds(IWord word, MappingKind... kinds) {
+        if (kinds.length == 0) {
+            throw new IllegalArgumentException("You need to provide some mapping kinds!");
+        }
 
-		if (kinds.length < 2) {
-			return getNounMappingsOfKind(kinds[0]);
-		}
+        if (kinds.length < 2) {
+            return getNounMappingsOfKind(kinds[0]);
+        }
 
-		MutableList<INounMapping> result = Lists.mutable.empty();
-		ImmutableList<INounMapping> mappings = getNounMappingsByWord(word);
+        MutableList<INounMapping> result = Lists.mutable.empty();
+        ImmutableList<INounMapping> mappings = getNounMappingsByWord(word);
 
-		for (INounMapping mapping : mappings) {
-			final ImmutableList<Double> probabilities = Lists.immutable.with(kinds)
-					.collect(mapping::getProbabilityForKind);
-			if (probabilities.anySatisfy(p -> p <= 0)) {
-				continue;
-			}
+        for (INounMapping mapping : mappings) {
+            final ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(mapping::getProbabilityForKind);
+            if (probabilities.anySatisfy(p -> p <= 0)) {
+                continue;
+            }
 
-			boolean similar = probabilities
-					.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
-			if (similar) {
-				result.add(mapping);
-			}
+            boolean similar = probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
+            if (similar) {
+                result.add(mapping);
+            }
 
-		}
+        }
 
-		return result.toImmutable();
-	}
+        return result.toImmutable();
+    }
 
-	ImmutableList<INounMapping> getNounMappingsOfKind(MappingKind mappingKind);
+    ImmutableList<INounMapping> getNounMappingsOfKind(MappingKind mappingKind);
 
 }

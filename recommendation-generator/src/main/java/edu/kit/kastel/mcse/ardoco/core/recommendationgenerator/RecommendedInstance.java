@@ -72,7 +72,7 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
     private static double calculateMappingProbability(ImmutableList<INounMapping> nameMappings, ImmutableList<INounMapping> typeMappings) {
         var highestNameProbability = nameMappings.collectDouble(nm -> nm.getProbabilityForKind(MappingKind.NAME)).maxIfEmpty(0);
         var highestTypeProbability = typeMappings.collectDouble(nm -> nm.getProbabilityForKind(MappingKind.TYPE)).maxIfEmpty(0);
-        
+
         return CommonUtilities.rootMeanSquare(highestNameProbability, highestTypeProbability);
     }
 
