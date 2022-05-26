@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -11,7 +10,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
@@ -21,12 +19,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistencyCandidate;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementSupport;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.filters.TraceLinkFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
 public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
-
-    private final List<AbstractFilter<InconsistencyAgentData>> filters = List.of(new TraceLinkFilter());
 
     @Configurable
     private double minSupport = 1;
@@ -39,10 +34,6 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     public void execute(InconsistencyAgentData data) {
         for (var model : data.getModelIds()) {
             findMissingModelElementInconsistencies(data, model);
-        }
-
-        for (var filter : this.filters) {
-            filter.exec(data);
         }
     }
 
