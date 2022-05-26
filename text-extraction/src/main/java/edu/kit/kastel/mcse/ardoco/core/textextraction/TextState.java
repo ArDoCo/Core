@@ -98,12 +98,12 @@ public class TextState extends AbstractState implements ITextState {
 
     /**
      * Returns all type mappings.
-     *
+     * @param kind searched mappingKind
      * @return all type mappings as list
      */
     @Override
-    public final ImmutableList<INounMapping> getTypes() {
-        return nounMappings.select(nounMappingIsType()).toImmutable();
+    public final ImmutableList<INounMapping> getNounMappingsOfKind(MappingKind kind) {
+        return nounMappings.select(nounMappingIsOfKind(kind)).toImmutable();
     }
 
     /**
@@ -137,7 +137,7 @@ public class TextState extends AbstractState implements ITextState {
     public final ImmutableList<String> getNameList() {
 
         Set<String> names = new HashSet<>();
-        var nameMappings = getNames();
+        var nameMappings = getNounMappingsOfKind(MappingKind.NAME);
         for (INounMapping nnm : nameMappings) {
             names.add(nnm.getReference());
         }
@@ -152,22 +152,13 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<String> getTypeList() {
         Set<String> types = new HashSet<>();
-        var typeMappings = getTypes();
+        var typeMappings = getNounMappingsOfKind(MappingKind.TYPE);
         for (INounMapping nnm : typeMappings) {
             types.add(nnm.getReference());
         }
         return Lists.immutable.withAll(types);
     }
 
-    /**
-     * Returns all name mappings
-     *
-     * @return a list of all name mappings
-     */
-    @Override
-    public final ImmutableList<INounMapping> getNames() {
-        return nounMappings.select(n -> MappingKind.NAME == n.getKind()).toImmutable();
-    }
 
     /**
      * Returns all type mappings containing the given node.
@@ -177,7 +168,7 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getTypeMappingsByWord(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsType()).toImmutable();
+        return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsOfKind(MappingKind.TYPE)).toImmutable();
     }
 
     /**
@@ -195,40 +186,18 @@ public class TextState extends AbstractState implements ITextState {
      * Returns if a node is contained by the name mappings.
      *
      * @param word node to check
+     * @param mappingKind mappingKind to check for
      * @return true if the node is contained by name mappings.
      */
     @Override
-    public final boolean isWordContainedByNameMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsName());
+    public final boolean isWordContainedByMappingKind(IWord word, MappingKind mappingKind) {
+        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsOfKind(mappingKind));
     }
 
-    private Predicate<? super INounMapping> nounMappingIsName() {
-        return n -> n.getKind() == MappingKind.NAME;
+    private Predicate<? super INounMapping> nounMappingIsOfKind(MappingKind mappingKind) {
+        return n -> n.getKind() == mappingKind;
     }
 
-    /**
-     * Returns if a node is contained by the type mappings.
-     *
-     * @param word node to check
-     * @return true if the node is contained by type mappings.
-     */
-    @Override
-    public final boolean isWordContainedByTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsType());
-    }
-
-    private Predicate<? super INounMapping> nounMappingIsType() {
-        return n -> n.getKind() == MappingKind.TYPE;
-    }
-
-    @Override
-    public final boolean isWordContainedByNameOrTypeMapping(IWord word) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(n -> {
-            var nameProb = n.getProbabilityForName();
-            var typeProb = n.getProbabilityForType();
-            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < NAME_OR_TYPE_MAX_DIFF;
-        });
-    }
 
     @Override
     public ITextState createCopy() {

@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecomme
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
@@ -74,7 +75,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
      * Find words that use CamelCase or snake_case.
      */
     private void findSpecialNamedEntitities(ITextState textState, IRecommendationState recommendationState) {
-        findSpecialNamedEntitiesInNounMappings(textState.getNames(), recommendationState);
+        findSpecialNamedEntitiesInNounMappings(textState.getNounMappingsOfKind(MappingKind.NAME), recommendationState);
     }
 
     private void findSpecialNamedEntitiesInNounMappings(ImmutableList<INounMapping> nounMappings, IRecommendationState recommendationState) {
@@ -135,7 +136,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         }
 
         if (word.getPosTag().isNoun()) {
-            var typeMappings = textState.getMappingsThatCouldBeAType(word);
+            var typeMappings = textState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             if (!typeMappings.isEmpty()) {
                 addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
             }

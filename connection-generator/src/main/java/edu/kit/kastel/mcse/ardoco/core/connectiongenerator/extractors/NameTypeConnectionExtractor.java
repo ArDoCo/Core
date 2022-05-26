@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -16,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecomme
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
@@ -61,8 +63,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         if (!similarTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(pre);
-            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(pre, MappingKind.NAME);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
 
             var instance = tryToIdentify(textExtractionState, similarTypes, pre, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
@@ -89,8 +91,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            var nameMappings = textExtractionState.getMappingsThatCouldBeAName(after);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(after, MappingKind.NAME);
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
@@ -113,8 +115,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(pre);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(pre, List.of(MappingKind.NAME, MappingKind.TYPE));
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
@@ -136,8 +138,8 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addType(word, this, probability);
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeAType(word);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeNameOrType(after);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(after, List.of(MappingKind.NAME, MappingKind.TYPE));
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
