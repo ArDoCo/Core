@@ -39,39 +39,26 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     private void findMissingModelElementInconsistencies(InconsistencyAgentData data, String model) {
         var inconsistencyState = data.getInconsistencyState(model);
-        var connectionState = data.getConnectionState(model);
-        var recommendationState = data.getRecommendationState(data.getModelState(model).getMetamodel());
+            var connectionState = data.getConnectionState(model);
 
-        var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
+            var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
 
-        var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
-        var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
+            var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
+            var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
 
-        // find recommendedInstances with no trace link (also not sharing words with linked RIs)
-        candidateElements.removeAllIterable(linkedRecommendedInstances);
-        filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
+            // find recommendedInstances with no trace link (also not sharing words with linked RIs)
+            candidateElements.removeAllIterable(linkedRecommendedInstances);
+            filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
 
-        for (var candidate : candidateElements) {
-            addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
-        }
-
-        // find out those elements that are in the same sentence as a traced element
-        // need checking!
-        for (var relation : recommendationState.getInstanceRelations()) {
-            var fromInstance = relation.getFromInstance();
-            var toInstance = relation.getToInstance();
-            if (linkedRecommendedInstances.contains(fromInstance) && candidateElements.contains(toInstance)) {
-                addToCandidates(candidates, toInstance, MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT);
-            } else if (linkedRecommendedInstances.contains(toInstance) && candidateElements.contains(fromInstance)) {
-                addToCandidates(candidates, fromInstance, MissingElementSupport.DEPENDENCY_TO_TRACED_ELEMENT);
+            for (var candidate : candidateElements) {
+                addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
             }
-        }
 
-        // methods for other kinds of support
-        // NONE
+            // methods for other kinds of support
+            // NONE
 
-        // finally create inconsistencies
-        createInconsistencies(candidates, inconsistencyState);
+            // finally create inconsistencies
+            createInconsistencies(candidates, inconsistencyState);
     }
 
     /**
