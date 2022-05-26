@@ -13,7 +13,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import edu.kit.kastel.informalin.framework.models.pcm.PCMModel;
 import edu.kit.kastel.informalin.framework.models.pcm.PCMRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 
 public class PcmXMLModelConnector implements IModelConnector {
@@ -42,11 +41,5 @@ public class PcmXMLModelConnector implements IModelConnector {
     @Override
     public ImmutableList<IModelInstance> getInstances() {
         return Lists.immutable.withAll(repository.getComponents()).collect(e -> new Instance(e.getEntityName(), e.getType(), e.getId()));
-    }
-
-    @Override
-    public ImmutableList<IModelRelation> getRelations() {
-        // NOT YET IMPLEMENTED!
-        return Lists.immutable.empty();
     }
 }
