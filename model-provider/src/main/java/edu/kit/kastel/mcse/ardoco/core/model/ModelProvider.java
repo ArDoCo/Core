@@ -6,7 +6,6 @@ import java.util.Map;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelRelation;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 
 /**
@@ -30,8 +29,7 @@ public final class ModelProvider {
 
     public IModelState execute(Map<String, String> additionalSettings) {
         ImmutableList<IModelInstance> instances = modelConnector.getInstances();
-        ImmutableList<IModelRelation> relations = modelConnector.getRelations();
-        return new ModelExtractionState(modelConnector.getModelId(), modelConnector.getMetamodel(), instances, relations, additionalSettings);
+        return new ModelExtractionState(modelConnector.getModelId(), modelConnector.getMetamodel(), instances, additionalSettings);
     }
 
 }

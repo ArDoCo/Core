@@ -9,9 +9,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  pre_job:
     runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          concurrent_skipping: 'same_content'
+          skip_after_successful_duplicate: 'true'
 
+  build:
+    needs: pre_job
+    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -27,9 +39,5 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    - name: maven-settings-xml-action
-      uses: whelk-io/maven-settings-xml-action@v20
-      with:
-        servers: '[{ "id": "github", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }, { "id": "github-informalin", "username": "x-access-token", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
     - name: Verify with Maven
       run: mvn -B verify --file pom.xml -U -Dparallel=all -DperCoreThreadCount=false -DthreadCount=8 -T 1C

@@ -108,9 +108,6 @@ class PcmXMLModelConnectorTest {
         Assertions.assertEquals(Metamodel.ARCHITECTURE, connector.getMetamodel());
         Assertions.assertEquals(14, connector.getInstances().size());
         Assertions.assertTrue(connector.getInstances().allSatisfy(i -> i.getFullType().equals("BasicComponent")));
-        // NIY
-        Assertions.assertEquals(0, connector.getRelations().size());
-
     }
 
 }

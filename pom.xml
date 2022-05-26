@@ -3,12 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>edu.kit.kastel.mcse.ardoco</groupId>
-    <artifactId>parent</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <groupId>com.github.ardoco</groupId>
+    <artifactId>ardoco-parent</artifactId>
+    <version>0.6</version>
   </parent>
 
-  <artifactId>core</artifactId>
+  <groupId>com.github.ardoco.core</groupId>
+  <artifactId>base</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
@@ -25,19 +26,6 @@
     <module>tests</module>
     <module>cli</module>
   </modules>
-
-  <distributionManagement>
-    <repository>
-      <id>github</id>
-      <name>GitHub ArDoCo/Core Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/ArDoCo/Core</url>
-    </repository>
-    <snapshotRepository>
-      <id>github</id>
-      <name>GitHub ArDoCo/Core Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/ArDoCo/Core</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <properties>
     <project.source.encoding>UTF-8</project.source.encoding>
@@ -142,9 +130,8 @@
 
   <repositories>
     <repository>
-      <id>github</id>
-      <name>GitHub ArDoCo/Core Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/ArDoCo/Core</url>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
   </repositories>
 
