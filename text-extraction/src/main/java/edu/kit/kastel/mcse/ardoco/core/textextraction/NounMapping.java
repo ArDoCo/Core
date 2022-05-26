@@ -330,13 +330,8 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
-    public double getProbabilityForName() {
-        return distribution.get(MappingKind.NAME).getConfidence();
-    }
-
-    @Override
-    public double getProbabilityForType() {
-        return distribution.get(MappingKind.TYPE).getConfidence();
+    public double getProbabilityForKind(MappingKind mappingKind) {
+        return distribution.get(mappingKind).getConfidence();
     }
 
     @Override

@@ -13,6 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
@@ -63,7 +64,8 @@ public class ReferenceAgent extends ConnectionAgent {
     }
 
     private ImmutableList<INounMapping> getSimilarNounMappings(IModelInstance instance, ITextState textState) {
-        return textState.getNames().select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
+        return textState.getNounMappingsOfKind(MappingKind.NAME)
+                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
     }
 
     @Override

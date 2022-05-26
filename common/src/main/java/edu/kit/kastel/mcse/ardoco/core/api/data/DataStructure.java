@@ -3,7 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.api.data;
 
 import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
