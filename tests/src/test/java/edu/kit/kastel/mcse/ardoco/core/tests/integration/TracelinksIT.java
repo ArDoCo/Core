@@ -32,6 +32,10 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 
+/**
+ * @author Jan Keim
+ *
+ */
 class TracelinksIT {
     private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
 

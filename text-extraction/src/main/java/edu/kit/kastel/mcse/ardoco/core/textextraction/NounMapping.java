@@ -3,7 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -22,6 +26,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
  * The Class NounMapping is a basic realization of {@link INounMapping}.
+ *
+ * @author Sophie Schulz
+ * @author Jan Keim
  */
 public class NounMapping implements INounMapping {
 

@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  */
 
 public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
+
     @Configurable
     private double nameOrTypeWeight = 0.5;
 

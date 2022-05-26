@@ -13,7 +13,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 /**
  * The analyzer classifies nouns.
  *
- * @author Sophie
+ * @author Sophie Schulz
+ * @author Jan Keim
  */
 public class NounExtractor extends AbstractExtractor<TextAgentData> {
     @Configurable
@@ -63,6 +64,6 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // empty
+        // handle additional config
     }
 }
