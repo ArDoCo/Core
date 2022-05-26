@@ -99,14 +99,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
      *
      * @return the probability for name
      */
-    double getProbabilityForName();
-
-    /**
-     * Gets the probability for type.
-     *
-     * @return the probability for type
-     */
-    double getProbabilityForType();
+    double getProbabilityForKind(MappingKind mappingKind);
 
     /**
      * Gets the distribution of all mapping kinds.

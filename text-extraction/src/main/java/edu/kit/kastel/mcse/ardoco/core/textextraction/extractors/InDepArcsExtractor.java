@@ -9,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 
 /**
@@ -51,15 +52,15 @@ public class InDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
         for (DependencyTag depTag : incomingDepArcs) {
             if (hasNortDependencies(depTag)) {
-                textState.addName(word, this, probability * nameOrTypeWeight);
-                textState.addType(word, this, probability * nameOrTypeWeight);
+                textState.addNounMapping(word, MappingKind.NAME, this, probability * nameOrTypeWeight);
+                textState.addNounMapping(word, MappingKind.TYPE, this, probability * nameOrTypeWeight);
             } else if (hasTypeOrNortDependencies(depTag)) {
                 if (WordHelper.hasIndirectDeterminerAsPreWord(word)) {
-                    textState.addType(word, this, probability);
+                    textState.addNounMapping(word, MappingKind.TYPE, this, probability);
                 }
 
-                textState.addName(word, this, probability * nameOrTypeWeight);
-                textState.addType(word, this, probability * nameOrTypeWeight);
+                textState.addNounMapping(word, MappingKind.NAME, this, probability * nameOrTypeWeight);
+                textState.addNounMapping(word, MappingKind.TYPE, this, probability * nameOrTypeWeight);
             }
         }
     }
