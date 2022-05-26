@@ -40,7 +40,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param probability probability to be a name mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addNounMapping(IWord n, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences);
+    void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a type mapping to the state.
@@ -50,17 +50,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param occurrences list of the appearances of the mapping
      */
     void addNounMapping(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences);
-
-    /**
-     * Creates a new relation mapping and adds it to the state. More end points, as well as a preposition can be added
-     * afterwards.
-     *
-     * @param word1       first relation end point
-     * @param word2       second relation end point
-     * @param probability probability of being a relation
-     * @return the added relation mapping
-     */
-    IRelationMapping addRelation(INounMapping word1, INounMapping word2, IClaimant claimant, double probability);
 
     // --- remove section --->
 
