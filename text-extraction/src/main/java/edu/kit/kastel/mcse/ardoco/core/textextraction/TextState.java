@@ -12,8 +12,11 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IPhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -28,6 +31,8 @@ public class TextState extends AbstractState implements ITextState {
 
     private MutableList<INounMapping> nounMappings;
 
+    private MutableList<IPhraseMapping> phraseMappings;
+
     /**
      * Creates a new name type relation state
      *
@@ -36,6 +41,7 @@ public class TextState extends AbstractState implements ITextState {
     public TextState(Map<String, String> configs) {
         super(configs);
         nounMappings = Lists.mutable.empty();
+        phraseMappings = Lists.mutable.empty();
     }
 
     /***
@@ -66,21 +72,25 @@ public class TextState extends AbstractState implements ITextState {
         addNounMapping(word, kind, claimant, probability, Lists.immutable.with(word.getText()));
     }
 
-    /***
-     * Adds a type mapping to the state
-     *
-     * @param probability probability to be a type mapping
-     * @param occurrences list of the appearances of the mapping
-     * @param word        node of the mapping
-     */
     @Override
-    public final void addNounMapping(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
-        addNounMapping(word, MappingKind.TYPE, claimant, probability, occurrences);
+    public void addPhraseMapping(ImmutableList<IPhrase> phrases, ImmutableList<INounMapping> nounMappings, IClaimant claimant, double probability) {
+        IPhraseMapping phraseMapping = new PhraseMapping(phrases, nounMappings, claimant, probability);
+        addPhraseMappingOrAppendToSimilarPhraseMapping(phraseMapping, claimant);
+    }
+
+    private void addPhraseMappingOrAppendToSimilarPhraseMapping(IPhraseMapping phraseMapping, IClaimant claimant) {
+        // TODO: check for similarity!
+        phraseMappings.add(phraseMapping);
     }
 
     @Override
     public final ImmutableList<INounMapping> getNounMappings() {
         return nounMappings.toImmutable();
+    }
+
+    @Override
+    public ImmutableList<IPhraseMapping> getPhraseMappings() {
+        return phraseMappings.toImmutable();
     }
 
     /**
@@ -103,6 +113,17 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final ImmutableList<INounMapping> getNounMappingsByWord(IWord word) {
         return nounMappings.select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
+    }
+
+    @Override
+    public ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nounMapping) {
+
+        return phraseMappings.select(p -> p.getNounMappings().contains(nounMapping)).toImmutable();
+    }
+
+    @Override
+    public ImmutableList<IPhraseMapping> getPhraseMappingsByPhrase(IPhrase phrase) {
+        return phraseMappings.select(p -> p.equals(phrase)).toImmutable();
     }
 
     /**
@@ -142,6 +163,11 @@ public class TextState extends AbstractState implements ITextState {
         return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsOfKind(kind)).toImmutable();
     }
 
+    @Override
+    public ImmutableList<IPhraseMapping> getPhraseMappingsByPhraseType(PhraseType phraseType) {
+        return this.phraseMappings.select(p -> p.getPhraseType().equals(phraseType)).toImmutable();
+    }
+
     /**
      * Returns if a node is contained by the mappings.
      *
@@ -151,6 +177,14 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final boolean isWordContainedByNounMappings(IWord word) {
         return nounMappings.anySatisfy(n -> n.getWords().contains(word));
+    }
+
+    @Override
+    public boolean isNounMappingContainedByPhrase(INounMapping nounMapping) {
+        if (this.getPhraseMappingsByNounMapping(nounMapping).size() > 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -201,6 +235,11 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public void removeNounMapping(INounMapping n) {
         nounMappings.remove(n);
+    }
+
+    @Override
+    public void removePhraseMapping(IPhraseMapping phraseMapping) {
+        this.phraseMappings.remove(phraseMapping);
     }
 
     @Override
