@@ -1,7 +1,10 @@
+package edu.kit.kastel.mcse.ardoco.core.textextraction;
+
 import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -25,21 +28,27 @@ public class PhraseMapping implements IPhraseMapping {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final MutableList<INounMapping> containedNounMappings;
-    private Confidence confidence;
+    private final Confidence confidence;
 
-    public PhraseMapping(ImmutableList<IPhrase> phrases, ImmutableList<INounMapping> nounMappings, IClaimant claimant, double probability) {
+    public PhraseMapping(IPhrase phrase, ImmutableList<INounMapping> nounMappings, IClaimant claimant, double probability) {
 
-        if (phrases.size() < 2) {
-            throw new IllegalArgumentException("There should be at least one phrase to generate a phrase mapping!");
-        }
-        for (IPhrase phrase : phrases) {
-            if (phrases.get(0).getPhraseType() != phrase.getPhraseType()) {
-                throw new IllegalArgumentException("All phrases in a phrase mapping should have the same phrase type!");
-            }
-        }
-        this.phrases = Lists.mutable.withAll(phrases);
+        Objects.requireNonNull(phrase);
+        Objects.requireNonNull(claimant);
+
+        this.phrases = Lists.mutable.with(phrase);
         this.containedNounMappings = Lists.mutable.withAll(nounMappings);
         this.confidence = new Confidence(claimant, probability, DEFAULT_AGGREGATOR);
+    }
+
+    public PhraseMapping(ImmutableList<IPhrase> phrases, ImmutableList<INounMapping> nounMappings, IClaimant claimant, double probability) {
+        this(phrases.get(0), nounMappings, claimant, probability);
+
+        for (int i = 1; i < phrases.size(); i++) {
+            if (phrases.get(0).getPhraseType() != phrases.get(i).getPhraseType()) {
+                throw new IllegalArgumentException("All phrases in a phrase mapping should have the same phrase type!");
+            }
+            this.addPhase(phrases.get(i));
+        }
     }
 
     @Override
