@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
@@ -20,5 +21,9 @@ public interface IPhraseMapping {
 
     PhraseType getPhraseType();
 
-    Map<IWord, Double> getPhraseVector();
+    Map<IWord, Integer> getPhraseVector();
+
+    IPhraseMapping merge(IPhraseMapping phraseMapping);
+
+    Confidence getConfidence();
 }

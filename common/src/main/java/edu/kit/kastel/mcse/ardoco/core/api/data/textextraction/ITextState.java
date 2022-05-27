@@ -8,7 +8,9 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 
 /**
  * The Interface ITextState.
@@ -18,8 +20,8 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
      * 
-     * @see #getMappingsThatCouldBeNameOrType(IWord)
-     * @see #isWordContainedByNameOrTypeMapping(IWord)
+     * @see #getMappingsThatCouldBeOfKind(IWord, MappingKind)
+     * @see #isWordContainedByMappingKind(IWord, MappingKind)
      */
     double MAPPINGKIND_MAX_DIFF = 0.1;
 
@@ -32,6 +34,8 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability);
 
+    void addPhraseMapping(ImmutableList<IPhrase> phrases, ImmutableList<INounMapping> nounMappings, IClaimant claimant, double probability);
+
     /**
      * * Adds a name mapping to the state.
      *
@@ -42,15 +46,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences);
 
-    /**
-     * * Adds a type mapping to the state.
-     *
-     * @param word        word of the mapping
-     * @param probability probability to be a type mapping
-     * @param occurrences list of the appearances of the mapping
-     */
-    void addNounMapping(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences);
-
     // --- remove section --->
 
     /**
@@ -60,6 +55,8 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     void removeNounMapping(INounMapping word);
 
+    void removePhraseMapping(IPhraseMapping phraseMapping);
+
     /**
      * Returns all mappings containing the given word.
      *
@@ -67,6 +64,10 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return all mappings containing the given word as list
      */
     ImmutableList<INounMapping> getNounMappingsByWord(IWord word);
+
+    ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nounMapping);
+
+    ImmutableList<IPhraseMapping> getPhraseMappingsByPhrase(IPhrase phrase);
 
     /**
      * Returns a list of all references of noun mappings.
@@ -83,6 +84,8 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return a list of all type mappings containing the given word
      */
     ImmutableList<INounMapping> getNounMappingsByWordAndKind(IWord word, MappingKind kind);
+
+    ImmutableList<IPhraseMapping> getPhraseMappingsByPhraseType(PhraseType phraseType);
 
     /**
      * Returns if a word is contained by the name mappings.
@@ -101,12 +104,16 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     boolean isWordContainedByNounMappings(IWord word);
 
+    boolean isNounMappingContainedByPhrase(INounMapping nounMapping);
+
     /**
      * Gets the all noun mappings.
      *
      * @return the all mappings
      */
     ImmutableList<INounMapping> getNounMappings();
+
+    ImmutableList<IPhraseMapping> getPhraseMappings();
 
     /**
      * Adds the noun mapping.

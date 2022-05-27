@@ -26,9 +26,10 @@ public class PhraseMapping implements IPhraseMapping {
      */
     private final MutableList<IPhrase> phrases;
 
-    private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final MutableList<INounMapping> containedNounMappings;
-    private final Confidence confidence;
+    private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
+    private static final double DEFAULT_MAX_VECTOR_DISTANCE = 0.5;
+    private Confidence confidence;
 
     public PhraseMapping(IPhrase phrase, ImmutableList<INounMapping> nounMappings, IClaimant claimant, double probability) {
 
@@ -72,24 +73,41 @@ public class PhraseMapping implements IPhraseMapping {
     }
 
     @Override
+    public Confidence getConfidence() {
+        return this.confidence;
+    }
+
+    @Override
     public PhraseType getPhraseType() {
         return phrases.get(0).getPhraseType();
     }
 
     @Override
-    public Map<IWord, Double> getPhraseVector() {
+    public Map<IWord, Integer> getPhraseVector() {
 
         MutableList<IWord> words = phrases.flatCollect(IPhrase::getContainedWords);
 
-        Map<IWord, Double> phraseVector = new HashMap<>();
+        Map<IWord, Integer> phraseVector = new HashMap<>();
 
         for (IWord word : words) {
             if (phrases.contains(word)) {
                 continue;
             }
-            phraseVector.put(word, (words.count(w -> w == word) / (double) words.size()));
+            phraseVector.put(word, words.count(w -> w == word));
+            // TODO: Thing about norm / (double) words.size()));
 
         }
         return phraseVector;
     }
+
+    @Override
+    public IPhraseMapping merge(IPhraseMapping phraseMapping) {
+
+        this.phrases.addAllIterable(phraseMapping.getPhrases().select(p -> !this.getPhrases().contains(p)));
+        this.containedNounMappings.addAllIterable(phraseMapping.getNounMappings().select(n -> !this.getNounMappings().contains(n)));
+
+        this.confidence = Confidence.merge(this.getConfidence(), phraseMapping.getConfidence(), DEFAULT_AGGREGATOR, AggregationFunctions.MAX);
+        return this;
+    }
+
 }

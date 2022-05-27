@@ -1,6 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.eclipse.collections.api.factory.Lists;
@@ -11,6 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IPhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 
 /**
  * This class is a utility class.
@@ -305,6 +310,67 @@ public final class SimilarityUtils {
                         || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity)) {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    private static boolean coversOtherPhraseVector(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY) {
+
+        Map<IWord, Integer> phraseVectorX = phraseMappingX.getPhraseVector();
+        Map<IWord, Integer> phraseVectorY = phraseMappingY.getPhraseVector();
+
+        return phraseVectorX.keySet().containsAll(phraseVectorY.keySet());
+    }
+
+    private static boolean containsAllNounMappingsOfPhraseMapping(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY) {
+        return phraseMappingX.getNounMappings().containsAllIterable(phraseMappingY.getNounMappings());
+    }
+
+    private static boolean containsNounMappingsOfMappingKindOfPhraseMapping(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY, MappingKind kind) {
+        return phraseMappingX.getNounMappings().containsAllIterable(phraseMappingY.getNounMappings().select(n -> n.getKind().equals(kind)));
+    }
+
+    private static double cosineSimilarity(Map<IWord, Integer> phraseVectorX, Map<IWord, Integer> phraseVectorY) {
+
+        // TODO: Think about use of lemmas/ stem?
+        Set<IWord> words = phraseVectorX.keySet();
+        words.addAll(phraseVectorY.keySet());
+
+        int sum = 0;
+        double xNorm = 0;
+        double yNorm = 0;
+        for (IWord word : words) {
+
+            if (phraseVectorX.containsKey(word)) {
+
+                xNorm += Math.pow(phraseVectorX.get(word), 2);
+
+                if (phraseVectorY.containsKey(word)) {
+                    sum += phraseVectorX.get(word) * phraseVectorY.get(word);
+                }
+            }
+            if (phraseVectorY.containsKey(word)) {
+                yNorm += Math.pow(phraseVectorY.get(word), 2);
+            }
+        }
+
+        xNorm = Math.sqrt(xNorm);
+        yNorm = Math.sqrt(yNorm);
+
+        return sum / (xNorm * yNorm);
+    }
+
+    public static boolean arePhraseMappingsSimilar(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY, double maxCosineDistance) {
+        if (cosineSimilarity(phraseMappingX.getPhraseVector(), (phraseMappingY).getPhraseVector()) < maxCosineDistance) {
+            if (containsNounMappingsOfMappingKindOfPhraseMapping(phraseMappingX, phraseMappingY, MappingKind.NAME)) {
+                return true;
+            }
+        }
+        if (coversOtherPhraseVector(phraseMappingX, phraseMappingY) || coversOtherPhraseVector(phraseMappingY, phraseMappingX)) {
+            if (containsAllNounMappingsOfPhraseMapping(phraseMappingX, phraseMappingY)
+                    && containsAllNounMappingsOfPhraseMapping(phraseMappingY, phraseMappingX)) {
+                return true;
             }
         }
         return false;
