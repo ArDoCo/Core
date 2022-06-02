@@ -1,15 +1,19 @@
-# Core
-
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/dashboard?id=ArDoCo_Core)
+# ArDoCo Core
 
 [![Maven Verify](https://github.com/ArDoCo/Core/workflows/Maven%20Verify/badge.svg)](https://github.com/ArDoCo/Core/actions?query=workflow%3A%22Maven+Verify%22)
-
-[![](https://jitpack.io/v/ArDoCo/Core.svg)](https://jitpack.io/#ArDoCo/Core)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.ardoco.core/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.ardoco.core/parent)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ArDoCo_Core&metric=alert_status)](https://sonarcloud.io/dashboard?id=ArDoCo_Core)
+[![Latest Release](https://img.shields.io/github/release/ArDoCo/Core.svg)](https://github.com/ArDoCo/Core/releases/latest)
 
 The goal of this project is to connect architecture documentation and models while identifying missing or deviating
 elements (inconsistencies).
 An element can be any representable item of the model, like a component or a relation.
 To do so, we first create trace links and then make use of them and other information to identify inconsistencies.
+
+ArDoCo is actively developed by researchers of
+the _[Modelling for Continuous Software Engineering (MCSE) group](https://mcse.kastel.kit.edu)_
+of _[KASTEL - Institute of Information Security and Dependability](https://kastel.kit.edu)_ at
+the [KIT](https://www.kit.edu).
 
 ## CLI
 
@@ -45,27 +49,16 @@ To test the Core, you could use case studies and benchmarks provided in ..
 * [ArDoCo Benchmark](https://github.com/ArDoCo/Benchmark)
 * [SWATTR](https://github.com/ArDoCo/SWATTR)
 
-### Maven (via JitPack.io)
-
-```xml
-
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-
-```
+### Maven
 
 ```xml
 
 <dependencies>
-    <dependency>
-        <groupId>com.github.ArDoCo.Core</groupId>
-        <artifactId>pipeline</artifactId> <!-- or any other subproject -->
-        <version>0.4</version>
-    </dependency>
+	<dependency>
+		<groupId>io.github.ardoco.core</groupId>
+		<artifactId>pipeline</artifactId> <!-- or any other subproject -->
+		<version>0.5-SNAPSHOT</version>
+	</dependency>
 </dependencies>
 ```
 
@@ -73,3 +66,8 @@ To test the Core, you could use case studies and benchmarks provided in ..
 
 The base for this project is based on the master
 thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
+
+## Acknowledgments
+
+This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by
+KASTEL Security Research Labs (46.23.01).
