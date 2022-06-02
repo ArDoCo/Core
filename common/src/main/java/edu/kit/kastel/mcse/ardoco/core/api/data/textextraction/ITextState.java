@@ -18,8 +18,8 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
      * 
-     * @see #getMappingsThatCouldBeNameOrType(IWord)
-     * @see #isWordContainedByNameOrTypeMapping(IWord)
+     * @see #getMappingsThatCouldBeOfKind(IWord, MappingKind)
+     * @see #isWordContainedByMappingKind(IWord, MappingKind)
      */
     double MAPPINGKIND_MAX_DIFF = 0.1;
 
