@@ -247,13 +247,6 @@
         <module>tests</module>
         <module>cli</module>
       </modules>
-    </profile>
-
-    <profile>
-      <id>coverage</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <build>
         <plugins>
           <plugin>
