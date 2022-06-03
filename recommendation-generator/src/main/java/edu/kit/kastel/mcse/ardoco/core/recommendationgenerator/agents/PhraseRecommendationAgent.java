@@ -36,7 +36,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
             var textState = data.getTextState();
             var modelState = data.getModelState(model);
             var recommendationState = data.getRecommendationState(modelState.getMetamodel());
-            createRecommendationInstancesFromPhraseNounMappings(textState, recommendationState, modelState);
+            // createRecommendationInstancesFromPhraseNounMappings(textState, recommendationState, modelState);
             findMorePhrasesForRecommendationInstances(textState, recommendationState, modelState);
             findSpecialNamedEntitities(textState, recommendationState);
         }
@@ -46,14 +46,13 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
      * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a phrase (in
      * text-extraction)
      */
-    private void createRecommendationInstancesFromPhraseNounMappings(ITextState textState, IRecommendationState recommendationState, IModelState modelState) {
-        for (var nounMapping : textState.getNounMappings()) {
-            if (nounMapping.isPhrase()) {
-                var typeMappings = getRelatedTypeMappings(nounMapping, textState);
-                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
-            }
-        }
-    }
+    // TODO: Change to terms
+    /*
+     * private void createRecommendationInstancesFromPhraseNounMappings(ITextState textState, IRecommendationState
+     * recommendationState, IModelState modelState) { for (var nounMapping : textState.getNounMappings()) { if
+     * (nounMapping.isPhrase()) { var typeMappings = getRelatedTypeMappings(nounMapping, textState);
+     * addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState); } } }
+     */
 
     /**
      * Find additional phrases and create RecommendedInstances for them. Additional phrases are when a word in a

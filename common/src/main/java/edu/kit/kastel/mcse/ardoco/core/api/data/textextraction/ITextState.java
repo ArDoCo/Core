@@ -34,8 +34,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability);
 
-    void addPhraseMapping(ImmutableList<IPhrase> phrases, ImmutableList<INounMapping> nounMappings, IClaimant claimant, double probability);
-
     /**
      * * Adds a name mapping to the state.
      *
@@ -54,8 +52,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param word noun mapping to remove
      */
     void removeNounMapping(INounMapping word);
-
-    void removePhraseMapping(IPhraseMapping phraseMapping);
 
     /**
      * Returns all mappings containing the given word.
@@ -103,8 +99,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return true if the word is contained by mappings.
      */
     boolean isWordContainedByNounMappings(IWord word);
-
-    boolean isNounMappingContainedByPhrase(INounMapping nounMapping);
 
     /**
      * Gets the all noun mappings.

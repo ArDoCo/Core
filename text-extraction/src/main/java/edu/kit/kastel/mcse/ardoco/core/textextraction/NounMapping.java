@@ -3,11 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -18,6 +14,7 @@ import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
@@ -47,12 +44,10 @@ public class NounMapping implements INounMapping {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
 
-    private boolean hasPhrase = false;
-
     /**
      * Instantiates a new noun mapping.
      */
-    private NounMapping(ImmutableList<IWord> words, Map<MappingKind, Confidence> distribution, List<IWord> referenceWords, ImmutableList<String> surfaceForms) {
+    public NounMapping(ImmutableList<IWord> words, Map<MappingKind, Confidence> distribution, List<IWord> referenceWords, ImmutableList<String> surfaceForms) {
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
@@ -86,13 +81,6 @@ public class NounMapping implements INounMapping {
         this.distribution = new EnumMap<>(distribution);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-    }
-
-    public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IClaimant claimant, double probability) {
-        var occurences = phrase.collect(IWord::getText);
-        var nm = new NounMapping(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurences);
-        nm.hasPhrase = true;
-        return nm;
     }
 
     /**
@@ -176,6 +164,16 @@ public class NounMapping implements INounMapping {
         return positions.toSortedList().toImmutable();
     }
 
+    @Override
+    public ImmutableList<IPhrase> getPhrases() {
+
+        MutableList<IPhrase> phrases = Lists.mutable.empty();
+        for (IWord word : this.words) {
+            phrases.add(word.getPhrase());
+        }
+        return phrases.toImmutable();
+    }
+
     /**
      * Adds occurrences to the mapping
      *
@@ -206,7 +204,6 @@ public class NounMapping implements INounMapping {
     public INounMapping createCopy() {
         var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(),
                 surfaceForms.toImmutable());
-        nm.hasPhrase = hasPhrase;
         return nm;
     }
 
@@ -273,6 +270,11 @@ public class NounMapping implements INounMapping {
         return coreferences.toImmutable();
     }
 
+    @Override
+    public AggregationFunctions getAggregationFunction() {
+        return this.DEFAULT_AGGREGATOR;
+    }
+
     /**
      * @param coreferences the coreferences to add
      */
@@ -296,7 +298,7 @@ public class NounMapping implements INounMapping {
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
-                ", probability=" + getProbability() + ", hasPhrase=" + hasPhrase + "]";
+                ", probability=" + getProbability() + "]";
     }
 
     @Override
@@ -316,47 +318,9 @@ public class NounMapping implements INounMapping {
         return Objects.equals(getReference(), other.getReference());
     }
 
-    /**
-     * @return if this is a phrase or contains a phrase
-     */
-    @Override
-    public boolean isPhrase() {
-        return hasPhrase;
-    }
-
-    @Override
-    public void setAsPhrase(boolean hasPhrase) {
-        this.hasPhrase = hasPhrase;
-    }
-
     @Override
     public double getProbabilityForKind(MappingKind mappingKind) {
         return distribution.get(mappingKind).getConfidence();
-    }
-
-    @Override
-    public INounMapping merge(INounMapping other) {
-        if (other == null) {
-            return new NounMapping(this);
-        }
-        var newWords = Lists.mutable.ofAll(words);
-        newWords.addAll(other.getWords().castToCollection());
-        Map<MappingKind, Confidence> newDistribution = new EnumMap<>(MappingKind.class);
-
-        for (MappingKind mk : MappingKind.values()) {
-            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), DEFAULT_AGGREGATOR, AggregationFunctions.MAX));
-        }
-
-        var newSurfaceForms = Lists.mutable.ofAll(surfaceForms);
-        newSurfaceForms.addAll(other.getSurfaceForms().castToCollection());
-
-        var usedReference = referenceWords.castToList();
-
-        INounMapping newNounMapping = new NounMapping(newWords.toImmutable(), newDistribution, usedReference, newSurfaceForms.toImmutable());
-        newNounMapping.addCoreferences(coreferences);
-        newNounMapping.addCoreferences(other.getCoreferences().castToCollection());
-
-        return newNounMapping;
     }
 
 }
