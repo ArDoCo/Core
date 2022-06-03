@@ -15,6 +15,8 @@ public interface IWord {
      */
     int getSentenceNo();
 
+    IPhrase getPhrase();
+
     /**
      * Return the sentence the word is contained in
      *

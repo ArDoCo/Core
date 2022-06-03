@@ -6,9 +6,11 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 
 /**
@@ -87,6 +89,8 @@ public interface INounMapping extends ICopyable<INounMapping> {
      */
     ImmutableList<Integer> getMappingSentenceNo();
 
+    ImmutableList<IPhrase> getPhrases();
+
     /**
      * Adds occurrences to the mapping.
      *
@@ -123,14 +127,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
      */
     ImmutableList<IWord> getCoreferences();
 
-    /**
-     * Creates a new INounMapping that resutls when merging the data from the INounMapping with a given other
-     * INounMapping
-     *
-     * @param other the other INounMapping
-     * @return new INounMapping that is a merge of the given INounMappings
-     */
-    INounMapping merge(INounMapping other);
+    AggregationFunctions getAggregationFunction();
 
     /**
      * Adds the kind with probability.
@@ -140,12 +137,5 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * @param probability the probability
      */
     void addKindWithProbability(MappingKind kind, IClaimant claimant, double probability);
-
-    /**
-     * @return if this is a phrase or contains a phrase
-     */
-    boolean isPhrase();
-
-    void setAsPhrase(boolean hasPhrase);
 
 }

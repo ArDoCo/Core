@@ -11,11 +11,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 
 public interface IPhraseMapping {
 
+    void addNounMapping(INounMapping nounMapping, IPhrase phrase);
+
     ImmutableList<INounMapping> getNounMappings();
 
     ImmutableList<IPhrase> getPhrases();
 
-    void addPhase(IPhrase phrase);
+    void addPhrase(IPhrase phrase);
+
+    void addPhrases(ImmutableList<IPhrase> phrases);
 
     double getProbability();
 
@@ -26,4 +30,6 @@ public interface IPhraseMapping {
     IPhraseMapping merge(IPhraseMapping phraseMapping);
 
     Confidence getConfidence();
+
+    void removeNounMapping(INounMapping nounMapping);
 }

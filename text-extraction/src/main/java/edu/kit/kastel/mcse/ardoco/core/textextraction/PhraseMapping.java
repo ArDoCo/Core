@@ -48,7 +48,29 @@ public class PhraseMapping implements IPhraseMapping {
             if (phrases.get(0).getPhraseType() != phrases.get(i).getPhraseType()) {
                 throw new IllegalArgumentException("All phrases in a phrase mapping should have the same phrase type!");
             }
-            this.addPhase(phrases.get(i));
+            this.addPhrase(phrases.get(i));
+        }
+    }
+
+    @Override
+    public void addNounMapping(INounMapping nounMapping, IPhrase phrase) {
+
+        if (this.getPhraseType() != phrase.getPhraseType()) {
+            throw new IllegalArgumentException("The phrase type inside a phrase mapping has to be the same!");
+        }
+
+        if (!this.containedNounMappings.contains(nounMapping)) {
+            this.containedNounMappings.add(nounMapping);
+        }
+        this.addPhrase(phrase);
+    }
+
+    @Override
+    public void addPhrases(ImmutableList<IPhrase> phrases) {
+        for (IPhrase phrase : phrases) {
+            if (!this.phrases.contains(phrase)) {
+                this.phrases.add(phrase);
+            }
         }
     }
 
@@ -63,7 +85,8 @@ public class PhraseMapping implements IPhraseMapping {
     }
 
     @Override
-    public void addPhase(IPhrase phrase) {
+    public void addPhrase(IPhrase phrase) {
+        assert phrase.getPhraseType().equals(this.getPhraseType()) : "added a different phrase type for mapping";
         phrases.add(phrase);
     }
 
@@ -75,6 +98,11 @@ public class PhraseMapping implements IPhraseMapping {
     @Override
     public Confidence getConfidence() {
         return this.confidence;
+    }
+
+    @Override
+    public void removeNounMapping(INounMapping nounMapping) {
+        this.containedNounMappings.remove(nounMapping);
     }
 
     @Override
@@ -103,6 +131,10 @@ public class PhraseMapping implements IPhraseMapping {
     @Override
     public IPhraseMapping merge(IPhraseMapping phraseMapping) {
 
+        if (phraseMapping.getPhraseType() != this.getPhraseType()) {
+            throw new IllegalArgumentException("The phrase types inside a phrase mapping should be the same!");
+        }
+
         this.phrases.addAllIterable(phraseMapping.getPhrases().select(p -> !this.getPhrases().contains(p)));
         this.containedNounMappings.addAllIterable(phraseMapping.getNounMappings().select(n -> !this.getNounMappings().contains(n)));
 
@@ -110,4 +142,21 @@ public class PhraseMapping implements IPhraseMapping {
         return this;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPhraseType(), getNounMappings(), getPhraseVector());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        var other = (IPhraseMapping) obj;
+        return Objects.equals(getPhraseType(), other.getPhraseType()) && Objects.equals(getNounMappings(), other.getNounMappings())
+                && Objects.equals(getPhraseVector(), other.getPhraseVector());
+    }
 }

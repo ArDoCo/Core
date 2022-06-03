@@ -362,12 +362,21 @@ public final class SimilarityUtils {
     }
 
     public static boolean arePhraseMappingsSimilar(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY, double maxCosineDistance) {
-        if (cosineSimilarity(phraseMappingX.getPhraseVector(), (phraseMappingY).getPhraseVector()) < maxCosineDistance) {
+        if (!phraseMappingX.getPhraseType().equals(phraseMappingY.getPhraseType())) {
+            return false;
+        }
+
+        // TODO: Maybe additional case where only words are considered that are not noun mappings?
+        if (cosineSimilarity(phraseMappingX.getPhraseVector(), (phraseMappingY).getPhraseVector()) > maxCosineDistance) {
+            // TODO: PHI : IS this correct?
+            // phraseMappingX contains all name mappings of phraseMappingY
             if (containsNounMappingsOfMappingKindOfPhraseMapping(phraseMappingX, phraseMappingY, MappingKind.NAME)) {
                 return true;
             }
         }
         if (coversOtherPhraseVector(phraseMappingX, phraseMappingY) || coversOtherPhraseVector(phraseMappingY, phraseMappingX)) {
+            // TODO: PHI : REWORK
+            // TODO: NounMappings rausnehmen?
             if (containsAllNounMappingsOfPhraseMapping(phraseMappingX, phraseMappingY)
                     && containsAllNounMappingsOfPhraseMapping(phraseMappingY, phraseMappingX)) {
                 return true;

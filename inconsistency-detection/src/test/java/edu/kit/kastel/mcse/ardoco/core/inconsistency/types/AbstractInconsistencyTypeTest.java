@@ -10,10 +10,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 
 /**
  * @author Jan Keim
@@ -86,6 +83,11 @@ public abstract class AbstractInconsistencyTypeTest {
         @Override
         public int getSentenceNo() {
             return 0;
+        }
+
+        @Override
+        public IPhrase getPhrase() {
+            return null;
         }
 
         @Override
