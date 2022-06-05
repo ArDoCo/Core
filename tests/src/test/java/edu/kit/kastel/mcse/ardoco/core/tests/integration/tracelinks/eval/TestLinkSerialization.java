@@ -13,7 +13,6 @@ public class TestLinkSerialization implements JsonSerializer<TestLink>, JsonDese
         var data = testLinkStr.split("⇔");
 
         return new TestLink(data[0], Integer.parseInt(data[1]));
-
     }
 
     @Override
