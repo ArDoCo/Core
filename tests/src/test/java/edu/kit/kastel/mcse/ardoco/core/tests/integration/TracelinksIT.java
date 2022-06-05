@@ -25,7 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -33,8 +32,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.comparisons.TLComparisonDir;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.stats.ComparisonStatsAnalysis;
 
 class TracelinksIT {
     private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
@@ -43,7 +40,6 @@ class TracelinksIT {
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<EvalProjectResult> RESULTS = new ArrayList<>();
     private static final Map<Project, DataStructure> DATA_MAP = new HashMap<>();
-    private static final Map<Project, ComparisonStatsAnalysis> COMP_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
     private File inputText;
@@ -70,7 +66,6 @@ class TracelinksIT {
             TLSummaryFile.save(evalDir.resolve("summary.md"), evalResult, DATA_MAP);
             TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
             TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-            TLComparisonDir.save(evalDir.resolve("comparisons"), COMP_MAP);
             TLLogFile.append(evalDir.resolve("log.md"), evalResult);
 
             Files.writeString(evalDir.resolve("result.json"), evalResult.toJsonString(), CREATE, TRUNCATE_EXISTING);
@@ -78,7 +73,6 @@ class TracelinksIT {
 
         RESULTS.clear();
         DATA_MAP.clear();
-        COMP_MAP.clear();
     }
 
     @AfterEach
@@ -153,8 +147,6 @@ class TracelinksIT {
                 try {
                     RESULTS.add(new EvalProjectResult(project, data));
                     DATA_MAP.put(project, data);
-                    COMP_MAP.put(project, new ComparisonStatsAnalysis(ComparisonStats.getComparisons()));
-                    ComparisonStats.reset();
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn(e.getMessage(), e.getCause());
