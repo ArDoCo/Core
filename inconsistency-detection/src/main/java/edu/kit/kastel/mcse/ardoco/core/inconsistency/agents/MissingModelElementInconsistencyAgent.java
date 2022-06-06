@@ -35,7 +35,6 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         for (var model : data.getModelIds()) {
             var inconsistencyState = data.getInconsistencyState(model);
             var connectionState = data.getConnectionState(model);
-            var recommendationState = data.getRecommendationState(data.getModelState(model).getMetamodel());
 
             var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
 

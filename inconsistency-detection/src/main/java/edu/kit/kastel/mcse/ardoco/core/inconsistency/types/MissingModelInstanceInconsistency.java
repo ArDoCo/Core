@@ -18,15 +18,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 public record MissingModelInstanceInconsistency(IRecommendedInstance textualInstance) implements IInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
 
-    private static final String REASON_FORMAT_STRING = "Text indicates (confidence: %.2f) that \"%s\" should be contained in the model(s) but could not be found. Sentences: %s";
-
     @Override
     public String getReason() {
         var name = textualInstance.getName();
         var occurrences = getOccurrencesString();
 
         var confidence = textualInstance.getProbability();
-        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, occurrences);
+        return String.format(Locale.US,
+                "Text indicates (confidence: %.2f) that \"%s\" should be contained in the model(s) but could not be found. Sentences: %s", confidence, name,
+                occurrences);
     }
 
     private String getOccurrencesString() {
