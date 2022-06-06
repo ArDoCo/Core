@@ -33,7 +33,7 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
 
             IInconsistencyState inconsistencyState = data.getInconsistencyState(model);
             for (var sentence : sentencesWithoutTraceLinks) {
-                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence, 0.69));
+                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence + 1, 0.69));
             }
         }
 
