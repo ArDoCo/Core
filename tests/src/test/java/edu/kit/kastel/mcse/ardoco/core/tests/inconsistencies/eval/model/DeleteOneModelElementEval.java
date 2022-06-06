@@ -6,11 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.impl.block.factory.Predicates;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
@@ -31,6 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model.DeleteOne
 public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
     public DeleteOneModelElementEval() {
+        // empty
     }
 
     @Override
@@ -83,12 +81,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         if (r.getKey() == null) {
             // For original, just put put the number of false positives (assuming original
             // has no missing instances)
-            var inconsistencySentences = r.getValue()
-                    .getInconsistencyState(modelId)
-                    .getInconsistencies()
-                    .select(selectMissingModelInconsistencies())
-                    .flatCollect(this::foundSentences)
-                    .toSet();
+            var inconsistencySentences = r.getValue().getInconsistencyState(modelId).getInconsistencies().flatCollect(this::foundSentences).toSet();
             var outputString = "ORIGINAL: Number of False Positives (assuming consistency for original): " + inconsistencySentences.size();
             os.println(outputString);
             return;
@@ -100,7 +93,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var sentencesAnnotatedWithElement = gs.getSentencesWithElement(deletedElement).toSortedSet().toImmutable();
 
         var newInconsistencies = r.getValue().getInconsistencyState(modelId).getInconsistencies();
-        var newMissingModelInstanceInconsistencies = newInconsistencies.select(selectMissingModelInconsistencies()).flatCollect(this::foundSentences).toSet();
+        var newMissingModelInstanceInconsistencies = newInconsistencies.flatCollect(this::foundSentences).toSet();
 
         os.println("Stats: New: " + newInconsistencies.size() + ", New MissingModelInstanceInconsistencies: " + newMissingModelInstanceInconsistencies.size());
 
@@ -119,19 +112,11 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         os.println("-----------------------------------");
     }
 
-    private Predicate<IInconsistency> selectMissingModelInconsistencies() {
-        return Predicates.or(SimpleMissingModelInstanceInconsistency.class::isInstance, MissingModelInstanceInconsistency.class::isInstance);
-    }
-
     private ImmutableList<Integer> foundSentences(IInconsistency inconsistency) {
         if (inconsistency instanceof SimpleMissingModelInstanceInconsistency simpleMissingModelInstanceInconsistency) {
             return Lists.immutable.of(simpleMissingModelInstanceInconsistency.sentenceNo());
         } else if (inconsistency instanceof MissingModelInstanceInconsistency missingModelInstanceInconsistency) {
-            MutableList<Integer> sentences = Lists.mutable.empty();
-            for (var nouns : missingModelInstanceInconsistency.getTextualInstance().getNameMappings()) {
-                sentences.addAll(nouns.getMappingSentenceNo().castToCollection());
-            }
-            return sentences.distinct().toImmutable();
+            return Lists.immutable.of(missingModelInstanceInconsistency.sentence());
         }
         return Lists.immutable.empty();
     }
