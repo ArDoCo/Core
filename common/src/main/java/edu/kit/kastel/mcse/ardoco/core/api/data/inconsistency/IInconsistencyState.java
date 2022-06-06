@@ -11,6 +11,8 @@ import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 
 /**
+ * Inconsistency state holding data and information about inconsistency.
+ * 
  * @author Jan Keim
  */
 public interface IInconsistencyState extends ICopyable<IInconsistencyState>, IConfigurable {
@@ -59,11 +61,15 @@ public interface IInconsistencyState extends ICopyable<IInconsistencyState>, ICo
     boolean removeRecommendedInstance(IRecommendedInstance recommendedInstance);
 
     /**
+     * Sets the recommended Instances
+     * 
      * @param recommendedInstances the recommendedInstances to set
      */
     void setRecommendedInstances(List<IRecommendedInstance> recommendedInstances);
 
     /**
+     * Returns the recommended Instances
+     * 
      * @return the recommendedInstances
      */
     MutableList<IRecommendedInstance> getRecommendedInstances();

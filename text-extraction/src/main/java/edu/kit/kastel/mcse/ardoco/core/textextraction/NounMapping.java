@@ -309,7 +309,7 @@ public class NounMapping implements INounMapping {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof NounMapping)) {
             return false;
         }
         var other = (INounMapping) obj;

@@ -39,26 +39,26 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
 
     private void findMissingModelElementInconsistencies(InconsistencyAgentData data, String model) {
         var inconsistencyState = data.getInconsistencyState(model);
-            var connectionState = data.getConnectionState(model);
+        var connectionState = data.getConnectionState(model);
 
-            var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
+        var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
 
-            var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
-            var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
+        var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
+        var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
 
-            // find recommendedInstances with no trace link (also not sharing words with linked RIs)
-            candidateElements.removeAllIterable(linkedRecommendedInstances);
-            filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
+        // find recommendedInstances with no trace link (also not sharing words with linked RIs)
+        candidateElements.removeAllIterable(linkedRecommendedInstances);
+        filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
 
-            for (var candidate : candidateElements) {
-                addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
-            }
+        for (var candidate : candidateElements) {
+            addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
+        }
 
-            // methods for other kinds of support
-            // NONE
+        // methods for other kinds of support
+        // NONE
 
-            // finally create inconsistencies
-            createInconsistencies(candidates, inconsistencyState);
+        // finally create inconsistencies
+        createInconsistencies(candidates, inconsistencyState);
     }
 
     /**
