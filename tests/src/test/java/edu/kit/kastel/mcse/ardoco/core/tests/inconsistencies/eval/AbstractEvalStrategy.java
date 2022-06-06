@@ -20,7 +20,7 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
         super();
     }
 
-    protected static DataStructure runRecommendationConnectionInconsistency(DataStructure data) {
+    protected DataStructure runRecommendationConnectionInconsistency(DataStructure data) {
         Map<String, String> config = new HashMap<>();
         // Model Extractor has been executed & textExtractor does not depend on model changes
         runRecommendationGenerator(data, config);
@@ -29,30 +29,30 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
         return data;
     }
 
-    protected static IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> configs) {
+    protected IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> configs) {
         ModelProvider modelExtractor = new ModelProvider(modelConnector);
         return modelExtractor.execute(configs);
     }
 
-    protected static DataStructure runTextExtractor(DataStructure data, Map<String, String> configs) {
+    protected DataStructure runTextExtractor(DataStructure data, Map<String, String> configs) {
         IExecutionStage textModule = new TextExtraction();
         textModule.execute(data, configs);
         return data;
     }
 
-    private static DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> configs) {
+    protected DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> configs) {
         IExecutionStage recommendationModule = new RecommendationGenerator();
         recommendationModule.execute(data, configs);
         return data;
     }
 
-    private static DataStructure runConnectionGenerator(DataStructure data, Map<String, String> configs) {
+    protected DataStructure runConnectionGenerator(DataStructure data, Map<String, String> configs) {
         IExecutionStage connectionGenerator = new ConnectionGenerator();
         connectionGenerator.execute(data, configs);
         return data;
     }
 
-    private static DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
+    protected DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
         IExecutionStage inconsistencyChecker = new InconsistencyChecker();
         inconsistencyChecker.execute(data, configs);
         return data;
