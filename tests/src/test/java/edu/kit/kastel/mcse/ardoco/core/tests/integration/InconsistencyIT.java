@@ -30,6 +30,11 @@ class InconsistencyIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
 
+    /**
+     * Tests the inconsistency detection on all {@link Project projects}.
+     * 
+     * @param project Project that gets inserted automatically with the enum {@link Project}.
+     */
     @DisplayName("Evaluate Inconsistency Analyses")
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(Project.class)
@@ -42,7 +47,13 @@ class InconsistencyIT {
         checkResults(results, expectedResults);
     }
 
-    @EnabledIfEnvironmentVariable(named = "testBaseline", matches = "true")
+    /**
+     * Tests the baseline approach that reports an inconsistency for each sentence that is not traced to a model
+     * element. This test is enabled by providing the environment variable "testBaseline" with any value.
+     * 
+     * @param project Project that gets inserted automatically with the enum {@link Project}.
+     */
+    @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluate Inconsistency Analyses Baseline")
     @ParameterizedTest(name = "Evaluating Baseline For {0}")
     @EnumSource(Project.class)
