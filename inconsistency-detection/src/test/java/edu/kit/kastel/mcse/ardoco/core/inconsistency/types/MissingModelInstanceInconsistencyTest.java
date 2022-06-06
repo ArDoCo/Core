@@ -14,6 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendedInstan
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 
 /**
+ * This class tests the record MissingModelInconsistency.
+ * 
  * @author Jan Keim
  */
 public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements IClaimant {
@@ -23,8 +25,8 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
     @BeforeEach
     void beforeEach() {
         ImmutableList<IWord> words = Lists.immutable.of(new DummyWord());
-        ImmutableList<String> occurences = Lists.immutable.of("occurence");
-        var nounMapping = new NounMapping(words, MappingKind.NAME, this, 1.0, words.toList(), occurences);
+        ImmutableList<String> occurrences = Lists.immutable.of("occurrence");
+        var nounMapping = new NounMapping(words, MappingKind.NAME, this, 1.0, words.toList(), occurrences);
         var recommendedInstance = new RecommendedInstance("name", "type", this, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.empty());
         missingModelInstanceInconsistency = new MissingModelInstanceInconsistency(recommendedInstance);
     }
