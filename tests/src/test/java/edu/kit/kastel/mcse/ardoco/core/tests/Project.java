@@ -23,14 +23,14 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.0, .0, .145)//
+            new EvaluationResults(.0, .0, .164)//
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.0, .0, .122)//
+            new EvaluationResults(.0, .0, .189)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
@@ -43,7 +43,7 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.0, .0, .115));
+            new EvaluationResults(.0, .0, .125));
 
     private final String model;
     private final String textFile;
