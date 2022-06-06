@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.RetrieveVectorException;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorBasedWordSimMeasure;
 
@@ -55,8 +54,6 @@ public class FastTextMeasure extends VectorBasedWordSimMeasure {
         } catch (RetrieveVectorException e) {
             LOGGER.error("failed to compare fastText vectors: " + ctx, e);
         }
-
-        ComparisonStats.recordScore(similarity);
 
         return similarity >= this.similarityThreshold;
     }

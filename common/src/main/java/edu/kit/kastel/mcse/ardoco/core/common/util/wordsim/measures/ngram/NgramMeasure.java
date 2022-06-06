@@ -6,7 +6,6 @@ import java.util.Objects;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 
 /**
  * This word similarity measure uses the N-gram word distance function defined by Kondrak 2005.
@@ -74,8 +73,6 @@ public class NgramMeasure implements WordSimMeasure {
         double normalizedDistance = distance / Math.max(ctx.firstTerm().length(), ctx.secondTerm().length());
 
         double similarity = 1.0 - normalizedDistance;
-
-        ComparisonStats.recordScore(similarity);
 
         return similarity >= this.similarityThreshold;
     }

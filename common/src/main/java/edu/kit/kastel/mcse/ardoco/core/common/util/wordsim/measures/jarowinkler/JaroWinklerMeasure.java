@@ -6,7 +6,6 @@ import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 
 /**
  * This word similarity measure uses the jaro winkler algorithm to calculate similarity.
@@ -25,7 +24,7 @@ public class JaroWinklerMeasure implements WordSimMeasure {
     }
 
     /**
-     * Constructs an new {@link JaroWinklerMeasure}.
+     * Constructs a new {@link JaroWinklerMeasure}.
      * 
      * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
      * @throws IllegalArgumentException if the given threshold is not between 0 and 1
@@ -41,9 +40,6 @@ public class JaroWinklerMeasure implements WordSimMeasure {
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
         double similarity = this.jaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm());
-
-        ComparisonStats.recordScore(similarity);
-
         return similarity >= this.similarityThreshold;
     }
 
