@@ -33,28 +33,32 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
     @Override
     public void execute(InconsistencyAgentData data) {
         for (var model : data.getModelIds()) {
-            var inconsistencyState = data.getInconsistencyState(model);
-            var connectionState = data.getConnectionState(model);
-
-            var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
-
-            var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
-            var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
-
-            // find recommendedInstances with no trace link (also not sharing words with linked RIs)
-            candidateElements.removeAllIterable(linkedRecommendedInstances);
-            filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
-
-            for (var candidate : candidateElements) {
-                addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
-            }
-
-            // methods for other kinds of support
-            // NONE
-
-            // finally create inconsistencies
-            createInconsistencies(candidates, inconsistencyState);
+            findMissingModelElementInconsistencies(data, model);
         }
+    }
+
+    private void findMissingModelElementInconsistencies(InconsistencyAgentData data, String model) {
+        var inconsistencyState = data.getInconsistencyState(model);
+        var connectionState = data.getConnectionState(model);
+
+        var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
+
+        var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
+        var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
+
+        // find recommendedInstances with no trace link (also not sharing words with linked RIs)
+        candidateElements.removeAllIterable(linkedRecommendedInstances);
+        filterCandidatesCoveredByRecommendedInstance(candidateElements, linkedRecommendedInstances);
+
+        for (var candidate : candidateElements) {
+            addToCandidates(candidates, candidate, MissingElementSupport.ELEMENT_WITH_NO_TRACE_LINK);
+        }
+
+        // methods for other kinds of support
+        // NONE
+
+        // finally create inconsistencies
+        createInconsistencies(candidates, inconsistencyState);
     }
 
     /**
@@ -103,7 +107,13 @@ public class MissingModelElementInconsistencyAgent extends InconsistencyAgent {
         for (var candidate : candidates) {
             var support = candidate.getAmountOfSupport();
             if (support >= minSupport) {
-                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(candidate.getRecommendedInstance()));
+                IRecommendedInstance recommendedInstance = candidate.getRecommendedInstance();
+                double confidence = recommendedInstance.getProbability();
+                for (var word : recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords).distinct()) {
+                    var sentenceNo = word.getSentenceNo() + 1;
+                    var wordText = word.getText();
+                    inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
+                }
             }
         }
     }
