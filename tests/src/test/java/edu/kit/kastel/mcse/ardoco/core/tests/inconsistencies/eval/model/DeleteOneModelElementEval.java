@@ -22,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.baseline.SimpleMissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
@@ -185,9 +184,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     }
 
     private ImmutableList<Integer> foundSentences(IInconsistency inconsistency) {
-        if (inconsistency instanceof SimpleMissingModelInstanceInconsistency simpleMissingModelInstanceInconsistency) {
-            return Lists.immutable.of(simpleMissingModelInstanceInconsistency.sentenceNo());
-        } else if (inconsistency instanceof MissingModelInstanceInconsistency missingModelInstanceInconsistency) {
+        if (inconsistency instanceof MissingModelInstanceInconsistency missingModelInstanceInconsistency) {
             return Lists.immutable.of(missingModelInstanceInconsistency.sentence());
         }
         return Lists.immutable.empty();

@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStat
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
 public class InconsistencyBaseline extends AbstractExecutionStage {
 
@@ -32,7 +33,7 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
 
             IInconsistencyState inconsistencyState = data.getInconsistencyState(model);
             for (var sentence : sentencesWithoutTraceLinks) {
-                inconsistencyState.addInconsistency(new SimpleMissingModelInstanceInconsistency(sentence));
+                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence, 0.69));
             }
         }
 
