@@ -7,6 +7,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
 
 /**
+ * This class tests the record MissingModelInconsistency.
+ * 
  * @author Jan Keim
  */
 public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements IClaimant {
