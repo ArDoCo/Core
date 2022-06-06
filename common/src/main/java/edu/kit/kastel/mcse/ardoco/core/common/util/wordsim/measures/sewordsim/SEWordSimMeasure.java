@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.deletelater.ComparisonStats;
 
 /**
  * This word similarity measures utilizes the SEWordSim database from Tian et al. 2014
@@ -61,8 +60,6 @@ public class SEWordSimMeasure implements WordSimMeasure {
         if (Double.isNaN(similarity)) {
             return false; // words are probably missing from the database
         }
-
-        ComparisonStats.recordScore(similarity);
 
         return similarity >= this.similarityThreshold;
     }
