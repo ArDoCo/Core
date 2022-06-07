@@ -6,6 +6,9 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model.DeleteOne
 
 public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     private static final Logger logger = LoggerFactory.getLogger(DeleteOneModelElementEval.class);
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final String OUTPUT = "src/test/resources/testout";
 
     private static final boolean detailedDebug = true;
@@ -42,7 +46,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
     @Override
     public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
-        IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
+        var strategy = new DeleteOneElementEach(originalModel);
         var result = process(originalModel, originalText, strategy);
 
         if (detailedDebug) {
@@ -65,21 +69,24 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
     private void writeOutResultInfo(Project project, Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> result) {
         var evalDir = Path.of(OUTPUT).resolve("id_eval");
-        Path targetFile = null;
+        Path targetFile;
         try {
             Files.createDirectories(evalDir);
-            var filename = "results_" + project.name().toLowerCase() + ".md";
+            var filename = "results.md";
             targetFile = evalDir.resolve(filename);
-            Files.writeString(targetFile, "", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            if (project == Project.MEDIASTORE) {
+                Files.writeString(targetFile, "# Inconsistency Detection\n", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            }
         } catch (IOException e) {
             logger.warn(e.getMessage(), e.getCause());
             return;
         }
 
-        var outputBuilder = new StringBuilder("# Inconsistency Detection\n");
-        outputBuilder.append("## ");
+        var outputBuilder = new StringBuilder(DATE_FORMATTER.format(LocalDateTime.now()));
+        outputBuilder.append("\n## ");
         outputBuilder.append(project.name());
         outputBuilder.append("\n");
+        // TODO What info is helpful to log to file?
         for (var resultEntry : result.entrySet()) {
             var modifiedElement = resultEntry.getKey();
             if (modifiedElement != null) {
@@ -88,27 +95,22 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
             }
             var data = resultEntry.getValue();
             for (var modelId : data.getModelIds()) {
-                outputBuilder.append("### Model-ID: ");
-                outputBuilder.append(modelId);
-                outputBuilder.append("\n\n");
+                outputBuilder.append("### Model-ID: ").append(modelId).append("\n");
 
                 var text = data.getText();
                 var sentences = text.getSentences();
                 ImmutableList<IInconsistency> inconsistencies = data.getInconsistencyState(modelId).getInconsistencies();
                 var mmInconsistencies = inconsistencies.select(MissingModelInstanceInconsistency.class::isInstance)
                         .collect(MissingModelInstanceInconsistency.class::cast)
-                        .toSortedList((i1, i2) -> Integer.compare(i1.sentence(), i2.sentence()));
+                        .toSortedList(Comparator.comparingInt(MissingModelInstanceInconsistency::sentence));
                 for (var mmi : mmInconsistencies) {
                     var sentenceNo = mmi.sentence();
                     var sentenceText = sentences.get(sentenceNo - 1).getText();
                     var name = mmi.name();
 
-                    outputBuilder.append("s");
-                    outputBuilder.append(String.format("%02d", sentenceNo));
-                    outputBuilder.append("; name=\"" + name + "\"");
-                    outputBuilder.append("; sentence=\"" + sentenceText + "\"");
-                    outputBuilder.append("\n");
-
+                    outputBuilder.append("s").append(String.format("%02d", sentenceNo));
+                    outputBuilder.append("; name=\"").append(name).append("\"");
+                    outputBuilder.append("; sentence=\"").append(sentenceText).append("\"").append("\n");
                 }
                 outputBuilder.append("\n");
             }
@@ -150,8 +152,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         os.println("-----------------------------------");
 
         if (r.getKey() == null) {
-            // For original, just put put the number of false positives (assuming original
-            // has no missing instances)
+            // For original, just put the number of false positives (assuming original has no missing instances)
             var inconsistencySentences = r.getValue().getInconsistencyState(modelId).getInconsistencies().flatCollect(this::foundSentences).toSet();
             var outputString = "ORIGINAL: Number of False Positives (assuming consistency for original): " + inconsistencySentences.size();
             os.println(outputString);
