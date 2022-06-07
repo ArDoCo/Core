@@ -1,14 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model;
 
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
@@ -24,6 +16,14 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1Evaluator;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model.DeleteOneElementEach;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import java.io.File;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 
@@ -34,7 +34,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     @Override
     public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
-        var result = process(originalModel, originalText, strategy);
+        var result = process(originalModel, originalText, strategy, project.getDiagramDir());
 
         var evaluator = new PRF1Evaluator();
 
@@ -51,13 +51,16 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     }
 
     private Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> process(IModelConnector pcmModel, IText annotatedText,
-            IModificationStrategy strategy) {
+            IModificationStrategy strategy, File diagramDir) {
         var configurations = new HashMap<String, String>();
         Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> results = new HashMap<>();
 
         var originalData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), runModelExtractor(pcmModel, configurations)));
+        originalData.setDiagramDirectory(diagramDir == null ? null : diagramDir.getAbsolutePath());
 
         runTextExtractor(originalData, configurations);
+        runDiagramDetection(originalData, configurations);
+
         var original = runRecommendationConnectionInconsistency(originalData);
         results.put(null, original);
 

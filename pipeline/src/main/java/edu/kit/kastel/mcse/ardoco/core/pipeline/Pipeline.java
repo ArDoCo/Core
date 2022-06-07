@@ -1,8 +1,24 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
+import edu.kit.kastel.mcse.ardoco.core.diagramdetection.DiagramDetection;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,24 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
 
 /**
  * The Pipeline defines the execution of the agents.
@@ -53,7 +53,7 @@ public final class Pipeline {
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
     public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
-        return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
+        return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null, null);
     }
 
     /**
@@ -65,10 +65,11 @@ public final class Pipeline {
      * @param inputCodeModel         File of the input model (Java Code JSON)
      * @param additionalConfigsFile  File with the additional or overwriting config parameters that should be used
      * @param outputDir              File that represents the output directory where the results should be written to
+     * @param diagramDirectory       File that contains diagrams that shall be interpreted (null to ignore)
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
     public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
-            File outputDir) throws IOException {
+            File outputDir, File diagramDirectory) throws IOException {
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
@@ -96,6 +97,8 @@ public final class Pipeline {
             models.put(javaModel.getModelId(), codeModelState);
         }
         var data = new DataStructure(annotatedText, models);
+        if (diagramDirectory != null)
+            data.setDiagramDirectory(diagramDirectory.getAbsolutePath());
 
         if (outputDir != null) {
             for (String modelId : data.getModelIds()) {
@@ -105,6 +108,12 @@ public final class Pipeline {
             }
         }
         logTiming(prevStartTime, "Model-Extractor");
+
+        if (diagramDirectory != null) {
+            prevStartTime = System.currentTimeMillis();
+            runDiagramDetection(data, additionalConfigs);
+            logTiming(prevStartTime, "Diagram-Detection");
+        }
 
         prevStartTime = System.currentTimeMillis();
         runTextExtractor(data, additionalConfigs);
@@ -197,6 +206,11 @@ public final class Pipeline {
     private static IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> additionalConfigs) {
         var modelExtractor = new ModelProvider(modelConnector);
         return modelExtractor.execute(additionalConfigs);
+    }
+
+    private static void runDiagramDetection(DataStructure data, Map<String, String> additionalConfigs) {
+        IExecutionStage diagramDetection = new DiagramDetection();
+        diagramDetection.execute(data, additionalConfigs);
     }
 
     private static void runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {

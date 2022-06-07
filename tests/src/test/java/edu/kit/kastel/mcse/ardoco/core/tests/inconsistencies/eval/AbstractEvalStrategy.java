@@ -1,18 +1,19 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
+import edu.kit.kastel.mcse.ardoco.core.diagramdetection.DiagramDetection;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
 
@@ -55,6 +56,12 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
     protected DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
         IExecutionStage inconsistencyChecker = new InconsistencyChecker();
         inconsistencyChecker.execute(data, configs);
+        return data;
+    }
+
+    protected DataStructure runDiagramDetection(DataStructure data, Map<String, String> configs) {
+        IExecutionStage diagramDetection = new DiagramDetection();
+        diagramDetection.execute(data, configs);
         return data;
     }
 }

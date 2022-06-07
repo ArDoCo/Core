@@ -20,6 +20,10 @@
     </dependency>
     <dependency>
       <groupId>io.github.informalin.framework</groupId>
+      <artifactId>docker</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.informalin.framework</groupId>
       <artifactId>configuration</artifactId>
     </dependency>
     <dependency>
@@ -44,6 +48,11 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>text-provider</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

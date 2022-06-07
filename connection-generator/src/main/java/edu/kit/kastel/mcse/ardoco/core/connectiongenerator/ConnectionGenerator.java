@@ -1,12 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
@@ -15,6 +9,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as

@@ -1,14 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
@@ -17,6 +9,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecomme
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
@@ -188,6 +187,11 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public void addProbability(IClaimant claimant, double probability) {
+        this.probability.addAgentConfidence(claimant, probability);
     }
 
     @Override

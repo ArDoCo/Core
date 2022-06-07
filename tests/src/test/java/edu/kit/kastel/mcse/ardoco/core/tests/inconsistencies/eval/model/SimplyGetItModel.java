@@ -1,9 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model;
 
-import java.io.PrintStream;
-import java.util.Map;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
@@ -13,12 +10,19 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalSt
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 
+import java.io.PrintStream;
+import java.util.Map;
+
 public class SimplyGetItModel extends AbstractEvalStrategy {
 
     @Override
     public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
         var originalData = new DataStructure(originalText, Map.of(originalModel.getModelId(), runModelExtractor(originalModel, Map.of())));
+        originalData.setDiagramDirectory(p.getDiagramDir() == null ? null : p.getDiagramDir().getAbsolutePath());
+
         runTextExtractor(originalData, Map.of());
+        runDiagramDetection(originalData, Map.of());
+
         var original = runRecommendationConnectionInconsistency(originalData);
 
         var inconsistencies = original.getInconsistencyState(originalModel.getModelId()).getInconsistencies();

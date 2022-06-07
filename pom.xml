@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>io.github.informalin.framework</groupId>
     <artifactId>parent</artifactId>
-    <version>0.7.1</version>
+    <version>0.8-SNAPSHOT</version>
   </parent>
 
   <groupId>io.github.ardoco.core</groupId>
@@ -14,12 +13,15 @@
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
-    or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
-    or a relation. To do so, we first create trace links and then make use of them and other information to identify
-    inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software Engineering
-    (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT. This work was supported by
-    funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research
-    Labs (46.23.01).</description>
+        or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
+        or a relation. To do so, we first create trace links and then make use of them and other information to identify
+        inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
+        Engineering
+        (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT. This work was supported
+        by
+        funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security
+        Research
+        Labs (46.23.01).</description>
   <licenses>
     <license>
       <name>MIT License</name>
@@ -125,6 +127,11 @@
         <artifactId>inconsistency-detection</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>diagram-detection</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -220,6 +227,7 @@
         <module>connection-generator</module>
         <module>inconsistency-detection</module>
         <module>model-provider</module>
+        <module>diagram-detection</module>
       </modules>
       <build>
         <plugins>
@@ -258,6 +266,7 @@
         <module>model-provider</module>
         <module>tests</module>
         <module>cli</module>
+        <module>diagram-detection</module>
       </modules>
     </profile>
   </profiles>

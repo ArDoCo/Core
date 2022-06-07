@@ -1,32 +1,35 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
-import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
-
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.*;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.*;
+
+import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
 
 public final class DataStructure implements IData, IModelData, ITextData, IRecommendationData, IConnectionData, IInconsistencyData, TextAgentData,
-        RecommendationAgentData, ConnectionAgentData, InconsistencyAgentData {
+        RecommendationAgentData, ConnectionAgentData, InconsistencyAgentData, IDiagramDetectionData, DiagramDetectionData {
+
+    private static final Logger logger = LoggerFactory.getLogger(DataStructure.class);
+
+    private String diagramDirectory;
+
     private final IText text;
     private final Map<String, IModelState> modelStates;
 
     private ITextState textState;
+    private IDiagramDetectionState diagramDetectionState;
     private Map<Metamodel, IRecommendationState> recommendationStates = new EnumMap<>(Metamodel.class);
     private Map<String, IConnectionState> connectionStates = new HashMap<>();
     private Map<String, IInconsistencyState> inconsistencyStates = new HashMap<>();
@@ -109,4 +112,31 @@ public final class DataStructure implements IData, IModelData, ITextData, IRecom
             throw new IllegalArgumentException("Model with Key " + model + " was not found");
     }
 
+    @Override
+    public void setDiagramDetectionState(IDiagramDetectionState state) {
+        this.diagramDetectionState = state;
+    }
+
+    @Override
+    public IDiagramDetectionState getDiagramDetectionState() {
+        return diagramDetectionState;
+    }
+
+    @Override
+    public File getDiagramDirectory() {
+        if (diagramDirectory == null)
+            return null;
+
+        File diagramDirectoryFile = new File(this.diagramDirectory);
+        if (!diagramDirectoryFile.exists()) {
+            logger.warn("DiagramDirectory {} does not exist", this.diagramDirectory);
+            return null;
+        }
+        return diagramDirectoryFile;
+    }
+
+    @Override
+    public void setDiagramDirectory(String directory) {
+        this.diagramDirectory = directory;
+    }
 }

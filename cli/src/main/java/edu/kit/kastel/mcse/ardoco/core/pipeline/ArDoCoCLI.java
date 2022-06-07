@@ -1,14 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline.runAndSave;
+import org.apache.commons.cli.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline.runAndSave;
 
 /**
  * A simple CLI for execution of the agents.
@@ -23,6 +23,8 @@ public final class ArDoCoCLI {
     private static final String CMD_TEXT = "t";
     private static final String CMD_CONF = "c";
     private static final String CMD_OUT_DIR = "o";
+
+    private static final String CMD_DIAGRAM_DIR = "d";
 
     private static Options options;
 
@@ -44,6 +46,7 @@ public final class ArDoCoCLI {
         // -t : Path to Text File
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
+        // -d : Diagram Folder (optional)
 
         CommandLine cmd;
         try {
@@ -64,6 +67,7 @@ public final class ArDoCoCLI {
         File inputModelCode;
         File additionalConfigs = null;
         File outputDir;
+        File diagramDir = null;
 
         if (!cmd.hasOption(CMD_TEXT)) {
             printUsage();
@@ -79,6 +83,9 @@ public final class ArDoCoCLI {
             }
 
             outputDir = ensureDir(cmd.getOptionValue(CMD_OUT_DIR));
+            if (cmd.hasOption(CMD_DIAGRAM_DIR)) {
+                diagramDir = ensureDir(CMD_DIAGRAM_DIR);
+            }
         } catch (IOException e) {
             logger.error(e.getMessage());
             return;
@@ -91,7 +98,7 @@ public final class ArDoCoCLI {
             return;
         }
         try {
-            runAndSave(name, inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir);
+            runAndSave(name, inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir, diagramDir);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -172,6 +179,11 @@ public final class ArDoCoCLI {
 
         opt = new Option(CMD_OUT_DIR, "out", true, "path to the output directory");
         opt.setRequired(true);
+        opt.setType(String.class);
+        options.addOption(opt);
+
+        opt = new Option(CMD_DIAGRAM_DIR, "diagram-dir", true, "path to a directory with diagrams to be interpreted");
+        opt.setRequired(false);
         opt.setType(String.class);
         options.addOption(opt);
 
