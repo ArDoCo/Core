@@ -1,18 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
@@ -21,6 +9,17 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 class ComputerScienceWordsAgentTest implements IClaimant {
     private ComputerScienceWordsAgent agent;
@@ -139,7 +138,7 @@ class ComputerScienceWordsAgentTest implements IClaimant {
 
         @Override
         public IPhrase getPhrase() {
-            throw new UnsupportedOperationException();
+            return new Phrase(this);
         }
 
         @Override
@@ -185,6 +184,54 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         @Override
         public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    private static class Phrase implements IPhrase {
+        private final IWord word;
+
+        Phrase(IWord text) {
+            this.word = text;
+        }
+
+        @Override
+        public int getSentenceNo() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ISentence getSentence() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getWord() {
+            return word.getText();
+        }
+
+        @Override
+        public PhraseType getPhraseType() {
+            return PhraseType.X;
+        }
+
+        @Override
+        public ImmutableList<IWord> getContainedWords() {
+            return Lists.immutable.with(word);
+        }
+
+        @Override
+        public ImmutableList<IPhrase> getSubPhrases() {
+            return Lists.immutable.empty();
+        }
+
+        @Override
+        public boolean isSuperPhraseOf(IPhrase other) {
+            return false;
+        }
+
+        @Override
+        public boolean isSubPhraseOf(IPhrase other) {
+            return false;
         }
     }
 }
