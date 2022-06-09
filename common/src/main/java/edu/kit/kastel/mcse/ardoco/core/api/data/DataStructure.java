@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionS
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStatesData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
@@ -24,21 +25,21 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 public final class DataStructure implements IData, IModelData, ITextData, IRecommendationData, IConnectionData, IInconsistencyData, TextAgentData,
         RecommendationAgentData, ConnectionAgentData, InconsistencyAgentData {
     private final IText text;
-    private final Map<String, IModelState> modelStates;
+    private final ModelStatesData modelStates;
 
     private ITextState textState;
     private Map<Metamodel, IRecommendationState> recommendationStates = new EnumMap<>(Metamodel.class);
     private Map<String, IConnectionState> connectionStates = new HashMap<>();
     private Map<String, IInconsistencyState> inconsistencyStates = new HashMap<>();
 
-    public DataStructure(IText text, Map<String, IModelState> models) {
+    public DataStructure(IText text, ModelStatesData modelStatesData) {
         this.text = text;
-        this.modelStates = models;
+        this.modelStates = modelStatesData;
     }
 
     @Override
     public DataStructure createCopy() {
-        DataStructure ds = new DataStructure(text, copyMap(modelStates, IModelState::createCopy));
+        DataStructure ds = new DataStructure(text, modelStates.createCopy());
         ds.textState = textState == null ? null : textState.createCopy();
         ds.recommendationStates = copyMap(recommendationStates, IRecommendationState::createCopy);
         ds.connectionStates = copyMap(connectionStates, IConnectionState::createCopy);
@@ -70,12 +71,12 @@ public final class DataStructure implements IData, IModelData, ITextData, IRecom
 
     @Override
     public List<String> getModelIds() {
-        return modelStates.keySet().stream().toList();
+        return modelStates.modelIds().stream().toList();
     }
 
     @Override
     public IModelState getModelState(String model) {
-        return modelStates.get(model);
+        return modelStates.getModelState(model);
     }
 
     @Override
@@ -105,7 +106,7 @@ public final class DataStructure implements IData, IModelData, ITextData, IRecom
     }
 
     private void ensureModel(String model) {
-        if (!this.modelStates.containsKey(model))
+        if (!getModelIds().contains(model))
             throw new IllegalArgumentException("Model with Key " + model + " was not found");
     }
 

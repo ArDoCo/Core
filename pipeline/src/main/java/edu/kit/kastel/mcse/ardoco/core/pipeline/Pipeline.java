@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStatesData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
@@ -80,21 +80,19 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         pipeline.addPipelineStep(textProvider);
 
         // Preprocess: model connectors
-        Map<String, IModelState> models = new HashMap<>();
-        IModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
-        models.put(pcmModel.getModelId(), pipeline.runModelExtractor(pcmModel, additionalConfigs));
+        pipeline.addPcmModelProviderToPipeline(inputArchitectureModel, additionalConfigs);
 
         if (inputCodeModel != null) {
-            IModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
-            var codeModelState = pipeline.runModelExtractor(javaModel, additionalConfigs);
-            models.put(javaModel.getModelId(), codeModelState);
+            pipeline.addJavaModelProviderToPipeline(inputCodeModel, additionalConfigs);
         }
 
+        // TODO remove
         var annotatedText = pipeline.getAnnotatedText(inputText);
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
         }
+        var models = pipeline.getDataRepository().getData("ModelStatesData", ModelStatesData.class).orElseThrow();
         var data = new DataStructure(annotatedText, models);
 
         if (outputDir != null) {
@@ -131,6 +129,20 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
         return data;
+    }
+
+    private void addJavaModelProviderToPipeline(File inputCodeModel, Map<String, String> additionalConfigs) throws IOException {
+        IModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
+        var javaModelProvider = new ModelProvider(this.getDataRepository(), javaModel);
+        javaModelProvider.setAdditionalSettings(additionalConfigs);
+        this.addPipelineStep(javaModelProvider);
+    }
+
+    private void addPcmModelProviderToPipeline(File inputArchitectureModel, Map<String, String> additionalConfigs) throws IOException {
+        IModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
+        var pcmModelProvider = new ModelProvider(this.getDataRepository(), pcmModel);
+        pcmModelProvider.setAdditionalSettings(additionalConfigs);
+        this.addPipelineStep(pcmModelProvider);
     }
 
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
@@ -187,11 +199,6 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
 
         FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(),
                 data.getInconsistencyState(modelId));
-    }
-
-    private IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> additionalConfigs) {
-        var modelExtractor = new ModelProvider(modelConnector);
-        return modelExtractor.execute(additionalConfigs);
     }
 
     private void runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {
