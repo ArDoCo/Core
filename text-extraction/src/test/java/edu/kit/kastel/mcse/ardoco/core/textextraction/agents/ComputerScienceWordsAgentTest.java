@@ -69,7 +69,7 @@ class ComputerScienceWordsAgentTest implements IClaimant {
 
         this.agent.execute(tad);
 
-        Assertions.assertEquals((1.0 + this.modifier) / 2, nounMapping.getProbability());
+        Assertions.assertEquals((1.0 + this.modifier) / 2, ts.getNounMappingsByWord(validWord.get(0)).get(0).getProbability());
         Assertions.assertEquals(1.0, ts.getNounMappingsByWord(invalidWord).get(0).getProbability());
 
     }
