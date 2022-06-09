@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
@@ -22,7 +23,7 @@ class SentenceTest {
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        var connector = new CoreNLPProvider(new FileInputStream(textPath));
+        var connector = new CoreNLPProvider(new DataRepository(), new FileInputStream(textPath));
         var ontologyText = connector.getAnnotatedText();
         sentences = ontologyText.getSentences();
     }

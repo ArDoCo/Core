@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.base.ProviderTest;
 
@@ -19,7 +20,7 @@ class CoreNLPProviderTest extends ProviderTest {
     public synchronized static CoreNLPProvider getCoreNLPProvider() {
         if (coreNLPProvider == null) {
             try {
-                coreNLPProvider = new CoreNLPProvider(new FileInputStream(inputText));
+                coreNLPProvider = new CoreNLPProvider(new DataRepository(), new FileInputStream(inputText));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }

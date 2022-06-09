@@ -1,9 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +14,7 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
@@ -36,13 +34,13 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 /**
  * The Pipeline defines the execution of the agents.
  */
-public final class Pipeline {
-
-    private Pipeline() {
-        throw new IllegalAccessError();
-    }
+public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline {
 
     private static final Logger logger = LoggerFactory.getLogger(Pipeline.class);
+
+    public Pipeline(String id, DataRepository dataRepository) {
+        super(id, dataRepository);
+    }
 
     /**
      * Run the approach with the given parameters and save the output to the file system.
@@ -69,31 +67,33 @@ public final class Pipeline {
      */
     public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) throws IOException {
+        Pipeline pipeline = new Pipeline("ArDoCo", new DataRepository());
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
+        var dataRepository = pipeline.getDataRepository();
 
-        logger.info("Preparing and preprocessing text input.");
-        var prevStartTime = System.currentTimeMillis();
-        var annotatedText = getAnnotatedText(inputText);
-        if (annotatedText == null) {
-            logger.info("Could not preprocess or receive annotated text. Exiting.");
-            return null;
-        }
-        logTiming(prevStartTime, "Text preprocessing");
+        // Preprocess: text provider
+        var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
+        pipeline.addPipelineStep(textProvider);
 
-        logger.info("Starting process to generate Trace Links");
-        prevStartTime = System.currentTimeMillis();
+        // Preprocess: model connectors
         Map<String, IModelState> models = new HashMap<>();
         IModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
-        models.put(pcmModel.getModelId(), runModelExtractor(pcmModel, additionalConfigs));
+        models.put(pcmModel.getModelId(), pipeline.runModelExtractor(pcmModel, additionalConfigs));
 
         if (inputCodeModel != null) {
             IModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
-            var codeModelState = runModelExtractor(javaModel, additionalConfigs);
+            var codeModelState = pipeline.runModelExtractor(javaModel, additionalConfigs);
             models.put(javaModel.getModelId(), codeModelState);
+        }
+
+        var annotatedText = pipeline.getAnnotatedText(inputText);
+        if (annotatedText == null) {
+            logger.info("Could not preprocess or receive annotated text. Exiting.");
+            return null;
         }
         var data = new DataStructure(annotatedText, models);
 
@@ -104,36 +104,31 @@ public final class Pipeline {
                 FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(modelId), name);
             }
         }
-        logTiming(prevStartTime, "Model-Extractor");
 
-        prevStartTime = System.currentTimeMillis();
-        runTextExtractor(data, additionalConfigs);
-        logTiming(prevStartTime, "Text-Extractor");
+        // text extractor
+        pipeline.runTextExtractor(data, additionalConfigs);
 
-        prevStartTime = System.currentTimeMillis();
-        runRecommendationGenerator(data, additionalConfigs);
-        logTiming(prevStartTime, "Recommendation-Generator");
+        // recommendation generator
+        pipeline.runRecommendationGenerator(data, additionalConfigs);
 
-        prevStartTime = System.currentTimeMillis();
-        runConnectionGenerator(data, additionalConfigs);
-        logTiming(prevStartTime, "Connection-Generator");
+        // connection generator
+        pipeline.runConnectionGenerator(data, additionalConfigs);
 
-        prevStartTime = System.currentTimeMillis();
-        runInconsistencyChecker(data, additionalConfigs);
-        logTiming(prevStartTime, "Inconsistency-Checker");
+        // inconsistency checker
+        pipeline.runInconsistencyChecker(data, additionalConfigs);
 
+        // save step
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
-
         if (outputDir != null) {
             logger.info("Writing output.");
-            prevStartTime = System.currentTimeMillis();
-
             for (String modelId : data.getModelIds()) {
-                printResultsInFiles(outputDir, modelId, name, data, duration);
+                pipeline.printResultsInFiles(outputDir, modelId, name, data, duration);
             }
-            logTiming(prevStartTime, "Saving");
         }
+
+        pipeline.run();
+
+        logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
         return data;
     }
@@ -167,9 +162,9 @@ public final class Pipeline {
         logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
-    private static IText getAnnotatedText(File inputText) {
+    private IText getAnnotatedText(File inputText) {
         try {
-            ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(inputText));
+            ITextConnector textConnector = new CoreNLPProvider(getDataRepository(), new FileInputStream(inputText));
             return textConnector.getAnnotatedText();
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -178,7 +173,7 @@ public final class Pipeline {
 
     }
 
-    private static void printResultsInFiles(File outputDir, String modelId, String name, DataStructure data, Duration duration) {
+    private void printResultsInFiles(File outputDir, String modelId, String name, DataStructure data, Duration duration) {
 
         FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings.csv").toFile(), //
                 data.getTextState());
@@ -194,27 +189,27 @@ public final class Pipeline {
                 data.getInconsistencyState(modelId));
     }
 
-    private static IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> additionalConfigs) {
+    private IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> additionalConfigs) {
         var modelExtractor = new ModelProvider(modelConnector);
         return modelExtractor.execute(additionalConfigs);
     }
 
-    private static void runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {
+    private void runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage textModule = new TextExtraction();
         textModule.execute(data, additionalConfigs);
     }
 
-    private static void runRecommendationGenerator(DataStructure data, Map<String, String> additionalConfigs) {
+    private void runRecommendationGenerator(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage recommendationModule = new RecommendationGenerator();
         recommendationModule.execute(data, additionalConfigs);
     }
 
-    private static void runConnectionGenerator(DataStructure data, Map<String, String> additionalConfigs) {
+    private void runConnectionGenerator(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage connectionGenerator = new ConnectionGenerator();
         connectionGenerator.execute(data, additionalConfigs);
     }
 
-    private static void runInconsistencyChecker(DataStructure data, Map<String, String> additionalConfigs) {
+    private void runInconsistencyChecker(DataStructure data, Map<String, String> additionalConfigs) {
         IExecutionStage inconsistencyChecker = new InconsistencyChecker();
         inconsistencyChecker.execute(data, additionalConfigs);
     }
