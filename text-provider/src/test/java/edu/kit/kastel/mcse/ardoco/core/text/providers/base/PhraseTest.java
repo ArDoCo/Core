@@ -1,15 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.base;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class PhraseTest {
     public static final int SENTENCE_NO = 41;
@@ -55,9 +54,9 @@ public abstract class PhraseTest {
 
     @Test
     void getTextTest() {
-        var sentencePhraseText = sentencePhrase.getText();
-        var npPhraseText = npPhrase.getText();
-        var vpPhraseText = vpPhrase.getText();
+        var sentencePhraseText = sentencePhrase.getWord();
+        var npPhraseText = npPhrase.getWord();
+        var vpPhraseText = vpPhrase.getWord();
         Assertions.assertAll( //
                 () -> Assertions.assertEquals("The TeaStore is a test application.", sentencePhraseText), //
                 () -> Assertions.assertEquals("a test application", npPhraseText), //

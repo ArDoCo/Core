@@ -1,21 +1,21 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
-import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IPhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import org.apache.commons.text.similarity.JaroWinklerSimilarity;
+import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is a utility class.
@@ -334,7 +334,7 @@ public final class SimilarityUtils {
     private static double cosineSimilarity(Map<IWord, Integer> phraseVectorX, Map<IWord, Integer> phraseVectorY) {
 
         // TODO: Think about use of lemmas/ stem?
-        Set<IWord> words = phraseVectorX.keySet();
+        Set<IWord> words = new HashSet<>(phraseVectorX.keySet());
         words.addAll(phraseVectorY.keySet());
 
         int sum = 0;

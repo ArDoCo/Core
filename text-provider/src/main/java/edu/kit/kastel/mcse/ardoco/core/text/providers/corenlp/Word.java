@@ -1,13 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.impl.factory.Lists;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -15,6 +8,12 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 import edu.stanford.nlp.trees.TypedDependency;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
+
+import java.util.List;
+import java.util.Objects;
 
 class Word implements IWord {
 
@@ -37,8 +36,13 @@ class Word implements IWord {
     }
 
     public IPhrase getPhrase() {
-        // TODO: To implement
-        return null;
+        var phrase = getSentence().getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
+        var subPhrases = List.of(phrase);
+        while (!subPhrases.isEmpty()) {
+            phrase = subPhrases.get(0);
+            subPhrases = phrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
+        }
+        return phrase;
     }
 
     @Override

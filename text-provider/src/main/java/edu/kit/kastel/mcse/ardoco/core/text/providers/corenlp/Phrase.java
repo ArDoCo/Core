@@ -1,26 +1,28 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import java.util.List;
-
-import org.eclipse.collections.api.factory.Lists;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.stanford.nlp.trees.Tree;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
+import java.util.List;
+import java.util.Objects;
 
 class Phrase implements IPhrase {
     private final Tree tree;
-    private final List<IWord> words;
-    private Sentence sentence;
+    private final ImmutableList<IWord> words;
+    private final Sentence sentence;
 
     private String text = null;
 
     public Phrase(Tree tree, List<IWord> words) {
         this.tree = tree;
-        this.words = words;
+        this.words = Lists.immutable.withAll(words);
         this.sentence = retrieveSentence(words.get(0));
     }
 
@@ -43,7 +45,7 @@ class Phrase implements IPhrase {
     }
 
     @Override
-    public String getText() {
+    public String getWord() {
         if (text == null) {
             text = tree.spanString();
         }
@@ -57,13 +59,13 @@ class Phrase implements IPhrase {
     }
 
     @Override
-    public List<IWord> getContainedWords() {
+    public ImmutableList<IWord> getContainedWords() {
         return words;
     }
 
     @Override
-    public List<IPhrase> getSubPhrases() {
-        List<IPhrase> subPhrases = Lists.mutable.empty();
+    public ImmutableList<IPhrase> getSubPhrases() {
+        MutableList<IPhrase> subPhrases = Lists.mutable.empty();
         for (var subTree : tree) {
             if (subTree.isPhrasal() && tree.dominates(subTree)) {
                 var wordsForPhrase = Sentence.getWordsForPhrase(subTree, this.sentence);
@@ -71,7 +73,7 @@ class Phrase implements IPhrase {
                 subPhrases.add(currPhrase);
             }
         }
-        return subPhrases;
+        return subPhrases.toImmutable();
     }
 
     @Override
@@ -79,8 +81,8 @@ class Phrase implements IPhrase {
         if (other instanceof Phrase otherPhrase) {
             return tree.dominates(otherPhrase.tree);
         } else {
-            var currText = getText();
-            var otherText = other.getText();
+            var currText = getWord();
+            var otherText = other.getWord();
             return currText.contains(otherText) && currText.length() != otherText.length();
         }
     }
@@ -90,9 +92,26 @@ class Phrase implements IPhrase {
         if (other instanceof Phrase otherPhrase) {
             return otherPhrase.tree.dominates(this.tree);
         } else {
-            var currText = getText();
-            var otherText = other.getText();
+            var currText = getWord();
+            var otherText = other.getWord();
             return otherText.contains(currText) && currText.length() != otherText.length();
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getSentenceNo(), this.getWord(), this.getPhraseType(), this.getContainedWords().get(0).getPosition());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || this.getClass() != obj.getClass())
+            return false;
+        Phrase other = (Phrase) obj;
+        return Objects.equals(this.getSentenceNo(), other.getSentenceNo()) && Objects.equals(this.getWord(), other.getWord())
+                && Objects.equals(this.getPhraseType(), other.getPhraseType())
+                && Objects.equals(this.getContainedWords().get(0).getPosition(), other.getContainedWords().get(0).getPosition());
     }
 }
