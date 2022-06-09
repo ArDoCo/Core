@@ -52,14 +52,29 @@ To test the Core, you could use case studies and benchmarks provided in ..
 ### Maven
 
 ```xml
-
 <dependencies>
-	<dependency>
-		<groupId>io.github.ardoco.core</groupId>
-		<artifactId>pipeline</artifactId> <!-- or any other subproject -->
-		<version>0.5-SNAPSHOT</version>
-	</dependency>
+    <dependency>
+        <groupId>io.github.ardoco.core</groupId>
+        <artifactId>pipeline</artifactId> <!-- or any other subproject -->
+        <version>0.5-SNAPSHOT</version>
+    </dependency>
 </dependencies>
+```
+
+For snapshot releases, make sure to add the following repository
+```xml
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>mavenSnapshot</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+  </repositories>
 ```
 
 ### Attribution
