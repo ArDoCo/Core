@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Connection Generation" href="../connectionGeneration/" /><link rel="prev" title="Model Extractor" href="../modelExtraction/" />
 
-    <meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+    <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
         <title>Recommendation Generation - </title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
@@ -218,7 +218,7 @@
         </div>
         <article role="main">
           <section id="recommendation-generation">
-<h1>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this headline">#</a></h1>
+<h1>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this heading">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This site is deprecated</p>
@@ -231,9 +231,9 @@ The analyzer/ solvers and their parameters can be specified in the <a class="ref
 The <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/state/RecommendationState.java">Recommendation State</a> is a blackboard and stores all results of the analyzers/ solvers of the agent.</p>
 <img alt="center" src="../../../_images/RecommendationGeneration.PNG" />
 <section id="analyzers">
-<h2>Analyzers<a class="headerlink" href="#analyzers" title="Permalink to this headline">#</a></h2>
+<h2>Analyzers<a class="headerlink" href="#analyzers" title="Permalink to this heading">#</a></h2>
 <section id="extraction-dependent-occurrence-analyzer">
-<h3>Extraction Dependent Occurrence Analyzer<a class="headerlink" href="#extraction-dependent-occurrence-analyzer" title="Permalink to this headline">#</a></h3>
+<h3>Extraction Dependent Occurrence Analyzer<a class="headerlink" href="#extraction-dependent-occurrence-analyzer" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractionDependentOccurrenceAnalyzer.java">Extraction Dependent Occurrence Analyzer</a>:
 This analyzer uses model information to find referenced model instances.
 For every node is checked, whether it could be a name or a type of a model instance.
@@ -241,7 +241,7 @@ If similar model instance names (or types) are found, they are added as noun map
 This analyzer should run before any other analyzers or solvers are processed since it extends the underlying knowledge base.</p>
 </section>
 <section id="name-type-analyzer">
-<h3>Name Type Analyzer<a class="headerlink" href="#name-type-analyzer" title="Permalink to this headline">#</a></h3>
+<h3>Name Type Analyzer<a class="headerlink" href="#name-type-analyzer" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/NameTypeAnalyzer.java">Name Type Analyzer</a>:
 The NameTypeAnalyzer searches for patterns of name and types.
 If these patterns occur, it creates recommendations out of the combination.
@@ -252,16 +252,16 @@ The use of norts does not doubt the classification of the text extraction state,
 Current combinations are: <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">nort</span> <span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">name</span></code>, and <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">nort</span></code>.</p>
 </section>
 <section id="extracted-terms-analyzer">
-<h3>Extracted Terms Analyzer<a class="headerlink" href="#extracted-terms-analyzer" title="Permalink to this headline">#</a></h3>
+<h3>Extracted Terms Analyzer<a class="headerlink" href="#extracted-terms-analyzer" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractedTermsAnalyzer.java">Extracted Terms Analyzer</a>:
 This analyzer uses terms of the text extraction state to create recommendation names and types of multiple words, like <code class="docutils literal notranslate"><span class="pre">car</span> <span class="pre">wheel</span></code> of type <code class="docutils literal notranslate"><span class="pre">common</span> <span class="pre">component</span></code>.
 For more information have a look at the sources.</p>
 </section>
 </section>
 <section id="solvers">
-<h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this headline">#</a></h2>
+<h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this heading">#</a></h2>
 <section id="reference-solver">
-<h3>Reference Solver<a class="headerlink" href="#reference-solver" title="Permalink to this headline">#</a></h3>
+<h3>Reference Solver<a class="headerlink" href="#reference-solver" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/ReferenceSolver.java">Reference Solver</a>:
 The ReferenceSolver combines information from textual and model resources.
 As textual resources, the noun mappings of the text extraction state are used.
@@ -269,7 +269,7 @@ Their reference represents a unified term for all words stored in the mapping.
 As a model equivalent, instances from the model extraction state are used.</p>
 </section>
 <section id="separated-relations-solver">
-<h3>Separated Relations Solver<a class="headerlink" href="#separated-relations-solver" title="Permalink to this headline">#</a></h3>
+<h3>Separated Relations Solver<a class="headerlink" href="#separated-relations-solver" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/SeparatedRelationsSolver.java">Separated Relations Solver</a>:
 The SeparatedRelationsSolver is a solver that creates RecommendedRelations.
 Sometimes, punctuation marks occur in architecture documentation to specify the location of an element.
@@ -370,6 +370,7 @@ For each, the solver checks if an included name noun mapping contains an occurre
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     </body>

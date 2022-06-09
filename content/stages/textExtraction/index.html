@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Model Extractor" href="../modelExtraction/" /><link rel="prev" title="Text Preprocessing" href="../textPreprocessing/" />
 
-    <meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+    <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
         <title>Text Extractor - </title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
@@ -218,20 +218,20 @@
         </div>
         <article role="main">
           <section id="text-extractor">
-<h1>Text Extractor<a class="headerlink" href="#text-extractor" title="Permalink to this headline">#</a></h1>
+<h1>Text Extractor<a class="headerlink" href="#text-extractor" title="Permalink to this heading">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This site is deprecated</p>
 </div>
 <section id="preprocessing">
-<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">#</a></h2>
+<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this heading">#</a></h2>
 <p>As described in the <a class="reference external" href="https://github.com/ArDoCo/Core/wiki/Overview">Overview</a> the goal of the Text Extraction is to extract all possibly relevant information from the text.
 The text is preprocessed by INDIRECT.
 Further analysis depends on some linguistic information (e.g. dependencies).
 To add this information to the PARSE graph, the corresponding INDIRECT agents have to be executed in the preprocessing.</p>
 </section>
 <section id="text-extraction-agent">
-<h2>Text Extraction Agent<a class="headerlink" href="#text-extraction-agent" title="Permalink to this headline">#</a></h2>
+<h2>Text Extraction Agent<a class="headerlink" href="#text-extraction-agent" title="Permalink to this heading">#</a></h2>
 <p>The interface for the text extraction is the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/TextExtractionAgent.java">Text Extraction Agent</a>.
 The agent has a state and multiple analyzers/ solvers.
 The analyzer/ solvers and their parameters can be specified in the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/resources/config.properties">configuration</a>.
@@ -241,16 +241,16 @@ Thereby, the results of this step can be corrected by further analysis in later 
 <img alt="center" src="../../../_images/TextExtraction.png" />
 </section>
 <section id="analyzers">
-<h2>Analyzers<a class="headerlink" href="#analyzers" title="Permalink to this headline">#</a></h2>
+<h2>Analyzers<a class="headerlink" href="#analyzers" title="Permalink to this heading">#</a></h2>
 <section id="nounanalyzer">
-<h3>NounAnalyzer<a class="headerlink" href="#nounanalyzer" title="Permalink to this headline">#</a></h3>
+<h3>NounAnalyzer<a class="headerlink" href="#nounanalyzer" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/NounAnalyzer.java">Noun Analyzer</a>:
 The goal of the Noun Analyzer is to find and extract the nouns.
 For this, it uses the POS (Part Of Speech) tags of the PARSE graph.
 INDIRECT uses the nltk tagset.</p>
 </section>
 <section id="dependency-analyzers">
-<h3>Dependency Analyzers<a class="headerlink" href="#dependency-analyzers" title="Permalink to this headline">#</a></h3>
+<h3>Dependency Analyzers<a class="headerlink" href="#dependency-analyzers" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/InDepArcsAnalyzer.java">Incoming Dependency Arcs Analyzer</a>:
 The Incoming Dependency Arcs Analyzer checks the incoming dependency edges of the PARSE graph, created with the Dependency Parser agent of INDIRECT.</p>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/OutDepArcsAnalyzer.java">Outgoing Dependency Arcs Analyzer</a>:
@@ -258,7 +258,7 @@ This analyzer checks the outgoing dependency edges of a node.
 For this, the edges have to be created first by the Dependency Parser of INDIRECT.</p>
 </section>
 <section id="separated-names-analyzer">
-<h3>Separated Names Analyzer<a class="headerlink" href="#separated-names-analyzer" title="Permalink to this headline">#</a></h3>
+<h3>Separated Names Analyzer<a class="headerlink" href="#separated-names-analyzer" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/SeparatedNamesAnalyzer.java">Separated Names Analyzer</a>:
 The separated names analyzer identifies nodes containing separators.
 Then it adds it as noun mapping of kind name to the extraction state.
@@ -267,7 +267,7 @@ Then, the method adds each part is separately to the text extraction state.
 The separators for that process are stored in a configuration file.</p>
 </section>
 <section id="article-type-name-analyzer">
-<h3>Article-Type-Name Analyzer<a class="headerlink" href="#article-type-name-analyzer" title="Permalink to this headline">#</a></h3>
+<h3>Article-Type-Name Analyzer<a class="headerlink" href="#article-type-name-analyzer" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/ArticleTypeNameAnalyzer.java">Article-Type-Name Analyzer</a>:
 This analyzer checks the current node and its surrounding for two specified patterns.
 In both cases the current node has to be previously classified as a nort (or more specific kind).
@@ -281,9 +281,9 @@ For example “The ai component is …”</p>
 </section>
 </section>
 <section id="solvers">
-<h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this headline">#</a></h2>
+<h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this heading">#</a></h2>
 <section id="multiple-part-solver">
-<h3>Multiple Part Solver<a class="headerlink" href="#multiple-part-solver" title="Permalink to this headline">#</a></h3>
+<h3>Multiple Part Solver<a class="headerlink" href="#multiple-part-solver" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/solvers/MultiplePartSolver.java">Multiple Part Solver</a>:
 This solver identifies terms in the current extraction state.</p>
 </section>
@@ -380,6 +380,7 @@ This solver identifies terms in the current extraction state.</p>
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     </body>

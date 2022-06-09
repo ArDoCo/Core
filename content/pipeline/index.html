@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Stages" href="../stages/" /><link rel="prev" title="Save Actions" href="../quickstart/saveActions/" />
 
-    <meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+    <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
         <title>Pipeline - </title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
@@ -218,7 +218,7 @@
         </div>
         <article role="main">
           <section id="pipeline">
-<h1>Pipeline<a class="headerlink" href="#pipeline" title="Permalink to this headline">#</a></h1>
+<h1>Pipeline<a class="headerlink" href="#pipeline" title="Permalink to this heading">#</a></h1>
 <p>ArDoCo recognizes inconsistencies between a model and a documentation.
 Therefore, it is divided into multiple steps that can be seen as pipeline:</p>
 <img alt="center" src="../../_images/pipeline2.png" />
@@ -240,14 +240,14 @@ Thereby, ArDoCo is able to recommend textual instances as potential trace links 
 In this stage, ArDoCo identifies entities without trace links as inconsistent states.</p>
 <p>The respective <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/Pipeline.java">pipeline class</a> is located in the <a class="reference external" href="https://github.com/ArDoCo/Core/">core module</a>.</p>
 <section id="input">
-<h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">#</a></h2>
+<h2>Input<a class="headerlink" href="#input" title="Permalink to this heading">#</a></h2>
 <p>The pipeline works with a single data structure for all steps: the <a class="reference internal" href="../datastructures/"><span class="doc">data structure</span></a>.
 The <em>data structure</em> is filled with the information of the executed steps.
 Then it is passed on through the pipeline.
 Therefore, when the pipeline is instantiated, the prerequisites, a text in natural language and a readable model, have to be loaded into it.
 The pipeline is executed via the method <a class="reference external" href="https://github.com/ArDoCo/Core/blob/3b62cc78f0a9d4c60dc75796a401d83665f219f1/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/Pipeline.java#L75">runAndSave</a>).</p>
 <section id="text">
-<h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">#</a></h3>
+<h3>Text<a class="headerlink" href="#text" title="Permalink to this heading">#</a></h3>
 <p>In a first step, the text should be given via a .txt file.
 It should not contain any images, tables, or listings.
 It is preprocessed via <a class="reference external" href="https://ps.ipd.kit.edu/176_indirect.php">INDIRECT</a>.
@@ -262,7 +262,7 @@ Notice, that some steps of the project depend on specific annotations, like pos-
 </div>
 </section>
 <section id="models">
-<h3>Models<a class="headerlink" href="#models" title="Permalink to this headline">#</a></h3>
+<h3>Models<a class="headerlink" href="#models" title="Permalink to this heading">#</a></h3>
 <p>ArDoCo can handle architectural and code models.
 Models are read out using the suitable <em>model connector</em>.</p>
 <p>In case of architectural models, this is the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/3b62cc78f0a9d4c60dc75796a401d83665f219f1/model-provider/src/main/java/edu/kit/kastel/mcse/ardoco/core/model/pcm/PcmXMLModelConnector.java#L22">PCM model connector</a>.
@@ -280,7 +280,7 @@ Just like for architectural models, other code models can be used if additional 
 </section>
 </section>
 <section id="pipeline-stages">
-<h2>Pipeline Stages<a class="headerlink" href="#pipeline-stages" title="Permalink to this headline">#</a></h2>
+<h2>Pipeline Stages<a class="headerlink" href="#pipeline-stages" title="Permalink to this heading">#</a></h2>
 <p>The agile design enables to rearrange or replace each step of the pipeline.
 Thereby, the parts of it can be exchanged or reused in other ways.</p>
 <p>After the initial <em>data structure</em> was created, the other steps of the pipeline are executed.
@@ -298,7 +298,7 @@ To ensure that these extractors run before every other (maybe) on their result b
 <p>This should be refactored for the 0.4 release</p>
 </div>
 <section id="text-extraction">
-<h3>Text Extraction<a class="headerlink" href="#text-extraction" title="Permalink to this headline">#</a></h3>
+<h3>Text Extraction<a class="headerlink" href="#text-extraction" title="Permalink to this heading">#</a></h3>
 <p>The <a class="reference internal" href="../stages/textExtraction/"><span class="doc">text extractor</span></a> depends on the annotated input text.
 It uses PosTags, DependencyTags, and other information, as described in the <a class="reference internal" href="../stages/textPreprocessing/"><span class="doc">preprocessing section</span></a>
 Currently most agents of this stage use heuristics to detect possible instances and relations.</p>
@@ -307,7 +307,7 @@ Currently most agents of this stage use heuristics to detect possible instances 
 However, since the later steps rely on this step, the recall of this step should be kept high, whereas a high precision is less important.</p>
 </section>
 <section id="recommendation-generation">
-<h3>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this headline">#</a></h3>
+<h3>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this heading">#</a></h3>
 <p>The <a class="reference internal" href="../stages/recommendationGeneration/"><span class="doc">recommendation generator</span></a> requires the <a class="reference internal" href="../data/textData/"><span class="doc">annotated text</span></a>, the <a class="reference internal" href="../data/textData/"><span class="doc">extracted text data</span></a>, and the <a class="reference internal" href="../data/modelData/"><span class="doc">metamodel</span></a>.
 The goal of the recommendation generation is to build potential elements that could occur in the model.
 The properties of the elements depend on the underlying meta model (respectively the properties of its elements).
@@ -320,7 +320,7 @@ Its results are stored in the <a class="reference internal" href="../data/recomm
 </div>
 </section>
 <section id="connection-generation">
-<h3>Connection Generation<a class="headerlink" href="#connection-generation" title="Permalink to this headline">#</a></h3>
+<h3>Connection Generation<a class="headerlink" href="#connection-generation" title="Permalink to this heading">#</a></h3>
 <p>The connection generation connects the recommended entities to the entities of the given model.
 Thus, it creates trace links between the input text and model.
 The links are stored in the <a class="reference internal" href="../data/connectionData/"><span class="doc">connection state</span></a>.</p>
@@ -330,7 +330,7 @@ The links are stored in the <a class="reference internal" href="../data/connecti
 </div>
 </section>
 <section id="inconsistency-generation">
-<h3>Inconsistency Generation<a class="headerlink" href="#inconsistency-generation" title="Permalink to this headline">#</a></h3>
+<h3>Inconsistency Generation<a class="headerlink" href="#inconsistency-generation" title="Permalink to this heading">#</a></h3>
 <p>The inconsistency generation is the last stage of the pipeline.
 It makes a comparison between the found trace links and the entities of the model.
 Thereby, it recognizes inconsistencies caused by missing mentions of model entities.</p>
@@ -431,6 +431,7 @@ Thereby, it recognizes inconsistencies caused by missing mentions of model entit
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     </body>
