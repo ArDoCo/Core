@@ -2,7 +2,8 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Model Extractor" href="../modelExtraction/" /><link rel="prev" title="Text Preprocessing" href="../textPreprocessing/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Model Extractor" href="../modelExtraction/" /><link rel="prev" title="Text Preprocessing" href="../textPreprocessing/" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
         <title>Text Extractor - </title>
@@ -215,20 +216,20 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="text-extractor">
+          <section id="text-extractor">
 <h1>Text Extractor<a class="headerlink" href="#text-extractor" title="Permalink to this headline">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This site is deprecated</p>
 </div>
-<div class="section" id="preprocessing">
+<section id="preprocessing">
 <h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">#</a></h2>
 <p>As described in the <a class="reference external" href="https://github.com/ArDoCo/Core/wiki/Overview">Overview</a> the goal of the Text Extraction is to extract all possibly relevant information from the text.
 The text is preprocessed by INDIRECT.
 Further analysis depends on some linguistic information (e.g. dependencies).
 To add this information to the PARSE graph, the corresponding INDIRECT agents have to be executed in the preprocessing.</p>
-</div>
-<div class="section" id="text-extraction-agent">
+</section>
+<section id="text-extraction-agent">
 <h2>Text Extraction Agent<a class="headerlink" href="#text-extraction-agent" title="Permalink to this headline">#</a></h2>
 <p>The interface for the text extraction is the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/TextExtractionAgent.java">Text Extraction Agent</a>.
 The agent has a state and multiple analyzers/ solvers.
@@ -237,25 +238,25 @@ The <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main
 It can be changed by the analyzers/ solvers of the Text Extraction State, as well as dependent analyzers/ solvers.
 Thereby, the results of this step can be corrected by further analysis in later steps.</p>
 <img alt="center" src="../../../_images/TextExtraction.png"/>
-</div>
-<div class="section" id="analyzers">
+</section>
+<section id="analyzers">
 <h2>Analyzers<a class="headerlink" href="#analyzers" title="Permalink to this headline">#</a></h2>
-<div class="section" id="nounanalyzer">
+<section id="nounanalyzer">
 <h3>NounAnalyzer<a class="headerlink" href="#nounanalyzer" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/NounAnalyzer.java">Noun Analyzer</a>:
 The goal of the Noun Analyzer is to find and extract the nouns.
 For this, it uses the POS (Part Of Speech) tags of the PARSE graph.
 INDIRECT uses the nltk tagset.</p>
-</div>
-<div class="section" id="dependency-analyzers">
+</section>
+<section id="dependency-analyzers">
 <h3>Dependency Analyzers<a class="headerlink" href="#dependency-analyzers" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/InDepArcsAnalyzer.java">Incoming Dependency Arcs Analyzer</a>:
 The Incoming Dependency Arcs Analyzer checks the incoming dependency edges of the PARSE graph, created with the Dependency Parser agent of INDIRECT.</p>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/OutDepArcsAnalyzer.java">Outgoing Dependency Arcs Analyzer</a>:
 This analyzer checks the outgoing dependency edges of a node.
 For this, the edges have to be created first by the Dependency Parser of INDIRECT.</p>
-</div>
-<div class="section" id="separated-names-analyzer">
+</section>
+<section id="separated-names-analyzer">
 <h3>Separated Names Analyzer<a class="headerlink" href="#separated-names-analyzer" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/SeparatedNamesAnalyzer.java">Separated Names Analyzer</a>:
 The separated names analyzer identifies nodes containing separators.
@@ -263,8 +264,8 @@ Then it adds it as noun mapping of kind name to the extraction state.
 Examples for this would be: intelligence::ai or car.wheel.
 Then, the method adds each part is separately to the text extraction state.
 The separators for that process are stored in a configuration file.</p>
-</div>
-<div class="section" id="article-type-name-analyzer">
+</section>
+<section id="article-type-name-analyzer">
 <h3>Article-Type-Name Analyzer<a class="headerlink" href="#article-type-name-analyzer" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/analyzers/ArticleTypeNameAnalyzer.java">Article-Type-Name Analyzer</a>:
 This analyzer checks the current node and its surrounding for two specified patterns.
@@ -276,17 +277,17 @@ For example “The component a is …”</p>
 <p>Article Name Type:
 If the previous node is a name and the predecessor of that is an article, the current node is classified as a type.
 For example “The ai component is …”</p>
-</div>
-</div>
-<div class="section" id="solvers">
+</section>
+</section>
+<section id="solvers">
 <h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this headline">#</a></h2>
-<div class="section" id="multiple-part-solver">
+<section id="multiple-part-solver">
 <h3>Multiple Part Solver<a class="headerlink" href="#multiple-part-solver" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/textExtractor/solvers/MultiplePartSolver.java">Multiple Part Solver</a>:
 This solver identifies terms in the current extraction state.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
         </article>
       </div>

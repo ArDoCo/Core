@@ -2,7 +2,8 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Connection Generation" href="../connectionGeneration/" /><link rel="prev" title="Model Extractor" href="../modelExtraction/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Connection Generation" href="../connectionGeneration/" /><link rel="prev" title="Model Extractor" href="../modelExtraction/" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
         <title>Recommendation Generation - </title>
@@ -215,7 +216,7 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="recommendation-generation">
+          <section id="recommendation-generation">
 <h1>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this headline">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -228,17 +229,17 @@ The agent has a state and multiple analyzers/ solvers.
 The analyzer/ solvers and their parameters can be specified in the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/resources/config.properties">configuration</a>.
 The <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/state/RecommendationState.java">Recommendation State</a> is a blackboard and stores all results of the analyzers/ solvers of the agent.</p>
 <img alt="center" src="../../../_images/RecommendationGeneration.PNG"/>
-<div class="section" id="analyzers">
+<section id="analyzers">
 <h2>Analyzers<a class="headerlink" href="#analyzers" title="Permalink to this headline">#</a></h2>
-<div class="section" id="extraction-dependent-occurrence-analyzer">
+<section id="extraction-dependent-occurrence-analyzer">
 <h3>Extraction Dependent Occurrence Analyzer<a class="headerlink" href="#extraction-dependent-occurrence-analyzer" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractionDependentOccurrenceAnalyzer.java">Extraction Dependent Occurrence Analyzer</a>:
 This analyzer uses model information to find referenced model instances.
 For every node is checked, whether it could be a name or a type of a model instance.
 If similar model instance names (or types) are found, they are added as noun mappings of their kind to the text extraction state.
 This analyzer should run before any other analyzers or solvers are processed since it extends the underlying knowledge base.</p>
-</div>
-<div class="section" id="name-type-analyzer">
+</section>
+<section id="name-type-analyzer">
 <h3>Name Type Analyzer<a class="headerlink" href="#name-type-analyzer" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/NameTypeAnalyzer.java">Name Type Analyzer</a>:
 The NameTypeAnalyzer searches for patterns of name and types.
@@ -248,25 +249,25 @@ For that reason, only combinations between names and types (and no types and typ
 However, the analyzers can use norts in exchange for names.
 The use of norts does not doubt the classification of the text extraction state, since it could not unambiguously classify the nort as name or type.
 Current combinations are: <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">nort</span> <span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">name</span></code>, and <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">nort</span></code>.</p>
-</div>
-<div class="section" id="extracted-terms-analyzer">
+</section>
+<section id="extracted-terms-analyzer">
 <h3>Extracted Terms Analyzer<a class="headerlink" href="#extracted-terms-analyzer" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/analyzers/ExtractedTermsAnalyzer.java">Extracted Terms Analyzer</a>:
 This analyzer uses terms of the text extraction state to create recommendation names and types of multiple words, like <code class="docutils literal notranslate"><span class="pre">car</span> <span class="pre">wheel</span></code> of type <code class="docutils literal notranslate"><span class="pre">common</span> <span class="pre">component</span></code>.
 For more information have a look at the sources.</p>
-</div>
-</div>
-<div class="section" id="solvers">
+</section>
+</section>
+<section id="solvers">
 <h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this headline">#</a></h2>
-<div class="section" id="reference-solver">
+<section id="reference-solver">
 <h3>Reference Solver<a class="headerlink" href="#reference-solver" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/ReferenceSolver.java">Reference Solver</a>:
 The ReferenceSolver combines information from textual and model resources.
 As textual resources, the noun mappings of the text extraction state are used.
 Their reference represents a unified term for all words stored in the mapping.
 As a model equivalent, instances from the model extraction state are used.</p>
-</div>
-<div class="section" id="separated-relations-solver">
+</section>
+<section id="separated-relations-solver">
 <h3>Separated Relations Solver<a class="headerlink" href="#separated-relations-solver" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/solvers/SeparatedRelationsSolver.java">Separated Relations Solver</a>:
 The SeparatedRelationsSolver is a solver that creates RecommendedRelations.
@@ -276,9 +277,9 @@ In this case, component c is part of ai that lies in a layer.
 In the context of this work, these specific punctuation marks are called separators.
 They can be defined in a configuration file.
 For each, the solver checks if an included name noun mapping contains an occurrence with a separator.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
         </article>
       </div>

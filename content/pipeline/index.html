@@ -2,7 +2,8 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Stages" href="../stages/" /><link rel="prev" title="Save Actions" href="../quickstart/saveActions/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Stages" href="../stages/" /><link rel="prev" title="Save Actions" href="../quickstart/saveActions/" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
         <title>Pipeline - </title>
@@ -215,7 +216,7 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="pipeline">
+          <section id="pipeline">
 <h1>Pipeline<a class="headerlink" href="#pipeline" title="Permalink to this headline">#</a></h1>
 <p>ArDoCo recognizes inconsistencies between a model and a documentation.
 Therefore, it is divided into multiple steps that can be seen as pipeline:</p>
@@ -237,14 +238,14 @@ Thereby, ArDoCo is able to recommend textual instances as potential trace links 
 <p>The last stage is the <em>inconsistency generation</em>.
 In this stage, ArDoCo identifies entities without trace links as inconsistent states.</p>
 <p>The respective <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/Pipeline.java">pipeline class</a> is located in the <a class="reference external" href="https://github.com/ArDoCo/Core/">core module</a>.</p>
-<div class="section" id="input">
+<section id="input">
 <h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">#</a></h2>
 <p>The pipeline works with a single data structure for all steps: the <a class="reference internal" href="../datastructures/"><span class="doc">data structure</span></a>.
 The <em>data structure</em> is filled with the information of the executed steps.
 Then it is passed on through the pipeline.
 Therefore, when the pipeline is instantiated, the prerequisites, a text in natural language and a readable model, have to be loaded into it.
 The pipeline is executed via the method <a class="reference external" href="https://github.com/ArDoCo/Core/blob/3b62cc78f0a9d4c60dc75796a401d83665f219f1/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/Pipeline.java#L75">runAndSave</a>).</p>
-<div class="section" id="text">
+<section id="text">
 <h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">#</a></h3>
 <p>In a first step, the text should be given via a .txt file.
 It should not contain any images, tables, or listings.
@@ -258,8 +259,8 @@ Notice, that some steps of the project depend on specific annotations, like pos-
 <p class="admonition-title">See also</p>
 <p>For more information read the documentation about <a class="reference internal" href="../data/textData/"><span class="doc">the textual data</span></a>.</p>
 </div>
-</div>
-<div class="section" id="models">
+</section>
+<section id="models">
 <h3>Models<a class="headerlink" href="#models" title="Permalink to this headline">#</a></h3>
 <p>ArDoCo can handle architectural and code models.
 Models are read out using the suitable <em>model connector</em>.</p>
@@ -275,9 +276,9 @@ Just like for architectural models, other code models can be used if additional 
 <p class="admonition-title">See also</p>
 <p>For more information read the documentation about the <a class="reference internal" href="../stages/modelExtraction/"><span class="doc">model connectors</span></a> and <a class="reference internal" href="../data/modelData/"><span class="doc">the model data</span></a>.</p>
 </div>
-</div>
-</div>
-<div class="section" id="pipeline-stages">
+</section>
+</section>
+<section id="pipeline-stages">
 <h2>Pipeline Stages<a class="headerlink" href="#pipeline-stages" title="Permalink to this headline">#</a></h2>
 <p>The agile design enables to rearrange or replace each step of the pipeline.
 Thereby, the parts of it can be exchanged or reused in other ways.</p>
@@ -295,7 +296,7 @@ To ensure that these extractors run before every other (maybe) on their result b
 <p class="admonition-title">Hint</p>
 <p>This should be refactored for the 0.4 release</p>
 </div>
-<div class="section" id="text-extraction">
+<section id="text-extraction">
 <h3>Text Extraction<a class="headerlink" href="#text-extraction" title="Permalink to this headline">#</a></h3>
 <p>The <a class="reference internal" href="../stages/textExtraction/"><span class="doc">text extractor</span></a> depends on the annotated input text.
 It uses PosTags, DependencyTags, and other information, as described in the <a class="reference internal" href="../stages/textPreprocessing/"><span class="doc">preprocessing section</span></a>
@@ -303,8 +304,8 @@ Currently most agents of this stage use heuristics to detect possible instances 
 <p>The extracted information are stored in the <a class="reference internal" href="../data/textextractionData/"><span class="doc">text extraction state</span></a>.</p>
 <p>The text extraction should thin out unnecessary information by extracting all possibly relevant instances and relations.
 However, since the later steps rely on this step, the recall of this step should be kept high, whereas a high precision is less important.</p>
-</div>
-<div class="section" id="recommendation-generation">
+</section>
+<section id="recommendation-generation">
 <h3>Recommendation Generation<a class="headerlink" href="#recommendation-generation" title="Permalink to this headline">#</a></h3>
 <p>The <a class="reference internal" href="../stages/recommendationGeneration/"><span class="doc">recommendation generator</span></a> requires the <a class="reference internal" href="../data/textData/"><span class="doc">annotated text</span></a>, the <a class="reference internal" href="../data/textData/"><span class="doc">extracted text data</span></a>, and the <a class="reference internal" href="../data/modelData/"><span class="doc">metamodel</span></a>.
 The goal of the recommendation generation is to build potential elements that could occur in the model.
@@ -316,8 +317,8 @@ Its results are stored in the <a class="reference internal" href="../data/recomm
 <p class="admonition-title">See also</p>
 <p>For more information read the documentation about <a class="reference internal" href="../stages/recommendationGeneration/"><span class="doc">the recommendation generator</span></a>.</p>
 </div>
-</div>
-<div class="section" id="connection-generation">
+</section>
+<section id="connection-generation">
 <h3>Connection Generation<a class="headerlink" href="#connection-generation" title="Permalink to this headline">#</a></h3>
 <p>The connection generation connects the recommended entities to the entities of the given model.
 Thus, it creates trace links between the input text and model.
@@ -326,8 +327,8 @@ The links are stored in the <a class="reference internal" href="../data/connecti
 <p class="admonition-title">See also</p>
 <p>For more information read the documentation about <a class="reference internal" href="../stages/connectionGeneration/"><span class="doc">the connection generator</span></a>.</p>
 </div>
-</div>
-<div class="section" id="inconsistency-generation">
+</section>
+<section id="inconsistency-generation">
 <h3>Inconsistency Generation<a class="headerlink" href="#inconsistency-generation" title="Permalink to this headline">#</a></h3>
 <p>The inconsistency generation is the last stage of the pipeline.
 It makes a comparison between the found trace links and the entities of the model.
@@ -336,9 +337,9 @@ Thereby, it recognizes inconsistencies caused by missing mentions of model entit
 <p class="admonition-title">See also</p>
 <p>For more information read the documentation about the <a class="reference internal" href="../stages/inconsistencyGeneration/"><span class="doc">inconsistency generator</span></a>.</p>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
         </article>
       </div>
