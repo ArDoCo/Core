@@ -13,13 +13,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Scanner;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.Modifications;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 public class DeleteOneSentenceEach implements IModificationStrategy {
@@ -67,8 +67,7 @@ public class DeleteOneSentenceEach implements IModificationStrategy {
             try {
                 File tmp = File.createTempFile(this.getClass().getSimpleName(), ".txt");
                 write(tmp, deleted);
-                ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(tmp));
-                IText newText = textConnector.getAnnotatedText();
+                IText newText = new CoreNLPProvider(new DataRepository(), new FileInputStream(tmp)).getAnnotatedText();
                 return ModifiedElement.of(newText, deleted + 1, Modifications.DELETE_SENTENCE);
             } catch (Exception e) {
                 e.printStackTrace();

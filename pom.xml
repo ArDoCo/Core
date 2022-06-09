@@ -1,264 +1,271 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>io.github.informalin.framework</groupId>
+    <parent>
+        <groupId>io.github.informalin.framework</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.7.1</version>
+    </parent>
+
+    <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
-    <version>0.7.1</version>
-  </parent>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <name>ArDoCo (Core) - The Consistency Analyzer</name>
+    <description>The goal of this project is to connect architecture documentation and models while identifying missing
+        or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
+        or a relation. To do so, we first create trace links and then make use of them and other information to identify
+        inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software Engineering
+        (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT. This work was supported by
+        funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research
+        Labs (46.23.01).
+    </description>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>Hossiphi</id>
+            <name>Sophie Corallo</name>
+            <email>sophie.schulz@kit.edu</email>
+            <url>https://mcse.kastel.kit.edu/staff_sophie_schulz.php</url>
+            <organization>KASTEL</organization>
+            <organizationUrl>https://mcse.kastel.kit.edu/</organizationUrl>
+            <timezone>GMT+1</timezone>
+        </developer>
+        <developer>
+            <id>dfuchss</id>
+            <name>Dominik Fuchss</name>
+            <email>dominik.fuchss@kit.edu</email>
+            <url>https://mcse.kastel.kit.edu/staff_dominik_fuchss.php</url>
+            <organization>KASTEL</organization>
+            <organizationUrl>https://mcse.kastel.kit.edu/</organizationUrl>
+            <timezone>GMT+1</timezone>
+        </developer>
+        <developer>
+            <id>Gram21</id>
+            <name>Jan Keim</name>
+            <email>jan.keim@kit.edu</email>
+            <url>https://mcse.kastel.kit.edu/staff_Keim_Jan.php</url>
+            <organization>KASTEL</organization>
+            <organizationUrl>https://mcse.kastel.kit.edu/</organizationUrl>
+            <timezone>GMT+1</timezone>
+        </developer>
+    </developers>
 
-  <groupId>io.github.ardoco.core</groupId>
-  <artifactId>parent</artifactId>
-  <version>${revision}</version>
-  <packaging>pom</packaging>
-  <name>ArDoCo (Core) - The Consistency Analyzer</name>
-  <description>The goal of this project is to connect architecture documentation and models while identifying missing
-    or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
-    or a relation. To do so, we first create trace links and then make use of them and other information to identify
-    inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software Engineering
-    (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT. This work was supported by
-    funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research
-    Labs (46.23.01).</description>
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <id>Hossiphi</id>
-      <name>Sophie Corallo</name>
-      <email>sophie.schulz@kit.edu</email>
-      <url>https://mcse.kastel.kit.edu/staff_sophie_schulz.php</url>
-      <organization>KASTEL</organization>
-      <organizationUrl>https://mcse.kastel.kit.edu/</organizationUrl>
-      <timezone>GMT+1</timezone>
-    </developer>
-    <developer>
-      <id>dfuchss</id>
-      <name>Dominik Fuchss</name>
-      <email>dominik.fuchss@kit.edu</email>
-      <url>https://mcse.kastel.kit.edu/staff_dominik_fuchss.php</url>
-      <organization>KASTEL</organization>
-      <organizationUrl>https://mcse.kastel.kit.edu/</organizationUrl>
-      <timezone>GMT+1</timezone>
-    </developer>
-    <developer>
-      <id>Gram21</id>
-      <name>Jan Keim</name>
-      <email>jan.keim@kit.edu</email>
-      <url>https://mcse.kastel.kit.edu/staff_Keim_Jan.php</url>
-      <organization>KASTEL</organization>
-      <organizationUrl>https://mcse.kastel.kit.edu/</organizationUrl>
-      <timezone>GMT+1</timezone>
-    </developer>
-  </developers>
+    <scm>
+        <connection>scm:git:git://github.com/ArDoCo/Core.git</connection>
+        <developerConnection>scm:git:ssh://github.com:ArDoCo/Core.git</developerConnection>
+        <url>http://github.com/ArDoCo/Core/tree/main</url>
+    </scm>
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/ArDoCo/Core/issues</url>
+    </issueManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-  <scm>
-    <connection>scm:git:git://github.com/ArDoCo/Core.git</connection>
-    <developerConnection>scm:git:ssh://github.com:ArDoCo/Core.git</developerConnection>
-    <url>http://github.com/ArDoCo/Core/tree/main</url>
-  </scm>
-  <issueManagement>
-    <system>GitHub Issues</system>
-    <url>https://github.com/ArDoCo/Core/issues</url>
-  </issueManagement>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
+    <properties>
+        <project.source.encoding>UTF-8</project.source.encoding>
 
-  <properties>
-    <project.source.encoding>UTF-8</project.source.encoding>
+        <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
+        <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+        <sonar.organization>ardoco</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+        <argLine>-Xmx4g -Xss256m</argLine>
+    </properties>
 
-    <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
-    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-    <sonar.organization>ardoco</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
-    <argLine>-Xmx4g -Xss256m</argLine>
-  </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>text-extraction</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>text-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>recommendation-generator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>pipeline</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>connection-generator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>model-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>inconsistency-detection</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-  <dependencyManagement>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.9</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>text-extraction</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>text-provider</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>recommendation-generator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>connection-generator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>model-provider</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>inconsistency-detection</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.12.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
-        <version>1.9</version>
-      </dependency>
+        <dependency>
+            <groupId>io.github.informalin.framework</groupId>
+            <artifactId>pipeline</artifactId>
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
+        <!-- Eclipse collections -->
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+        </dependency>
+        <!-- Apache Commons Lang -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
     </dependencies>
-  </dependencyManagement>
+    <repositories>
+        <repository>
+            <id>mavenCentral</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>mavenSnapshot</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
 
-  <dependencies>
-    <!-- Eclipse collections -->
-    <dependency>
-      <groupId>org.eclipse.collections</groupId>
-      <artifactId>eclipse-collections-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.collections</groupId>
-      <artifactId>eclipse-collections</artifactId>
-    </dependency>
-    <!-- Apache Commons Lang -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-  </dependencies>
-  <repositories>
-    <repository>
-      <id>mavenCentral</id>
-      <url>https://repo1.maven.org/maven2/</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>mavenSnapshot</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-  </repositories>
-
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>prepare-agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>deployment</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <modules>
-        <module>text-extraction</module>
-        <module>text-provider</module>
-        <module>recommendation-generator</module>
-        <module>common</module>
-        <module>pipeline</module>
-        <module>connection-generator</module>
-        <module>inconsistency-detection</module>
-        <module>model-provider</module>
-      </modules>
-      <build>
+    <build>
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <phase>verify</phase>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                  <keyname>2673EE7DF64D33426A93D642E88F0DA2FB06A126</keyname>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>module-defaults</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>text-extraction</module>
-        <module>text-provider</module>
-        <module>recommendation-generator</module>
-        <module>common</module>
-        <module>pipeline</module>
-        <module>connection-generator</module>
-        <module>inconsistency-detection</module>
-        <module>model-provider</module>
-        <module>tests</module>
-        <module>cli</module>
-      </modules>
-    </profile>
-  </profiles>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>deployment</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>text-extraction</module>
+                <module>text-provider</module>
+                <module>recommendation-generator</module>
+                <module>common</module>
+                <module>pipeline</module>
+                <module>connection-generator</module>
+                <module>inconsistency-detection</module>
+                <module>model-provider</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <keyname>2673EE7DF64D33426A93D642E88F0DA2FB06A126</keyname>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>module-defaults</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>text-extraction</module>
+                <module>text-provider</module>
+                <module>recommendation-generator</module>
+                <module>common</module>
+                <module>pipeline</module>
+                <module>connection-generator</module>
+                <module>inconsistency-detection</module>
+                <module>model-provider</module>
+                <module>tests</module>
+                <module>cli</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

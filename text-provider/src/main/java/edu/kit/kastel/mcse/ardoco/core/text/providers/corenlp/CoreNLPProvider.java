@@ -3,25 +3,30 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
-public class CoreNLPProvider implements ITextConnector {
+public class CoreNLPProvider extends AbstractPipelineStep implements ITextConnector {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
     private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
     private final InputStream text;
     private IText annotatedText;
 
-    public CoreNLPProvider(InputStream text) {
+    public CoreNLPProvider(DataRepository data, InputStream text) {
+        super("CoreNLPTextProvider", data);
         annotatedText = null;
         this.text = text;
     }
@@ -69,5 +74,17 @@ public class CoreNLPProvider implements ITextConnector {
         String inputText = scanner.next();
         scanner.close();
         return inputText;
+    }
+
+    @Override
+    public void run() {
+        var annotatedText = getAnnotatedText();
+        var preprocessingData = new PreprocessingData(annotatedText);
+        this.getDataRepository().addData("preprocessingData", preprocessingData);
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+        // empty
     }
 }
