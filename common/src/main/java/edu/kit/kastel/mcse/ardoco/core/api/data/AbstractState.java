@@ -3,9 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.api.data;
 
 import java.util.Map;
 
+import edu.kit.kastel.informalin.data.PipelineStepData;
 import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
 
-public abstract class AbstractState extends AbstractConfigurable {
+public abstract class AbstractState extends AbstractConfigurable implements PipelineStepData {
     protected final Map<String, String> configs;
 
     protected AbstractState(Map<String, String> config) {

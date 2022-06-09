@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
@@ -16,8 +17,11 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
 
+    private DataRepository dataRepository;
+
     protected AbstractEvalStrategy() {
         super();
+        this.dataRepository = new DataRepository();
     }
 
     protected DataStructure runRecommendationConnectionInconsistency(DataStructure data) {
@@ -30,8 +34,10 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
     }
 
     protected IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> configs) {
-        ModelProvider modelExtractor = new ModelProvider(modelConnector);
-        return modelExtractor.execute(configs);
+        ModelProvider modelExtractor = new ModelProvider(dataRepository, modelConnector);
+        modelExtractor.setAdditionalSettings(configs);
+        modelExtractor.run();
+        return modelExtractor.getModelState();
     }
 
     protected DataStructure runTextExtractor(DataStructure data, Map<String, String> configs) {
