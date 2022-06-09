@@ -63,18 +63,18 @@ To test the Core, you could use case studies and benchmarks provided in ..
 
 For snapshot releases, make sure to add the following repository
 ```xml
-  <repositories>
+<repositories>
     <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>mavenSnapshot</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+        <id>mavenSnapshot</id>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
-  </repositories>
+</repositories>
 ```
 
 ### Attribution
