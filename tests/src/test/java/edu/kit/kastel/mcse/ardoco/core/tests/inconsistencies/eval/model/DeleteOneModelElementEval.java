@@ -1,6 +1,15 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model;
 
+import java.io.File;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
@@ -16,14 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.PRF1Evaluator;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.model.DeleteOneElementEach;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.io.File;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class DeleteOneModelElementEval extends AbstractEvalStrategy {
 

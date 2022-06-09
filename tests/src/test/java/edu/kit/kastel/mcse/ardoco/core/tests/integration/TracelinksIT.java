@@ -1,16 +1,14 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -23,13 +21,16 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 
 /**
  * @author Jan Keim

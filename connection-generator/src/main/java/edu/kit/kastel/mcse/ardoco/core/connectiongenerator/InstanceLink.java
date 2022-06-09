@@ -1,6 +1,14 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
@@ -8,13 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLin
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * Represents a trace link between an instance of the extracted model and a recommended instance.

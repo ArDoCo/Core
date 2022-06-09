@@ -1,6 +1,22 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
+import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
@@ -17,21 +33,6 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGen
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
-import static edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable.KEY_VALUE_CONNECTOR;
 
 /**
  * The Pipeline defines the execution of the agents.

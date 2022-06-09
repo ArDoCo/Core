@@ -1,14 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection.agents;
 
-import edu.kit.kastel.informalin.framework.common.tuple.Pair;
-import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionResult;
-import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
-import edu.kit.kastel.lissa.swa.documentation.TextBox;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,9 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import edu.kit.kastel.informalin.framework.common.tuple.Pair;
+import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionResult;
+import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
+import edu.kit.kastel.lissa.swa.documentation.TextBox;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
+
 public class SketchRecognitionAgent extends DiagramDetectionAgent {
     private static final List<String> SUPPORTED_FILES = List.of(".jpg", ".png", ".jpeg");
-    private final SketchRecognitionService srs = new SketchRecognitionService();
+    private final SketchRecognitionService sketchRecognitionService = new SketchRecognitionService();
 
     @Override
     public void execute(DiagramDetectionData data) {
@@ -35,18 +35,18 @@ public class SketchRecognitionAgent extends DiagramDetectionAgent {
         for (int i = 0; i < images.length; i++)
             images[i] = Path.of(data.getDiagramDirectory().getAbsolutePath(), images[i]).toString();
 
-        srs.start();
+        sketchRecognitionService.start();
         List<Pair<String, SketchRecognitionResult>> results = new ArrayList<>();
         for (var image : images) {
             try {
-                var result = srs.recognize(new FileInputStream(image));
+                var result = sketchRecognitionService.recognize(new FileInputStream(image));
                 logger.debug("Got result for {}", image);
                 results.add(new Pair<>(image, result));
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
         }
-        srs.stop();
+        sketchRecognitionService.stop();
 
         transformData(results, data.getDiagramDetectionState());
     }

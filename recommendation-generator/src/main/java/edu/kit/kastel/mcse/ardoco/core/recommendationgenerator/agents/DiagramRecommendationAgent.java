@@ -1,15 +1,15 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
+import java.util.List;
+import java.util.Map;
+
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IBox;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-
-import java.util.List;
-import java.util.Map;
 
 public class DiagramRecommendationAgent extends RecommendationAgent {
 
@@ -38,7 +38,7 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
 
     private void processDiagram(List<IBox> diagram, IRecommendationState recommendationState) {
         var interestingWords = diagram.stream().flatMap(it -> it.getWordsThatBelongToThisBox().stream()).toList();
-        var matchingRIs = interestingWords.stream().flatMap(iw -> recommendationState.getRecommendedInstancesByName(iw).stream()).distinct().toList();
+        var matchingRIs = interestingWords.stream().flatMap(iw -> recommendationState.getRecommendedInstancesBySimilarName(iw).stream()).distinct().toList();
         var notMatchingRIs = recommendationState.getRecommendedInstances().stream().filter(it -> !matchingRIs.contains(it)).toList();
 
         for (var notMatching : notMatchingRIs)
@@ -49,7 +49,7 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
         /*
          * for (var word : interestingWords) { var recommendations =
          * recommendationState.getRecommendedInstancesBySimilarName(word);
-         * 
+         *
          * if (!recommendations.isEmpty()) {
          * logger.debug("Modifying RecommendedInstances according to Sketches & Diagrams: {}", recommendations); for
          * (var recommendation : recommendations) recommendation.addProbability(this, probability); } }

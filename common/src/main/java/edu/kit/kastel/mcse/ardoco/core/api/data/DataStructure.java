@@ -1,6 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
+import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
+
+import java.io.File;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.api.agent.*;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
@@ -10,13 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.*;
-
-import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
 
 public final class DataStructure implements IData, IModelData, ITextData, IRecommendationData, IConnectionData, IInconsistencyData, TextAgentData,
         RecommendationAgentData, ConnectionAgentData, InconsistencyAgentData, IDiagramDetectionData, DiagramDetectionData {

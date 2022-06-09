@@ -1,16 +1,16 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IBox;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IBox;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
 
 public class DiagramDetectionState extends AbstractState implements IDiagramDetectionState {
     private Map<String, String> diagrams = new HashMap<>();
