@@ -104,16 +104,20 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         }
 
         // text extractor
-        pipeline.runTextExtractor(data, additionalConfigs);
+        IExecutionStage textModule = new TextExtraction();
+        textModule.execute(data, additionalConfigs);
 
         // recommendation generator
-        pipeline.runRecommendationGenerator(data, additionalConfigs);
+        IExecutionStage recommendationModule = new RecommendationGenerator();
+        recommendationModule.execute(data, additionalConfigs);
 
         // connection generator
-        pipeline.runConnectionGenerator(data, additionalConfigs);
+        IExecutionStage connectionGenerator = new ConnectionGenerator();
+        connectionGenerator.execute(data, additionalConfigs);
 
         // inconsistency checker
-        pipeline.runInconsistencyChecker(data, additionalConfigs);
+        IExecutionStage inconsistencyChecker = new InconsistencyChecker();
+        inconsistencyChecker.execute(data, additionalConfigs);
 
         // save step
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
@@ -200,25 +204,4 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(),
                 data.getInconsistencyState(modelId));
     }
-
-    private void runTextExtractor(DataStructure data, Map<String, String> additionalConfigs) {
-        IExecutionStage textModule = new TextExtraction();
-        textModule.execute(data, additionalConfigs);
-    }
-
-    private void runRecommendationGenerator(DataStructure data, Map<String, String> additionalConfigs) {
-        IExecutionStage recommendationModule = new RecommendationGenerator();
-        recommendationModule.execute(data, additionalConfigs);
-    }
-
-    private void runConnectionGenerator(DataStructure data, Map<String, String> additionalConfigs) {
-        IExecutionStage connectionGenerator = new ConnectionGenerator();
-        connectionGenerator.execute(data, additionalConfigs);
-    }
-
-    private void runInconsistencyChecker(DataStructure data, Map<String, String> additionalConfigs) {
-        IExecutionStage inconsistencyChecker = new InconsistencyChecker();
-        inconsistencyChecker.execute(data, additionalConfigs);
-    }
-
 }
