@@ -2,15 +2,9 @@
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 /**
  *
@@ -70,35 +64,6 @@ public enum Project {
 
     public File getGoldStandardFile() {
         return new File(goldStandard);
-    }
-
-    public IModelConnector getModel() {
-        if (modelConnector == null) {
-            synchronized (this) {
-                if (modelConnector == null) {
-                    try {
-                        modelConnector = new PcmXMLModelConnector(getModelFile());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-        return modelConnector;
-    }
-
-    public IText getText() {
-        return getTextViaFile();
-    }
-
-    public IText getTextViaFile() {
-        try {
-            ITextConnector textConnector = new CoreNLPProvider(new FileInputStream(getTextFile()));
-            return textConnector.getAnnotatedText();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public GoldStandard getGoldStandard(IModelConnector pcmModel) {
