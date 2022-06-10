@@ -34,31 +34,35 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
 
     protected IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> configs) {
         ModelProvider modelExtractor = new ModelProvider(dataRepository, modelConnector);
-        modelExtractor.setAdditionalSettings(configs);
+        modelExtractor.applyConfiguration(configs);
         modelExtractor.run();
         return modelExtractor.getModelState();
     }
 
     protected DataStructure runTextExtractor(DataStructure data, Map<String, String> configs) {
         var textModule = new TextExtraction(dataRepository);
+        textModule.applyConfiguration(configs);
         textModule.run();
         return data;
     }
 
     protected DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> configs) {
         var recommendationModule = new RecommendationGenerator(dataRepository);
+        recommendationModule.applyConfiguration(configs);
         recommendationModule.run();
         return data;
     }
 
     protected DataStructure runConnectionGenerator(DataStructure data, Map<String, String> configs) {
         var connectionGenerator = new ConnectionGenerator(dataRepository);
+        connectionGenerator.applyConfiguration(configs);
         connectionGenerator.run();
         return data;
     }
 
     protected DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
         var inconsistencyChecker = new InconsistencyChecker(dataRepository);
+        inconsistencyChecker.applyConfiguration(configs);
         inconsistencyChecker.run();
         return data;
     }
