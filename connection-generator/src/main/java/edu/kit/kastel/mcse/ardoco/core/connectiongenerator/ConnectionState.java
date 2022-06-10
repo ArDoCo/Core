@@ -28,7 +28,7 @@ public class ConnectionState extends AbstractState implements IConnectionState {
 
     @Override
     public IConnectionState createCopy() {
-        var newState = new ConnectionState(this.configs);
+        var newState = new ConnectionState();
         newState.instanceLinks = instanceLinks.stream().map(IInstanceLink::createCopy).collect(Collectors.toSet());
         return newState;
     }
@@ -36,9 +36,13 @@ public class ConnectionState extends AbstractState implements IConnectionState {
     /**
      * Creates a new connection state.
      */
-    public ConnectionState(Map<String, String> configs) {
-        super(configs);
+    public ConnectionState() {
         instanceLinks = new HashSet<>();
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+        // empty
     }
 
     /**

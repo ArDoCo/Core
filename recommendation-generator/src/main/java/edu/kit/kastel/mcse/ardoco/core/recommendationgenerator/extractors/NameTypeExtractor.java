@@ -3,15 +3,18 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
 import java.util.Map;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationStates;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
@@ -19,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * @author Sophie Schulz
  * @author Jan Keim
  */
-public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData> {
+public class NameTypeExtractor extends AbstractExtractor {
 
     @Configurable
     private double probability = 1.0;
@@ -27,16 +30,28 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
     /**
      * Creates a new NameTypeAnalyzer
      */
-    public NameTypeExtractor() {
-        // empty
+    public NameTypeExtractor(DataRepository dataRepository) {
+        super("NameTypeExtractor", dataRepository);
     }
 
     @Override
-    public void exec(RecommendationAgentData data, IWord word) {
-        var textState = data.getTextState();
-        for (var model : data.getModelIds()) {
-            var modelState = data.getModelState(model);
-            var recommendationState = data.getRecommendationState(modelState.getMetamodel());
+    public void run() {
+        DataRepository dataRepository = getDataRepository();
+        var text = RecommendationGenerator.getAnnotatedText(dataRepository);
+        var textState = RecommendationGenerator.getTextState(dataRepository);
+        var modelStatesData = RecommendationGenerator.getModelStatesData(dataRepository);
+        var recommendationStates = RecommendationGenerator.getRecommendationStates(dataRepository);
+
+        for (var word : text.getWords()) {
+            exec(textState, modelStatesData, recommendationStates, word);
+        }
+    }
+
+    private void exec(ITextState textState, ModelStates modelStates, RecommendationStates recommendationStates, IWord word) {
+        for (var model : modelStates.modelIds()) {
+            var modelState = modelStates.getModelState(model);
+            var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
+
             addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);
             addRecommendedInstanceIfNameBeforeType(textState, word, modelState, recommendationState);
             addRecommendedInstanceIfNameOrTypeBeforeType(textState, word, modelState, recommendationState);
@@ -146,4 +161,5 @@ public class NameTypeExtractor extends AbstractExtractor<RecommendationAgentData
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         // handle additional config
     }
+
 }

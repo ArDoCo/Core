@@ -31,22 +31,19 @@ public class ModelExtractionState extends AbstractState implements IModelState {
     @Override
     public IModelState createCopy() {
         return new ModelExtractionState(modelId, metamodelType, instanceTypes, names, //
-                instances.collect(IModelInstance::createCopy), //
-                this.configs);
+                instances.collect(IModelInstance::createCopy));
     }
 
     // For generation of configuration
     private ModelExtractionState() {
-        super(Map.of());
         this.modelId = null;
         this.metamodelType = null;
         this.instanceTypes = null;
         this.names = null;
     }
 
-    private ModelExtractionState(String modelId, Metamodel metamodelType, Set<String> instanceTypes, Set<String> names, ImmutableList<IModelInstance> instances,
-            Map<String, String> configs) {
-        super(configs);
+    private ModelExtractionState(String modelId, Metamodel metamodelType, Set<String> instanceTypes, Set<String> names,
+            ImmutableList<IModelInstance> instances) {
         this.modelId = modelId;
         this.metamodelType = metamodelType;
         this.instanceTypes = instanceTypes;
@@ -59,8 +56,7 @@ public class ModelExtractionState extends AbstractState implements IModelState {
      *
      * @param instances instances of this model extraction state
      */
-    public ModelExtractionState(String modelId, Metamodel metamodelType, ImmutableList<IModelInstance> instances, Map<String, String> configs) {
-        super(configs);
+    public ModelExtractionState(String modelId, Metamodel metamodelType, ImmutableList<IModelInstance> instances) {
         this.modelId = Objects.requireNonNull(modelId);
         this.metamodelType = metamodelType;
         this.instances = instances;
@@ -150,4 +146,8 @@ public class ModelExtractionState extends AbstractState implements IModelState {
         return output.toString();
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+        // empty
+    }
 }

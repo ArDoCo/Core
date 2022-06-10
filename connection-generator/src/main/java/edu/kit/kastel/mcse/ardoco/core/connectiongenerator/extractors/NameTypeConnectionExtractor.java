@@ -7,42 +7,56 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
  * @author Sophie Schulz, Jan Keim
  */
-public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAgentData> {
+public class NameTypeConnectionExtractor extends AbstractExtractor {
 
     @Configurable
     private double probability = 1.0;
 
-    public NameTypeConnectionExtractor() {
-        // empty
+    public NameTypeConnectionExtractor(DataRepository dataRepository) {
+        super("NameTypeConnectionExtractor", dataRepository);
     }
 
     @Override
-    public void exec(ConnectionAgentData data, IWord word) {
-        for (var model : data.getModelIds()) {
-            var modelState = data.getModelState(model);
-            var recommendationState = data.getRecommendationState(modelState.getMetamodel());
-            checkForNameAfterType(data.getTextState(), word, modelState, recommendationState);
-            checkForNameBeforeType(data.getTextState(), word, modelState, recommendationState);
-            checkForNortBeforeType(data.getTextState(), word, modelState, recommendationState);
-            checkForNortAfterType(data.getTextState(), word, modelState, recommendationState);
+    public void run() {
+        DataRepository dataRepository = getDataRepository();
+        var text = ConnectionGenerator.getAnnotatedText(dataRepository);
+        var textState = ConnectionGenerator.getTextState(dataRepository);
+        var modelStates = ConnectionGenerator.getModelStatesData(dataRepository);
+        var recommendationStates = ConnectionGenerator.getRecommendationStates(dataRepository);
+        for (var word : text.getWords()) {
+            exec(textState, modelStates, recommendationStates, word);
+        }
+    }
+
+    private void exec(ITextState textState, ModelStates modelStates, IRecommendationStates recommendationStates, IWord word) {
+        for (var model : modelStates.modelIds()) {
+            var modelState = modelStates.getModelState(model);
+            var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
+            checkForNameAfterType(textState, word, modelState, recommendationState);
+            checkForNameBeforeType(textState, word, modelState, recommendationState);
+            checkForNortBeforeType(textState, word, modelState, recommendationState);
+            checkForNortAfterType(textState, word, modelState, recommendationState);
         }
     }
 
@@ -200,4 +214,5 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         // handle additional configuration
     }
+
 }

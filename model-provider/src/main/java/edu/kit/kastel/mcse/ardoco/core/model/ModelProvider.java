@@ -8,7 +8,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStatesData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 
 /**
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStatesData;
 public final class ModelProvider extends AbstractPipelineStep {
     private static final String MODEL_STATES_DATA = "ModelStatesData";
     private final IModelConnector modelConnector;
-    private Map<String, String> additionalSettings;
     private ModelExtractionState modelState = null;
 
     /**
@@ -30,10 +29,6 @@ public final class ModelProvider extends AbstractPipelineStep {
     public ModelProvider(DataRepository dataRepository, IModelConnector modelConnector) {
         super("ModelProvider " + modelConnector.getModelId(), dataRepository);
         this.modelConnector = modelConnector;
-    }
-
-    public void setAdditionalSettings(Map<String, String> additionalSettings) {
-        this.additionalSettings = additionalSettings;
     }
 
     /**
@@ -48,22 +43,22 @@ public final class ModelProvider extends AbstractPipelineStep {
     @Override
     public void run() {
         ImmutableList<IModelInstance> instances = modelConnector.getInstances();
-        modelState = new ModelExtractionState(modelConnector.getModelId(), modelConnector.getMetamodel(), instances, additionalSettings);
+        modelState = new ModelExtractionState(modelConnector.getModelId(), modelConnector.getMetamodel(), instances);
 
         addModelStateToDataRepository();
     }
 
     private void addModelStateToDataRepository() {
         var dataRepository = getDataRepository();
-        var optionalData = dataRepository.getData(MODEL_STATES_DATA, ModelStatesData.class);
-        ModelStatesData modelStatesData;
+        var optionalData = dataRepository.getData(MODEL_STATES_DATA, ModelStates.class);
+        ModelStates modelStates;
         if (optionalData.isEmpty()) {
-            modelStatesData = new ModelStatesData();
+            modelStates = new ModelStates();
         } else {
-            modelStatesData = optionalData.get();
+            modelStates = optionalData.get();
         }
-        modelStatesData.addModelState(modelConnector.getModelId(), modelState);
-        dataRepository.addData(MODEL_STATES_DATA, modelStatesData);
+        modelStates.addModelState(modelConnector.getModelId(), modelState);
+        dataRepository.addData(MODEL_STATES_DATA, modelStates);
     }
 
     @Override

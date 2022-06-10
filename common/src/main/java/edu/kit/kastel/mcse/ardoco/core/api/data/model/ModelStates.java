@@ -8,16 +8,16 @@ import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
 
-public class ModelStatesData implements IData {
+public class ModelStates implements IData {
     public static final String ID = "ModelStatesData";
 
     private Map<String, IModelState> models = new HashMap<>();
 
-    public ModelStatesData() {
+    public ModelStates() {
         super();
     }
 
-    public ModelStatesData(Map<String, IModelState> models) {
+    public ModelStates(Map<String, IModelState> models) {
         this.models = models;
     }
 
@@ -34,7 +34,7 @@ public class ModelStatesData implements IData {
     }
 
     @Override
-    public ModelStatesData createCopy() {
-        return new ModelStatesData(copyMap(models, IModelState::createCopy));
+    public ModelStates createCopy() {
+        return new ModelStates(copyMap(models, IModelState::createCopy));
     }
 }

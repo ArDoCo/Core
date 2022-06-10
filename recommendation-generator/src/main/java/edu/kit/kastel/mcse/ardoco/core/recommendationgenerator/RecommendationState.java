@@ -27,7 +27,7 @@ public class RecommendationState extends AbstractState implements IRecommendatio
 
     @Override
     public IRecommendationState createCopy() {
-        var recommendationState = new RecommendationState(this.configs);
+        var recommendationState = new RecommendationState();
         recommendationState.recommendedInstances = recommendedInstances.collect(IRecommendedInstance::createCopy);
         return recommendationState;
     }
@@ -35,8 +35,7 @@ public class RecommendationState extends AbstractState implements IRecommendatio
     /**
      * Creates a new recommendation state.
      */
-    public RecommendationState(Map<String, String> configs) {
-        super(configs);
+    public RecommendationState() {
         recommendedInstances = Lists.mutable.empty();
     }
 
@@ -203,4 +202,8 @@ public class RecommendationState extends AbstractState implements IRecommendatio
         return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutable();
     }
 
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+        // empty
+    }
 }
