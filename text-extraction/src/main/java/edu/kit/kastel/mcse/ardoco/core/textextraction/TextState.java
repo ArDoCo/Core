@@ -25,16 +25,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * @author Jan Keim
  */
 public class TextState extends AbstractState implements ITextState {
+    public static final String ID = "TextState";
 
     private MutableList<INounMapping> nounMappings;
 
     /**
      * Creates a new name type relation state
-     *
-     * @param configs any additional configuration
      */
-    public TextState(Map<String, String> configs) {
-        super(configs);
+    public TextState() {
         nounMappings = Lists.mutable.empty();
     }
 
@@ -171,7 +169,7 @@ public class TextState extends AbstractState implements ITextState {
 
     @Override
     public ITextState createCopy() {
-        var textExtractionState = new TextState(this.configs);
+        var textExtractionState = new TextState();
         textExtractionState.nounMappings = Lists.mutable.ofAll(nounMappings);
         return textExtractionState;
     }

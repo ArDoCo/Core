@@ -3,13 +3,14 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.util.Map;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 /**
  * The analyzer classifies nouns.
@@ -17,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
  * @author Sophie Schulz
  * @author Jan Keim
  */
-public class NounExtractor extends AbstractExtractor<TextAgentData> {
+public class NounExtractor extends AbstractExtractor {
     @Configurable
     private double nameOrTypeWeight = 0.5;
 
@@ -27,25 +28,21 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
     /**
      * Prototype constructor.
      */
-    public NounExtractor() {
-        // empty
+    public NounExtractor(DataRepository data) {
+        super("NounExtractor", data);
     }
 
-    /**
-     * Exec.
-     *
-     * @param n the n
-     */
     @Override
-    public void exec(TextAgentData data, IWord n) {
+    public void run() {
+        for (var n : TextExtraction.getAnnotatedText(getDataRepository()).getWords()) {
+            var nodeValue = n.getText();
+            if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
+                return;
+            }
 
-        var nodeValue = n.getText();
-        if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
-            return;
+            var textState = TextExtraction.getTextState(getDataRepository());
+            findSingleNouns(textState, n);
         }
-
-        findSingleNouns(data.getTextState(), n);
-
     }
 
     /**
@@ -65,6 +62,6 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // handle additional config
+        this.applyConfiguration(additionalConfiguration);
     }
 }

@@ -7,7 +7,6 @@ import java.util.Map;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
@@ -41,26 +40,26 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
     }
 
     protected DataStructure runTextExtractor(DataStructure data, Map<String, String> configs) {
-        IExecutionStage textModule = new TextExtraction();
-        textModule.execute(data, configs);
+        var textModule = new TextExtraction(dataRepository);
+        textModule.run();
         return data;
     }
 
     protected DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> configs) {
-        IExecutionStage recommendationModule = new RecommendationGenerator();
-        recommendationModule.execute(data, configs);
+        var recommendationModule = new RecommendationGenerator();
+        recommendationModule.run();
         return data;
     }
 
     protected DataStructure runConnectionGenerator(DataStructure data, Map<String, String> configs) {
-        IExecutionStage connectionGenerator = new ConnectionGenerator();
-        connectionGenerator.execute(data, configs);
+        var connectionGenerator = new ConnectionGenerator();
+        connectionGenerator.run();
         return data;
     }
 
     protected DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
-        IExecutionStage inconsistencyChecker = new InconsistencyChecker();
-        inconsistencyChecker.execute(data, configs);
+        var inconsistencyChecker = new InconsistencyChecker();
+        inconsistencyChecker.run();
         return data;
     }
 }

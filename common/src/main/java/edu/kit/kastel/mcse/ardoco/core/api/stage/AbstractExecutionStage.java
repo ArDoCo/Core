@@ -3,11 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.api.stage;
 
 import java.util.Map;
 
-import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.pipeline.Pipeline;
 
-public abstract class AbstractExecutionStage extends AbstractConfigurable implements IExecutionStage {
+public abstract class AbstractExecutionStage extends Pipeline {
+    public AbstractExecutionStage(String id, DataRepository dataRepository) {
+        super(id, dataRepository);
+    }
+
     @Override
-    protected final void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // You should use #execute(DataStructure data, Map<String, String> additionalSettings)
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
     }
 }

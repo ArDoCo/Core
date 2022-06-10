@@ -1,10 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.agent;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
-
-public interface IAgent<D extends IData> extends IClaimant {
-    void execute(D data);
+public interface IAgent extends IClaimant {
 
     default String getId() {
         return this.getClass().getSimpleName();

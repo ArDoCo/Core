@@ -80,7 +80,7 @@ public class CoreNLPProvider extends AbstractPipelineStep implements ITextConnec
     public void run() {
         var annotatedText = getAnnotatedText();
         var preprocessingData = new PreprocessingData(annotatedText);
-        this.getDataRepository().addData("preprocessingData", preprocessingData);
+        this.getDataRepository().addData(PreprocessingData.ID, preprocessingData);
     }
 
     @Override

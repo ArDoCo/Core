@@ -9,6 +9,7 @@ import java.util.Set;
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
 
 public class ModelStatesData implements IData {
+    public static final String ID = "ModelStatesData";
 
     private Map<String, IModelState> models = new HashMap<>();
 

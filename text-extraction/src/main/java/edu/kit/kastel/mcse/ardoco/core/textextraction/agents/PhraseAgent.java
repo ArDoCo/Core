@@ -5,15 +5,18 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * Agent that is responsible for looking at phrases and extracting {@link INounMapping}s from compound nouns etc.
@@ -29,15 +32,17 @@ public class PhraseAgent extends TextAgent {
     /**
      * Instantiates a new initial text agent.
      */
-    public PhraseAgent() {
-        // empty
+    public PhraseAgent(DataRepository dataRepository) {
+        super("TextExtraction", dataRepository);
     }
 
     @Override
-    public void execute(TextAgentData data) {
-        for (var word : data.getText().getWords()) {
-            createNounMappingIfPhrase(word, data.getTextState());
-            createNounMappingIfSpecialNamedEntity(word, data.getTextState());
+    public void run() {
+        var text = getAnnotatedText();
+        var textState = getDataRepository().getData(TextState.ID, TextState.class).orElseThrow();
+        for (var word : text.getWords()) {
+            createNounMappingIfPhrase(word, textState);
+            createNounMappingIfSpecialNamedEntity(word, textState);
         }
     }
 
@@ -83,4 +88,9 @@ public class PhraseAgent extends TextAgent {
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         // handle additional config
     }
+
+    private IText getAnnotatedText() {
+        return this.getDataRepository().getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
+    }
+
 }
