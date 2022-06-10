@@ -49,7 +49,6 @@ public class ConnectionGenerator extends AbstractExecutionStage {
 
     @Override
     public void run() {
-        // build connectionState
         var connectionStates = ConnectionStates.build();
         getDataRepository().addData(ConnectionStates.ID, connectionStates);
 

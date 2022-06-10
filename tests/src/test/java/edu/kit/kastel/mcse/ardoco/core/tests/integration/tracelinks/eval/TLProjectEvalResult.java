@@ -2,12 +2,21 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
@@ -27,13 +36,22 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
     private final List<TestLink> falsePositives = new ArrayList<>();
     private final List<TestLink> falseNegatives = new ArrayList<>();
 
-    public TLProjectEvalResult(Project project, DataStructure data) throws IOException {
+    public TLProjectEvalResult(Project project, DataRepository data) throws IOException {
         this(project, getTraceLinks(project, data), TLGoldStandardFile.loadLinks(project));
     }
 
-    private static List<TestLink> getTraceLinks(Project project, DataStructure data) {
+    private static List<TestLink> getTraceLinks(Project project, DataRepository data) {
         var traceLinks = Lists.mutable.<TestLink> empty();
-        for (var connectionState : data.getModelIds().stream().map(data::getConnectionState).toList()) {
+        var connectionStates = data.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
+        var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
+
+        List<IConnectionState> connectionStatesList = modelStates.modelIds()
+                .stream()
+                .map(modelStates::getModelState)
+                .map(IModelState::getMetamodel)
+                .map(connectionStates::getConnectionState)
+                .toList();
+        for (var connectionState : connectionStatesList) {
             traceLinks.addAll(connectionState.getTraceLinks().stream().map(TestLink::new).toList());
         }
         return traceLinks.toList();

@@ -26,9 +26,14 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
@@ -105,7 +110,7 @@ class TracelinksIT {
         inputText = project.getTextFile();
 
         // execute pipeline
-        DataStructure data = null;
+        DataRepository data = null;
         try {
             data = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
         } catch (IOException e) {
@@ -113,11 +118,14 @@ class TracelinksIT {
         }
 
         Assertions.assertNotNull(data);
-        Assertions.assertEquals(1, data.getModelIds().size());
-        var modelId = data.getModelIds().get(0);
+        var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
+        var modelIds = modelStates.modelIds();
+        Assertions.assertEquals(1, modelIds.size());
+        var modelId = modelIds.stream().findFirst().orElseThrow();
+        var model = modelStates.getModelState(modelId);
 
         // calculate results and compare to expected results
-        var results = calculateResults(project, data, modelId);
+        var results = calculateResults(project, data, model);
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
@@ -150,14 +158,15 @@ class TracelinksIT {
 
     }
 
-    private void printDetailedDebug(EvaluationResults results, DataStructure data) {
+    private void printDetailedDebug(EvaluationResults results, DataRepository data) {
         var falseNegatives = results.getFalseNegative().stream().map(Object::toString);
         var falsePositives = results.getFalsePositives().stream().map(Object::toString);
 
-        var sentences = data.getText().getSentences();
+        var sentences = data.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText().getSentences();
+        var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
-        for (String modelId : data.getModelIds()) {
-            var instances = data.getModelState(modelId).getInstances();
+        for (String modelId : modelStates.modelIds()) {
+            var instances = modelStates.getModelState(modelId).getInstances();
 
             var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);
             var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);
@@ -201,8 +210,9 @@ class TracelinksIT {
         return outputList;
     }
 
-    private EvaluationResults calculateResults(Project project, DataStructure data, String modelId) {
-        var connectionState = data.getConnectionState(modelId);
+    private EvaluationResults calculateResults(Project project, DataRepository data, IModelState modelState) {
+        var connectionStates = data.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
+        var connectionState = connectionStates.getConnectionState(modelState.getMetamodel());
         var traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());
 

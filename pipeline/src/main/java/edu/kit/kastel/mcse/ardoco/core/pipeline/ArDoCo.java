@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
@@ -69,7 +70,7 @@ public final class ArDoCo extends Pipeline {
      * @param outputDir              File that represents the output directory where the results should be written to
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
+    public static DataRepository runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) throws IOException {
         ArDoCo arDoCo = new ArDoCo("ArDoCo", new DataRepository());
         logger.info("Loading additional configs ..");
@@ -138,7 +139,7 @@ public final class ArDoCo extends Pipeline {
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
-        return data;
+        return dataRepository;
     }
 
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
@@ -182,7 +183,7 @@ public final class ArDoCo extends Pipeline {
     }
 
     public static InconsistencyState getInconsistencyState(DataRepository dataRepository) {
-        return dataRepository.getData(InconsistencyState.ID, InconsistencyState.class).orElseThrow();
+        return dataRepository.getData(IInconsistencyStates.ID, InconsistencyState.class).orElseThrow();
     }
 
     private void printResultsInFiles(File outputDir, String modelId, String name, DataRepository data, Duration duration) {

@@ -9,12 +9,13 @@ import org.eclipse.collections.api.factory.SortedBags;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 
 /**
  * Filters {@link IRecommendedInstance}s that have low probabilities of being an entity. This can either be because the
@@ -24,7 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
  * @author Jan Keim
  *
  */
-public class RecommendedInstanceProbabilityFilter extends AbstractFilter<InconsistencyAgentData> {
+public class RecommendedInstanceProbabilityFilter extends AbstractFilter {
     @Configurable
     private double thresholdNameAndTypeProbability = 0.3;
     @Configurable
@@ -40,14 +41,19 @@ public class RecommendedInstanceProbabilityFilter extends AbstractFilter<Inconsi
 
     private MutableSortedBag<Double> probabilities = SortedBags.mutable.empty();
 
-    public RecommendedInstanceProbabilityFilter() {
-        // empty
+    public RecommendedInstanceProbabilityFilter(DataRepository dataRepository) {
+        super("RecommendedInstanceProbabilityFilter", dataRepository);
     }
 
     @Override
-    public void exec(InconsistencyAgentData data) {
-        for (var model : data.getModelIds()) {
-            var inconsistencyState = data.getInconsistencyState(model);
+    public void run() {
+        var dataRepository = getDataRepository();
+        var modelStates = InconsistencyChecker.getModelStatesData(dataRepository);
+        var inconsistencyStates = InconsistencyChecker.getInconsistencyStates(dataRepository);
+
+        for (var model : modelStates.modelIds()) {
+            var modelState = modelStates.getModelState(model);
+            var inconsistencyState = inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
             filterRecommendedInstances(inconsistencyState);
         }
     }
