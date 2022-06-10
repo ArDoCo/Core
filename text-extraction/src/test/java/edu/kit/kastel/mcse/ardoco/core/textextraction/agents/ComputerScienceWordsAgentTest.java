@@ -1,6 +1,18 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
@@ -9,17 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
 
 class ComputerScienceWordsAgentTest implements IClaimant {
     private ComputerScienceWordsAgent agent;
@@ -205,7 +206,7 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         }
 
         @Override
-        public String getWord() {
+        public String getText() {
             return word.getText();
         }
 

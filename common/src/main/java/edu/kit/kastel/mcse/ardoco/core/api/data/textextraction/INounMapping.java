@@ -138,4 +138,5 @@ public interface INounMapping extends ICopyable<INounMapping> {
      */
     void addKindWithProbability(MappingKind kind, IClaimant claimant, double probability);
 
+    boolean containsSameWords(INounMapping nounMapping);
 }
