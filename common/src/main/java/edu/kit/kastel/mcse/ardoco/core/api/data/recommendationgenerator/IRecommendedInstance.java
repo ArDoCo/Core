@@ -1,10 +1,10 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.informalin.framework.common.ICopyable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IRecommendedInstance defines the aggregation of noun mappings to one recommendation.
@@ -31,6 +31,14 @@ public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
      * @return the probability to be found in the model
      */
     double getProbability();
+
+    /**
+     * Adds a probability to the recommended instance
+     *
+     * @param claimant    the claimant of the confidence
+     * @param probability the confidence
+     */
+    void addProbability(IClaimant claimant, double probability);
 
     /**
      * Adds a name and type mapping to this recommended instance.
