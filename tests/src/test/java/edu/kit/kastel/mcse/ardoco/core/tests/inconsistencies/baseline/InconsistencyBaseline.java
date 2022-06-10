@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
@@ -16,13 +17,13 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceI
 
 public class InconsistencyBaseline extends AbstractExecutionStage {
 
-    public InconsistencyBaseline() {
-        super();
+    public InconsistencyBaseline(DataRepository dataRepository) {
+        super("InconsistencyBaseline", dataRepository);
     }
 
     @Override
     public void execute(DataStructure data, Map<String, String> additionalSettings) {
-        data.getModelIds().forEach(mid -> data.setInconsistencyState(mid, new InconsistencyState(additionalSettings)));
+        data.getModelIds().forEach(mid -> data.setInconsistencyState(mid, new InconsistencyState()));
         this.applyConfiguration(additionalSettings);
 
         var sentences = Sets.mutable.fromStream(data.getText().getSentences().stream().map(ISentence::getSentenceNumber));

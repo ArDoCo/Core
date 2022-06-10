@@ -21,10 +21,14 @@ public class InconsistencyState extends AbstractState implements IInconsistencyS
     private MutableList<IRecommendedInstance> recommendedInstances;
     private MutableList<IInconsistency> inconsistencies;
 
-    public InconsistencyState(Map<String, String> configs) {
-        super(configs);
+    public InconsistencyState() {
         inconsistencies = Lists.mutable.empty();
         recommendedInstances = Lists.mutable.empty();
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+        // empty
     }
 
     /**
@@ -58,7 +62,7 @@ public class InconsistencyState extends AbstractState implements IInconsistencyS
 
     @Override
     public IInconsistencyState createCopy() {
-        var newInconsistencyState = new InconsistencyState(this.configs);
+        var newInconsistencyState = new InconsistencyState();
         newInconsistencyState.inconsistencies = inconsistencies.collect(IInconsistency::createCopy);
         return newInconsistencyState;
     }

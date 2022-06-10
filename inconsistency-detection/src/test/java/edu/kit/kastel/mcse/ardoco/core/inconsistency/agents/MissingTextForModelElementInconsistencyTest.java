@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.extractors.MissingTextForModelElementInconsistencyExtractor;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 
 class MissingTextForModelElementInconsistencyTest {
@@ -33,7 +34,7 @@ class MissingTextForModelElementInconsistencyTest {
         var regexWhitelistEntry = "\\w*Recommender";
         whitelist.add(regexWhitelistEntry);
 
-        var filteredList = MissingTextForModelElementInconsistencyAgent.filterWithWhitelist(modelInstances, whitelist);
+        var filteredList = MissingTextForModelElementInconsistencyExtractor.filterWithWhitelist(modelInstances, whitelist);
         Assertions.assertAll(//
                 () -> Assertions.assertEquals(1, filteredList.size()), //
                 () -> Assertions.assertEquals("4", filteredList.get(0).getUid()));
@@ -45,25 +46,26 @@ class MissingTextForModelElementInconsistencyTest {
         MutableList<String> shortenedType = Lists.mutable.of("Component");
 
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(0), exactTypes),
+                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(0), exactTypes),
                         "Instance 0 with 'exactTypes'"),
-                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(1), exactTypes),
+                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(1), exactTypes),
                         "Instance 1 with 'exactTypes'"),
-                () -> Assertions.assertFalse(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(2), exactTypes),
+                () -> Assertions.assertFalse(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(2), exactTypes),
                         "Instance 2 with 'exactTypes'"),
-                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(3), exactTypes),
+                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(3), exactTypes),
                         "Instance 3 with 'exactTypes'"),
-                () -> Assertions.assertFalse(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(4), exactTypes),
+                () -> Assertions.assertFalse(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(4), exactTypes),
                         "Instance 4 with 'types'"),
-                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(0), shortenedType),
+                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(0), shortenedType),
                         "Instance 0 with 'shortenedType'"),
-                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(1), shortenedType),
+                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(1), shortenedType),
                         "Instance 1 with 'shortenedType'"),
-                () -> Assertions.assertFalse(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(2), shortenedType),
+                () -> Assertions.assertFalse(
+                        MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(2), shortenedType),
                         "Instance 2 with 'shortenedType'"),
-                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(3), shortenedType),
+                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(3), shortenedType),
                         "Instance 3 with 'shortenedType'"),
-                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyAgent.modelInstanceHasTargetedType(modelInstances.get(4), shortenedType),
+                () -> Assertions.assertTrue(MissingTextForModelElementInconsistencyExtractor.modelInstanceHasTargetedType(modelInstances.get(4), shortenedType),
                         "Instance 4 with 'shortenedType'"));
     }
 

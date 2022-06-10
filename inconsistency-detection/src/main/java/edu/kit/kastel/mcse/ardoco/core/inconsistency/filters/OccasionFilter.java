@@ -6,13 +6,14 @@ import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 
 /**
  * Filters {@link IRecommendedInstance}s that occur only once in the text, thus are unlikely to be important entities.
@@ -20,19 +21,24 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
  * @author Jan Keim
  *
  */
-public class OccasionFilter extends AbstractFilter<InconsistencyAgentData> {
+public class OccasionFilter extends AbstractFilter {
 
     @Configurable
     private int expectedAppearances = 2;
 
-    public OccasionFilter() {
-        // empty
+    public OccasionFilter(DataRepository dataRepository) {
+        super("OccasionFilter", dataRepository);
     }
 
     @Override
-    public void exec(InconsistencyAgentData data) {
-        for (var model : data.getModelIds()) {
-            var inconsistencyState = data.getInconsistencyState(model);
+    public void run() {
+        var dataRepository = getDataRepository();
+        var modelStates = InconsistencyChecker.getModelStatesData(dataRepository);
+        var inconsistencyStates = InconsistencyChecker.getInconsistencyStates(dataRepository);
+
+        for (var model : modelStates.modelIds()) {
+            var modelState = modelStates.getModelState(model);
+            var inconsistencyState = inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
             filterRecommendedInstances(inconsistencyState);
         }
     }

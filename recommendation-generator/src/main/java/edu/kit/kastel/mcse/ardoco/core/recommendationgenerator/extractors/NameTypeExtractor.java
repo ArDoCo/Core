@@ -9,12 +9,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationStates;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
@@ -47,7 +47,7 @@ public class NameTypeExtractor extends AbstractExtractor {
         }
     }
 
-    private void exec(ITextState textState, ModelStates modelStates, RecommendationStates recommendationStates, IWord word) {
+    private void exec(ITextState textState, ModelStates modelStates, IRecommendationStates recommendationStates, IWord word) {
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
