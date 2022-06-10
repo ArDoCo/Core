@@ -319,6 +319,11 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
+    public boolean containsSameWords(INounMapping nounMapping) {
+        return this.words.containsAllIterable(nounMapping.getWords()) && nounMapping.getWords().containsAllIterable(this.words);
+    }
+
+    @Override
     public double getProbabilityForKind(MappingKind mappingKind) {
         return distribution.get(mappingKind).getConfidence();
     }

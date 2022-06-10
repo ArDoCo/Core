@@ -53,6 +53,13 @@ public class PhraseMapping implements IPhraseMapping {
         }
     }
 
+    private PhraseMapping(ImmutableList<IPhrase> phrases, ImmutableList<INounMapping> nounMappings, Confidence confidence) {
+        this.phrases = phrases.toList();
+        this.containedNounMappings = nounMappings.toList();
+        this.confidence = confidence;
+
+    }
+
     @Override
     public void addNounMapping(INounMapping nounMapping, IPhrase phrase) {
 
@@ -114,7 +121,11 @@ public class PhraseMapping implements IPhraseMapping {
     @Override
     public Map<IWord, Integer> getPhraseVector() {
 
-        MutableList<IWord> words = phrases.flatCollect(IPhrase::getContainedWords);
+        MutableList<IWord> words = Lists.mutable.empty();
+
+        for (IPhrase phrase : phrases) {
+            words.addAllIterable(phrase.getContainedWords());
+        }
 
         Map<IWord, Integer> phraseVector = new HashMap<>();
 
@@ -130,16 +141,28 @@ public class PhraseMapping implements IPhraseMapping {
     }
 
     @Override
-    public IPhraseMapping merge(IPhraseMapping phraseMapping) {
+    public IPhraseMapping merge(IPhraseMapping phraseMapping, INounMapping oldNounMapping, INounMapping newNounMapping) {
 
         if (phraseMapping.getPhraseType() != this.getPhraseType()) {
             throw new IllegalArgumentException("The phrase types inside a phrase mapping should be the same!");
         }
 
-        this.phrases.addAllIterable(phraseMapping.getPhrases().select(p -> !this.getPhrases().contains(p)));
-        this.containedNounMappings.addAllIterable(phraseMapping.getNounMappings().select(n -> !this.getNounMappings().contains(n)));
+        var phraseMappingsToAdd = phraseMapping.getPhrases().select(p -> !this.getPhrases().contains(p));
+        this.phrases.addAllIterable(phraseMappingsToAdd);
+
+        this.exchangeNounMapping(oldNounMapping, newNounMapping);
 
         this.confidence = Confidence.merge(this.getConfidence(), phraseMapping.getConfidence(), DEFAULT_AGGREGATOR, AggregationFunctions.MAX);
+        return this;
+    }
+
+    public IPhraseMapping exchangeNounMapping(INounMapping oldNounMapping, INounMapping newNounMapping) {
+
+        if (oldNounMapping != null) {
+            assert (this.containedNounMappings.contains(oldNounMapping));
+            this.containedNounMappings.remove(oldNounMapping);
+        }
+        this.containedNounMappings.add(newNounMapping);
         return this;
     }
 
@@ -159,5 +182,11 @@ public class PhraseMapping implements IPhraseMapping {
         var other = (IPhraseMapping) obj;
         return Objects.equals(getPhraseType(), other.getPhraseType()) && Objects.equals(getNounMappings(), other.getNounMappings())
                 && Objects.equals(getPhraseVector(), other.getPhraseVector());
+    }
+
+    @Override
+    public IPhraseMapping createCopy() {
+        var pm = new PhraseMapping(phrases.toImmutable(), getNounMappings(), getConfidence().createCopy());
+        return pm;
     }
 }

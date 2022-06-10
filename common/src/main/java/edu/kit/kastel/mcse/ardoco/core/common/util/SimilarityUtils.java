@@ -1,21 +1,23 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IPhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IPhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 
 /**
  * This class is a utility class.
@@ -346,8 +348,11 @@ public final class SimilarityUtils {
 
                 xNorm += Math.pow(phraseVectorX.get(word), 2);
 
-                if (phraseVectorY.containsKey(word)) {
-                    sum += phraseVectorX.get(word) * phraseVectorY.get(word);
+                ImmutableList<IWord> equalWords = Lists.immutable
+                        .withAll(phraseVectorY.keySet().stream().filter(w -> w.getText().equals(word.getText())).toList());
+                if (!equalWords.isEmpty()) {
+                    assert (equalWords.size() == 1) : "The keyset should only contain one word with the same text";
+                    sum += phraseVectorX.get(word) * phraseVectorY.get(equalWords.get(0));
                 }
             }
             if (phraseVectorY.containsKey(word)) {
@@ -361,27 +366,51 @@ public final class SimilarityUtils {
         return sum / (xNorm * yNorm);
     }
 
-    public static boolean arePhraseMappingsSimilar(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY, double maxCosineDistance) {
-        if (!phraseMappingX.getPhraseType().equals(phraseMappingY.getPhraseType())) {
-            return false;
+    public static IPhraseMapping getMostSimilarPhraseMapping(IPhraseMapping phraseMappingX, ImmutableList<IPhraseMapping> phraseMappingYs,
+            double minCosineSimilarity) {
+
+        if (phraseMappingYs.isEmpty()) {
+            return null;
+        }
+
+        double currentMinSimilarity = minCosineSimilarity;
+        IPhraseMapping mostSimilarPhraseMapping = phraseMappingYs.get(0);
+        for (IPhraseMapping phraseMappingY : phraseMappingYs) {
+            double similarity = getPhraseMappingSimilarity(phraseMappingX, phraseMappingY);
+            if (similarity > currentMinSimilarity) {
+                currentMinSimilarity = similarity;
+                mostSimilarPhraseMapping = phraseMappingY;
+            }
+
+        }
+        return mostSimilarPhraseMapping;
+    }
+
+    public static double getPhraseMappingSimilarity(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY) {
+        PhraseType phraseTypeX = phraseMappingX.getPhraseType();
+        PhraseType phraseTypeY = phraseMappingY.getPhraseType();
+        if (!phraseTypeX.equals(phraseTypeY)) {
+            return 0;
         }
 
         // TODO: Maybe additional case where only words are considered that are not noun mappings?
-        if (cosineSimilarity(phraseMappingX.getPhraseVector(), (phraseMappingY).getPhraseVector()) > maxCosineDistance) {
-            // TODO: PHI : IS this correct?
-            // phraseMappingX contains all name mappings of phraseMappingY
-            if (containsNounMappingsOfMappingKindOfPhraseMapping(phraseMappingX, phraseMappingY, MappingKind.NAME)) {
-                return true;
-            }
+
+        // TODO: PHI : IS this correct?
+        // phraseMappingX contains all name mappings of phraseMappingY
+        if (containsNounMappingsOfMappingKindOfPhraseMapping(phraseMappingX, phraseMappingY, MappingKind.NAME)) {
+            double cosineSimilarity = cosineSimilarity(phraseMappingX.getPhraseVector(), (phraseMappingY).getPhraseVector());
+            return cosineSimilarity;
         }
+
         if (coversOtherPhraseVector(phraseMappingX, phraseMappingY) || coversOtherPhraseVector(phraseMappingY, phraseMappingX)) {
             // TODO: PHI : REWORK
             // TODO: NounMappings rausnehmen?
             if (containsAllNounMappingsOfPhraseMapping(phraseMappingX, phraseMappingY)
                     && containsAllNounMappingsOfPhraseMapping(phraseMappingY, phraseMappingX)) {
-                return true;
+                // TODO: HARD CODED
+                return 1.0;
             }
         }
-        return false;
+        return 0;
     }
 }

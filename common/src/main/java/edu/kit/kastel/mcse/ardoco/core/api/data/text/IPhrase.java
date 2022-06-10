@@ -8,7 +8,7 @@ public interface IPhrase {
 
     ISentence getSentence();
 
-    String getWord();
+    String getText();
 
     PhraseType getPhraseType();
 

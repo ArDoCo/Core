@@ -5,12 +5,13 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 
-public interface IPhraseMapping {
+public interface IPhraseMapping extends ICopyable<IPhraseMapping> {
 
     void addNounMapping(INounMapping nounMapping, IPhrase phrase);
 
@@ -28,9 +29,10 @@ public interface IPhraseMapping {
 
     Map<IWord, Integer> getPhraseVector();
 
-    IPhraseMapping merge(IPhraseMapping phraseMapping);
+    IPhraseMapping merge(IPhraseMapping phraseMapping, INounMapping oldNounMapping, INounMapping newNounMapping);
 
     Confidence getConfidence();
 
     void removeNounMapping(INounMapping nounMapping);
+
 }
