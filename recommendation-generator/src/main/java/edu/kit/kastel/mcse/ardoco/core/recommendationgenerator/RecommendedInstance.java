@@ -25,7 +25,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 public class RecommendedInstance implements IRecommendedInstance, IClaimant {
 
     private static final AggregationFunctions GLOBAL_AGGREGATOR = AggregationFunctions.AVERAGE;
-    private int weightInternalConfidence = -3;
+    /**
+     * Meaning (Weights): <br/>
+     * 0,-1,1 => Balanced <br/>
+     * 2 => InternalConfidence: 2 / mappingConfidence: 1<br/>
+     * -2 => InternalConfidence: 1 / mappingConfidence: 2<br/>
+     * ...
+     */
+    private int weightInternalConfidence = 0;
 
     private String type;
     private String name;
