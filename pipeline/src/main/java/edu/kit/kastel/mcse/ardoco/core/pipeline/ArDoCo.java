@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStatesData;
@@ -33,11 +34,11 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 /**
  * The Pipeline defines the execution of the agents.
  */
-public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline {
+public final class ArDoCo extends Pipeline {
 
-    private static final Logger logger = LoggerFactory.getLogger(Pipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArDoCo.class);
 
-    public Pipeline(String id, DataRepository dataRepository) {
+    public ArDoCo(String id, DataRepository dataRepository) {
         super(id, dataRepository);
     }
 
@@ -66,36 +67,36 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
      */
     public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) throws IOException {
-        Pipeline pipeline = new Pipeline("ArDoCo", new DataRepository());
+        ArDoCo arDoCo = new ArDoCo("ArDoCo", new DataRepository());
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
-        var dataRepository = pipeline.getDataRepository();
+        var dataRepository = arDoCo.getDataRepository();
 
         var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
         textProvider.applyConfiguration(additionalConfigs);
-        pipeline.addPipelineStep(textProvider);
+        arDoCo.addPipelineStep(textProvider);
 
-        pipeline.addPcmModelProviderToPipeline(inputArchitectureModel, additionalConfigs);
+        arDoCo.addPcmModelProviderToPipeline(inputArchitectureModel, additionalConfigs);
         if (inputCodeModel != null) {
-            pipeline.addJavaModelProviderToPipeline(inputCodeModel, additionalConfigs);
+            arDoCo.addJavaModelProviderToPipeline(inputCodeModel, additionalConfigs);
         }
 
         var textExtractor = new TextExtraction(dataRepository);
         textExtractor.applyConfiguration(additionalConfigs);
-        pipeline.addPipelineStep(textExtractor);
+        arDoCo.addPipelineStep(textExtractor);
 
-        pipeline.run();
+        arDoCo.run();
 
         // TODO remove
-        var annotatedText = pipeline.getAnnotatedText();
+        var annotatedText = arDoCo.getAnnotatedText();
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
         }
-        var models = pipeline.getDataRepository().getData(ModelStatesData.ID, ModelStatesData.class).orElseThrow();
+        var models = arDoCo.getDataRepository().getData(ModelStatesData.ID, ModelStatesData.class).orElseThrow();
         var data = new DataStructure(annotatedText, models);
 
         if (outputDir != null) {
@@ -105,8 +106,6 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
                 FilePrinter.writeModelInstancesInCsvFile(modelStateFile, data.getModelState(modelId), name);
             }
         }
-
-        // text extractor
 
         // recommendation generator
         var recommendationModule = new RecommendationGenerator();
@@ -125,7 +124,7 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         if (outputDir != null) {
             logger.info("Writing output.");
             for (String modelId : data.getModelIds()) {
-                pipeline.printResultsInFiles(outputDir, modelId, name, data, duration);
+                arDoCo.printResultsInFiles(outputDir, modelId, name, data, duration);
             }
         }
 
