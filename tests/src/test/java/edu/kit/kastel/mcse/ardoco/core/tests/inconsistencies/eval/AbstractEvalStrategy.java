@@ -46,19 +46,19 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
     }
 
     protected DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> configs) {
-        var recommendationModule = new RecommendationGenerator();
+        var recommendationModule = new RecommendationGenerator(dataRepository);
         recommendationModule.run();
         return data;
     }
 
     protected DataStructure runConnectionGenerator(DataStructure data, Map<String, String> configs) {
-        var connectionGenerator = new ConnectionGenerator();
+        var connectionGenerator = new ConnectionGenerator(dataRepository);
         connectionGenerator.run();
         return data;
     }
 
     protected DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
-        var inconsistencyChecker = new InconsistencyChecker();
+        var inconsistencyChecker = new InconsistencyChecker(dataRepository);
         inconsistencyChecker.run();
         return data;
     }

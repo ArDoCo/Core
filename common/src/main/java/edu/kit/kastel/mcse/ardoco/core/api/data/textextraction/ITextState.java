@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
  * The Interface ITextState.
  */
 public interface ITextState extends ICopyable<ITextState>, IConfigurable {
+    static final String ID = "TextState";
 
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.

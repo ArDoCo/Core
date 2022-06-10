@@ -3,14 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
 import java.util.Map;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 
 /**
  * This analyzer searches for the occurrence of instance names and types of the extraction state and adds them as names
@@ -19,21 +21,33 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * @author Sophie schulz
  * @author Jan Keim
  */
-public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<ConnectionAgentData> {
+public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor {
 
     @Configurable
     private double probability = 1.0;
 
-    public ExtractionDependentOccurrenceExtractor() {
-        // empty
+    public ExtractionDependentOccurrenceExtractor(DataRepository dataRepository) {
+        super("ExtractionDependentOccurrenceExtractor", dataRepository);
     }
 
     @Override
-    public void exec(ConnectionAgentData data, IWord word) {
-        for (var model : data.getModelIds()) {
+    public void run() {
+        DataRepository dataRepository = getDataRepository();
+        var text = ConnectionGenerator.getAnnotatedText(dataRepository);
+        var textState = ConnectionGenerator.getTextState(dataRepository);
+        var modelStates = ConnectionGenerator.getModelStatesData(dataRepository);
+        for (var word : text.getWords()) {
+            exec(textState, modelStates, word);
+        }
+    }
+
+    private void exec(ITextState textState, ModelStates modelStates, IWord word) {
+        for (var model : modelStates.modelIds()) {
+            var modelState = modelStates.getModelState(model);
+
             // TODO revisit and check if we want to check something different than only words as well
-            searchForName(data.getModelState(model), data.getTextState(), word);
-            searchForType(data.getModelState(model), data.getTextState(), word);
+            searchForName(modelState, textState, word);
+            searchForType(modelState, textState, word);
         }
     }
 

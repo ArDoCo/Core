@@ -25,7 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * @author Jan Keim
  */
 public class TextState extends AbstractState implements ITextState {
-    public static final String ID = "TextState";
 
     private MutableList<INounMapping> nounMappings;
 

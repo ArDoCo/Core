@@ -1,20 +1,14 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
+import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ReferenceExtractor;
 
 /**
  * The reference solver finds instances mentioned in the text extraction state as names. If it founds some similar names
@@ -24,52 +18,32 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  */
 public class ReferenceAgent extends ConnectionAgent {
 
+    private final List<AbstractExtractor> extractors;
+
     @Configurable
-    private double probability = 0.75;
+    private List<String> enabledExtractors;
 
     /**
      * Create the agent.
      */
-    public ReferenceAgent() {
-        // empty
+    public ReferenceAgent(DataRepository dataRepository) {
+        super("ReferenceAgent", dataRepository);
+
+        extractors = List.of(new ReferenceExtractor(dataRepository));
+        enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
     }
 
-    /**
-     * Executes the solver.
-     */
     @Override
-    public void execute(ConnectionAgentData data) {
-        for (var model : data.getModelIds()) {
-            var modelState = data.getModelState(model);
-            var recommendationState = data.getRecommendationState(modelState.getMetamodel());
-            var textState = data.getTextState();
-            findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(modelState, recommendationState, textState);
-        }
-    }
-
-    /**
-     * Searches for instances mentioned in the text extraction state as names. If it founds some similar names it
-     * creates recommendations.
-     */
-    private void findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(IModelState modelState, IRecommendationState recommendationState,
-            ITextState textState) {
-        for (IModelInstance instance : modelState.getInstances()) {
-            var similarToInstanceMappings = getSimilarNounMappings(instance, textState);
-
-            for (INounMapping similarNameMapping : similarToInstanceMappings) {
-                recommendationState.addRecommendedInstance(similarNameMapping.getReference(), this, probability, similarToInstanceMappings);
-            }
+    public void run() {
+        for (var extractor : findByClassName(enabledExtractors, extractors)) {
+            this.addPipelineStep(extractor);
         }
 
-    }
-
-    private ImmutableList<INounMapping> getSimilarNounMappings(IModelInstance instance, ITextState textState) {
-        return textState.getNounMappingsOfKind(MappingKind.NAME)
-                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
+        super.run();
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // empty
+        extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 }

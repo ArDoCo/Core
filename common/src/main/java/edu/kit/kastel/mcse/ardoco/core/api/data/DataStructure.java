@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionS
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStatesData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
@@ -25,16 +25,16 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 public final class DataStructure implements IData, IModelData, ITextData, IRecommendationData, IConnectionData, IInconsistencyData, TextAgentData,
         RecommendationAgentData, ConnectionAgentData, InconsistencyAgentData {
     private final IText text;
-    private final ModelStatesData modelStates;
+    private final ModelStates modelStates;
 
     private ITextState textState;
     private Map<Metamodel, IRecommendationState> recommendationStates = new EnumMap<>(Metamodel.class);
     private Map<String, IConnectionState> connectionStates = new HashMap<>();
     private Map<String, IInconsistencyState> inconsistencyStates = new HashMap<>();
 
-    public DataStructure(IText text, ModelStatesData modelStatesData) {
+    public DataStructure(IText text, ModelStates modelStates) {
         this.text = text;
-        this.modelStates = modelStatesData;
+        this.modelStates = modelStates;
     }
 
     @Override
