@@ -55,7 +55,7 @@ public final class ArDoCo extends Pipeline {
      * @param inputArchitectureModel File of the input model (PCM)
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
+    public static DataRepository run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
         return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
