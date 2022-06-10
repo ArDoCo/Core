@@ -16,9 +16,9 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 public class SimplyGetItModel extends AbstractEvalStrategy {
 
     @Override
-    public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os, boolean withDiagrams) {
         var originalData = new DataStructure(originalText, Map.of(originalModel.getModelId(), runModelExtractor(originalModel, Map.of())));
-        originalData.setDiagramDirectory(p.getDiagramDir() == null ? null : p.getDiagramDir().getAbsolutePath());
+        originalData.setDiagramDirectory(p.getDiagramDir() == null || !withDiagrams ? null : p.getDiagramDir().getAbsolutePath());
 
         runTextExtractor(originalData, Map.of());
         runDiagramDetection(originalData, Map.of());

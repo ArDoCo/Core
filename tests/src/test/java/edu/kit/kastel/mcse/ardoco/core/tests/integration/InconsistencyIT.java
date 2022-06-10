@@ -35,7 +35,19 @@ class InconsistencyIT {
     @EnumSource(Project.class)
     void inconsistencyIT(Project project) {
         AbstractEvalStrategy evalStrategy = new DeleteOneModelElementEval();
-        var results = evalInconsistency(project, evalStrategy);
+        var results = evalInconsistency(project, evalStrategy, false);
+        var expectedResults = project.getExpectedInconsistencyResults();
+
+        logResults(project, results, expectedResults);
+        checkResults(results, expectedResults);
+    }
+
+    @DisplayName("Evaluate Inconsistency Analyses (with Diagrams)")
+    @ParameterizedTest(name = "Evaluating {0}")
+    @EnumSource(Project.class)
+    void inconsistencyITDiagrams(Project project) {
+        AbstractEvalStrategy evalStrategy = new DeleteOneModelElementEval();
+        var results = evalInconsistency(project, evalStrategy, true);
         var expectedResults = project.getExpectedInconsistencyResults();
 
         logResults(project, results, expectedResults);
@@ -48,7 +60,7 @@ class InconsistencyIT {
     @EnumSource(Project.class)
     void inconsistencyBaselineIT(Project project) {
         AbstractEvalStrategy evalStrategy = new DeleteOneModelElementBaselineEval();
-        var results = evalInconsistency(project, evalStrategy);
+        var results = evalInconsistency(project, evalStrategy, false);
         var expectedResults = project.getExpectedInconsistencyResults();
 
         logResults(project, results, expectedResults);
@@ -75,21 +87,21 @@ class InconsistencyIT {
                         "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
     }
 
-    private static EvaluationResult evalInconsistency(Project project, AbstractEvalStrategy evalStrategy) {
+    private static EvaluationResult evalInconsistency(Project project, AbstractEvalStrategy evalStrategy, boolean withDiagrams) {
         var name = project.name();
         logger.info("Starting Inconsistency Analyses for {}", name);
 
         var outFile = String.format("%s%sinconsistency-eval-%s.txt", OUTPUT, File.separator, name.toLowerCase());
 
         try (PrintStream os = new PrintStream(outFile)) {
-            return run(project, evalStrategy, os);
+            return run(project, evalStrategy, os, withDiagrams);
         } catch (FileNotFoundException e) {
             Assertions.fail("Could not find file.");
         }
         return null;
     }
 
-    private static EvaluationResult run(Project project, IEvaluationStrategy eval, PrintStream os) {
+    private static EvaluationResult run(Project project, IEvaluationStrategy eval, PrintStream os, boolean withDiagrams) {
         os.println("####################################");
         os.println("START Eval: " + project + " -- " + eval.getClass().getSimpleName());
 
@@ -97,7 +109,7 @@ class InconsistencyIT {
         IText annotatedText = project.getText();
 
         GoldStandard gs = project.getGoldStandard(pcmModel);
-        var results = eval.evaluate(project, pcmModel, annotatedText, gs, os);
+        var results = eval.evaluate(project, pcmModel, annotatedText, gs, os, withDiagrams);
 
         os.println("END Eval: " + project + " -- " + eval);
         os.println("####################################\n");

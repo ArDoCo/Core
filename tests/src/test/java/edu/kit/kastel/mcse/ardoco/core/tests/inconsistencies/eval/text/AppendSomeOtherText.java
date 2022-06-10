@@ -15,7 +15,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 public class AppendSomeOtherText extends AbstractEvalStrategy {
 
     @Override
-    public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os,
+            boolean withDiagrams) {
         var otherProjects = Lists.mutable.with(Project.values()).select(p -> p != project);
 
         for (var otherProject : otherProjects) {

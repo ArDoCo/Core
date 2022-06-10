@@ -17,11 +17,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
 public class SimplyGetItNaming extends AbstractEvalStrategy {
 
     @Override
-    public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public EvaluationResult evaluate(Project p, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os, boolean withDiagrams) {
         var configs = new HashMap<String, String>();
         var modelState = runModelExtractor(originalModel, configs);
         var originalData = new DataStructure(originalText, Map.of(originalModel.getModelId(), modelState));
-        originalData.setDiagramDirectory(p.getDiagramDir() == null ? null : p.getDiagramDir().getAbsolutePath());
+        originalData.setDiagramDirectory(p.getDiagramDir() == null || !withDiagrams ? null : p.getDiagramDir().getAbsolutePath());
 
         runTextExtractor(originalData, configs);
         runDiagramDetection(originalData, configs);

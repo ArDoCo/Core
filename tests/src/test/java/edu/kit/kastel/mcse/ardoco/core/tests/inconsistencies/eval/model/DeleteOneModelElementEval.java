@@ -33,9 +33,10 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
     }
 
     @Override
-    public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os) {
+    public EvaluationResult evaluate(Project project, IModelConnector originalModel, IText originalText, GoldStandard gs, PrintStream os,
+            boolean withDiagrams) {
         IModificationStrategy strategy = new DeleteOneElementEach(originalModel);
-        var result = process(originalModel, originalText, strategy, project.getDiagramDir());
+        var result = process(originalModel, originalText, strategy, withDiagrams ? project.getDiagramDir() : null);
 
         var evaluator = new PRF1Evaluator();
 

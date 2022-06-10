@@ -109,7 +109,7 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
      */
     @Override
     public double getProbability() {
-        var mappingProbability = calculateMappingProbability(Lists.immutable.withAll(nameMappings), Lists.immutable.withAll(typeMappings));
+        var mappingProbability = calculateMappingProbability(getNameMappings(), getTypeMappings());
         var ownProbability = internalConfidence.getConfidence();
         List<Double> probabilities = new ArrayList<>();
         probabilities.add(mappingProbability);
