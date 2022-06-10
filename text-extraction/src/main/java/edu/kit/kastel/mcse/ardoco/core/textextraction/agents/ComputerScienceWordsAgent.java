@@ -19,14 +19,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * This agent uses data from DBPedia to mark default words in computer science.
@@ -69,17 +72,22 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     private final ImmutableList<String> commonCSWords;
 
-    public ComputerScienceWordsAgent() {
+    public ComputerScienceWordsAgent(DataRepository dataRepository) {
+        super("ComputerScienceWordsAgent", dataRepository);
         this.commonCSWords = loadWords();
     }
 
     @Override
-    public void execute(TextAgentData data) {
+    public void run() {
+        var text = TextExtraction.getAnnotatedText(getDataRepository());
+        var textState = TextExtraction.getTextState(getDataRepository());
+        execute(text, textState);
+        super.run();
+    }
+
+    public void execute(IText text, TextState textState) {
         if (!enabled)
             return;
-
-        var text = data.getText();
-        var textState = data.getTextState();
 
         Set<INounMapping> processed = new HashSet<>();
         for (var word : text.getWords()) {

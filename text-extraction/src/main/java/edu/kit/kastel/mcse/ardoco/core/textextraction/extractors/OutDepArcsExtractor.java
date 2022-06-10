@@ -3,14 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.util.Map;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * The analyzer examines the outgoing arcs of the current node.
@@ -18,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  * @author Sophie
  */
 
-public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
+public class OutDepArcsExtractor extends AbstractExtractor {
 
     @Configurable
     private double nameOrTypeWeight = 0.5;
@@ -29,18 +31,25 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
     /**
      * Prototype constructor.
      */
-    public OutDepArcsExtractor() {
-        // empty
+    public OutDepArcsExtractor(DataRepository dataRepository) {
+        super("OutDepArcsExtractor", dataRepository);
     }
 
     @Override
-    public void exec(TextAgentData data, IWord n) {
+    public void run() {
+        var textState = TextExtraction.getTextState(getDataRepository());
+        for (var word : TextExtraction.getAnnotatedText(getDataRepository()).getWords()) {
+            exec(textState, word);
+        }
+    }
 
-        var nodeValue = n.getText();
+    private void exec(TextState textState, IWord word) {
+
+        var nodeValue = word.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
             return;
         }
-        examineOutgoingDepArcs(data.getTextState(), n);
+        examineOutgoingDepArcs(textState, word);
     }
 
     /**
@@ -63,6 +72,7 @@ public class OutDepArcsExtractor extends AbstractExtractor<TextAgentData> {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // handle additional config
+        this.applyConfiguration(additionalConfiguration);
     }
+
 }

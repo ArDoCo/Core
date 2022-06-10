@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStatesData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
@@ -27,7 +27,6 @@ import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
@@ -75,24 +74,28 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         var startTime = System.currentTimeMillis();
         var dataRepository = pipeline.getDataRepository();
 
-        // Preprocess: text provider
         var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
+        textProvider.applyConfiguration(additionalConfigs);
         pipeline.addPipelineStep(textProvider);
 
-        // Preprocess: model connectors
         pipeline.addPcmModelProviderToPipeline(inputArchitectureModel, additionalConfigs);
-
         if (inputCodeModel != null) {
             pipeline.addJavaModelProviderToPipeline(inputCodeModel, additionalConfigs);
         }
 
+        var textExtractor = new TextExtraction(dataRepository);
+        textExtractor.applyConfiguration(additionalConfigs);
+        pipeline.addPipelineStep(textExtractor);
+
+        pipeline.run();
+
         // TODO remove
-        var annotatedText = pipeline.getAnnotatedText(inputText);
+        var annotatedText = pipeline.getAnnotatedText();
         if (annotatedText == null) {
             logger.info("Could not preprocess or receive annotated text. Exiting.");
             return null;
         }
-        var models = pipeline.getDataRepository().getData("ModelStatesData", ModelStatesData.class).orElseThrow();
+        var models = pipeline.getDataRepository().getData(ModelStatesData.ID, ModelStatesData.class).orElseThrow();
         var data = new DataStructure(annotatedText, models);
 
         if (outputDir != null) {
@@ -104,19 +107,17 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         }
 
         // text extractor
-        IExecutionStage textModule = new TextExtraction();
-        textModule.execute(data, additionalConfigs);
 
         // recommendation generator
-        IExecutionStage recommendationModule = new RecommendationGenerator();
+        var recommendationModule = new RecommendationGenerator();
         recommendationModule.execute(data, additionalConfigs);
 
         // connection generator
-        IExecutionStage connectionGenerator = new ConnectionGenerator();
+        var connectionGenerator = new ConnectionGenerator();
         connectionGenerator.execute(data, additionalConfigs);
 
         // inconsistency checker
-        IExecutionStage inconsistencyChecker = new InconsistencyChecker();
+        var inconsistencyChecker = new InconsistencyChecker();
         inconsistencyChecker.execute(data, additionalConfigs);
 
         // save step
@@ -127,8 +128,6 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
                 pipeline.printResultsInFiles(outputDir, modelId, name, data, duration);
             }
         }
-
-        pipeline.run();
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
@@ -178,15 +177,8 @@ public final class Pipeline extends edu.kit.kastel.informalin.pipeline.Pipeline 
         logger.info("Finished step {} in {}.{}s.", step, duration.getSeconds(), duration.toMillisPart());
     }
 
-    private IText getAnnotatedText(File inputText) {
-        try {
-            ITextConnector textConnector = new CoreNLPProvider(getDataRepository(), new FileInputStream(inputText));
-            return textConnector.getAnnotatedText();
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
-
+    private IText getAnnotatedText() {
+        return this.getDataRepository().getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
     }
 
     private void printResultsInFiles(File outputDir, String modelId, String name, DataStructure data, Duration duration) {

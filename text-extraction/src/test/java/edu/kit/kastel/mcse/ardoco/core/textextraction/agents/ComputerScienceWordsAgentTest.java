@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -13,15 +12,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
@@ -31,51 +29,41 @@ class ComputerScienceWordsAgentTest implements IClaimant {
     private ImmutableList<String> data;
     private double modifier;
 
+    private NounMapping nounMapping;
+    private MyWord invalidWord;
+    private TextState textState;
+
     @BeforeEach
     void setup() throws NoSuchFieldException, IllegalAccessException {
-        this.agent = new ComputerScienceWordsAgent();
+        var dataRepository = new DataRepository();
+
+        var validWord = wordToListOfIWord(data.get(0));
+        nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),
+                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
+        invalidWord = new MyWord("ASDFWJ", validWord.size());
+        MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
+        var preprocessingData = new PreprocessingData(text);
+        dataRepository.addData(PreprocessingData.ID, preprocessingData);
+
+        textState = new TextState();
+        textState.addNounMapping(nounMapping, this);
+        textState.addNounMapping(invalidWord, MappingKind.NAME, this, 1.0);
+
+        dataRepository.addData(TextState.ID, textState);
+
+        this.agent = new ComputerScienceWordsAgent(dataRepository);
         setData();
     }
 
     @Test
     void testSetProbability() {
 
-        var validWord = wordToListOfIWord(data.get(0));
-        var nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),
-                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
-        var invalidWord = new MyWord("ASDFWJ", validWord.size());
-        MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
-        TextState ts = new TextState(Map.of());
+        this.agent.run();
+        var nounMappingProbability = nounMapping.getProbability();
+        var invalidNounMappingProbability = textState.getNounMappingsByWord(invalidWord).get(0).getProbability();
 
-        ts.addNounMapping(nounMapping, this);
-        ts.addNounMapping(invalidWord, MappingKind.NAME, this, 1.0);
-
-        TextAgentData tad = new TextAgentData() {
-            @Override
-            public IText getText() {
-                return text;
-            }
-
-            @Override
-            public void setTextState(ITextState state) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public ITextState getTextState() {
-                return ts;
-            }
-
-            @Override
-            public IData createCopy() {
-                throw new UnsupportedOperationException();
-            }
-        };
-
-        this.agent.execute(tad);
-
-        Assertions.assertEquals((1.0 + this.modifier) / 2, nounMapping.getProbability());
-        Assertions.assertEquals(1.0, ts.getNounMappingsByWord(invalidWord).get(0).getProbability());
+        Assertions.assertEquals((1.0 + this.modifier) / 2, nounMappingProbability);
+        Assertions.assertEquals(1.0, invalidNounMappingProbability);
 
     }
 

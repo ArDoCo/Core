@@ -1,9 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.agent;
 
-import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.pipeline.Pipeline;
 
-public abstract class AbstractAgent<D extends IData> extends AbstractConfigurable implements IAgent<D> {
+public abstract class AbstractAgent extends Pipeline implements IAgent {
 
+    protected AbstractAgent(String id, DataRepository dataRepository) {
+        super(id, dataRepository);
+    }
 }
