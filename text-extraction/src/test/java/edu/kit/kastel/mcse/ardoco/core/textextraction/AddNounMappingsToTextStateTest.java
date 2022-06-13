@@ -52,55 +52,55 @@ public class AddNounMappingsToTextStateTest {
         this.claimant = new MyAgent();
         preTextState = new TextState(Map.of());
 
-        IWord the0 = Mockito.mock(IWord.class);
-        IWord lazy0 = Mockito.mock(IWord.class);
+        IWord a0 = Mockito.mock(IWord.class);
+        IWord fast0 = Mockito.mock(IWord.class);
         IWord fox0 = Mockito.mock(IWord.class);
         IWord the1 = Mockito.mock(IWord.class);
         IWord brown1 = Mockito.mock(IWord.class);
         IWord dog1 = Mockito.mock(IWord.class);
-        IWord hut1 = Mockito.mock(IWord.class);
 
         Phrase foxPhrase0 = Mockito.mock(Phrase.class);
         Phrase dogPhrase0 = Mockito.mock(Phrase.class);
         ISentence sentence0 = Mockito.mock(ISentence.class);
 
-        mockSentence(sentence0, 0, "The lazy fox jumps over the brown dog hut", Lists.immutable.with(foxPhrase0, dogPhrase0));
+        mockSentence(sentence0, 0, "A fast fox is hunted by the brown dog", Lists.immutable.with(foxPhrase0, dogPhrase0));
 
-        mockPhrase(foxPhrase0, "The lazy fox", PhraseType.NP, sentence0, 0, Lists.immutable.with(the0, lazy0, fox0));
-        mockPhrase(dogPhrase0, "the brown dog hut", PhraseType.NP, sentence0, 0, Lists.immutable.with(the1, brown1, dog1, hut1));
+        mockPhrase(foxPhrase0, "A fast fox", PhraseType.NP, sentence0, 0, Lists.immutable.with(a0, fast0, fox0));
+        mockPhrase(dogPhrase0, "the brown dog", PhraseType.NP, sentence0, 0, Lists.immutable.with(the1, brown1, dog1));
 
-        mockWord(the0, "the", "the", sentence0, 0, foxPhrase0, 0);
-        mockWord(lazy0, "lazy", "lazy", sentence0, 0, foxPhrase0, 1);
+        mockWord(a0, "a", "a", sentence0, 0, foxPhrase0, 0);
+        mockWord(fast0, "fast", "fast", sentence0, 0, foxPhrase0, 1);
         mockWord(fox0, "fox", "fox", sentence0, 0, foxPhrase0, 2);
 
-        mockWord(the1, "the", "the", sentence0, 0, dogPhrase0, 5);
-        mockWord(brown1, "brown", "brown", sentence0, 0, dogPhrase0, 6);
-        mockWord(dog1, "dog", "dog", sentence0, 0, dogPhrase0, 7);
-        mockWord(hut1, "hut", "hut", sentence0, 0, dogPhrase0, 8);
+        mockWord(the1, "the", "the", sentence0, 0, dogPhrase0, 6);
+        mockWord(brown1, "brown", "brown", sentence0, 0, dogPhrase0, 7);
+        mockWord(dog1, "dog", "dog", sentence0, 0, dogPhrase0, 8);
 
-        IWord a2 = Mockito.mock(IWord.class);
-        IWord fast2 = Mockito.mock(IWord.class);
+        IWord the2 = Mockito.mock(IWord.class);
+        IWord lazy2 = Mockito.mock(IWord.class);
         IWord fox2 = Mockito.mock(IWord.class);
         IWord the3 = Mockito.mock(IWord.class);
         IWord brown3 = Mockito.mock(IWord.class);
         IWord dog3 = Mockito.mock(IWord.class);
+        IWord hut3 = Mockito.mock(IWord.class);
 
         Phrase foxPhrase1 = Mockito.mock(Phrase.class);
         Phrase dogPhrase1 = Mockito.mock(Phrase.class);
         ISentence sentence1 = Mockito.mock(ISentence.class);
 
-        mockSentence(sentence1, 1, "A fast fox is hunted by the brown dog", Lists.immutable.with(foxPhrase1, dogPhrase1));
+        mockSentence(sentence1, 1, "The lazy fox jumps over the brown dog hut", Lists.immutable.with(foxPhrase1, dogPhrase1));
 
-        mockPhrase(foxPhrase1, "A fast fox", PhraseType.NP, sentence1, 1, Lists.immutable.with(a2, fast2, fox2));
-        mockPhrase(dogPhrase1, "the brown dog", PhraseType.NP, sentence1, 1, Lists.immutable.with(the3, brown3, dog3));
+        mockPhrase(foxPhrase1, "The lazy fox", PhraseType.NP, sentence1, 1, Lists.immutable.with(the2, lazy2, fox2));
+        mockPhrase(dogPhrase1, "the brown dog hut", PhraseType.NP, sentence1, 1, Lists.immutable.with(the3, brown3, dog3, hut3));
 
-        mockWord(a2, "a", "a", sentence1, 1, foxPhrase1, 0);
-        mockWord(fast2, "fast", "fast", sentence1, 1, foxPhrase1, 1);
+        mockWord(the2, "the", "the", sentence1, 1, foxPhrase1, 0);
+        mockWord(lazy2, "lazy", "lazy", sentence1, 1, foxPhrase1, 1);
         mockWord(fox2, "fox", "fox", sentence1, 1, foxPhrase1, 2);
 
-        mockWord(the3, "the", "the", sentence1, 1, dogPhrase1, 6);
-        mockWord(brown3, "brown", "brown", sentence1, 1, dogPhrase1, 7);
-        mockWord(dog3, "dog", "dog", sentence1, 1, dogPhrase1, 8);
+        mockWord(the3, "the", "the", sentence1, 1, dogPhrase1, 5);
+        mockWord(brown3, "brown", "brown", sentence1, 1, dogPhrase1, 6);
+        mockWord(dog3, "dog", "dog", sentence1, 1, dogPhrase1, 7);
+        mockWord(hut3, "hut", "hut", sentence0, 1, dogPhrase1, 8);
 
         IWord i4 = Mockito.mock(IWord.class);
         IWord turtles4 = Mockito.mock(IWord.class);
