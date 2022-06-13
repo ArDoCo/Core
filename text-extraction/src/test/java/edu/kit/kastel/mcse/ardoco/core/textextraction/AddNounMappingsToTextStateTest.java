@@ -35,12 +35,15 @@ public class AddNounMappingsToTextStateTest {
     private IWord dog1;
     private IWord fox2;
     private IWord dog3;
+    private IWord turtles4;
 
     private IPhrase dogPhrase0;
     private IPhrase foxPhrase0;
 
     private IPhrase dogPhrase1;
     private IPhrase foxPhrase1;
+
+    private IPhrase turtlePhrase2;
 
     private IAgent claimant;
 
@@ -99,14 +102,31 @@ public class AddNounMappingsToTextStateTest {
         mockWord(brown3, "brown", "brown", sentence1, 1, dogPhrase1, 7);
         mockWord(dog3, "dog", "dog", sentence1, 1, dogPhrase1, 8);
 
+        IWord i4 = Mockito.mock(IWord.class);
+        IWord turtles4 = Mockito.mock(IWord.class);
+
+        Phrase iPhrase2 = Mockito.mock(Phrase.class);
+        Phrase turtlePhrase2 = Mockito.mock(Phrase.class);
+        ISentence sentence2 = Mockito.mock(ISentence.class);
+
+        mockSentence(sentence2, 2, "I like turtles", Lists.immutable.with(iPhrase2, turtlePhrase2));
+
+        mockPhrase(iPhrase2, "I", PhraseType.NP, sentence2, 2, Lists.immutable.with(i4));
+        mockPhrase(turtlePhrase2, "turtles", PhraseType.NP, sentence2, 2, Lists.immutable.with(turtles4));
+
+        mockWord(i4, "I", "i", sentence2, 2, iPhrase2, 0);
+        mockWord(turtles4, "turtles", "turtles", sentence2, 2, turtlePhrase2, 2);
+
         this.fox0 = fox0;
         this.dog1 = dog1;
         this.fox2 = fox2;
         this.dog3 = dog3;
+        this.turtles4 = turtles4;
         this.dogPhrase0 = dogPhrase0;
         this.foxPhrase0 = foxPhrase0;
         this.dogPhrase1 = dogPhrase1;
         this.foxPhrase1 = foxPhrase1;
+        this.turtlePhrase2 = turtlePhrase2;
 
         preTextState.addNounMapping(fox0, MappingKind.NAME, claimant, 0.5);
         preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
@@ -196,7 +216,6 @@ public class AddNounMappingsToTextStateTest {
         //
         // Options: Extending both, noun mapping and phrase mapping, would be an idea here, if it would not be an
         // illegal state.
-
     }
 
     @Test
@@ -210,6 +229,7 @@ public class AddNounMappingsToTextStateTest {
         // Argumentation: We follow currently a more conservative strategy.
         //
         // Attention: Adding additional noun mappings would change the conditions for the other situations.
+
     }
 
     @Test
@@ -262,6 +282,15 @@ public class AddNounMappingsToTextStateTest {
         // DO: add noun mapping and phrase mapping
         //
         // Argumentation: There are no respective mappings in the state.
+
+        textState.addNounMapping(turtles4, MappingKind.NAME, claimant, 0.5);
+
+        Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings());
+        Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(turtles4)).size() == 1);
+
+        Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
+        Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(turtlePhrase2)).size() == 1);
+
     }
 
     private static class MyAgent extends TextAgent {
