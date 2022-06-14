@@ -1,19 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection.agents;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionResult;
 import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
-import edu.kit.kastel.lissa.swa.documentation.TextBox;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
@@ -56,11 +54,19 @@ public class SketchRecognitionAgent extends DiagramDetectionAgent {
             var id = UUID.nameUUIDFromBytes(diagramResult.first().getBytes(StandardCharsets.UTF_8)).toString();
             diagramDetectionState.registerDiagram(id, diagramResult.first());
             for (var box : diagramResult.second().getBoxes()) {
-                var texts = box.getTexts().stream().map(TextBox::getText).toList();
-                if (!texts.isEmpty())
-                    diagramDetectionState.addBox(id, texts);
+                Map<Color, List<String>> textsByColor = new LinkedHashMap<>();
+                for (var text : box.getTexts()) {
+                    if (!textsByColor.containsKey(toColor(text.getDominatingColor())))
+                        textsByColor.put(toColor(text.getDominatingColor()), new ArrayList<>());
+                    textsByColor.get(toColor(text.getDominatingColor())).add(text.getText());
+                }
+                diagramDetectionState.addBox(id, toColor(box.getDominatingColor()), textsByColor);
             }
         }
+    }
+
+    private Color toColor(Integer color) {
+        return color == null ? null : new Color(color, true);
     }
 
     private boolean isValid(String name) {

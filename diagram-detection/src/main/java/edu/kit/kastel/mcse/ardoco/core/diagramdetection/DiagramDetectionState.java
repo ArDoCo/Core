@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +42,11 @@ public class DiagramDetectionState extends AbstractState implements IDiagramDete
     }
 
     @Override
-    public void addBox(String diagramId, List<String> elements) {
+    public void addBox(String diagramId, Color dominatingColor, Map<Color, List<String>> mentionedWordsByColor) {
         if (!this.diagrams.containsKey(diagramId))
             throw new IllegalArgumentException("Diagram " + diagramId + " is not known by this DiagramDetectionState");
-        this.boxes.computeIfAbsent(diagramId, k -> new ArrayList<>()).add(new Box(elements));
+        this.boxes.computeIfAbsent(diagramId, k -> new ArrayList<>()).add(new Box(dominatingColor, mentionedWordsByColor));
+
     }
 
     @Override
