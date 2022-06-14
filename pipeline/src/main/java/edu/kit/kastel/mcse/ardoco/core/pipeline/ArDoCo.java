@@ -1,19 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
@@ -34,6 +21,18 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGen
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * The Pipeline defines the execution of the agents.
@@ -41,6 +40,12 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 public final class ArDoCo extends Pipeline {
 
     private static final Logger logger = LoggerFactory.getLogger(ArDoCo.class);
+
+    // Needed for Configuration Generation
+    @SuppressWarnings("unused")
+    private ArDoCo() {
+        super(null, null);
+    }
 
     public ArDoCo(String id, DataRepository dataRepository) {
         super(id, dataRepository);
