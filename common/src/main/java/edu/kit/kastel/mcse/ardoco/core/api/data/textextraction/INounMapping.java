@@ -91,6 +91,8 @@ public interface INounMapping extends ICopyable<INounMapping> {
 
     ImmutableList<IPhrase> getPhrases();
 
+    INounMapping removePhrase(IPhrase phrase);
+
     /**
      * Adds occurrences to the mapping.
      *
@@ -139,4 +141,6 @@ public interface INounMapping extends ICopyable<INounMapping> {
     void addKindWithProbability(MappingKind kind, IClaimant claimant, double probability);
 
     boolean containsSameWords(INounMapping nounMapping);
+
+    INounMapping merge(INounMapping other);
 }

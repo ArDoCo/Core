@@ -29,10 +29,13 @@ public interface IPhraseMapping extends ICopyable<IPhraseMapping> {
 
     Map<IWord, Integer> getPhraseVector();
 
-    IPhraseMapping merge(IPhraseMapping phraseMapping, INounMapping oldNounMapping, INounMapping newNounMapping);
+    IPhraseMapping merge(IPhraseMapping phraseMapping, Map<INounMapping, INounMapping> replacementTable);
 
     Confidence getConfidence();
 
     void removeNounMapping(INounMapping nounMapping);
 
+    IPhraseMapping removePhrase(IPhrase phrase);
+
+    IPhraseMapping mergeAndAddNounMappings(IPhraseMapping phraseMapping, ImmutableList<INounMapping> nounMappings);
 }

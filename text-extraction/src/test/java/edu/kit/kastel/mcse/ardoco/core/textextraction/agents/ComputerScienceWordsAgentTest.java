@@ -37,7 +37,7 @@ class ComputerScienceWordsAgentTest implements IClaimant {
     void testSetProbability() {
 
         var validWord = wordToListOfIWord(data.get(0));
-        var nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),
+        var nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
                 Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
         var invalidWord = new MyWord("ASDFWJ", validWord.size());
         MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));

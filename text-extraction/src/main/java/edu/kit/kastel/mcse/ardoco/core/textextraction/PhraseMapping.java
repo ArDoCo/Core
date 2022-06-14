@@ -27,7 +27,7 @@ public class PhraseMapping implements IPhraseMapping {
      */
     private final MutableList<IPhrase> phrases;
 
-    private final MutableList<INounMapping> containedNounMappings;
+    private MutableList<INounMapping> containedNounMappings;
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private static final double DEFAULT_MAX_VECTOR_DISTANCE = 0.5;
     private Confidence confidence;
@@ -114,6 +114,35 @@ public class PhraseMapping implements IPhraseMapping {
     }
 
     @Override
+    public IPhraseMapping removePhrase(IPhrase phrase) {
+
+        // select all noun mappings that contain the phrase
+        MutableList<INounMapping> nounMappingsToChange = containedNounMappings.select(nm -> nm.getPhrases().anySatisfy(p -> p.equals(phrase)));
+        MutableList<INounMapping> nounMappingsToDelete = Lists.mutable.empty();
+        MutableList<INounMapping> removedNounMappings = Lists.mutable.empty();
+
+        for (INounMapping nounMapping : nounMappingsToChange) {
+
+            INounMapping newNounMappingWithRemovedPhrase = nounMapping.removePhrase(phrase);
+
+            removedNounMappings.add(newNounMappingWithRemovedPhrase);
+
+            if (nounMapping.getWords().isEmpty()) {
+                nounMappingsToDelete.add(nounMapping);
+            }
+        }
+
+        phrases.remove(phrase);
+        if (phrases.isEmpty()) {
+            containedNounMappings = Lists.mutable.empty();
+        }
+
+        // return PhraseMapping out of removed phrases
+        return new PhraseMapping(removedNounMappings.flatCollect(nm -> nm.getPhrases()).toImmutable(), removedNounMappings.toImmutable(), this.getConfidence());
+
+    }
+
+    @Override
     public PhraseType getPhraseType() {
         return phrases.get(0).getPhraseType();
     }
@@ -141,29 +170,49 @@ public class PhraseMapping implements IPhraseMapping {
     }
 
     @Override
-    public IPhraseMapping merge(IPhraseMapping phraseMapping, INounMapping oldNounMapping, INounMapping newNounMapping) {
+    public IPhraseMapping merge(IPhraseMapping phraseMapping, Map<INounMapping, INounMapping> nounMappingReplacement) {
 
         if (phraseMapping.getPhraseType() != this.getPhraseType()) {
             throw new IllegalArgumentException("The phrase types inside a phrase mapping should be the same!");
         }
 
-        var phraseMappingsToAdd = phraseMapping.getPhrases().select(p -> !this.getPhrases().contains(p));
-        this.phrases.addAllIterable(phraseMappingsToAdd);
+        mergePhrases(phraseMapping.getPhrases());
 
-        this.exchangeNounMapping(oldNounMapping, newNounMapping);
+        for (INounMapping oldNounMapping : nounMappingReplacement.keySet()) {
+            if (oldNounMapping != null) {
+                assert (this.containedNounMappings.contains(oldNounMapping));
+                this.containedNounMappings.remove(oldNounMapping);
+            }
+
+            this.containedNounMappings.add(nounMappingReplacement.get(oldNounMapping));
+        }
 
         this.confidence = Confidence.merge(this.getConfidence(), phraseMapping.getConfidence(), DEFAULT_AGGREGATOR, AggregationFunctions.MAX);
         return this;
     }
 
-    public IPhraseMapping exchangeNounMapping(INounMapping oldNounMapping, INounMapping newNounMapping) {
-
-        if (oldNounMapping != null) {
-            assert (this.containedNounMappings.contains(oldNounMapping));
-            this.containedNounMappings.remove(oldNounMapping);
+    @Override
+    public IPhraseMapping mergeAndAddNounMappings(IPhraseMapping phraseMapping, ImmutableList<INounMapping> nounMappings) {
+        if (phraseMapping.getPhraseType() != this.getPhraseType()) {
+            throw new IllegalArgumentException("The phrase types inside a phrase mapping should be the same!");
         }
-        this.containedNounMappings.add(newNounMapping);
+
+        mergePhrases(phraseMapping.getPhrases());
+        for (INounMapping nounMapping : nounMappings) {
+            if (containedNounMappings.contains(nounMapping)) {
+                // throw new IllegalArgumentException("This noun mapping is already contained by this phrase mapping");
+            } else {
+                containedNounMappings.add(nounMapping);
+            }
+        }
+
+        this.confidence = Confidence.merge(this.getConfidence(), phraseMapping.getConfidence(), DEFAULT_AGGREGATOR, AggregationFunctions.MAX);
         return this;
+
+    }
+
+    private void mergePhrases(ImmutableList<IPhrase> phrases) {
+        this.phrases.addAllIterable(phrases.select(p -> !this.getPhrases().contains(p)));
     }
 
     @Override

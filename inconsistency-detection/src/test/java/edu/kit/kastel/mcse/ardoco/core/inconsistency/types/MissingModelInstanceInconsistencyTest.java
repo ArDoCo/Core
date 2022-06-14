@@ -24,7 +24,7 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
     void beforeEach() {
         ImmutableList<IWord> words = Lists.immutable.of(new DummyWord());
         ImmutableList<String> occurences = Lists.immutable.of("occurence");
-        var nounMapping = new NounMapping(words, MappingKind.NAME, this, 1.0, words.toList(), occurences);
+        var nounMapping = new NounMapping(words, MappingKind.NAME, this, 1.0, Lists.immutable.withAll(words), occurences);
         var recommendedInstance = new RecommendedInstance("name", "type", this, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.empty());
         missingModelInstanceInconsistency = new MissingModelInstanceInconsistency(recommendedInstance);
     }
