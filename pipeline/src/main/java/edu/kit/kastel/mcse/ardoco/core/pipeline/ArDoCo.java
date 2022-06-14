@@ -19,12 +19,12 @@ import edu.kit.kastel.informalin.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
@@ -179,19 +179,18 @@ public final class ArDoCo extends Pipeline {
         return dataRepository.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
     }
 
-    public static InconsistencyState getInconsistencyState(DataRepository dataRepository) {
-        return dataRepository.getData(IInconsistencyStates.ID, InconsistencyState.class).orElseThrow();
+    public static IInconsistencyStates getInconsistencyStates(DataRepository dataRepository) {
+        return dataRepository.getData(IInconsistencyStates.ID, IInconsistencyStates.class).orElseThrow();
     }
 
     private void printResultsInFiles(File outputDir, String modelId, String name, DataRepository data, Duration duration) {
-
-        // TODO
         var textState = getTextState(data);
         var modelState = getModelStatesData(data).getModelState(modelId);
         var metaModel = modelState.getMetamodel();
         var recommendationState = getRecommendationStates(data).getRecommendationState(metaModel);
         var connectionState = getConnectionStates(data).getConnectionState(metaModel);
-        var inconsistencyState = getInconsistencyState(data);
+        var inconsistencyStates = getInconsistencyStates(data);
+        var inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
 
         FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings.csv").toFile(), //
                 textState);
