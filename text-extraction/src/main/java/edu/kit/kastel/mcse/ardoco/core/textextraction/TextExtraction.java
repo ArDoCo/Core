@@ -13,6 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
@@ -53,7 +54,7 @@ public class TextExtraction extends AbstractExecutionStage {
         var optionalTextState = dataRepository.getData(TextState.ID, TextState.class);
         if (optionalTextState.isEmpty()) {
             var textState = new TextState();
-            dataRepository.addData(TextState.ID, textState);
+            dataRepository.addData(ITextState.ID, textState);
         }
     }
 

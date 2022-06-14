@@ -21,7 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as
@@ -72,7 +71,7 @@ public class ConnectionGenerator extends AbstractExecutionStage {
     }
 
     public static ITextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(TextState.ID, TextState.class).orElseThrow();
+        return dataRepository.getData(ITextState.ID, ITextState.class).orElseThrow();
     }
 
     public static ModelStates getModelStatesData(DataRepository dataRepository) {

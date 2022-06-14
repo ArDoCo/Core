@@ -110,13 +110,14 @@ class TracelinksIT {
         inputText = project.getTextFile();
 
         // execute pipeline
-        DataRepository data = null;
+        DataStructure dataStructure = null;
         try {
-            data = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
+            dataStructure = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
         } catch (IOException e) {
             Assertions.fail("Exception during execution occurred");
         }
 
+        var data = dataStructure.getDataRepository();
         Assertions.assertNotNull(data);
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
         var modelIds = modelStates.modelIds();
@@ -139,7 +140,7 @@ class TracelinksIT {
                 printDetailedDebug(results, data);
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
-                    DATA_MAP.put(project, data);
+                    DATA_MAP.put(project, dataStructure);
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn(e.getMessage(), e.getCause());

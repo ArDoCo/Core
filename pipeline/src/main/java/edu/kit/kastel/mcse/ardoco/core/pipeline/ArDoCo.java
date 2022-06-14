@@ -34,7 +34,6 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGen
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * The Pipeline defines the execution of the agents.
@@ -55,7 +54,7 @@ public final class ArDoCo extends Pipeline {
      * @param inputArchitectureModel File of the input model (PCM)
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataRepository run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
+    public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
         return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
@@ -70,7 +69,7 @@ public final class ArDoCo extends Pipeline {
      * @param outputDir              File that represents the output directory where the results should be written to
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataRepository runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
+    public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) throws IOException {
         ArDoCo arDoCo = new ArDoCo("ArDoCo", new DataRepository());
         logger.info("Loading additional configs ..");
@@ -139,7 +138,7 @@ public final class ArDoCo extends Pipeline {
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
-        return dataRepository;
+        return new DataStructure(dataRepository);
     }
 
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
@@ -167,7 +166,7 @@ public final class ArDoCo extends Pipeline {
     }
 
     public static ITextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(TextState.ID, TextState.class).orElseThrow();
+        return dataRepository.getData(ITextState.ID, ITextState.class).orElseThrow();
     }
 
     public static ModelStates getModelStatesData(DataRepository dataRepository) {

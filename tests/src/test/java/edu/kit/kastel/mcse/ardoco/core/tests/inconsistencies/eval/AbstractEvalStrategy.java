@@ -6,7 +6,6 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
@@ -16,54 +15,47 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
 
-    private DataRepository dataRepository;
-
     protected AbstractEvalStrategy() {
         super();
-        this.dataRepository = new DataRepository();
     }
 
     protected DataStructure runRecommendationConnectionInconsistency(DataStructure data) {
         Map<String, String> config = new HashMap<>();
         // Model Extractor has been executed & textExtractor does not depend on model changes
-        runRecommendationGenerator(data, config);
-        runConnectionGenerator(data, config);
-        runInconsistencyChecker(data, config);
+        DataRepository dataRepository = data.getDataRepository();
+        runRecommendationGenerator(dataRepository, config);
+        runConnectionGenerator(dataRepository, config);
+        runInconsistencyChecker(dataRepository, config);
         return data;
     }
 
-    protected IModelState runModelExtractor(IModelConnector modelConnector, Map<String, String> configs) {
+    protected void runModelExtractor(DataRepository dataRepository, IModelConnector modelConnector, Map<String, String> configs) {
         ModelProvider modelExtractor = new ModelProvider(dataRepository, modelConnector);
         modelExtractor.applyConfiguration(configs);
         modelExtractor.run();
-        return modelExtractor.getModelState();
     }
 
-    protected DataStructure runTextExtractor(DataStructure data, Map<String, String> configs) {
+    protected void runTextExtractor(DataRepository dataRepository, Map<String, String> configs) {
         var textModule = new TextExtraction(dataRepository);
         textModule.applyConfiguration(configs);
         textModule.run();
-        return data;
     }
 
-    protected DataStructure runRecommendationGenerator(DataStructure data, Map<String, String> configs) {
+    protected void runRecommendationGenerator(DataRepository dataRepository, Map<String, String> configs) {
         var recommendationModule = new RecommendationGenerator(dataRepository);
         recommendationModule.applyConfiguration(configs);
         recommendationModule.run();
-        return data;
     }
 
-    protected DataStructure runConnectionGenerator(DataStructure data, Map<String, String> configs) {
+    protected void runConnectionGenerator(DataRepository dataRepository, Map<String, String> configs) {
         var connectionGenerator = new ConnectionGenerator(dataRepository);
         connectionGenerator.applyConfiguration(configs);
         connectionGenerator.run();
-        return data;
     }
 
-    protected DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
+    protected void runInconsistencyChecker(DataRepository dataRepository, Map<String, String> configs) {
         var inconsistencyChecker = new InconsistencyChecker(dataRepository);
         inconsistencyChecker.applyConfiguration(configs);
         inconsistencyChecker.run();
-        return data;
     }
 }

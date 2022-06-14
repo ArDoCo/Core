@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,7 +19,9 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
@@ -82,7 +85,7 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
             return;
         }
 
-        var outputBuilder = new StringBuilder(DATE_FORMATTER.format(LocalDateTime.now()));
+        var outputBuilder = new StringBuilder(DATE_FORMATTER.format(LocalDateTime.now(ZoneId.systemDefault())));
         outputBuilder.append("\n## ");
         outputBuilder.append(project.name());
         outputBuilder.append("\n");
@@ -128,18 +131,27 @@ public class DeleteOneModelElementEval extends AbstractEvalStrategy {
         var configurations = new HashMap<String, String>();
         Map<ModifiedElement<IModelConnector, IModelInstance>, DataStructure> results = new HashMap<>();
 
-        var originalData = new DataStructure(annotatedText, Map.of(pcmModel.getModelId(), runModelExtractor(pcmModel, configurations)));
+        DataRepository dataRepository = new DataRepository();
+        DataStructure originalData = new DataStructure(dataRepository);
+        PreprocessingData preprocessingData = new PreprocessingData(annotatedText);
+        dataRepository.addData(PreprocessingData.ID, preprocessingData);
 
-        runTextExtractor(originalData, configurations);
+        runModelExtractor(dataRepository, pcmModel, configurations);
+        runTextExtractor(dataRepository, configurations);
+
         var original = runRecommendationConnectionInconsistency(originalData);
         results.put(null, original);
 
         var modifiedElementIterator = strategy.getModifiedModelInstances();
         while (modifiedElementIterator.hasNext()) {
             var modification = modifiedElementIterator.next();
-            var model = modification.getArtifact();
-            var data = new DataStructure(annotatedText, Map.of(model.getModelId(), runModelExtractor(model, configurations)));
-            runTextExtractor(data, configurations);
+
+            DataRepository modDataRepository = new DataRepository();
+            modDataRepository.addData(PreprocessingData.ID, preprocessingData);
+
+            runModelExtractor(modDataRepository, pcmModel, configurations);
+            runTextExtractor(modDataRepository, configurations);
+            var data = new DataStructure(modDataRepository);
             var result = runRecommendationConnectionInconsistency(data);
             results.put(modification, result);
         }
