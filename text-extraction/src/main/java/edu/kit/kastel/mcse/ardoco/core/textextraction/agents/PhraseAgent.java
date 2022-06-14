@@ -33,7 +33,7 @@ public class PhraseAgent extends TextAgent {
      * Instantiates a new initial text agent.
      */
     public PhraseAgent(DataRepository dataRepository) {
-        super("TextExtraction", dataRepository);
+        super("PhraseAgent", dataRepository);
     }
 
     @Override
