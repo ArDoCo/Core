@@ -28,6 +28,11 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
     @Configurable
     private boolean useMergeAll = false;
 
+    @Configurable
+    private boolean deleteRIsWithLowConfidence = false;
+    @Configurable
+    private double minConfidenceToPreventDeletion = 0.6;
+
     /**
      * This value defines at which overlap of words in a color group with RI, the RIs get a positive boost.
      */
@@ -52,7 +57,6 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
             // TODO For now we assume the architectural sketches belong to architecture not code.
             processDiagram(diagramState.detectedBoxes(diagram), data.getRecommendationState(Metamodel.ARCHITECTURE));
         }
-
     }
 
     private void processDiagram(List<IBox> diagram, IRecommendationState recommendationState) {
@@ -61,6 +65,9 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
 
         if (useMergeAll)
             processUsingMergedWordLists(diagram, recommendationState);
+
+        if (deleteRIsWithLowConfidence)
+            deleteRIsWithLowConfidence(recommendationState);
         /*
          * for (var word : interestingWords) { var recommendations =
          * recommendationState.getRecommendedInstancesBySimilarName(word);
@@ -119,6 +126,15 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
             matchings.put(wordGroup.getKey(), score);
         }
         return matchings;
+    }
+
+    private void deleteRIsWithLowConfidence(IRecommendationState recommendationState) {
+        for (var ri : recommendationState.getRecommendedInstances()) {
+            var confidence = ri.getConfidencesForClaimant(this);
+            if (ri.getProbability() < minConfidenceToPreventDeletion && confidence.getConfidence() < minConfidenceToPreventDeletion) {
+                recommendationState.removeRecommendedInstance(ri);
+            }
+        }
     }
 
     private List<IRecommendedInstance> getRecommendedInstancesByBoxWords(List<String> words, IRecommendationState recommendationState) {

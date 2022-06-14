@@ -29,6 +29,8 @@ public interface IRecommendationState extends ICopyable<IRecommendationState>, I
      */
     void addRecommendedInstance(String name, IClaimant claimant, double probability, ImmutableList<INounMapping> nameMappings);
 
+    boolean removeRecommendedInstance(IRecommendedInstance recommendedInstance);
+
     /**
      * Adds a recommended instance.
      *

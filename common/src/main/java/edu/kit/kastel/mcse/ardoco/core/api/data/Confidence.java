@@ -14,12 +14,9 @@ import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 
 /**
- *
- *
  * @author Sophie Schulz
  * @author Dominik Fuchß
  * @author Jan Keim
- *
  */
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
@@ -45,6 +42,10 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     @Override
     public Confidence createCopy() {
         return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidences));
+    }
+
+    public Confidence forClaimant(IClaimant claimant) {
+        return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidences.stream().filter(it -> it.getOne().equals(claimant)).toList()));
     }
 
     public void addAgentConfidence(IClaimant claimant, double confidence) {
@@ -122,4 +123,5 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         var other = (Confidence) obj;
         return Objects.equals(agentConfidences, other.agentConfidences) && confidenceAggregator == other.confidenceAggregator;
     }
+
 }

@@ -125,6 +125,11 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
         return GLOBAL_AGGREGATOR.applyAsDouble(probabilities);
     }
 
+    @Override
+    public Confidence getConfidencesForClaimant(IClaimant claimant) {
+        return this.internalConfidence.forClaimant(claimant);
+    }
+
     /**
      * Adds a name and type mapping to this recommended instance.
      *

@@ -203,4 +203,8 @@ public class RecommendationState extends AbstractState implements IRecommendatio
         return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutable();
     }
 
+    @Override
+    public boolean removeRecommendedInstance(IRecommendedInstance recommendedInstance) {
+        return this.recommendedInstances.remove(recommendedInstance);
+    }
 }

@@ -5,6 +5,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 
 /**
@@ -92,4 +93,6 @@ public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
     void setName(String name);
 
     void addProbability(IClaimant claimant, double probability);
+
+    Confidence getConfidencesForClaimant(IClaimant claimant);
 }
