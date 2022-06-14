@@ -42,7 +42,6 @@ public class InitialTextAgent extends TextAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        this.applyConfiguration(additionalConfiguration);
         extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 

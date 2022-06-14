@@ -62,6 +62,6 @@ public class NounExtractor extends AbstractExtractor {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        this.applyConfiguration(additionalConfiguration);
+        // empty
     }
 }
