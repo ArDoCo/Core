@@ -1,15 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Scanner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
@@ -17,6 +8,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
 
 public class CoreNLPProvider extends AbstractPipelineStep implements ITextConnector {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
@@ -24,6 +23,13 @@ public class CoreNLPProvider extends AbstractPipelineStep implements ITextConnec
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
     private final InputStream text;
     private IText annotatedText;
+
+    // Needed for Configuration Generation
+    @SuppressWarnings("unused")
+    private CoreNLPProvider() {
+        super(null, null);
+        this.text = null;
+    }
 
     public CoreNLPProvider(DataRepository data, InputStream text) {
         super("CoreNLPTextProvider", data);

@@ -1,14 +1,13 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-import java.util.Map;
-
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import java.util.Map;
 
 /**
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
@@ -20,6 +19,13 @@ public final class ModelProvider extends AbstractPipelineStep {
     private static final String MODEL_STATES_DATA = "ModelStatesData";
     private final IModelConnector modelConnector;
     private ModelExtractionState modelState = null;
+
+    // Needed for Configuration Generation
+    @SuppressWarnings("unused")
+    private ModelProvider() {
+        super(null, null);
+        this.modelConnector = null;
+    }
 
     /**
      * Instantiates a new model provider.
@@ -33,7 +39,7 @@ public final class ModelProvider extends AbstractPipelineStep {
 
     /**
      * Returns the {@link ModelExtractionState}. Returns null if this step did not run previously.
-     * 
+     *
      * @return the {@link ModelExtractionState} if the Provider did run. Else, null
      */
     public ModelExtractionState getModelState() {

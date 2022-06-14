@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.model;
 
 import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
