@@ -93,16 +93,6 @@ public final class ArDoCo extends Pipeline {
             var javaModelProvider = new ModelProvider(arDoCo.getDataRepository(), javaModel);
             arDoCo.addPipelineStep(javaModelProvider);
         }
-        if (outputDir != null) {
-            var modelStatesData = getModelStatesData(dataRepository);
-            for (String modelId : modelStatesData.modelIds()) {
-                IModelState modelState = modelStatesData.getModelState(modelId);
-                var metaModel = modelState.getMetamodel();
-                var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + metaModel + ".csv").toFile();
-
-                FilePrinter.writeModelInstancesInCsvFile(modelStateFile, modelState, name);
-            }
-        }
 
         // text extractor
         var textExtractor = new TextExtraction(dataRepository);
@@ -132,8 +122,16 @@ public final class ArDoCo extends Pipeline {
             var modelStatesData = getModelStatesData(dataRepository);
             logger.info("Writing output.");
             for (String modelId : modelStatesData.modelIds()) {
+                // write model states
+                IModelState modelState = modelStatesData.getModelState(modelId);
+                var metaModel = modelState.getMetamodel();
+                var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + metaModel + ".csv").toFile();
+                FilePrinter.writeModelInstancesInCsvFile(modelStateFile, modelState, name);
+
+                // write results
                 arDoCo.printResultsInFiles(outputDir, modelId, name, dataRepository, duration);
             }
+
         }
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
