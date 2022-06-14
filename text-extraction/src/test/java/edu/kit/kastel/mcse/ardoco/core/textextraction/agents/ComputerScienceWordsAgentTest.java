@@ -36,6 +36,8 @@ class ComputerScienceWordsAgentTest implements IClaimant {
     @BeforeEach
     void setup() throws NoSuchFieldException, IllegalAccessException {
         var dataRepository = new DataRepository();
+        this.agent = new ComputerScienceWordsAgent(dataRepository);
+        setData();
 
         var validWord = wordToListOfIWord(data.get(0));
         nounMapping = new NounMapping(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),
@@ -50,9 +52,6 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         textState.addNounMapping(invalidWord, MappingKind.NAME, this, 1.0);
 
         dataRepository.addData(TextState.ID, textState);
-
-        this.agent = new ComputerScienceWordsAgent(dataRepository);
-        setData();
     }
 
     @Test
