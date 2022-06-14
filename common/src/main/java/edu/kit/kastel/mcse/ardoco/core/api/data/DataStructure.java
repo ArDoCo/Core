@@ -1,108 +1,70 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
-import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
-
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
+import org.eclipse.collections.api.factory.Lists;
+
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 
-public final class DataStructure implements IData, IModelData, ITextData, IRecommendationData, IConnectionData, IInconsistencyData, TextAgentData,
-        RecommendationAgentData, ConnectionAgentData, InconsistencyAgentData {
-    private final IText text;
-    private final ModelStates modelStates;
+public final class DataStructure {
 
-    private ITextState textState;
-    private Map<Metamodel, IRecommendationState> recommendationStates = new EnumMap<>(Metamodel.class);
-    private Map<String, IConnectionState> connectionStates = new HashMap<>();
-    private Map<String, IInconsistencyState> inconsistencyStates = new HashMap<>();
+    private final DataRepository dataRepository;
 
-    public DataStructure(IText text, ModelStates modelStates) {
-        this.text = text;
-        this.modelStates = modelStates;
+    public DataStructure(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
     }
 
-    @Override
     public DataStructure createCopy() {
-        DataStructure ds = new DataStructure(text, modelStates.createCopy());
-        ds.textState = textState == null ? null : textState.createCopy();
-        ds.recommendationStates = copyMap(recommendationStates, IRecommendationState::createCopy);
-        ds.connectionStates = copyMap(connectionStates, IConnectionState::createCopy);
-        ds.inconsistencyStates = copyMap(inconsistencyStates, IInconsistencyState::createCopy);
-        return ds;
+        // TODO better copy
+        return new DataStructure(dataRepository);
     }
 
-    @Override
-    public void setConnectionState(String model, IConnectionState state) {
-        ensureModel(model);
-        connectionStates.put(model, state);
-    }
-
-    @Override
     public IConnectionState getConnectionState(String model) {
-        return connectionStates.get(model);
+        var connectionStates = dataRepository.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
+        var modelState = getModelState(model);
+        return connectionStates.getConnectionState(modelState.getMetamodel());
     }
 
-    @Override
-    public void setInconsistencyState(String model, IInconsistencyState state) {
-        ensureModel(model);
-        this.inconsistencyStates.put(model, state);
-    }
-
-    @Override
     public IInconsistencyState getInconsistencyState(String model) {
-        return inconsistencyStates.get(model);
+        var inconsistencyStates = dataRepository.getData(IInconsistencyStates.ID, IInconsistencyStates.class).orElseThrow();
+        var modelState = getModelState(model);
+        return inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
     }
 
-    @Override
+    private ModelStates getModelStates() {
+        var modelStates = dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
+        return modelStates;
+    }
+
     public List<String> getModelIds() {
-        return modelStates.modelIds().stream().toList();
+        ModelStates modelStates = getModelStates();
+        return Lists.mutable.ofAll(modelStates.modelIds());
     }
 
-    @Override
     public IModelState getModelState(String model) {
+        ModelStates modelStates = getModelStates();
         return modelStates.getModelState(model);
     }
 
-    @Override
-    public void setRecommendationState(Metamodel mm, IRecommendationState state) {
-        Objects.requireNonNull(mm);
-        this.recommendationStates.put(mm, state);
-    }
-
-    @Override
     public IRecommendationState getRecommendationState(Metamodel mm) {
-        return recommendationStates.get(mm);
+        var recommendationStates = dataRepository.getData(IRecommendationStates.ID, IRecommendationStates.class).orElseThrow();
+        return recommendationStates.getRecommendationState(mm);
     }
 
-    @Override
     public IText getText() {
-        return text;
-    }
-
-    @Override
-    public void setTextState(ITextState state) {
-        this.textState = state;
-    }
-
-    @Override
-    public ITextState getTextState() {
-        return textState;
+        var preprocessingData = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow();
+        return preprocessingData.getText();
     }
 
     private void ensureModel(String model) {
@@ -110,4 +72,7 @@ public final class DataStructure implements IData, IModelData, ITextData, IRecom
             throw new IllegalArgumentException("Model with Key " + model + " was not found");
     }
 
+    public DataRepository getDataRepository() {
+        return dataRepository;
+    }
 }

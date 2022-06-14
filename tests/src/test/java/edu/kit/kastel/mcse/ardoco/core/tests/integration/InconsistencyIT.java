@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
@@ -104,8 +105,10 @@ class InconsistencyIT {
         os.println("####################################");
         os.println("START Eval: " + project + " -- " + eval.getClass().getSimpleName());
 
+        DataRepository dataRepository = new DataRepository();
+
         IModelConnector pcmModel = project.getModel();
-        IText annotatedText = project.getText();
+        IText annotatedText = project.getText(dataRepository);
 
         GoldStandard gs = project.getGoldStandard(pcmModel);
         var results = eval.evaluate(project, pcmModel, annotatedText, gs, os);

@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InitialRecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseRecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * The Class RecommendationGenerator defines the recommendation stage.
@@ -65,7 +64,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     }
 
     public static ITextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(TextState.ID, TextState.class).orElseThrow();
+        return dataRepository.getData(ITextState.ID, ITextState.class).orElseThrow();
     }
 
     public static ModelStates getModelStatesData(DataRepository dataRepository) {

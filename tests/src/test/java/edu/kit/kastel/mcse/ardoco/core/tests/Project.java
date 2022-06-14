@@ -88,13 +88,13 @@ public enum Project {
         return modelConnector;
     }
 
-    public IText getText() {
-        return getTextViaFile();
+    public IText getText(DataRepository dataRepository) {
+        return getTextViaFile(dataRepository);
     }
 
-    public IText getTextViaFile() {
+    public IText getTextViaFile(DataRepository dataRepository) {
         try {
-            ITextConnector textConnector = new CoreNLPProvider(new DataRepository(), new FileInputStream(getTextFile()));
+            ITextConnector textConnector = new CoreNLPProvider(dataRepository, new FileInputStream(getTextFile()));
             return textConnector.getAnnotatedText();
         } catch (FileNotFoundException e) {
             logger.warn(e.getMessage(), e.getCause());

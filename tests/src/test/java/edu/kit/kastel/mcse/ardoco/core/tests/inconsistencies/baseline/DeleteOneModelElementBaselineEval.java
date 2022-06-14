@@ -3,17 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.baseline;
 
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.stage.IExecutionStage;
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model.DeleteOneModelElementEval;
 
 public class DeleteOneModelElementBaselineEval extends DeleteOneModelElementEval {
 
     @Override
-    protected DataStructure runInconsistencyChecker(DataStructure data, Map<String, String> configs) {
-        IExecutionStage inconsistencyChecker = new InconsistencyBaseline();
-        inconsistencyChecker.execute(data, configs);
-        return data;
+    protected void runInconsistencyChecker(DataRepository dataRepository, Map<String, String> configs) {
+        var inconsistencyChecker = new InconsistencyBaseline(dataRepository);
+        inconsistencyChecker.applyConfiguration(configs);
+        inconsistencyChecker.run();
     }
 
 }
