@@ -256,11 +256,6 @@ public class AddNounMappingsToTextStateTest {
 
     @Test
     void addDifferentNounMappingWithEqualPhrase() {
-        // DO: Extend phrase mapping, add noun mapping, add new noun mapping to existing phrase mapping
-    }
-
-    @Test
-    void addDifferentNounMappingWithSamePhrase() {
         // DO: split (if necessary) already existing phrase with shared noun mapping
         // Do: add noun mapping and phrase mapping - extend with shared noun mapping
         //
