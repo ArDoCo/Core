@@ -35,6 +35,7 @@ public class AddNounMappingsToTextStateTest {
     private IWord dog1;
     private IWord fox2;
     private IWord dog3;
+    private IWord hut3;
     private IWord turtles4;
 
     private IPhrase dogPhrase0;
@@ -121,6 +122,7 @@ public class AddNounMappingsToTextStateTest {
         this.dog1 = dog1;
         this.fox2 = fox2;
         this.dog3 = dog3;
+        this.hut3 = hut3;
         this.turtles4 = turtles4;
         this.dogPhrase0 = dogPhrase0;
         this.foxPhrase0 = foxPhrase0;
@@ -255,9 +257,30 @@ public class AddNounMappingsToTextStateTest {
     @Test
     void addDifferentNounMappingWithEqualPhrase() {
         // DO: Extend phrase mapping, add noun mapping, add new noun mapping to existing phrase mapping
+    }
+
+    @Test
+    void addDifferentNounMappingWithSamePhrase() {
+        // DO: split (if necessary) already existing phrase with shared noun mapping
+        // Do: add noun mapping and phrase mapping - extend with shared noun mapping
         //
         // Argumentation: Detecting a combination of noun mappings
 
+        textState.addNounMapping(dog3, MappingKind.NAME, claimant, 0.5);
+        textState.addNounMapping(hut3, MappingKind.TYPE, claimant, 0.5);
+
+        Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings());
+        Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(hut3)).size() == 1);
+        Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(dog3)).size() == 1);
+
+        Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
+        Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).size() == 1);
+        Assertions.assertFalse(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase0)).get(0).getNounMappings().contains(dog3));
+
+        IPhraseMapping dog1PhraseMapping = textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).get(0);
+
+        Assertions.assertTrue(dog1PhraseMapping.getNounMappings().select(nm -> nm.getWords().contains(dog3)).size() == 1);
+        Assertions.assertTrue(dog1PhraseMapping.getNounMappings().select(nm -> nm.getWords().contains(hut3)).size() == 1);
     }
 
     @Test
@@ -267,6 +290,7 @@ public class AddNounMappingsToTextStateTest {
         // Options: Merging would be a possibility here. Could also be done dependent on a lowering of similarity.
         //
         // Argumentation: Follow a conservative way analogue to the previous cases
+
     }
 
     @Test

@@ -3,7 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -47,7 +50,8 @@ public class NounMapping implements INounMapping {
     /**
      * Instantiates a new noun mapping.
      */
-    public NounMapping(ImmutableList<IWord> words, Map<MappingKind, Confidence> distribution, List<IWord> referenceWords, ImmutableList<String> surfaceForms) {
+    public NounMapping(ImmutableList<IWord> words, Map<MappingKind, Confidence> distribution, ImmutableList<IWord> referenceWords,
+            ImmutableList<String> surfaceForms) {
         this.words = Lists.mutable.withAll(words);
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
@@ -57,7 +61,7 @@ public class NounMapping implements INounMapping {
     /**
      * Instantiates a new noun mapping.
      */
-    public NounMapping(ImmutableList<IWord> words, MappingKind kind, IClaimant claimant, double probability, List<IWord> referenceWords,
+    public NounMapping(ImmutableList<IWord> words, MappingKind kind, IClaimant claimant, double probability, ImmutableList<IWord> referenceWords,
             ImmutableList<String> occurrences) {
         Objects.requireNonNull(claimant);
 
@@ -174,6 +178,26 @@ public class NounMapping implements INounMapping {
         return phrases.toImmutable();
     }
 
+    @Override
+    public INounMapping removePhrase(IPhrase phrase) {
+
+        MutableList<IWord> wordsToRemove = Lists.mutable.empty();
+
+        for (IWord word : words) {
+            if (word.getPhrase().equals(phrase)) {
+                wordsToRemove.add(word);
+            }
+        }
+
+        words.removeAll(wordsToRemove);
+
+        // TODO: Recalculate confidence, etc!!! -> Confidence must be designed differently
+
+        // return noun mapping out of removed words
+        return new NounMapping(wordsToRemove.toImmutable(), getDistribution(), getReferenceWords(), getSurfaceForms());
+
+    }
+
     /**
      * Adds occurrences to the mapping
      *
@@ -202,7 +226,7 @@ public class NounMapping implements INounMapping {
 
     @Override
     public INounMapping createCopy() {
-        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(),
+        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable.withAll(referenceWords),
                 surfaceForms.toImmutable());
         return nm;
     }
@@ -289,6 +313,20 @@ public class NounMapping implements INounMapping {
     @Override
     public void addCoreference(IWord coreference) {
         coreferences.add(coreference);
+    }
+
+    @Override
+    public INounMapping merge(INounMapping other) {
+        Map<MappingKind, Confidence> otherDistribution = other.getDistribution();
+
+        for (MappingKind kind : otherDistribution.keySet()) {
+            Confidence.merge(distribution.get(kind), otherDistribution.get(kind), DEFAULT_AGGREGATOR, DEFAULT_AGGREGATOR);
+        }
+
+        this.addOccurrence(other.getSurfaceForms());
+        other.getWords().forEach(w -> this.addWord(w));
+
+        return this;
     }
 
     @Override
