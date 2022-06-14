@@ -72,7 +72,7 @@ public class OutDepArcsExtractor extends AbstractExtractor {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        this.applyConfiguration(additionalConfiguration);
+        // emtpy
     }
 
 }

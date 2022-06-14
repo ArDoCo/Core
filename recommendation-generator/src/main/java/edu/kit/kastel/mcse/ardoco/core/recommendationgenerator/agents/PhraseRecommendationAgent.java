@@ -35,6 +35,6 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // handle additional config
+        extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 }

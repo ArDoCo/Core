@@ -61,7 +61,7 @@ public class SeparatedNamesExtractor extends AbstractExtractor {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        this.applyConfiguration(additionalConfiguration);
+        // emtpy
     }
 
 }
