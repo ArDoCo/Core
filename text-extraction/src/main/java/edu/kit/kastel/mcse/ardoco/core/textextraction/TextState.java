@@ -442,10 +442,10 @@ public class TextState extends AbstractState implements ITextState {
             }
         }
 
-        this.phraseMappings.removeAll(phraseMappingsToRemove);
-
         // merge all together
         phraseMappingsToMerge.forEach(pm -> phraseMapping.mergeAndAddNounMappings(pm, pm.getNounMappings()));
+
+        this.phraseMappings.removeAll(phraseMappingsToRemove);
 
         return addNounMappingAddPhraseMapping(nounMapping, phraseMapping);
 

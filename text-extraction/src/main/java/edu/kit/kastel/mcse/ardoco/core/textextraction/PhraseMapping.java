@@ -94,7 +94,9 @@ public class PhraseMapping implements IPhraseMapping {
 
     @Override
     public void addPhrase(IPhrase phrase) {
-        assert phrase.getPhraseType().equals(this.getPhraseType()) : "added a different phrase type for mapping";
+        if (!phrase.getPhraseType().equals(this.getPhraseType())) {
+            throw new IllegalArgumentException("added a different phrase type for mapping");
+        }
         phrases.add(phrase);
     }
 
@@ -144,6 +146,9 @@ public class PhraseMapping implements IPhraseMapping {
 
     @Override
     public PhraseType getPhraseType() {
+        if (phrases.isEmpty()) {
+            throw new IllegalStateException("A phrase mapping should always contain some phrases!");
+        }
         return phrases.get(0).getPhraseType();
     }
 
