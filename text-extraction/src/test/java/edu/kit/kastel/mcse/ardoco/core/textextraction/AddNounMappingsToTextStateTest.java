@@ -36,11 +36,14 @@ public class AddNounMappingsToTextStateTest {
     private IWord fox2;
     private IWord dog3;
     private IWord hut3;
-    private IWord turtles4;
+    private IWord turtle4;
 
     private IWord doggy5;
 
     private IWord hut5;
+
+    private IWord dog6;
+
     private IPhrase dogPhrase0;
     private IPhrase foxPhrase0;
 
@@ -50,6 +53,10 @@ public class AddNounMappingsToTextStateTest {
     private IPhrase turtlePhrase2;
 
     private IPhrase dogPhrase3;
+
+    private IPhrase dogPhrase4;
+
+    private ISentence sentence0;
     private IAgent claimant;
 
     @BeforeEach
@@ -108,19 +115,23 @@ public class AddNounMappingsToTextStateTest {
         mockWord(hut3, "hut", "hut", sentence0, 1, dogPhrase1, 8);
 
         IWord i4 = Mockito.mock(IWord.class);
-        IWord turtles4 = Mockito.mock(IWord.class);
+        IWord green4 = Mockito.mock(IWord.class);
+        IWord turtle4 = Mockito.mock(IWord.class);
+        IWord hats4 = Mockito.mock(IWord.class);
 
         Phrase iPhrase2 = Mockito.mock(Phrase.class);
         Phrase turtlePhrase2 = Mockito.mock(Phrase.class);
         ISentence sentence2 = Mockito.mock(ISentence.class);
 
-        mockSentence(sentence2, 2, "I like turtles", Lists.immutable.with(iPhrase2, turtlePhrase2));
+        mockSentence(sentence2, 2, "I like green turtle hats", Lists.immutable.with(iPhrase2, turtlePhrase2));
 
         mockPhrase(iPhrase2, "I", PhraseType.NP, sentence2, 2, Lists.immutable.with(i4));
-        mockPhrase(turtlePhrase2, "turtles", PhraseType.NP, sentence2, 2, Lists.immutable.with(turtles4));
+        mockPhrase(turtlePhrase2, "green turtle hats", PhraseType.NP, sentence2, 2, Lists.immutable.with(green4, turtle4, hats4));
 
         mockWord(i4, "I", "i", sentence2, 2, iPhrase2, 0);
-        mockWord(turtles4, "turtles", "turtles", sentence2, 2, turtlePhrase2, 2);
+        mockWord(green4, "green", "green", sentence2, 2, turtlePhrase2, 2);
+        mockWord(turtle4, "turtles", "turtles", sentence2, 2, turtlePhrase2, 3);
+        mockWord(hats4, "hats", "hat", sentence2, 2, turtlePhrase2, 4);
 
         IWord a5 = Mockito.mock(IWord.class);
         IWord brown5 = Mockito.mock(IWord.class);
@@ -138,20 +149,38 @@ public class AddNounMappingsToTextStateTest {
         mockWord(doggy5, "doggy", "dog", sentence3, 3, dogPhrase3, 2);
         mockWord(hut5, "hut", "hut", sentence3, 3, dogPhrase3, 3);
 
+        IWord i6 = Mockito.mock(IWord.class);
+        IWord green6 = Mockito.mock(IWord.class);
+        IWord dog6 = Mockito.mock(IWord.class);
+        IWord hats6 = Mockito.mock(IWord.class);
+        Phrase dogPhrase4 = Mockito.mock(Phrase.class);
+        ISentence sentence4 = Mockito.mock(ISentence.class);
+
+        mockSentence(sentence4, 4, "I like green dog hats", Lists.immutable.with(dogPhrase4));
+
+        mockPhrase(dogPhrase4, "green dog hats", PhraseType.NP, sentence4, 4, Lists.immutable.with(green6, dog6, hats6));
+
+        mockWord(green6, "green", "green", sentence4, 4, dogPhrase4, 2);
+        mockWord(dog6, "dog", "dog", sentence4, 4, dogPhrase4, 3);
+        mockWord(hats6, "hats", "hat", sentence4, 4, dogPhrase4, 4);
+
         this.fox0 = fox0;
         this.dog1 = dog1;
         this.fox2 = fox2;
         this.dog3 = dog3;
         this.hut3 = hut3;
-        this.turtles4 = turtles4;
+        this.turtle4 = turtle4;
         this.doggy5 = doggy5;
         this.hut5 = hut5;
+        this.dog6 = dog6;
         this.dogPhrase0 = dogPhrase0;
         this.foxPhrase0 = foxPhrase0;
         this.dogPhrase1 = dogPhrase1;
         this.foxPhrase1 = foxPhrase1;
         this.turtlePhrase2 = turtlePhrase2;
         this.dogPhrase3 = dogPhrase3;
+        this.dogPhrase4 = dogPhrase4;
+        this.sentence0 = sentence0;
 
         preTextState.addNounMapping(fox0, MappingKind.NAME, claimant, 0.5);
         preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
@@ -249,6 +278,12 @@ public class AddNounMappingsToTextStateTest {
         //
         // Options: Extending both, noun mapping and phrase mapping, would be an idea here, if it would not be an
         // illegal state.
+
+        IWord alternativeDog = Mockito.mock(IWord.class);
+
+        mockWord(alternativeDog, "doggy", "doggy", sentence0, 0, dogPhrase0, 0);
+
+        Assertions.assertThrows(IllegalStateException.class, () -> textState.addNounMapping(alternativeDog, MappingKind.NAME, claimant, 0.5));
     }
 
     @Test
@@ -304,6 +339,20 @@ public class AddNounMappingsToTextStateTest {
         //
         // Options: It could become interesting when lowering the similarity of noun mappings in this case
 
+        // the brown dog -> dog
+        // I like green turtle hats -> turtle
+        // I like green dog hats -> dog
+
+        textState.addNounMapping(turtle4, MappingKind.TYPE, claimant, 0.5);
+        textState.addNounMapping(dog6, MappingKind.NAME, claimant, 0.5);
+
+        Assertions.assertAll(//
+                () -> Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings()),
+                () -> Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(dog6)).size() == 1),
+
+                () -> Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()),
+                () -> Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase4)).size() == 1));
+
     }
 
     @Test
@@ -313,6 +362,15 @@ public class AddNounMappingsToTextStateTest {
         // Options: Merging would also be a possibility here.
         //
         // Argumentation: Following a conservative way analogue to previous cases
+
+        textState.addNounMapping(doggy5, MappingKind.TYPE, claimant, 0.5);
+
+        Assertions.assertAll(//
+                () -> Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings()),
+                () -> Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(doggy5)).size() == 1),
+
+                () -> Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()),
+                () -> Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase3)).size() == 1));
 
     }
 
@@ -350,6 +408,14 @@ public class AddNounMappingsToTextStateTest {
         // Options: Merging would be a possibility here. Could also be done dependent on a lowering of similarity.
         //
         // Argumentation: Follow a conservative way analogue to the previous cases
+        textState.addNounMapping(hut3, MappingKind.TYPE, claimant, 0.5);
+
+        Assertions.assertAll(//
+                () -> Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings()),
+                () -> Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(hut3)).size() == 1),
+
+                () -> Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()),
+                () -> Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).size() == 1));
 
     }
 
@@ -359,6 +425,15 @@ public class AddNounMappingsToTextStateTest {
         //
         // Argumentation: Phrase Mapping should contain the noun mapping or at least some similar one.
 
+        textState.addNounMapping(hut3, MappingKind.NAME, claimant, 0.5);
+
+        Assertions.assertAll(//
+                () -> Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings()),
+                () -> Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(hut3)).size() == 1),
+
+                () -> Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()),
+                () -> Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).size() == 1));
+
     }
 
     @Test
@@ -367,11 +442,11 @@ public class AddNounMappingsToTextStateTest {
         //
         // Argumentation: There are no respective mappings in the state.
 
-        textState.addNounMapping(turtles4, MappingKind.NAME, claimant, 0.5);
+        textState.addNounMapping(turtle4, MappingKind.NAME, claimant, 0.5);
 
         Assertions.assertAll(//
                 () -> Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings()),
-                () -> Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(turtles4)).size() == 1),
+                () -> Assertions.assertTrue(textState.getNounMappings().select(nm -> nm.getWords().contains(turtle4)).size() == 1),
 
                 () -> Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()),
                 () -> Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(turtlePhrase2)).size() == 1));
