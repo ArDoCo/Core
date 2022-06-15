@@ -276,7 +276,7 @@ public class TextState extends AbstractState implements ITextState {
         existingNounMapping.addOccurrence(nounMapping.getSurfaceForms());
         existingNounMapping.addWord(nounMapping.getReferenceWords().get(0));
 
-        if (phraseMappingsOfCorrectType.size() == 0) {
+        if (phraseMappingsOfCorrectType.isEmpty()) {
             this.phraseMappings
                     .add(new PhraseMapping(phraseMapping.getPhrases(), Lists.immutable.with(existingNounMapping), claimant, phraseMapping.getProbability()));
         } else {
@@ -304,7 +304,7 @@ public class TextState extends AbstractState implements ITextState {
     private INounMapping addEqualNounMapping(ImmutableList<INounMapping> equalNounMappings, INounMapping nounMapping, IPhraseMapping phraseMapping,
             IClaimant claimant) {
         ImmutableList<IPhraseMapping> equalPhraseMappings = this.getPhraseMappings().select(pm -> pm.equals(phraseMapping));
-        if (equalPhraseMappings.size() > 0) {
+        if (!equalPhraseMappings.isEmpty()) {
             assert (equalPhraseMappings.size() == 1) : "There should be only one equal phrase mapping";
             IPhraseMapping equalPhraseMapping = equalPhraseMappings.get(0);
             var equalNounMappingsWithEqualPhrase = equalNounMappings.select(nm -> equalPhraseMapping.getNounMappings().contains(nm));
@@ -323,7 +323,7 @@ public class TextState extends AbstractState implements ITextState {
                 ImmutableList<IPhraseMapping> similarPhraseMappingsOfEqualNounMapping = this.getPhraseMappingsByNounMapping(equalNounMapping)
                         .select(pm -> SimilarityUtils.getPhraseMappingSimilarity(pm, phraseMapping) > MIN_COSINE_SIMILARITY);
 
-                if (similarPhraseMappingsOfEqualNounMapping.size() > 0) {
+                if (!similarPhraseMappingsOfEqualNounMapping.isEmpty()) {
 
                     return this.addEqualNounMappingWithSimilarPhrase(equalNounMapping, nounMapping, phraseMapping, claimant);
                 } else {
@@ -338,12 +338,12 @@ public class TextState extends AbstractState implements ITextState {
     private INounMapping addSimilarNounMapping(ImmutableList<IPhraseMapping> equalPhraseMappings, Map<INounMapping, IPhraseMapping> similarMappings,
             INounMapping nounMapping, IPhraseMapping phraseMapping, IClaimant claimant) {
 
-        if (equalPhraseMappings.size() > 0) {
+        if (!equalPhraseMappings.isEmpty()) {
             return addSimilarNounMappingWithEqualPhrase();
 
         } else {
 
-            if (similarMappings.keySet().size() > 0) {
+            if (!similarMappings.keySet().isEmpty()) {
                 return addSimilarNounMappingWithSimilarPhrase(similarMappings, nounMapping, phraseMapping, claimant);
 
             } else {
