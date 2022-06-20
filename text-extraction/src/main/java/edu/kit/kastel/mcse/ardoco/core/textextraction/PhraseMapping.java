@@ -125,7 +125,7 @@ public class PhraseMapping implements IPhraseMapping {
 
         for (INounMapping nounMapping : nounMappingsToChange) {
 
-            INounMapping newNounMappingWithRemovedPhrase = nounMapping.removePhrase(phrase);
+            INounMapping newNounMappingWithRemovedPhrase = nounMapping.splitByPhrase(phrase);
 
             removedNounMappings.add(newNounMappingWithRemovedPhrase);
 
@@ -142,6 +142,34 @@ public class PhraseMapping implements IPhraseMapping {
         // return PhraseMapping out of removed phrases
         return new PhraseMapping(removedNounMappings.flatCollect(nm -> nm.getPhrases()).toImmutable(), removedNounMappings.toImmutable(), this.getConfidence());
 
+    }
+
+    public IPhraseMapping splitByPhrase(IPhrase phrase) {
+
+        if (this.phrases.size() == 1) {
+            return this;
+        }
+
+        MutableList<INounMapping> stayingNounMappings = Lists.mutable.empty();
+        MutableList<INounMapping> nounMappingsForNewPM = Lists.mutable.empty();
+
+        for (INounMapping oldNounMapping : containedNounMappings) {
+            if (oldNounMapping.getPhrases().contains(phrase)) {
+
+                INounMapping newNounMapping = oldNounMapping.splitByPhrase(phrase);
+                nounMappingsForNewPM.add(newNounMapping);
+                if (!oldNounMapping.getPhrases().isEmpty()) {
+                    stayingNounMappings.add(oldNounMapping);
+                }
+            } else {
+                stayingNounMappings.add(oldNounMapping);
+            }
+        }
+
+        IPhraseMapping newPhraseMapping = new PhraseMapping(Lists.immutable.with(phrase), nounMappingsForNewPM.toImmutable(), confidence.createCopy());
+        this.containedNounMappings = stayingNounMappings;
+
+        return newPhraseMapping;
     }
 
     @Override
@@ -162,15 +190,10 @@ public class PhraseMapping implements IPhraseMapping {
         }
 
         Map<IWord, Integer> phraseVector = new HashMap<>();
+        var grouped = containedNounMappings.flatCollect(INounMapping::getWords).groupBy(IWord::getText).toMap();
+        grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
+        // TODO: Thing about norm
 
-        for (IWord word : words) {
-            if (phrases.contains(word)) {
-                continue;
-            }
-            phraseVector.put(word, words.count(w -> w == word));
-            // TODO: Thing about norm / (double) words.size()));
-
-        }
         return phraseVector;
     }
 
@@ -204,6 +227,7 @@ public class PhraseMapping implements IPhraseMapping {
 
         mergePhrases(phraseMapping.getPhrases());
         for (INounMapping nounMapping : nounMappings) {
+            // TODO: Contains doesn not work here! NounMaping Should be extended!
             if (containedNounMappings.contains(nounMapping)) {
                 // throw new IllegalArgumentException("This noun mapping is already contained by this phrase mapping");
             } else {
@@ -214,6 +238,12 @@ public class PhraseMapping implements IPhraseMapping {
         this.confidence = Confidence.merge(this.getConfidence(), phraseMapping.getConfidence(), DEFAULT_AGGREGATOR, AggregationFunctions.MAX);
         return this;
 
+    }
+
+    @Override
+    public boolean containsExactNounMapping(INounMapping nm) {
+
+        return containedNounMappings.anySatisfy(cnm -> cnm.containsSameWordsAs(nm));
     }
 
     private void mergePhrases(ImmutableList<IPhrase> phrases) {

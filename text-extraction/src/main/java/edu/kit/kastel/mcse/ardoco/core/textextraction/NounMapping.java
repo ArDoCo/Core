@@ -179,7 +179,7 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
-    public INounMapping removePhrase(IPhrase phrase) {
+    public INounMapping splitByPhrase(IPhrase phrase) {
 
         MutableList<IWord> wordsToRemove = Lists.mutable.empty();
 
@@ -357,8 +357,8 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
-    public boolean containsSameWords(INounMapping nounMapping) {
-        return this.words.containsAllIterable(nounMapping.getWords()) && nounMapping.getWords().containsAllIterable(this.words);
+    public boolean containsSameWordsAs(INounMapping nounMapping) {
+        return this.words.containsAllIterable(nounMapping.getWords());
     }
 
     @Override
