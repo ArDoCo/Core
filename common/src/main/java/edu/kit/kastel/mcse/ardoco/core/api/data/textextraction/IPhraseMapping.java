@@ -37,5 +37,9 @@ public interface IPhraseMapping extends ICopyable<IPhraseMapping> {
 
     IPhraseMapping removePhrase(IPhrase phrase);
 
+    IPhraseMapping splitByPhrase(IPhrase phrase);
+
     IPhraseMapping mergeAndAddNounMappings(IPhraseMapping phraseMapping, ImmutableList<INounMapping> nounMappings);
+
+    boolean containsExactNounMapping(INounMapping nm);
 }

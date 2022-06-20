@@ -351,6 +351,12 @@ public final class SimilarityUtils {
                 ImmutableList<IWord> equalWords = Lists.immutable
                         .withAll(phraseVectorY.keySet().stream().filter(w -> w.getText().equals(word.getText())).toList());
                 if (!equalWords.isEmpty()) {
+
+                    // TODO Remove
+                    if (equalWords.size() != 1) {
+                        int i = 0;
+                    }
+
                     assert (equalWords.size() == 1) : "The keyset should only contain one word with the same text";
                     sum += phraseVectorX.get(word) * phraseVectorY.get(equalWords.get(0));
                 }
