@@ -190,7 +190,7 @@ public class PhraseMapping implements IPhraseMapping {
         }
 
         Map<IWord, Integer> phraseVector = new HashMap<>();
-        var grouped = containedNounMappings.flatCollect(INounMapping::getWords).groupBy(IWord::getText).toMap();
+        var grouped = words.groupBy(IWord::getText).toMap();
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
         // TODO: Thing about norm
 
