@@ -1,16 +1,20 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.ToDoubleBiFunction;
+import java.util.stream.Collectors;
 
+import org.apache.commons.text.similarity.CosineSimilarity;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -335,41 +339,15 @@ public final class SimilarityUtils {
 
     private static double cosineSimilarity(Map<IWord, Integer> phraseVectorX, Map<IWord, Integer> phraseVectorY) {
 
-        // TODO: Think about use of lemmas/ stem?
-        Set<IWord> words = new HashSet<>(phraseVectorX.keySet());
-        words.addAll(phraseVectorY.keySet());
+        CosineSimilarity cosineSimilarity = new CosineSimilarity();
 
-        int sum = 0;
-        double xNorm = 0;
-        double yNorm = 0;
-        for (IWord word : words) {
+        Map<CharSequence, Integer> stringVectorX = phraseVectorX.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), e -> e.getValue()));
+        Map<CharSequence, Integer> stringVectorY = phraseVectorY.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), e -> e.getValue()));
 
-            if (phraseVectorX.containsKey(word)) {
+        double cosineDistance = cosineSimilarity.cosineSimilarity(stringVectorX, stringVectorY);
 
-                xNorm += Math.pow(phraseVectorX.get(word), 2);
+        return cosineDistance;
 
-                ImmutableList<IWord> equalWords = Lists.immutable
-                        .withAll(phraseVectorY.keySet().stream().filter(w -> w.getText().equals(word.getText())).toList());
-                if (!equalWords.isEmpty()) {
-
-                    // TODO Remove
-                    if (equalWords.size() != 1) {
-                        int i = 0;
-                    }
-
-                    assert (equalWords.size() == 1) : "The keyset should only contain one word with the same text";
-                    sum += phraseVectorX.get(word) * phraseVectorY.get(equalWords.get(0));
-                }
-            }
-            if (phraseVectorY.containsKey(word)) {
-                yNorm += Math.pow(phraseVectorY.get(word), 2);
-            }
-        }
-
-        xNorm = Math.sqrt(xNorm);
-        yNorm = Math.sqrt(yNorm);
-
-        return sum / (xNorm * yNorm);
     }
 
     public static IPhraseMapping getMostSimilarPhraseMapping(IPhraseMapping phraseMappingX, ImmutableList<IPhraseMapping> phraseMappingYs,
@@ -382,7 +360,7 @@ public final class SimilarityUtils {
         double currentMinSimilarity = minCosineSimilarity;
         IPhraseMapping mostSimilarPhraseMapping = phraseMappingYs.get(0);
         for (IPhraseMapping phraseMappingY : phraseMappingYs) {
-            double similarity = getPhraseMappingSimilarity(phraseMappingX, phraseMappingY);
+            double similarity = getPhraseMappingSimilarity(phraseMappingX, phraseMappingY, PhraseMappingAggregatorStrategy.MAX_SIMILARITY);
             if (similarity > currentMinSimilarity) {
                 currentMinSimilarity = similarity;
                 mostSimilarPhraseMapping = phraseMappingY;
@@ -392,7 +370,41 @@ public final class SimilarityUtils {
         return mostSimilarPhraseMapping;
     }
 
-    public static double getPhraseMappingSimilarity(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY) {
+    public enum PhraseMappingAggregatorStrategy implements ToDoubleBiFunction<IPhraseMapping, IPhraseMapping> {
+        MAX_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
+                .max()
+                .orElse(Double.NaN)),
+        MIN_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
+                .min()
+                .orElse(Double.NaN)),
+        AVG_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
+                .average()
+                .orElse(Double.NaN));
+
+        private final ToDoubleBiFunction<IPhraseMapping, IPhraseMapping> mapper;
+
+        PhraseMappingAggregatorStrategy(ToDoubleBiFunction<IPhraseMapping, IPhraseMapping> mapper) {
+            this.mapper = mapper;
+        }
+
+        @Override
+        public double applyAsDouble(IPhraseMapping phraseMapping, IPhraseMapping phraseMapping2) {
+            return this.mapper.applyAsDouble(phraseMapping, phraseMapping2);
+        }
+    }
+
+    public static <A, B> ImmutableList<Pair<A, B>> uniqueDot(ImmutableList<A> first, ImmutableList<B> second) {
+        List<Pair<A, B>> result = new ArrayList<>();
+        for (A a : first)
+            for (B b : second)
+                result.add(new Pair<>(a, b));
+        return Lists.immutable.withAll(result);
+    }
+
+    public static double getPhraseMappingSimilarity(IPhraseMapping phraseMappingX, IPhraseMapping phraseMappingY, PhraseMappingAggregatorStrategy strategy) {
         PhraseType phraseTypeX = phraseMappingX.getPhraseType();
         PhraseType phraseTypeY = phraseMappingY.getPhraseType();
         if (!phraseTypeX.equals(phraseTypeY)) {
@@ -404,7 +416,8 @@ public final class SimilarityUtils {
         // TODO: PHI : IS this correct?
         // phraseMappingX contains all name mappings of phraseMappingY
         if (containsNounMappingsOfMappingKindOfPhraseMapping(phraseMappingX, phraseMappingY, MappingKind.NAME)) {
-            double cosineSimilarity = cosineSimilarity(phraseMappingX.getPhraseVector(), (phraseMappingY).getPhraseVector());
+
+            double cosineSimilarity = strategy.applyAsDouble(phraseMappingX, phraseMappingY);
             return cosineSimilarity;
         }
 

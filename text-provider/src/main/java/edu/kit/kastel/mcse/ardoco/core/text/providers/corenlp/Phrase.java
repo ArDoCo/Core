@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -96,6 +98,16 @@ public class Phrase implements IPhrase {
             var otherText = other.getText();
             return otherText.contains(currText) && currText.length() != otherText.length();
         }
+    }
+
+    @Override
+    public Map<IWord, Integer> getPhraseVector() {
+        final Map<IWord, Integer> phraseVector = new HashMap<>();
+
+        var grouped = getContainedWords().groupBy(IWord::getText).toMap();
+        grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
+
+        return phraseVector;
     }
 
     @Override

@@ -234,5 +234,10 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         public boolean isSubPhraseOf(IPhrase other) {
             return false;
         }
+
+        @Override
+        public Map<IWord, Integer> getPhraseVector() {
+            throw new UnsupportedOperationException();
+        }
     }
 }

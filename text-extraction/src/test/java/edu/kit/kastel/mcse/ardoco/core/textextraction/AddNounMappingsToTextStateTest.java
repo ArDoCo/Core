@@ -479,6 +479,7 @@ public class AddNounMappingsToTextStateTest {
         Mockito.when(phrase.getPhraseType()).thenReturn(phraseType);
         Mockito.when(phrase.getSentenceNo()).thenReturn(sentenceNumber);
         Mockito.when(phrase.getContainedWords()).thenReturn(containedWords);
+        Mockito.when(phrase.getPhraseVector()).thenCallRealMethod();
     }
 
     private void mockWord(IWord word, String text, String lemma, ISentence sentence, int sentenceNumber, IPhrase phrase, int position) {
