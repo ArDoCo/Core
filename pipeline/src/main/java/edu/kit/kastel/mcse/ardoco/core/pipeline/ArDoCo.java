@@ -40,14 +40,8 @@ public final class ArDoCo extends Pipeline {
 
     private static final Logger logger = LoggerFactory.getLogger(ArDoCo.class);
 
-    // Needed for Configuration Generation
-    @SuppressWarnings("unused")
-    private ArDoCo() {
-        super(null, null);
-    }
-
-    public ArDoCo(String id, DataRepository dataRepository) {
-        super(id, dataRepository);
+    public ArDoCo() {
+        super("ArDoCo", new DataRepository());
     }
 
     /**
@@ -76,21 +70,14 @@ public final class ArDoCo extends Pipeline {
     public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) throws IOException {
 
-        DataRepository dataRepository = new DataRepository();
-        ArDoCo arDoCo = new ArDoCo("ArDoCo", dataRepository);
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
-        addTextProvider(inputText, arDoCo, additionalConfigs);
-        addModelProviders(inputArchitectureModel, inputCodeModel, arDoCo);
-        addTextExtractor(arDoCo, additionalConfigs);
-        addRecommendationGenerator(arDoCo, additionalConfigs);
-        addConnectionGenerator(arDoCo, additionalConfigs);
-        addInconsistencyChecker(arDoCo, additionalConfigs);
-
+        ArDoCo arDoCo = new ArDoCo();
+        definePipeline(inputText, inputArchitectureModel, inputCodeModel, arDoCo, additionalConfigs);
         arDoCo.run();
 
         // save step
@@ -99,7 +86,17 @@ public final class ArDoCo extends Pipeline {
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
-        return new DataStructure(dataRepository);
+        return new DataStructure(arDoCo.getDataRepository());
+    }
+
+    private static void definePipeline(File inputText, File inputArchitectureModel, File inputCodeModel, ArDoCo arDoCo, Map<String, String> additionalConfigs)
+            throws IOException {
+        addTextProvider(inputText, arDoCo, additionalConfigs);
+        addModelProviders(inputArchitectureModel, inputCodeModel, arDoCo);
+        addTextExtractor(arDoCo, additionalConfigs);
+        addRecommendationGenerator(arDoCo, additionalConfigs);
+        addConnectionGenerator(arDoCo, additionalConfigs);
+        addInconsistencyChecker(arDoCo, additionalConfigs);
     }
 
     private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, Duration duration) {
