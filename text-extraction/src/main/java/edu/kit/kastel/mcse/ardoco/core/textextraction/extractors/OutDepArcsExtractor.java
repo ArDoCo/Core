@@ -10,9 +10,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * The analyzer examines the outgoing arcs of the current node.
@@ -37,13 +36,13 @@ public class OutDepArcsExtractor extends AbstractExtractor {
 
     @Override
     public void run() {
-        var textState = TextExtraction.getTextState(getDataRepository());
-        for (var word : TextExtraction.getAnnotatedText(getDataRepository()).getWords()) {
+        var textState = DataRepositoryHelper.getTextState(getDataRepository());
+        for (var word : DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords()) {
             exec(textState, word);
         }
     }
 
-    private void exec(TextState textState, IWord word) {
+    private void exec(ITextState textState, IWord word) {
 
         var nodeValue = word.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {

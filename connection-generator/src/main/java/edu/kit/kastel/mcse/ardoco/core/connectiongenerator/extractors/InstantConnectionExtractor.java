@@ -11,8 +11,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 
 public class InstantConnectionExtractor extends AbstractExtractor {
     @Configurable
@@ -27,11 +27,11 @@ public class InstantConnectionExtractor extends AbstractExtractor {
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
-        var text = ConnectionGenerator.getAnnotatedText(dataRepository);
-        var textState = ConnectionGenerator.getTextState(dataRepository);
-        var modelStates = ConnectionGenerator.getModelStatesData(dataRepository);
-        var recommendationStates = ConnectionGenerator.getRecommendationStates(dataRepository);
-        var connectionStates = ConnectionGenerator.getConnectionStates(dataRepository);
+        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
+        var textState = DataRepositoryHelper.getTextState(dataRepository);
+        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
+        var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelState(model);
             Metamodel metamodel = modelState.getMetamodel();

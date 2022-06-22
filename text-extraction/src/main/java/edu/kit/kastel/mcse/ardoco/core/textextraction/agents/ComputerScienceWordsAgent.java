@@ -27,9 +27,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
 
 /**
  * This agent uses data from DBPedia to mark default words in computer science.
@@ -79,13 +78,13 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     @Override
     public void run() {
-        var text = TextExtraction.getAnnotatedText(getDataRepository());
-        var textState = TextExtraction.getTextState(getDataRepository());
+        var text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
+        var textState = DataRepositoryHelper.getTextState(getDataRepository());
         execute(text, textState);
         super.run();
     }
 
-    public void execute(IText text, TextState textState) {
+    public void execute(IText text, ITextState textState) {
         if (!enabled)
             return;
 

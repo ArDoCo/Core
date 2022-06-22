@@ -11,11 +11,6 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InitialRecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseRecommendationAgent;
@@ -58,21 +53,4 @@ public class RecommendationGenerator extends AbstractExecutionStage {
             agent.applyConfiguration(additionalConfiguration);
         }
     }
-
-    public static IText getAnnotatedText(DataRepository dataRepository) {
-        return dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
-    }
-
-    public static ITextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(ITextState.ID, ITextState.class).orElseThrow();
-    }
-
-    public static ModelStates getModelStatesData(DataRepository dataRepository) {
-        return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
-    }
-
-    public static IRecommendationStates getRecommendationStates(DataRepository dataRepository) {
-        return dataRepository.getData(IRecommendationStates.ID, IRecommendationStates.class).orElseThrow();
-    }
-
 }

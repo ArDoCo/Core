@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
@@ -37,10 +37,10 @@ public class NameTypeExtractor extends AbstractExtractor {
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
-        var text = RecommendationGenerator.getAnnotatedText(dataRepository);
-        var textState = RecommendationGenerator.getTextState(dataRepository);
-        var modelStatesData = RecommendationGenerator.getModelStatesData(dataRepository);
-        var recommendationStates = RecommendationGenerator.getRecommendationStates(dataRepository);
+        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
+        var textState = DataRepositoryHelper.getTextState(dataRepository);
+        var modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
 
         for (var word : text.getWords()) {
             exec(textState, modelStatesData, recommendationStates, word);

@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
  * The analyzer classifies nouns.
@@ -34,13 +34,13 @@ public class NounExtractor extends AbstractExtractor {
 
     @Override
     public void run() {
-        for (var n : TextExtraction.getAnnotatedText(getDataRepository()).getWords()) {
+        for (var n : DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords()) {
             var nodeValue = n.getText();
             if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
                 return;
             }
 
-            var textState = TextExtraction.getTextState(getDataRepository());
+            var textState = DataRepositoryHelper.getTextState(getDataRepository());
             findSingleNouns(textState, n);
         }
     }

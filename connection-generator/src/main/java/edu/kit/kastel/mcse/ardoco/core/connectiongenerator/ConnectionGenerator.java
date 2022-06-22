@@ -11,12 +11,6 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
@@ -66,23 +60,4 @@ public class ConnectionGenerator extends AbstractExecutionStage {
         }
     }
 
-    public static IText getAnnotatedText(DataRepository dataRepository) {
-        return dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
-    }
-
-    public static ITextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(ITextState.ID, ITextState.class).orElseThrow();
-    }
-
-    public static ModelStates getModelStatesData(DataRepository dataRepository) {
-        return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
-    }
-
-    public static IRecommendationStates getRecommendationStates(DataRepository dataRepository) {
-        return dataRepository.getData(IRecommendationStates.ID, IRecommendationStates.class).orElseThrow();
-    }
-
-    public static IConnectionStates getConnectionStates(DataRepository dataRepository) {
-        return dataRepository.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
-    }
 }

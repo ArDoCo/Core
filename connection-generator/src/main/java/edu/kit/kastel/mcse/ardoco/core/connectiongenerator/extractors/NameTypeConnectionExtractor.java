@@ -20,8 +20,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
@@ -40,10 +40,10 @@ public class NameTypeConnectionExtractor extends AbstractExtractor {
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
-        var text = ConnectionGenerator.getAnnotatedText(dataRepository);
-        var textState = ConnectionGenerator.getTextState(dataRepository);
-        var modelStates = ConnectionGenerator.getModelStatesData(dataRepository);
-        var recommendationStates = ConnectionGenerator.getRecommendationStates(dataRepository);
+        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
+        var textState = DataRepositoryHelper.getTextState(dataRepository);
+        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         for (var word : text.getWords()) {
             exec(textState, modelStates, recommendationStates, word);
         }

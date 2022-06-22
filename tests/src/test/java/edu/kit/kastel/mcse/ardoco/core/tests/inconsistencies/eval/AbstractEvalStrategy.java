@@ -22,7 +22,7 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
     protected DataStructure runRecommendationConnectionInconsistency(DataStructure data) {
         Map<String, String> config = new HashMap<>();
         // Model Extractor has been executed & textExtractor does not depend on model changes
-        DataRepository dataRepository = data.getDataRepository();
+        DataRepository dataRepository = data.dataRepository();
         runRecommendationGenerator(dataRepository, config);
         runConnectionGenerator(dataRepository, config);
         runInconsistencyChecker(dataRepository, config);

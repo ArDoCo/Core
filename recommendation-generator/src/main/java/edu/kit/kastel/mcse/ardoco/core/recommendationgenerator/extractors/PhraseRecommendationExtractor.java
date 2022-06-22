@@ -19,8 +19,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 
 public class PhraseRecommendationExtractor extends AbstractExtractor {
 
@@ -34,9 +34,9 @@ public class PhraseRecommendationExtractor extends AbstractExtractor {
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
-        var modelStatesData = RecommendationGenerator.getModelStatesData(dataRepository);
-        var textState = RecommendationGenerator.getTextState(dataRepository);
-        var recommendationStates = RecommendationGenerator.getRecommendationStates(dataRepository);
+        var modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var textState = DataRepositoryHelper.getTextState(dataRepository);
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
 
         for (var model : modelStatesData.modelIds()) {
             var modelState = modelStatesData.getModelState(model);

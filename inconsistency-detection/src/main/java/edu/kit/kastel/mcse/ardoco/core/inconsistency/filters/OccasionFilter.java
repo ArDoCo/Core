@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStat
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
  * Filters {@link IRecommendedInstance}s that occur only once in the text, thus are unlikely to be important entities.
@@ -33,8 +33,8 @@ public class OccasionFilter extends AbstractFilter {
     @Override
     public void run() {
         var dataRepository = getDataRepository();
-        var modelStates = InconsistencyChecker.getModelStatesData(dataRepository);
-        var inconsistencyStates = InconsistencyChecker.getInconsistencyStates(dataRepository);
+        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
 
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelState(model);
