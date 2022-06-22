@@ -117,7 +117,7 @@ class TracelinksIT {
             Assertions.fail("Exception during execution occurred");
         }
 
-        var data = dataStructure.getDataRepository();
+        var data = dataStructure.dataRepository();
         Assertions.assertNotNull(data);
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
         var modelIds = modelStates.modelIds();

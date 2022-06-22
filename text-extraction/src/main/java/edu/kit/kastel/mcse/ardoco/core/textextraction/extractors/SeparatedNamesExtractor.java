@@ -11,8 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
  * This analyzer classifies all nodes, containing separators, as names and adds them as mappings to the current text
@@ -35,8 +34,8 @@ public class SeparatedNamesExtractor extends AbstractExtractor {
 
     @Override
     public void run() {
-        var textState = TextExtraction.getTextState(getDataRepository());
-        for (var word : TextExtraction.getAnnotatedText(getDataRepository()).getWords()) {
+        var textState = DataRepositoryHelper.getTextState(getDataRepository());
+        for (var word : DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords()) {
             exec(textState, word);
         }
     }
@@ -45,7 +44,7 @@ public class SeparatedNamesExtractor extends AbstractExtractor {
      * Checks if Node Value contains separator. If true, it is split and added separately to the names of the text
      * extraction state.
      */
-    private void exec(TextState textState, IWord word) {
+    private void exec(ITextState textState, IWord word) {
         checkForSeparatedNode(textState, word);
     }
 

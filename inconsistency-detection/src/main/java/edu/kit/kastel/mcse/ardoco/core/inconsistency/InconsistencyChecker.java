@@ -11,10 +11,7 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingModelElementInconsistencyAgent;
@@ -55,19 +52,4 @@ public class InconsistencyChecker extends AbstractExecutionStage {
         }
     }
 
-    public static ModelStates getModelStatesData(DataRepository dataRepository) {
-        return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
-    }
-
-    public static IRecommendationStates getRecommendationStates(DataRepository dataRepository) {
-        return dataRepository.getData(IRecommendationStates.ID, IRecommendationStates.class).orElseThrow();
-    }
-
-    public static IConnectionStates getConnectionStates(DataRepository dataRepository) {
-        return dataRepository.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
-    }
-
-    public static IInconsistencyStates getInconsistencyStates(DataRepository dataRepository) {
-        return dataRepository.getData(IInconsistencyStates.ID, IInconsistencyStates.class).orElseThrow();
-    }
 }

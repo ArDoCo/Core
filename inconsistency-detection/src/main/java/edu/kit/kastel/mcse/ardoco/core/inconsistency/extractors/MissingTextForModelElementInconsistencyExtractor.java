@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingTextForModelElementInconsistency;
 
 public class MissingTextForModelElementInconsistencyExtractor extends AbstractExtractor {
@@ -31,10 +31,10 @@ public class MissingTextForModelElementInconsistencyExtractor extends AbstractEx
     @Override
     public void run() {
         var dataRepository = getDataRepository();
-        var modelStates = InconsistencyChecker.getModelStatesData(dataRepository);
-        var recommendationStates = InconsistencyChecker.getRecommendationStates(dataRepository);
-        var connectionStates = InconsistencyChecker.getConnectionStates(dataRepository);
-        var inconsistencyStates = InconsistencyChecker.getInconsistencyStates(dataRepository);
+        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
+        var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
+        var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
 
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelState(model);

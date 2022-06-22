@@ -1,28 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +12,25 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
+import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 /**
  * The Pipeline defines the execution of the agents.
@@ -166,26 +164,6 @@ public final class ArDoCo extends Pipeline {
             }
         }
         return additionalConfigs;
-    }
-
-    public static ITextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(ITextState.ID, ITextState.class).orElseThrow();
-    }
-
-    public static ModelStates getModelStatesData(DataRepository dataRepository) {
-        return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
-    }
-
-    public static RecommendationStates getRecommendationStates(DataRepository dataRepository) {
-        return dataRepository.getData(RecommendationStates.ID, RecommendationStates.class).orElseThrow();
-    }
-
-    public static ConnectionStates getConnectionStates(DataRepository dataRepository) {
-        return dataRepository.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
-    }
-
-    public static IInconsistencyStates getInconsistencyStates(DataRepository dataRepository) {
-        return dataRepository.getData(IInconsistencyStates.ID, IInconsistencyStates.class).orElseThrow();
     }
 
     private void printResultsInFiles(File outputDir, String modelId, String name, DataRepository data, Duration duration) {

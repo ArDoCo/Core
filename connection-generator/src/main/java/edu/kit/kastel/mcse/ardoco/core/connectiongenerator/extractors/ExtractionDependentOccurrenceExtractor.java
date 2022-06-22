@@ -11,8 +11,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 
 /**
  * This analyzer searches for the occurrence of instance names and types of the extraction state and adds them as names
@@ -33,9 +33,9 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor {
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
-        var text = ConnectionGenerator.getAnnotatedText(dataRepository);
-        var textState = ConnectionGenerator.getTextState(dataRepository);
-        var modelStates = ConnectionGenerator.getModelStatesData(dataRepository);
+        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
+        var textState = DataRepositoryHelper.getTextState(dataRepository);
+        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         for (var word : text.getWords()) {
             exec(textState, modelStates, word);
         }

@@ -11,8 +11,6 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent;
@@ -65,13 +63,4 @@ public class TextExtraction extends AbstractExecutionStage {
             agent.applyConfiguration(additionalConfiguration);
         }
     }
-
-    public static IText getAnnotatedText(DataRepository dataRepository) {
-        return dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
-    }
-
-    public static TextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(TextState.ID, TextState.class).orElseThrow();
-    }
-
 }
