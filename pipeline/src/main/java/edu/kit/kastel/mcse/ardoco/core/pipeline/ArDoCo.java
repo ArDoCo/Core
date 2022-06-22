@@ -5,6 +5,7 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -82,12 +83,67 @@ public final class ArDoCo extends Pipeline {
         var startTime = System.currentTimeMillis();
         var dataRepository = arDoCo.getDataRepository();
 
-        // text providers
-        var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
-        textProvider.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(textProvider);
+        addTextProvider(inputText, arDoCo, additionalConfigs, dataRepository);
+        addModelProviders(inputArchitectureModel, inputCodeModel, arDoCo);
+        addTextExtractor(arDoCo, additionalConfigs, dataRepository);
+        addRecommendationGenerator(arDoCo, additionalConfigs, dataRepository);
+        addConnectionGenerator(arDoCo, additionalConfigs, dataRepository);
+        addInconsistencyChecker(arDoCo, additionalConfigs, dataRepository);
 
-        // model providers
+        arDoCo.run();
+
+        // save step
+        var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
+        saveOutput(name, outputDir, arDoCo, dataRepository, duration);
+
+        logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
+
+        return new DataStructure(dataRepository);
+    }
+
+    private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, DataRepository dataRepository, Duration duration) {
+        if (outputDir == null) {
+            return;
+        }
+        var modelStatesData = getModelStatesData(dataRepository);
+        logger.info("Writing output.");
+        for (String modelId : modelStatesData.modelIds()) {
+            // write model states
+            IModelState modelState = modelStatesData.getModelState(modelId);
+            var metaModel = modelState.getMetamodel();
+            var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + metaModel + ".csv").toFile();
+            FilePrinter.writeModelInstancesInCsvFile(modelStateFile, modelState, name);
+
+            // write results
+            arDoCo.printResultsInFiles(outputDir, modelId, name, dataRepository, duration);
+        }
+    }
+
+    private static void addInconsistencyChecker(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var inconsistencyChecker = new InconsistencyChecker(dataRepository);
+        inconsistencyChecker.applyConfiguration(additionalConfigs);
+        arDoCo.addPipelineStep(inconsistencyChecker);
+    }
+
+    private static void addConnectionGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var connectionGenerator = new ConnectionGenerator(dataRepository);
+        connectionGenerator.applyConfiguration(additionalConfigs);
+        arDoCo.addPipelineStep(connectionGenerator);
+    }
+
+    private static void addRecommendationGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var recommendationGenerator = new RecommendationGenerator(dataRepository);
+        recommendationGenerator.applyConfiguration(additionalConfigs);
+        arDoCo.addPipelineStep(recommendationGenerator);
+    }
+
+    private static void addTextExtractor(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var textExtractor = new TextExtraction(dataRepository);
+        textExtractor.applyConfiguration(additionalConfigs);
+        arDoCo.addPipelineStep(textExtractor);
+    }
+
+    private static void addModelProviders(File inputArchitectureModel, File inputCodeModel, ArDoCo arDoCo) throws IOException {
         IModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
         var pcmModelProvider = new ModelProvider(arDoCo.getDataRepository(), pcmModel);
         arDoCo.addPipelineStep(pcmModelProvider);
@@ -96,50 +152,13 @@ public final class ArDoCo extends Pipeline {
             var javaModelProvider = new ModelProvider(arDoCo.getDataRepository(), javaModel);
             arDoCo.addPipelineStep(javaModelProvider);
         }
+    }
 
-        // text extractor
-        var textExtractor = new TextExtraction(dataRepository);
-        textExtractor.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(textExtractor);
-
-        // recommendation generator
-        var recommendationGenerator = new RecommendationGenerator(dataRepository);
-        recommendationGenerator.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(recommendationGenerator);
-
-        // connection generator
-        var connectionGenerator = new ConnectionGenerator(dataRepository);
-        connectionGenerator.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(connectionGenerator);
-
-        // inconsistency checker
-        var inconsistencyChecker = new InconsistencyChecker(dataRepository);
-        inconsistencyChecker.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(inconsistencyChecker);
-
-        arDoCo.run();
-
-        // save step
-        var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        if (outputDir != null) {
-            var modelStatesData = getModelStatesData(dataRepository);
-            logger.info("Writing output.");
-            for (String modelId : modelStatesData.modelIds()) {
-                // write model states
-                IModelState modelState = modelStatesData.getModelState(modelId);
-                var metaModel = modelState.getMetamodel();
-                var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + metaModel + ".csv").toFile();
-                FilePrinter.writeModelInstancesInCsvFile(modelStateFile, modelState, name);
-
-                // write results
-                arDoCo.printResultsInFiles(outputDir, modelId, name, dataRepository, duration);
-            }
-
-        }
-
-        logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
-
-        return new DataStructure(dataRepository);
+    private static void addTextProvider(File inputText, ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository)
+            throws FileNotFoundException {
+        var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
+        textProvider.applyConfiguration(additionalConfigs);
+        arDoCo.addPipelineStep(textProvider);
     }
 
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {

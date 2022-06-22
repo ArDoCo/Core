@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.inconsistency.extractors;
+package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistency
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementSupport;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
-public class MissingModelElementInconsistencyExtractor extends AbstractExtractor {
+public class MissingModelElementInconsistencyExtractor extends Informant {
 
     @Configurable
     private double minSupport = 1;

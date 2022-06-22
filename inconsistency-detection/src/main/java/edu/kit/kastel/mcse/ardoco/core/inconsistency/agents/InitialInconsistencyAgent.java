@@ -6,15 +6,15 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.filters.OccasionFilter;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.filters.RecommendedInstanceProbabilityFilter;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.OccasionFilter;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.RecommendedInstanceProbabilityFilter;
 
 public class InitialInconsistencyAgent extends InconsistencyAgent {
-    private final List<AbstractFilter> filters;
+    private final List<Informant> filters;
 
     @Configurable
     private List<String> enabledFilters;
@@ -41,8 +41,8 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
             inconsistencyState.addRecommendedInstances(recommendationState.getRecommendedInstances().toList());
         }
 
-        for (var extractor : findByClassName(enabledFilters, filters)) {
-            this.addPipelineStep(extractor);
+        for (var filter : findByClassName(enabledFilters, filters)) {
+            this.addPipelineStep(filter);
         }
 
         super.run();
