@@ -75,36 +75,38 @@ public final class ArDoCo extends Pipeline {
      */
     public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) throws IOException {
-        ArDoCo arDoCo = new ArDoCo("ArDoCo", new DataRepository());
+
+        DataRepository dataRepository = new DataRepository();
+        ArDoCo arDoCo = new ArDoCo("ArDoCo", dataRepository);
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
-        var dataRepository = arDoCo.getDataRepository();
 
-        addTextProvider(inputText, arDoCo, additionalConfigs, dataRepository);
+        addTextProvider(inputText, arDoCo, additionalConfigs);
         addModelProviders(inputArchitectureModel, inputCodeModel, arDoCo);
-        addTextExtractor(arDoCo, additionalConfigs, dataRepository);
-        addRecommendationGenerator(arDoCo, additionalConfigs, dataRepository);
-        addConnectionGenerator(arDoCo, additionalConfigs, dataRepository);
-        addInconsistencyChecker(arDoCo, additionalConfigs, dataRepository);
+        addTextExtractor(arDoCo, additionalConfigs);
+        addRecommendationGenerator(arDoCo, additionalConfigs);
+        addConnectionGenerator(arDoCo, additionalConfigs);
+        addInconsistencyChecker(arDoCo, additionalConfigs);
 
         arDoCo.run();
 
         // save step
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        saveOutput(name, outputDir, arDoCo, dataRepository, duration);
+        saveOutput(name, outputDir, arDoCo, duration);
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
         return new DataStructure(dataRepository);
     }
 
-    private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, DataRepository dataRepository, Duration duration) {
+    private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, Duration duration) {
         if (outputDir == null) {
             return;
         }
+        var dataRepository = arDoCo.getDataRepository();
         var modelStatesData = getModelStatesData(dataRepository);
         logger.info("Writing output.");
         for (String modelId : modelStatesData.modelIds()) {
@@ -119,25 +121,29 @@ public final class ArDoCo extends Pipeline {
         }
     }
 
-    private static void addInconsistencyChecker(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    private static void addInconsistencyChecker(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
+        var dataRepository = arDoCo.getDataRepository();
         var inconsistencyChecker = new InconsistencyChecker(dataRepository);
         inconsistencyChecker.applyConfiguration(additionalConfigs);
         arDoCo.addPipelineStep(inconsistencyChecker);
     }
 
-    private static void addConnectionGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    private static void addConnectionGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
+        var dataRepository = arDoCo.getDataRepository();
         var connectionGenerator = new ConnectionGenerator(dataRepository);
         connectionGenerator.applyConfiguration(additionalConfigs);
         arDoCo.addPipelineStep(connectionGenerator);
     }
 
-    private static void addRecommendationGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    private static void addRecommendationGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
+        var dataRepository = arDoCo.getDataRepository();
         var recommendationGenerator = new RecommendationGenerator(dataRepository);
         recommendationGenerator.applyConfiguration(additionalConfigs);
         arDoCo.addPipelineStep(recommendationGenerator);
     }
 
-    private static void addTextExtractor(ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    private static void addTextExtractor(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
+        var dataRepository = arDoCo.getDataRepository();
         var textExtractor = new TextExtraction(dataRepository);
         textExtractor.applyConfiguration(additionalConfigs);
         arDoCo.addPipelineStep(textExtractor);
@@ -145,17 +151,18 @@ public final class ArDoCo extends Pipeline {
 
     private static void addModelProviders(File inputArchitectureModel, File inputCodeModel, ArDoCo arDoCo) throws IOException {
         ModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
-        var pcmModelProvider = new ModelProvider(arDoCo.getDataRepository(), pcmModel);
+        DataRepository dataRepository = arDoCo.getDataRepository();
+        var pcmModelProvider = new ModelProvider(dataRepository, pcmModel);
         arDoCo.addPipelineStep(pcmModelProvider);
         if (inputCodeModel != null) {
             ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
-            var javaModelProvider = new ModelProvider(arDoCo.getDataRepository(), javaModel);
+            var javaModelProvider = new ModelProvider(dataRepository, javaModel);
             arDoCo.addPipelineStep(javaModelProvider);
         }
     }
 
-    private static void addTextProvider(File inputText, ArDoCo arDoCo, Map<String, String> additionalConfigs, DataRepository dataRepository)
-            throws FileNotFoundException {
+    private static void addTextProvider(File inputText, ArDoCo arDoCo, Map<String, String> additionalConfigs) throws FileNotFoundException {
+        var dataRepository = arDoCo.getDataRepository();
         var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
         textProvider.applyConfiguration(additionalConfigs);
         arDoCo.addPipelineStep(textProvider);
