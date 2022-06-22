@@ -6,7 +6,7 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.InDepArcsExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.NounExtractor;
@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.SeparatedNamesE
  */
 public class InitialTextAgent extends TextAgent {
 
-    private final List<Informant> extractors;
+    private final List<AbstractInformant> extractors;
 
     @Configurable
     private List<String> enabledExtractors;

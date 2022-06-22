@@ -7,21 +7,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.MissingTextForModelElementInconsistencyExtractor;
-import edu.kit.kastel.mcse.ardoco.core.model.Instance;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
 
 class MissingTextForModelElementInconsistencyTest {
-    private MutableList<IModelInstance> modelInstances;
+    private MutableList<ModelInstance> modelInstances;
 
     @BeforeEach
     void beforeEach() {
         modelInstances = Lists.mutable.empty();
-        modelInstances.add(new Instance("DummyRecommender", "BasicComponent", "1"));
-        modelInstances.add(new Instance("ExpertRecommender", "CompositeComponent", "2"));
-        modelInstances.add(new Instance("Cache", "Interface", "3"));
-        modelInstances.add(new Instance("WebUI", "BasicComponent", "4"));
-        modelInstances.add(new Instance("Only Suffix", "Component", "5"));
+        modelInstances.add(new ModelInstanceImpl("DummyRecommender", "BasicComponent", "1"));
+        modelInstances.add(new ModelInstanceImpl("ExpertRecommender", "CompositeComponent", "2"));
+        modelInstances.add(new ModelInstanceImpl("Cache", "Interface", "3"));
+        modelInstances.add(new ModelInstanceImpl("WebUI", "BasicComponent", "4"));
+        modelInstances.add(new ModelInstanceImpl("Only Suffix", "Component", "5"));
     }
 
     @Test

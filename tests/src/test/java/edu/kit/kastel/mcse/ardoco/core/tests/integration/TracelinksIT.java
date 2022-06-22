@@ -29,12 +29,12 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
@@ -183,8 +183,8 @@ class TracelinksIT {
 
     }
 
-    private MutableList<String> createOutputStrings(Stream<String> tracelinkStrings, ImmutableList<ISentence> sentences,
-            ImmutableList<IModelInstance> instances) {
+    private MutableList<String> createOutputStrings(Stream<String> tracelinkStrings, ImmutableList<Sentence> sentences,
+            ImmutableList<ModelInstance> instances) {
         var outputList = Lists.mutable.<String> empty();
         for (var tracelinkString : tracelinkStrings.toList()) {
             var parts = tracelinkString.split(",");
@@ -211,8 +211,8 @@ class TracelinksIT {
         return outputList;
     }
 
-    private EvaluationResults calculateResults(Project project, DataRepository data, IModelState modelState) {
-        var connectionStates = data.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
+    private EvaluationResults calculateResults(Project project, DataRepository data, ModelExtractionState modelState) {
+        var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var connectionState = connectionStates.getConnectionState(modelState.getMetamodel());
         var traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());
@@ -222,7 +222,7 @@ class TracelinksIT {
         return TestUtil.compare(traceLinks, goldStandard);
     }
 
-    private Set<String> getTraceLinksFromConnectionState(IConnectionState connectionState) {
+    private Set<String> getTraceLinksFromConnectionState(ConnectionState connectionState) {
         var formatString = "%s,%d";
         return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToSet();
     }

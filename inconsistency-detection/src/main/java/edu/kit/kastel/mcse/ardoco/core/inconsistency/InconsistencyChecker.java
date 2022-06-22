@@ -9,9 +9,9 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingModelElementInconsistencyAgent;
@@ -29,13 +29,13 @@ public class InconsistencyChecker extends AbstractExecutionStage {
 
         agents = Lists.mutable.of(new InitialInconsistencyAgent(dataRepository), new MissingModelElementInconsistencyAgent(dataRepository),
                 new MissingTextForModelElementInconsistencyAgent(dataRepository));
-        enabledAgents = agents.collect(IAgent::getId);
+        enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
     public void run() {
-        var inconsistencyStates = InconsistencyStates.build();
-        getDataRepository().addData(IInconsistencyStates.ID, inconsistencyStates);
+        var inconsistencyStates = InconsistencyStatesImpl.build();
+        getDataRepository().addData(InconsistencyStates.ID, inconsistencyStates);
 
         for (InconsistencyAgent agent : findByClassName(enabledAgents, agents)) {
             this.addPipelineStep(agent);

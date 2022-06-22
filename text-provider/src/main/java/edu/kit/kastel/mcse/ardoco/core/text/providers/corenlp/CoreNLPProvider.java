@@ -1,28 +1,29 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
-public class CoreNLPProvider extends AbstractPipelineStep implements ITextConnector {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+
+public class CoreNLPProvider extends AbstractPipelineStep implements TextProvider {
     private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
     private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
     private final InputStream text;
-    private IText annotatedText;
+    private Text annotatedText;
 
     // Needed for Configuration Generation
     @SuppressWarnings("unused")
@@ -52,26 +53,26 @@ public class CoreNLPProvider extends AbstractPipelineStep implements ITextConnec
     }
 
     @Override
-    public IText getAnnotatedText(String textName) {
+    public Text getAnnotatedText(String textName) {
         logger.warn("Returning annotated text ignoring the provided name");
         return getAnnotatedText();
     }
 
     @Override
-    public synchronized IText getAnnotatedText() {
+    public synchronized Text getAnnotatedText() {
         if (annotatedText == null) {
             annotatedText = processText(text);
         }
         return annotatedText;
     }
 
-    private IText processText(InputStream text) {
+    private Text processText(InputStream text) {
         var inputText = readInputText(text);
         Properties props = getStanfordProperties(new Properties());
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         CoreDocument document = new CoreDocument(inputText);
         pipeline.annotate(document);
-        return new Text(document);
+        return new TextImpl(document);
     }
 
     private String readInputText(InputStream text) {

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
@@ -66,7 +66,7 @@ public class TLSummaryFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static String createFalseLinksOutput(String type, List<TestLink> falseLinks, DataStructure data, IText text) {
+    private static String createFalseLinksOutput(String type, List<TestLink> falseLinks, DataStructure data, Text text) {
         var builder = new StringBuilder();
         builder.append(type).append(":\n");
 
@@ -78,7 +78,7 @@ public class TLSummaryFile {
         return builder.toString();
     }
 
-    private static String createFalseLinkOutput(DataStructure data, IText text, TestLink falseLink) {
+    private static String createFalseLinkOutput(DataStructure data, Text text, TestLink falseLink) {
         var builder = new StringBuilder();
         for (var modelId : data.getModelIds()) {
             var datamodel = data.getModelState(modelId);
@@ -90,7 +90,7 @@ public class TLSummaryFile {
         return builder.toString();
     }
 
-    static String format(TestLink link, IText text, IModelState modelState) {
+    static String format(TestLink link, Text text, ModelExtractionState modelState) {
         var model = modelState.getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
         var sentence = text.getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
 

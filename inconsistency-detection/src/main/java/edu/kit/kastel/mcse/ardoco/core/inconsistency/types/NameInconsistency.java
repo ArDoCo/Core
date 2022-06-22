@@ -8,21 +8,21 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
-public class NameInconsistency implements IInconsistency {
+public class NameInconsistency implements Inconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "NameInconsistency";
 
     private static final String REASON_FORMAT_STRING = "Inconsistent naming in trace link between textual occurence \"%s\" (sentence %d) and model element \"%s\" (%s)";
 
-    private final IModelInstance modelInstance;
-    private final IWord word;
+    private final ModelInstance modelInstance;
+    private final Word word;
     private final int sentenceNo;
 
-    public NameInconsistency(IModelInstance modelInstance, IWord word) {
+    public NameInconsistency(ModelInstance modelInstance, Word word) {
         this.modelInstance = modelInstance;
         this.word = word;
         sentenceNo = word.getSentenceNo() + 1;
@@ -37,7 +37,7 @@ public class NameInconsistency implements IInconsistency {
     }
 
     @Override
-    public IInconsistency createCopy() {
+    public Inconsistency createCopy() {
         return new NameInconsistency(modelInstance.createCopy(), word);
     }
 

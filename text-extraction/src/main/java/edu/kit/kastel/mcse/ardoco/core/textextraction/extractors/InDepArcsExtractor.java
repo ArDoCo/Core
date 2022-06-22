@@ -5,11 +5,11 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 
@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  * @author Sophie Schulz
  * @author Jan Keim
  */
-public class InDepArcsExtractor extends Informant {
+public class InDepArcsExtractor extends AbstractInformant {
 
     @Configurable
     private double nameOrTypeWeight = 0.5;
@@ -37,12 +37,12 @@ public class InDepArcsExtractor extends Informant {
     @Override
     public void run() {
         var textState = DataRepositoryHelper.getTextState(getDataRepository());
-        for (var word : DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords()) {
+        for (var word : DataRepositoryHelper.getAnnotatedText(getDataRepository()).words()) {
             exec(textState, word);
         }
     }
 
-    private void exec(ITextState textState, IWord word) {
+    private void exec(TextState textState, Word word) {
         var nodeValue = word.getText();
         if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
             return;
@@ -53,7 +53,7 @@ public class InDepArcsExtractor extends Informant {
     /**
      * Examines the incoming dependency arcs from the PARSE graph.
      */
-    private void examineIncomingDepArcs(ITextState textState, IWord word) {
+    private void examineIncomingDepArcs(TextState textState, Word word) {
 
         var incomingDepArcs = WordHelper.getIncomingDependencyTags(word);
 

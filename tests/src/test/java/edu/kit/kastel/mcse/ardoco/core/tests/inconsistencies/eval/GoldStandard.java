@@ -9,16 +9,16 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
 public class GoldStandard {
     private File goldStandard;
-    private IModelConnector model;
+    private ModelConnector model;
 
-    private MutableList<MutableList<IModelInstance>> sentence2instance = Lists.mutable.empty();
+    private MutableList<MutableList<ModelInstance>> sentence2instance = Lists.mutable.empty();
 
-    public GoldStandard(File goldStanard, IModelConnector model) {
+    public GoldStandard(File goldStanard, ModelConnector model) {
         goldStandard = goldStanard;
         this.model = model;
         load();
@@ -34,7 +34,7 @@ public class GoldStandard {
                 }
 
                 String[] idXline = line.strip().split(",");
-                IModelInstance instance = model.getInstances().select(i -> i.getUid().equals(idXline[0])).getFirst();
+                ModelInstance instance = model.getInstances().select(i -> i.getUid().equals(idXline[0])).getFirst();
                 if (instance == null) {
                     System.err.println("No instance found for id \"" + idXline[0] + "\"");
                     continue;
@@ -50,12 +50,12 @@ public class GoldStandard {
         }
     }
 
-    public ImmutableList<IModelInstance> getModelInstances(int sentenceNo) {
+    public ImmutableList<ModelInstance> getModelInstances(int sentenceNo) {
         // Index starts at 1
         return sentence2instance.get(sentenceNo).toImmutable();
     }
 
-    public ImmutableList<Integer> getSentencesWithElement(IModelInstance elem) {
+    public ImmutableList<Integer> getSentencesWithElement(ModelInstance elem) {
         MutableList<Integer> sentences = Lists.mutable.empty();
         for (int i = 0; i < sentence2instance.size(); i++) {
             var instances = sentence2instance.get(i);

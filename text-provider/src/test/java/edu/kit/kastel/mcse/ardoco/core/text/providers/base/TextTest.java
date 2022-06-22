@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 public abstract class TextTest {
     private static final Logger logger = LoggerFactory.getLogger(TextTest.class);
-    private static IText text;
+    private static Text text;
 
     @BeforeEach
     void beforeEach() {
@@ -22,12 +22,12 @@ public abstract class TextTest {
         text = provider.getAnnotatedText();
     }
 
-    protected abstract ITextConnector getProvider();
+    protected abstract TextProvider getProvider();
 
     @Test
     void getWordsTest() {
-        var words = text.getWords();
-        IWord word = words.get(739);
+        var words = text.words();
+        Word word = words.get(739);
 
         Assertions.assertAll(//
                 () -> Assertions.assertEquals("test", word.getText()), //
@@ -45,6 +45,6 @@ public abstract class TextTest {
         Assertions.assertAll(//
                 () -> Assertions.assertEquals("The TeaStore is a test application.", sentence.getText()), //
                 () -> Assertions.assertEquals(7, words.size()), //
-                () -> Assertions.assertEquals(text.getWords().get(739), words.get(4)));
+                () -> Assertions.assertEquals(text.words().get(739), words.get(4)));
     }
 }

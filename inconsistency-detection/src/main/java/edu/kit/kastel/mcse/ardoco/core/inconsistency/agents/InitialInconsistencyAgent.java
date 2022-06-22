@@ -6,15 +6,15 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.OccasionFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.RecommendedInstanceProbabilityFilter;
 
 public class InitialInconsistencyAgent extends InconsistencyAgent {
-    private final List<Informant> filters;
+    private final List<AbstractInformant> filters;
 
     @Configurable
     private List<String> enabledFilters;

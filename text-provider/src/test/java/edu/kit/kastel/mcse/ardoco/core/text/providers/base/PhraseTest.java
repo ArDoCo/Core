@@ -6,30 +6,30 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
 
 public abstract class PhraseTest {
     public static final int SENTENCE_NO = 41;
-    private IPhrase npPhrase;
-    private IPhrase vpPhrase;
-    private IPhrase sentencePhrase;
-    private ISentence sentence;
+    private Phrase npPhrase;
+    private Phrase vpPhrase;
+    private Phrase sentencePhrase;
+    private Sentence sentence;
 
     @BeforeEach
     void beforeEach() {
         var provider = getProvider();
         var text = provider.getAnnotatedText();
         sentence = text.getSentences().get(SENTENCE_NO);
-        ImmutableList<IPhrase> phrases = sentence.getPhrases();
+        ImmutableList<Phrase> phrases = sentence.getPhrases();
         sentencePhrase = phrases.get(1);
         vpPhrase = phrases.get(3);
         npPhrase = phrases.get(4);
     }
 
-    protected abstract ITextConnector getProvider();
+    protected abstract TextProvider getProvider();
 
     @Test
     void getPhraseTypeTest() {

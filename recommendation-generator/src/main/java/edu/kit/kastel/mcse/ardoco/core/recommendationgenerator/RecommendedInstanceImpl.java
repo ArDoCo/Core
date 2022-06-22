@@ -1,0 +1,234 @@
+/* Licensed under MIT 2021-2022. */
+package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
+import edu.kit.kastel.informalin.framework.common.ICopyable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+
+/**
+ * This class represents recommended instances. These instances should be contained by the model. The likelihood is
+ * measured by the probability. Every recommended instance has a unique name.
+ *
+ * @author Sophie
+ */
+public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
+
+    private String type;
+    private String name;
+    private Confidence probability;
+    private final Set<NounMapping> typeMappings;
+    private final Set<NounMapping> nameMappings;
+
+    @Override
+    public RecommendedInstance createCopy() {
+        var copy = new RecommendedInstanceImpl(name, type);
+        copy.probability = probability.createCopy();
+        copy.nameMappings.addAll(nameMappings.stream().map(ICopyable::createCopy).toList());
+        copy.typeMappings.addAll(typeMappings.stream().map(ICopyable::createCopy).toList());
+        return copy;
+    }
+
+    private RecommendedInstanceImpl(String name, String type) {
+        this.type = type;
+        this.name = name;
+        this.probability = new Confidence(AggregationFunctions.AVERAGE);
+        nameMappings = new HashSet<>();
+        typeMappings = new HashSet<>();
+    }
+
+    /**
+     * Creates a new recommended instance.
+     *
+     * @param name        the name of the instance
+     * @param type        the type of the instance
+     * @param probability the probability that this instance should be found in the model
+     * @param nameNodes   the involved name mappings
+     * @param typeNodes   the involved type mappings
+     */
+    public RecommendedInstanceImpl(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameNodes,
+            ImmutableList<NounMapping> typeNodes) {
+        this(name, type);
+        this.probability.addAgentConfidence(claimant, probability);
+
+        nameMappings.addAll(nameNodes.castToCollection());
+        typeMappings.addAll(typeNodes.castToCollection());
+
+        this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
+    }
+
+    private static double calculateMappingProbability(ImmutableList<NounMapping> nameMappings, ImmutableList<NounMapping> typeMappings) {
+        var highestNameProbability = nameMappings.collectDouble(nm -> nm.getProbabilityForKind(MappingKind.NAME)).maxIfEmpty(0);
+        var highestTypeProbability = typeMappings.collectDouble(nm -> nm.getProbabilityForKind(MappingKind.TYPE)).maxIfEmpty(0);
+
+        return CommonUtilities.rootMeanSquare(highestNameProbability, highestTypeProbability);
+    }
+
+    /**
+     * Returns the involved name mappings.
+     *
+     * @return the name mappings of this recommended instance
+     */
+    @Override
+    public ImmutableList<NounMapping> getNameMappings() {
+        return Lists.immutable.withAll(nameMappings);
+    }
+
+    /**
+     * Returns the involved type mappings.
+     *
+     * @return the type mappings of this recommended instance
+     */
+    @Override
+    public ImmutableList<NounMapping> getTypeMappings() {
+        return Lists.immutable.withAll(typeMappings);
+    }
+
+    /**
+     * Returns the probability being an instance of the model.
+     *
+     * @return the probability to be found in the model
+     */
+    @Override
+    public double getProbability() {
+        return probability.getConfidence();
+    }
+
+    /**
+     * Adds a name and type mapping to this recommended instance.
+     *
+     * @param nameMapping the name mapping to add
+     * @param typeMapping the type mapping to add
+     */
+    @Override
+    public void addMappings(NounMapping nameMapping, NounMapping typeMapping) {
+        addName(nameMapping);
+        addType(typeMapping);
+    }
+
+    /**
+     * Adds name and type mappings to this recommended instance.
+     *
+     * @param nameMapping the name mappings to add
+     * @param typeMapping the type mappings to add
+     */
+    @Override
+    public void addMappings(ImmutableList<NounMapping> nameMapping, ImmutableList<NounMapping> typeMapping) {
+        nameMapping.forEach(this::addName);
+        typeMapping.forEach(this::addType);
+    }
+
+    /**
+     * Adds a name mapping to this recommended instance.
+     *
+     * @param nameMapping the name mapping to add
+     */
+    @Override
+    public void addName(NounMapping nameMapping) {
+        nameMappings.add(nameMapping);
+    }
+
+    /**
+     * Adds a type mapping to this recommended instance.
+     *
+     * @param typeMapping the type mapping to add
+     */
+    @Override
+    public void addType(NounMapping typeMapping) {
+        typeMappings.add(typeMapping);
+    }
+
+    /**
+     * Returns the type as string from this recommended instance.
+     *
+     * @return the type as string
+     */
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Returns the name as string from this recommended instance.
+     *
+     * @return the name as string
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the type of this recommended instance to the given type.
+     *
+     * @param type the new type
+     */
+    @Override
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Sets the name of this recommended instance to the given name.
+     *
+     * @param name the new name
+     */
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        var separator = "\n\t\t\t\t\t";
+        MutableList<String> typeNodeVals = Lists.mutable.empty();
+        MutableList<String> typeOccurrences = Lists.mutable.empty();
+        MutableList<Integer> typePositions = Lists.mutable.empty();
+        for (NounMapping typeMapping : typeMappings) {
+            typeNodeVals.add(typeMapping.toString());
+            typeOccurrences.addAll(typeMapping.getSurfaceForms().castToCollection());
+            typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
+        }
+
+        MutableList<String> nameNodeVals = Lists.mutable.empty();
+        MutableList<String> nameOccurrences = Lists.mutable.empty();
+        MutableList<Integer> namePositions = Lists.mutable.empty();
+        for (NounMapping nameMapping : nameMappings) {
+            nameNodeVals.add(nameMapping.toString());
+            nameOccurrences.addAll(nameMapping.getSurfaceForms().castToCollection());
+            namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
+        }
+        return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + probability + //
+                ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        var other = (RecommendedInstanceImpl) obj;
+        return Objects.equals(name, other.name) && Objects.equals(type, other.type);
+    }
+
+}

@@ -2,12 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 
 public final class DataRepositoryHelper {
 
@@ -15,27 +15,27 @@ public final class DataRepositoryHelper {
         super();
     }
 
-    public static IText getAnnotatedText(DataRepository dataRepository) {
+    public static Text getAnnotatedText(DataRepository dataRepository) {
         return dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
     }
 
-    public static ITextState getTextState(DataRepository dataRepository) {
-        return dataRepository.getData(ITextState.ID, ITextState.class).orElseThrow();
+    public static TextState getTextState(DataRepository dataRepository) {
+        return dataRepository.getData(TextState.ID, TextState.class).orElseThrow();
     }
 
     public static ModelStates getModelStatesData(DataRepository dataRepository) {
         return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
     }
 
-    public static IRecommendationStates getRecommendationStates(DataRepository dataRepository) {
-        return dataRepository.getData(IRecommendationStates.ID, IRecommendationStates.class).orElseThrow();
+    public static RecommendationStates getRecommendationStates(DataRepository dataRepository) {
+        return dataRepository.getData(RecommendationStates.ID, RecommendationStates.class).orElseThrow();
     }
 
-    public static IConnectionStates getConnectionStates(DataRepository dataRepository) {
-        return dataRepository.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
+    public static ConnectionStates getConnectionStates(DataRepository dataRepository) {
+        return dataRepository.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
     }
 
-    public static IInconsistencyStates getInconsistencyStates(DataRepository dataRepository) {
-        return dataRepository.getData(IInconsistencyStates.ID, IInconsistencyStates.class).orElseThrow();
+    public static InconsistencyStates getInconsistencyStates(DataRepository dataRepository) {
+        return dataRepository.getData(InconsistencyStates.ID, InconsistencyStates.class).orElseThrow();
     }
 }

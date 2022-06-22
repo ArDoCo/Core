@@ -20,11 +20,11 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
@@ -109,7 +109,7 @@ public final class ArDoCo extends Pipeline {
         logger.info("Writing output.");
         for (String modelId : modelStatesData.modelIds()) {
             // write model states
-            IModelState modelState = modelStatesData.getModelState(modelId);
+            ModelExtractionState modelState = modelStatesData.getModelState(modelId);
             var metaModel = modelState.getMetamodel();
             var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + metaModel + ".csv").toFile();
             FilePrinter.writeModelInstancesInCsvFile(modelStateFile, modelState, name);
@@ -144,11 +144,11 @@ public final class ArDoCo extends Pipeline {
     }
 
     private static void addModelProviders(File inputArchitectureModel, File inputCodeModel, ArDoCo arDoCo) throws IOException {
-        IModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
+        ModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
         var pcmModelProvider = new ModelProvider(arDoCo.getDataRepository(), pcmModel);
         arDoCo.addPipelineStep(pcmModelProvider);
         if (inputCodeModel != null) {
-            IModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
+            ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
             var javaModelProvider = new ModelProvider(arDoCo.getDataRepository(), javaModel);
             arDoCo.addPipelineStep(javaModelProvider);
         }

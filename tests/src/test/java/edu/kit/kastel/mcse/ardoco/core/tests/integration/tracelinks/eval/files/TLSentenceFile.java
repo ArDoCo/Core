@@ -10,7 +10,7 @@ import java.util.Map;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 
 public class TLSentenceFile {
@@ -20,11 +20,11 @@ public class TLSentenceFile {
         var builder = new StringBuilder();
 
         for (Project project : projects) {
-            ImmutableList<ISentence> sentences = dataMap.get(project).getText().getSentences();
+            ImmutableList<Sentence> sentences = dataMap.get(project).getText().getSentences();
 
             builder.append("# ").append(project.name()).append("\n\n");
 
-            for (ISentence sentence : sentences) {
+            for (Sentence sentence : sentences) {
                 builder.append("- [").append(sentence.getSentenceNumber()).append("]: ").append(sentence.getText()).append('\n');
             }
 

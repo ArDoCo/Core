@@ -11,21 +11,21 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
- * Filters {@link IRecommendedInstance}s that have low probabilities of being an entity. This can either be because the
- * probability of being a {@link IRecommendedInstance} is low or because the probability of having a mapping for a name
+ * Filters {@link RecommendedInstance}s that have low probabilities of being an entity. This can either be because the
+ * probability of being a {@link RecommendedInstance} is low or because the probability of having a mapping for a name
  * and/or type is low.
  *
  * @author Jan Keim
  *
  */
-public class RecommendedInstanceProbabilityFilter extends Informant {
+public class RecommendedInstanceProbabilityFilter extends AbstractInformant {
     @Configurable
     private double thresholdNameAndTypeProbability = 0.3;
     @Configurable
@@ -61,8 +61,8 @@ public class RecommendedInstanceProbabilityFilter extends Informant {
     /**
      * Filter RecommendedInstances based on various heuristics. First, filter unlikely ones (low probability).
      */
-    private void filterRecommendedInstances(IInconsistencyState inconsistencyState) {
-        var filteredRecommendedInstances = Lists.mutable.<IRecommendedInstance> empty();
+    private void filterRecommendedInstances(InconsistencyState inconsistencyState) {
+        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
         if (dynamicThreshold) {
@@ -81,7 +81,7 @@ public class RecommendedInstanceProbabilityFilter extends Informant {
         inconsistencyState.setRecommendedInstances(filteredRecommendedInstances);
     }
 
-    private double analyzeProbabilitiesofRecommendedInstances(MutableList<IRecommendedInstance> recommendedInstances) {
+    private double analyzeProbabilitiesofRecommendedInstances(MutableList<RecommendedInstance> recommendedInstances) {
         var highestProbability = 0.0d;
         for (var recommendedInstance : recommendedInstances) {
             var probability = recommendedInstance.getProbability();
@@ -104,25 +104,25 @@ public class RecommendedInstanceProbabilityFilter extends Informant {
         return highestProbability;
     }
 
-    private boolean performHeuristicsAndChecks(IRecommendedInstance recommendedInstance) {
+    private boolean performHeuristicsAndChecks(RecommendedInstance recommendedInstance) {
         var checksArePositive = checkProbabilityOfBeingRecommendedInstance(recommendedInstance);
         return checksArePositive && checkProbabilitiesForNounMappingTypes(recommendedInstance);
     }
 
-    private boolean checkProbabilityOfBeingRecommendedInstance(IRecommendedInstance recommendedInstance) {
+    private boolean checkProbabilityOfBeingRecommendedInstance(RecommendedInstance recommendedInstance) {
         var probability = recommendedInstance.getProbability();
         return probability > threshold;
     }
 
     /**
-     * Check for probabilities of the {@link INounMapping}s that are contained by the {@link IRecommendedInstance}. If
-     * they exceed a threshold, then the check is positive. The {@link IRecommendedInstance} needs to either be certain
+     * Check for probabilities of the {@link NounMapping}s that are contained by the {@link RecommendedInstance}. If
+     * they exceed a threshold, then the check is positive. The {@link RecommendedInstance} needs to either be certain
      * for name or type or decently certain for name and type.
      *
-     * @param recommendedInstance the {@link IRecommendedInstance} to check
+     * @param recommendedInstance the {@link RecommendedInstance} to check
      * @return true if the probabilities of the types exceed a threshold
      */
-    private boolean checkProbabilitiesForNounMappingTypes(IRecommendedInstance recommendedInstance) {
+    private boolean checkProbabilitiesForNounMappingTypes(RecommendedInstance recommendedInstance) {
         var highestTypeProbability = getHighestTypeProbability(recommendedInstance.getTypeMappings());
         var highestNameProbability = getHighestNameProbability(recommendedInstance.getTypeMappings());
 
@@ -131,18 +131,18 @@ public class RecommendedInstanceProbabilityFilter extends Informant {
 
     }
 
-    private double getHighestNameProbability(ImmutableList<INounMapping> nounMappings) {
+    private double getHighestNameProbability(ImmutableList<NounMapping> nounMappings) {
         if (nounMappings.isEmpty()) {
             return 0.0;
         }
-        return nounMappings.collect(INounMapping::getProbability).max();
+        return nounMappings.collect(NounMapping::getProbability).max();
     }
 
-    private double getHighestTypeProbability(ImmutableList<INounMapping> typeMappings) {
+    private double getHighestTypeProbability(ImmutableList<NounMapping> typeMappings) {
         if (typeMappings.isEmpty()) {
             return 0.0;
         }
-        return typeMappings.collect(INounMapping::getProbability).max();
+        return typeMappings.collect(NounMapping::getProbability).max();
     }
 
     @Override

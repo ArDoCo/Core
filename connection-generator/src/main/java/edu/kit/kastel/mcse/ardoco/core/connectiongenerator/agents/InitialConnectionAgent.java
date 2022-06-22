@@ -6,8 +6,8 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ExtractionDependentOccurrenceExtractor;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.NameTypeConnectionExtractor;
 
@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.NameTypeCo
  * The agent that executes the extractors of this stage.
  */
 public class InitialConnectionAgent extends ConnectionAgent {
-    private final List<Informant> extractors;
+    private final List<AbstractInformant> extractors;
 
     @Configurable
     private List<String> enabledExtractors;

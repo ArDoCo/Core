@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 /**
@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 class SentenceTest {
     private static final String textPath = "src/test/resources/teastore.txt";
 
-    private static ImmutableList<ISentence> sentences;
+    private static ImmutableList<Sentence> sentences;
 
     @BeforeAll
     static void beforeAll() throws Exception {

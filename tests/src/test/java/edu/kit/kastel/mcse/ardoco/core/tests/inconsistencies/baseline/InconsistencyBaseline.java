@@ -6,16 +6,16 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyStatesImpl;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
 public class InconsistencyBaseline extends AbstractExecutionStage {
@@ -26,15 +26,15 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
 
     @Override
     public void run() {
-        var inconsistencyStates = InconsistencyStates.build();
+        var inconsistencyStates = InconsistencyStatesImpl.build();
         DataRepository dataRepository = getDataRepository();
-        dataRepository.addData(IInconsistencyStates.ID, inconsistencyStates);
+        dataRepository.addData(InconsistencyStates.ID, inconsistencyStates);
 
         var text = getText(dataRepository);
         var modelStates = getModelStatesData(dataRepository);
         var connectionStates = getConnectionStates(dataRepository);
 
-        var sentences = Sets.mutable.fromStream(text.getSentences().stream().map(ISentence::getSentenceNumber));
+        var sentences = Sets.mutable.fromStream(text.getSentences().stream().map(Sentence::getSentenceNumber));
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelState(model);
             Metamodel metamodel = modelState.getMetamodel();
@@ -42,14 +42,14 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
             var sentencesWithTraceLinks = traceLinks.collect(TraceLink::getSentenceNumber).toSet();
             MutableSet<Integer> sentencesWithoutTraceLinks = sentences.withoutAll(sentencesWithTraceLinks);
 
-            IInconsistencyState inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
+            InconsistencyState inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
             for (var sentence : sentencesWithoutTraceLinks) {
                 inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence + 1, 0.69));
             }
         }
     }
 
-    public static IText getText(DataRepository dataRepository) {
+    public static Text getText(DataRepository dataRepository) {
         var preprocessingData = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow();
         return preprocessingData.getText();
     }
@@ -58,8 +58,8 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
         return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
     }
 
-    public static IConnectionStates getConnectionStates(DataRepository dataRepository) {
-        return dataRepository.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
+    public static ConnectionStates getConnectionStates(DataRepository dataRepository) {
+        return dataRepository.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
     }
 
 }

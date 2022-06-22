@@ -9,7 +9,7 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InitialRecommendationAgent;
@@ -32,13 +32,13 @@ public class RecommendationGenerator extends AbstractExecutionStage {
         super("RecommendationGenerator", dataRepository);
 
         this.agents = Lists.mutable.of(new InitialRecommendationAgent(dataRepository), new PhraseRecommendationAgent(dataRepository));
-        this.enabledAgents = agents.collect(IAgent::getId);
+        this.enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
     public void run() {
-        var recommendationStates = RecommendationStates.build();
-        getDataRepository().addData(RecommendationStates.ID, recommendationStates);
+        var recommendationStates = RecommendationStatesImpl.build();
+        getDataRepository().addData(RecommendationStatesImpl.ID, recommendationStates);
 
         for (RecommendationAgent agent : findByClassName(enabledAgents, agents)) {
             this.addPipelineStep(agent);
