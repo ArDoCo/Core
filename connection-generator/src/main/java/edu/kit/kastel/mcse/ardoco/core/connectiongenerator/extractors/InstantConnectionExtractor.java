@@ -5,7 +5,7 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecomme
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class InstantConnectionExtractor extends AbstractExtractor {
+public class InstantConnectionExtractor extends Informant {
     @Configurable
     private double probability = 1.0;
     @Configurable

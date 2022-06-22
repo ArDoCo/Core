@@ -6,13 +6,13 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.PhraseRecommendationExtractor;
 
 public final class PhraseRecommendationAgent extends RecommendationAgent {
 
-    private final List<AbstractExtractor> extractors;
+    private final List<Informant> extractors;
 
     @Configurable
     private List<String> enabledExtractors;

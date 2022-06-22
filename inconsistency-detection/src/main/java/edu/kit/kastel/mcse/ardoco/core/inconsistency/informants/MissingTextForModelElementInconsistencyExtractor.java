@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.inconsistency.extractors;
+package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import java.util.List;
 import java.util.Map;
@@ -10,14 +10,14 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingTextForModelElementInconsistency;
 
-public class MissingTextForModelElementInconsistencyExtractor extends AbstractExtractor {
+public class MissingTextForModelElementInconsistencyExtractor extends Informant {
 
     @Configurable
     private List<String> whitelist = Lists.mutable.of("DummyRecommender", "Cache");

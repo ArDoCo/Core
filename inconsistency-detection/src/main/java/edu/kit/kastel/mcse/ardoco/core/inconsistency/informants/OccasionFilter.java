@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.inconsistency.filters;
+package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractFilter;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * @author Jan Keim
  *
  */
-public class OccasionFilter extends AbstractFilter {
+public class OccasionFilter extends Informant {
 
     @Configurable
     private int expectedAppearances = 2;

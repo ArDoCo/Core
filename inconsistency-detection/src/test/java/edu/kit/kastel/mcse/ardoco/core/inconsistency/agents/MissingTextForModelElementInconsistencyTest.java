@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.extractors.MissingTextForModelElementInconsistencyExtractor;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.MissingTextForModelElementInconsistencyExtractor;
 import edu.kit.kastel.mcse.ardoco.core.model.Instance;
 
 class MissingTextForModelElementInconsistencyTest {

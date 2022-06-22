@@ -6,8 +6,8 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ReferenceExtractor;
 
 /**
@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ReferenceE
  */
 public class ReferenceAgent extends ConnectionAgent {
 
-    private final List<AbstractExtractor> extractors;
+    private final List<Informant> extractors;
 
     @Configurable
     private List<String> enabledExtractors;
