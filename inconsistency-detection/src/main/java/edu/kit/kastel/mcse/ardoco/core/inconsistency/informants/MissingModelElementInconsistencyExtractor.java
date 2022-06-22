@@ -11,22 +11,22 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistencyCandidate;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementSupport;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
-public class MissingModelElementInconsistencyExtractor extends Informant {
+public class MissingModelElementInconsistencyExtractor extends AbstractInformant {
 
     @Configurable
     private double minSupport = 1;
@@ -48,7 +48,8 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
         }
     }
 
-    private void findMissingModelElementInconsistencies(IConnectionStates connectionStates, IInconsistencyStates inconsistencyStates, IModelState modelState) {
+    private void findMissingModelElementInconsistencies(ConnectionStates connectionStates, InconsistencyStates inconsistencyStates,
+            ModelExtractionState modelState) {
         Metamodel metamodel = modelState.getMetamodel();
         var inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
         var connectionState = connectionStates.getConnectionState(metamodel);
@@ -56,7 +57,7 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
         var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
 
         var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
-        var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getTextualInstance);
+        var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(InstanceLink::getTextualInstance);
 
         // find recommendedInstances with no trace link (also not sharing words with linked RIs)
         candidateElements.removeAllIterable(linkedRecommendedInstances);
@@ -79,11 +80,11 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
      * @param candidateElements          candidate RecommendedInstances
      * @param linkedRecommendedInstances already linked RecommendedInstances
      */
-    private void filterCandidatesCoveredByRecommendedInstance(MutableList<IRecommendedInstance> candidateElements,
-            ImmutableList<IRecommendedInstance> linkedRecommendedInstances) {
+    private void filterCandidatesCoveredByRecommendedInstance(MutableList<RecommendedInstance> candidateElements,
+            ImmutableList<RecommendedInstance> linkedRecommendedInstances) {
         for (var linkedRecommendedInstance : linkedRecommendedInstances) {
-            var linkedWords = linkedRecommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
-            var candidatesToRemove = Lists.mutable.<IRecommendedInstance> empty();
+            var linkedWords = linkedRecommendedInstance.getNameMappings().flatCollect(NounMapping::getWords);
+            var candidatesToRemove = Lists.mutable.<RecommendedInstance> empty();
             for (var candidate : candidateElements) {
                 if (CommonUtilities.wordListContainsAnyWordFromRecommendedInstance(linkedWords, candidate)) {
                     candidatesToRemove.add(candidate);
@@ -93,7 +94,7 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
         }
     }
 
-    private void addToCandidates(MutableSet<MissingElementInconsistencyCandidate> candidates, IRecommendedInstance recommendedInstance,
+    private void addToCandidates(MutableSet<MissingElementInconsistencyCandidate> candidates, RecommendedInstance recommendedInstance,
             MissingElementSupport support) {
         for (var candidate : candidates) {
             var candidateRecommendedInstance = candidate.getRecommendedInstance();
@@ -101,7 +102,7 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
                 candidate.addSupport(MissingElementSupport.MULTIPLE_OVERLAPPING_RECOMMENDED_INSTANCES);
                 return;
             }
-            var candidateWords = candidateRecommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
+            var candidateWords = candidateRecommendedInstance.getNameMappings().flatCollect(NounMapping::getWords);
             if (CommonUtilities.wordListContainsAnyWordFromRecommendedInstance(candidateWords, recommendedInstance)) {
                 candidate.addSupport(MissingElementSupport.MULTIPLE_OVERLAPPING_RECOMMENDED_INSTANCES);
                 // TODO what to do here?
@@ -115,13 +116,13 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
         candidates.add(candidate);
     }
 
-    private void createInconsistencies(MutableSet<MissingElementInconsistencyCandidate> candidates, IInconsistencyState inconsistencyState) {
+    private void createInconsistencies(MutableSet<MissingElementInconsistencyCandidate> candidates, InconsistencyState inconsistencyState) {
         for (var candidate : candidates) {
             var support = candidate.getAmountOfSupport();
             if (support >= minSupport) {
-                IRecommendedInstance recommendedInstance = candidate.getRecommendedInstance();
+                RecommendedInstance recommendedInstance = candidate.getRecommendedInstance();
                 double confidence = recommendedInstance.getProbability();
-                for (var word : recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords).distinct()) {
+                for (var word : recommendedInstance.getNameMappings().flatCollect(NounMapping::getWords).distinct()) {
                     var sentenceNo = word.getSentenceNo() + 1;
                     var wordText = word.getText();
                     inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));

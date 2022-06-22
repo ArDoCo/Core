@@ -14,15 +14,15 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.Modifications;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
-public class DeleteOneSentenceEach implements IModificationStrategy {
+public class DeleteOneSentenceEach implements ModificationStrategy {
 
     private File text;
     private List<String> lines;
@@ -45,11 +45,11 @@ public class DeleteOneSentenceEach implements IModificationStrategy {
     }
 
     @Override
-    public Iterator<ModifiedElement<IText, Integer>> getModifiedTexts() {
+    public Iterator<ModifiedElement<Text, Integer>> getModifiedTexts() {
         return new DeleteOneSentenceEachIterator();
     }
 
-    private class DeleteOneSentenceEachIterator implements Iterator<ModifiedElement<IText, Integer>> {
+    private class DeleteOneSentenceEachIterator implements Iterator<ModifiedElement<Text, Integer>> {
         private int currentDeletion = 0;
 
         @Override
@@ -58,7 +58,7 @@ public class DeleteOneSentenceEach implements IModificationStrategy {
         }
 
         @Override
-        public ModifiedElement<IText, Integer> next() {
+        public ModifiedElement<Text, Integer> next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
@@ -67,7 +67,7 @@ public class DeleteOneSentenceEach implements IModificationStrategy {
             try {
                 File tmp = File.createTempFile(this.getClass().getSimpleName(), ".txt");
                 write(tmp, deleted);
-                IText newText = new CoreNLPProvider(new DataRepository(), new FileInputStream(tmp)).getAnnotatedText();
+                Text newText = new CoreNLPProvider(new DataRepository(), new FileInputStream(tmp)).getAnnotatedText();
                 return ModifiedElement.of(newText, deleted + 1, Modifications.DELETE_SENTENCE);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -90,7 +90,7 @@ public class DeleteOneSentenceEach implements IModificationStrategy {
     }
 
     @Override
-    public Iterator<ModifiedElement<IModelConnector, IModelInstance>> getModifiedModelInstances() {
+    public Iterator<ModifiedElement<ModelConnector, ModelInstance>> getModifiedModelInstances() {
         throw new UnsupportedOperationException();
     }
 }

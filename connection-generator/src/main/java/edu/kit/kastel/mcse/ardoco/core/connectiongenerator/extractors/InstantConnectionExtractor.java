@@ -5,16 +5,16 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class InstantConnectionExtractor extends Informant {
+public class InstantConnectionExtractor extends AbstractInformant {
     @Configurable
     private double probability = 1.0;
     @Configurable
@@ -47,10 +47,10 @@ public class InstantConnectionExtractor extends Informant {
      * Searches in the recommended instances of the recommendation state for similar names to extracted instances. If
      * some are found the instance link is added to the connection state.
      */
-    private void findNamesOfModelInstancesInSupposedMappings(IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState) {
+    private void findNamesOfModelInstancesInSupposedMappings(ModelExtractionState modelState, RecommendationState recommendationState,
+            ConnectionState connectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
-        for (IModelInstance instance : modelState.getInstances()) {
+        for (ModelInstance instance : modelState.getInstances()) {
             var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
 
             for (var recommendedInstance : mostLikelyRi) {
@@ -60,8 +60,8 @@ public class InstantConnectionExtractor extends Informant {
         }
     }
 
-    private void createLinksForEqualOrSimilarRecommendedInstances(IModelState modelState, IRecommendationState recommendationState,
-            IConnectionState connectionState) {
+    private void createLinksForEqualOrSimilarRecommendedInstances(ModelExtractionState modelState, RecommendationState recommendationState,
+            ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var sameInstances = modelState.getInstances()
                     .select(instance -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));

@@ -11,18 +11,18 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class PhraseRecommendationExtractor extends Informant {
+public class PhraseRecommendationExtractor extends AbstractInformant {
 
     @Configurable
     private double confidence = 0.8;
@@ -52,7 +52,8 @@ public class PhraseRecommendationExtractor extends Informant {
      * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a phrase (in
      * text-extraction)
      */
-    private void createRecommendationInstancesFromPhraseNounMappings(ITextState textState, IRecommendationState recommendationState, IModelState modelState) {
+    private void createRecommendationInstancesFromPhraseNounMappings(TextState textState, RecommendationState recommendationState,
+            ModelExtractionState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
             if (nounMapping.isPhrase()) {
                 var typeMappings = getRelatedTypeMappings(nounMapping, textState);
@@ -65,7 +66,7 @@ public class PhraseRecommendationExtractor extends Informant {
      * Find additional phrases and create RecommendedInstances for them. Additional phrases are when a word in a
      * NounMapping has another word in front or afterwards and that phrase is a TypeMapping
      */
-    private void findMorePhrasesForRecommendationInstances(ITextState textState, IRecommendationState recommendationState, IModelState modelState) {
+    private void findMorePhrasesForRecommendationInstances(TextState textState, RecommendationState recommendationState, ModelExtractionState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
             for (var word : nounMapping.getWords()) {
                 var prevWord = word.getPreWord();
@@ -80,11 +81,11 @@ public class PhraseRecommendationExtractor extends Informant {
     /**
      * Find words that use CamelCase or snake_case.
      */
-    private void findSpecialNamedEntitities(ITextState textState, IRecommendationState recommendationState) {
+    private void findSpecialNamedEntitities(TextState textState, RecommendationState recommendationState) {
         findSpecialNamedEntitiesInNounMappings(textState.getNounMappingsOfKind(MappingKind.NAME), recommendationState);
     }
 
-    private void findSpecialNamedEntitiesInNounMappings(ImmutableList<INounMapping> nounMappings, IRecommendationState recommendationState) {
+    private void findSpecialNamedEntitiesInNounMappings(ImmutableList<NounMapping> nounMappings, RecommendationState recommendationState) {
         for (var nounMapping : nounMappings) {
             for (var word : nounMapping.getWords()) {
                 var wordText = word.getText();
@@ -96,8 +97,8 @@ public class PhraseRecommendationExtractor extends Informant {
         }
     }
 
-    private void addRecommendedInstance(INounMapping nounMapping, ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState,
-            IModelState modelState) {
+    private void addRecommendedInstance(NounMapping nounMapping, ImmutableList<NounMapping> typeMappings, RecommendationState recommendationState,
+            ModelExtractionState modelState) {
         var nounMappings = Lists.immutable.of(nounMapping);
         var types = getSimilarModelTypes(typeMappings, modelState);
         if (types.isEmpty()) {
@@ -109,7 +110,7 @@ public class PhraseRecommendationExtractor extends Informant {
         }
     }
 
-    private ImmutableList<String> getSimilarModelTypes(ImmutableList<INounMapping> typeMappings, IModelState modelState) {
+    private ImmutableList<String> getSimilarModelTypes(ImmutableList<NounMapping> typeMappings, ModelExtractionState modelState) {
         MutableSet<String> similarModelTypes = Sets.mutable.empty();
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
@@ -125,8 +126,8 @@ public class PhraseRecommendationExtractor extends Informant {
         return similarModelTypes.toList().toImmutable();
     }
 
-    private ImmutableList<INounMapping> getRelatedTypeMappings(INounMapping nounMapping, ITextState textState) {
-        MutableList<INounMapping> typeMappings = Lists.mutable.empty();
+    private ImmutableList<NounMapping> getRelatedTypeMappings(NounMapping nounMapping, TextState textState) {
+        MutableList<NounMapping> typeMappings = Lists.mutable.empty();
         // find TypeMappings that come from the Phrase Words within the Compound Word
         var phrase = getPhraseWordsFromNounMapping(nounMapping);
         for (var word : phrase) {
@@ -135,8 +136,8 @@ public class PhraseRecommendationExtractor extends Informant {
         return typeMappings.toImmutable();
     }
 
-    private void addRecommendedInstanceIfPhraseWithOtherWord(INounMapping nounMapping, IWord word, ITextState textState,
-            IRecommendationState recommendationState, IModelState modelState) {
+    private void addRecommendedInstanceIfPhraseWithOtherWord(NounMapping nounMapping, Word word, TextState textState, RecommendationState recommendationState,
+            ModelExtractionState modelState) {
         if (word == null) {
             return;
         }
@@ -149,8 +150,8 @@ public class PhraseRecommendationExtractor extends Informant {
         }
     }
 
-    private static ImmutableList<IWord> getPhraseWordsFromNounMapping(INounMapping nounMapping) {
-        ImmutableList<IWord> phrase = Lists.immutable.empty();
+    private static ImmutableList<Word> getPhraseWordsFromNounMapping(NounMapping nounMapping) {
+        ImmutableList<Word> phrase = Lists.immutable.empty();
         for (var word : nounMapping.getWords()) {
             var currPhrase = CommonUtilities.getCompoundPhrase(word);
             if (currPhrase.size() > phrase.size()) {

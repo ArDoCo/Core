@@ -8,7 +8,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 
 public class TLModelFile {
@@ -25,7 +25,7 @@ public class TLModelFile {
             for (var modelId : projectData.getModelIds()) {
                 var models = projectData.getModelState(modelId).getInstances();
                 builder.append("## ModelId: ").append(modelId).append("\n");
-                for (IModelInstance model : models) {
+                for (ModelInstance model : models) {
                     builder.append("- [")
                             .append(model.getUid())
                             .append("]: \"")

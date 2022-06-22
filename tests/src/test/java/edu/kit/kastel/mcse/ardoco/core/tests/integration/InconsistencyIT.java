@@ -15,15 +15,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.baseline.DeleteOneModelElementBaselineEval;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.IEvaluationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.model.DeleteOneModelElementEval;
 
 class InconsistencyIT {
@@ -101,14 +101,14 @@ class InconsistencyIT {
         return null;
     }
 
-    private static EvaluationResult run(Project project, IEvaluationStrategy eval, PrintStream os) {
+    private static EvaluationResult run(Project project, EvaluationStrategy eval, PrintStream os) {
         os.println("####################################");
         os.println("START Eval: " + project + " -- " + eval.getClass().getSimpleName());
 
         DataRepository dataRepository = new DataRepository();
 
-        IModelConnector pcmModel = project.getModel();
-        IText annotatedText = project.getText(dataRepository);
+        ModelConnector pcmModel = project.getModel();
+        Text annotatedText = project.getText(dataRepository);
 
         GoldStandard gs = project.getGoldStandard(pcmModel);
         var results = eval.evaluate(project, pcmModel, annotatedText, gs, os);

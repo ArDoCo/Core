@@ -10,14 +10,14 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingTextForModelElementInconsistency;
 
-public class MissingTextForModelElementInconsistencyExtractor extends Informant {
+public class MissingTextForModelElementInconsistencyExtractor extends AbstractInformant {
 
     @Configurable
     private List<String> whitelist = Lists.mutable.of("DummyRecommender", "Cache");
@@ -42,10 +42,10 @@ public class MissingTextForModelElementInconsistencyExtractor extends Informant 
             var connectionState = connectionStates.getConnectionState(metaModel);
             var inconsistencyState = inconsistencyStates.getInconsistencyState(metaModel);
 
-            var linkedModelInstances = connectionState.getInstanceLinks().collect(IInstanceLink::getModelInstance).distinct();
+            var linkedModelInstances = connectionState.getInstanceLinks().collect(InstanceLink::getModelInstance).distinct();
 
             // find model instances of given types that are not linked and, thus, are candidates
-            var candidateModelInstances = Lists.mutable.<IModelInstance> empty();
+            var candidateModelInstances = Lists.mutable.<ModelInstance> empty();
             for (var modelInstance : modelState.getInstances()) {
                 if (modelInstanceHasTargetedType(modelInstance, types) && !linkedModelInstances.contains(modelInstance)) {
                     candidateModelInstances.add(modelInstance);
@@ -60,7 +60,7 @@ public class MissingTextForModelElementInconsistencyExtractor extends Informant 
         }
     }
 
-    public static boolean modelInstanceHasTargetedType(IModelInstance modelInstance, List<String> types) {
+    public static boolean modelInstanceHasTargetedType(ModelInstance modelInstance, List<String> types) {
         if (types.contains(modelInstance.getFullType())) {
             return true;
         }
@@ -72,7 +72,7 @@ public class MissingTextForModelElementInconsistencyExtractor extends Informant 
         return false;
     }
 
-    public static MutableList<IModelInstance> filterWithWhitelist(MutableList<IModelInstance> candidateModelInstances, List<String> whitelist) {
+    public static MutableList<ModelInstance> filterWithWhitelist(MutableList<ModelInstance> candidateModelInstances, List<String> whitelist) {
         var filteredCandidates = Lists.mutable.ofAll(candidateModelInstances);
         for (var whitelisting : whitelist) {
             var pattern = Pattern.compile(whitelisting);
@@ -92,7 +92,7 @@ public class MissingTextForModelElementInconsistencyExtractor extends Informant 
         return filteredCandidates;
     }
 
-    private void createInconsistencies(MutableList<IModelInstance> candidateModelInstances, IInconsistencyState inconsistencyState) {
+    private void createInconsistencies(MutableList<ModelInstance> candidateModelInstances, InconsistencyState inconsistencyState) {
         for (var candidate : candidateModelInstances) {
             var inconsistency = new MissingTextForModelElementInconsistency(candidate);
             inconsistencyState.addInconsistency(inconsistency);

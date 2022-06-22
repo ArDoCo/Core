@@ -1,12 +1,9 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.agent;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.pipeline.Pipeline;
+public interface Agent extends Claimant {
 
-public abstract class Agent extends Pipeline implements IAgent {
-
-    protected Agent(String id, DataRepository dataRepository) {
-        super(id, dataRepository);
+    default String getId() {
+        return this.getClass().getSimpleName();
     }
 }

@@ -3,9 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.Instance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
 
 /**
  * @author Jan Keim
@@ -17,12 +17,12 @@ public class MissingTextForModelElementInconsistencyTest extends AbstractInconsi
 
     @BeforeEach
     void beforeEach() {
-        IModelInstance instance = new Instance("instance", "type", "uid1");
+        ModelInstance instance = new ModelInstanceImpl("instance", "type", "uid1");
         missingTextForModelElementInconsistency = new MissingTextForModelElementInconsistency(instance);
     }
 
     @Override
-    protected IInconsistency getInconsistency() {
+    protected Inconsistency getInconsistency() {
         return missingTextForModelElementInconsistency;
     }
 
@@ -37,14 +37,14 @@ public class MissingTextForModelElementInconsistencyTest extends AbstractInconsi
     }
 
     @Override
-    protected IInconsistency getUnequalInconsistency() {
-        IModelInstance instance = new Instance("otherInstance", "otherType", "uid2");
+    protected Inconsistency getUnequalInconsistency() {
+        ModelInstance instance = new ModelInstanceImpl("otherInstance", "otherType", "uid2");
         return new MissingTextForModelElementInconsistency(instance);
     }
 
     @Override
-    protected IInconsistency getEqualInconsistency() {
-        IModelInstance instance = new Instance("instance", "type", "uid1");
+    protected Inconsistency getEqualInconsistency() {
+        ModelInstance instance = new ModelInstanceImpl("instance", "type", "uid1");
         return new MissingTextForModelElementInconsistency(instance);
     }
 

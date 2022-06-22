@@ -7,17 +7,17 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class ReferenceExtractor extends Informant {
+public class ReferenceExtractor extends AbstractInformant {
 
     @Configurable
     private double probability = 0.75;
@@ -43,19 +43,19 @@ public class ReferenceExtractor extends Informant {
      * Searches for instances mentioned in the text extraction state as names. If it founds some similar names it
      * creates recommendations.
      */
-    private void findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(IModelState modelState, IRecommendationState recommendationState,
-            ITextState textState) {
-        for (IModelInstance instance : modelState.getInstances()) {
+    private void findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(ModelExtractionState modelState, RecommendationState recommendationState,
+            TextState textState) {
+        for (ModelInstance instance : modelState.getInstances()) {
             var similarToInstanceMappings = getSimilarNounMappings(instance, textState);
 
-            for (INounMapping similarNameMapping : similarToInstanceMappings) {
+            for (NounMapping similarNameMapping : similarToInstanceMappings) {
                 recommendationState.addRecommendedInstance(similarNameMapping.getReference(), this, probability, similarToInstanceMappings);
             }
         }
 
     }
 
-    private ImmutableList<INounMapping> getSimilarNounMappings(IModelInstance instance, ITextState textState) {
+    private ImmutableList<NounMapping> getSimilarNounMappings(ModelInstance instance, TextState textState) {
         return textState.getNounMappingsOfKind(MappingKind.NAME)
                 .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
     }

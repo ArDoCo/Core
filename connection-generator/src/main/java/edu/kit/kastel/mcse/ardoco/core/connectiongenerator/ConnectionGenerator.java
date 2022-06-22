@@ -9,8 +9,8 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
@@ -37,13 +37,13 @@ public class ConnectionGenerator extends AbstractExecutionStage {
         super("ConnectionGenerator", dataRepository);
 
         agents = Lists.mutable.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new InstanceConnectionAgent(dataRepository));
-        enabledAgents = agents.collect(IAgent::getId);
+        enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
     public void run() {
-        var connectionStates = ConnectionStates.build();
-        getDataRepository().addData(ConnectionStates.ID, connectionStates);
+        var connectionStates = ConnectionStatesImpl.build();
+        getDataRepository().addData(ConnectionStatesImpl.ID, connectionStates);
 
         for (ConnectionAgent agent : findByClassName(enabledAgents, agents)) {
             this.addPipelineStep(agent);

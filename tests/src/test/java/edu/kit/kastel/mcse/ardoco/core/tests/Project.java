@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 /**
@@ -55,7 +55,7 @@ public enum Project {
     private final String goldStandard;
     private final EvaluationResults expectedTraceLinkResults;
     private final EvaluationResults expectedInconsistencyResults;
-    private volatile IModelConnector modelConnector = null;
+    private volatile ModelConnector modelConnector = null;
 
     Project(String model, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults, EvaluationResults expectedInconsistencyResults) {
         this.model = model;
@@ -73,7 +73,7 @@ public enum Project {
         return new File(textFile);
     }
 
-    public IModelConnector getModel() {
+    public ModelConnector getModel() {
         if (modelConnector == null) {
             synchronized (this) {
                 if (modelConnector == null) {
@@ -88,13 +88,13 @@ public enum Project {
         return modelConnector;
     }
 
-    public IText getText(DataRepository dataRepository) {
+    public Text getText(DataRepository dataRepository) {
         return getTextViaFile(dataRepository);
     }
 
-    public IText getTextViaFile(DataRepository dataRepository) {
+    public Text getTextViaFile(DataRepository dataRepository) {
         try {
-            ITextConnector textConnector = new CoreNLPProvider(dataRepository, new FileInputStream(getTextFile()));
+            TextProvider textConnector = new CoreNLPProvider(dataRepository, new FileInputStream(getTextFile()));
             return textConnector.getAnnotatedText();
         } catch (FileNotFoundException e) {
             logger.warn(e.getMessage(), e.getCause());
@@ -106,7 +106,7 @@ public enum Project {
         return new File(goldStandard);
     }
 
-    public GoldStandard getGoldStandard(IModelConnector pcmModel) {
+    public GoldStandard getGoldStandard(ModelConnector pcmModel) {
         return new GoldStandard(getGoldStandardFile(), pcmModel);
     }
 

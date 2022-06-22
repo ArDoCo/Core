@@ -8,9 +8,9 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 
-public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements IInconsistency {
+public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements Inconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
     private static final String REASON_FORMAT_STRING = "Text indicates (confidence: %.2f) that \"%s\" (sentence %d) should be contained in the model(s) but could not be found.";
@@ -21,7 +21,7 @@ public record MissingModelInstanceInconsistency(String name, int sentence, doubl
     }
 
     @Override
-    public IInconsistency createCopy() {
+    public Inconsistency createCopy() {
         return new MissingModelInstanceInconsistency(name, sentence, confidence);
     }
 

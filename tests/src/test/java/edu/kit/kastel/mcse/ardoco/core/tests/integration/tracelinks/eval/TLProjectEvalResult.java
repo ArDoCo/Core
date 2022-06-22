@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
@@ -42,13 +42,13 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
 
     private static List<TestLink> getTraceLinks(Project project, DataRepository data) {
         var traceLinks = Lists.mutable.<TestLink> empty();
-        var connectionStates = data.getData(IConnectionStates.ID, IConnectionStates.class).orElseThrow();
+        var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
-        List<IConnectionState> connectionStatesList = modelStates.modelIds()
+        List<ConnectionState> connectionStatesList = modelStates.modelIds()
                 .stream()
                 .map(modelStates::getModelState)
-                .map(IModelState::getMetamodel)
+                .map(ModelExtractionState::getMetamodel)
                 .map(connectionStates::getConnectionState)
                 .toList();
         for (var connectionState : connectionStatesList) {

@@ -6,14 +6,14 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
-public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
+public abstract class AbstractEvalStrategy implements EvaluationStrategy {
 
     protected AbstractEvalStrategy() {
         super();
@@ -29,7 +29,7 @@ public abstract class AbstractEvalStrategy implements IEvaluationStrategy {
         return data;
     }
 
-    protected void runModelExtractor(DataRepository dataRepository, IModelConnector modelConnector, Map<String, String> configs) {
+    protected void runModelExtractor(DataRepository dataRepository, ModelConnector modelConnector, Map<String, String> configs) {
         ModelProvider modelExtractor = new ModelProvider(dataRepository, modelConnector);
         modelExtractor.applyConfiguration(configs);
         modelExtractor.run();

@@ -1,13 +1,15 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
+import java.util.Map;
+
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Map;
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 
 /**
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
@@ -17,8 +19,8 @@ import java.util.Map;
  */
 public final class ModelProvider extends AbstractPipelineStep {
     private static final String MODEL_STATES_DATA = "ModelStatesData";
-    private final IModelConnector modelConnector;
-    private ModelExtractionState modelState = null;
+    private final ModelConnector modelConnector;
+    private ModelExtractionStateImpl modelState = null;
 
     // Needed for Configuration Generation
     @SuppressWarnings("unused")
@@ -32,24 +34,24 @@ public final class ModelProvider extends AbstractPipelineStep {
      *
      * @param modelConnector the model connector
      */
-    public ModelProvider(DataRepository dataRepository, IModelConnector modelConnector) {
+    public ModelProvider(DataRepository dataRepository, ModelConnector modelConnector) {
         super("ModelProvider " + modelConnector.getModelId(), dataRepository);
         this.modelConnector = modelConnector;
     }
 
     /**
-     * Returns the {@link ModelExtractionState}. Returns null if this step did not run previously.
+     * Returns the {@link ModelExtractionStateImpl}. Returns null if this step did not run previously.
      *
-     * @return the {@link ModelExtractionState} if the Provider did run. Else, null
+     * @return the {@link ModelExtractionStateImpl} if the Provider did run. Else, null
      */
-    public ModelExtractionState getModelState() {
+    public ModelExtractionStateImpl getModelState() {
         return modelState;
     }
 
     @Override
     public void run() {
-        ImmutableList<IModelInstance> instances = modelConnector.getInstances();
-        modelState = new ModelExtractionState(modelConnector.getModelId(), modelConnector.getMetamodel(), instances);
+        ImmutableList<ModelInstance> instances = modelConnector.getInstances();
+        modelState = new ModelExtractionStateImpl(modelConnector.getModelId(), modelConnector.getMetamodel(), instances);
 
         addModelStateToDataRepository();
     }

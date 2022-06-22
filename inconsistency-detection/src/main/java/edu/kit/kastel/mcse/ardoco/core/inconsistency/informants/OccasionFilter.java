@@ -8,20 +8,20 @@ import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
- * Filters {@link IRecommendedInstance}s that occur only once in the text, thus are unlikely to be important entities.
+ * Filters {@link RecommendedInstance}s that occur only once in the text, thus are unlikely to be important entities.
  *
  * @author Jan Keim
  *
  */
-public class OccasionFilter extends Informant {
+public class OccasionFilter extends AbstractInformant {
 
     @Configurable
     private int expectedAppearances = 2;
@@ -43,8 +43,8 @@ public class OccasionFilter extends Informant {
         }
     }
 
-    private void filterRecommendedInstances(IInconsistencyState inconsistencyState) {
-        var filteredRecommendedInstances = Lists.mutable.<IRecommendedInstance> empty();
+    private void filterRecommendedInstances(InconsistencyState inconsistencyState) {
+        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
         for (var recommendedInstance : recommendedInstances) {
@@ -55,17 +55,17 @@ public class OccasionFilter extends Informant {
         inconsistencyState.setRecommendedInstances(filteredRecommendedInstances);
     }
 
-    private boolean recommendedInstanceHasMultipleOccasions(IRecommendedInstance recommendedInstance) {
+    private boolean recommendedInstanceHasMultipleOccasions(RecommendedInstance recommendedInstance) {
         var counterDifferentTextPositions = countDifferentTextPositions(recommendedInstance);
 
         return counterDifferentTextPositions >= expectedAppearances;
     }
 
-    private int countDifferentTextPositions(IRecommendedInstance recommendedInstance) {
+    private int countDifferentTextPositions(RecommendedInstance recommendedInstance) {
         // phrases exist of words that are directly following each other. Therefore, we look if words appear not
         // directly after each other to count different text positions
         var counter = 0;
-        var words = recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords).toSortedSet(Comparator.comparingInt(IWord::getPosition));
+        var words = recommendedInstance.getNameMappings().flatCollect(NounMapping::getWords).toSortedSet(Comparator.comparingInt(Word::getPosition));
         var lastPosition = -1337;
         for (var word : words) {
             var position = word.getPosition();
@@ -79,7 +79,7 @@ public class OccasionFilter extends Informant {
 
     // Alternative to counting different text positions
     @SuppressWarnings("unused")
-    private int countSurfaceForms(IRecommendedInstance recommendedInstance) {
+    private int countSurfaceForms(RecommendedInstance recommendedInstance) {
         var counter = 0;
         var nameMappings = recommendedInstance.getNameMappings();
         for (var nameMapping : nameMappings) {

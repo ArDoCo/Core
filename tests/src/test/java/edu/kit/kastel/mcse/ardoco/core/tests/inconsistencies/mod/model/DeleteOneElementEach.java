@@ -8,41 +8,41 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.IModificationStrategy;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModificationStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.Modifications;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.mod.ModifiedElement;
 
-public class DeleteOneElementEach implements IModificationStrategy {
+public class DeleteOneElementEach implements ModificationStrategy {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final IModelConnector model;
-    private final ImmutableList<IModelInstance> originalModelElements;
+    private final ModelConnector model;
+    private final ImmutableList<ModelInstance> originalModelElements;
 
-    public DeleteOneElementEach(IModelConnector model) {
+    public DeleteOneElementEach(ModelConnector model) {
         this.model = model;
         originalModelElements = this.model.getInstances();
     }
 
     @Override
-    public Iterator<ModifiedElement<IModelConnector, IModelInstance>> getModifiedModelInstances() {
+    public Iterator<ModifiedElement<ModelConnector, ModelInstance>> getModifiedModelInstances() {
         return new DeleteOneElementEachIterator();
     }
 
-    private class DeleteOneElementEachIterator implements Iterator<ModifiedElement<IModelConnector, IModelInstance>> {
+    private class DeleteOneElementEachIterator implements Iterator<ModifiedElement<ModelConnector, ModelInstance>> {
 
         private int currentDeletion = 0;
 
         @Override
-        public ModifiedElement<IModelConnector, IModelInstance> next() {
+        public ModifiedElement<ModelConnector, ModelInstance> next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             int deleted = currentDeletion++;
-            IModelInstance deletionModelElement = originalModelElements.get(deleted);
+            ModelInstance deletionModelElement = originalModelElements.get(deleted);
             logger.info("Current deletion model element: {}", deletionModelElement.getFullName());
             return ModifiedElement.of(new ModelWrapper(deleted), deletionModelElement, Modifications.DELETE_ELEMENT);
         }
@@ -53,7 +53,7 @@ public class DeleteOneElementEach implements IModificationStrategy {
         }
     }
 
-    private class ModelWrapper implements IModelConnector {
+    private class ModelWrapper implements ModelConnector {
 
         private final int skip;
 
@@ -62,7 +62,7 @@ public class DeleteOneElementEach implements IModificationStrategy {
         }
 
         @Override
-        public ImmutableList<IModelInstance> getInstances() {
+        public ImmutableList<ModelInstance> getInstances() {
             var instances = originalModelElements.toList();
             instances.remove(skip);
             return instances.toImmutable();
@@ -81,7 +81,7 @@ public class DeleteOneElementEach implements IModificationStrategy {
     }
 
     @Override
-    public Iterator<ModifiedElement<IText, Integer>> getModifiedTexts() {
+    public Iterator<ModifiedElement<Text, Integer>> getModifiedTexts() {
         throw new UnsupportedOperationException();
     }
 

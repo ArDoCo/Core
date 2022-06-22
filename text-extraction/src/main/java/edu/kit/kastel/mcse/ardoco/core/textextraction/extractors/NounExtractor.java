@@ -5,11 +5,11 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * @author Sophie Schulz
  * @author Jan Keim
  */
-public class NounExtractor extends Informant {
+public class NounExtractor extends AbstractInformant {
     @Configurable
     private double nameOrTypeWeight = 0.5;
 
@@ -34,7 +34,7 @@ public class NounExtractor extends Informant {
 
     @Override
     public void run() {
-        for (var n : DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords()) {
+        for (var n : DataRepositoryHelper.getAnnotatedText(getDataRepository()).words()) {
             var nodeValue = n.getText();
             if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
                 return;
@@ -48,7 +48,7 @@ public class NounExtractor extends Informant {
     /**
      * Finds all nouns and adds them as name-or-type mappings (and types) to the text extraction state.
      */
-    private void findSingleNouns(ITextState textState, IWord word) {
+    private void findSingleNouns(TextState textState, Word word) {
         var pos = word.getPosTag();
         if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
             textState.addNounMapping(word, MappingKind.NAME, this, probability * nameOrTypeWeight);
