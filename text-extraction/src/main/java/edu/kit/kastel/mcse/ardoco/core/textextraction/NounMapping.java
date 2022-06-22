@@ -358,7 +358,7 @@ public class NounMapping implements INounMapping {
 
     @Override
     public boolean containsSameWordsAs(INounMapping nounMapping) {
-        return this.words.containsAllIterable(nounMapping.getWords());
+        return words.size() == nounMapping.getWords().size() && this.words.containsAllIterable(nounMapping.getWords());
     }
 
     @Override
