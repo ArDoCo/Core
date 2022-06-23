@@ -1,7 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,16 +28,26 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  */
 public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
 
+    private static final AggregationFunctions GLOBAL_AGGREGATOR = AggregationFunctions.AVERAGE;
+    /**
+     * Meaning (Weights): <br/>
+     * 0,-1,1 => Balanced <br/>
+     * 2 => InternalConfidence: 2 / mappingConfidence: 1<br/>
+     * -2 => InternalConfidence: 1 / mappingConfidence: 2<br/>
+     * ...
+     */
+    private int weightInternalConfidence = 0;
+
     private String type;
     private String name;
-    private Confidence probability;
+    private Confidence internalConfidence;
     private final Set<NounMapping> typeMappings;
     private final Set<NounMapping> nameMappings;
 
     @Override
     public RecommendedInstance createCopy() {
         var copy = new RecommendedInstanceImpl(name, type);
-        copy.probability = probability.createCopy();
+        copy.internalConfidence = internalConfidence.createCopy();
         copy.nameMappings.addAll(nameMappings.stream().map(ICopyable::createCopy).toList());
         copy.typeMappings.addAll(typeMappings.stream().map(ICopyable::createCopy).toList());
         return copy;
@@ -44,7 +56,7 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     private RecommendedInstanceImpl(String name, String type) {
         this.type = type;
         this.name = name;
-        this.probability = new Confidence(AggregationFunctions.AVERAGE);
+        this.internalConfidence = new Confidence(AggregationFunctions.AVERAGE);
         nameMappings = new HashSet<>();
         typeMappings = new HashSet<>();
     }
@@ -61,12 +73,10 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     public RecommendedInstanceImpl(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameNodes,
             ImmutableList<NounMapping> typeNodes) {
         this(name, type);
-        this.probability.addAgentConfidence(claimant, probability);
+        this.internalConfidence.addAgentConfidence(claimant, probability);
 
         nameMappings.addAll(nameNodes.castToCollection());
         typeMappings.addAll(typeNodes.castToCollection());
-
-        this.probability.addAgentConfidence(this, calculateMappingProbability(getNameMappings(), getTypeMappings()));
     }
 
     private static double calculateMappingProbability(ImmutableList<NounMapping> nameMappings, ImmutableList<NounMapping> typeMappings) {
@@ -103,7 +113,20 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
      */
     @Override
     public double getProbability() {
-        return probability.getConfidence();
+        var mappingProbability = calculateMappingProbability(getNameMappings(), getTypeMappings());
+        var ownProbability = internalConfidence.getConfidence();
+        List<Double> probabilities = new ArrayList<>();
+        probabilities.add(mappingProbability);
+        probabilities.add(ownProbability);
+
+        if (Math.abs(weightInternalConfidence) > 1) {
+            var element = weightInternalConfidence > 0 ? ownProbability : mappingProbability;
+            for (int i = 0; i < Math.abs(weightInternalConfidence) - 1; i++) {
+                probabilities.add(element);
+            }
+        }
+
+        return GLOBAL_AGGREGATOR.applyAsDouble(probabilities);
     }
 
     /**
@@ -191,26 +214,23 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     }
 
     @Override
+    public void addProbability(Claimant claimant, double probability) {
+        this.internalConfidence.addAgentConfidence(claimant, probability);
+    }
+
+    @Override
     public String toString() {
         var separator = "\n\t\t\t\t\t";
         MutableList<String> typeNodeVals = Lists.mutable.empty();
-        MutableList<String> typeOccurrences = Lists.mutable.empty();
-        MutableList<Integer> typePositions = Lists.mutable.empty();
         for (NounMapping typeMapping : typeMappings) {
             typeNodeVals.add(typeMapping.toString());
-            typeOccurrences.addAll(typeMapping.getSurfaceForms().castToCollection());
-            typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
 
         MutableList<String> nameNodeVals = Lists.mutable.empty();
-        MutableList<String> nameOccurrences = Lists.mutable.empty();
-        MutableList<Integer> namePositions = Lists.mutable.empty();
         for (NounMapping nameMapping : nameMappings) {
             nameNodeVals.add(nameMapping.toString());
-            nameOccurrences.addAll(nameMapping.getSurfaceForms().castToCollection());
-            namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
-        return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + probability + //
+        return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + getProbability() + //
                 ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";
     }
 
