@@ -35,6 +35,14 @@ public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
     double getProbability();
 
     /**
+     * Adds a probability to the recommended instance
+     *
+     * @param claimant    the claimant of the confidence
+     * @param probability the confidence
+     */
+    void addProbability(IClaimant claimant, double probability);
+
+    /**
      * Adds a name and type mapping to this recommended instance.
      *
      * @param nameMapping the name mapping to add
@@ -91,8 +99,6 @@ public interface IRecommendedInstance extends ICopyable<IRecommendedInstance> {
      * @param name the new name
      */
     void setName(String name);
-
-    void addProbability(IClaimant claimant, double probability);
 
     Confidence getConfidencesForClaimant(IClaimant claimant);
 }

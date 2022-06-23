@@ -223,21 +223,13 @@ public class RecommendedInstance implements IRecommendedInstance, IClaimant {
     public String toString() {
         var separator = "\n\t\t\t\t\t";
         MutableList<String> typeNodeVals = Lists.mutable.empty();
-        MutableList<String> typeOccurrences = Lists.mutable.empty();
-        MutableList<Integer> typePositions = Lists.mutable.empty();
         for (INounMapping typeMapping : typeMappings) {
             typeNodeVals.add(typeMapping.toString());
-            typeOccurrences.addAll(typeMapping.getSurfaceForms().castToCollection());
-            typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
 
         MutableList<String> nameNodeVals = Lists.mutable.empty();
-        MutableList<String> nameOccurrences = Lists.mutable.empty();
-        MutableList<Integer> namePositions = Lists.mutable.empty();
         for (INounMapping nameMapping : nameMappings) {
             nameNodeVals.add(nameMapping.toString());
-            nameOccurrences.addAll(nameMapping.getSurfaceForms().castToCollection());
-            namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
         return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + getProbability() + //
                 ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";

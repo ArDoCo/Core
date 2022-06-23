@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.List;
 
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
-import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionResult;
+import edu.kit.kastel.lissa.swa.api.sketches.SketchRecognitionResult;
 import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionData;
