@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.util.Map;
 
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
@@ -34,14 +36,13 @@ public class NounExtractor extends AbstractInformant {
 
     @Override
     public void run() {
-        for (var n : DataRepositoryHelper.getAnnotatedText(getDataRepository()).words()) {
-            var nodeValue = n.getText();
-            if (nodeValue.length() == 1 && !Character.isLetter(nodeValue.charAt(0))) {
-                return;
+        ImmutableList<Word> words = DataRepositoryHelper.getAnnotatedText(getDataRepository()).words();
+        var textState = DataRepositoryHelper.getTextState(getDataRepository());
+        for (var word : words) {
+            var text = word.getText();
+            if (text.length() > 1 && Character.isLetter(text.charAt(0))) {
+                findSingleNouns(textState, word);
             }
-
-            var textState = DataRepositoryHelper.getTextState(getDataRepository());
-            findSingleNouns(textState, n);
         }
     }
 
