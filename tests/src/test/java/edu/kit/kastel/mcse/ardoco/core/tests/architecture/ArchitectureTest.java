@@ -20,7 +20,7 @@ public class ArchitectureTest {
 
     @ArchTest
     public static final ArchRule modelInstancesOnlyAfterModelExtraction = classes().that()
-            .haveSimpleName("IModelInstance")
+            .haveSimpleName("ModelInstance")
             .should()
             .onlyHaveDependentClassesThat()
             .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..tests..");
@@ -43,7 +43,7 @@ public class ArchitectureTest {
             .haveSimpleNameContaining("Inconsistency")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..api..", "..tests..");
+            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..api..", "..common..", "..tests..");
 
     @ArchTest
     public static final ArchRule layerRule = layeredArchitecture()
