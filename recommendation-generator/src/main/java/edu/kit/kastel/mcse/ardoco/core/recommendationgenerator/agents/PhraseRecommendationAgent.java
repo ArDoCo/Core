@@ -123,7 +123,7 @@ public final class PhraseRecommendationAgent extends RecommendationAgent {
         // find TypeMappings that come from the Phrase Words within the Compound Word
         var phrase = getPhraseWordsFromNounMapping(nounMapping);
         for (var word : phrase) {
-            typeMappings.addAll(textState.getNounMappingsByWordAndKind(word, MappingKind.TYPE).toList());
+            typeMappings.addAll(textState.getNounMappingsByWordTextAndKind(word, MappingKind.TYPE).toList());
         }
         return typeMappings.toImmutable();
     }

@@ -6,16 +6,13 @@ import java.util.Map;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.informalin.framework.common.ICopyable;
-import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 
 public interface IPhraseMapping extends ICopyable<IPhraseMapping> {
 
-    void addNounMapping(INounMapping nounMapping, IPhrase phrase);
-
-    ImmutableList<INounMapping> getNounMappings();
+    ImmutableList<INounMapping> getNounMappings(ITextState textState);
 
     ImmutableList<IPhrase> getPhrases();
 
@@ -23,23 +20,13 @@ public interface IPhraseMapping extends ICopyable<IPhraseMapping> {
 
     void addPhrases(ImmutableList<IPhrase> phrases);
 
-    double getProbability();
-
     PhraseType getPhraseType();
 
     Map<IWord, Integer> getPhraseVector();
 
-    IPhraseMapping merge(IPhraseMapping phraseMapping, Map<INounMapping, INounMapping> replacementTable);
+    IPhraseMapping merge(IPhraseMapping phraseMapping);
 
-    Confidence getConfidence();
+    void removePhrase(IPhrase phrase);
 
-    void removeNounMapping(INounMapping nounMapping);
-
-    IPhraseMapping removePhrase(IPhrase phrase);
-
-    IPhraseMapping splitByPhrase(IPhrase phrase);
-
-    IPhraseMapping mergeAndAddNounMappings(IPhraseMapping phraseMapping, ImmutableList<INounMapping> nounMappings);
-
-    boolean containsExactNounMapping(INounMapping nm);
+    boolean containsExactNounMapping(ITextState textState, INounMapping nm);
 }

@@ -239,9 +239,10 @@ public class AddNounMappingsToTextStateTest {
                 () -> Assertions.assertTrue(extendedNounMapping.getPhrases().containsAll(List.of(dog1.getPhrase(), dog3.getPhrase()))),
                 () -> Assertions.assertTrue(extendedPhraseMapping.getPhrases().containsAll(List.of(dog1.getPhrase(), dog3.getPhrase()))),
 
-                () -> Assertions.assertIterableEquals(previousPhraseMapping.getNounMappings(), extendedPhraseMapping.getNounMappings()),
-                () -> Assertions.assertEquals(1, extendedPhraseMapping.getNounMappings().size()),
-                () -> Assertions.assertTrue(extendedPhraseMapping.getNounMappings().get(0).getPhrases().containsAll(List.of(dogPhrase0, dogPhrase1))));
+                () -> Assertions.assertIterableEquals(preTextState.getNounMappingsByPhraseMapping(previousPhraseMapping),
+                        textState.getNounMappingsByPhraseMapping(extendedPhraseMapping)),
+                () -> Assertions.assertEquals(1, textState.getNounMappingsByPhraseMapping(extendedPhraseMapping).size()), () -> Assertions.assertTrue(
+                        textState.getNounMappingsByPhraseMapping(extendedPhraseMapping).get(0).getPhrases().containsAll(List.of(dogPhrase0, dogPhrase1))));
     }
 
     @Test
@@ -325,7 +326,7 @@ public class AddNounMappingsToTextStateTest {
 
                 () -> Assertions.assertEquals(doggyPhraseMappings, textState.getPhraseMappingsByNounMapping(dogNounMapping)),
                 () -> Assertions.assertTrue(doggyPhraseMappings.size() == 1),
-                () -> Assertions.assertTrue(doggyPhraseMappings.get(0).getNounMappings().contains(doggyNounMapping)),
+                () -> Assertions.assertTrue(textState.getNounMappingsByPhraseMapping(doggyPhraseMappings.get(0)).contains(doggyNounMapping)),
                 () -> Assertions.assertTrue(doggyPhraseMappings.get(0).getPhrases().contains(dogPhrase3)),
                 () -> Assertions.assertTrue(doggyPhraseMappings.get(0).getPhrases().contains(dogPhrase1)));
 
@@ -394,11 +395,14 @@ public class AddNounMappingsToTextStateTest {
 
                 () -> Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()),
                 () -> Assertions.assertTrue(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).size() == 1),
-                () -> Assertions
-                        .assertFalse(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase0)).get(0).getNounMappings().contains(dog3)),
+                () -> Assertions.assertFalse(
+                        !textState.getNounMappingsByPhraseMapping(textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase0)).get(0))
+                                .select(nm -> nm.getWords().contains(dog3))
+                                .isEmpty()),
 
-                () -> Assertions.assertTrue(dog1PhraseMapping.getNounMappings().select(nm -> nm.getWords().contains(dog3)).size() == 1),
-                () -> Assertions.assertTrue(dog1PhraseMapping.getNounMappings().select(nm -> nm.getWords().contains(hut3)).size() == 1));
+                () -> Assertions.assertTrue(textState.getNounMappingsByPhraseMapping(dog1PhraseMapping).select(nm -> nm.getWords().contains(dog3)).size() == 1),
+                () -> Assertions
+                        .assertTrue(textState.getNounMappingsByPhraseMapping(dog1PhraseMapping).select(nm -> nm.getWords().contains(hut3)).size() == 1));
     }
 
     @Test

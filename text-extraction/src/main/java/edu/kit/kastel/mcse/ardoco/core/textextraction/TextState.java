@@ -8,8 +8,9 @@ import java.util.Set;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
@@ -30,9 +31,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  */
 public class TextState extends AbstractState implements ITextState {
 
-    private MutableList<INounMapping> nounMappings;
-
-    private MutableList<IPhraseMapping> phraseMappings;
+    private MutableSet<INounMapping> nounMappings;
+    private MutableSet<IPhraseMapping> phraseMappings;
 
     private static final double MIN_COSINE_SIMILARITY = 0.4;
 
@@ -43,8 +43,8 @@ public class TextState extends AbstractState implements ITextState {
      */
     public TextState(Map<String, String> configs) {
         super(configs);
-        nounMappings = Lists.mutable.empty();
-        phraseMappings = Lists.mutable.empty();
+        nounMappings = Sets.mutable.empty();
+        phraseMappings = Sets.mutable.empty();
     }
 
     /***
@@ -58,7 +58,7 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public final void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences) {
         var words = Lists.immutable.with(word);
-        addNounMappingOrAppendToSimilarNounMapping(words, kind, claimant, probability, occurrences);
+        addNounMappingOrExtendExistingNounMapping(words, kind, claimant, probability, occurrences);
 
     }
 
@@ -75,18 +75,37 @@ public class TextState extends AbstractState implements ITextState {
         addNounMapping(word, kind, claimant, probability, Lists.immutable.with(word.getText()));
     }
 
-    private void addPhraseMapping(IPhraseMapping phraseMapping) {
-        this.phraseMappings.add(phraseMapping);
-    }
-
     @Override
     public final ImmutableList<INounMapping> getNounMappings() {
-        return nounMappings.toImmutable();
+        return nounMappings.toImmutableList();
     }
 
     @Override
     public ImmutableList<IPhraseMapping> getPhraseMappings() {
-        return phraseMappings.toImmutable();
+
+        return Lists.immutable.withAll(nounMappings.flatCollect(this::getPhraseMappingsByNounMapping));
+    }
+
+    public ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nm) {
+
+        var result = phraseMappings.select(pm -> pm.getPhrases().containsAllIterable(nm.getPhrases())).toImmutableList();
+
+        if (result.size() != 1) {
+            int i = 0;
+        }
+        return result;
+    }
+
+    public IPhraseMapping getPhraseMappingByNounMapping(INounMapping nounMapping) {
+        ImmutableList<IPhraseMapping> phraseMappingsByNounMapping = getPhraseMappingsByNounMapping(nounMapping);
+
+        assert (phraseMappingsByNounMapping.size() >= 1) : "We currently support only noun mappings with just one phrase mapping";
+        return phraseMappingsByNounMapping.get(0);
+
+    }
+
+    public ImmutableList<INounMapping> getNounMappingsByPhraseMapping(IPhraseMapping phraseMapping) {
+        return this.nounMappings.select(nm -> phraseMapping.getPhrases().equals(nm.getPhrases())).toImmutableList();
     }
 
     /**
@@ -97,7 +116,7 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNounMappingsOfKind(MappingKind kind) {
-        return nounMappings.select(nounMappingIsOfKind(kind)).toImmutable();
+        return getNounMappings().select(nounMappingIsOfKind(kind)).toImmutable();
     }
 
     /**
@@ -110,23 +129,12 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNounMappingsByWord(IWord word) {
-        return nounMappings.select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
-    }
-
-    @Override
-    public ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nounMapping) {
-
-        // with exactly the same noun mapping
-        var phraseMappingsWithEqualNounMapping = this.phraseMappings.select(p -> p.getNounMappings().anySatisfy(nm -> nm.containsSameWordsAs(nounMapping)));
-
-        return phraseMappingsWithEqualNounMapping
-                .select(pm -> !pm.getNounMappings().select(nm -> nm.containsSameWordsAs(nounMapping) && nounMapping.containsSameWordsAs(nm)).isEmpty())
-                .toImmutable();
+        return getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
     }
 
     @Override
     public ImmutableList<IPhraseMapping> getPhraseMappingsByPhrase(IPhrase phrase) {
-        return phraseMappings.select(p -> p.equals(phrase)).toImmutable();
+        return getPhraseMappings().select(pm -> pm.getPhrases().contains(phrase));
     }
 
     /**
@@ -137,7 +145,8 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref) {
-        return nounMappings.select(nm -> SimilarityUtils.areWordsSimilar(ref, nm.getReference())).toImmutable();
+
+        return getNounMappings().select(nm -> SimilarityUtils.areWordsSimilar(ref, nm.getReference())).toImmutable();
     }
 
     /**
@@ -162,13 +171,13 @@ public class TextState extends AbstractState implements ITextState {
      * @return a list of alltype mappings containing the given node
      */
     @Override
-    public final ImmutableList<INounMapping> getNounMappingsByWordAndKind(IWord word, MappingKind kind) {
-        return nounMappings.select(n -> n.getWords().contains(word)).select(nounMappingIsOfKind(kind)).toImmutable();
+    public final ImmutableList<INounMapping> getNounMappingsByWordTextAndKind(IWord word, MappingKind kind) {
+        return getNounMappings().select(n -> n.getWords().anySatisfy(w -> w.getText().equals(word.getText()))).select(nounMappingIsOfKind(kind)).toImmutable();
     }
 
     @Override
     public ImmutableList<IPhraseMapping> getPhraseMappingsByPhraseType(PhraseType phraseType) {
-        return this.phraseMappings.select(p -> p.getPhraseType().equals(phraseType)).toImmutable();
+        return getPhraseMappings().select(p -> p.getPhraseType().equals(phraseType)).toImmutable();
     }
 
     /**
@@ -179,7 +188,7 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByNounMappings(IWord word) {
-        return nounMappings.anySatisfy(n -> n.getWords().contains(word));
+        return getNounMappings().anySatisfy(n -> n.getWords().contains(word));
     }
 
     /**
@@ -191,7 +200,7 @@ public class TextState extends AbstractState implements ITextState {
      */
     @Override
     public final boolean isWordContainedByMappingKind(IWord word, MappingKind mappingKind) {
-        return nounMappings.select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsOfKind(mappingKind));
+        return getNounMappings().select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsOfKind(mappingKind));
     }
 
     private Predicate<? super INounMapping> nounMappingIsOfKind(MappingKind mappingKind) {
@@ -201,452 +210,315 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public ITextState createCopy() {
         var textExtractionState = new TextState(this.configs);
-        textExtractionState.nounMappings = nounMappings.collect(INounMapping::createCopy);
-        textExtractionState.phraseMappings = phraseMappings.collect(IPhraseMapping::createCopy);
+        textExtractionState.nounMappings = Sets.mutable.withAll(nounMappings);
+        textExtractionState.phraseMappings = Sets.mutable.withAll(phraseMappings);
         return textExtractionState;
     }
 
     @Override
     public void addNounMapping(INounMapping nounMapping, IClaimant claimant) {
-        addNounMappingOrAppendToSimilarNounMapping(nounMapping.getWords(), nounMapping.getKind(), claimant, nounMapping.getProbability(),
+        addNounMappingOrExtendExistingNounMapping(nounMapping.getWords(), nounMapping.getKind(), claimant, nounMapping.getProbability(),
                 nounMapping.getSurfaceForms());
     }
 
     private IPhraseMapping getPhraseMappingByPhrase(IPhrase phrase) {
-        MutableList<IPhraseMapping> phraseMappingsWithPhrase = this.phraseMappings.select(pm -> pm.getPhrases().contains(phrase));
+        ImmutableList<IPhraseMapping> phraseMappingsWithPhrase = getPhraseMappings().select(pm -> pm.getPhrases().contains(phrase));
         assert (phraseMappingsWithPhrase.size() == 1) : "There is an overlap of phraseMappings!";
         return phraseMappingsWithPhrase.get(0);
     }
 
-    private INounMapping addNounMappingOrAppendToSimilarNounMapping(ImmutableList<IWord> words, MappingKind kind, IClaimant claimant, double probability,
-            ImmutableList<String> occurrences) {
-
-        // TODO Remove
-
-        if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-        }
-
-        INounMapping nounMapping = new NounMapping(words, kind, claimant, probability, Lists.immutable.withAll(words), occurrences);
-        IPhraseMapping phraseMapping = new PhraseMapping(nounMapping.getPhrases(), Lists.immutable.with(nounMapping), claimant, 1.0);
-
-        ImmutableList<INounMapping> equalNounMappings = this.getNounMappings()
-                .select(nm -> nm.getWords()
-                        .anySatisfy(w -> w.getPosition() == nounMapping.getWords().get(0).getPosition()
-                                && w.getSentenceNo() == nounMapping.getWords().get(0).getSentenceNo()));
-
-        // TODO: REmove!
-        if (nounMapping.getWords().get(0).getPosition() == 245) {
-            int i = 0;
-        }
-
-        if (equalNounMappings.size() > 0) {
-            assert (words.size() == 1) : "We currently only support the input of one word per new noun mapping!";
-
-            return addEqualNounMapping(equalNounMappings, nounMapping, words.get(0).getPhrase(), claimant);
-        }
-
-        ImmutableList<INounMapping> similarNounMappings = this.getNounMappings().select(nm -> SimilarityUtils.areNounMappingsSimilar(nm, nounMapping));
-
-        ImmutableList<IPhraseMapping> similarPhraseMappings = this.getPhraseMappings()
-                .select(pm -> SimilarityUtils.getPhraseMappingSimilarity(pm, phraseMapping,
-                        SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
-
+    /**
+     * Extracts a phrase mapping that has the same phrase as the given phrase mapping. Currently, we only allow one
+     * phrase per phrase mapping to search for the same phrase.
+     * 
+     * @param phraseMapping that holds the phrase that is searched for.
+     * @return phraseMapping that has the same phrases as the given phrase mapping
+     */
+    private IPhraseMapping getPhraseMappingContainingTheSamePhrase(IPhraseMapping phraseMapping) {
         Map<IPhrase, IPhraseMapping> exactPhrases = new HashMap<>();
 
-        for (IPhraseMapping existingPhraseMapping : phraseMappings) {
+        for (IPhraseMapping existingPhraseMapping : getPhraseMappings()) {
             for (IPhrase existingPhrase : existingPhraseMapping.getPhrases()) {
                 if (phraseMapping.getPhrases().anySatisfy(phrase -> phrase.equals(existingPhrase))) {
                     exactPhrases.put(existingPhrase, existingPhraseMapping);
                 }
             }
         }
-        if (!exactPhrases.isEmpty()) {
-            assert (exactPhrases.keySet().size() == 1) : "There should be only one phrase in the initial phrase mapping";
-        }
+
+        assert exactPhrases.isEmpty() || (exactPhrases.keySet().size() == 1) : "There should be only one phrase in the initial phrase mapping";
+
         ImmutableList<IPhraseMapping> phraseMappingsWithEqualPhrases = Lists.immutable.withAll(exactPhrases.values());
 
-        // TODO: To remove
-        if (!phraseMappingsWithEqualPhrases.isEmpty()) {
-            int i = 0;
-        }
+        if (phraseMappingsWithEqualPhrases.isEmpty())
+            return null;
 
-        Map<INounMapping, IPhraseMapping> similarMappings = new HashMap<>();
-        for (INounMapping similarMapping : similarNounMappings) {
-            var similarPhraseMappingOfSimilarNounMappings = similarPhraseMappings.select(pm -> pm.getNounMappings().contains(similarMapping));
-            if (similarPhraseMappingOfSimilarNounMappings.isEmpty())
-                continue;
-            // TODO: This is not true!!!!!!
-            // each nounMapping has only one similar phrase mapping
-            if (similarPhraseMappingOfSimilarNounMappings.size() > 1) {
-                int i = 0;
-            }
-            similarMappings.put(similarMapping, similarPhraseMappingOfSimilarNounMappings.get(0));
-        }
+        assert (phraseMappingsWithEqualPhrases.size() == 1) : "There should be only one equal phrase mapping";
+        return phraseMappingsWithEqualPhrases.get(0);
+    }
 
-        if (!similarNounMappings.isEmpty()) {
+    private INounMapping addNounMappingOrExtendExistingNounMapping(ImmutableList<IWord> words, MappingKind kind, IClaimant claimant, double probability,
+            ImmutableList<String> occurrences) {
 
-            return addSimilarNounMapping(phraseMappingsWithEqualPhrases, similarMappings, nounMapping, phraseMapping, claimant);
+        ImmutableList<INounMapping> currentNounMappings = getNounMappings();
+        ImmutableList<IPhraseMapping> currentPhraseMappings = getPhraseMappings();
+
+        INounMapping nounMapping = new NounMapping(words, kind, claimant, probability, Lists.immutable.withAll(words), occurrences);
+        IPhraseMapping phraseMapping = new PhraseMapping(words.collect(IWord::getPhrase));
+
+        ImmutableList<INounMapping> equalNounMappings = currentNounMappings.select(nm -> nm.containsSameWordsAs(nounMapping));
+        ImmutableList<INounMapping> textualEqualNounMappings = currentNounMappings.select(nm -> nm.sharesTextualWordRepresentation(nounMapping));
+        ImmutableList<INounMapping> similarNounMappings = this.getNounMappings().select(nm -> SimilarityUtils.areNounMappingsSimilar(nm, nounMapping));
+
+        IPhraseMapping phraseMappingWithEqualPhrase = getPhraseMappingContainingTheSamePhrase(phraseMapping);
+        ImmutableList<IPhraseMapping> similarPhraseMappings = currentPhraseMappings.select(pm -> SimilarityUtils.getPhraseMappingSimilarity(this, pm,
+                phraseMapping, SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
+
+        if (!equalNounMappings.isEmpty()) {
+            // all words are equal -> equal phrases -> do nothing
+            return null;
+
+        } else if (!textualEqualNounMappings.isEmpty()) {
+            // all new words have the same text as one noun mapping
+            // however - semantically they can differ -> dependent on phrases!
+
+            assert (words.size() == 1) : "We currently only support the input of one word per new noun mapping!";
+            return addTextualEqualNounMapping(textualEqualNounMappings, phraseMappingWithEqualPhrase, nounMapping);
+
+        } else if (!similarNounMappings.isEmpty()) {
+
+            return addSimilarNounMapping(phraseMappingWithEqualPhrase, similarNounMappings, nounMapping);
 
         } else {
 
-            return addDifferentNounMapping(phraseMappingsWithEqualPhrases, similarMappings, similarPhraseMappings, nounMapping, phraseMapping);
+            return addDifferentNounMapping(phraseMappingWithEqualPhrase, similarPhraseMappings, nounMapping);
         }
     }
 
-    private INounMapping appendNounMappingToExistingNounMapping(INounMapping existingNounMapping, IPhraseMapping existingPhraseMapping,
-            INounMapping nounMapping, IPhraseMapping phraseMapping, IClaimant claimant) {
+    private INounMapping addNounMappingAddPhraseMapping(INounMapping nounMapping) {
 
-        existingNounMapping.addKindWithProbability(nounMapping.getKind(), claimant, nounMapping.getProbability());
-        existingNounMapping.addOccurrence(nounMapping.getSurfaceForms());
-        existingNounMapping.addWord(nounMapping.getReferenceWords().get(0));
-
-        assert (existingPhraseMapping.getPhraseType().equals(phraseMapping.getPhraseType())) : "Both phrase mappings should have the same type";
-
-        Map<INounMapping, INounMapping> replacementTable = new HashMap<>();
-        replacementTable.put(existingNounMapping, existingNounMapping);
-
-        existingPhraseMapping.merge(phraseMapping, replacementTable);
+        nounMappings.add(nounMapping);
+        phraseMappings.add(new PhraseMapping(nounMapping.getPhrases()));
 
         if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
+            int i = 0;
         }
-
-        return existingNounMapping;
-    }
-
-    private INounMapping addNounMappingAddPhraseMapping(INounMapping nounMapping, IPhraseMapping phraseMapping) {
-        this.nounMappings.add(nounMapping);
-        assert (!phraseMapping.getNounMappings()
-                .select(nm -> nm.containsSameWordsAs(nounMapping) && nounMapping.containsSameWordsAs(nm))
-                .isEmpty()) : "When adding a noun mapping and a phrase mapping, both should be connected";
-
-        this.phraseMappings.add(phraseMapping);
-
         return nounMapping;
     }
 
-    private INounMapping addEqualNounMapping(ImmutableList<INounMapping> equalNounMappings, INounMapping nounMapping, IPhrase phrase, IClaimant claimant) {
-        ImmutableList<IPhraseMapping> equalPhraseMappings = this.getPhraseMappings().select(pm -> pm.getPhrases().contains(phrase));
-        if (!equalPhraseMappings.isEmpty()) {
+    private void mergeAllNounMappings(INounMapping nounMappingToMergeInto, ImmutableList<INounMapping> nounMappingsToMerge) {
 
-            // TODO remove
-            if (equalPhraseMappings.size() != 1) {
-                int i = 0;
-            }
-            assert (equalPhraseMappings.size() == 1) : "There should be only one equal phrase mapping";
-            IPhraseMapping equalPhraseMapping = equalPhraseMappings.get(0);
+        for (int i = 0; i < nounMappingsToMerge.size(); i++) {
+            nounMappingToMergeInto.merge(nounMappingsToMerge.get(i));
+            nounMappings.remove(nounMappingsToMerge.get(i));
+        }
+
+        ImmutableList<IPhraseMapping> phraseMappingsOfMergedNounMapping = getPhraseMappingsByNounMapping(nounMappingToMergeInto);
+        if (phraseMappingsOfMergedNounMapping.isEmpty()) {
+            IPhraseMapping newPhraseMapping = new PhraseMapping(nounMappingToMergeInto.getPhrases());
+            phraseMappings.add(newPhraseMapping);
+            phraseMappingsOfMergedNounMapping = Lists.immutable.with(newPhraseMapping);
+        }
+
+        IPhraseMapping equalPhraseMapping = phraseMappingsOfMergedNounMapping.get(0);
+        for (int i = 1; i < phraseMappingsOfMergedNounMapping.size(); i++) {
+            assert (phraseMappingsOfMergedNounMapping.get(i)
+                    .getPhraseType()
+                    .equals(equalPhraseMapping.getPhraseType())) : "Both phrase mappings should have the same type";
+            equalPhraseMapping.merge(phraseMappingsOfMergedNounMapping.get(i));
+            phraseMappings.remove(phraseMappingsOfMergedNounMapping.get(i));
+        }
+
+        if (invalidState()) {
+            int i = 0;
+        }
+
+    }
+
+    private INounMapping addTextualEqualNounMapping(ImmutableList<INounMapping> textualEqualNounMappings, IPhraseMapping phraseMappingWithEqualPhrase,
+            INounMapping nounMapping) {
+
+        if (phraseMappingWithEqualPhrase != null) {
 
             // contains does not work here
-            var equalNounMappingsWithEqualPhrase = equalNounMappings.select(nm -> equalPhraseMapping.containsExactNounMapping(nm));
+            var equalNounMappingsWithEqualPhrase = textualEqualNounMappings
+                    .select(nm -> getNounMappingsByPhraseMapping(phraseMappingWithEqualPhrase).contains(nm));
 
             if (equalNounMappingsWithEqualPhrase.isEmpty()) {
                 throw new IllegalStateException("It should not be possible that a noun and phrase mappings are equal but not connected!");
 
-            } else if (equalNounMappingsWithEqualPhrase.size() > 1) {
-                // TODO: ???
-                int i = 0;
-                return null;
-
             } else {
-                var equalNounMapping = equalNounMappingsWithEqualPhrase.get(0);
+                return addTextualEqualNounMappingWithEqualPhrase(nounMapping, equalNounMappingsWithEqualPhrase);
 
-                assert (equalPhraseMapping.getNounMappings()
-                        .contains(equalNounMapping)) : "An identical phrase mapping should contain the identical noun mapping";
-
-                return addEqualNounMappingWithEqualPhrase(equalNounMapping, equalPhraseMapping, nounMapping, phrase, claimant);
             }
 
         } else {
 
-            for (INounMapping equalNounMapping : equalNounMappings) {
-                ImmutableList<IPhraseMapping> similarPhraseMappingsOfEqualNounMapping = this.getPhraseMappingsByNounMapping(equalNounMapping)
-                        .select(pm -> SimilarityUtils.getPhraseMappingSimilarity(pm,
-                                new PhraseMapping(nounMapping.getPhrases(), Lists.immutable.with(nounMapping), claimant, 1.0),
-                                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
+            ImmutableList<INounMapping> nounMappingsWithSimilarPhrases = textualEqualNounMappings.select(
+                    nm -> SimilarityUtils.getPhraseMappingSimilarity(this, getPhraseMappingByNounMapping(nm), new PhraseMapping(nounMapping.getPhrases()),
+                            SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
 
-                if (!similarPhraseMappingsOfEqualNounMapping.isEmpty()) {
+            if (!nounMappingsWithSimilarPhrases.isEmpty()) {
+                return addTextualEqualNounMappingWithSimilarPhrase(nounMapping, nounMappingsWithSimilarPhrases);
 
-                    return this.addEqualNounMappingWithSimilarPhrase(equalNounMapping, similarPhraseMappingsOfEqualNounMapping, nounMapping, phrase, claimant);
-
-                } else {
-                    return addEqualNounMappingWithDifferentPhrase(equalNounMappings, nounMapping, phrase, claimant);
-                }
-
+            } else {
+                return addTextualEqualNounMappingWithDifferentPhrase(nounMapping);
             }
-            throw new IllegalStateException("One case must apply and this state should not be reached");
+
         }
     }
 
-    private INounMapping addSimilarNounMapping(ImmutableList<IPhraseMapping> equalPhraseMappings, Map<INounMapping, IPhraseMapping> similarMappings,
-            INounMapping nounMapping, IPhraseMapping phraseMapping, IClaimant claimant) {
+    private INounMapping addSimilarNounMapping(IPhraseMapping phraseMappingWithEqualPhrase, ImmutableList<INounMapping> similarMappings,
+            INounMapping nounMapping) {
 
-        if (!equalPhraseMappings.isEmpty()) {
+        if (phraseMappingWithEqualPhrase != null) {
 
-            return addSimilarNounMappingWithEqualPhrase();
+            ImmutableList<INounMapping> similarNounMappingsWithEqualPhrase = similarMappings
+                    .select(nm -> getPhraseMappingByNounMapping(nm).equals(phraseMappingWithEqualPhrase));
+
+            return addSimilarNounMappingWithEqualPhrase(nounMapping, similarNounMappingsWithEqualPhrase);
 
         } else {
 
-            if (!similarMappings.keySet().isEmpty()) {
-                return addSimilarNounMappingWithSimilarPhrase(similarMappings, nounMapping, phraseMapping, claimant);
+            if (!similarMappings.isEmpty()) {
+                return addSimilarNounMappingWithSimilarPhrase(similarMappings, nounMapping);
 
             } else {
-                return addSimilarNounMappingWithDifferentPhrase(nounMapping, phraseMapping);
+                return addSimilarNounMappingWithDifferentPhrase(nounMapping);
             }
         }
     }
 
-    private INounMapping addDifferentNounMapping(ImmutableList<IPhraseMapping> phraseMappingsWithEqualPhrases,
-            Map<INounMapping, IPhraseMapping> similarMappings, ImmutableList<IPhraseMapping> similarPhraseMappings, INounMapping nounMapping,
-            IPhraseMapping phraseMapping) {
+    private INounMapping addDifferentNounMapping(IPhraseMapping phraseMappingWithEqualPhrase, ImmutableList<IPhraseMapping> similarPhraseMappings,
+            INounMapping nounMapping) {
 
-        if (!phraseMappingsWithEqualPhrases.isEmpty()) {
-            return addDifferentNounMappingWithEqualPhrases(nounMapping, phraseMapping, phraseMappingsWithEqualPhrases);
+        if (phraseMappingWithEqualPhrase != null) {
+            return addDifferentNounMappingWithEqualPhrases(nounMapping, phraseMappingWithEqualPhrase);
         } else if (!similarPhraseMappings.isEmpty()) {
-            return addDifferentNounMappingWithSimilarPhrase(nounMapping, phraseMapping, similarPhraseMappings);
+            return addDifferentNounMappingWithSimilarPhrase(nounMapping);
 
         } else {
-            return addDifferentNounMappingWithDifferentPhrase(nounMapping, phraseMapping);
+            return addDifferentNounMappingWithDifferentPhrase(nounMapping);
         }
 
     }
 
-    private INounMapping addEqualNounMappingWithEqualPhrase(INounMapping existingNounMapping, IPhraseMapping existingPhraseMapping, INounMapping nounMapping,
-            IPhrase phrase, IClaimant claimant) {
-        // DO: Extend existing noun mapping and phrase mapping with occurrences
-        appendNounMappingToExistingNounMapping(existingNounMapping, existingPhraseMapping, nounMapping,
-                new PhraseMapping(nounMapping.getPhrases(), Lists.immutable.with(nounMapping), claimant, 1.0), claimant);
+    private INounMapping addTextualEqualNounMappingWithEqualPhrase(INounMapping nounMapping,
+            ImmutableList<INounMapping> textualEqualNounMappingsWithEqualPhrase) {
 
-        // TODO Remove
-
-        if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-        }
-
-        return existingNounMapping;
-    }
-
-    private INounMapping addEqualNounMappingWithSimilarPhrase(INounMapping existingNounMapping, ImmutableList<IPhraseMapping> similarPhraseMappings,
-            INounMapping nounMapping, IPhrase phrase, IClaimant claimant) {
-
-        // It is irrelevant - no other analyses needed - both noun mappings are equal = the same = at the same position
-        // in the text -> both phrases have to be the same! -> update/ increase the claim for the combination, but do
-        // not add/ extend the mappings!
-
-        throw new IllegalStateException("This state should not be reached - if it's exactly the same noun mapping, than it's exactly the same phrase!");
-
-    }
-
-    private INounMapping addEqualNounMappingWithDifferentPhrase(ImmutableList<INounMapping> existingNounMappings, INounMapping nounMapping, IPhrase phrase,
-            IClaimant claimant) {
-        // DO: Do not merge. Create a new noun mapping with new phrase mapping
-        addNounMappingAddPhraseMapping(nounMapping, new PhraseMapping(nounMapping.getPhrases(), Lists.immutable.with(nounMapping), claimant, 1.0));
-
-        // TODO Remove
-
-        if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-        }
-
+        mergeAllNounMappings(nounMapping, textualEqualNounMappingsWithEqualPhrase);
         return nounMapping;
     }
 
-    private INounMapping addSimilarNounMappingWithEqualPhrase() {
-        // DO: This state should not be possible and should throw an
-        // IllegalStateException.
-        // TODO: TEAMMATES : check checks -> what to do?
-        // throw new IllegalStateException("If the phrases are the same the containing
-        // noun mappings can not be just similar - but must be equal!");
-        return null;
+    private INounMapping addTextualEqualNounMappingWithSimilarPhrase(INounMapping nounMapping,
+            ImmutableList<INounMapping> textualEqualNounMappingsWithSimilarPhrase) {
+
+        mergeAllNounMappings(nounMapping, textualEqualNounMappingsWithSimilarPhrase);
+        return nounMapping;
     }
 
-    private INounMapping addSimilarNounMappingWithSimilarPhrase(Map<INounMapping, IPhraseMapping> similarMappings, INounMapping nounMapping,
-            IPhraseMapping phraseMapping, IClaimant claimant) {
+    private INounMapping addTextualEqualNounMappingWithDifferentPhrase(INounMapping nounMapping) {
+        // DO: Do not merge. Create a new noun mapping with new phrase mapping
+        addNounMappingAddPhraseMapping(nounMapping);
+        return nounMapping;
+    }
+
+    private INounMapping addSimilarNounMappingWithEqualPhrase(INounMapping nounMapping, ImmutableList<INounMapping> similarNounMappingsWithEqualPhrase) {
+        // TODO: Think about this scenario: Occurs in TEAMMATES - check & checks in same phrase (one is wrongly
+        // recognized - but what is a useful handling?)
+        // For sentence-based TLR this won't make a big difference.
+        // (However, it could decrease the similarity between noun mappings)
+        mergeAllNounMappings(nounMapping, similarNounMappingsWithEqualPhrase);
+        return nounMapping;
+    }
+
+    private INounMapping addSimilarNounMappingWithSimilarPhrase(ImmutableList<INounMapping> similarMappings, INounMapping nounMapping) {
         // DO: Merge all to one noun mapping and one phrase mapping
 
-        var similarMappingsCopy = Lists.mutable.withAll(similarMappings.keySet());
-
-        if (similarMappings.keySet().size() > 1) {
-
-            for (int i = 0; i < similarMappings.keySet().size(); i++) {
-
-                nounMapping.merge(similarMappingsCopy.get(i));
-            }
-
-            for (INounMapping similarMapping : similarMappingsCopy) {
-                this.removeNounMapping(similarMapping);
-            }
-
-            this.addNounMappingAddPhraseMapping(nounMapping, phraseMapping);
-
-            // TODO Remove
-            if (invalidState()) {
-                throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-            }
-
-            return nounMapping;
-
-        } else {
-
-            INounMapping similarNounMapping = similarMappingsCopy.get(0);
-
-            INounMapping extendedNounMapping = appendNounMappingToExistingNounMapping(similarNounMapping, similarMappings.get(similarNounMapping), nounMapping,
-                    phraseMapping, claimant);
-
-            // TODO Remove
-            if (invalidState()) {
-                throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-            }
-            return extendedNounMapping;
-        }
-
+        mergeAllNounMappings(nounMapping, similarMappings);
+        return nounMapping;
     }
 
-    private INounMapping addSimilarNounMappingWithDifferentPhrase(INounMapping nounMapping, IPhraseMapping phraseMapping) {
+    private INounMapping addSimilarNounMappingWithDifferentPhrase(INounMapping nounMapping) {
         // DO: add a new noun mapping and a new phrase mapping.
-        var extendedNounMapping = addNounMappingAddPhraseMapping(nounMapping, phraseMapping);
-
-        // TODO Remove
-        if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-        }
-
-        return extendedNounMapping;
+        return addNounMappingAddPhraseMapping(nounMapping);
     }
 
-    private INounMapping addDifferentNounMappingWithEqualPhrases(INounMapping nounMapping, IPhraseMapping phraseMapping,
-            ImmutableList<IPhraseMapping> phraseMappingsWithExactPhrase) {
+    private INounMapping addDifferentNounMappingWithEqualPhrases(INounMapping nounMapping, IPhraseMapping phraseMappingWithEqualPhrase) {
 
-        var phraseMappingsToRemove = Lists.mutable.empty();
-        MutableList<IPhraseMapping> phraseMappingsToMerge = Lists.mutable.empty();
-
-        assert (phraseMappingsWithExactPhrase.size() == 1) : "There should be only one phrase mapping per phrase";
-        IPhraseMapping phraseMappingWithExactPhrase = phraseMappingsWithExactPhrase.get(0);
-
-        assert (phraseMapping.getPhrases().size() == 1) : "The new phrase mapping should contain only one phrase";
-        phraseMappingWithExactPhrase.addNounMapping(nounMapping, phraseMapping.getPhrases().get(0));
-
+        phraseMappingWithEqualPhrase.merge(new PhraseMapping(nounMapping.getPhrases()));
         nounMappings.add(nounMapping);
-        /*
-         * for (IPhraseMapping phraseMappingWithExactPhrase : phraseMappingsWithExactPhrase) {
-         * 
-         * assert (phraseMapping.getPhrases().size() == 1) :
-         * "The new phrase mapping should have exactly one phrase in it!"; IPhraseMapping phraseMappingWithRemovedPhrase
-         * = phraseMappingWithExactPhrase.splitByPhrase(phraseMapping.getPhrases().get(0)) ;
-         * phraseMappingsToMerge.add(phraseMappingWithRemovedPhrase);
-         * this.nounMappings.addAllIterable(phraseMappingWithRemovedPhrase. getNounMappings());
-         * 
-         * if (phraseMappingWithExactPhrase.getPhrases().size() == 1) {
-         * phraseMappingsToRemove.add(phraseMappingWithExactPhrase); }
-         * 
-         * 
-         * }
-         * 
-         * 
-         * // merge all together phraseMappingsToMerge.forEach(pm -> phraseMapping.mergeAndAddNounMappings(pm,
-         * pm.getNounMappings()));
-         * 
-         * this.phraseMappings.removeAll(phraseMappingsToRemove);
-         * 
-         * var extendedNounMapping = addNounMappingAddPhraseMapping(nounMapping, phraseMapping);
-         */
-        // TODO Remove
+
         if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
+            int i = 0;
         }
 
         return nounMapping;
 
     }
 
-    private INounMapping addDifferentNounMappingWithSimilarPhrase(INounMapping nounMapping, IPhraseMapping phraseMapping,
-            ImmutableList<IPhraseMapping> similarMappings) {
+    /**
+     * Adds a new noun mapping that has a similar phrase mapping as an already existing noun mapping. However, both
+     * phrase mappings do not share same phrases. Therefore, both can be added freshly to the state.
+     * 
+     * @param nounMapping to be added
+     * @return the added noun mapping
+     */
+    private INounMapping addDifferentNounMappingWithSimilarPhrase(INounMapping nounMapping) {
 
-        var newNounMapping = addNounMappingAddPhraseMapping(nounMapping, phraseMapping);
-
-        // TODO Remove
-        if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-        }
-
-        return newNounMapping;
+        return addNounMappingAddPhraseMapping(nounMapping);
     }
 
-    private INounMapping addDifferentNounMappingWithDifferentPhrase(INounMapping nounMapping, IPhraseMapping phraseMapping) {
+    /**
+     * Adds the given noun mapping and the phrase mapping to the state.
+     * 
+     * @param nounMapping to be added
+     * @return the added noun mapping
+     */
+    private INounMapping addDifferentNounMappingWithDifferentPhrase(INounMapping nounMapping) {
         // DO: add noun mapping and phrase mapping
-        var newNounMapping = addNounMappingAddPhraseMapping(nounMapping, phraseMapping);
-
-        // TODO Remove
-        if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-        }
-
-        return newNounMapping;
+        return addNounMappingAddPhraseMapping(nounMapping);
     }
 
-    @Override
     public void removeNounMapping(INounMapping nounMapping) {
-
-        MutableList<INounMapping> nounMappingsToRemove = nounMappings.select(
-                nm -> nm.getWords().anySatisfy(w -> nounMapping.getWords().contains(w)) || nounMapping.getWords().anySatisfy(w -> nm.getWords().contains(w)));
-
-        for (INounMapping nounMappingToRemove : nounMappingsToRemove) {
-            nounMappings.remove(nounMappingToRemove);
-            MutableList<IPhraseMapping> phraseMappings = this.phraseMappings.select(
-                    pm -> pm.getNounMappings().anySatisfy(nm -> nm.equals(nounMappingToRemove) && nm.getWords().equals(nounMappingToRemove.getWords())));
-            for (IPhraseMapping phraseMapping : phraseMappings) {
-                if (phraseMapping.getNounMappings().size() == 1) {
-                    this.phraseMappings.remove(phraseMapping);
-                } else if (phraseMapping.getNounMappings().size() > 1) {
-                    phraseMapping.removeNounMapping(nounMapping);
-                } else {
-                    throw new IllegalStateException("There should be no phrase mapping without any noun mappings");
-                }
-            }
-        }
-        // TODO: To remove
-        if (invalidState()) {
-            throw new IllegalStateException("The noun mappings of phrase mappings and this state differ");
-        }
-
+        ImmutableList<IPhraseMapping> phraseMappingsOfNounMapping = getPhraseMappingsByNounMapping(nounMapping);
+        phraseMappingsOfNounMapping.select(pm -> getNounMappingsByPhraseMapping(pm).size() == 1);
     }
 
-    private void removePhraseMapping(IPhraseMapping phraseMapping) {
-        this.phraseMappings.remove(phraseMapping);
+    private boolean invalidState() {
+
+        // the size of phraseMappings and nounMappings is equal
+        if (nounMappings.flatCollect(nm -> getPhraseMappingsByNounMapping(nm)).size() > getNounMappings().size()) {
+            return true;
+        }
+
+        if (nounMappings.size() != getNounMappings().size()) {
+            return true;
+        }
+        if (phraseMappings.size() != getPhraseMappings().size()) {
+            return true;
+        }
+
+        // every noun mapping should have exactly one phrase mapping
+        ImmutableList<INounMapping> currentNounMappings = getNounMappings();
+
+        for (int i = 0; i < currentNounMappings.size(); i++) {
+            if (getPhraseMappingsByNounMapping(currentNounMappings.get(i)).size() != 1) {
+                return true;
+            }
+
+        }
+
+        return false;
+
     }
 
     @Override
     public String toString() {
-        return "TextExtractionState [nounMappings=" + String.join("\n", nounMappings.toString()) + ", relationNodes=" + "]";
+        return "TextExtractionState [nounMappings=" + String.join("\n", nounMappings.toString(), "phraseMappings =", phraseMappings.toString()) + "]";
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         // handle additional configuration
-    }
-
-    private boolean invalidState() {
-        MutableList<INounMapping> nounMappingsOfPMs = this.phraseMappings.flatCollect(pm -> pm.getNounMappings());
-        if (!(nounMappingsOfPMs.size() == nounMappings.size() && nounMappingsOfPMs.containsAll(nounMappings))) {
-            return true;
-            // throw new IllegalStateException("The noun mappings of phrase mappings and
-            // this state differ");
-        }
-        for (IWord word : nounMappings.flatCollect(INounMapping::getWords)) {
-            if (this.getNounMappingsByWord(word).size() != 1) {
-                return true;
-            } else if (this.getPhraseMappingsByNounMapping(this.getNounMappingsByWord(word).get(0)).size() != 1) {
-                var res = this.getPhraseMappingsByNounMapping(this.getNounMappingsByWord(word).get(0));
-                return true;
-            }
-        }
-        for (IPhrase phrase : phraseMappings.flatCollect(IPhraseMapping::getPhrases)) {
-            if (this.getPhraseMappings().select(pm -> pm.getPhrases().contains(phrase)).size() != 1) {
-                return true;
-            }
-        }
-
-        return false;
-
     }
 }

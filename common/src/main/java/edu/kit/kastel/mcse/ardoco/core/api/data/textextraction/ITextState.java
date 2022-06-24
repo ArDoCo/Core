@@ -61,7 +61,11 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     ImmutableList<INounMapping> getNounMappingsByWord(IWord word);
 
-    ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nounMapping);
+    IPhraseMapping getPhraseMappingByNounMapping(INounMapping nounMapping);
+
+    ImmutableList<INounMapping> getNounMappingsByPhraseMapping(IPhraseMapping phraseMapping);
+
+    ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nm);
 
     ImmutableList<IPhraseMapping> getPhraseMappingsByPhrase(IPhrase phrase);
 
@@ -79,7 +83,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @param word word to filter for
      * @return a list of all type mappings containing the given word
      */
-    ImmutableList<INounMapping> getNounMappingsByWordAndKind(IWord word, MappingKind kind);
+    ImmutableList<INounMapping> getNounMappingsByWordTextAndKind(IWord word, MappingKind kind);
 
     ImmutableList<IPhraseMapping> getPhraseMappingsByPhraseType(PhraseType phraseType);
 
