@@ -10,8 +10,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.JavaUtils;
@@ -171,11 +173,11 @@ public class NounMapping implements INounMapping {
     @Override
     public ImmutableList<IPhrase> getPhrases() {
 
-        MutableList<IPhrase> phrases = Lists.mutable.empty();
+        MutableSet<IPhrase> phrases = Sets.mutable.empty();
         for (IWord word : this.words) {
             phrases.add(word.getPhrase());
         }
-        return phrases.toImmutable();
+        return phrases.toList().toImmutable();
     }
 
     @Override
@@ -324,7 +326,7 @@ public class NounMapping implements INounMapping {
         }
 
         this.addOccurrence(other.getSurfaceForms());
-        other.getWords().forEach(w -> this.addWord(w));
+        other.getWords().forEach(this::addWord);
 
         return this;
     }
@@ -358,7 +360,16 @@ public class NounMapping implements INounMapping {
 
     @Override
     public boolean containsSameWordsAs(INounMapping nounMapping) {
+        // getWords().anySatisfy(w -> w.getPosition() == nounMapping.getWords().get(0).getPosition()
+        // && w.getSentenceNo() == nounMapping.getWords().get(0).getSentenceNo())
         return words.size() == nounMapping.getWords().size() && this.words.containsAllIterable(nounMapping.getWords());
+    }
+
+    @Override
+    public boolean sharesTextualWordRepresentation(INounMapping nounMapping) {
+
+        boolean result = nounMapping.getWords().allSatisfy(w -> this.getWords().anySatisfy(thisW -> thisW.getText().equals(w.getText())));
+        return result;
     }
 
     @Override

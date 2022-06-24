@@ -142,5 +142,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
 
     boolean containsSameWordsAs(INounMapping nounMapping);
 
+    boolean sharesTextualWordRepresentation(INounMapping nounMapping);
+
     INounMapping merge(INounMapping other);
 }
