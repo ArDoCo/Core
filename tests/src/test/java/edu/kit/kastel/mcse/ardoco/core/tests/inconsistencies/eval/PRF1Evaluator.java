@@ -28,7 +28,7 @@ public class PRF1Evaluator {
 
     /**
      * Returns the weighted average EvaluationResults (Precision, Recall, F1 as {@link PRF1}. Weighted with number of
-     * occurences.
+     * occurrences.
      *
      * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link PRF1}
      */
@@ -41,7 +41,7 @@ public class PRF1Evaluator {
      *
      * @return the average EvaluationResults (Precision, Recall, F1 as {@link PRF1}
      */
-    public PRF1 getAveragePRF1() {
+    public PRF1 getMacroAveragePRF1() {
         var avgPrecision = 0.0;
         var avgRecall = 0.0;
         var avgF1 = 0.0;

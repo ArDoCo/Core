@@ -31,7 +31,7 @@ public class RecommendedInstanceProbabilityFilter extends AbstractFilter<Inconsi
     private double thresholdNameOrTypeProbability = 0.8;
 
     @Configurable
-    private double threshold = 0.6d;
+    private double threshold = 0.5d;
 
     @Configurable
     private boolean dynamicThreshold = true;

@@ -3,7 +3,12 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -96,9 +101,10 @@ public class ComputerScienceWordsAgent extends TextAgent {
                 logger.trace("Found {} for {}", occurrence, word);
             }
 
-            switch (mode) {
-            case ADD_PROBABILITY -> addProbability(nounMapping);
-            case DELETE_OCCURRENCE -> deleteOccurrence(textState, nounMapping);
+            if (mode == CSWAgentMode.ADD_PROBABILITY) {
+                addProbability(nounMapping);
+            } else if (mode == CSWAgentMode.DELETE_OCCURRENCE) {
+                deleteOccurrence(textState, nounMapping);
             }
 
         }

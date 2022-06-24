@@ -1,7 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
@@ -16,140 +18,88 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
      * 
-     * @see #getMappingsThatCouldBeNameOrType(IWord)
-     * @see #isWordContainedByNameOrTypeMapping(IWord)
+     * @see #getMappingsThatCouldBeOfKind(IWord, MappingKind)
+     * @see #isWordContainedByMappingKind(IWord, MappingKind)
      */
-    double NAME_OR_TYPE_MAX_DIFF = 0.1;
-
-    /**
-     * * Adds a name mapping to the state.
-     *
-     * @param n           node of the mapping
-     * @param probability probability to be a name mapping
-     * @param occurrences list of the appearances of the mapping
-     */
-    void addName(IWord n, IClaimant claimant, double probability, ImmutableList<String> occurrences);
+    double MAPPINGKIND_MAX_DIFF = 0.1;
 
     /**
      * * Adds a name mapping to the state.
      *
      * @param word        word of the mapping
+     * @param kind        the kind of the mapping
      * @param probability probability to be a name mapping
      */
-    void addName(IWord word, IClaimant claimant, double probability);
+    void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability);
 
     /**
-     * * Adds a type mapping to the state.
+     * * Adds a name mapping to the state.
      *
-     * @param word        node of the mapping
-     * @param probability probability to be a type mapping
+     * @param word        word of the mapping
+     * @param kind        the kind of the mapping
+     * @param probability probability to be a name mapping
+     * @param occurrences list of the appearances of the mapping
      */
-    void addType(IWord word, IClaimant claimant, double probability);
+    void addNounMapping(IWord word, MappingKind kind, IClaimant claimant, double probability, ImmutableList<String> occurrences);
 
     /**
      * * Adds a type mapping to the state.
      *
-     * @param word        node of the mapping
+     * @param word        word of the mapping
      * @param probability probability to be a type mapping
      * @param occurrences list of the appearances of the mapping
      */
-    void addType(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences);
-
-    /**
-     * Creates a new relation mapping and adds it to the state. More end points, as well as a preposition can be added
-     * afterwards.
-     *
-     * @param node1       first relation end point
-     * @param node2       second relation end point
-     * @param probability probability of being a relation
-     * @return the added relation mapping
-     */
-    IRelationMapping addRelation(INounMapping node1, INounMapping node2, IClaimant claimant, double probability);
+    void addNounMapping(IWord word, IClaimant claimant, double probability, ImmutableList<String> occurrences);
 
     // --- remove section --->
 
     /**
      * Removes a noun mapping from the state.
      *
-     * @param n noun mapping to remove
+     * @param word noun mapping to remove
      */
-    void removeNounMapping(INounMapping n);
+    void removeNounMapping(INounMapping word);
 
     /**
-     * Returns all type mappings.
+     * Returns all mappings containing the given word.
      *
-     * @return all type mappings as list
+     * @param word the given word
+     * @return all mappings containing the given word as list
      */
-    ImmutableList<INounMapping> getTypes();
+    ImmutableList<INounMapping> getNounMappingsByWord(IWord word);
 
     /**
-     * Returns all mappings containing the given node.
+     * Returns a list of all references of noun mappings.
+     * 
+     * @param kind of references that shall be collected
+     * @return all references of noun mappings with the specified kind as list.
+     */
+    ImmutableList<String> getListOfReferences(MappingKind kind);
+
+    /**
+     * Returns all type mappings containing the given word.
      *
-     * @param n the given node
-     * @return all mappings containing the given node as list
+     * @param word word to filter for
+     * @return a list of all type mappings containing the given word
      */
-    ImmutableList<INounMapping> getNounMappingsByWord(IWord n);
+    ImmutableList<INounMapping> getNounMappingsByWordAndKind(IWord word, MappingKind kind);
 
     /**
-     * Returns a list of all references of name mappings.
+     * Returns if a word is contained by the name mappings.
      *
-     * @return all references of name mappings as list.
+     * @param word        word to check
+     * @param mappingKind mappingKind to check
+     * @return true if the word is contained by name mappings.
      */
-    ImmutableList<String> getNameList();
+    boolean isWordContainedByMappingKind(IWord word, MappingKind mappingKind);
 
     /**
-     * Returns a list of all references of type mappings.
-     *
-     * @return all references of type mappings as list.
-     */
-    ImmutableList<String> getTypeList();
-
-    /**
-     * Returns all name mappings.
-     *
-     * @return a list of all name mappings
-     */
-    ImmutableList<INounMapping> getNames();
-
-    /**
-     * Returns all type mappings containing the given node.
-     *
-     * @param word node to filter for
-     * @return a list of alltype mappings containing the given node
-     */
-    ImmutableList<INounMapping> getTypeMappingsByWord(IWord word);
-
-    /**
-     * Returns if a node is contained by the name mappings.
-     *
-     * @param node node to check
-     * @return true if the node is contained by name mappings.
-     */
-    boolean isWordContainedByNameMapping(IWord node);
-
-    /**
-     * Returns if a node is contained by the mappings.
-     *
-     * @param node node to check
-     * @return true if the node is contained by mappings.
-     */
-    boolean isWordContainedByNounMappings(IWord node);
-
-    /**
-     * Returns if a node is contained by the type mappings.
-     *
-     * @param node node to check
-     * @return true if the node is contained by type mappings.
-     */
-    boolean isWordContainedByTypeMapping(IWord node);
-
-    /**
-     * Returns if a node is contained by a mapping that can be both, a name or a type mapping.
+     * Returns if a word is contained by the mappings.
      *
      * @param word word to check
-     * @return true if the node is contained by name or type mappings.
+     * @return true if the word is contained by mappings.
      */
-    boolean isWordContainedByNameOrTypeMapping(IWord word);
+    boolean isWordContainedByNounMappings(IWord word);
 
     /**
      * Gets the all noun mappings.
@@ -166,23 +116,14 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     void addNounMapping(INounMapping nounMapping, IClaimant claimant);
 
     /**
-     * Gets the mappings that could be A type.
+     * Gets the mappings that could be a type.
      *
-     * @param word the word
-     * @return the mappings that could be A type
+     * @param word        the word
+     * @param mappingKind the mapping kind that
+     * @return the mappings that could be a type
      */
-    default ImmutableList<INounMapping> getMappingsThatCouldBeAType(IWord word) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForType() > 0);
-    }
-
-    /**
-     * Gets the mappings that could be A name.
-     *
-     * @param word the word
-     * @return the mappings that could be A name
-     */
-    default ImmutableList<INounMapping> getMappingsThatCouldBeAName(IWord word) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForName() > 0);
+    default ImmutableList<INounMapping> getMappingsThatCouldBeOfKind(IWord word, MappingKind mappingKind) {
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(mappingKind) > 0);
     }
 
     /**
@@ -196,15 +137,38 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     /**
      * Gets the mappings that could be a Name or Type.
      *
-     * @param word the word
+     * @param word  the word
+     * @param kinds the required mappingKindso
      * @return the mappings that could be a Name or Type
      */
-    default ImmutableList<INounMapping> getMappingsThatCouldBeNameOrType(IWord word) {
-        return getNounMappingsByWord(word).select(n -> {
-            var nameProb = n.getProbabilityForName();
-            var typeProb = n.getProbabilityForType();
-            return nameProb > 0 && typeProb > 0 && Math.abs(nameProb - typeProb) < NAME_OR_TYPE_MAX_DIFF;
-        });
+    default ImmutableList<INounMapping> getMappingsThatCouldBeMultipleKinds(IWord word, MappingKind... kinds) {
+        if (kinds.length == 0) {
+            throw new IllegalArgumentException("You need to provide some mapping kinds!");
+        }
+
+        if (kinds.length < 2) {
+            return getNounMappingsOfKind(kinds[0]);
+        }
+
+        MutableList<INounMapping> result = Lists.mutable.empty();
+        ImmutableList<INounMapping> mappings = getNounMappingsByWord(word);
+
+        for (INounMapping mapping : mappings) {
+            final ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(mapping::getProbabilityForKind);
+            if (probabilities.anySatisfy(p -> p <= 0)) {
+                continue;
+            }
+
+            boolean similar = probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
+            if (similar) {
+                result.add(mapping);
+            }
+
+        }
+
+        return result.toImmutable();
     }
+
+    ImmutableList<INounMapping> getNounMappingsOfKind(MappingKind mappingKind);
 
 }

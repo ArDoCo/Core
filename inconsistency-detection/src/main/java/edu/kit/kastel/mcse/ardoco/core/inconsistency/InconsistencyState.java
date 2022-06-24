@@ -41,6 +41,11 @@ public class InconsistencyState extends AbstractState implements IInconsistencyS
         return false;
     }
 
+    @Override
+    public boolean removeInconsistency(IInconsistency inconsistency) {
+        return inconsistencies.remove(inconsistency);
+    }
+
     /**
      * Returns a list of inconsistencies held by this state
      *

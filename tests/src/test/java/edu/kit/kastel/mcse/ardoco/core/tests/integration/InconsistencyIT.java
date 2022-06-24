@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
@@ -15,7 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.model.IModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.baseline.DeleteOneModelElementBaselineEval;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.AbstractEvalStrategy;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval.GoldStandard;
@@ -31,9 +34,28 @@ class InconsistencyIT {
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(Project.class)
     void inconsistencyIT(Project project) {
-        var results = evalInconsistency(project);
+        AbstractEvalStrategy evalStrategy = new DeleteOneModelElementEval();
+        var results = evalInconsistency(project, evalStrategy);
         var expectedResults = project.getExpectedInconsistencyResults();
 
+        logResults(project, results, expectedResults);
+        checkResults(results, expectedResults);
+    }
+
+    @EnabledIfEnvironmentVariable(named = "testBaseline", matches = "true")
+    @DisplayName("Evaluate Inconsistency Analyses Baseline")
+    @ParameterizedTest(name = "Evaluating Baseline For {0}")
+    @EnumSource(Project.class)
+    void inconsistencyBaselineIT(Project project) {
+        AbstractEvalStrategy evalStrategy = new DeleteOneModelElementBaselineEval();
+        var results = evalInconsistency(project, evalStrategy);
+        var expectedResults = project.getExpectedInconsistencyResults();
+
+        logResults(project, results, expectedResults);
+        Assertions.assertTrue(results.getF1() > 0.0);
+    }
+
+    private void logResults(Project project, EvaluationResult results, EvaluationResults expectedResults) {
         if (logger.isInfoEnabled()) {
             String infoString = String.format(Locale.ENGLISH,
                     "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)",
@@ -41,7 +63,9 @@ class InconsistencyIT {
                     expectedResults.getF1());
             logger.info(infoString);
         }
+    }
 
+    private void checkResults(EvaluationResult results, EvaluationResults expectedResults) {
         Assertions.assertAll(//
                 () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(),
                         "Precision " + results.getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
@@ -51,15 +75,14 @@ class InconsistencyIT {
                         "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
     }
 
-    private static EvaluationResult evalInconsistency(Project project) {
+    private static EvaluationResult evalInconsistency(Project project, AbstractEvalStrategy evalStrategy) {
         var name = project.name();
         logger.info("Starting Inconsistency Analyses for {}", name);
-        AbstractEvalStrategy eval1 = new DeleteOneModelElementEval();
 
         var outFile = String.format("%s%sinconsistency-eval-%s.txt", OUTPUT, File.separator, name.toLowerCase());
 
         try (PrintStream os = new PrintStream(outFile)) {
-            return run(project, eval1, os);
+            return run(project, evalStrategy, os);
         } catch (FileNotFoundException e) {
             Assertions.fail("Could not find file.");
         }
