@@ -20,8 +20,6 @@ class JavaJsonModelConnectorTest {
         JavaJsonModelConnector jjmc = new JavaJsonModelConnector(is);
         Assertions.assertEquals(192, jjmc.getInstances().size());
         Assertions.assertEquals("3368242f-d572-3d92-9031-dc20a86dcff1", jjmc.getModelId());
-        // NIY
-        Assertions.assertEquals(0, jjmc.getRelations().size());
         Assertions.assertEquals(Metamodel.CODE, jjmc.getMetamodel());
     }
 }

@@ -3,7 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -22,6 +26,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
  * The Class NounMapping is a basic realization of {@link INounMapping}.
+ *
+ * @author Sophie Schulz
+ * @author Jan Keim
  */
 public class NounMapping implements INounMapping {
 
@@ -82,8 +89,8 @@ public class NounMapping implements INounMapping {
     }
 
     public static INounMapping createPhraseNounMapping(ImmutableList<IWord> phrase, IClaimant claimant, double probability) {
-        var occurences = phrase.collect(IWord::getText);
-        var nm = new NounMapping(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurences);
+        var occurrences = phrase.collect(IWord::getText);
+        var nm = new NounMapping(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurrences);
         nm.hasPhrase = true;
         return nm;
     }
@@ -302,7 +309,7 @@ public class NounMapping implements INounMapping {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof NounMapping)) {
             return false;
         }
         var other = (INounMapping) obj;
@@ -323,13 +330,8 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
-    public double getProbabilityForName() {
-        return distribution.get(MappingKind.NAME).getConfidence();
-    }
-
-    @Override
-    public double getProbabilityForType() {
-        return distribution.get(MappingKind.TYPE).getConfidence();
+    public double getProbabilityForKind(MappingKind mappingKind) {
+        return distribution.get(mappingKind).getConfidence();
     }
 
     @Override

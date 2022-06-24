@@ -15,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InitialRecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InstanceRelationAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseRecommendationAgent;
 
 /**
@@ -23,8 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseReco
  */
 public class RecommendationGenerator extends AbstractExecutionStage {
 
-    private final MutableList<RecommendationAgent> agents = Lists.mutable.of(new InitialRecommendationAgent(), new PhraseRecommendationAgent(),
-            new InstanceRelationAgent());
+    private final MutableList<RecommendationAgent> agents = Lists.mutable.of(new InitialRecommendationAgent(), new PhraseRecommendationAgent());
 
     @Configurable
     private List<String> enabledAgents = agents.collect(IAgent::getId);
@@ -33,6 +31,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
      * Creates a new model connection agent with the given extraction state and ntr state.
      */
     public RecommendationGenerator() {
+        // empty
     }
 
     @Override

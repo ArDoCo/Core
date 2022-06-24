@@ -9,11 +9,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 
 /**
  * The analyzer classifies nouns.
  *
- * @author Sophie
+ * @author Sophie Schulz
+ * @author Jan Keim
  */
 public class NounExtractor extends AbstractExtractor<TextAgentData> {
     @Configurable
@@ -26,6 +28,7 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
      * Prototype constructor.
      */
     public NounExtractor() {
+        // empty
     }
 
     /**
@@ -51,16 +54,17 @@ public class NounExtractor extends AbstractExtractor<TextAgentData> {
     private void findSingleNouns(ITextState textState, IWord word) {
         var pos = word.getPosTag();
         if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
-            textState.addName(word, this, probability * nameOrTypeWeight);
-            textState.addType(word, this, probability * nameOrTypeWeight);
+            textState.addNounMapping(word, MappingKind.NAME, this, probability * nameOrTypeWeight);
+            textState.addNounMapping(word, MappingKind.TYPE, this, probability * nameOrTypeWeight);
         }
         if (POSTag.NOUN_PLURAL == pos) {
-            textState.addType(word, this, probability);
+            textState.addNounMapping(word, MappingKind.TYPE, this, probability);
         }
 
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        // handle additional config
     }
 }

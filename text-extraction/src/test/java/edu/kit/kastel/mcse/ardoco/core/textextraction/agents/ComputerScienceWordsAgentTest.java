@@ -16,7 +16,11 @@ import org.junit.jupiter.api.Test;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.IData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
@@ -44,7 +48,7 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         TextState ts = new TextState(Map.of());
 
         ts.addNounMapping(nounMapping, this);
-        ts.addName(invalidWord, this, 1.0);
+        ts.addNounMapping(invalidWord, MappingKind.NAME, this, 1.0);
 
         TextAgentData tad = new TextAgentData() {
             @Override
@@ -115,11 +119,6 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         @Override
         public ImmutableList<IWord> getWords() {
             return words;
-        }
-
-        @Override
-        public ImmutableList<ICorefCluster> getCorefClusters() {
-            throw new UnsupportedOperationException();
         }
 
         @Override

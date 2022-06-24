@@ -23,7 +23,7 @@ copyright = '2022, Sophie Corallo, Jan Keim, Dominik Fuchß'
 author = 'Sophie Corallo, Jan Keim, Dominik Fuchß'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3'
+release = '0.4'
 
 # -- General configuration ---------------------------------------------------
 

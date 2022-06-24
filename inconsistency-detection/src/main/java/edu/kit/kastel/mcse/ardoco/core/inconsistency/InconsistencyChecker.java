@@ -25,6 +25,7 @@ public class InconsistencyChecker extends AbstractExecutionStage {
     private List<String> enabledAgents = agents.collect(IAgent::getId);
 
     public InconsistencyChecker() {
+        // empty
     }
 
     @Override

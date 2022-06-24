@@ -1,19 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
 
 /**
+ * This class tests the record MissingModelInconsistency.
+ * 
  * @author Jan Keim
  */
 public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements IClaimant {
@@ -22,11 +17,7 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @BeforeEach
     void beforeEach() {
-        ImmutableList<IWord> words = Lists.immutable.of(new DummyWord());
-        ImmutableList<String> occurences = Lists.immutable.of("occurence");
-        var nounMapping = new NounMapping(words, MappingKind.NAME, this, 1.0, words.toList(), occurences);
-        var recommendedInstance = new RecommendedInstance("name", "type", this, 1.0, Lists.immutable.of(nounMapping), Lists.immutable.empty());
-        missingModelInstanceInconsistency = new MissingModelInstanceInconsistency(recommendedInstance);
+        missingModelInstanceInconsistency = new MissingModelInstanceInconsistency("inconsistency", 1, 1.0);
     }
 
     @Override
@@ -41,24 +32,23 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @Override
     protected String getReasonString() {
-        return "Text indicates (confidence: 0.00) that \"name\" should be contained in the model(s) but could not be found. Sentences: 1";
+        return "Text indicates (confidence: 1.0) that \"inconsistency\" (sentence 1) should be contained in the model(s) but could not be found.";
+
     }
 
     @Override
     protected IInconsistency getUnequalInconsistency() {
-        var recommendedInstance = new RecommendedInstance("otherName", "otherType", null, 1.0, Lists.immutable.empty(), Lists.immutable.<INounMapping> empty());
-        return new MissingModelInstanceInconsistency(recommendedInstance);
+        return new MissingModelInstanceInconsistency("otherInconsistency", 1, 1.0);
     }
 
     @Override
     protected IInconsistency getEqualInconsistency() {
-        var recommendedInstance = new RecommendedInstance("name", "type", null, 1.0, Lists.immutable.empty(), Lists.immutable.empty());
-        return new MissingModelInstanceInconsistency(recommendedInstance);
+        return new MissingModelInstanceInconsistency("inconsistency", 1, 1.0);
     }
 
     @Override
     protected String[] getFileOutputEntry() {
-        return new String[] { getTypeString(), "1", "name", "text", Double.toString(0.0) };
+        return new String[] { getTypeString(), "1", "name", Integer.toString(1), Double.toString(0.0) };
     }
 
 }

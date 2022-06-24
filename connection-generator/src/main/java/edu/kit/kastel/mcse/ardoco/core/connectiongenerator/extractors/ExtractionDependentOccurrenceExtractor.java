@@ -9,13 +9,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
  * This analyzer searches for the occurrence of instance names and types of the extraction state and adds them as names
  * and types to the text extraction state.
  *
- * @author Sophie
+ * @author Sophie schulz
+ * @author Jan Keim
  */
 public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<ConnectionAgentData> {
 
@@ -45,7 +47,7 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
         }
         var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
-            textState.addName(word, this, probability);
+            textState.addNounMapping(word, MappingKind.NAME, this, probability);
         }
     }
 
@@ -65,7 +67,7 @@ public class ExtractionDependentOccurrenceExtractor extends AbstractExtractor<Co
     private void searchForType(IModelState modelState, ITextState textState, IWord word) {
         var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
-            textState.addType(word, this, probability);
+            textState.addNounMapping(word, MappingKind.TYPE, this, probability);
         }
     }
 
