@@ -5,16 +5,13 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyStatesImpl;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
@@ -30,9 +27,9 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
         DataRepository dataRepository = getDataRepository();
         dataRepository.addData(InconsistencyStates.ID, inconsistencyStates);
 
-        var text = getText(dataRepository);
-        var modelStates = getModelStatesData(dataRepository);
-        var connectionStates = getConnectionStates(dataRepository);
+        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
+        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
 
         var sentences = Sets.mutable.fromStream(text.getSentences().stream().map(Sentence::getSentenceNumber));
         for (var model : modelStates.modelIds()) {
@@ -48,18 +45,4 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
             }
         }
     }
-
-    public static Text getText(DataRepository dataRepository) {
-        var preprocessingData = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow();
-        return preprocessingData.getText();
-    }
-
-    public static ModelStates getModelStatesData(DataRepository dataRepository) {
-        return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
-    }
-
-    public static ConnectionStates getConnectionStates(DataRepository dataRepository) {
-        return dataRepository.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
-    }
-
 }
