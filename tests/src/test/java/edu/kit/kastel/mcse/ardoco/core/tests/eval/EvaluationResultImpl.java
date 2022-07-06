@@ -1,14 +1,14 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.util.Locale;
 
-public class PRF1 implements EvaluationResult {
+public class EvaluationResultImpl implements EvaluationResult {
     private final double precision;
     private final double recall;
     private final double f1;
 
-    PRF1(int tp, int fp, int fn) {
+    EvaluationResultImpl(int tp, int fp, int fn) {
         var calculatedPrecision = 1.0 * tp / (tp + fp);
         if (Double.isNaN(calculatedPrecision)) {
             this.precision = 0.0;
@@ -31,10 +31,16 @@ public class PRF1 implements EvaluationResult {
         }
     }
 
-    PRF1(double precision, double recall, double f1) {
+    EvaluationResultImpl(double precision, double recall, double f1) {
         this.precision = precision;
         this.recall = recall;
         this.f1 = f1;
+    }
+
+    EvaluationResultImpl() {
+        this.precision = 0;
+        this.recall = 0;
+        this.f1 = 0;
     }
 
     @Override

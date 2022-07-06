@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +65,6 @@ public class EvaluationResults {
     @Override
     public String toString() {
         return String.format(Locale.US, "Precision: %.3f\tRecall: %.3f\tF1: %.3f", precision, recall, f1);
-    }
-
-    public String toPrettyString() {
-        return String.format(Locale.US, "\tPrecision:\t%.3f%n\tRecall:\t\t%.3f%n\tF1:\t\t%.3f", precision, recall, f1);
     }
 
     @Override

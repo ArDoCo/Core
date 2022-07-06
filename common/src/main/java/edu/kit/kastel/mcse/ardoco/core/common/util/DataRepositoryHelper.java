@@ -16,24 +16,48 @@ public final class DataRepositoryHelper {
         super();
     }
 
+    public static boolean hasAnnotatedText(DataRepository dataRepository) {
+        return dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).isPresent();
+    }
+
     public static Text getAnnotatedText(DataRepository dataRepository) {
         return dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
+    }
+
+    public static boolean hasTextState(DataRepository dataRepository) {
+        return dataRepository.getData(TextState.ID, TextState.class).isPresent();
     }
 
     public static TextState getTextState(DataRepository dataRepository) {
         return dataRepository.getData(TextState.ID, TextState.class).orElseThrow();
     }
 
+    public static boolean hasModelStatesData(DataRepository dataRepository) {
+        return dataRepository.getData(ModelStates.ID, ModelStates.class).isPresent();
+    }
+
     public static ModelStates getModelStatesData(DataRepository dataRepository) {
         return dataRepository.getData(ModelStates.ID, ModelStates.class).orElseThrow();
+    }
+
+    public static boolean hasRecommendationStates(DataRepository dataRepository) {
+        return dataRepository.getData(RecommendationStates.ID, RecommendationStates.class).isPresent();
     }
 
     public static RecommendationStates getRecommendationStates(DataRepository dataRepository) {
         return dataRepository.getData(RecommendationStates.ID, RecommendationStates.class).orElseThrow();
     }
 
+    public static boolean hasConnectionStates(DataRepository dataRepository) {
+        return dataRepository.getData(ConnectionStates.ID, ConnectionStates.class).isPresent();
+    }
+
     public static ConnectionStates getConnectionStates(DataRepository dataRepository) {
         return dataRepository.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
+    }
+
+    public static boolean hasInconsistencyStates(DataRepository dataRepository) {
+        return dataRepository.getData(InconsistencyStates.ID, InconsistencyStates.class).isPresent();
     }
 
     public static InconsistencyStates getInconsistencyStates(DataRepository dataRepository) {

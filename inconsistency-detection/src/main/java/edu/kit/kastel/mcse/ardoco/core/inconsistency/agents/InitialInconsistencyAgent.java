@@ -4,6 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
@@ -14,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.OccasionFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.RecommendedInstanceProbabilityFilter;
 
 public class InitialInconsistencyAgent extends InconsistencyAgent {
-    private final List<AbstractInformant> filters;
+    private final MutableList<AbstractInformant> filters;
 
     @Configurable
     private List<String> enabledFilters;
@@ -22,8 +25,8 @@ public class InitialInconsistencyAgent extends InconsistencyAgent {
     public InitialInconsistencyAgent(DataRepository dataRepository) {
         super("InitialInconsistencyAgent", dataRepository);
 
-        filters = List.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository));
-        enabledFilters = filters.stream().map(e -> e.getClass().getSimpleName()).toList();
+        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository));
+        enabledFilters = filters.collect(AbstractInformant::getId);
     }
 
     @Override

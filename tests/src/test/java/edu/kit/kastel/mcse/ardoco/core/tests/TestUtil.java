@@ -1,10 +1,16 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 
 public class TestUtil {
 

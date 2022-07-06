@@ -37,6 +37,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
  * The Pipeline defines the execution of the agents.
  */
 public final class ArDoCo extends Pipeline {
+    private DataStructure dataStructure;
 
     private static final Logger logger = LoggerFactory.getLogger(ArDoCo.class);
 
@@ -44,8 +45,16 @@ public final class ArDoCo extends Pipeline {
         super("ArDoCo", new DataRepository());
     }
 
+    private void setDataStructure(DataStructure dataStructure) {
+        this.dataStructure = dataStructure;
+    }
+
+    public DataStructure getDataStructure() {
+        return this.dataStructure;
+    }
+
     /**
-     * Run the approach with the given parameters and save the output to the file system.
+     * Run the approach with the given parameters.
      *
      * @param name                   Name of the run
      * @param inputText              File of the input text.
@@ -86,17 +95,23 @@ public final class ArDoCo extends Pipeline {
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
-        return new DataStructure(arDoCo.getDataRepository());
+        arDoCo.setDataStructure(new DataStructure(arDoCo.getDataRepository()));
+        return arDoCo.getDataStructure();
     }
 
     private static void definePipeline(File inputText, File inputArchitectureModel, File inputCodeModel, ArDoCo arDoCo, Map<String, String> additionalConfigs)
             throws IOException {
-        addTextProvider(inputText, arDoCo, additionalConfigs);
-        addModelProviders(inputArchitectureModel, inputCodeModel, arDoCo);
-        addTextExtractor(arDoCo, additionalConfigs);
-        addRecommendationGenerator(arDoCo, additionalConfigs);
-        addConnectionGenerator(arDoCo, additionalConfigs);
-        addInconsistencyChecker(arDoCo, additionalConfigs);
+        var dataRepository = arDoCo.getDataRepository();
+
+        arDoCo.addPipelineStep(getTextProvider(inputText, additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(getPcmModelProvider(inputArchitectureModel, dataRepository));
+        if (inputCodeModel != null) {
+            arDoCo.addPipelineStep(getJavaModelProvider(inputCodeModel, dataRepository));
+        }
+        arDoCo.addPipelineStep(getTextExtraction(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(getRecommendationGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(getConnectionGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(getInconsistencyChecker(additionalConfigs, dataRepository));
     }
 
     private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, Duration duration) {
@@ -118,51 +133,47 @@ public final class ArDoCo extends Pipeline {
         }
     }
 
-    private static void addInconsistencyChecker(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
-        var dataRepository = arDoCo.getDataRepository();
+    public static InconsistencyChecker getInconsistencyChecker(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var inconsistencyChecker = new InconsistencyChecker(dataRepository);
         inconsistencyChecker.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(inconsistencyChecker);
+        return inconsistencyChecker;
     }
 
-    private static void addConnectionGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
-        var dataRepository = arDoCo.getDataRepository();
+    public static ConnectionGenerator getConnectionGenerator(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var connectionGenerator = new ConnectionGenerator(dataRepository);
         connectionGenerator.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(connectionGenerator);
+        return connectionGenerator;
     }
 
-    private static void addRecommendationGenerator(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
-        var dataRepository = arDoCo.getDataRepository();
+    public static RecommendationGenerator getRecommendationGenerator(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var recommendationGenerator = new RecommendationGenerator(dataRepository);
         recommendationGenerator.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(recommendationGenerator);
+        return recommendationGenerator;
     }
 
-    private static void addTextExtractor(ArDoCo arDoCo, Map<String, String> additionalConfigs) {
-        var dataRepository = arDoCo.getDataRepository();
+    public static TextExtraction getTextExtraction(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var textExtractor = new TextExtraction(dataRepository);
         textExtractor.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(textExtractor);
+        return textExtractor;
     }
 
-    private static void addModelProviders(File inputArchitectureModel, File inputCodeModel, ArDoCo arDoCo) throws IOException {
+    public static ModelProvider getJavaModelProvider(File inputCodeModel, DataRepository dataRepository) throws IOException {
+        ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
+        var javaModelProvider = new ModelProvider(dataRepository, javaModel);
+        return javaModelProvider;
+    }
+
+    public static ModelProvider getPcmModelProvider(File inputArchitectureModel, DataRepository dataRepository) throws IOException {
         ModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
-        DataRepository dataRepository = arDoCo.getDataRepository();
         var pcmModelProvider = new ModelProvider(dataRepository, pcmModel);
-        arDoCo.addPipelineStep(pcmModelProvider);
-        if (inputCodeModel != null) {
-            ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
-            var javaModelProvider = new ModelProvider(dataRepository, javaModel);
-            arDoCo.addPipelineStep(javaModelProvider);
-        }
+        return pcmModelProvider;
     }
 
-    private static void addTextProvider(File inputText, ArDoCo arDoCo, Map<String, String> additionalConfigs) throws FileNotFoundException {
-        var dataRepository = arDoCo.getDataRepository();
+    public static CoreNLPProvider getTextProvider(File inputText, Map<String, String> additionalConfigs, DataRepository dataRepository)
+            throws FileNotFoundException {
         var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
         textProvider.applyConfiguration(additionalConfigs);
-        arDoCo.addPipelineStep(textProvider);
+        return textProvider;
     }
 
     private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
