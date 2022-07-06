@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import org.eclipse.collections.api.list.ImmutableList;
