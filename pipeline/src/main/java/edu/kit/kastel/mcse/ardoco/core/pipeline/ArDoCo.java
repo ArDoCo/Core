@@ -37,7 +37,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
  * The Pipeline defines the execution of the agents.
  */
 public final class ArDoCo extends Pipeline {
-    private DataStructure dataStructure;
 
     private static final Logger logger = LoggerFactory.getLogger(ArDoCo.class);
 
@@ -45,12 +44,15 @@ public final class ArDoCo extends Pipeline {
         super("ArDoCo", new DataRepository());
     }
 
-    private void setDataStructure(DataStructure dataStructure) {
-        this.dataStructure = dataStructure;
+    @Override
+    public DataRepository getDataRepository() {
+        return super.getDataRepository();
     }
 
-    public DataStructure getDataStructure() {
-        return this.dataStructure;
+    @Override
+    public void run() {
+        logger.info("Starting ArDoCo");
+        super.run();
     }
 
     /**
@@ -77,7 +79,7 @@ public final class ArDoCo extends Pipeline {
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
     public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
-            File outputDir) throws IOException {
+            File outputDir) {
 
         logger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
@@ -85,8 +87,13 @@ public final class ArDoCo extends Pipeline {
         logger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
-        ArDoCo arDoCo = new ArDoCo();
-        definePipeline(inputText, inputArchitectureModel, inputCodeModel, arDoCo, additionalConfigs);
+        ArDoCo arDoCo = null;
+        try {
+            arDoCo = defineArDoCo(inputText, inputArchitectureModel, inputCodeModel, additionalConfigs);
+        } catch (IOException e) {
+            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
+            throw new RuntimeException(e);
+        }
         arDoCo.run();
 
         // save step
@@ -95,12 +102,12 @@ public final class ArDoCo extends Pipeline {
 
         logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
-        arDoCo.setDataStructure(new DataStructure(arDoCo.getDataRepository()));
-        return arDoCo.getDataStructure();
+        return new DataStructure(arDoCo.getDataRepository());
     }
 
-    private static void definePipeline(File inputText, File inputArchitectureModel, File inputCodeModel, ArDoCo arDoCo, Map<String, String> additionalConfigs)
+    private static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs)
             throws IOException {
+        var arDoCo = new ArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
         arDoCo.addPipelineStep(getTextProvider(inputText, additionalConfigs, dataRepository));
@@ -112,6 +119,7 @@ public final class ArDoCo extends Pipeline {
         arDoCo.addPipelineStep(getRecommendationGenerator(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(getConnectionGenerator(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(getInconsistencyChecker(additionalConfigs, dataRepository));
+        return arDoCo;
     }
 
     private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, Duration duration) {
@@ -159,14 +167,12 @@ public final class ArDoCo extends Pipeline {
 
     public static ModelProvider getJavaModelProvider(File inputCodeModel, DataRepository dataRepository) throws IOException {
         ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
-        var javaModelProvider = new ModelProvider(dataRepository, javaModel);
-        return javaModelProvider;
+        return new ModelProvider(dataRepository, javaModel);
     }
 
     public static ModelProvider getPcmModelProvider(File inputArchitectureModel, DataRepository dataRepository) throws IOException {
         ModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
-        var pcmModelProvider = new ModelProvider(dataRepository, pcmModel);
-        return pcmModelProvider;
+        return new ModelProvider(dataRepository, pcmModel);
     }
 
     public static CoreNLPProvider getTextProvider(File inputText, Map<String, String> additionalConfigs, DataRepository dataRepository)
@@ -176,7 +182,7 @@ public final class ArDoCo extends Pipeline {
         return textProvider;
     }
 
-    private static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
+    public static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
         Map<String, String> additionalConfigs = new HashMap<>();
         if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
             try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8.name())) {

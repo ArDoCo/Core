@@ -6,12 +6,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
-public class HoldElementsBackModelProvider implements ModelConnector {
+public class HoldElementsBackModelConnector implements ModelConnector {
 
     private final ModelConnector actualModelConnector;
-    private int currentHoldBackId = 0;
+    private int currentHoldBackId = -1;
 
-    public HoldElementsBackModelProvider(ModelConnector actualModelConnector) {
+    public HoldElementsBackModelConnector(ModelConnector actualModelConnector) {
         this.actualModelConnector = actualModelConnector;
     }
 
@@ -28,6 +28,9 @@ public class HoldElementsBackModelProvider implements ModelConnector {
     @Override
     public ImmutableList<ModelInstance> getInstances() {
         var actualInstances = actualModelConnector.getInstances();
+        if (currentHoldBackId < 0) {
+            return actualInstances;
+        }
         return actualInstances.newWithout(actualInstances.get(currentHoldBackId));
     }
 
@@ -37,5 +40,9 @@ public class HoldElementsBackModelProvider implements ModelConnector {
 
     public ModelInstance getCurrentHoldBack() {
         return actualModelConnector.getInstances().get(currentHoldBackId);
+    }
+
+    public int numberOfInstances() {
+        return getInstances().size();
     }
 }

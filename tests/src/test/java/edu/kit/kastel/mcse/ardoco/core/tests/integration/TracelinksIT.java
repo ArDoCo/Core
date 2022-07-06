@@ -109,12 +109,7 @@ class TracelinksIT {
         inputText = project.getTextFile();
 
         // execute pipeline
-        DataStructure dataStructure = null;
-        try {
-            dataStructure = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
-        } catch (IOException e) {
-            Assertions.fail("Exception during execution occurred");
-        }
+        DataStructure dataStructure = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
 
         var data = dataStructure.dataRepository();
         Assertions.assertNotNull(data);

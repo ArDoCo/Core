@@ -2,6 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -15,11 +17,18 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
+import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.tests.architecture.inconsistencies.baseline.InconsistencyBaseline;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 class InconsistencyIT {
@@ -53,32 +62,13 @@ class InconsistencyIT {
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(Project.class)
     void inconsistencyIT(Project project) {
-        Map<ModelInstance, DataStructure> runs = new HashMap<>();
-
-        var name = project.name().toLowerCase();
-        inputModel = project.getModelFile();
-        inputText = project.getTextFile();
-
-    }
-
-    public void defineBasePipeline(ArDoCo arDoCo) {
-        var dataRepository = arDoCo.getDataStructure().dataRepository();
-        //
-        // arDoCo.addPipelineStep(getTextProvider(inputText, additionalConfigs, dataRepository));
-        // arDoCo.addPipelineStep(getPcmModelProvider(inputArchitectureModel, dataRepository));
-        // if (inputCodeModel != null) {
-        // arDoCo.addPipelineStep(getJavaModelProvider(inputCodeModel, dataRepository));
-        // }
-        // arDoCo.addPipelineStep(getTextExtraction(additionalConfigs, dataRepository));
-        // arDoCo.addPipelineStep(getRecommendationGenerator(additionalConfigs, dataRepository));
-        // arDoCo.addPipelineStep(getConnectionGenerator(additionalConfigs, dataRepository));
-        // arDoCo.addPipelineStep(getInconsistencyChecker(additionalConfigs, dataRepository));
+        Map<ModelInstance, DataStructure> runs = produceHoldBackRunResults(project, false);
     }
 
     /**
      * Tests the baseline approach that reports an inconsistency for each sentence that is not traced to a model
      * element. This test is enabled by providing the environment variable "testBaseline" with any value.
-     * 
+     *
      * @param project Project that gets inserted automatically with the enum {@link Project}.
      */
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
@@ -86,12 +76,92 @@ class InconsistencyIT {
     @ParameterizedTest(name = "Evaluating Baseline For {0}")
     @EnumSource(Project.class)
     void inconsistencyBaselineIT(Project project) {
-        // AbstractEvalStrategy evalStrategy = new DeleteOneModelElementBaselineEval();
-        // var results = evalInconsistency(project, evalStrategy);
-        // var expectedResults = project.getExpectedInconsistencyResults();
-        //
-        // logResults(project, results, expectedResults);
-        // Assertions.assertTrue(results.getF1() > 0.0);
+        Map<ModelInstance, DataStructure> runs = produceHoldBackRunResults(project, true);
+    }
+
+    private Map<ModelInstance, DataStructure> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
+        Map<ModelInstance, DataStructure> runs = new HashMap<>();
+
+        var name = project.name().toLowerCase();
+        inputModel = project.getModelFile();
+        inputText = project.getTextFile();
+
+        var holdElementsBackModelConnector = constructHoldElementsBackModelConnector();
+
+        ArDoCo arDoCoBaseRun = null;
+        try {
+            arDoCoBaseRun = definePipelineBase(inputText, holdElementsBackModelConnector, additionalConfigs, useBaselineApproach);
+        } catch (IOException e) {
+            Assertions.fail(e);
+        }
+        arDoCoBaseRun.run();
+        var baseRunData = new DataStructure(arDoCoBaseRun.getDataRepository());
+        runs.put(null, baseRunData);
+
+        for (int i = 0; i < holdElementsBackModelConnector.numberOfInstances(); i++) {
+            holdElementsBackModelConnector.setCurrentHoldBackId(i);
+            var currentHoldBack = holdElementsBackModelConnector.getCurrentHoldBack();
+            var currentRun = defineArDoCoWithPreComputedData(baseRunData, holdElementsBackModelConnector, additionalConfigs, useBaselineApproach);
+            currentRun.run();
+            runs.put(currentHoldBack, new DataStructure(currentRun.getDataRepository()));
+        }
+        return runs;
+    }
+
+    private HoldElementsBackModelConnector constructHoldElementsBackModelConnector() {
+        ModelConnector pcmModel = null;
+        try {
+            pcmModel = new PcmXMLModelConnector(this.inputModel);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new HoldElementsBackModelConnector(pcmModel);
+    }
+
+    private static ArDoCo definePipelineBase(File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector, File additionalConfigsFile,
+            boolean useInconsistencyBaseline) throws FileNotFoundException {
+        ArDoCo arDoCo = new ArDoCo();
+        var dataRepository = arDoCo.getDataRepository();
+        var additionalConfigs = ArDoCo.loadAdditionalConfigs(additionalConfigsFile);
+
+        arDoCo.addPipelineStep(ArDoCo.getTextProvider(inputText, additionalConfigs, dataRepository));
+
+        addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
+
+        if (useInconsistencyBaseline) {
+            arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
+        } else {
+            arDoCo.addPipelineStep(ArDoCo.getInconsistencyChecker(additionalConfigs, dataRepository));
+        }
+
+        return arDoCo;
+    }
+
+    private static ArDoCo defineArDoCoWithPreComputedData(DataStructure precomputedData, HoldElementsBackModelConnector holdElementsBackModelConnector,
+            File additionalConfigsFile, boolean useInconsistencyBaseline) {
+        ArDoCo arDoCo = new ArDoCo();
+        var dataRepository = arDoCo.getDataRepository();
+        var additionalConfigs = ArDoCo.loadAdditionalConfigs(additionalConfigsFile);
+
+        var preprocessingData = new PreprocessingData(precomputedData.getText());
+        dataRepository.addData(PreprocessingData.ID, preprocessingData);
+
+        addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
+
+        if (useInconsistencyBaseline) {
+            arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
+        } else {
+            arDoCo.addPipelineStep(ArDoCo.getInconsistencyChecker(additionalConfigs, dataRepository));
+        }
+        return arDoCo;
+    }
+
+    private static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
+            Map<String, String> additionalConfigs) {
+        arDoCo.addPipelineStep(new ModelProvider(dataRepository, holdElementsBackModelConnector));
+        arDoCo.addPipelineStep(ArDoCo.getTextExtraction(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(ArDoCo.getRecommendationGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(ArDoCo.getConnectionGenerator(additionalConfigs, dataRepository));
     }
 
     private void logResults(Project project, EvaluationResult results, EvaluationResults expectedResults) {
