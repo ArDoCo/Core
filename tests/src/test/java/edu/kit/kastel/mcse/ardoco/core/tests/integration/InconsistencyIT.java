@@ -47,7 +47,6 @@ class InconsistencyIT {
     private PcmXMLModelConnector pcmModel;
 
     private File additionalConfigs = null;
-    private final File outputDir = new File(OUTPUT);
 
     @AfterEach
     void afterEach() {
@@ -116,7 +115,6 @@ class InconsistencyIT {
     private Map<ModelInstance, DataStructure> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
         Map<ModelInstance, DataStructure> runs = new HashMap<>();
 
-        var name = project.name().toLowerCase();
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
 
