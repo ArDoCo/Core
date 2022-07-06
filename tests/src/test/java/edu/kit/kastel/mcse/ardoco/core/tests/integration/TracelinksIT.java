@@ -30,15 +30,14 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLLogFile;
@@ -119,14 +118,13 @@ class TracelinksIT {
 
         var data = dataStructure.dataRepository();
         Assertions.assertNotNull(data);
-        var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
-        var modelIds = modelStates.modelIds();
+        var modelIds = dataStructure.getModelIds();
         Assertions.assertEquals(1, modelIds.size());
         var modelId = modelIds.stream().findFirst().orElseThrow();
-        var model = modelStates.getModelState(modelId);
+        var model = dataStructure.getModelState(modelId);
 
         // calculate results and compare to expected results
-        var results = calculateResults(project, data, model);
+        var results = calculateResults(project, dataStructure, model);
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
@@ -211,9 +209,8 @@ class TracelinksIT {
         return outputList;
     }
 
-    private EvaluationResults calculateResults(Project project, DataRepository data, ModelExtractionState modelState) {
-        var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
-        var connectionState = connectionStates.getConnectionState(modelState.getMetamodel());
+    private EvaluationResults calculateResults(Project project, DataStructure dataStructure, ModelExtractionState modelState) {
+        var connectionState = dataStructure.getConnectionState(modelState.getModelId());
         var traceLinks = getTraceLinksFromConnectionState(connectionState);
         logger.info("Found {} trace links", traceLinks.size());
 

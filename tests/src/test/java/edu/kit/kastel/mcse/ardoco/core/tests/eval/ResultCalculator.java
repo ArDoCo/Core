@@ -1,47 +1,47 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.util.List;
 
 import org.eclipse.collections.api.factory.Lists;
 
-public class PRF1Evaluator {
+public class ResultCalculator {
 
     private int tp;
     private int fp;
     private int fn;
-    private List<PRF1> results;
+    private List<EvaluationResult> results;
 
-    public PRF1Evaluator() {
+    public ResultCalculator() {
         reset();
     }
 
-    public PRF1 nextEvaluation(int tp, int fp, int fn) {
+    public EvaluationResult nextEvaluation(int tp, int fp, int fn) {
         this.tp += tp;
         this.fp += fp;
         this.fn += fn;
 
-        var prf1 = new PRF1(tp, fp, fn);
+        var prf1 = new EvaluationResultImpl(tp, fp, fn);
         results.add(prf1);
         return prf1;
     }
 
     /**
-     * Returns the weighted average EvaluationResults (Precision, Recall, F1 as {@link PRF1}. Weighted with number of
-     * occurrences.
+     * Returns the weighted average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}. Weighted
+     * with number of occurrences.
      *
-     * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link PRF1}
+     * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}
      */
-    public PRF1 getWeightedAveragePRF1() {
-        return new PRF1(tp, fp, fn);
+    public EvaluationResult getWeightedAveragePRF1() {
+        return new EvaluationResultImpl(tp, fp, fn);
     }
 
     /**
-     * Returns the average EvaluationResults (Precision, Recall, F1 as {@link PRF1}.
+     * Returns the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}.
      *
-     * @return the average EvaluationResults (Precision, Recall, F1 as {@link PRF1}
+     * @return the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}
      */
-    public PRF1 getMacroAveragePRF1() {
+    public EvaluationResult getMacroAveragePRF1() {
         var avgPrecision = 0.0;
         var avgRecall = 0.0;
         var avgF1 = 0.0;
@@ -64,7 +64,7 @@ public class PRF1Evaluator {
         avgRecall /= counter;
         avgF1 /= counter;
 
-        return new PRF1(avgPrecision, avgRecall, avgF1);
+        return new EvaluationResultImpl(avgPrecision, avgRecall, avgF1);
     }
 
     /**

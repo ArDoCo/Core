@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.inconsistencies.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,8 +18,8 @@ public class GoldStandard {
 
     private MutableList<MutableList<ModelInstance>> sentence2instance = Lists.mutable.empty();
 
-    public GoldStandard(File goldStanard, ModelConnector model) {
-        goldStandard = goldStanard;
+    public GoldStandard(File goldStandard, ModelConnector model) {
+        this.goldStandard = goldStandard;
         this.model = model;
         load();
     }
