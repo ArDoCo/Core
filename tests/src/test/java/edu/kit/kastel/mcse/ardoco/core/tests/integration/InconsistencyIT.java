@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,16 +21,20 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.architecture.inconsistencies.baseline.InconsistencyBaseline;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
 
 class InconsistencyIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyIT.class);
@@ -39,6 +44,8 @@ class InconsistencyIT {
 
     private File inputText;
     private File inputModel;
+    private PcmXMLModelConnector pcmModel;
+
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
@@ -55,7 +62,7 @@ class InconsistencyIT {
 
     /**
      * Tests the inconsistency detection on all {@link Project projects}.
-     * 
+     *
      * @param project Project that gets inserted automatically with the enum {@link Project}.
      */
     @DisplayName("Evaluate Inconsistency Analyses")
@@ -63,6 +70,27 @@ class InconsistencyIT {
     @EnumSource(Project.class)
     void inconsistencyIT(Project project) {
         Map<ModelInstance, DataStructure> runs = produceHoldBackRunResults(project, false);
+
+        ResultCalculator resultCalculator = calculateEvaluationResults(project, runs);
+        var weightedResults = resultCalculator.getWeightedAveragePRF1();
+
+        EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
+        logResults(project, weightedResults, expectedInconsistencyResults);
+        checkResults(weightedResults, expectedInconsistencyResults);
+    }
+
+    private ResultCalculator calculateEvaluationResults(Project project, Map<ModelInstance, DataStructure> runs) {
+        ResultCalculator resultCalculator = new ResultCalculator();
+        for (var run : runs.entrySet()) {
+            var runEvalResults = evaluateRun(project, run.getKey(), run.getValue());
+            if (runEvalResults != null) {
+                int fn = runEvalResults.getFalseNegative().size();
+                int fp = runEvalResults.getFalsePositives().size();
+                int tp = runEvalResults.getTruePositives().size();
+                resultCalculator.nextEvaluation(tp, fp, fn);
+            }
+        }
+        return resultCalculator;
     }
 
     /**
@@ -77,6 +105,12 @@ class InconsistencyIT {
     @EnumSource(Project.class)
     void inconsistencyBaselineIT(Project project) {
         Map<ModelInstance, DataStructure> runs = produceHoldBackRunResults(project, true);
+
+        ResultCalculator resultCalculator = calculateEvaluationResults(project, runs);
+        var weightedResults = resultCalculator.getWeightedAveragePRF1();
+
+        EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
+        logResults(project, weightedResults, expectedInconsistencyResults);
     }
 
     private Map<ModelInstance, DataStructure> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
@@ -88,11 +122,12 @@ class InconsistencyIT {
 
         var holdElementsBackModelConnector = constructHoldElementsBackModelConnector();
 
-        ArDoCo arDoCoBaseRun = null;
+        ArDoCo arDoCoBaseRun;
         try {
             arDoCoBaseRun = definePipelineBase(inputText, holdElementsBackModelConnector, additionalConfigs, useBaselineApproach);
         } catch (IOException e) {
             Assertions.fail(e);
+            return runs;
         }
         arDoCoBaseRun.run();
         var baseRunData = new DataStructure(arDoCoBaseRun.getDataRepository());
@@ -109,9 +144,8 @@ class InconsistencyIT {
     }
 
     private HoldElementsBackModelConnector constructHoldElementsBackModelConnector() {
-        ModelConnector pcmModel = null;
         try {
-            pcmModel = new PcmXMLModelConnector(this.inputModel);
+            this.pcmModel = new PcmXMLModelConnector(this.inputModel);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -164,11 +198,34 @@ class InconsistencyIT {
         arDoCo.addPipelineStep(ArDoCo.getConnectionGenerator(additionalConfigs, dataRepository));
     }
 
+    private ExplicitEvaluationResults evaluateRun(Project project, ModelInstance removedElement, DataStructure data) {
+        var modelId = data.getModelIds().get(0);
+
+        ImmutableList<MissingModelInstanceInconsistency> inconsistencies = getInconsistencies(data, modelId);
+        if (removedElement == null) {
+            // base case
+            // TODO
+            return null;
+        }
+
+        var goldStandard = project.getGoldStandard(this.pcmModel);
+        var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(i -> i.toString()).castToCollection();
+        var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(i -> i.toString()).castToCollection();
+
+        return TestUtil.compare(actualSentences, expectedLines);
+    }
+
+    private ImmutableList<MissingModelInstanceInconsistency> getInconsistencies(DataStructure data, String modelId) {
+        ImmutableList<Inconsistency> inconsistencies = data.getInconsistencyState(modelId).getInconsistencies();
+        return inconsistencies.select(i -> MissingModelInstanceInconsistency.class.isAssignableFrom(i.getClass()))
+                .collect(MissingModelInstanceInconsistency.class::cast);
+    }
+
     private void logResults(Project project, EvaluationResult results, EvaluationResults expectedResults) {
         if (logger.isInfoEnabled()) {
             String infoString = String.format(Locale.ENGLISH,
                     "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)",
-                    project.name(), results.getPrecision(), expectedResults.precision, results.getRecall(), expectedResults.getRecall(), results.getF1(),
+                    project.name(), results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
                     expectedResults.getF1());
             logger.info(infoString);
         }

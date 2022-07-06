@@ -37,6 +37,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLDiffFile;
@@ -130,7 +131,9 @@ class TracelinksIT {
             logger.info(infoString);
 
             if (detailedDebug) {
-                printDetailedDebug(results, data);
+                if (results instanceof ExplicitEvaluationResults explicitResults) {
+                    printDetailedDebug(explicitResults, data);
+                }
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
                     DATA_MAP.put(project, dataStructure);
@@ -152,7 +155,7 @@ class TracelinksIT {
 
     }
 
-    private void printDetailedDebug(EvaluationResults results, DataRepository data) {
+    private void printDetailedDebug(ExplicitEvaluationResults results, DataRepository data) {
         var falseNegatives = results.getFalseNegative().stream().map(Object::toString);
         var falsePositives = results.getFalsePositives().stream().map(Object::toString);
 

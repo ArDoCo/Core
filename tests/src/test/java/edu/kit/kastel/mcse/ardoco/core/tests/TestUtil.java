@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.factory.Lists;
-
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 
 public class TestUtil {
 
@@ -18,31 +16,22 @@ public class TestUtil {
         throw new IllegalAccessError("This constructor should not be called!");
     }
 
-    public static EvaluationResults compare(Collection<String> traceLinks, Collection<String> goldStandard) {
-        Set<String> distinctTraceLinks = new HashSet<>(traceLinks);
+    public static ExplicitEvaluationResults compare(Collection<String> results, Collection<String> goldStandard) {
+        Set<String> distinctTraceLinks = new HashSet<>(results);
         Set<String> distinctGoldStandard = new HashSet<>(goldStandard);
 
         // True Positives are the trace links that are contained on both lists
         Set<String> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
-        double tp = truePositives.size();
+        List<String> truePositivesList = new ArrayList<>(truePositives);
 
         // False Positives are the trace links that are only contained in the result set
         Set<String> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
         List<String> falsePositivesList = new ArrayList<>(falsePositives);
-        double fp = falsePositives.size();
 
         // False Negatives are the trace links that are only contained in the gold standard
         Set<String> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         List<String> falseNegativesList = new ArrayList<>(falseNegatives);
-        double fn = falseNegatives.size();
 
-        double precision = tp / (tp + fp);
-        double recall = tp / (tp + fn);
-        double f1 = 2 * precision * recall / (precision + recall);
-
-        var evaluationResults = new EvaluationResults(precision, recall, f1);
-        evaluationResults.setFalseNegatives(Lists.mutable.ofAll(falseNegativesList));
-        evaluationResults.setFalsePositives(Lists.mutable.ofAll(falsePositivesList));
-        return evaluationResults;
+        return new ExplicitEvaluationResults(truePositivesList, falseNegativesList, falsePositivesList);
     }
 }
