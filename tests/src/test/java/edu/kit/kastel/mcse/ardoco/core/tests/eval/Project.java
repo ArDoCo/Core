@@ -2,18 +2,12 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 /**
  *
@@ -85,20 +79,6 @@ public enum Project {
             }
         }
         return modelConnector;
-    }
-
-    public Text getText(DataRepository dataRepository) {
-        return getTextViaFile(dataRepository);
-    }
-
-    public Text getTextViaFile(DataRepository dataRepository) {
-        try {
-            TextProvider textConnector = new CoreNLPProvider(dataRepository, new FileInputStream(getTextFile()));
-            return textConnector.getAnnotatedText();
-        } catch (FileNotFoundException e) {
-            logger.warn(e.getMessage(), e.getCause());
-            return null;
-        }
     }
 
     public File getGoldStandardFile() {
