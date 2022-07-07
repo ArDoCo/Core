@@ -39,20 +39,23 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLDiffFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLLogFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLModelFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLPreviousFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSentenceFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLSummaryFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLModelFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLPreviousFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSentenceFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
 
 /**
+ * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
+ * defined in the enum {@link Project}.
+ * 
  * @author Jan Keim
  *
  */
-class TracelinksIT {
-    private static final Logger logger = LoggerFactory.getLogger(TracelinksIT.class);
+class TraceabilityLinkRecoveryEvaluationIT {
+    private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluationIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
@@ -92,8 +95,7 @@ class TracelinksIT {
     }
 
     // NOTE: if you only want to test a specific project, you can simply set up the
-    // EnumSource
-    // For more details, see
+    // EnumSource. For more details, see
     // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
     // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
