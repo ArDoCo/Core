@@ -18,8 +18,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
  */
 public class InconsistencyStateImpl extends AbstractState implements InconsistencyState {
 
-    private MutableList<RecommendedInstance> recommendedInstances;
-    private MutableList<Inconsistency> inconsistencies;
+    private transient MutableList<RecommendedInstance> recommendedInstances;
+    private transient MutableList<Inconsistency> inconsistencies;
 
     public InconsistencyStateImpl() {
         inconsistencies = Lists.mutable.empty();

@@ -6,16 +6,16 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.NameTypeExtractor;
 
 /**
  * The Class InitialRecommendationAgent runs all extractors of this stage.
  */
-public class InitialRecommendationAgent extends RecommendationAgent {
+public class InitialRecommendationAgent extends PipelineAgent {
 
-    private final List<AbstractInformant> extractors;
+    private final List<Informant> extractors;
 
     @Configurable
     private List<String> enabledExtractors;

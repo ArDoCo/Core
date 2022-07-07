@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
@@ -19,7 +16,6 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 public class CoreNLPProvider extends AbstractPipelineStep implements TextProvider {
-    private static final Logger logger = LoggerFactory.getLogger(CoreNLPProvider.class);
     private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
     private final InputStream text;
@@ -85,8 +81,7 @@ public class CoreNLPProvider extends AbstractPipelineStep implements TextProvide
 
     @Override
     public void run() {
-        var annotatedText = getAnnotatedText();
-        var preprocessingData = new PreprocessingData(annotatedText);
+        var preprocessingData = new PreprocessingData(getAnnotatedText());
         this.getDataRepository().addData(PreprocessingData.ID, preprocessingData);
     }
 

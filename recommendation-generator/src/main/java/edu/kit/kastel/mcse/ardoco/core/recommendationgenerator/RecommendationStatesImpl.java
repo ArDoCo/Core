@@ -14,7 +14,7 @@ public class RecommendationStatesImpl implements RecommendationStates {
         recommendationStates = new EnumMap<>(Metamodel.class);
     }
 
-    static public RecommendationStates build() {
+    public static RecommendationStates build() {
         var recStates = new RecommendationStatesImpl();
         for (Metamodel mm : Metamodel.values()) {
             recStates.recommendationStates.put(mm, new RecommendationStateImpl());

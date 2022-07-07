@@ -30,8 +30,7 @@ public record DataStructure(DataRepository dataRepository) {
     }
 
     private ModelStates getModelStates() {
-        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
-        return modelStates;
+        return DataRepositoryHelper.getModelStatesData(dataRepository);
     }
 
     public List<String> getModelIds() {

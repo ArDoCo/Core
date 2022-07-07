@@ -23,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  */
 public class RecommendationStateImpl extends AbstractState implements RecommendationState {
 
-    private MutableList<RecommendedInstance> recommendedInstances;
+    private transient MutableList<RecommendedInstance> recommendedInstances;
 
     @Override
     public RecommendationState createCopy() {

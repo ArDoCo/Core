@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
@@ -35,7 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  *
  * @author Dominik Fuchss
  */
-public class ComputerScienceWordsAgent extends TextAgent {
+public class ComputerScienceWordsAgent extends PipelineAgent {
 
     private static final int MAX_WIKI_LEVEL = 3;
 

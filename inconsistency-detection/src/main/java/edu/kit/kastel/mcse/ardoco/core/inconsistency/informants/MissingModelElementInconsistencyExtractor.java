@@ -11,7 +11,7 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistency
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementSupport;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
-public class MissingModelElementInconsistencyExtractor extends AbstractInformant {
+public class MissingModelElementInconsistencyExtractor extends Informant {
 
     @Configurable
     private double minSupport = 1;

@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.agent;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 
-public abstract class AbstractInformant extends AbstractPipelineStep implements Claimant {
-    protected AbstractInformant(String id, DataRepository dataRepository) {
+public abstract class Informant extends AbstractPipelineStep implements Claimant {
+    protected Informant(String id, DataRepository dataRepository) {
         super(id, dataRepository);
     }
 }

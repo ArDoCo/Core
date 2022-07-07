@@ -7,7 +7,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
@@ -23,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
  *
  * @author Jan Keim
  */
-public class PhraseAgent extends TextAgent {
+public class PhraseAgent extends PipelineAgent {
     @Configurable
     private double phraseConfidence = 0.6;
     @Configurable
@@ -39,7 +39,7 @@ public class PhraseAgent extends TextAgent {
     @Override
     public void run() {
         var text = getAnnotatedText();
-        var textState = getDataRepository().getData(TextStateImpl.ID, TextStateImpl.class).orElseThrow();
+        var textState = getDataRepository().getData(TextState.ID, TextStateImpl.class).orElseThrow();
         for (var word : text.words()) {
             createNounMappingIfPhrase(word, textState);
             createNounMappingIfSpecialNamedEntity(word, textState);

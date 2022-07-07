@@ -10,7 +10,7 @@ import edu.kit.kastel.informalin.data.PipelineStepData;
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";
 
-    private Map<String, ModelExtractionState> models = new HashMap<>();
+    private transient Map<String, ModelExtractionState> models = new HashMap<>();
 
     public ModelStates() {
         super();

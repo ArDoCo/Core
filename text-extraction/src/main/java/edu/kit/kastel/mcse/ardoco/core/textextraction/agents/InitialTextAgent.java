@@ -6,8 +6,8 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.InDepArcsExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.NounExtractor;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.OutDepArcsExtractor;
@@ -16,9 +16,9 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.SeparatedNamesE
 /**
  * The Class InitialTextAgent defines the agent that executes the extractors for the text stage.
  */
-public class InitialTextAgent extends TextAgent {
+public class InitialTextAgent extends PipelineAgent {
 
-    private final List<AbstractInformant> extractors;
+    private final List<Informant> extractors;
 
     @Configurable
     private List<String> enabledExtractors;
