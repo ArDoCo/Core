@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,11 +37,6 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
      */
     public ConnectionStateImpl() {
         instanceLinks = new HashSet<>();
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
-        // empty
     }
 
     /**
