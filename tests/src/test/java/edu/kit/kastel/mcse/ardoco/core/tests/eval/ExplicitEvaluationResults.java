@@ -60,6 +60,9 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
             double tp = truePositives.size();
             double fp = falsePositives.size();
             precision = tp / (tp + fp);
+            if (Double.isNaN(precision)) {
+                precision = 0.0;
+            }
         }
         return precision;
     }
@@ -70,6 +73,9 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
             double tp = truePositives.size();
             double fn = falseNegatives.size();
             recall = tp / (tp + fn);
+            if (Double.isNaN(recall)) {
+                recall = 0.0;
+            }
         }
         return recall;
     }
@@ -80,6 +86,9 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
             double precision = getPrecision();
             double recall = getRecall();
             f1 = 2 * precision * recall / (precision + recall);
+            if (Double.isNaN(f1)) {
+                f1 = 0.0;
+            }
         }
         return f1;
     }

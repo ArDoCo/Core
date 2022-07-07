@@ -1,11 +1,21 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -53,12 +63,14 @@ class InconsistencyDetectionEvaluationIT {
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
         Map<ModelInstance, DataStructure> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
 
-        ResultCalculator resultCalculator = calculateEvaluationResults(project, runs);
+        var results = calculateEvaluationResults(project, runs);
+        ResultCalculator resultCalculator = results.getOne();
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, weightedResults, expectedInconsistencyResults);
         checkResults(weightedResults, expectedInconsistencyResults);
+        writeOutResults(project, results.getTwo(), runs);
     }
 
     /**
@@ -77,14 +89,17 @@ class InconsistencyDetectionEvaluationIT {
 
         Assertions.assertTrue(runs != null && runs.size() > 0);
 
-        ResultCalculator resultCalculator = calculateEvaluationResults(project, runs);
+        var results = calculateEvaluationResults(project, runs);
+        ResultCalculator resultCalculator = results.getOne();
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, weightedResults, expectedInconsistencyResults);
     }
 
-    private ResultCalculator calculateEvaluationResults(Project project, Map<ModelInstance, DataStructure> runs) {
+    private Pair<ResultCalculator, List<ExplicitEvaluationResults<String>>> calculateEvaluationResults(Project project,
+            Map<ModelInstance, DataStructure> runs) {
+        List<ExplicitEvaluationResults<String>> explicitResults = new ArrayList<>();
         ResultCalculator resultCalculator = new ResultCalculator();
         for (var run : runs.entrySet()) {
             var runEvalResults = evaluateRun(project, run.getKey(), run.getValue());
@@ -93,9 +108,10 @@ class InconsistencyDetectionEvaluationIT {
                 int fp = runEvalResults.getFalsePositives().size();
                 int tp = runEvalResults.getTruePositives().size();
                 resultCalculator.addEvaluationResults(tp, fp, fn);
+                explicitResults.add(runEvalResults);
             }
         }
-        return resultCalculator;
+        return Tuples.pair(resultCalculator, explicitResults);
     }
 
     private ExplicitEvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, DataStructure data) {
@@ -104,7 +120,6 @@ class InconsistencyDetectionEvaluationIT {
         ImmutableList<MissingModelInstanceInconsistency> inconsistencies = getInconsistencies(data, modelId);
         if (removedElement == null) {
             // base case
-            // TODO
             return null;
         }
 
@@ -115,7 +130,7 @@ class InconsistencyDetectionEvaluationIT {
         return TestUtil.compare(actualSentences, expectedLines);
     }
 
-    private PcmXMLModelConnector getPcmModel(Project project) {
+    private static PcmXMLModelConnector getPcmModel(Project project) {
         try {
             return new PcmXMLModelConnector(project.getModelFile());
         } catch (IOException e) {
@@ -123,7 +138,7 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private ImmutableList<MissingModelInstanceInconsistency> getInconsistencies(DataStructure data, String modelId) {
+    private static ImmutableList<MissingModelInstanceInconsistency> getInconsistencies(DataStructure data, String modelId) {
         ImmutableList<Inconsistency> inconsistencies = data.getInconsistencyState(modelId).getInconsistencies();
         return inconsistencies.select(i -> MissingModelInstanceInconsistency.class.isAssignableFrom(i.getClass()))
                 .collect(MissingModelInstanceInconsistency.class::cast);
@@ -147,6 +162,66 @@ class InconsistencyDetectionEvaluationIT {
                         "Recall " + results.getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
                 () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
                         "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+    }
+
+    private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, DataStructure> runs) {
+        StringBuilder outputBuilder = new StringBuilder();
+        outputBuilder.append("### ").append(project.name()).append(" ###");
+        outputBuilder.append(System.lineSeparator());
+
+        int counter = 0;
+        for (var run : runs.entrySet()) {
+            var data = run.getValue();
+            ModelInstance instance = run.getKey();
+            if (instance == null) {
+                var initialInconsistencies = getInitialInconsistencies(data);
+                outputBuilder.append("Initial Inconsistencies: ").append(initialInconsistencies.size());
+                var initialInconsistenciesSentences = initialInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
+                        .toSortedList()
+                        .collect(i -> i.toString());
+                outputBuilder.append(System.lineSeparator()).append(listToString(initialInconsistenciesSentences));
+            } else {
+                outputBuilder.append("###").append(System.lineSeparator());
+                outputBuilder.append("Removed Instance: ").append(instance.getFullName());
+                outputBuilder.append(System.lineSeparator());
+                var result = results.get(counter++);
+                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f", result.getPrecision(), result.getRecall(),
+                        result.getF1());
+                outputBuilder.append(resultString);
+                var truePositives = result.getTruePositives();
+                truePositives = sortIntegerStrings(truePositives);
+                outputBuilder.append(System.lineSeparator()).append("True Positives: ").append(listToString(truePositives));
+                var falsePositives = result.getFalsePositives();
+                falsePositives = sortIntegerStrings(falsePositives);
+                outputBuilder.append(System.lineSeparator()).append("False Positives: ").append(listToString(falsePositives));
+                var falseNegatives = result.getFalseNegative();
+                falseNegatives = sortIntegerStrings(falseNegatives);
+                outputBuilder.append(System.lineSeparator()).append("False Negatives: ").append(listToString(falseNegatives));
+            }
+
+            outputBuilder.append(System.lineSeparator());
+        }
+
+        var filename = OUTPUT + "/inconsistencies_" + project.name().toLowerCase() + ".txt";
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), UTF_8)) {
+            writer.write(outputBuilder.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private static List<String> sortIntegerStrings(List<String> list) {
+        return list.stream().map(Integer::parseInt).sorted().map(i -> i.toString()).toList();
+    }
+
+    private static String listToString(List<?> truePositives) {
+        return truePositives.stream().map(Object::toString).collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    private static ImmutableList<MissingModelInstanceInconsistency> getInitialInconsistencies(DataStructure data) {
+        var id = data.getModelIds().get(0);
+        return getInconsistencies(data, id);
     }
 
 }
