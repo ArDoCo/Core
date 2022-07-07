@@ -8,12 +8,10 @@ import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
  * Filters {@link RecommendedInstance}s that occur only once in the text, thus are unlikely to be important entities.
@@ -21,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * @author Jan Keim
  *
  */
-public class OccasionFilter extends Informant {
+public class OccasionFilter extends Filter {
 
     @Configurable
     private int expectedAppearances = 2;
@@ -30,20 +28,7 @@ public class OccasionFilter extends Informant {
         super("OccasionFilter", dataRepository);
     }
 
-    @Override
-    public void run() {
-        var dataRepository = getDataRepository();
-        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
-        var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
-
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
-            var inconsistencyState = inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
-            filterRecommendedInstances(inconsistencyState);
-        }
-    }
-
-    private void filterRecommendedInstances(InconsistencyState inconsistencyState) {
+    protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
         var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
