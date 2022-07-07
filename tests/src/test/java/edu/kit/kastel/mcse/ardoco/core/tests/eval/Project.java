@@ -27,7 +27,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.0, .0, .189)//
+            new EvaluationResults(.0, .0, .196)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
@@ -40,7 +40,7 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.0, .0, .125));
+            new EvaluationResults(.0, .0, .198));
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
     private final String model;
