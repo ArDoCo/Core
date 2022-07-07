@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
 import java.nio.file.Files;

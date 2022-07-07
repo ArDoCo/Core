@@ -16,7 +16,7 @@ public class TestUtil {
         throw new IllegalAccessError("This constructor should not be called!");
     }
 
-    public static ExplicitEvaluationResults compare(Collection<String> results, Collection<String> goldStandard) {
+    public static ExplicitEvaluationResults<String> compare(Collection<String> results, Collection<String> goldStandard) {
         Set<String> distinctTraceLinks = new HashSet<>(results);
         Set<String> distinctGoldStandard = new HashSet<>(goldStandard);
 
@@ -32,6 +32,6 @@ public class TestUtil {
         Set<String> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         List<String> falseNegativesList = new ArrayList<>(falseNegatives);
 
-        return new ExplicitEvaluationResults(truePositivesList, falseNegativesList, falsePositivesList);
+        return new ExplicitEvaluationResults<>(truePositivesList, falseNegativesList, falsePositivesList);
     }
 }

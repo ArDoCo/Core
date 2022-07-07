@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 
 /**
+ * This enum captures the different case studies that are used for evaluation in the integration tests.
  *
  * @author Jan Keim
  *
@@ -58,33 +58,31 @@ public enum Project {
         this.expectedInconsistencyResults = expectedInconsistencyResults;
     }
 
+    /**
+     * @return the File that represents the model for this project
+     */
     public File getModelFile() {
         return new File(model);
     }
 
+    /**
+     * @return the File that represents the text for this project
+     */
     public File getTextFile() {
         return new File(textFile);
     }
 
-    public ModelConnector getModel() {
-        if (modelConnector == null) {
-            synchronized (this) {
-                if (modelConnector == null) {
-                    try {
-                        modelConnector = new PcmXMLModelConnector(getModelFile());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-        return modelConnector;
-    }
-
+    /**
+     * @return the File that represents the gold standard for this project
+     */
     public File getGoldStandardFile() {
         return new File(goldStandard);
     }
 
+    /**
+     * @param pcmModel the model connector (pcm)
+     * @return the {@link GoldStandard} for this project
+     */
     public GoldStandard getGoldStandard(ModelConnector pcmModel) {
         return new GoldStandard(getGoldStandardFile(), pcmModel);
     }

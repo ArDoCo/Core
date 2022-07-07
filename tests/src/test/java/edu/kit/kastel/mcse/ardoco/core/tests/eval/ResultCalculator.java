@@ -7,41 +7,40 @@ import org.eclipse.collections.api.factory.Lists;
 
 public class ResultCalculator {
 
-    private int tp;
-    private int fp;
-    private int fn;
-    private List<EvaluationResult> results;
+    private int truePositives;
+    private int falsePositives;
+    private int falseNegatives;
+    private List<EvaluationResults> results;
 
     public ResultCalculator() {
         reset();
     }
 
-    public EvaluationResult nextEvaluation(int tp, int fp, int fn) {
-        this.tp += tp;
-        this.fp += fp;
-        this.fn += fn;
+    public void addEvaluationResults(int truePositives, int falsePositives, int falseNegatives) {
+        this.truePositives += truePositives;
+        this.falsePositives += falsePositives;
+        this.falseNegatives += falseNegatives;
 
-        var prf1 = new EvaluationResultImpl(tp, fp, fn);
-        results.add(prf1);
-        return prf1;
+        var evalResults = new EvaluationResults(truePositives, falsePositives, falseNegatives);
+        results.add(evalResults);
     }
 
     /**
-     * Returns the weighted average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}. Weighted
-     * with number of occurrences.
+     * Returns the weighted average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}. Weighted with
+     * number of occurrences.
      *
-     * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}
+     * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}
      */
-    public EvaluationResult getWeightedAveragePRF1() {
-        return new EvaluationResultImpl(tp, fp, fn);
+    public EvaluationResults getWeightedAveragePRF1() {
+        return new EvaluationResults(truePositives, falsePositives, falseNegatives);
     }
 
     /**
-     * Returns the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}.
+     * Returns the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}.
      *
-     * @return the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultImpl}
+     * @return the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}
      */
-    public EvaluationResult getMacroAveragePRF1() {
+    public EvaluationResults getMacroAveragePRF1() {
         var avgPrecision = 0.0;
         var avgRecall = 0.0;
         var avgF1 = 0.0;
@@ -64,16 +63,16 @@ public class ResultCalculator {
         avgRecall /= counter;
         avgF1 /= counter;
 
-        return new EvaluationResultImpl(avgPrecision, avgRecall, avgF1);
+        return new EvaluationResults(avgPrecision, avgRecall, avgF1);
     }
 
     /**
      * Resets the evaluator, so previously committed results are removed.
      */
     public void reset() {
-        tp = 0;
-        fp = 0;
-        fn = 0;
+        truePositives = 0;
+        falsePositives = 0;
+        falseNegatives = 0;
         this.results = Lists.mutable.empty();
     }
 }

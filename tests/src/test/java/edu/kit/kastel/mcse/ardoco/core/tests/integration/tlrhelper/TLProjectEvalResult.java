@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,14 +17,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.TLGoldStandardFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
 
 /**
  * Represents the trace link evaluation result for a single project.
  */
-public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, EvaluationResult {
+public class TLProjectEvalResult extends EvaluationResults implements Comparable<TLProjectEvalResult> {
 
     private final Project project;
     private final double precision, recall, f1Score;
@@ -116,10 +116,6 @@ public class TLProjectEvalResult implements Comparable<TLProjectEvalResult>, Eva
 
     public List<TestLink> getFoundLinks() {
         return foundLinks;
-    }
-
-    public List<TestLink> getCorrectLinks() {
-        return correctLinks;
     }
 
     public List<TestLink> getTruePositives() {

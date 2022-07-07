@@ -3,31 +3,54 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.util.List;
 
-public class ExplicitEvaluationResults extends EvaluationResults {
+/**
+ * This class represents explicit evaluation results. The lists containing the true positives, false negatives, and
+ * false positives are explicitly stored and can be retrieved, e.g., for analysing purposes.
+ * 
+ * @param <T> Type of the lists that store true positives, false negatives, and false positives.
+ */
+public class ExplicitEvaluationResults<T> extends EvaluationResults {
 
     private double precision = -1.337;
     private double recall = -1.337;
     private double f1 = -1.337;
 
-    private List<? extends Object> truePositives;
-    private List<? extends Object> falseNegatives;
-    private List<? extends Object> falsePositives;
+    private List<T> truePositives;
+    private List<T> falseNegatives;
+    private List<T> falsePositives;
 
-    public ExplicitEvaluationResults(List<? extends Object> truePositives, List<? extends Object> falseNegatives, List<? extends Object> falsePositives) {
+    /**
+     * Construct explicit results by providing the lists containing the true positives, false negatives, and false
+     * positives.
+     * 
+     * @param truePositives  the true positives
+     * @param falseNegatives the false negatives
+     * @param falsePositives the false positives
+     */
+    public ExplicitEvaluationResults(List<T> truePositives, List<T> falseNegatives, List<T> falsePositives) {
         this.truePositives = truePositives;
         this.falseNegatives = falseNegatives;
         this.falsePositives = falsePositives;
     }
 
-    public List<? extends Object> getFalseNegative() {
+    /**
+     * @return the list of false negatives
+     */
+    public List<T> getFalseNegative() {
         return falseNegatives;
     }
 
-    public List<? extends Object> getFalsePositives() {
+    /**
+     * @return the list of false positives
+     */
+    public List<T> getFalsePositives() {
         return falsePositives;
     }
 
-    public List<? extends Object> getTruePositives() {
+    /**
+     * @return the list of true positives
+     */
+    public List<T> getTruePositives() {
         return truePositives;
     }
 
