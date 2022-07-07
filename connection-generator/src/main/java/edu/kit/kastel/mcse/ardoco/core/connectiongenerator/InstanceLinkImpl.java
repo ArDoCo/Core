@@ -64,16 +64,6 @@ public class InstanceLinkImpl implements InstanceLink {
     }
 
     /**
-     * Sets the probability to the given probability.
-     *
-     * @param probability the new probability
-     */
-    @Override
-    public void setProbability(Claimant claimant, double probability) {
-        this.probability.addAgentConfidence(claimant, probability);
-    }
-
-    /**
      * Returns the recommended instance.
      *
      * @return the textual instance
@@ -108,24 +98,6 @@ public class InstanceLinkImpl implements InstanceLink {
         }
         var other = (InstanceLinkImpl) obj;
         return Objects.equals(modelInstance, other.modelInstance) && Objects.equals(textualInstance, other.textualInstance);
-    }
-
-    /**
-     * Returns all occurrences of all recommended instance names as string.
-     *
-     * @return all names of the recommended instances
-     */
-    @Override
-    public String getNameOccurrencesAsString() {
-        Set<String> names = new HashSet<>();
-        MutableList<Integer> namePositions = Lists.mutable.empty();
-        for (NounMapping nameMapping : textualInstance.getNameMappings()) {
-            names.addAll(nameMapping.getSurfaceForms().castToCollection());
-            namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
-        }
-
-        return "name=" + textualInstance.getName() + "occurrences= " + "NameVariants: " + names.size() + ": " + names + //
-                " sentences{" + Arrays.toString(namePositions.toArray()) + "}";
     }
 
     @Override

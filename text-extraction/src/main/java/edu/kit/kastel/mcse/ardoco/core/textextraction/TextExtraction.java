@@ -10,7 +10,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent;
@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
  */
 public class TextExtraction extends AbstractExecutionStage {
 
-    private final MutableList<TextAgent> agents;
+    private final MutableList<PipelineAgent> agents;
 
     @Configurable
     private List<String> enabledAgents;
@@ -41,7 +41,7 @@ public class TextExtraction extends AbstractExecutionStage {
     public void run() {
         initializeTextState();
 
-        for (TextAgent agent : findByClassName(enabledAgents, agents)) {
+        for (var agent : findByClassName(enabledAgents, agents)) {
             this.addPipelineStep(agent);
         }
         super.run();
@@ -49,7 +49,7 @@ public class TextExtraction extends AbstractExecutionStage {
 
     private void initializeTextState() {
         var dataRepository = getDataRepository();
-        var optionalTextState = dataRepository.getData(TextStateImpl.ID, TextStateImpl.class);
+        var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
             var textState = new TextStateImpl();
             dataRepository.addData(TextState.ID, textState);

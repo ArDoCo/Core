@@ -38,7 +38,7 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
  */
 public final class ArDoCo extends Pipeline {
 
-    private static final Logger logger = LoggerFactory.getLogger(ArDoCo.class);
+    private static final Logger classLogger = LoggerFactory.getLogger(ArDoCo.class);
 
     public ArDoCo() {
         super("ArDoCo", new DataRepository());
@@ -51,7 +51,7 @@ public final class ArDoCo extends Pipeline {
 
     @Override
     public void run() {
-        logger.info("Starting ArDoCo");
+        classLogger.info("Starting ArDoCo");
         super.run();
     }
 
@@ -63,7 +63,7 @@ public final class ArDoCo extends Pipeline {
      * @param inputArchitectureModel File of the input model (PCM)
      * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) throws IOException {
+    public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) {
         return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
@@ -81,18 +81,18 @@ public final class ArDoCo extends Pipeline {
     public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) {
 
-        logger.info("Loading additional configs ..");
+        classLogger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
-        logger.info("Starting {}", name);
+        classLogger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
         ArDoCo arDoCo = null;
         try {
             arDoCo = defineArDoCo(inputText, inputArchitectureModel, inputCodeModel, additionalConfigs);
         } catch (IOException e) {
-            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
-            throw new RuntimeException(e);
+            classLogger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
+            return null;
         }
         arDoCo.run();
 
@@ -100,7 +100,7 @@ public final class ArDoCo extends Pipeline {
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
         saveOutput(name, outputDir, arDoCo, duration);
 
-        logger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
+        classLogger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
         return new DataStructure(arDoCo.getDataRepository());
     }
@@ -128,7 +128,7 @@ public final class ArDoCo extends Pipeline {
         }
         var dataRepository = arDoCo.getDataRepository();
         var modelStatesData = getModelStatesData(dataRepository);
-        logger.info("Writing output.");
+        classLogger.info("Writing output.");
         for (String modelId : modelStatesData.modelIds()) {
             // write model states
             ModelExtractionState modelState = modelStatesData.getModelState(modelId);
@@ -193,14 +193,14 @@ public final class ArDoCo extends Pipeline {
                     }
                     var values = line.split(KEY_VALUE_CONNECTOR, 2);
                     if (values.length != 2) {
-                        logger.error("Found config line \"{}\". Layout has to be: 'KEY" + KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName"
+                        classLogger.error("Found config line \"{}\". Layout has to be: 'KEY" + KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName"
                                 + CLASS_ATTRIBUTE_CONNECTOR + "AttributeName" + KEY_VALUE_CONNECTOR + "42", line);
                     } else {
                         additionalConfigs.put(values[0], values[1]);
                     }
                 }
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                classLogger.error(e.getMessage(), e);
             }
         }
         return additionalConfigs;

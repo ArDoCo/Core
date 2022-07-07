@@ -10,7 +10,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingTextForModelE
 
 public class InconsistencyChecker extends AbstractExecutionStage {
 
-    private final MutableList<InconsistencyAgent> agents;
+    private final MutableList<PipelineAgent> agents;
 
     @Configurable
     private List<String> enabledAgents;
@@ -37,7 +37,7 @@ public class InconsistencyChecker extends AbstractExecutionStage {
         var inconsistencyStates = InconsistencyStatesImpl.build();
         getDataRepository().addData(InconsistencyStates.ID, inconsistencyStates);
 
-        for (InconsistencyAgent agent : findByClassName(enabledAgents, agents)) {
+        for (PipelineAgent agent : findByClassName(enabledAgents, agents)) {
             this.addPipelineStep(agent);
         }
 

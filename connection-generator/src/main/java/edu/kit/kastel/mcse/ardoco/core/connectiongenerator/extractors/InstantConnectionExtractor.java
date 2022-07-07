@@ -5,7 +5,7 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class InstantConnectionExtractor extends AbstractInformant {
+public class InstantConnectionExtractor extends Informant {
     @Configurable
     private double probability = 1.0;
     @Configurable
@@ -27,8 +27,6 @@ public class InstantConnectionExtractor extends AbstractInformant {
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
-        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
-        var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);

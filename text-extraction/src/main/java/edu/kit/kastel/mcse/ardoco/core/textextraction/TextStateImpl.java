@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  */
 public class TextStateImpl extends AbstractState implements TextState {
 
-    private MutableList<NounMapping> nounMappings;
+    private transient MutableList<NounMapping> nounMappings;
 
     /**
      * Creates a new name type relation state

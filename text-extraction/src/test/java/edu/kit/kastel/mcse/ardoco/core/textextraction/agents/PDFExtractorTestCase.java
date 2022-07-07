@@ -11,15 +11,15 @@ import java.util.function.Predicate;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Not a test, but it extracts the data from the downloaded pdfs.
  */
-@DisabledIfEnvironmentVariable(matches = "true", named = "CI")
-class PDFExtractor {
+@EnabledIfEnvironmentVariable(matches = "true", named = "ExtractPDF")
+class PDFExtractorTestCase {
 
     @Test
     void extractStandardGlossary() throws IOException {

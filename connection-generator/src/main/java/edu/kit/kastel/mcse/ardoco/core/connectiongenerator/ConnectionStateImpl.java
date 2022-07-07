@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
  */
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 
-    private Set<InstanceLink> instanceLinks;
+    private transient Set<InstanceLink> instanceLinks;
 
     @Override
     public ConnectionState createCopy() {

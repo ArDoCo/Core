@@ -92,7 +92,7 @@ public final class ArDoCoCLI {
 
         var name = cmd.getOptionValue(CMD_NAME);
 
-        if (!name.matches("[A-Za-z0-9_]+")) {
+        if (!name.matches("\\w+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
             return;
         }

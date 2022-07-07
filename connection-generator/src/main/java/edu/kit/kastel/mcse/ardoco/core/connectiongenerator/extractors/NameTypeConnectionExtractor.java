@@ -9,7 +9,7 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
@@ -28,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  *
  * @author Sophie Schulz, Jan Keim
  */
-public class NameTypeConnectionExtractor extends AbstractInformant {
+public class NameTypeConnectionExtractor extends Informant {
 
     @Configurable
     private double probability = 1.0;

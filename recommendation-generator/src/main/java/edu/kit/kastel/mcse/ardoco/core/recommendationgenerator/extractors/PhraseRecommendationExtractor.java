@@ -11,7 +11,7 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class PhraseRecommendationExtractor extends AbstractInformant {
+public class PhraseRecommendationExtractor extends Informant {
 
     @Configurable
     private double confidence = 0.8;
@@ -163,6 +163,6 @@ public class PhraseRecommendationExtractor extends AbstractInformant {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
-
+        // empty
     }
 }
