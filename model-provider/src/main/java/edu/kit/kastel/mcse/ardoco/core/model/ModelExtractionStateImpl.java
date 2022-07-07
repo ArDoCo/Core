@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -144,10 +143,5 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
             output.append(i.toString()).append("\n");
         }
         return output.toString();
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
-        // empty
     }
 }

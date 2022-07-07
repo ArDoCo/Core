@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.text;
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**
- * The Interface IText defines the representation of a text.
+ * This interface defines the representation of a text.
  */
 public interface Text {
 

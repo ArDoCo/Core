@@ -96,14 +96,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
     boolean isWordContainedByMappingKind(Word word, MappingKind mappingKind);
 
     /**
-     * Returns if a word is contained by the mappings.
-     *
-     * @param word word to check
-     * @return true if the word is contained by mappings.
-     */
-    boolean isWordContainedByNounMappings(Word word);
-
-    /**
      * Gets the all noun mappings.
      *
      * @return the all mappings
@@ -140,7 +132,7 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      * Gets the mappings that could be a Name or Type.
      *
      * @param word  the word
-     * @param kinds the required mappingKindso
+     * @param kinds the required mappingKinds
      * @return the mappings that could be a Name or Type
      */
     default ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind... kinds) {

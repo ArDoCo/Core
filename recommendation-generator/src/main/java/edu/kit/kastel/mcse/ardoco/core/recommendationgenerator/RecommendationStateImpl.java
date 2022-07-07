@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.HashSet;
-import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -200,10 +199,5 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarType(String type) {
         return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutable();
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
-        // empty
     }
 }

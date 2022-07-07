@@ -7,8 +7,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
- * Represents a tracelink. Is a convenience data class that takes the necessary info from {@link InstanceLink} and the
- * specific {@link ModelInstance} and {@link Word} that are used in this tracelink.
+ * Represents a trace link. This is a convenience data class that takes the necessary info from {@link InstanceLink} and
+ * the specific {@link ModelInstance} and {@link Word} that are used in this trace link.
  *
  * @author Jan Keim
  */

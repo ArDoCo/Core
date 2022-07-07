@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -24,11 +23,6 @@ public class InconsistencyStateImpl extends AbstractState implements Inconsisten
     public InconsistencyStateImpl() {
         inconsistencies = Lists.mutable.empty();
         recommendedInstances = Lists.mutable.empty();
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
-        // empty
     }
 
     /**

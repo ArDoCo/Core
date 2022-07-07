@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
@@ -140,17 +139,6 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     /**
-     * Returns if a node is contained by the mappings.
-     *
-     * @param word node to check
-     * @return true if the node is contained by mappings.
-     */
-    @Override
-    public final boolean isWordContainedByNounMappings(Word word) {
-        return nounMappings.anySatisfy(n -> n.getWords().contains(word));
-    }
-
-    /**
      * Returns if a node is contained by the name mappings.
      *
      * @param word        node to check
@@ -205,8 +193,4 @@ public class TextStateImpl extends AbstractState implements TextState {
         return "TextExtractionState [nounMappings=" + String.join("\n", nounMappings.toString()) + ", relationNodes=" + "]";
     }
 
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // handle additional configuration
-    }
 }
