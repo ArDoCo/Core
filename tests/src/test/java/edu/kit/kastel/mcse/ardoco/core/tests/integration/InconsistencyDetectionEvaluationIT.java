@@ -75,6 +75,8 @@ class InconsistencyDetectionEvaluationIT {
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
         Map<ModelInstance, DataStructure> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, true);
 
+        Assertions.assertTrue(runs != null && runs.size() > 0);
+
         ResultCalculator resultCalculator = calculateEvaluationResults(project, runs);
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
