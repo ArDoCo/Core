@@ -11,11 +11,9 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
  * Filters {@link RecommendedInstance}s that have low probabilities of being an entity. This can either be because the
@@ -25,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * @author Jan Keim
  *
  */
-public class RecommendedInstanceProbabilityFilter extends Informant {
+public class RecommendedInstanceProbabilityFilter extends Filter {
     @Configurable
     private double thresholdNameAndTypeProbability = 0.3;
     @Configurable
@@ -45,23 +43,10 @@ public class RecommendedInstanceProbabilityFilter extends Informant {
         super("RecommendedInstanceProbabilityFilter", dataRepository);
     }
 
-    @Override
-    public void run() {
-        var dataRepository = getDataRepository();
-        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
-        var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
-
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
-            var inconsistencyState = inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
-            filterRecommendedInstances(inconsistencyState);
-        }
-    }
-
     /**
      * Filter RecommendedInstances based on various heuristics. First, filter unlikely ones (low probability).
      */
-    private void filterRecommendedInstances(InconsistencyState inconsistencyState) {
+    protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
         var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
