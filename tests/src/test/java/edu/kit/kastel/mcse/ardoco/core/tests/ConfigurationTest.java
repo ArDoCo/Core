@@ -1,18 +1,18 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.reflections.Reflections;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.reflections.Reflections;
-
-import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
-import edu.kit.kastel.informalin.framework.configuration.Configurable;
 
 /**
  * This test class deals with the configurations.
@@ -33,6 +33,7 @@ class ConfigurationTest {
         var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
                 .stream()
+                .filter(c -> c.getPackageName().startsWith("edu.kit.kastel.mcse.ardoco"))
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();
@@ -164,6 +165,14 @@ class ConfigurationTest {
             var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().get();
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(Map.of());
+        }
+        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)) {
+            var constructor = constructors.stream()
+                    .filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)
+                    .findFirst()
+                    .get();
+            constructor.setAccessible(true);
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null });
         }
 
         Assertions.fail("No suitable constructor has been found for " + clazz);

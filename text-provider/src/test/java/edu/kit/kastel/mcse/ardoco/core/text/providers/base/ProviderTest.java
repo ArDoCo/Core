@@ -7,20 +7,20 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
 
 public abstract class ProviderTest {
     private static final Logger logger = LoggerFactory.getLogger(ProviderTest.class);
     protected static String inputText = "src/test/resources/teastore.txt";
 
-    private ITextConnector provider = null;
+    private TextProvider provider = null;
 
     @BeforeEach
     void beforeEach() {
         provider = getProvider();
     }
 
-    protected abstract ITextConnector getProvider();
+    protected abstract TextProvider getProvider();
 
     @Test
     void getTextTest() {

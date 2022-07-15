@@ -6,22 +6,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 public abstract class WordTest {
     public static final int WORD_INDEX = 739;
-    private static IWord word;
+    private static Word word;
 
     @BeforeEach
     void beforeEach() {
         var provider = getProvider();
         var text = provider.getAnnotatedText();
-        word = text.getWords().get(WORD_INDEX);
+        word = text.words().get(WORD_INDEX);
     }
 
-    protected abstract ITextConnector getProvider();
+    protected abstract TextProvider getProvider();
 
     @Test
     void getTextTest() {

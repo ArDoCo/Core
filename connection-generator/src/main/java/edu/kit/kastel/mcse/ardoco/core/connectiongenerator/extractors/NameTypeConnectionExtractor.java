@@ -7,17 +7,20 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
@@ -25,24 +28,35 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  *
  * @author Sophie Schulz, Jan Keim
  */
-public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAgentData> {
+public class NameTypeConnectionExtractor extends Informant {
 
     @Configurable
     private double probability = 1.0;
 
-    public NameTypeConnectionExtractor() {
-        // empty
+    public NameTypeConnectionExtractor(DataRepository dataRepository) {
+        super("NameTypeConnectionExtractor", dataRepository);
     }
 
     @Override
-    public void exec(ConnectionAgentData data, IWord word) {
-        for (var model : data.getModelIds()) {
-            var modelState = data.getModelState(model);
-            var recommendationState = data.getRecommendationState(modelState.getMetamodel());
-            checkForNameAfterType(data.getTextState(), word, modelState, recommendationState);
-            checkForNameBeforeType(data.getTextState(), word, modelState, recommendationState);
-            checkForNortBeforeType(data.getTextState(), word, modelState, recommendationState);
-            checkForNortAfterType(data.getTextState(), word, modelState, recommendationState);
+    public void run() {
+        DataRepository dataRepository = getDataRepository();
+        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
+        var textState = DataRepositoryHelper.getTextState(dataRepository);
+        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
+        for (var word : text.words()) {
+            exec(textState, modelStates, recommendationStates, word);
+        }
+    }
+
+    private void exec(TextState textState, ModelStates modelStates, RecommendationStates recommendationStates, Word word) {
+        for (var model : modelStates.modelIds()) {
+            var modelState = modelStates.getModelState(model);
+            var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
+            checkForNameAfterType(textState, word, modelState, recommendationState);
+            checkForNameBeforeType(textState, word, modelState, recommendationState);
+            checkForNortBeforeType(textState, word, modelState, recommendationState);
+            checkForNortAfterType(textState, word, modelState, recommendationState);
         }
     }
 
@@ -50,7 +64,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      * Checks if the current node is a type in the text extraction state. If the names of the text extraction state
      * contain the previous node. If that's the case a recommendation for the combination of both is created.
      */
-    private void checkForNameBeforeType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
+    private void checkForNameBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -79,7 +93,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      * @param modelState          the current model state
      * @param recommendationState the current recommendation state
      */
-    private void checkForNameAfterType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
+    private void checkForNameAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -102,7 +116,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
      * state contain the previous node. If that's the case a recommendation for the combination of both is created.
      */
-    private void checkForNortBeforeType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
+    private void checkForNortBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -126,7 +140,7 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
      * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
      */
-    private void checkForNortAfterType(ITextState textExtractionState, IWord word, IModelState modelState, IRecommendationState recommendationState) {
+    private void checkForNortAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -156,11 +170,11 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      * @param typeMappings        the type mappings
      */
     private void addRecommendedInstanceIfNodeNotNull(//
-            IWord currentWord, ITextState textExtractionState, IModelInstance instance, ImmutableList<INounMapping> nameMappings,
-            ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState) {
+            Word currentWord, TextState textExtractionState, ModelInstance instance, ImmutableList<NounMapping> nameMappings,
+            ImmutableList<NounMapping> typeMappings, RecommendationState recommendationState) {
         var nounMappingsByCurrentWord = textExtractionState.getNounMappingsByWord(currentWord);
         if (instance != null && nounMappingsByCurrentWord != null) {
-            for (INounMapping nmapping : nounMappingsByCurrentWord) {
+            for (NounMapping nmapping : nounMappingsByCurrentWord) {
                 var name = instance.getFullName();
                 var type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
@@ -177,11 +191,11 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
      * @param word                the node for name identification
      * @return the unique matching instance
      */
-    private IModelInstance tryToIdentify(ITextState textExtractionState, ImmutableList<String> similarTypes, IWord word, IModelState modelState) {
+    private ModelInstance tryToIdentify(TextState textExtractionState, ImmutableList<String> similarTypes, Word word, ModelExtractionState modelState) {
         if (textExtractionState == null || similarTypes == null || word == null) {
             return null;
         }
-        MutableList<IModelInstance> matchingInstances = Lists.mutable.empty();
+        MutableList<ModelInstance> matchingInstances = Lists.mutable.empty();
 
         for (String type : similarTypes) {
             matchingInstances.addAll(modelState.getInstancesOfType(type).castToCollection());
@@ -200,4 +214,5 @@ public class NameTypeConnectionExtractor extends AbstractExtractor<ConnectionAge
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         // handle additional configuration
     }
+
 }

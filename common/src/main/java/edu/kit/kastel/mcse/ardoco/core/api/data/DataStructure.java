@@ -1,112 +1,55 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
-import static edu.kit.kastel.informalin.framework.common.JavaUtils.copyMap;
-
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.InconsistencyAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
+import org.eclipse.collections.api.factory.Lists;
+
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
-public final class DataStructure implements IData, IModelData, ITextData, IRecommendationData, IConnectionData, IInconsistencyData, TextAgentData,
-        RecommendationAgentData, ConnectionAgentData, InconsistencyAgentData {
-    private final IText text;
-    private final Map<String, IModelState> modelStates;
+public record DataStructure(DataRepository dataRepository) {
 
-    private ITextState textState;
-    private Map<Metamodel, IRecommendationState> recommendationStates = new EnumMap<>(Metamodel.class);
-    private Map<String, IConnectionState> connectionStates = new HashMap<>();
-    private Map<String, IInconsistencyState> inconsistencyStates = new HashMap<>();
-
-    public DataStructure(IText text, Map<String, IModelState> models) {
-        this.text = text;
-        this.modelStates = models;
+    public ConnectionState getConnectionState(String model) {
+        var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
+        var modelState = getModelState(model);
+        return connectionStates.getConnectionState(modelState.getMetamodel());
     }
 
-    @Override
-    public DataStructure createCopy() {
-        DataStructure ds = new DataStructure(text, copyMap(modelStates, IModelState::createCopy));
-        ds.textState = textState == null ? null : textState.createCopy();
-        ds.recommendationStates = copyMap(recommendationStates, IRecommendationState::createCopy);
-        ds.connectionStates = copyMap(connectionStates, IConnectionState::createCopy);
-        ds.inconsistencyStates = copyMap(inconsistencyStates, IInconsistencyState::createCopy);
-        return ds;
+    public InconsistencyState getInconsistencyState(String model) {
+        var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
+        var modelState = getModelState(model);
+        return inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
     }
 
-    @Override
-    public void setConnectionState(String model, IConnectionState state) {
-        ensureModel(model);
-        connectionStates.put(model, state);
+    private ModelStates getModelStates() {
+        return DataRepositoryHelper.getModelStatesData(dataRepository);
     }
 
-    @Override
-    public IConnectionState getConnectionState(String model) {
-        return connectionStates.get(model);
-    }
-
-    @Override
-    public void setInconsistencyState(String model, IInconsistencyState state) {
-        ensureModel(model);
-        this.inconsistencyStates.put(model, state);
-    }
-
-    @Override
-    public IInconsistencyState getInconsistencyState(String model) {
-        return inconsistencyStates.get(model);
-    }
-
-    @Override
     public List<String> getModelIds() {
-        return modelStates.keySet().stream().toList();
+        ModelStates modelStates = getModelStates();
+        return Lists.mutable.ofAll(modelStates.modelIds());
     }
 
-    @Override
-    public IModelState getModelState(String model) {
-        return modelStates.get(model);
+    public ModelExtractionState getModelState(String model) {
+        ModelStates modelStates = getModelStates();
+        return modelStates.getModelState(model);
     }
 
-    @Override
-    public void setRecommendationState(Metamodel mm, IRecommendationState state) {
-        Objects.requireNonNull(mm);
-        this.recommendationStates.put(mm, state);
+    public RecommendationState getRecommendationState(Metamodel mm) {
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
+        return recommendationStates.getRecommendationState(mm);
     }
 
-    @Override
-    public IRecommendationState getRecommendationState(Metamodel mm) {
-        return recommendationStates.get(mm);
+    public Text getText() {
+        var preprocessingData = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow();
+        return preprocessingData.getText();
     }
-
-    @Override
-    public IText getText() {
-        return text;
-    }
-
-    @Override
-    public void setTextState(ITextState state) {
-        this.textState = state;
-    }
-
-    @Override
-    public ITextState getTextState() {
-        return textState;
-    }
-
-    private void ensureModel(String model) {
-        if (!this.modelStates.containsKey(model))
-            throw new IllegalArgumentException("Model with Key " + model + " was not found");
-    }
-
 }
