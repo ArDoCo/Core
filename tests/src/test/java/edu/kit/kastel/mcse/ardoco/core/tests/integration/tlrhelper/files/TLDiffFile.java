@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
@@ -23,7 +23,7 @@ public class TLDiffFile {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static void save(Path targetFile, Collection<TLProjectEvalResult> newResults, Collection<TLProjectEvalResult> oldResults,
-            Map<Project, DataStructure> dataMap) throws IOException {
+            Map<Project, ArDoCoResult> dataMap) throws IOException {
         // Assumption: Both collections contain the same projects
 
         newResults = newResults.stream().sorted().toList();
@@ -88,8 +88,8 @@ public class TLDiffFile {
         return oldLinks.stream().filter(link -> !newLinks.contains(link)).toList();
     }
 
-    private static void appendList(StringBuilder builder, String description, List<TestLink> links, DataStructure data) {
-        var text = data.getText();
+    private static void appendList(StringBuilder builder, String description, List<TestLink> links, ArDoCoResult arDoCoResult) {
+        var text = arDoCoResult.getText();
         if (links.isEmpty()) {
             return;
         }
@@ -97,9 +97,9 @@ public class TLDiffFile {
         builder.append(description).append(":\n");
 
         for (TestLink link : links) {
-            for (var modelId : data.getModelIds()) {
-                var datamodel = data.getModelState(modelId);
-                var line = TLSummaryFile.format(link, text, datamodel);
+            for (var modelId : arDoCoResult.getModelIds()) {
+                var dataModel = arDoCoResult.getModelState(modelId);
+                var line = TLSummaryFile.format(link, text, dataModel);
                 if (line != null && !line.isBlank()) {
                     builder.append("- ").append(line).append('\n');
                 }

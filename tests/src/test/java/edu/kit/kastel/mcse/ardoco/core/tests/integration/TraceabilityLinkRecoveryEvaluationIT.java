@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -27,9 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
@@ -60,7 +58,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
-    private static final Map<Project, DataStructure> DATA_MAP = new HashMap<>();
+    private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
     private File inputText;
@@ -112,17 +110,17 @@ class TraceabilityLinkRecoveryEvaluationIT {
         inputText = project.getTextFile();
 
         // execute pipeline
-        DataStructure dataStructure = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
+        ArDoCoResult arDoCoResult = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
 
-        var data = dataStructure.dataRepository();
+        var data = arDoCoResult.dataRepository();
         Assertions.assertNotNull(data);
-        var modelIds = dataStructure.getModelIds();
+        var modelIds = arDoCoResult.getModelIds();
         Assertions.assertEquals(1, modelIds.size());
         var modelId = modelIds.stream().findFirst().orElseThrow();
-        var model = dataStructure.getModelState(modelId);
+        var model = arDoCoResult.getModelState(modelId);
 
         // calculate results and compare to expected results
-        var results = calculateResults(project, dataStructure, model);
+        var results = calculateResults(project, arDoCoResult, model);
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
@@ -138,7 +136,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 }
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
-                    DATA_MAP.put(project, dataStructure);
+                    DATA_MAP.put(project, arDoCoResult);
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn(e.getMessage(), e.getCause());
@@ -181,11 +179,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     }
 
-    private MutableList<String> createOutputStrings(Stream<String> tracelinkStrings, ImmutableList<Sentence> sentences,
+    private MutableList<String> createOutputStrings(Stream<String> traceLinkStrings, ImmutableList<Sentence> sentences,
             ImmutableList<ModelInstance> instances) {
         var outputList = Lists.mutable.<String> empty();
-        for (var tracelinkString : tracelinkStrings.toList()) {
-            var parts = tracelinkString.split(",");
+        for (var traceLinkString : traceLinkStrings.toList()) {
+            var parts = traceLinkString.split(",");
             if (parts.length < 2) {
                 continue;
             }
@@ -199,29 +197,25 @@ class TraceabilityLinkRecoveryEvaluationIT {
             try {
                 sentenceNo = Integer.parseInt(sentence);
             } catch (NumberFormatException e) {
-                logger.debug("Having problems retrieving sentence, so skipping line: {}", tracelinkString);
+                logger.debug("Having problems retrieving sentence, so skipping line: {}", traceLinkString);
                 continue;
             }
             var sentenceText = sentences.get(sentenceNo - 1);
 
-            outputList.add(String.format("%-20s - %s (%s)", modelElement.getFullName(), sentenceText.getText(), tracelinkString));
+            outputList.add(String.format("%-20s - %s (%s)", modelElement.getFullName(), sentenceText.getText(), traceLinkString));
         }
         return outputList;
     }
 
-    private EvaluationResults calculateResults(Project project, DataStructure dataStructure, ModelExtractionState modelState) {
-        var connectionState = dataStructure.getConnectionState(modelState.getModelId());
-        var traceLinks = getTraceLinksFromConnectionState(connectionState);
+    private EvaluationResults calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
+        String modelId = modelState.getModelId();
+        var connectionState = arDoCoResult.getConnectionState(modelId);
+        var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
 
         var goldStandard = getGoldStandard(project);
 
-        return TestUtil.compare(traceLinks, goldStandard);
-    }
-
-    private Set<String> getTraceLinksFromConnectionState(ConnectionState connectionState) {
-        var formatString = "%s,%d";
-        return connectionState.getTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1)).castToSet();
+        return TestUtil.compare(traceLinks.toSet(), goldStandard);
     }
 
     private List<String> getGoldStandard(Project project) {

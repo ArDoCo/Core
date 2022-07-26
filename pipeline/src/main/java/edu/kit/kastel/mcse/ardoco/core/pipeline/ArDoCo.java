@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
@@ -61,9 +61,9 @@ public final class ArDoCo extends Pipeline {
      * @param name                   Name of the run
      * @param inputText              File of the input text.
      * @param inputArchitectureModel File of the input model (PCM)
-     * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
+     * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) {
+    public static ArDoCoResult run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) {
         return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
     }
 
@@ -76,9 +76,9 @@ public final class ArDoCo extends Pipeline {
      * @param inputCodeModel         File of the input model (Java Code JSON)
      * @param additionalConfigsFile  File with the additional or overwriting config parameters that should be used
      * @param outputDir              File that represents the output directory where the results should be written to
-     * @return the {@link DataStructure} that contains the blackboard with all results (of all steps)
+     * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
-    public static DataStructure runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
+    public static ArDoCoResult runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
             File outputDir) {
 
         classLogger.info("Loading additional configs ..");
@@ -102,7 +102,7 @@ public final class ArDoCo extends Pipeline {
 
         classLogger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
 
-        return new DataStructure(arDoCo.getDataRepository());
+        return new ArDoCoResult(arDoCo.getDataRepository());
     }
 
     private static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs)

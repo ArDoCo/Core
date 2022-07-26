@@ -24,8 +24,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
@@ -61,7 +60,7 @@ class InconsistencyDetectionEvaluationIT {
     @EnumSource(Project.class)
     void inconsistencyIT(Project project) {
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
-        Map<ModelInstance, DataStructure> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
+        Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
@@ -85,7 +84,7 @@ class InconsistencyDetectionEvaluationIT {
     @EnumSource(Project.class)
     void inconsistencyBaselineIT(Project project) {
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
-        Map<ModelInstance, DataStructure> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, true);
+        Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, true);
 
         Assertions.assertTrue(runs != null && runs.size() > 0);
 
@@ -97,8 +96,7 @@ class InconsistencyDetectionEvaluationIT {
         logResults(project, weightedResults, expectedInconsistencyResults);
     }
 
-    private Pair<ResultCalculator, List<ExplicitEvaluationResults<String>>> calculateEvaluationResults(Project project,
-            Map<ModelInstance, DataStructure> runs) {
+    private Pair<ResultCalculator, List<ExplicitEvaluationResults<String>>> calculateEvaluationResults(Project project, Map<ModelInstance, ArDoCoResult> runs) {
         List<ExplicitEvaluationResults<String>> explicitResults = new ArrayList<>();
         ResultCalculator resultCalculator = new ResultCalculator();
         for (var run : runs.entrySet()) {
@@ -114,10 +112,11 @@ class InconsistencyDetectionEvaluationIT {
         return Tuples.pair(resultCalculator, explicitResults);
     }
 
-    private ExplicitEvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, DataStructure data) {
-        var modelId = data.getModelIds().get(0);
+    private ExplicitEvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, ArDoCoResult arDoCoResult) {
+        var modelId = arDoCoResult.getModelIds().get(0);
 
-        ImmutableList<MissingModelInstanceInconsistency> inconsistencies = getInconsistencies(data, modelId);
+        ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(modelId,
+                MissingModelInstanceInconsistency.class);
         if (removedElement == null) {
             // base case
             return null;
@@ -136,12 +135,6 @@ class InconsistencyDetectionEvaluationIT {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static ImmutableList<MissingModelInstanceInconsistency> getInconsistencies(DataStructure data, String modelId) {
-        ImmutableList<Inconsistency> inconsistencies = data.getInconsistencyState(modelId).getInconsistencies();
-        return inconsistencies.select(i -> MissingModelInstanceInconsistency.class.isAssignableFrom(i.getClass()))
-                .collect(MissingModelInstanceInconsistency.class::cast);
     }
 
     private void logResults(Project project, EvaluationResults results, EvaluationResults expectedResults) {
@@ -164,7 +157,7 @@ class InconsistencyDetectionEvaluationIT {
                         "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
     }
 
-    private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, DataStructure> runs) {
+    private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("### ").append(project.name()).append(" ###");
         outputBuilder.append(System.lineSeparator());
@@ -219,9 +212,9 @@ class InconsistencyDetectionEvaluationIT {
         return truePositives.stream().map(Object::toString).collect(Collectors.joining(", ", "[", "]"));
     }
 
-    private static ImmutableList<MissingModelInstanceInconsistency> getInitialInconsistencies(DataStructure data) {
-        var id = data.getModelIds().get(0);
-        return getInconsistencies(data, id);
+    private static ImmutableList<MissingModelInstanceInconsistency> getInitialInconsistencies(ArDoCoResult arDoCoResult) {
+        var id = arDoCoResult.getModelIds().get(0);
+        return arDoCoResult.getInconsistenciesOfTypeForModel(id, MissingModelInstanceInconsistency.class);
     }
 
 }

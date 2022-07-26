@@ -7,13 +7,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 public class TLModelFile {
 
-    public static void save(Path targetFile, Map<Project, DataStructure> dataMap) throws IOException {
+    public static void save(Path targetFile, Map<Project, ArDoCoResult> dataMap) throws IOException {
         var projects = dataMap.keySet().stream().sorted().toList();
         var builder = new StringBuilder();
 
