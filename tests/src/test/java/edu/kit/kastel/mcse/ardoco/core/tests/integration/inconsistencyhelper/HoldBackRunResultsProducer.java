@@ -10,15 +10,15 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.tests.architecture.inconsistencies.baseline.InconsistencyBaseline;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
 
 public class HoldBackRunResultsProducer {
     private File inputText;
@@ -39,8 +39,8 @@ public class HoldBackRunResultsProducer {
      * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced
      *         when running ArDoCo without the ModelElement
      */
-    public Map<ModelInstance, DataStructure> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
-        Map<ModelInstance, DataStructure> runs = new HashMap<ModelInstance, DataStructure>();
+    public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
+        Map<ModelInstance, ArDoCoResult> runs = new HashMap<ModelInstance, ArDoCoResult>();
 
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
@@ -55,7 +55,7 @@ public class HoldBackRunResultsProducer {
             return runs;
         }
         arDoCoBaseRun.run();
-        var baseRunData = new DataStructure(arDoCoBaseRun.getDataRepository());
+        var baseRunData = new ArDoCoResult(arDoCoBaseRun.getDataRepository());
         runs.put(null, baseRunData);
 
         for (int i = 0; i < holdElementsBackModelConnector.numberOfActualInstances(); i++) {
@@ -63,7 +63,7 @@ public class HoldBackRunResultsProducer {
             var currentHoldBack = holdElementsBackModelConnector.getCurrentHoldBack();
             var currentRun = defineArDoCoWithPreComputedData(baseRunData, holdElementsBackModelConnector, useBaselineApproach);
             currentRun.run();
-            runs.put(currentHoldBack, new DataStructure(currentRun.getDataRepository()));
+            runs.put(currentHoldBack, new ArDoCoResult(currentRun.getDataRepository()));
         }
         return runs;
     }
@@ -96,13 +96,13 @@ public class HoldBackRunResultsProducer {
         return arDoCo;
     }
 
-    private static ArDoCo defineArDoCoWithPreComputedData(DataStructure precomputedData, HoldElementsBackModelConnector holdElementsBackModelConnector,
+    private static ArDoCo defineArDoCoWithPreComputedData(ArDoCoResult precomputedResults, HoldElementsBackModelConnector holdElementsBackModelConnector,
             boolean useInconsistencyBaseline) {
         ArDoCo arDoCo = new ArDoCo();
         var dataRepository = arDoCo.getDataRepository();
         var additionalConfigs = ArDoCo.loadAdditionalConfigs(null);
 
-        var preprocessingData = new PreprocessingData(precomputedData.getText());
+        var preprocessingData = new PreprocessingData(precomputedResults.getText());
         dataRepository.addData(PreprocessingData.ID, preprocessingData);
 
         addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);

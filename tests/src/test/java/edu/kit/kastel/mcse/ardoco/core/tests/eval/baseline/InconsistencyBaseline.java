@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.architecture.inconsistencies.baseline;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;

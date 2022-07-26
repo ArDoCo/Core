@@ -30,7 +30,7 @@ public class ArchitectureTest {
             .haveSimpleNameEndingWith("Link")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..tests..");
+            .resideInAnyPackage("..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..api..", "..tests..");
 
     @ArchTest
     public static final ArchRule usingLinkAsNamingOnlyInConnectionGenerator = classes().that()
