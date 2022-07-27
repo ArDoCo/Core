@@ -309,9 +309,6 @@ public class TextState extends AbstractState implements ITextState {
         nounMappings.add(wrap(nounMapping));
         phraseMappings.add(new PhraseMapping(nounMapping.getPhrases()));
 
-        if (invalidState()) {
-            int i = 0;
-        }
         return nounMapping;
     }
 
@@ -330,33 +327,6 @@ public class TextState extends AbstractState implements ITextState {
 
         nounMappings.add(wrap(newNounMapping));
         phraseMappings.add(newPhraseMapping);
-    }
-
-    private void mergeAllNounMappingsOld(ImmutableList<INounMapping> nounMappingsToMerge, INounMapping nounMappingToMergeInto) {
-
-        for (int i = 0; i < nounMappingsToMerge.size(); i++) {
-            nounMappingToMergeInto.merge(nounMappingsToMerge.get(i));
-            nounMappings.remove(wrap(nounMappingsToMerge.get(i)));
-        }
-
-        ImmutableList<IPhraseMapping> phraseMappingsOfMergedNounMapping = getPhraseMappingsByNounMapping(nounMappingToMergeInto);
-
-        if (phraseMappingsOfMergedNounMapping.isEmpty()) {
-            IPhraseMapping newPhraseMapping = new PhraseMapping(nounMappingToMergeInto.getPhrases());
-            phraseMappings.add(newPhraseMapping);
-            phraseMappingsOfMergedNounMapping = Lists.immutable.with(newPhraseMapping);
-        }
-
-        IPhraseMapping equalPhraseMapping = phraseMappingsOfMergedNounMapping.get(0);
-        for (int i = 1; i < phraseMappingsOfMergedNounMapping.size(); i++) {
-            equalPhraseMapping.merge(phraseMappingsOfMergedNounMapping.get(i));
-            phraseMappings.remove(phraseMappingsOfMergedNounMapping.get(i));
-        }
-
-        if (invalidState()) {
-            int i = 0;
-        }
-
     }
 
     private INounMapping addTextualEqualNounMapping(ImmutableList<INounMapping> textualEqualNounMappings, IPhraseMapping phraseMappingWithEqualPhrase,
@@ -378,16 +348,11 @@ public class TextState extends AbstractState implements ITextState {
 
                     nounMappings.add(wrap(nounMapping));
 
-                    // TODO: Remove
-                    if (invalidState()) {
-                        int i = 0;
-                    }
                     return nounMapping;
 
                 } else {
                     // case 2: phrase is not contained by other noun mappings -> throw exception
                     // TODO: equal phrase but no noun mappings of that!
-                    // TODO: add to invalid State
                     // throw new IllegalStateException("It should not be possible that a noun and
                     // phrase mappings are equal but not connected!");
                     nounMappings.add(wrap(nounMapping));
@@ -460,12 +425,8 @@ public class TextState extends AbstractState implements ITextState {
     private INounMapping addTextualEqualNounMappingWithSimilarPhrase(INounMapping nounMapping,
             ImmutableList<INounMapping> textualEqualNounMappingsWithSimilarPhrase) {
 
-        // System.out.println(this.toString());
-
         mergeAllNounMappings(textualEqualNounMappingsWithSimilarPhrase, nounMapping);
 
-        // System.out.println("after addTextEqNM W SimPhrase:");
-        // System.out.println(this.toString());
         return nounMapping;
     }
 
@@ -499,11 +460,6 @@ public class TextState extends AbstractState implements ITextState {
 
     private INounMapping addDifferentNounMappingWithEqualPhrases(INounMapping nounMapping, IPhraseMapping phraseMappingWithEqualPhrase) {
 
-        // phraseMappingWithEqualPhrase.merge(new PhraseMapping(nounMapping.getPhrases()));
-        // nounMappings.add(wrap(nounMapping));
-
-        System.out.println(this.toString());
-
         var sharedPhrases = nounMapping.getPhrases().select(p -> phraseMappingWithEqualPhrase.getPhrases().contains(p));
         MutableList<INounMapping> nounMappingsOfSharedPhrases = Lists.mutable.empty();
 
@@ -519,25 +475,16 @@ public class TextState extends AbstractState implements ITextState {
             splittedNounMappings.add(nounMappingWithSharedPhrase.split(wordsOfSharedPhrases));
         }
 
-        var phraseMappingsOfExistingNounMappings = splittedNounMappings.flatCollect(this::getPhraseMappingsByNounMapping);
-
         for (int i = 0; i < splittedNounMappings.size(); i++) {
             nounMapping.merge(splittedNounMappings.get(i));
             nounMappings.remove(wrap(splittedNounMappings.get(i)));
         }
 
-        IPhraseMapping newPhraseMapping = new PhraseMapping(nounMapping.getPhrases());
-        phraseMappingsOfExistingNounMappings.forEach(newPhraseMapping::merge);
-        phraseMappings.removeAllIterable(phraseMappingsOfExistingNounMappings);
+        sharedPhrases.forEach(phraseMappingWithEqualPhrase::removePhrase);
+        IPhraseMapping newPhraseMapping = new PhraseMapping(sharedPhrases);
 
         nounMappings.add(wrap(nounMapping));
         phraseMappings.add(newPhraseMapping);
-
-        System.out.println(this.toString());
-
-        if (invalidState()) {
-            int i = 0;
-        }
 
         return nounMapping;
 
@@ -569,34 +516,6 @@ public class TextState extends AbstractState implements ITextState {
     public void removeNounMapping(INounMapping nounMapping) {
         ImmutableList<IPhraseMapping> phraseMappingsOfNounMapping = getPhraseMappingsByNounMapping(nounMapping);
         phraseMappingsOfNounMapping.select(pm -> getNounMappingsByPhraseMapping(pm).size() == 1);
-    }
-
-    private boolean invalidState() {
-
-        // the size of phraseMappings and nounMappings is equal
-        if (nounMappings.flatCollect(nm -> getPhraseMappingsByNounMapping(nm.getElement())).size() > getNounMappings().size()) {
-            return true;
-        }
-
-        if (nounMappings.size() != getNounMappings().size()) {
-            return true;
-        }
-        if (phraseMappings.size() != getPhraseMappings().size()) {
-            return true;
-        }
-
-        // every noun mapping should have exactly one phrase mapping
-        ImmutableList<INounMapping> currentNounMappings = getNounMappings();
-
-        for (int i = 0; i < currentNounMappings.size(); i++) {
-            if (getPhraseMappingsByNounMapping(currentNounMappings.get(i)).size() != 1) {
-                return true;
-            }
-
-        }
-
-        return false;
-
     }
 
     private ElementWrapper<INounMapping> wrap(INounMapping nounMapping) {

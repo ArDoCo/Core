@@ -344,7 +344,7 @@ public class NounMapping implements INounMapping {
                 + distribution.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
-                ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
+                ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
                 ", probability=" + getProbability() + "]";
     }
 
