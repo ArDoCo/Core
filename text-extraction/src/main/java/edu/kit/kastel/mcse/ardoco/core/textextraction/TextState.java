@@ -1,15 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.*;
-
-import org.eclipse.collections.api.block.predicate.Predicate;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
-
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
@@ -21,6 +12,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import org.eclipse.collections.api.block.predicate.Predicate;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
+
+import java.util.*;
 
 /**
  * The Class TextState defines the basic implementation of a {@link ITextState}.
@@ -87,8 +86,7 @@ public class TextState extends AbstractState implements ITextState {
 
     @Override
     public ImmutableList<IPhraseMapping> getPhraseMappings() {
-
-        return Sets.mutable.withAll(getNounMappings().flatCollect(this::getPhraseMappingsByNounMapping)).toImmutableList();
+        return phraseMappings.toImmutableList();
     }
 
     public ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nm) {
@@ -131,9 +129,9 @@ public class TextState extends AbstractState implements ITextState {
 
     /**
      * Returns all mappings containing the given word.
-     *
+     * <p>
      * TODO: For Phi: Will it make problems that this is not compared just by reference?
-     * 
+     *
      * @param word the given word
      * @return all mappings containing the given node as list
      */
@@ -240,7 +238,7 @@ public class TextState extends AbstractState implements ITextState {
     /**
      * Extracts a phrase mapping that has the same phrase as the given phrase mapping. Currently, we only allow one
      * phrase per phrase mapping to search for the same phrase.
-     * 
+     *
      * @param phraseMapping that holds the phrase that is searched for.
      * @return phraseMapping that has the same phrases as the given phrase mapping
      */
@@ -493,7 +491,7 @@ public class TextState extends AbstractState implements ITextState {
     /**
      * Adds a new noun mapping that has a similar phrase mapping as an already existing noun mapping. However, both
      * phrase mappings do not share same phrases. Therefore, both can be added freshly to the state.
-     * 
+     *
      * @param nounMapping to be added
      * @return the added noun mapping
      */
@@ -504,7 +502,7 @@ public class TextState extends AbstractState implements ITextState {
 
     /**
      * Adds the given noun mapping and the phrase mapping to the state.
-     * 
+     *
      * @param nounMapping to be added
      * @return the added noun mapping
      */

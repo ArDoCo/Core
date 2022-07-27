@@ -18,156 +18,157 @@ import edu.stanford.nlp.trees.TypedDependency;
 
 class Word implements IWord {
 
-	private final CoreLabel token;
-	private final CoreDocument coreDocument;
-	private final int index;
-	private ISentence sentence = null;
-	private IWord preWord = null;
-	private IWord nextWord = null;
+    private final CoreLabel token;
+    private final CoreDocument coreDocument;
+    private final int index;
+    private ISentence sentence = null;
+    private IWord preWord = null;
+    private IWord nextWord = null;
 
-	Word(CoreLabel token, int index, CoreDocument coreDocument) {
-		this.token = token;
-		this.index = index;
-		this.coreDocument = coreDocument;
-	}
+    Word(CoreLabel token, int index, CoreDocument coreDocument) {
+        this.token = token;
+        this.index = index;
+        this.coreDocument = coreDocument;
+    }
 
-	@Override
-	public int getSentenceNo() {
-		return token.sentIndex();
-	}
+    @Override
+    public int getSentenceNo() {
+        return token.sentIndex();
+    }
 
-	public IPhrase getPhrase() {
-		var phrase = getSentence().getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
-		var subPhrases = List.of(phrase);
-		while (!subPhrases.isEmpty()) {
-			phrase = subPhrases.get(0);
-			subPhrases = phrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
-		}
-		return phrase;
-	}
+    public IPhrase getPhrase() {
+        var phrase = getSentence().getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
+        var subPhrases = List.of(phrase);
+        while (!subPhrases.isEmpty()) {
+            phrase = subPhrases.get(0);
+            subPhrases = phrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
+        }
+        return phrase;
+    }
 
-	@Override
-	public ISentence getSentence() {
-		if (this.sentence == null) {
-			int sentenceNo = getSentenceNo();
-			var coreSentence = coreDocument.sentences().get(sentenceNo);
-			sentence = new Sentence(coreSentence, sentenceNo);
-		}
-		return sentence;
-	}
+    @Override
+    public ISentence getSentence() {
+        if (this.sentence == null) {
+            int sentenceNo = getSentenceNo();
+            var coreSentence = coreDocument.sentences().get(sentenceNo);
+            sentence = new Sentence(coreSentence, sentenceNo);
+        }
+        return sentence;
+    }
 
-	@Override
-	public String getText() {
-		return token.get(CoreAnnotations.TextAnnotation.class);
-	}
+    @Override
+    public String getText() {
+        return token.get(CoreAnnotations.TextAnnotation.class);
+    }
 
-	@Override
-	public POSTag getPosTag() {
-		String posString = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-		return POSTag.get(posString);
-	}
+    @Override
+    public POSTag getPosTag() {
+        String posString = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+        return POSTag.get(posString);
+    }
 
-	@Override
-	public IWord getPreWord() {
-		int preWordIndex = index - 1;
-		if (preWord == null && preWordIndex > 0) {
-			var coreDocumentToken = coreDocument.tokens().get(preWordIndex);
-			preWord = new Word(coreDocumentToken, preWordIndex, coreDocument);
-		}
-		return preWord;
-	}
+    @Override
+    public IWord getPreWord() {
+        int preWordIndex = index - 1;
+        if (preWord == null && preWordIndex > 0) {
+            var coreDocumentToken = coreDocument.tokens().get(preWordIndex);
+            preWord = new Word(coreDocumentToken, preWordIndex, coreDocument);
+        }
+        return preWord;
+    }
 
-	@Override
-	public IWord getNextWord() {
-		int nextWordIndex = index + 1;
-		var tokens = coreDocument.tokens();
-		if (nextWord == null && nextWordIndex < tokens.size()) {
-			var coreDocumentToken = tokens.get(nextWordIndex);
-			nextWord = new Word(coreDocumentToken, nextWordIndex, coreDocument);
-		}
-		return nextWord;
-	}
+    @Override
+    public IWord getNextWord() {
+        int nextWordIndex = index + 1;
+        var tokens = coreDocument.tokens();
+        if (nextWord == null && nextWordIndex < tokens.size()) {
+            var coreDocumentToken = tokens.get(nextWordIndex);
+            nextWord = new Word(coreDocumentToken, nextWordIndex, coreDocument);
+        }
+        return nextWord;
+    }
 
-	@Override
-	public int getPosition() {
-		return index;
-	}
+    @Override
+    public int getPosition() {
+        return index;
+    }
 
-	protected int getPositionInSentence() {
-		return this.token.index();
-	}
+    protected int getPositionInSentence() {
+        return this.token.index();
+    }
 
-	protected int getBeginCharPosition() {
-		return this.token.beginPosition();
-	}
+    protected int getBeginCharPosition() {
+        return this.token.beginPosition();
+    }
 
-	@Override
-	public String getLemma() {
-		return token.get(CoreAnnotations.LemmaAnnotation.class);
-	}
+    @Override
+    public String getLemma() {
+        return token.get(CoreAnnotations.LemmaAnnotation.class);
+    }
 
-	@Override
-	public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
-		MutableList<IWord> dependencyWords = Lists.mutable.empty();
-		List<TypedDependency> dependencies = getDependenciesOfType(dependencyTag);
-		for (var typedDependency : dependencies) {
-			var target = typedDependency.dep().backingLabel();
-			var source = typedDependency.gov().backingLabel();
-			if (source.beginPosition() == token.beginPosition()) {
-				var targetWord = getCorrespondingWordForFirstTokenBasedOnSecondToken(target, source);
-				dependencyWords.add(targetWord);
-			}
-		}
-		return dependencyWords.toImmutable();
-	}
+    @Override
+    public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
+        MutableList<IWord> dependencyWords = Lists.mutable.empty();
+        List<TypedDependency> dependencies = getDependenciesOfType(dependencyTag);
+        for (var typedDependency : dependencies) {
+            var target = typedDependency.dep().backingLabel();
+            var source = typedDependency.gov().backingLabel();
+            if (source.beginPosition() == token.beginPosition()) {
+                var targetWord = getCorrespondingWordForFirstTokenBasedOnSecondToken(target, source);
+                dependencyWords.add(targetWord);
+            }
+        }
+        return dependencyWords.toImmutable();
+    }
 
-	@Override
-	public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
-		MutableList<IWord> dependencyWords = Lists.mutable.empty();
-		List<TypedDependency> dependencies = getDependenciesOfType(dependencyTag);
-		for (var typedDependency : dependencies) {
-			var target = typedDependency.dep().backingLabel();
-			var source = typedDependency.gov().backingLabel();
-			if (target.beginPosition() == token.beginPosition()) {
-				var word = getCorrespondingWordForFirstTokenBasedOnSecondToken(source, target);
-				dependencyWords.add(word);
-			}
-		}
-		return dependencyWords.toImmutable();
-	}
+    @Override
+    public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
+        MutableList<IWord> dependencyWords = Lists.mutable.empty();
+        List<TypedDependency> dependencies = getDependenciesOfType(dependencyTag);
+        for (var typedDependency : dependencies) {
+            var target = typedDependency.dep().backingLabel();
+            var source = typedDependency.gov().backingLabel();
+            if (target.beginPosition() == token.beginPosition()) {
+                var word = getCorrespondingWordForFirstTokenBasedOnSecondToken(source, target);
+                dependencyWords.add(word);
+            }
+        }
+        return dependencyWords.toImmutable();
+    }
 
-	private IWord getCorrespondingWordForFirstTokenBasedOnSecondToken(CoreLabel firstToken, CoreLabel secondToken) {
-		var firstTokenIndex = (firstToken.index() - secondToken.index()) + index;
-		return new Word(firstToken, firstTokenIndex, coreDocument);
-	}
+    private IWord getCorrespondingWordForFirstTokenBasedOnSecondToken(CoreLabel firstToken, CoreLabel secondToken) {
+        var firstTokenIndex = (firstToken.index() - secondToken.index()) + index;
+        return new Word(firstToken, firstTokenIndex, coreDocument);
+    }
 
-	private List<TypedDependency> getDependenciesOfType(DependencyTag dependencyTag) {
-		List<TypedDependency> typedDependencies = Lists.mutable.empty();
-		var coreSentence = coreDocument.sentences().get(getSentenceNo());
-		SemanticGraph dependencies = coreSentence.dependencyParse();
-		for (var typedDependency : dependencies.typedDependencies()) {
-			GrammaticalRelation rel = typedDependency.reln();
-			if (dependencyTag.name().equalsIgnoreCase(rel.getShortName())) {
-				typedDependencies.add(typedDependency);
-			}
-		}
-		return typedDependencies;
-	}
+    private List<TypedDependency> getDependenciesOfType(DependencyTag dependencyTag) {
+        List<TypedDependency> typedDependencies = Lists.mutable.empty();
+        var coreSentence = coreDocument.sentences().get(getSentenceNo());
+        SemanticGraph dependencies = coreSentence.dependencyParse();
+        for (var typedDependency : dependencies.typedDependencies()) {
+            GrammaticalRelation rel = typedDependency.reln();
+            if (dependencyTag.name().equalsIgnoreCase(rel.getShortName())) {
+                typedDependencies.add(typedDependency);
+            }
+        }
+        return typedDependencies;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || !(o instanceof Word))
-			return false;
-		if (o instanceof Word word) {
-			return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag() && getSentenceNo() == word.getSentenceNo();
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || !(o instanceof Word))
+            return false;
+        if (o instanceof Word word) {
+            return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag()
+                    && getSentenceNo() == word.getSentenceNo();
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getPosition(), getPosTag(), getText(), getSentenceNo());
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPosition(), getPosTag(), getText(), getSentenceNo());
+    }
 }
