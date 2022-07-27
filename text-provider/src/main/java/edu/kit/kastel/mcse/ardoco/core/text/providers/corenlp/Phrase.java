@@ -126,4 +126,9 @@ public class Phrase implements IPhrase {
                 && Objects.equals(this.getPhraseType(), other.getPhraseType())
                 && Objects.equals(this.getContainedWords().get(0).getPosition(), other.getContainedWords().get(0).getPosition());
     }
+
+    @Override
+    public String toString() {
+        return "Phrase{" + "text='" + getText() + '\'' + '}';
+    }
 }

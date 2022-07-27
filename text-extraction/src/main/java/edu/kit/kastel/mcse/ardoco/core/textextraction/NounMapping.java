@@ -38,7 +38,7 @@ public class NounMapping implements INounMapping {
     private final ImmutableList<IWord> referenceWords;
 
     /* Words are the references within the text */
-    private final MutableList<IWord> words;
+    private MutableList<IWord> words;
 
     private final MutableList<IWord> coreferences = Lists.mutable.empty();
 
@@ -329,6 +329,13 @@ public class NounMapping implements INounMapping {
         other.getWords().forEach(this::addWord);
 
         return this;
+    }
+
+    @Override
+    public INounMapping split(ImmutableList<IWord> words) {
+        var sharedWords = this.words.select(words::contains);
+        this.words.removeAll(sharedWords.toList());
+        return new NounMapping(sharedWords.toImmutable(), distribution, referenceWords, surfaceForms.toImmutable());
     }
 
     @Override

@@ -145,4 +145,6 @@ public interface INounMapping extends ICopyable<INounMapping> {
     boolean sharesTextualWordRepresentation(INounMapping nounMapping);
 
     INounMapping merge(INounMapping other);
+
+    INounMapping split(ImmutableList<IWord> words);
 }
