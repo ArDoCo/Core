@@ -1,6 +1,15 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.*;
+
+import org.eclipse.collections.api.block.predicate.Predicate;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
+
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
@@ -12,14 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import org.eclipse.collections.api.block.predicate.Predicate;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
-
-import java.util.*;
 
 /**
  * The Class TextState defines the basic implementation of a {@link ITextState}.
@@ -478,7 +479,13 @@ public class TextState extends AbstractState implements ITextState {
             nounMappings.remove(wrap(splittedNounMappings.get(i)));
         }
 
-        sharedPhrases.forEach(phraseMappingWithEqualPhrase::removePhrase);
+        for (IPhrase sharedPhrase : sharedPhrases) {
+            if (phraseMappingWithEqualPhrase.getPhrases().size() == 1) {
+                phraseMappings.remove(phraseMappingWithEqualPhrase);
+            } else {
+                phraseMappingWithEqualPhrase.removePhrase(sharedPhrase);
+            }
+        }
         IPhraseMapping newPhraseMapping = new PhraseMapping(sharedPhrases);
 
         nounMappings.add(wrap(nounMapping));
