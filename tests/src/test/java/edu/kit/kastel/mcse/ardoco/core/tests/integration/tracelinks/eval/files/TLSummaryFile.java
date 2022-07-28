@@ -1,22 +1,25 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files;
 
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalUtils;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TestLink;
 
 public class TLSummaryFile {
@@ -24,84 +27,60 @@ public class TLSummaryFile {
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void save(Path targetFile, Collection<TLProjectEvalResult> results, Map<Project, DataStructure> dataMap) throws IOException {
-        var sortedResults = results.stream().sorted().toList();
-        var builder = new StringBuilder();
+    public static void save(Path targetFile, EvalResult result, Map<Project, DataStructure> dataMap) throws IOException {
 
-        builder.append("Time of evaluation: `").append(DATE_FORMATTER.format(LocalDateTime.now())).append("`\n\n");
+        var file = new StringBuilder();
 
-        for (TLProjectEvalResult result : sortedResults) {
-            var data = dataMap.get(result.getProject());
-            var text = data.getText();
+        file.append("# Summary\n\n");
+        file.append("- Time of evaluation: `").append(DATE_FORMATTER.format(LocalDateTime.now())).append("`\n");
 
-            var precision = NUMBER_FORMAT.format(result.getPrecision());
-            var recall = NUMBER_FORMAT.format(result.getRecall());
-            var f1Score = NUMBER_FORMAT.format(result.getF1());
-            var truePosCount = result.getTruePositives().size();
-            var falsePositives = result.getFalsePositives();
-            var falsePosCount = falsePositives.size();
-            var falseNegatives = result.getFalseNegatives();
-            var falseNegCount = falseNegatives.size();
+        appendMetrics(file, result.getPrecision(), result.getRecall(), result.getF1Score(), result.getAccuracy(), result.getFalsePositiveCount(),
+                result.getFalseNegativeCount(), result.getTruePositiveCount(), result.getTrueNegativeCount());
 
-            builder.append("# ").append(result.getProject().name()).append("\n\n");
+        for (EvalProjectResult projectResult : result.getProjectResults()) {
+            file.append("\n## ").append(projectResult.getProject().name()).append("\n\n");
 
-            builder.append("Summary:\n");
-            builder.append(String.format("- %s Precision / %s Recall / %s F1\n", precision, recall, f1Score));
-            builder.append(String.format("- %s True Positives / %s False Positives / %s False Negatives\n", truePosCount, falsePosCount, falseNegCount));
-            builder.append('\n');
+            appendMetrics(file, projectResult.getPrecision(), projectResult.getRecall(), projectResult.getF1Score(), projectResult.getAccuracy(),
+                    projectResult.getFalsePositives().size(), projectResult.getFalseNegatives().size(), projectResult.getTruePositives().size(),
+                    projectResult.getTrueNegativeCount());
 
-            if (!falsePositives.isEmpty()) {
-                var falsePositivesOutput = createFalseLinksOutput("False Positives", falsePositives, data, text);
-                builder.append(falsePositivesOutput);
+            if (!projectResult.getFalsePositives().isEmpty()) {
+                file.append("\nFalse Positives:\n");
+                appendLinks(file, projectResult.getFalsePositives(), dataMap.get(projectResult.getProject()));
             }
 
-            if (!falseNegatives.isEmpty()) {
-                var falseNegativesOutput = createFalseLinksOutput("False Negatives", falseNegatives, data, text);
-                builder.append(falseNegativesOutput);
-            }
-
-            builder.append('\n');
-        }
-
-        Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-    }
-
-    private static String createFalseLinksOutput(String type, List<TestLink> falseLinks, DataStructure data, IText text) {
-        var builder = new StringBuilder();
-        builder.append(type).append(":\n");
-
-        for (TestLink falseLink : falseLinks) {
-            builder.append(createFalseLinkOutput(data, text, falseLink));
-        }
-
-        builder.append('\n');
-        return builder.toString();
-    }
-
-    private static String createFalseLinkOutput(DataStructure data, IText text, TestLink falseLink) {
-        var builder = new StringBuilder();
-        for (var modelId : data.getModelIds()) {
-            var datamodel = data.getModelState(modelId);
-            var line = format(falseLink, text, datamodel);
-            if (line != null && !line.isBlank()) {
-                builder.append("- ").append(line).append('\n');
+            if (!projectResult.getFalseNegatives().isEmpty()) {
+                file.append("\nFalse Negatives:\n");
+                appendLinks(file, projectResult.getFalseNegatives(), dataMap.get(projectResult.getProject()));
             }
         }
-        return builder.toString();
+
+        Files.writeString(targetFile, file.toString(), UTF_8, CREATE, TRUNCATE_EXISTING);
     }
 
-    static String format(TestLink link, IText text, IModelState modelState) {
-        var model = modelState.getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
-        var sentence = text.getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
-
-        if (model == null && sentence == null) {
-            return null;
+    private static void appendLinks(StringBuilder file, List<TestLink> links, DataStructure data) {
+        for (TestLink link : links) {
+            file.append("- ");
+            String str = EvalUtils.formatLink(link, data);
+            file.append(str);
+            file.append('\n');
         }
+    }
 
-        var modelStr = model == null ? link.modelId() : "\"" + model.getFullName() + "\"";
-        var sentenceStr = sentence == null ? String.valueOf(link.sentenceNr()) : "\"" + sentence.getText() + "\"";
+    private static void appendMetrics(StringBuilder file, double precision, double recall, double f1, double accuracy, int falsePositives, int falseNegatives,
+            int truePositives, int trueNegatives) {
+        file.append(format("- %s Precision, ", NUMBER_FORMAT.format(precision)));
+        file.append(format("%s Recall, ", NUMBER_FORMAT.format(recall)));
+        file.append(format("%s F1, ", NUMBER_FORMAT.format(f1)));
+        file.append(format("%s Accuracy\n", NUMBER_FORMAT.format(accuracy)));
 
-        return String.format("%s ⇔ %s [%s,%s]", modelStr, sentenceStr, link.modelId(), link.sentenceNr());
+        file.append(format("- %s False Positives, ", falsePositives));
+        file.append(format("%s False Negatives, ", falseNegatives));
+        file.append(format("%s True Positives, ", truePositives));
+        file.append(format("%s True Negatives\n", trueNegatives));
+    }
+
+    private TLSummaryFile() {
     }
 
 }
