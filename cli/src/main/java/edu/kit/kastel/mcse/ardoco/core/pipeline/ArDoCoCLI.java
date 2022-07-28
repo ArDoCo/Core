@@ -1,12 +1,18 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline.runAndSave;
+import static edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo.runAndSave;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +99,7 @@ public final class ArDoCoCLI {
 
         var name = cmd.getOptionValue(CMD_NAME);
 
-        if (!name.matches("[A-Za-z0-9_]+")) {
+        if (!name.matches("\\w+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
             return;
         }

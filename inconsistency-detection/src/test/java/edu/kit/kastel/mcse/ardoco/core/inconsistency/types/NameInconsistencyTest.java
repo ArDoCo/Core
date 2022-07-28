@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.model.Instance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
 
 class NameInconsistencyTest extends AbstractInconsistencyTypeTest {
     private static final String NAME_INCONSISTENCY_TYPE = "NameInconsistency";
@@ -12,11 +12,11 @@ class NameInconsistencyTest extends AbstractInconsistencyTypeTest {
 
     @BeforeEach
     void beforeEach() {
-        nameInconsistency = new NameInconsistency(new Instance("Dummy", "BasicComponent", "1"), new DummyWord());
+        nameInconsistency = new NameInconsistency(new ModelInstanceImpl("Dummy", "BasicComponent", "1"), new DummyWord());
     }
 
     @Override
-    protected IInconsistency getInconsistency() {
+    protected Inconsistency getInconsistency() {
         return nameInconsistency;
     }
 
@@ -31,13 +31,13 @@ class NameInconsistencyTest extends AbstractInconsistencyTypeTest {
     }
 
     @Override
-    protected IInconsistency getUnequalInconsistency() {
-        return new NameInconsistency(new Instance("DummyComposite", "CompositeComponent", "2"), new DummyWord());
+    protected Inconsistency getUnequalInconsistency() {
+        return new NameInconsistency(new ModelInstanceImpl("DummyComposite", "CompositeComponent", "2"), new DummyWord());
     }
 
     @Override
-    protected IInconsistency getEqualInconsistency() {
-        return new NameInconsistency(new Instance("Dummy", "BasicComponent", "1"), new DummyWord());
+    protected Inconsistency getEqualInconsistency() {
+        return new NameInconsistency(new ModelInstanceImpl("Dummy", "BasicComponent", "1"), new DummyWord());
     }
 
     @Override

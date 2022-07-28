@@ -1,37 +1,44 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection.agents;
 
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.common.tuple.Pair;
+import edu.kit.kastel.lissa.swa.api.sketches.SketchRecognitionResult;
+import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.DiagramDetectionState;
+
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
-import edu.kit.kastel.informalin.framework.common.tuple.Pair;
-import edu.kit.kastel.lissa.swa.api.sketches.SketchRecognitionResult;
-import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.DiagramDetectionData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IDiagramDetectionState;
-
-public class SketchRecognitionAgent extends DiagramDetectionAgent {
+public class SketchRecognitionAgent extends PipelineAgent {
     private static final List<String> SUPPORTED_FILES = List.of(".jpg", ".png", ".jpeg");
     private final SketchRecognitionService sketchRecognitionService = new SketchRecognitionService();
+    private final File diagramDirectory;
+
+    public SketchRecognitionAgent(DataRepository dataRepository, File diagramDirectory) {
+        super(SketchRecognitionAgent.class.getSimpleName(), dataRepository);
+        this.diagramDirectory = diagramDirectory;
+    }
 
     @Override
-    public void execute(DiagramDetectionData data) {
-        if (data.getDiagramDirectory() == null)
+    public void run() {
+        if (diagramDirectory == null || !diagramDirectory.exists())
             return;
 
-        var images = data.getDiagramDirectory().list((file, name) -> isValid(name));
+        var images = diagramDirectory.list((file, name) -> isValid(name));
         if (images == null || images.length == 0) {
-            logger.warn("Found no images in directory: {}", data.getDiagramDirectory());
+            logger.warn("Found no images in directory: {}", diagramDirectory);
             return;
         }
         for (int i = 0; i < images.length; i++)
-            images[i] = Path.of(data.getDiagramDirectory().getAbsolutePath(), images[i]).toString();
+            images[i] = Path.of(diagramDirectory.getAbsolutePath(), images[i]).toString();
 
         sketchRecognitionService.start();
         List<Pair<String, SketchRecognitionResult>> results = new ArrayList<>();
@@ -46,10 +53,10 @@ public class SketchRecognitionAgent extends DiagramDetectionAgent {
         }
         sketchRecognitionService.stop();
 
-        transformData(results, data.getDiagramDetectionState());
+        transformData(results, getDataRepository().getData(DiagramDetectionState.ID, DiagramDetectionState.class).orElseThrow());
     }
 
-    private void transformData(List<Pair<String, SketchRecognitionResult>> results, IDiagramDetectionState diagramDetectionState) {
+    private void transformData(List<Pair<String, SketchRecognitionResult>> results, DiagramDetectionState diagramDetectionState) {
         for (var diagramResult : results) {
             var id = UUID.nameUUIDFromBytes(diagramResult.first().getBytes(StandardCharsets.UTF_8)).toString();
             diagramDetectionState.registerDiagram(id, diagramResult.first());
@@ -73,8 +80,9 @@ public class SketchRecognitionAgent extends DiagramDetectionAgent {
         return SUPPORTED_FILES.stream().anyMatch(t -> name.toLowerCase().endsWith(t));
     }
 
+
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-
+        // NOP
     }
 }

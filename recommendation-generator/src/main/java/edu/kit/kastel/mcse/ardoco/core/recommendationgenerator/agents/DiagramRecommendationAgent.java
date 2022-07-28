@@ -1,21 +1,23 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.DiagramDetectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.RecommendationAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.IBox;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-
-public class DiagramRecommendationAgent extends RecommendationAgent {
+public class DiagramRecommendationAgent extends PipelineAgent {
 
     @Configurable
     private double positiveBoostProbability = 0.9;
@@ -42,32 +44,36 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
     @Configurable
     private boolean enabled = true;
 
-    @Override
-    public void execute(RecommendationAgentData data) {
-        if (!enabled)
-            return;
 
-        if (data.getDiagramDirectory() == null || data.getDiagramDetectionState() == null) {
+    public DiagramRecommendationAgent(DataRepository dataRepository) {
+        super(DiagramRecommendationAgent.class.getSimpleName(), dataRepository);
+    }
+
+    @Override
+    public void run() {
+        if (!enabled) return;
+
+        var diagramStateOptional = getDataRepository().getData(DiagramDetectionState.ID, DiagramDetectionState.class);
+
+        if (diagramStateOptional.isEmpty()) {
             logger.debug("Skipping execution of {}", this.getId());
             return;
         }
 
-        var diagramState = data.getDiagramDetectionState();
+        var diagramState = diagramStateOptional.get();
         for (var diagram : diagramState.getDiagramIds()) {
             // TODO For now we assume the architectural sketches belong to architecture not code.
-            processDiagram(diagramState.detectedBoxes(diagram), data.getRecommendationState(Metamodel.ARCHITECTURE));
+            processDiagram(diagramState.detectedBoxes(diagram), DataRepositoryHelper.getRecommendationStates(getDataRepository()).getRecommendationState(Metamodel.ARCHITECTURE));
         }
+
     }
 
-    private void processDiagram(List<IBox> diagram, IRecommendationState recommendationState) {
-        if (useColorGroups)
-            processUsingColorGroups(diagram, recommendationState);
+    private void processDiagram(List<Box> diagram, RecommendationState recommendationState) {
+        if (useColorGroups) processUsingColorGroups(diagram, recommendationState);
 
-        if (useMergeAll)
-            processUsingMergedWordLists(diagram, recommendationState);
+        if (useMergeAll) processUsingMergedWordLists(diagram, recommendationState);
 
-        if (deleteRIsWithLowConfidence)
-            deleteRIsWithLowConfidence(recommendationState);
+        if (deleteRIsWithLowConfidence) deleteRIsWithLowConfidence(recommendationState);
         /*
          * for (var word : interestingWords) { var recommendations =
          * recommendationState.getRecommendedInstancesBySimilarName(word);
@@ -78,7 +84,7 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
          */
     }
 
-    private void processUsingMergedWordLists(List<IBox> diagram, IRecommendationState recommendationState) {
+    private void processUsingMergedWordLists(List<Box> diagram, RecommendationState recommendationState) {
         var interestingWords = diagram.stream().flatMap(it -> it.getWordsThatBelongToThisBox().stream()).toList();
         var matchingRIs = getRecommendedInstancesByBoxWords(interestingWords, recommendationState);
         var notMatchingRIs = recommendationState.getRecommendedInstances().stream().filter(it -> !matchingRIs.contains(it)).toList();
@@ -90,7 +96,7 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
             matching.addProbability(this, positiveBoostProbability);
     }
 
-    private void processUsingColorGroups(List<IBox> diagram, IRecommendationState recommendationState) {
+    private void processUsingColorGroups(List<Box> diagram, RecommendationState recommendationState) {
         Map<Color, List<String>> wordsOfBoxesByColor = new LinkedHashMap<>();
         for (var box : diagram) {
             for (var text : box.getWordsThatBelongToThisBoxGroupedByColor().entrySet()) {
@@ -116,7 +122,7 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
         // TODO Better Use matching scores to identify types of words
     }
 
-    private Map<Color, Double> calculateMatchingScore(Map<Color, List<String>> wordsOfBoxesByColor, IRecommendationState recommendationState) {
+    private Map<Color, Double> calculateMatchingScore(Map<Color, List<String>> wordsOfBoxesByColor, RecommendationState recommendationState) {
         Map<Color, Double> matchings = new LinkedHashMap<>();
         for (var wordGroup : wordsOfBoxesByColor.entrySet()) {
             var matchingRIs = getRecommendedInstancesByBoxWords(wordGroup.getValue(), recommendationState);
@@ -128,7 +134,7 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
         return matchings;
     }
 
-    private void deleteRIsWithLowConfidence(IRecommendationState recommendationState) {
+    private void deleteRIsWithLowConfidence(RecommendationState recommendationState) {
         for (var ri : recommendationState.getRecommendedInstances()) {
             var confidence = ri.getConfidencesForClaimant(this);
             if (ri.getProbability() < minConfidenceToPreventDeletion && confidence.getConfidence() < minConfidenceToPreventDeletion) {
@@ -137,12 +143,12 @@ public class DiagramRecommendationAgent extends RecommendationAgent {
         }
     }
 
-    private List<IRecommendedInstance> getRecommendedInstancesByBoxWords(List<String> words, IRecommendationState recommendationState) {
+    private List<RecommendedInstance> getRecommendedInstancesByBoxWords(List<String> words, RecommendationState recommendationState) {
         return words.stream().flatMap(iw -> recommendationState.getRecommendedInstancesBySimilarName(iw).stream()).distinct().toList();
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
         // NOP
     }
 }
