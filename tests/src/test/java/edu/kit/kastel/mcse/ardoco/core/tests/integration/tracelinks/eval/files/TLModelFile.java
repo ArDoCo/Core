@@ -46,4 +46,7 @@ public class TLModelFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
+    private TLModelFile() {
+    }
+
 }

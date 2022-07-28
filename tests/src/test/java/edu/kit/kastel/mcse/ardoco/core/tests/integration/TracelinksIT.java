@@ -1,6 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +32,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.tests.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalProjectResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.EvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tracelinks.eval.files.*;
 
 /**
@@ -41,7 +45,7 @@ class TracelinksIT {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String ADDITIONAL_CONFIG = null;
-    private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
+    private static final List<EvalProjectResult> RESULTS = new ArrayList<>();
     private static final Map<Project, DataStructure> DATA_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
 
@@ -56,13 +60,26 @@ class TracelinksIT {
             var evalDir = Path.of(OUTPUT).resolve("tl_eval");
             Files.createDirectories(evalDir);
 
-            TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
+            EvalResult evalResult = new EvalResult(RESULTS);
+            Path previousResultPath = evalDir.resolve("previous_result.json");
+
+            if (Files.exists(previousResultPath)) {
+                EvalResult previousResult = EvalResult.fromJsonString(Files.readString(previousResultPath));
+                TLDiffFile.save(evalDir.resolve("diff.md"), evalResult, previousResult, DATA_MAP);
+            } else {
+                Files.writeString(previousResultPath, evalResult.toJsonString());
+            }
+
+            TLSummaryFile.save(evalDir.resolve("summary.md"), evalResult, DATA_MAP);
             TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
             TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-            TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
-            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
-            TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
+            TLLogFile.append(evalDir.resolve("log.md"), evalResult);
+
+            Files.writeString(evalDir.resolve("result.json"), evalResult.toJsonString(), CREATE, TRUNCATE_EXISTING);
         }
+
+        RESULTS.clear();
+        DATA_MAP.clear();
     }
 
     @AfterEach
@@ -119,15 +136,15 @@ class TracelinksIT {
 
             if (detailedDebug) {
                 printDetailedDebug(results, data);
+
                 try {
-                    RESULTS.add(new TLProjectEvalResult(project, data));
+                    RESULTS.add(new EvalProjectResult(project, data));
                     DATA_MAP.put(project, data);
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn(e.getMessage(), e.getCause());
                 }
             }
-
         }
 
         Assertions.assertAll(//

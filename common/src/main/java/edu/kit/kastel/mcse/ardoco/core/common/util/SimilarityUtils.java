@@ -1,8 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -11,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
 /**
  * This class is a utility class.
@@ -18,9 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
  * @author Sophie, Jan
  */
 public final class SimilarityUtils {
-
-    private static final LevenshteinDistance levenShteinDistance = new LevenshteinDistance();
-    private static final JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
 
     private SimilarityUtils() {
         throw new IllegalAccessError();
@@ -135,9 +131,7 @@ public final class SimilarityUtils {
      * @return true, if the words are similar; false if not.
      */
     public static boolean areWordsSimilar(IWord word1, IWord word2) {
-        var word1Text = word1.getText();
-        var word2Text = word2.getText();
-        return areWordsSimilar(word1Text, word2Text);
+        return WordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**
@@ -148,43 +142,7 @@ public final class SimilarityUtils {
      * @return true, if the test string is similar to the original; false if not.
      */
     public static boolean areWordsSimilar(String word1, String word2) {
-        return areWordsSimilar(word1, word2, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
-    }
-
-    public static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
-        if (original == null || word2test == null) {
-            return false;
-        }
-        var originalLowerCase = original.toLowerCase();
-        var word2TestLowerCase = word2test.toLowerCase();
-        if (originalLowerCase.split(" ").length != word2TestLowerCase.split(" ").length) {
-            return false;
-        }
-
-        var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test, similarityThreshold);
-        var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
-        return isJaroWinklerSimilar || isLevenshteinSimilar;
-    }
-
-    private static boolean jaroWinklerSimilarityTest(String original, String word2test, Double threshold) {
-        return jaroWinklerSimilarity.apply(original, word2test) >= threshold;
-    }
-
-    private static boolean levenshteinDistanceTest(String original, String word2test, double threshold) {
-        var originalLowerCase = original.toLowerCase();
-        var word2TestLowerCase = word2test.toLowerCase();
-
-        var areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
-        var areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
-        var maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, threshold * Math.min(original.length(), word2test.length()));
-
-        int levenshteinDistance = levenShteinDistance.apply(originalLowerCase, word2TestLowerCase);
-
-        if (original.length() <= areWordsSimilarMinLength) {
-            var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
-            return levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation;
-        } else
-            return levenshteinDistance <= maxLevenshteinDistance;
+        return WordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**
