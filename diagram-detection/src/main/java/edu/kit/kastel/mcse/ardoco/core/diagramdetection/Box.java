@@ -1,13 +1,13 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection;
 
-import edu.kit.kastel.informalin.framework.common.JavaUtils;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import edu.kit.kastel.informalin.framework.common.JavaUtils;
 
 class Box implements edu.kit.kastel.mcse.ardoco.core.api.data.diagram.Box {
 

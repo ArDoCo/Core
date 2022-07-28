@@ -1,11 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IRecommendationState defines the state for recommendations.
@@ -41,7 +42,7 @@ public interface RecommendationState extends ICopyable<RecommendationState>, ICo
      * @return the added recommended instance
      */
     RecommendedInstance addRecommendedInstance(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameMappings,
-                                               ImmutableList<NounMapping> typeMappings);
+            ImmutableList<NounMapping> typeMappings);
 
     /**
      * Returns all recommended instances that contain a given mapping as type.

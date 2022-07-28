@@ -1,21 +1,21 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection.agents;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.framework.common.tuple.Pair;
-import edu.kit.kastel.lissa.swa.api.sketches.SketchRecognitionResult;
-import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.DiagramDetectionState;
-
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.*;
+import java.util.List;
+
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.common.tuple.Pair;
+import edu.kit.kastel.lissa.swa.api.sketches.SketchRecognitionResult;
+import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.DiagramDetectionState;
 
 public class SketchRecognitionAgent extends PipelineAgent {
     private static final List<String> SUPPORTED_FILES = List.of(".jpg", ".png", ".jpeg");
@@ -79,7 +79,6 @@ public class SketchRecognitionAgent extends PipelineAgent {
     private boolean isValid(String name) {
         return SUPPORTED_FILES.stream().anyMatch(t -> name.toLowerCase().endsWith(t));
     }
-
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {

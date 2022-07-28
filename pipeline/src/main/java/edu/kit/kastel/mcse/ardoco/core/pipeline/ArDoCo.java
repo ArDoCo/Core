@@ -1,6 +1,22 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
@@ -18,21 +34,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
 
 /**
  * The Pipeline defines the execution of the agents.
@@ -69,7 +70,7 @@ public final class ArDoCo extends Pipeline {
      * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
     public static ArDoCoResult runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
-                                          File outputDir, File diagramDirectory) {
+            File outputDir, File diagramDirectory) {
 
         classLogger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
@@ -95,8 +96,8 @@ public final class ArDoCo extends Pipeline {
         return new ArDoCoResult(arDoCo.getDataRepository());
     }
 
-    private static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs, File diagramDirectory)
-            throws IOException {
+    private static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs,
+            File diagramDirectory) throws IOException {
         var arDoCo = new ArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
@@ -113,7 +114,6 @@ public final class ArDoCo extends Pipeline {
         arDoCo.addPipelineStep(getInconsistencyChecker(additionalConfigs, dataRepository));
         return arDoCo;
     }
-
 
     private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, Duration duration) {
         if (outputDir == null) {

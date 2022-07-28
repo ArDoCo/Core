@@ -1,6 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
@@ -10,12 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DiagramRecommendationAgent extends PipelineAgent {
 
@@ -44,14 +44,14 @@ public class DiagramRecommendationAgent extends PipelineAgent {
     @Configurable
     private boolean enabled = true;
 
-
     public DiagramRecommendationAgent(DataRepository dataRepository) {
         super(DiagramRecommendationAgent.class.getSimpleName(), dataRepository);
     }
 
     @Override
     public void run() {
-        if (!enabled) return;
+        if (!enabled)
+            return;
 
         var diagramStateOptional = getDataRepository().getData(DiagramDetectionState.ID, DiagramDetectionState.class);
 
@@ -63,17 +63,21 @@ public class DiagramRecommendationAgent extends PipelineAgent {
         var diagramState = diagramStateOptional.get();
         for (var diagram : diagramState.getDiagramIds()) {
             // TODO For now we assume the architectural sketches belong to architecture not code.
-            processDiagram(diagramState.detectedBoxes(diagram), DataRepositoryHelper.getRecommendationStates(getDataRepository()).getRecommendationState(Metamodel.ARCHITECTURE));
+            processDiagram(diagramState.detectedBoxes(diagram),
+                    DataRepositoryHelper.getRecommendationStates(getDataRepository()).getRecommendationState(Metamodel.ARCHITECTURE));
         }
 
     }
 
     private void processDiagram(List<Box> diagram, RecommendationState recommendationState) {
-        if (useColorGroups) processUsingColorGroups(diagram, recommendationState);
+        if (useColorGroups)
+            processUsingColorGroups(diagram, recommendationState);
 
-        if (useMergeAll) processUsingMergedWordLists(diagram, recommendationState);
+        if (useMergeAll)
+            processUsingMergedWordLists(diagram, recommendationState);
 
-        if (deleteRIsWithLowConfidence) deleteRIsWithLowConfidence(recommendationState);
+        if (deleteRIsWithLowConfidence)
+            deleteRIsWithLowConfidence(recommendationState);
         /*
          * for (var word : interestingWords) { var recommendations =
          * recommendationState.getRecommendedInstancesBySimilarName(word);

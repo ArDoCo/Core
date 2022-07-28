@@ -1,6 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
+import java.util.*;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
@@ -9,11 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-
-import java.util.*;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
@@ -66,7 +67,7 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
      * @param typeNodes   the involved type mappings
      */
     public RecommendedInstanceImpl(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameNodes,
-                                   ImmutableList<NounMapping> typeNodes) {
+            ImmutableList<NounMapping> typeNodes) {
         this(name, type);
         this.internalConfidence.addAgentConfidence(claimant, probability);
 

@@ -1,11 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.

@@ -1,17 +1,18 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
+import java.util.HashSet;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-
-import java.util.HashSet;
 
 /**
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
@@ -71,7 +72,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public RecommendedInstance addRecommendedInstance(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameMappings,
-                                                      ImmutableList<NounMapping> typeMappings) {
+            ImmutableList<NounMapping> typeMappings) {
         var recommendedInstance = new RecommendedInstanceImpl(name, type, claimant, probability, //
                 Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),
                 Lists.immutable.withAll(new HashSet<>(typeMappings.castToCollection())));

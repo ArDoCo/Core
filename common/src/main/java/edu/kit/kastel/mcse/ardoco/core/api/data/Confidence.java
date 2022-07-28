@@ -1,16 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
-import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
-import edu.kit.kastel.informalin.framework.common.ICopyable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
-import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.tuple.Tuples;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+
+import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
+import edu.kit.kastel.informalin.framework.common.ICopyable;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 
 /**
  * @author Sophie Schulz

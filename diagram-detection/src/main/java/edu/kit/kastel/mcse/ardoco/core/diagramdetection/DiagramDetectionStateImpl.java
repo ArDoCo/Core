@@ -1,10 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.DiagramDetectionState;
-
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.DiagramDetectionState;
 
 public class DiagramDetectionStateImpl extends AbstractState implements DiagramDetectionState {
     private Map<String, String> diagrams = new HashMap<>();
@@ -41,7 +41,8 @@ public class DiagramDetectionStateImpl extends AbstractState implements DiagramD
     public void addBox(String diagramId, Color dominatingColor, Map<Color, List<String>> mentionedWordsByColor) {
         if (!this.diagrams.containsKey(diagramId))
             throw new IllegalArgumentException("Diagram " + diagramId + " is not known by this DiagramDetectionState");
-        this.boxes.computeIfAbsent(diagramId, k -> new ArrayList<>()).add(new edu.kit.kastel.mcse.ardoco.core.diagramdetection.Box(dominatingColor, mentionedWordsByColor));
+        this.boxes.computeIfAbsent(diagramId, k -> new ArrayList<>())
+                .add(new edu.kit.kastel.mcse.ardoco.core.diagramdetection.Box(dominatingColor, mentionedWordsByColor));
 
     }
 

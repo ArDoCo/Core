@@ -1,6 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
@@ -10,17 +16,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.DiagramRecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InitialRecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseRecommendationAgent;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * The Class RecommendationGenerator defines the recommendation stage.
  */
 public class RecommendationGenerator extends AbstractExecutionStage {
-
 
     private final MutableList<PipelineAgent> agents;
 
@@ -33,7 +33,8 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     public RecommendationGenerator(DataRepository dataRepository) {
         super("RecommendationGenerator", dataRepository);
 
-        this.agents = Lists.mutable.of(new InitialRecommendationAgent(dataRepository), new PhraseRecommendationAgent(dataRepository), new DiagramRecommendationAgent(dataRepository));
+        this.agents = Lists.mutable.of(new InitialRecommendationAgent(dataRepository), new PhraseRecommendationAgent(dataRepository),
+                new DiagramRecommendationAgent(dataRepository));
         this.enabledAgents = agents.collect(Agent::getId);
     }
 
