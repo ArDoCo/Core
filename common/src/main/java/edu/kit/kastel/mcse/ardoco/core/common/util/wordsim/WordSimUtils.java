@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteOpenMode;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 
@@ -22,6 +25,9 @@ public class WordSimUtils {
 
     private static List<WordSimMeasure> measures = WordSimLoader.loadUsingProperties();
     private static ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
+
+    private WordSimUtils() {
+    }
 
     /**
      * Sets which measures should be used for similarity comparison. The specified collection of measures will be used
@@ -152,7 +158,13 @@ public class WordSimUtils {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
     }
 
-    private WordSimUtils() {
+    public static SQLiteConfig getSqLiteConfig() {
+        var cfg = new SQLiteConfig();
+        cfg.setReadOnly(true);
+        cfg.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
+        cfg.setJournalMode(SQLiteConfig.JournalMode.OFF);
+        cfg.setSynchronous(SQLiteConfig.SynchronousMode.OFF);
+        cfg.setOpenMode(SQLiteOpenMode.NOMUTEX);
+        return cfg;
     }
-
 }

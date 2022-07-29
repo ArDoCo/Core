@@ -20,7 +20,6 @@ public class VectorUtils {
     public static double cosineSimilarity(double[] firstVec, double[] secondVec) {
         Objects.requireNonNull(firstVec);
         Objects.requireNonNull(secondVec);
-
         if (firstVec.length != secondVec.length) {
             throw new IllegalArgumentException("vector length does not match!");
         }
@@ -33,7 +32,9 @@ public class VectorUtils {
             return 0.0; // similarity between 0 and something else should probably be 0.0
         }
 
-        double dotProduct = 0.0, firstNorm = 0.0, secondNorm = 0.0;
+        double dotProduct = 0.0;
+        double firstNorm = 0.0;
+        double secondNorm = 0.0;
 
         for (int i = 0; i < firstVec.length; i++) {
             dotProduct += firstVec[i] * secondVec[i];
@@ -56,27 +57,15 @@ public class VectorUtils {
         Objects.requireNonNull(firstVec);
         Objects.requireNonNull(secondVec);
 
-        if (firstVec.length != secondVec.length) {
-            throw new IllegalArgumentException("vector length does not match!");
-        }
-
-        if (isZero(firstVec) && isZero(secondVec)) {
-            return 1.0; // similarity between 0 and 0 should probably be 1.0
-        }
-
-        if (isZero(firstVec) || isZero(secondVec)) {
-            return 0.0; // similarity between 0 and something else should probably be 0.0
-        }
-
-        double dotProduct = 0.0, firstNorm = 0.0, secondNorm = 0.0;
+        double[] firstVecDouble = new double[firstVec.length];
+        double[] secondVecDouble = new double[secondVec.length];
 
         for (int i = 0; i < firstVec.length; i++) {
-            dotProduct += firstVec[i] * secondVec[i];
-            firstNorm += Math.pow(firstVec[i], 2);
-            secondNorm += Math.pow(secondVec[i], 2);
+            firstVecDouble[i] = Double.valueOf(firstVec[i]);
+            secondVecDouble[i] = Double.valueOf(secondVec[i]);
         }
 
-        return dotProduct / (Math.sqrt(firstNorm) * Math.sqrt(secondNorm));
+        return cosineSimilarity(firstVecDouble, secondVecDouble);
     }
 
     /**
@@ -88,7 +77,7 @@ public class VectorUtils {
     public static boolean isZero(double[] vector) {
         Objects.requireNonNull(vector);
 
-        if (vector.length <= 0) {
+        if (vector.length == 0) {
             return true;
         }
 

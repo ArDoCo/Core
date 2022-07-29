@@ -11,7 +11,8 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import org.sqlite.SQLiteConfig;
-import org.sqlite.SQLiteOpenMode;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
 /**
  * Manages a connection to a sqlite database that contains vector word embeddings using a very specific schema:
@@ -42,12 +43,7 @@ public class VectorSqliteDatabase implements WordVectorDataSource, AutoCloseable
             throw new IllegalArgumentException("sqliteFile does not exist: " + sqliteFile);
         }
 
-        var cfg = new SQLiteConfig();
-        cfg.setReadOnly(true);
-        cfg.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
-        cfg.setJournalMode(SQLiteConfig.JournalMode.OFF);
-        cfg.setSynchronous(SQLiteConfig.SynchronousMode.OFF);
-        cfg.setOpenMode(SQLiteOpenMode.NOMUTEX);
+        SQLiteConfig cfg = WordSimUtils.getSqLiteConfig();
 
         this.connection = cfg.createConnection("jdbc:sqlite:" + sqliteFile);
         this.selectStatement = this.connection.prepareStatement(SELECT_QUERY);
