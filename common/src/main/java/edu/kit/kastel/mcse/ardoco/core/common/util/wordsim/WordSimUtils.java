@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 
 /**
@@ -102,7 +102,7 @@ public class WordSimUtils {
      * @param secondWord the second word
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(IWord firstWord, IWord secondWord) {
+    public static boolean areWordsSimilar(Word firstWord, Word secondWord) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), STRATEGY);
     }
 
@@ -114,7 +114,7 @@ public class WordSimUtils {
      * @param strategy   the strategy to use
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(IWord firstWord, IWord secondWord, ComparisonStrategy strategy) {
+    public static boolean areWordsSimilar(Word firstWord, Word secondWord, ComparisonStrategy strategy) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
     }
 
@@ -126,7 +126,7 @@ public class WordSimUtils {
      * @param secondWord the second word
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(String firstWord, IWord secondWord) {
+    public static boolean areWordsSimilar(String firstWord, Word secondWord) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), STRATEGY);
     }
 
@@ -138,7 +138,7 @@ public class WordSimUtils {
      * @param strategy   the strategy to use
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(String firstWord, IWord secondWord, ComparisonStrategy strategy) {
+    public static boolean areWordsSimilar(String firstWord, Word secondWord, ComparisonStrategy strategy) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
     }
 

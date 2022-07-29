@@ -6,14 +6,14 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
  * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur
  * within ArDoCo. The fields {@link #firstString} and {@link #secondString} are always not null. The field
  * {@link #lemmatize} decides whether the lemmatized version of both words should be used for comparison.
  */
-public record ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, @Nullable IWord firstWord, @Nullable IWord secondWord,
+public record ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, @Nullable Word firstWord, @Nullable Word secondWord,
         boolean lemmatize) {
 
     public ComparisonContext(@Nonnull String firstString, @Nonnull String secondString) {
@@ -24,11 +24,11 @@ public record ComparisonContext(@Nonnull String firstString, @Nonnull String sec
         this(firstString, secondString, null, null, lemmatize);
     }
 
-    public ComparisonContext(@Nonnull IWord firstWord, @Nonnull IWord secondWord, boolean lemmatize) {
+    public ComparisonContext(@Nonnull Word firstWord, @Nonnull Word secondWord, boolean lemmatize) {
         this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize);
     }
 
-    public ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, @Nullable IWord firstWord, @Nullable IWord secondWord,
+    public ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, @Nullable Word firstWord, @Nullable Word secondWord,
             boolean lemmatize) {
         this.firstString = Objects.requireNonNull(firstString);
         this.secondString = Objects.requireNonNull(secondString);
@@ -59,7 +59,7 @@ public record ComparisonContext(@Nonnull String firstString, @Nonnull String sec
         return findAppropriateTerm(secondString, secondWord);
     }
 
-    private String findAppropriateTerm(@Nonnull String string, @Nullable IWord word) {
+    private String findAppropriateTerm(@Nonnull String string, @Nullable Word word) {
         Objects.requireNonNull(string);
 
         if (word != null) {

@@ -1,9 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,26 +72,13 @@ class TraceabilityLinkRecoveryEvaluationIT {
             var evalDir = Path.of(OUTPUT).resolve("tl_eval");
             Files.createDirectories(evalDir);
 
-            EvalResult evalResult = new EvalResult(RESULTS);
-            Path previousResultPath = evalDir.resolve("previous_result.json");
-
-            if (Files.exists(previousResultPath)) {
-                EvalResult previousResult = EvalResult.fromJsonString(Files.readString(previousResultPath));
-                TLDiffFile.save(evalDir.resolve("diff.md"), evalResult, previousResult, DATA_MAP);
-            } else {
-                Files.writeString(previousResultPath, evalResult.toJsonString());
-            }
-
-            TLSummaryFile.save(evalDir.resolve("summary.md"), evalResult, DATA_MAP);
+            TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
             TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
             TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-            TLLogFile.append(evalDir.resolve("log.md"), evalResult);
-
-            Files.writeString(evalDir.resolve("result.json"), evalResult.toJsonString(), CREATE, TRUNCATE_EXISTING);
+            TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
+            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
+            TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
         }
-
-        RESULTS.clear();
-        DATA_MAP.clear();
     }
 
     @AfterEach
