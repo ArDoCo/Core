@@ -23,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
  */
 public class LevenshteinMeasure implements WordSimMeasure {
 
-    private final LevenshteinDistance distance = new LevenshteinDistance();
+    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     private final int minLength;
     private final int maxDistance;
     private final double threshold;
@@ -67,7 +67,7 @@ public class LevenshteinMeasure implements WordSimMeasure {
         String secondWord = ctx.secondTerm().toLowerCase();
 
         int maxDynamicDistance = (int) Math.min(this.maxDistance, this.threshold * Math.min(firstWord.length(), secondWord.length()));
-        int distance = this.distance.apply(firstWord, secondWord);
+        int distance = this.levenshteinDistance.apply(firstWord, secondWord);
 
         if (firstWord.length() <= this.minLength) {
             return distance <= this.maxDistance && (secondWord.contains(firstWord) || firstWord.contains(secondWord));

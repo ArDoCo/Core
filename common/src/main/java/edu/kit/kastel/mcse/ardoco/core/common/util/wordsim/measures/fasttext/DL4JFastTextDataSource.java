@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fastText;
+package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fasttext;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorUtils.isZero;
 

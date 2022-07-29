@@ -92,9 +92,9 @@ public class NgramMeasure implements WordSimMeasure {
             return Math.max(x.length(), y.length());
         }
 
-        int K = x.length();
-        int L = y.length();
-        double[][] D = new double[K + 1][L + 1];
+        int k = x.length();
+        int l = y.length();
+        double[][] D = new double[k + 1][l + 1];
 
         for (int u = 1; u <= n - 1; u++) {
             if (variant == Variant.LUCENE) {
@@ -108,23 +108,23 @@ public class NgramMeasure implements WordSimMeasure {
             }
         }
 
-        for (int i = 0; i <= K; i++) {
+        for (int i = 0; i <= k; i++) {
             D[i][0] = i;
         }
 
-        for (int j = 1; j <= L; j++) {
+        for (int j = 1; j <= l; j++) {
             D[0][j] = j;
         }
 
-        for (int i = 1; i <= K; i++) {
-            for (int j = 1; j <= L; j++) {
+        for (int i = 1; i <= k; i++) {
+            for (int j = 1; j <= l; j++) {
                 double dN = dN(n, i - 1, j - 1, x, y);
 
                 D[i][j] = min(D[i - 1][j] + 1.0, D[i][j - 1] + 1.0, D[i - 1][j - 1] + dN);
             }
         }
 
-        return D[K][L];
+        return D[k][l];
     }
 
     private double dN(int n, int i, int j, String x, String y) {
