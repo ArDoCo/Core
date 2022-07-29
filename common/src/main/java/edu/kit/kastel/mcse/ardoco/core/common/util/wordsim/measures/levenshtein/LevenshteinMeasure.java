@@ -1,8 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein;
 
-import java.util.Locale;
-
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
@@ -65,17 +63,14 @@ public class LevenshteinMeasure implements WordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        String firstWord = ctx.firstTerm().toLowerCase(Locale.ROOT);
-        String secondWord = ctx.secondTerm().toLowerCase(Locale.ROOT);
+        String firstWord = ctx.firstTerm().toLowerCase();
+        String secondWord = ctx.secondTerm().toLowerCase();
 
         int maxDynamicDistance = (int) Math.min(this.maxDistance, this.threshold * Math.min(firstWord.length(), secondWord.length()));
-
         int distance = this.distance.apply(firstWord, secondWord);
 
         if (firstWord.length() <= this.minLength) {
-            boolean wordsHaveContainmentRelation = secondWord.contains(firstWord) || firstWord.contains(secondWord);
-
-            return distance <= this.maxDistance && wordsHaveContainmentRelation;
+            return distance <= this.maxDistance && (secondWord.contains(firstWord) || firstWord.contains(secondWord));
         } else {
             return distance <= maxDynamicDistance;
         }
