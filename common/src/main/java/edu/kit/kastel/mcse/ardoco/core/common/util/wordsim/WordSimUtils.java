@@ -20,8 +20,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonSt
  */
 public class WordSimUtils {
 
-    private static List<WordSimMeasure> MEASURES = WordSimLoader.loadUsingProperties();
-    private static ComparisonStrategy STRATEGY = ComparisonStrategy.AT_LEAST_ONE;
+    private static List<WordSimMeasure> measures = WordSimLoader.loadUsingProperties();
+    private static ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
 
     /**
      * Sets which measures should be used for similarity comparison. The specified collection of measures will be used
@@ -30,7 +30,7 @@ public class WordSimUtils {
      * @param measures the measures to use
      */
     public static void setMeasures(Collection<WordSimMeasure> measures) {
-        MEASURES = new ArrayList<>(measures);
+        WordSimUtils.measures = new ArrayList<>(measures);
     }
 
     /**
@@ -40,7 +40,7 @@ public class WordSimUtils {
      * @param strategy the new default strategy
      */
     public static void setStrategy(ComparisonStrategy strategy) {
-        STRATEGY = strategy;
+        WordSimUtils.strategy = strategy;
     }
 
     /**
@@ -55,7 +55,7 @@ public class WordSimUtils {
         Objects.requireNonNull(ctx);
         Objects.requireNonNull(strategy);
 
-        return strategy.areWordsSimilar(ctx, MEASURES);
+        return strategy.areWordsSimilar(ctx, measures);
     }
 
     /**
@@ -67,7 +67,7 @@ public class WordSimUtils {
      */
     public static boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
-        return areWordsSimilar(ctx, STRATEGY);
+        return areWordsSimilar(ctx, strategy);
     }
 
     /**
@@ -79,7 +79,7 @@ public class WordSimUtils {
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
     public static boolean areWordsSimilar(String firstWord, String secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), STRATEGY);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
     }
 
     /**
@@ -103,7 +103,7 @@ public class WordSimUtils {
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
     public static boolean areWordsSimilar(Word firstWord, Word secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), STRATEGY);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
     }
 
     /**
@@ -127,7 +127,7 @@ public class WordSimUtils {
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
     public static boolean areWordsSimilar(String firstWord, Word secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), STRATEGY);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
     }
 
     /**
