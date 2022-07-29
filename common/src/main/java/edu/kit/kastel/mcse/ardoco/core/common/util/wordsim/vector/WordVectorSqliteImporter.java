@@ -15,12 +15,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Reads a file containing word vector embeddings and inserts them into a sqlite database.
@@ -128,73 +128,67 @@ public class WordVectorSqliteImporter {
         long linesRead = 0;
         long inserted = 0;
 
-        try (Connection connection = connect()) {
-            try (PreparedStatement statement = prepareSelect(connection)) {
-                try (var in = Files.newInputStream(vectorFile, StandardOpenOption.READ)) {
-                    try (var reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
-                        try (var bufferedReader = new BufferedReader(reader)) {
-                            ByteBuffer buffer = ByteBuffer.allocate(dimension * 4);
+        try (Connection connection = connect();
+                PreparedStatement statement = prepareSelect(connection);
+                var in = Files.newInputStream(vectorFile, StandardOpenOption.READ);
+                var bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
-                            while (bufferedReader.ready()) {
-                                var line = bufferedReader.readLine();
+            ByteBuffer buffer = ByteBuffer.allocate(dimension * 4);
 
-                                linesRead++;
+            while (bufferedReader.ready()) {
+                var line = bufferedReader.readLine();
+                linesRead++;
 
-                                if (linesRead < startLine) {
-                                    continue;
-                                }
-
-                                if (linesRead > endLine) {
-                                    break;
-                                }
-
-                                var parts = line.split(" ");
-
-                                if (parts.length - 1 != this.dimension) {
-                                    throw new IllegalStateException("importer has read line with invalid vector dimension: \"" + line + "\"");
-                                }
-
-                                // Process the word
-                                String word = parts[0];
-
-                                if (word.length() > this.maxWordLength) { // Filter out weird words from dataset
-                                    skippedWords.add(word);
-                                    continue;
-                                }
-
-                                if (!filterWord(word)) {
-                                    skippedWords.add(word);
-                                    continue;
-                                }
-
-                                word = processWord(word);
-
-                                // Process the vector
-                                buffer.clear();
-
-                                for (int i = 0; i < parts.length - 1; i++) {
-                                    float value = Float.parseFloat(parts[i + 1]);
-                                    buffer.putFloat(value);
-                                }
-
-                                // Insert into database
-                                if (!dryRun) {
-                                    statement.setString(1, word);
-                                    statement.setBytes(2, buffer.array());
-                                    statement.execute();
-                                } else {
-                                    LOGGER.debug("Would have inserted: {}", word);
-                                }
-
-                                inserted++;
-                            }
-                        }
-                    }
+                if (linesRead < startLine) {
+                    continue;
                 }
+
+                if (linesRead > endLine) {
+                    break;
+                }
+
+                var parts = line.split(" ");
+                if (parts.length - 1 != this.dimension) {
+                    throw new IllegalStateException("importer has read line with invalid vector dimension: \"" + line + "\"");
+                }
+
+                // Process the word
+                String word = parts[0];
+                if (word.length() > this.maxWordLength) { // Filter out weird words from dataset
+                    skippedWords.add(word);
+                    continue;
+                }
+
+                if (!filterWord(word)) {
+                    skippedWords.add(word);
+                    continue;
+                }
+
+                word = processWord(word);
+
+                // Process the vector
+                buffer.clear();
+
+                for (int i = 0; i < parts.length - 1; i++) {
+                    float value = Float.parseFloat(parts[i + 1]);
+                    buffer.putFloat(value);
+                }
+
+                // Insert into database
+                if (!dryRun) {
+                    statement.setString(1, word);
+                    statement.setBytes(2, buffer.array());
+                    statement.execute();
+                } else {
+                    LOGGER.debug("Would have inserted: {}", word);
+                }
+
+                inserted++;
             }
+
         }
 
-        return new ImportResult(inserted, ImmutableList.copyOf(skippedWords));
+        return new ImportResult(inserted, Lists.immutable.withAll(skippedWords));
     }
 
     private Connection connect() throws SQLException {

@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import opennlp.tools.stemmer.PorterStemmer;
-
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
+
+import opennlp.tools.stemmer.PorterStemmer;
 
 /**
  * Provides access to the SEWordSim sqlite database. Instances of this class keep an open connection to the sqlite file
