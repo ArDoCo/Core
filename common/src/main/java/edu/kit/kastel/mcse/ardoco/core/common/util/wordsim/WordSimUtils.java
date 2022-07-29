@@ -65,7 +65,7 @@ public class WordSimUtils {
     private static boolean splitLengthTest(ComparisonContext ctx) {
         var first = ctx.firstTerm().toLowerCase();
         var second = ctx.secondTerm().toLowerCase();
-        return (first.split(" ").length != second.split(" ").length);
+        return (first.split(" ").length == second.split(" ").length);
     }
 
     /**
