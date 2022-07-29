@@ -59,10 +59,9 @@ public class VectorUtils {
 
         double[] firstVecDouble = new double[firstVec.length];
         double[] secondVecDouble = new double[secondVec.length];
-
         for (int i = 0; i < firstVec.length; i++) {
-            firstVecDouble[i] = Double.valueOf(firstVec[i]);
-            secondVecDouble[i] = Double.valueOf(secondVec[i]);
+            firstVecDouble[i] = firstVec[i];
+            secondVecDouble[i] = secondVec[i];
         }
 
         return cosineSimilarity(firstVecDouble, secondVecDouble);
