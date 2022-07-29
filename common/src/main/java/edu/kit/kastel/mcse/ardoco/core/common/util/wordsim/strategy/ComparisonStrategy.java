@@ -11,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
  */
 public interface ComparisonStrategy {
 
-    ComparisonStrategy AT_LEAST_ONE = new AtleastOneStrategy();
+    ComparisonStrategy AT_LEAST_ONE = new AtLeastOneStrategy();
 
     ComparisonStrategy MAJORITY = new MajorityStrategy();
 
