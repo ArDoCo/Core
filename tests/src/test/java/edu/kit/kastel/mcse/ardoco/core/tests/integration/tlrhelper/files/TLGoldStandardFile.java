@@ -12,6 +12,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 public class TLGoldStandardFile {
 
+    private TLGoldStandardFile() {
+        // no instantiation
+        throw new IllegalAccessError("No instantiation allowed");
+    }
+
     public static List<TestLink> loadLinks(Project project) throws IOException {
         Path path = Path.of(String.format("src/test/resources/benchmark/%s/goldstandard.csv", project.name().toLowerCase(Locale.ROOT)));
         List<String> lines = Files.readAllLines(path);
@@ -23,9 +28,6 @@ public class TLGoldStandardFile {
                 .map(link -> new TestLink(link.modelId(), link.sentenceNr() - 1))
                 // ^ goldstandard sentences start with 1 while ISentences are zero indexed
                 .toList();
-    }
-
-    private TLGoldStandardFile() {
     }
 
 }
