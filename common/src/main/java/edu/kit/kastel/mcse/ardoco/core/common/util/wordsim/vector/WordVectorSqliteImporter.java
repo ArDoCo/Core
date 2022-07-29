@@ -135,16 +135,12 @@ public class WordVectorSqliteImporter {
 
             ByteBuffer buffer = ByteBuffer.allocate(dimension * 4);
 
-            while (bufferedReader.ready()) {
+            while (bufferedReader.ready() && linesRead < endLine) {
                 var line = bufferedReader.readLine();
                 linesRead++;
 
                 if (linesRead < startLine) {
                     continue;
-                }
-
-                if (linesRead > endLine) {
-                    break;
                 }
 
                 var parts = line.split(" ");
@@ -154,41 +150,40 @@ public class WordVectorSqliteImporter {
 
                 // Process the word
                 String word = parts[0];
-                if (word.length() > this.maxWordLength) { // Filter out weird words from dataset
+                // Filter out weird words from dataset
+                if (word.length() > this.maxWordLength) {
                     skippedWords.add(word);
                     continue;
                 }
-
                 if (!filterWord(word)) {
                     skippedWords.add(word);
                     continue;
                 }
-
                 word = processWord(word);
 
                 // Process the vector
                 buffer.clear();
-
                 for (int i = 0; i < parts.length - 1; i++) {
                     float value = Float.parseFloat(parts[i + 1]);
                     buffer.putFloat(value);
                 }
 
-                // Insert into database
-                if (!dryRun) {
-                    statement.setString(1, word);
-                    statement.setBytes(2, buffer.array());
-                    statement.execute();
-                } else {
-                    LOGGER.debug("Would have inserted: {}", word);
-                }
-
+                insertIntoDatabase(statement, buffer, word);
                 inserted++;
             }
-
         }
 
         return new ImportResult(inserted, Lists.immutable.withAll(skippedWords));
+    }
+
+    private void insertIntoDatabase(PreparedStatement statement, ByteBuffer buffer, String word) throws SQLException {
+        if (!dryRun) {
+            statement.setString(1, word);
+            statement.setBytes(2, buffer.array());
+            statement.execute();
+        } else {
+            LOGGER.debug("Would have inserted: {}", word);
+        }
     }
 
     private Connection connect() throws SQLException {
