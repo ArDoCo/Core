@@ -16,7 +16,7 @@ class NgramMeasureTest {
             "a b c d e f g h i j k l m n o p", "welcome", "insect", "smoke", "change");
 
     @Test
-    public void testUnigramDistance() {
+    void testUnigramDistance() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 1, 1.0);
         var levenshteinDistance = new LevenshteinDistance();
 
@@ -37,7 +37,7 @@ class NgramMeasureTest {
     }
 
     @Test
-    public void testUnigramSimilarity() {
+    void testUnigramSimilarity() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 1, 0.7);
 
         assertTrue(measure.areWordsSimilar(new ComparisonContext("Hello", "Hella"))); // 0.8
@@ -45,7 +45,7 @@ class NgramMeasureTest {
     }
 
     @Test
-    public void testBigram() {
+    void testBigram() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 2, 0.7);
         assertEquals(0.5, measure.calculateDistance("Hello", "Hella"), 0.01);
 
@@ -56,7 +56,7 @@ class NgramMeasureTest {
     }
 
     @Test
-    public void testTrigram() {
+    void testTrigram() {
         var measure = new NgramMeasure(NgramMeasure.Variant.POSITIONAL, 3, 0.7);
         assertEquals(1.0 / 3.0, measure.calculateDistance("Hello", "Hella"), 0.01);
 
@@ -67,7 +67,7 @@ class NgramMeasureTest {
     }
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         assertThrows(IllegalArgumentException.class, () -> new NgramMeasure(NgramMeasure.Variant.LUCENE, -1, 0.5));
         assertThrows(IllegalArgumentException.class, () -> new NgramMeasure(NgramMeasure.Variant.LUCENE, 1, -0.1));
         assertThrows(IllegalArgumentException.class, () -> new NgramMeasure(NgramMeasure.Variant.LUCENE, 1, 1.1));
