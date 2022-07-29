@@ -39,7 +39,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
         this.agent = new ComputerScienceWordsAgent(dataRepository);
         setData();
 
-        var validWord = wordToListOfIWord(data.get(0));
+        var validWord = wordToListOfWord(data.get(0));
         nounMapping = new NounMappingImpl(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),
                 Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
         invalidWord = new MyWord("ASDFWJ", validWord.size());
@@ -56,7 +56,6 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
     @Test
     void testSetProbability() {
-
         this.agent.run();
         var nounMappingProbability = nounMapping.getProbability();
         var invalidNounMappingProbability = textState.getNounMappingsByWord(invalidWord).get(0).getProbability();
@@ -66,7 +65,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
     }
 
-    private List<Word> wordToListOfIWord(String word) {
+    private List<Word> wordToListOfWord(String word) {
         var words = word.split("\\s+");
         List<Word> wordsList = new ArrayList<>();
         for (int i = 0; i < words.length; i++) {
@@ -99,7 +98,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
         }
     }
 
-    private record MyWord(String word, int pos) implements Word {
+    private record MyWord(String word, int position) implements Word {
 
         @Override
         public int getSentenceNo() {
@@ -133,7 +132,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
         @Override
         public int getPosition() {
-            return pos;
+            return position;
         }
 
         @Override
