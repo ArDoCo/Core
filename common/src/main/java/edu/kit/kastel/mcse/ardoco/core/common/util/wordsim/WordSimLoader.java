@@ -58,12 +58,12 @@ public class WordSimLoader {
 
                 LOGGER.info("Loading DL4J fastText data source...");
 
-                var dataSource = new DL4JFastTextDataSource(modelPath);
+                try (var dataSource = new DL4JFastTextDataSource(modelPath)) {
+                    LOGGER.info("Successfully loaded DL4J fastText data source!");
 
-                LOGGER.info("Successfully loaded DL4J fastText data source!");
-
-                var measure = new FastTextMeasure(dataSource, CommonTextToolsConfig.FASTTEXT_SIMILARITY_THRESHOLD);
-                list.add(measure);
+                    var measure = new FastTextMeasure(dataSource, CommonTextToolsConfig.FASTTEXT_SIMILARITY_THRESHOLD);
+                    list.add(measure);
+                }
             }
 
             return list;
