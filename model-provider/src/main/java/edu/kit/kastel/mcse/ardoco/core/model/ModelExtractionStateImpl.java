@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
  * This state contains all from the model extracted information. This are the extracted instances and relations. For
  * easier handling, the occurring types and names are stored additionally.
  *
- * @author Sophie
  */
 public class ModelExtractionStateImpl extends AbstractState implements ModelExtractionState {
 

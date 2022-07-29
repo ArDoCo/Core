@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
- * @author Jan Keim
  *
  */
 public abstract class AbstractInconsistencyTypeTest {

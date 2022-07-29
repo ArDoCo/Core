@@ -17,8 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 /**
  * The analyzer classifies nouns.
  *
- * @author Sophie Schulz
- * @author Jan Keim
  */
 public class NounExtractor extends Informant {
     @Configurable

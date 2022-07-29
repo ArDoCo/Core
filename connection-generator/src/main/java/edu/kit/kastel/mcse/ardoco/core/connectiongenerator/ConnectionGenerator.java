@@ -22,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent
  * matchings between text and model. The order is important: All connections should run after the recommendations have
  * been made.
  *
- * @author Sophie
  */
 public class ConnectionGenerator extends AbstractExecutionStage {
 

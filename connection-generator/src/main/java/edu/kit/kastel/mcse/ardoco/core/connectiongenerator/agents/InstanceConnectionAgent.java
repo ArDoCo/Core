@@ -13,7 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.InstantCon
 /**
  * This connector finds names of model instance in recommended instances.
  *
- * @author Sophie
  */
 public class InstanceConnectionAgent extends PipelineAgent {
     private final List<Informant> extractors;

@@ -24,7 +24,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
  * measured by the probability. Every recommended instance has a unique name.
  *
- * @author Sophie
  */
 public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
 

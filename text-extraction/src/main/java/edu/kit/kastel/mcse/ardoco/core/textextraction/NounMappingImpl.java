@@ -27,8 +27,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  *
- * @author Sophie Schulz
- * @author Jan Keim
  */
 public class NounMappingImpl implements NounMapping {
 
