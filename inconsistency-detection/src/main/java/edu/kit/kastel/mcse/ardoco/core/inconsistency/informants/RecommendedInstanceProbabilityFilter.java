@@ -20,7 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
  * probability of being a {@link RecommendedInstance} is low or because the probability of having a mapping for a name
  * and/or type is low.
  *
- * @author Jan Keim
  *
  */
 public class RecommendedInstanceProbabilityFilter extends Filter {

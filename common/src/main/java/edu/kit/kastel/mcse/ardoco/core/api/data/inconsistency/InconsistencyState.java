@@ -13,7 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 /**
  * Inconsistency state holding data and information about inconsistency.
  * 
- * @author Jan Keim
  */
 public interface InconsistencyState extends ICopyable<InconsistencyState>, IConfigurable {
 

@@ -8,7 +8,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
 
 /**
- * @author Jan Keim
  *
  */
 public class MissingTextForModelElementInconsistencyTest extends AbstractInconsistencyTypeTest {

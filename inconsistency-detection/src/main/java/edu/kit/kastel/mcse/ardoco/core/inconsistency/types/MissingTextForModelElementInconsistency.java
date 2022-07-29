@@ -11,7 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
 /**
- * @author Jan Keim
  */
 public class MissingTextForModelElementInconsistency implements Inconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingTextForModelElement";
