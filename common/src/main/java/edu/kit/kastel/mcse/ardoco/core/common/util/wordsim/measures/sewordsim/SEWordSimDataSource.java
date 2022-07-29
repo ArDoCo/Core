@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.sqlite.SQLiteConfig;
-import org.sqlite.SQLiteOpenMode;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import opennlp.tools.stemmer.PorterStemmer;
 
 /**
@@ -42,12 +42,7 @@ public class SEWordSimDataSource implements AutoCloseable {
             throw new IllegalArgumentException("sqliteFile does not exist: " + sqliteFile);
         }
 
-        var cfg = new SQLiteConfig();
-        cfg.setReadOnly(true);
-        cfg.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
-        cfg.setJournalMode(SQLiteConfig.JournalMode.OFF);
-        cfg.setSynchronous(SQLiteConfig.SynchronousMode.OFF);
-        cfg.setOpenMode(SQLiteOpenMode.NOMUTEX);
+        SQLiteConfig cfg = WordSimUtils.getSqLiteConfig();
 
         this.connection = cfg.createConnection("jdbc:sqlite:" + sqliteFile);
         this.selectStatement = this.connection.prepareStatement(SELECT_QUERY);
