@@ -19,13 +19,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
@@ -33,7 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  *
  * @author Dominik Fuchss
  */
-public class ComputerScienceWordsAgent extends TextAgent {
+public class ComputerScienceWordsAgent extends PipelineAgent {
 
     private static final int MAX_WIKI_LEVEL = 3;
 
@@ -69,27 +71,32 @@ public class ComputerScienceWordsAgent extends TextAgent {
 
     private final ImmutableList<String> commonCSWords;
 
-    public ComputerScienceWordsAgent() {
+    public ComputerScienceWordsAgent(DataRepository dataRepository) {
+        super("ComputerScienceWordsAgent", dataRepository);
         this.commonCSWords = loadWords();
     }
 
     @Override
-    public void execute(TextAgentData data) {
+    public void run() {
+        var text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
+        var textState = DataRepositoryHelper.getTextState(getDataRepository());
+        execute(text, textState);
+        super.run();
+    }
+
+    public void execute(Text text, TextState textState) {
         if (!enabled)
             return;
 
-        var text = data.getText();
-        var textState = data.getTextState();
-
-        Set<INounMapping> processed = new HashSet<>();
-        for (var word : text.getWords()) {
+        Set<NounMapping> processed = new HashSet<>();
+        for (var word : text.words()) {
             var nounMappings = textState.getNounMappingsByWord(word);
             for (var nounMapping : nounMappings)
                 processNounMapping(textState, word, nounMapping, processed);
         }
     }
 
-    private void processNounMapping(ITextState textState, IWord word, INounMapping nounMapping, Set<INounMapping> processed) {
+    private void processNounMapping(TextState textState, Word word, NounMapping nounMapping, Set<NounMapping> processed) {
         if (processed.contains(nounMapping))
             return;
         processed.add(nounMapping);
@@ -110,25 +117,25 @@ public class ComputerScienceWordsAgent extends TextAgent {
         }
     }
 
-    private void addProbability(INounMapping nounMapping) {
+    private void addProbability(NounMapping nounMapping) {
         nounMapping.addKindWithProbability(MappingKind.NAME, this, probabilityOfFoundWords);
         nounMapping.addKindWithProbability(MappingKind.TYPE, this, probabilityOfFoundWords);
     }
 
-    private void deleteOccurrence(ITextState textState, INounMapping nounMapping) {
+    private void deleteOccurrence(TextState textState, NounMapping nounMapping) {
         textState.removeNounMapping(nounMapping);
     }
 
-    private boolean match(INounMapping nounMapping, String csWord) {
+    private boolean match(NounMapping nounMapping, String csWord) {
         String[] csParts = csWord.split("\\s+");
-        IWord[] nmWords = nounMapping.getWords().toArray(new IWord[0]);
+        Word[] nmWords = nounMapping.getWords().toArray(new Word[0]);
 
         for (int start = 0; start < nmWords.length; start++) {
-            IWord[] remaining = Arrays.copyOfRange(nmWords, start, nmWords.length);
+            Word[] remaining = Arrays.copyOfRange(nmWords, start, nmWords.length);
             if (remaining.length < csParts.length)
                 return false;
             // Try to match ..
-            IWord[] wordsToMatch = Arrays.copyOfRange(remaining, 0, csParts.length);
+            Word[] wordsToMatch = Arrays.copyOfRange(remaining, 0, csParts.length);
             boolean match = matchIt(csParts, wordsToMatch);
             if (match)
                 return true;
@@ -137,7 +144,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
         return false;
     }
 
-    private boolean matchIt(String[] csParts, IWord[] wordsToMatch) {
+    private boolean matchIt(String[] csParts, Word[] wordsToMatch) {
         assert csParts.length == wordsToMatch.length;
 
         for (int i = 0; i < csParts.length; i++) {
@@ -154,7 +161,7 @@ public class ComputerScienceWordsAgent extends TextAgent {
         }
         if (logger.isDebugEnabled())
             logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts),
-                    String.join(" ", Arrays.stream(wordsToMatch).map(IWord::getText).toList()));
+                    String.join(" ", Arrays.stream(wordsToMatch).map(Word::getText).toList()));
         return true;
     }
 

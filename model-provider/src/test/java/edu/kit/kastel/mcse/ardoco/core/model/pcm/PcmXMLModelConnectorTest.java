@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 
 class PcmXMLModelConnectorTest {
@@ -32,11 +32,11 @@ class PcmXMLModelConnectorTest {
     @DisplayName("Get all instances from MediaStore")
     void getInstancesFromMediaStoreTest() throws ReflectiveOperationException, IOException {
         var connectorMediaStore = loadModel("src/test/resources/mediastore.repository");
-        ImmutableList<IModelInstance> instances = connectorMediaStore.getInstances();
+        ImmutableList<ModelInstance> instances = connectorMediaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing MediaStore instances:");
-            for (IModelInstance instance : instances) {
+            for (ModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
                 logger.debug(String.valueOf(instance.getNameParts()));
@@ -50,7 +50,7 @@ class PcmXMLModelConnectorTest {
         List<String> expectedInstancesNames = List.of("FileStorage", "Reencoding", "DB", "MediaAccess", "Facade", "TagWatermarking", "UserDBAdapter",
                 "AudioWatermarking", "UserManagement", "ParallelWatermarking", "MediaManagement", "Cache", "Packaging", "DownloadLoadBalancer");
 
-        for (IModelInstance instance : instances) {
+        for (ModelInstance instance : instances) {
             String name = instance.getFullName();
             Assertions.assertTrue(expectedInstancesNames.contains(name), "Found instance does not match one of the expected instances!");
         }
@@ -60,11 +60,11 @@ class PcmXMLModelConnectorTest {
     @DisplayName("Get all instances from TeaStore")
     void getInstancesFromTeaStoreTest() throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
         var connectorTeaStore = loadModel("src/test/resources/teastore.repository");
-        ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
+        ImmutableList<ModelInstance> instances = connectorTeaStore.getInstances();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing TeaStore instances:");
-            for (IModelInstance instance : instances) {
+            for (ModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
                 logger.debug(String.valueOf(instance.getNameParts()));
@@ -81,13 +81,13 @@ class PcmXMLModelConnectorTest {
     @DisplayName("Get all instances from TEAMMATES")
     void getInstancesFromTeammatesTest() throws ReflectiveOperationException, IOException, ParserConfigurationException, SAXException {
         var connectorTeaStore = loadModel("src/test/resources/teammates.repository");
-        ImmutableList<IModelInstance> instances = connectorTeaStore.getInstances();
+        ImmutableList<ModelInstance> instances = connectorTeaStore.getInstances();
 
         Assertions.assertFalse(instances.isEmpty(), "There need to be some instances contained in the model.");
 
         if (logger.isDebugEnabled()) {
             logger.debug("Listing TEAMMATES instances:");
-            for (IModelInstance instance : instances) {
+            for (ModelInstance instance : instances) {
                 String info = instance.toString();
                 logger.debug(info);
                 logger.debug(String.valueOf(instance.getNameParts()));

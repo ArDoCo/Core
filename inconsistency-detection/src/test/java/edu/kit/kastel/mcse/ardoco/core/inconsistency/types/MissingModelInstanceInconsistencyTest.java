@@ -3,15 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 
 /**
  * This class tests the record MissingModelInconsistency.
  * 
  * @author Jan Keim
  */
-public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements IClaimant {
+public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements Claimant {
 
     private MissingModelInstanceInconsistency missingModelInstanceInconsistency;
 
@@ -21,7 +21,7 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
     }
 
     @Override
-    protected IInconsistency getInconsistency() {
+    protected Inconsistency getInconsistency() {
         return missingModelInstanceInconsistency;
     }
 
@@ -37,12 +37,12 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
     }
 
     @Override
-    protected IInconsistency getUnequalInconsistency() {
+    protected Inconsistency getUnequalInconsistency() {
         return new MissingModelInstanceInconsistency("otherInconsistency", 1, 1.0);
     }
 
     @Override
-    protected IInconsistency getEqualInconsistency() {
+    protected Inconsistency getEqualInconsistency() {
         return new MissingModelInstanceInconsistency("inconsistency", 1, 1.0);
     }
 
