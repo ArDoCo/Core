@@ -13,7 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 
 /**
- * @author Jan Keim
  *
  */
 class SentenceTest {

@@ -18,8 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * This analyzer searches for the occurrence of instance names and types of the extraction state and adds them as names
  * and types to the text extraction state.
  *
- * @author Sophie schulz
- * @author Jan Keim
  */
 public class ExtractionDependentOccurrenceExtractor extends Informant {
 

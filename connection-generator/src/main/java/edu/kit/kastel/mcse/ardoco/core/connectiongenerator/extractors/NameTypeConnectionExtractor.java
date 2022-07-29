@@ -26,7 +26,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
- * @author Sophie Schulz, Jan Keim
  */
 public class NameTypeConnectionExtractor extends Informant {
 

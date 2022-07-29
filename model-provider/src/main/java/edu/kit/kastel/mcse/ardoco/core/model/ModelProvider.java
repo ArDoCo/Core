@@ -15,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
  * extraction state.
  *
- * @author Sophie
  */
 public final class ModelProvider extends AbstractPipelineStep {
     private static final String MODEL_STATES_DATA = "ModelStatesData";

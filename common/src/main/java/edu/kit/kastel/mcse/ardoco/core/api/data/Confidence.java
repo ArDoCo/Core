@@ -16,9 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 /**
  *
  *
- * @author Sophie Schulz
- * @author Dominik Fuchß
- * @author Jan Keim
  *
  */
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {

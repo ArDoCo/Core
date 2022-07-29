@@ -15,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * at spaces and can be seen as multiple names. Therefore, the longestName (and type) is the original name (type) of the
  * instance.
  *
- * @author Sophie
  */
 public class ModelInstanceImpl implements ModelInstance {
 

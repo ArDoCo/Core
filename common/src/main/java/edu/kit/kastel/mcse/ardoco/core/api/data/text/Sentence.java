@@ -6,7 +6,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 /**
  * Represents a sentence within the document.
  *
- * @author Jan Keim
  *
  */
 public interface Sentence {
