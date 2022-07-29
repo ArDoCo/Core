@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
 
 public abstract class SentenceTest {
-    private static ISentence sentence;
+    private static Sentence sentence;
 
     @BeforeEach
     void beforeEach() {
@@ -18,7 +18,7 @@ public abstract class SentenceTest {
         sentence = text.getSentences().get(41);
     }
 
-    protected abstract ITextConnector getProvider();
+    protected abstract TextProvider getProvider();
 
     @Test
     void getTextTest() {

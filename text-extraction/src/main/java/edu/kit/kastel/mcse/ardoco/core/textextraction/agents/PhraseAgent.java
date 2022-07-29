@@ -5,22 +5,25 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 
 /**
- * Agent that is responsible for looking at phrases and extracting {@link INounMapping}s from compound nouns etc.
+ * Agent that is responsible for looking at phrases and extracting {@link NounMapping}s from compound nouns etc.
  *
  * @author Jan Keim
  */
-public class PhraseAgent extends TextAgent {
+public class PhraseAgent extends PipelineAgent {
     @Configurable
     private double phraseConfidence = 0.6;
     @Configurable
@@ -29,19 +32,21 @@ public class PhraseAgent extends TextAgent {
     /**
      * Instantiates a new initial text agent.
      */
-    public PhraseAgent() {
-        // empty
+    public PhraseAgent(DataRepository dataRepository) {
+        super("PhraseAgent", dataRepository);
     }
 
     @Override
-    public void execute(TextAgentData data) {
-        for (var word : data.getText().getWords()) {
-            createNounMappingIfPhrase(word, data.getTextState());
-            createNounMappingIfSpecialNamedEntity(word, data.getTextState());
+    public void run() {
+        var text = getAnnotatedText();
+        var textState = getDataRepository().getData(TextState.ID, TextStateImpl.class).orElseThrow();
+        for (var word : text.words()) {
+            createNounMappingIfPhrase(word, textState);
+            createNounMappingIfSpecialNamedEntity(word, textState);
         }
     }
 
-    private void createNounMappingIfPhrase(IWord word, ITextState textState) {
+    private void createNounMappingIfPhrase(Word word, TextState textState) {
         var phrase = CommonUtilities.getCompoundPhrase(word);
 
         // if phrase is empty then it is no phrase
@@ -58,11 +63,11 @@ public class PhraseAgent extends TextAgent {
         }
     }
 
-    private void addPhraseNounMapping(ImmutableList<IWord> phrase, ITextState textState) {
+    private void addPhraseNounMapping(ImmutableList<Word> phrase, TextState textState) {
         var reference = CommonUtilities.createReferenceForPhrase(phrase);
         var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
         if (similarReferenceNounMappings.isEmpty()) {
-            var phraseNounMapping = NounMapping.createPhraseNounMapping(phrase, this, phraseConfidence);
+            var phraseNounMapping = NounMappingImpl.createPhraseNounMapping(phrase, this, phraseConfidence);
             textState.addNounMapping(phraseNounMapping, this);
         } else {
             for (var nounMapping : similarReferenceNounMappings) {
@@ -72,7 +77,7 @@ public class PhraseAgent extends TextAgent {
         }
     }
 
-    private void createNounMappingIfSpecialNamedEntity(IWord word, ITextState textState) {
+    private void createNounMappingIfSpecialNamedEntity(Word word, TextState textState) {
         var text = word.getText();
         if (CommonUtilities.isCamelCasedWord(text) || CommonUtilities.nameIsSnakeCased(text)) {
             textState.addNounMapping(word, MappingKind.NAME, this, specialNamedEntityConfidence);
@@ -83,4 +88,9 @@ public class PhraseAgent extends TextAgent {
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         // handle additional config
     }
+
+    private Text getAnnotatedText() {
+        return this.getDataRepository().getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
+    }
+
 }

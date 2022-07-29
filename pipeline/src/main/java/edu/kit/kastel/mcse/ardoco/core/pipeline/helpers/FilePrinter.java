@@ -19,21 +19,21 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.IInstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
@@ -59,7 +59,7 @@ public final class FilePrinter {
      * @param target the target file
      * @param text   the text to use.
      */
-    public static void writeSentencesInFile(File target, IText text) {
+    public static void writeSentencesInFile(File target, Text text) {
         var fileCreated = createFileIfNonExistent(target);
         if (!fileCreated) {
             return;
@@ -67,7 +67,7 @@ public final class FilePrinter {
 
         try (var myWriter = new FileWriter(target, StandardCharsets.UTF_8)) {
             var minSentenceNumber = 0;
-            for (IWord node : text.getWords()) {
+            for (Word node : text.words()) {
                 var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
                 if (sentenceNumber + 1 > minSentenceNumber) {
                     myWriter.append(LINE_SEPARATOR).append(String.valueOf(sentenceNumber)).append(": ");
@@ -99,8 +99,8 @@ public final class FilePrinter {
         return true;
     }
 
-    private static void writeStates(Writer myWriter, IModelState extractionState, ITextState ntrState, //
-            IRecommendationState recommendationState, IConnectionState connectionState, Duration duration) throws IOException {
+    private static void writeStates(Writer myWriter, ModelExtractionState extractionState, TextState ntrState, //
+            RecommendationState recommendationState, ConnectionState connectionState, Duration duration) throws IOException {
         myWriter.write("Results of ModelConnector: ");
         myWriter.append(LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
@@ -132,7 +132,7 @@ public final class FilePrinter {
         var comRecommendedInstanceByName = getRecommendedInstancesComparator();
         var recommendedInstances = recommendationState.getRecommendedInstances().toSortedList(comRecommendedInstanceByName).toImmutable();
 
-        for (IRecommendedInstance ri : recommendedInstances) {
+        for (RecommendedInstance ri : recommendedInstances) {
             myWriter.write(ri.toString() + LINE_SEPARATOR);
         }
         myWriter.write(HORIZONTAL_RULE);
@@ -144,7 +144,7 @@ public final class FilePrinter {
         var compInstByUID = getInstanceLinkComparator();
         var instanceMappings = Lists.immutable.withAll(connectionState.getInstanceLinks()).toSortedList(compInstByUID).toImmutable();
 
-        for (IInstanceLink imap : instanceMappings) {
+        for (InstanceLink imap : instanceMappings) {
 
             myWriter.write(imap.toString() + LINE_SEPARATOR);
         }
@@ -186,8 +186,8 @@ public final class FilePrinter {
      * @param connectionState     containing all instances and relations, matched by supposed mappings
      * @param duration            past time the approach needed to calculate the results
      */
-    public static void writeStatesToFile(File resultFile, IModelState extractionState, ITextState ntrState, //
-            IRecommendationState recommendationState, IConnectionState connectionState, Duration duration) {
+    public static void writeStatesToFile(File resultFile, ModelExtractionState extractionState, TextState ntrState, //
+            RecommendationState recommendationState, ConnectionState connectionState, Duration duration) {
         var fileCreated = createFileIfNonExistent(resultFile);
         if (!fileCreated) {
             return;
@@ -210,19 +210,19 @@ public final class FilePrinter {
      * @param modelState  the model state
      * @param name        the name
      */
-    public static void writeModelInstancesInCsvFile(File destination, IModelState modelState, String name) {
+    public static void writeModelInstancesInCsvFile(File destination, ModelExtractionState modelState, String name) {
         var dataLines = getInstancesFromModelState(modelState, name);
         writeDataLinesInFile(destination, dataLines);
     }
 
-    private static ImmutableList<String[]> getInstancesFromModelState(IModelState modelState, String name) {
+    private static ImmutableList<String[]> getInstancesFromModelState(ModelExtractionState modelState, String name) {
         MutableList<String[]> dataLines = Lists.mutable.empty();
 
         dataLines.add(new String[] { "Found Model Elements in " + name + ":", "", "" });
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "UID", "Name", "Type" });
 
-        for (IModelInstance instance : modelState.getInstances()) {
+        for (ModelInstance instance : modelState.getInstances()) {
 
             dataLines.add(new String[] { instance.getUid(), instance.getFullName(), instance.getFullType() });
 
@@ -237,7 +237,7 @@ public final class FilePrinter {
      * @param resultFile      the result file
      * @param connectionState the connection state
      */
-    public static void writeTraceLinksInCsvFile(File resultFile, IConnectionState connectionState) {
+    public static void writeTraceLinksInCsvFile(File resultFile, ConnectionState connectionState) {
         var dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
         writeDataLinesInFile(resultFile, dataLines);
     }
@@ -248,20 +248,20 @@ public final class FilePrinter {
      * @param resultFile the result file
      * @param textState  the text state
      */
-    public static void writeNounMappingsInCsvFile(File resultFile, ITextState textState) {
+    public static void writeNounMappingsInCsvFile(File resultFile, TextState textState) {
         var dataLines = getMappingsAsDataLinesOfTextState(textState);
         writeDataLinesInFile(resultFile, dataLines);
     }
 
-    private static ImmutableList<String[]> getMappingsAsDataLinesOfTextState(ITextState textState) {
+    private static ImmutableList<String[]> getMappingsAsDataLinesOfTextState(TextState textState) {
         MutableList<String[]> dataLines = Lists.mutable.empty();
 
         dataLines.add(new String[] { "Found NounMappings: ", "", "", "" });
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type" });
 
-        if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMapping)) {
-            for (INounMapping mapping : textState.getNounMappings()) {
+        if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMappingImpl)) {
+            for (NounMapping mapping : textState.getNounMappings()) {
 
                 var kind = mapping.getKind();
 
@@ -274,7 +274,7 @@ public final class FilePrinter {
             return dataLines.toImmutable();
         }
 
-        for (INounMapping mapping : textState.getNounMappings()) {
+        for (NounMapping mapping : textState.getNounMappings()) {
 
             var distribution = mapping.getDistribution();
             var nameProb = Double.toString(distribution.get(MappingKind.NAME).getConfidence());
@@ -286,7 +286,7 @@ public final class FilePrinter {
         return dataLines.toImmutable();
     }
 
-    private static ImmutableList<String[]> getLinksAsDataLinesOfConnectionState(IConnectionState connectionState) {
+    private static ImmutableList<String[]> getLinksAsDataLinesOfConnectionState(ConnectionState connectionState) {
         MutableList<String[]> dataLines = Lists.mutable.empty();
 
         dataLines.add(new String[] { "#Found TraceLinks: ", "", "" });
@@ -328,11 +328,11 @@ public final class FilePrinter {
 
     }
 
-    public static void writeInconsistenciesToFile(File file, IInconsistencyState inconsistencyState) {
+    public static void writeInconsistenciesToFile(File file, InconsistencyState inconsistencyState) {
         var inconsistencies = inconsistencyState.getInconsistencies();
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
-            inconsistencies.flatCollect(IInconsistency::toFileOutput)
+            inconsistencies.flatCollect(Inconsistency::toFileOutput)
                     .asLazy()
                     .collect(FilePrinter::convertToCSV)
                     .distinct()
@@ -394,11 +394,11 @@ public final class FilePrinter {
         return escapedData;
     }
 
-    private static Comparator<IRecommendedInstance> getRecommendedInstancesComparator() {
-        return Comparator.comparing(IRecommendedInstance::getName);
+    private static Comparator<RecommendedInstance> getRecommendedInstancesComparator() {
+        return Comparator.comparing(RecommendedInstance::getName);
     }
 
-    private static Comparator<IInstanceLink> getInstanceLinkComparator() {
+    private static Comparator<InstanceLink> getInstanceLinkComparator() {
         return Comparator.comparing(i -> i.getModelInstance().getUid());
     }
 }
