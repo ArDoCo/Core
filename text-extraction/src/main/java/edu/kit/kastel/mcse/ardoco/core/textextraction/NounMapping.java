@@ -13,6 +13,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
@@ -38,7 +39,7 @@ public class NounMapping implements INounMapping {
     private final ImmutableList<IWord> referenceWords;
 
     /* Words are the references within the text */
-    private MutableList<IWord> words;
+    private final MutableList<IWord> words;
 
     private final MutableList<IWord> coreferences = Lists.mutable.empty();
 
@@ -74,13 +75,6 @@ public class NounMapping implements INounMapping {
         initializeDistribution(distribution);
         this.referenceWords = Lists.immutable.withAll(referenceWords);
         surfaceForms = Lists.mutable.withAll(occurrences);
-    }
-
-    private NounMapping(INounMapping nm) {
-        words = Lists.mutable.withAll(nm.getWords());
-        initializeDistribution(nm.getDistribution());
-        referenceWords = nm.getReferenceWords();
-        surfaceForms = Lists.mutable.withAll(nm.getSurfaceForms());
     }
 
     private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
@@ -171,13 +165,13 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
-    public ImmutableList<IPhrase> getPhrases() {
+    public ImmutableSet<IPhrase> getPhrases() {
 
         MutableSet<IPhrase> phrases = Sets.mutable.empty();
         for (IWord word : this.words) {
             phrases.add(word.getPhrase());
         }
-        return phrases.toList().toImmutable();
+        return phrases.toImmutable();
     }
 
     @Override
@@ -193,7 +187,7 @@ public class NounMapping implements INounMapping {
 
         words.removeAll(wordsToRemove);
 
-        // TODO: Recalculate confidence, etc!!! -> Confidence must be designed differently
+        // TODO: Recalculate confidence
 
         // return noun mapping out of removed words
         return new NounMapping(wordsToRemove.toImmutable(), getDistribution(), getReferenceWords(), getSurfaceForms());
@@ -228,9 +222,8 @@ public class NounMapping implements INounMapping {
 
     @Override
     public INounMapping createCopy() {
-        var nm = new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable.withAll(referenceWords),
+        return new NounMapping(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable.withAll(referenceWords),
                 surfaceForms.toImmutable());
-        return nm;
     }
 
     @Override
@@ -298,7 +291,7 @@ public class NounMapping implements INounMapping {
 
     @Override
     public AggregationFunctions getAggregationFunction() {
-        return this.DEFAULT_AGGREGATOR;
+        return DEFAULT_AGGREGATOR;
     }
 
     /**
@@ -321,9 +314,8 @@ public class NounMapping implements INounMapping {
     public INounMapping merge(INounMapping other) {
         Map<MappingKind, Confidence> otherDistribution = other.getDistribution();
 
-        for (MappingKind kind : otherDistribution.keySet()) {
-            Confidence.merge(distribution.get(kind), otherDistribution.get(kind), DEFAULT_AGGREGATOR, DEFAULT_AGGREGATOR);
-        }
+        otherDistribution.keySet()
+                .forEach(kind -> Confidence.merge(distribution.get(kind), otherDistribution.get(kind), DEFAULT_AGGREGATOR, DEFAULT_AGGREGATOR));
 
         this.addOccurrence(other.getSurfaceForms());
         other.getWords().forEach(this::addWord);
@@ -366,6 +358,12 @@ public class NounMapping implements INounMapping {
     }
 
     @Override
+    public boolean isTheSameAs(INounMapping other) {
+        return Objects.equals(getReference(), other.getReference()) && Objects.equals(getWords(), other.getWords())
+                && Objects.equals(getKind(), other.getKind()) && Objects.equals(getPhrases(), other.getPhrases());
+    }
+
+    @Override
     public boolean containsSameWordsAs(INounMapping nounMapping) {
         // getWords().anySatisfy(w -> w.getPosition() == nounMapping.getWords().get(0).getPosition()
         // && w.getSentenceNo() == nounMapping.getWords().get(0).getSentenceNo())
@@ -375,8 +373,7 @@ public class NounMapping implements INounMapping {
     @Override
     public boolean sharesTextualWordRepresentation(INounMapping nounMapping) {
 
-        boolean result = nounMapping.getWords().allSatisfy(w -> this.getWords().anySatisfy(thisW -> thisW.getText().equals(w.getText())));
-        return result;
+        return nounMapping.getWords().allSatisfy(w -> this.getWords().anySatisfy(thisW -> thisW.getText().equals(w.getText())));
     }
 
     @Override

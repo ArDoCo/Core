@@ -21,11 +21,6 @@ class Text implements IText {
     }
 
     @Override
-    public IWord getFirstWord() {
-        return getWords().get(0);
-    }
-
-    @Override
     public ImmutableList<IWord> getWords() {
         if (words.isEmpty()) {
             iterateDocumentForWordsAndSentences();
@@ -49,11 +44,11 @@ class Text implements IText {
         int wordIndex = 0;
         for (int i = 0; i < coreSentences.size(); i++) {
             var coreSentence = coreSentences.get(i);
-            var sentence = new Sentence(coreSentence, i);
+            var sentence = new Sentence(coreSentence, i, this);
             sentenceList.add(sentence);
 
             for (var token : coreSentence.tokens()) {
-                var word = new Word(token, wordIndex, coreDocument);
+                var word = new Word(token, wordIndex, this);
                 wordList.add(word);
                 wordIndex++;
             }

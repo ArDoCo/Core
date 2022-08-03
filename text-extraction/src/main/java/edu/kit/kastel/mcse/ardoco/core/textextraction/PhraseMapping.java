@@ -9,6 +9,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
@@ -25,22 +26,15 @@ public class PhraseMapping implements IPhraseMapping {
      */
     private final MutableSet<IPhrase> phrases;
 
-    public PhraseMapping(IPhrase phrase) {
+    public PhraseMapping(ImmutableSet<IPhrase> phrases) {
+        this.phrases = Sets.mutable.empty();
 
-        Objects.requireNonNull(phrase);
-        this.phrases = Sets.mutable.with(phrase);
-    }
-
-    public PhraseMapping(ImmutableList<IPhrase> phrases) {
-        this(phrases.get(0));
-
-        for (int i = 1; i < phrases.size(); i++) {
-            if (phrases.get(0).getPhraseType() != phrases.get(i).getPhraseType()) {
-                // TODO: Combine different phraseTypes in PMs
-                // throw new IllegalArgumentException("All phrases in a phrase mapping should
-                // have the same phrase type!");
+        PhraseType type = phrases.getAny().getPhraseType();
+        for (IPhrase phrase : phrases) {
+            if (phrase.getPhraseType() != type) {
+                throw new IllegalArgumentException("Multiple Types of Phrase mappings");
             }
-            this.addPhrase(phrases.get(i));
+            this.phrases.add(phrase);
         }
     }
 
@@ -55,7 +49,7 @@ public class PhraseMapping implements IPhraseMapping {
 
     @Override
     public ImmutableList<INounMapping> getNounMappings(ITextState textState) {
-        return textState.getNounMappings().select(nm -> nm.getWords().equals(phrases.flatCollect(IPhrase::getContainedWords)));
+        return textState.getNounMappings().select(nm -> Sets.mutable.withAll(nm.getWords()).equals(phrases.flatCollect(IPhrase::getContainedWords)));
     }
 
     @Override
@@ -66,9 +60,7 @@ public class PhraseMapping implements IPhraseMapping {
     @Override
     public void addPhrase(IPhrase phrase) {
         if (!phrase.getPhraseType().equals(this.getPhraseType())) {
-            // TODO: Combine different phraseTypes in PMs
-            // throw new IllegalArgumentException("added a different phrase type for
-            // mapping");
+            throw new IllegalArgumentException("When added to a phrase mapping, phrases should have the same phrase type as the phrases of the mapping");
         }
         phrases.add(phrase);
     }
@@ -101,7 +93,7 @@ public class PhraseMapping implements IPhraseMapping {
         Map<IWord, Integer> phraseVector = new HashMap<>();
         var grouped = words.groupBy(IWord::getText).toMap();
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
-        // TODO: Thing about norm
+        // TODO: Think about norm
 
         return phraseVector;
     }
@@ -110,9 +102,7 @@ public class PhraseMapping implements IPhraseMapping {
     public IPhraseMapping merge(IPhraseMapping phraseMapping) {
 
         if (phraseMapping.getPhraseType() != this.getPhraseType()) {
-            // TODO: add different phraseTypes to one PM
-            // throw new IllegalArgumentException("The phrase types inside a phrase mapping
-            // should be the same!");
+            throw new IllegalArgumentException("If two phrase mappings are merged, they should have the same phrase type!");
         }
         this.phrases.addAllIterable(phrases.select(p -> !this.getPhrases().contains(p)));
         return this;
@@ -131,9 +121,23 @@ public class PhraseMapping implements IPhraseMapping {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        PhraseMapping that = (PhraseMapping) o;
+        return Objects.equals(phrases, that.phrases);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(phrases);
+    }
+
+    @Override
     public IPhraseMapping createCopy() {
-        var pm = new PhraseMapping(phrases.toList().toImmutable());
-        return pm;
+        return new PhraseMapping(phrases.toImmutable());
     }
 
     @Override

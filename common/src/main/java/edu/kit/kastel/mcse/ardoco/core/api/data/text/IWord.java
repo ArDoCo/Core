@@ -15,15 +15,6 @@ public interface IWord {
      */
     int getSentenceNo();
 
-    IPhrase getPhrase();
-
-    /**
-     * Return the sentence the word is contained in
-     *
-     * @return the sentence the word is contained in
-     */
-    ISentence getSentence();
-
     /**
      * Gets the text representation of the word.
      *
@@ -81,4 +72,6 @@ public interface IWord {
      * @return the words that are dependent on this
      */
     ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag);
+
+    IPhrase getPhrase();
 }

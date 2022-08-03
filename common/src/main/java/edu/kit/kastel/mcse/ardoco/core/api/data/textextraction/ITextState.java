@@ -6,11 +6,10 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.framework.common.ICopyable;
+import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 
 /**
  * The Interface ITextState.
@@ -19,7 +18,7 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
 
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
-     * 
+     *
      * @see #getMappingsThatCouldBeOfKind(IWord, MappingKind)
      * @see #isWordContainedByMappingKind(IWord, MappingKind)
      */
@@ -65,13 +64,9 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
 
     ImmutableList<INounMapping> getNounMappingsByPhraseMapping(IPhraseMapping phraseMapping);
 
-    ImmutableList<IPhraseMapping> getPhraseMappingsByNounMapping(INounMapping nm);
-
-    ImmutableList<IPhraseMapping> getPhraseMappingsByPhrase(IPhrase phrase);
-
     /**
      * Returns a list of all references of noun mappings.
-     * 
+     *
      * @param kind of references that shall be collected
      * @return all references of noun mappings with the specified kind as list.
      */
@@ -85,8 +80,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      */
     ImmutableList<INounMapping> getNounMappingsByWordTextAndKind(IWord word, MappingKind kind);
 
-    ImmutableList<IPhraseMapping> getPhraseMappingsByPhraseType(PhraseType phraseType);
-
     /**
      * Returns if a word is contained by the name mappings.
      *
@@ -95,14 +88,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
      * @return true if the word is contained by name mappings.
      */
     boolean isWordContainedByMappingKind(IWord word, MappingKind mappingKind);
-
-    /**
-     * Returns if a word is contained by the mappings.
-     *
-     * @param word word to check
-     * @return true if the word is contained by mappings.
-     */
-    boolean isWordContainedByNounMappings(IWord word);
 
     /**
      * Gets the all noun mappings.
@@ -130,14 +115,6 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
     default ImmutableList<INounMapping> getMappingsThatCouldBeOfKind(IWord word, MappingKind mappingKind) {
         return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(mappingKind) > 0);
     }
-
-    /**
-     * Returns all mappings with a similar reference as given.
-     *
-     * @param ref the reference to search for
-     * @return a list of noun mappings with the given reference.
-     */
-    ImmutableList<INounMapping> getNounMappingsWithSimilarReference(String ref);
 
     /**
      * Gets the mappings that could be a Name or Type.
@@ -176,4 +153,12 @@ public interface ITextState extends ICopyable<ITextState>, IConfigurable {
 
     ImmutableList<INounMapping> getNounMappingsOfKind(MappingKind mappingKind);
 
+    ImmutableList<INounMapping> getNounMappingsThatBelongToTheSamePhraseMapping(INounMapping nounMapping);
+
+    void mergeNounMappings(INounMapping nounMapping, INounMapping textuallyEqualNounMapping);
+
+    void mergePhraseMappingsAndNounMappings(IPhraseMapping phraseMapping, IPhraseMapping similarPhraseMapping,
+            MutableList<Pair<INounMapping, INounMapping>> similarNounMappings);
+
+    void mergePhraseMappings(IPhraseMapping phraseMapping, IPhraseMapping similarPhraseMapping);
 }

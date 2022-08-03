@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 /**
  * @author Jan Keim
@@ -131,13 +134,8 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public ISentence getSentence() {
-            return null;
-        }
-
-        @Override
         public int hashCode() {
-            return Objects.hash(getPosition(), getSentence(), getText());
+            return Objects.hash(getPosition(), getSentenceNo(), getText());
         }
 
         @Override
@@ -149,7 +147,7 @@ public abstract class AbstractInconsistencyTypeTest {
                 return false;
             }
             var other = (DummyWord) obj;
-            return getPosition() == other.getPosition() && getSentence() == other.getSentence() && Objects.equals(getText(), other.getText());
+            return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
         }
     }
 
