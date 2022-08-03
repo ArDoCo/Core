@@ -160,8 +160,9 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
             }
         }
         if (logger.isDebugEnabled())
-            logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts),
-                    String.join(" ", Arrays.stream(wordsToMatch).map(Word::getText).toList()));
+            logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts), String.join(" ", Arrays.stream(wordsToMatch)
+                    .map(Word::getText)
+                    .toList()));
         return true;
     }
 

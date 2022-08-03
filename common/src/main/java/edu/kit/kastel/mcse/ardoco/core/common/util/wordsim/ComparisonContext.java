@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
  * {@link #lemmatize} decides whether the lemmatized version of both words should be used for comparison.
  */
 public record ComparisonContext(@Nonnull String firstString, @Nonnull String secondString, @Nullable Word firstWord, @Nullable Word secondWord,
-        boolean lemmatize) {
+                                boolean lemmatize) {
 
     public ComparisonContext(@Nonnull String firstString, @Nonnull String secondString) {
         this(firstString, secondString, null, null, false);

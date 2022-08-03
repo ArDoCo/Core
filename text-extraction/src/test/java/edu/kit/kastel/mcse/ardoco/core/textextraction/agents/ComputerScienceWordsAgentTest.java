@@ -40,8 +40,8 @@ class ComputerScienceWordsAgentTest implements Claimant {
         setData();
 
         var validWord = wordToListOfWord(data.get(0));
-        nounMapping = new NounMappingImpl(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord),
-                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
+        nounMapping = new NounMappingImpl(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord), Lists.immutable.withAll(
+                Arrays.stream(data.get(0).split("\\s+")).toList()));
         invalidWord = new MyWord("ASDFWJ", validWord.size());
         MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
         var preprocessingData = new PreprocessingData(text);
