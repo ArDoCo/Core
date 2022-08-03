@@ -60,8 +60,8 @@ public final class SimilarityUtils {
      * @return true, iff the {@link NounMapping} and {@link ModelInstance} are similar.
      */
     public static boolean isNounMappingSimilarToModelInstance(NounMapping nounMapping, ModelInstance instance) {
-        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference()))
-                || areWordsSimilar(instance.getFullName(), nounMapping.getReference())) {
+        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(instance.getFullName(),
+                nounMapping.getReference())) {
             return true;
         }
 
@@ -252,17 +252,16 @@ public final class SimilarityUtils {
         var instanceNames = instance.getNameParts();
         ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
         ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
-        if (areWordsSimilar(instance.getFullName(), ri.getName())
-                || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList, similarity)
-                || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
+        if (areWordsSimilar(instance.getFullName(), ri.getName()) || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList,
+                similarity) || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
             return true;
         }
         for (var nounMapping : ri.getNameMappings()) {
             for (var surfaceForm : nounMapping.getSurfaceForms()) {
                 var splitSurfaceForm = CommonUtilities.splitCases(surfaceForm);
                 var surfaceFormWords = CommonUtilities.splitAtSeparators(splitSurfaceForm);
-                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity)
-                        || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity)) {
+                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity) || SimilarityUtils.areWordsOfListsSimilar(
+                        longestNameSplit, surfaceFormWords, similarity)) {
                     return true;
                 }
             }
