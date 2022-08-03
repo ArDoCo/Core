@@ -51,3 +51,4 @@ You find us on our websites: `Jan Keim <https://mcse.kastel.kit.edu/staff_Keim_J
    content/pipeline
    content/stages
    content/datastructures
+   content/wordsimilarity
