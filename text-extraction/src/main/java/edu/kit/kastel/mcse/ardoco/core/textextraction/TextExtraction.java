@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.MappingCombiner;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
 
 /**
@@ -21,7 +22,8 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
  */
 public class TextExtraction extends AbstractExecutionStage {
 
-    private final MutableList<TextAgent> agents = Lists.mutable.of(new InitialTextAgent(), new PhraseAgent(), new ComputerScienceWordsAgent());
+    private final MutableList<TextAgent> agents = Lists.mutable.of(new InitialTextAgent(), new PhraseAgent(), new ComputerScienceWordsAgent(),
+            new MappingCombiner());
 
     @Configurable
     private List<String> enabledAgents = agents.collect(IAgent::getId);

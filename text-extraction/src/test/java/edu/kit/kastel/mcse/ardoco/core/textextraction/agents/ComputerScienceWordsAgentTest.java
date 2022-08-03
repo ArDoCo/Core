@@ -108,11 +108,6 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         }
 
         @Override
-        public IWord getFirstWord() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public ImmutableList<IWord> getWords() {
             return words;
         }
@@ -140,11 +135,6 @@ class ComputerScienceWordsAgentTest implements IClaimant {
         @Override
         public IPhrase getPhrase() {
             return new Phrase(this);
-        }
-
-        @Override
-        public ISentence getSentence() {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -197,11 +187,6 @@ class ComputerScienceWordsAgentTest implements IClaimant {
 
         @Override
         public int getSentenceNo() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public ISentence getSentence() {
             throw new UnsupportedOperationException();
         }
 

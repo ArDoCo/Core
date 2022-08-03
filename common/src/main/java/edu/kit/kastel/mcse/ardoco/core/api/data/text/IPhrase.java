@@ -8,8 +8,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 public interface IPhrase {
     int getSentenceNo();
 
-    ISentence getSentence();
-
     String getText();
 
     PhraseType getPhraseType();

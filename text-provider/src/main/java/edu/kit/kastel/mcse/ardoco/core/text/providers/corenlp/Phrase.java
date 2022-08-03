@@ -10,7 +10,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.stanford.nlp.trees.Tree;
@@ -18,32 +17,20 @@ import edu.stanford.nlp.trees.Tree;
 public class Phrase implements IPhrase {
     private final Tree tree;
     private final ImmutableList<IWord> words;
-    private final Sentence sentence;
+
+    private final Sentence parent;
 
     private String text = null;
 
-    public Phrase(Tree tree, ImmutableList<IWord> words) {
+    public Phrase(Tree tree, ImmutableList<IWord> words, Sentence parent) {
         this.tree = tree;
         this.words = words;
-        this.sentence = retrieveSentence(words.get(0));
-    }
-
-    private Sentence retrieveSentence(IWord firstWord) {
-        ISentence iSentence = firstWord.getSentence();
-        if (iSentence instanceof Sentence cSentence) {
-            return cSentence;
-        }
-        throw new IllegalStateException("Words do not fit to sentence type");
+        this.parent = parent;
     }
 
     @Override
     public int getSentenceNo() {
         return words.get(0).getSentenceNo();
-    }
-
-    @Override
-    public ISentence getSentence() {
-        return sentence;
     }
 
     @Override
@@ -70,8 +57,8 @@ public class Phrase implements IPhrase {
         MutableList<IPhrase> subPhrases = Lists.mutable.empty();
         for (var subTree : tree) {
             if (subTree.isPhrasal() && tree.dominates(subTree)) {
-                ImmutableList<IWord> wordsForPhrase = Lists.immutable.withAll(Sentence.getWordsForPhrase(subTree, this.sentence));
-                Phrase currPhrase = new Phrase(subTree, wordsForPhrase);
+                ImmutableList<IWord> wordsForPhrase = Lists.immutable.withAll(parent.getWordsForPhrase(subTree));
+                Phrase currPhrase = new Phrase(subTree, wordsForPhrase, parent);
                 subPhrases.add(currPhrase);
             }
         }

@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreSentence;
+import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.Tree;
 
 class Sentence implements ISentence {
@@ -23,12 +24,15 @@ class Sentence implements ISentence {
     private ImmutableList<IWord> words = Lists.immutable.empty();
     private ImmutableList<IPhrase> phrases = Lists.immutable.empty();
 
+    private final Text parent;
+
     private final CoreSentence coreSentence;
     private final int sentenceNumber;
 
-    public Sentence(CoreSentence coreSentence, int sentenceNumber) {
+    public Sentence(CoreSentence coreSentence, int sentenceNumber, Text parent) {
         this.coreSentence = coreSentence;
         this.sentenceNumber = sentenceNumber;
+        this.parent = parent;
     }
 
     @Override
@@ -39,19 +43,7 @@ class Sentence implements ISentence {
     @Override
     public ImmutableList<IWord> getWords() {
         if (words.isEmpty()) {
-            final MutableList<IWord> wordsList = Lists.mutable.empty();
-            var coreDocument = coreSentence.document();
-            var wordIndex = 0;
-            for (var token : coreDocument.tokens()) {
-                var currSentenceNo = token.sentIndex();
-                if (currSentenceNo == sentenceNumber) {
-                    wordsList.add(new Word(token, wordIndex, coreDocument));
-                } else if (currSentenceNo > sentenceNumber) {
-                    break;
-                }
-                wordIndex++;
-            }
-            this.words = wordsList.toImmutable();
+            this.words = parent.getWords().select(w -> w.getSentenceNo() == sentenceNumber).toImmutable();
         }
         return words;
     }
@@ -68,8 +60,8 @@ class Sentence implements ISentence {
             var constituencyParse = this.coreSentence.constituencyParse();
             for (var phrase : constituencyParse) {
                 if (phrase.isPhrasal()) {
-                    ImmutableList<IWord> wordsForPhrase = Lists.immutable.withAll(getWordsForPhrase(phrase, this));
-                    Phrase currPhrase = new Phrase(phrase, wordsForPhrase);
+                    ImmutableList<IWord> wordsForPhrase = Lists.immutable.withAll(getWordsForPhrase(phrase));
+                    Phrase currPhrase = new Phrase(phrase, wordsForPhrase, this);
                     newPhrases.add(currPhrase);
                 }
             }
@@ -79,13 +71,13 @@ class Sentence implements ISentence {
         return phrases;
     }
 
-    protected static List<IWord> getWordsForPhrase(Tree phrase, Sentence sentence) {
+    protected List<IWord> getWordsForPhrase(Tree phrase) {
         List<IWord> phraseWords = Lists.mutable.empty();
         var coreLabels = phrase.taggedLabeledYield();
-        var index = findIndexOfFirstWordInPhrase(coreLabels.get(0), sentence);
+        var index = findIndexOfFirstWordInPhrase(coreLabels.get(0), this);
         logger.debug("phrase starting position: {}", index);
-        for (var word : coreLabels) {
-            var phraseWord = new Word(word, index++, sentence.coreSentence.document());
+        for (int wordIndexInSentence = 0; wordIndexInSentence < coreLabels.size(); wordIndexInSentence++) {
+            var phraseWord = parent.getWords().get(index++);
             phraseWords.add(phraseWord);
         }
         return phraseWords;
@@ -117,5 +109,9 @@ class Sentence implements ISentence {
     @Override
     public int hashCode() {
         return Objects.hash(getSentenceNumber(), getText());
+    }
+
+    public SemanticGraph dependencyParse() {
+        return this.coreSentence.dependencyParse();
     }
 }

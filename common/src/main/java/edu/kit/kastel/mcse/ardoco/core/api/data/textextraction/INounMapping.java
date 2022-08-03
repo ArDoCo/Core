@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
@@ -89,7 +90,7 @@ public interface INounMapping extends ICopyable<INounMapping> {
      */
     ImmutableList<Integer> getMappingSentenceNo();
 
-    ImmutableList<IPhrase> getPhrases();
+    ImmutableSet<IPhrase> getPhrases();
 
     INounMapping splitByPhrase(IPhrase phrase);
 
@@ -139,6 +140,8 @@ public interface INounMapping extends ICopyable<INounMapping> {
      * @param probability the probability
      */
     void addKindWithProbability(MappingKind kind, IClaimant claimant, double probability);
+
+    boolean isTheSameAs(INounMapping other);
 
     boolean containsSameWordsAs(INounMapping nounMapping);
 
