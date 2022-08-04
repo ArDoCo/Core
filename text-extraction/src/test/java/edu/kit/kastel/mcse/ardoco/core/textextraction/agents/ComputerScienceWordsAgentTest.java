@@ -100,7 +100,6 @@ class ComputerScienceWordsAgentTest implements Claimant {
             throw new UnsupportedOperationException();
         }
 
-
         @Override
         public String getText() {
             return word;

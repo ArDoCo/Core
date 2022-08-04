@@ -44,7 +44,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      */
     void addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> occurrences);
 
-
     // --- remove section --->
 
     /**
@@ -73,7 +72,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      * @return all references of noun mappings with the specified kind as list.
      */
     ImmutableList<String> getListOfReferences(MappingKind kind);
-
 
     /**
      * Returns if a word is contained by the name mappings.

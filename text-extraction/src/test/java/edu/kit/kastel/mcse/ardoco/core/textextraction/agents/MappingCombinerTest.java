@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import edu.kit.kastel.informalin.data.DataRepository;
