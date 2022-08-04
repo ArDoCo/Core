@@ -3,29 +3,28 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
- * Represents a tracelink. Is a convenience data class that takes the necessary info from {@link IInstanceLink} and the
- * specific {@link IModelInstance} and {@link IWord} that are used in this tracelink.
+ * Represents a trace link. This is a convenience data class that takes the necessary info from {@link InstanceLink} and
+ * the specific {@link ModelInstance} and {@link Word} that are used in this trace link.
  *
- * @author Jan Keim
  */
 public class TraceLink {
-    private final IInstanceLink instanceLink;
-    private final IModelInstance modelInstance;
-    private final IWord word;
+    private final InstanceLink instanceLink;
+    private final ModelInstance modelInstance;
+    private final Word word;
 
     /**
-     * Create a tracelink based on a {@link IInstanceLink} and a concrete {@link IModelInstance} along with a concrete
-     * {@link IWord}.
+     * Create a tracelink based on a {@link InstanceLink} and a concrete {@link ModelInstance} along with a concrete
+     * {@link Word}.
      *
      * @param instanceLink  InstanceLink of this tracelink
      * @param modelInstance modelInstance that the tracelink points to
      * @param word          word that the tracelink points to
      */
-    public TraceLink(IInstanceLink instanceLink, IModelInstance modelInstance, IWord word) {
+    public TraceLink(InstanceLink instanceLink, ModelInstance modelInstance, Word word) {
         this.instanceLink = instanceLink;
         this.modelInstance = modelInstance;
         this.word = word;
@@ -50,11 +49,11 @@ public class TraceLink {
     }
 
     /**
-     * Get the {@link IInstanceLink} that the tracelink is based on.
+     * Get the {@link InstanceLink} that the tracelink is based on.
      *
-     * @return {@link IInstanceLink} that the tracelink is based on.
+     * @return {@link InstanceLink} that the tracelink is based on.
      */
-    public IInstanceLink getInstanceLink() {
+    public InstanceLink getInstanceLink() {
         return instanceLink;
     }
 

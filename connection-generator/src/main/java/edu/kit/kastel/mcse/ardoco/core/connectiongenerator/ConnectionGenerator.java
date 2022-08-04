@@ -7,10 +7,11 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.ConnectionAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
@@ -21,31 +22,42 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent
  * matchings between text and model. The order is important: All connections should run after the recommendations have
  * been made.
  *
- * @author Sophie
  */
 public class ConnectionGenerator extends AbstractExecutionStage {
 
-    private final MutableList<ConnectionAgent> agents = Lists.mutable.of(new InitialConnectionAgent(), new ReferenceAgent(), new InstanceConnectionAgent());
+    private final MutableList<PipelineAgent> agents;
 
     @Configurable
-    private List<String> enabledAgents = agents.collect(IAgent::getId);
+    private List<String> enabledAgents;
 
     /**
      * Create the module.
      */
-    public ConnectionGenerator() {
-        // empty
+    public ConnectionGenerator(DataRepository dataRepository) {
+        super("ConnectionGenerator", dataRepository);
+
+        agents = Lists.mutable.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new InstanceConnectionAgent(dataRepository));
+        enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
-    public void execute(DataStructure data, Map<String, String> additionalSettings) {
-        // Init new connection states
-        data.getModelIds().forEach(mid -> data.setConnectionState(mid, new ConnectionState(additionalSettings)));
+    public void run() {
+        var connectionStates = ConnectionStatesImpl.build();
+        getDataRepository().addData(ConnectionStates.ID, connectionStates);
 
-        this.applyConfiguration(additionalSettings);
-        for (ConnectionAgent agent : findByClassName(enabledAgents, agents)) {
-            agent.applyConfiguration(additionalSettings);
-            agent.execute(data);
+        for (var agent : findByClassName(enabledAgents, agents)) {
+            this.addPipelineStep(agent);
+        }
+
+        super.run();
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
+        for (var agent : agents) {
+            agent.applyConfiguration(additionalConfiguration);
         }
     }
+
 }

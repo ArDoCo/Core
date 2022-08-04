@@ -1,45 +1,50 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import java.util.Map;
-
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.common.tuple.Pair;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.informalin.framework.common.tuple.Pair;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IPhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import java.util.Map;
 
-public class MappingCombiner extends TextAgent {
+public class MappingCombiner extends PipelineAgent {
 
     public static final double MIN_COSINE_SIMILARITY = 0.4;
 
-    @Override
-    public void execute(TextAgentData data) {
+	public MappingCombiner(DataRepository dataRepository) {
+        super(MappingCombiner.class.getSimpleName(),dataRepository);
+	}
 
-        combineSimilarPhraseMappings(data.getTextState());
+    @Override
+    public void run() {
+        TextState textState = DataRepositoryHelper.getTextState(getDataRepository());
+        combineSimilarPhraseMappings(textState);
     }
 
-    private void combineSimilarPhraseMappings(ITextState textState) {
 
-        ImmutableList<IPhraseMapping> phraseMappings = textState.getPhraseMappings();
+    private void combineSimilarPhraseMappings(TextState textState) {
 
-        for (IPhraseMapping phraseMapping : phraseMappings) {
-            ImmutableList<IPhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState,
+        ImmutableList<PhraseMapping> phraseMappings = textState.getPhraseMappings();
+
+        for (PhraseMapping phraseMapping : phraseMappings) {
+            ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState,
                     phraseMapping, p, SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
-            ImmutableList<INounMapping> nounMappingsOfPhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping);
+            ImmutableList<NounMapping> nounMappingsOfPhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping);
 
-            for (IPhraseMapping similarPhraseMapping : similarPhraseMappings) {
+            for (PhraseMapping similarPhraseMapping : similarPhraseMappings) {
 
-                ImmutableList<INounMapping> nounMappingsOfSimilarPhraseMapping = textState.getNounMappingsByPhraseMapping(similarPhraseMapping);
+                ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping = textState.getNounMappingsByPhraseMapping(similarPhraseMapping);
 
                 if (similarPhraseMapping == phraseMapping) {
-                    for (INounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
-                        for (INounMapping nounMapping : textState.getNounMappingsByPhraseMapping(phraseMapping)) {
+                    for (NounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
+                        for (NounMapping nounMapping : textState.getNounMappingsByPhraseMapping(phraseMapping)) {
                             if (nounMapping.isTheSameAs(nounMappingOfSimilarPhraseMapping)) {
                                 continue;
                             }
@@ -55,10 +60,10 @@ public class MappingCombiner extends TextAgent {
                     continue;
                 }
 
-                MutableList<Pair<INounMapping, INounMapping>> similarNounMappings = Lists.mutable.empty();
+                MutableList<Pair<NounMapping, NounMapping>> similarNounMappings = Lists.mutable.empty();
 
-                for (INounMapping nounMapping : nounMappingsOfPhraseMapping) {
-                    INounMapping similarNounMapping = getMostSimilarNounMappingOverThreshold(nounMapping, nounMappingsOfSimilarPhraseMapping);
+                for (NounMapping nounMapping : nounMappingsOfPhraseMapping) {
+                    NounMapping similarNounMapping = getMostSimilarNounMappingOverThreshold(nounMapping, nounMappingsOfSimilarPhraseMapping);
                     if (similarNounMapping != null) {
                         similarNounMappings.add(new Pair<>(nounMapping, similarNounMapping));
                     }
@@ -79,11 +84,11 @@ public class MappingCombiner extends TextAgent {
 
     }
 
-    private INounMapping getMostSimilarNounMappingOverThreshold(INounMapping nounMapping, ImmutableList<INounMapping> nounMappingsOfSimilarPhraseMapping) {
+    private NounMapping getMostSimilarNounMappingOverThreshold(NounMapping nounMapping, ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping) {
 
-        MutableList<INounMapping> similarNounMappings = Lists.mutable.empty();
+        MutableList<NounMapping> similarNounMappings = Lists.mutable.empty();
 
-        for (INounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
+        for (NounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
             if (SimilarityUtils.areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
                 similarNounMappings.add(nounMappingOfSimilarPhraseMapping);
             }

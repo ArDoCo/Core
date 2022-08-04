@@ -7,9 +7,6 @@ import org.slf4j.LoggerFactory;
 /**
  * This class represents all valid part-of-speech (pos) tags
  *
- * @author Sebastian Weigelt
- * @author Markus Kocybik
- * @author Jan Keim
  */
 public enum POSTag {
     //@formatter:off

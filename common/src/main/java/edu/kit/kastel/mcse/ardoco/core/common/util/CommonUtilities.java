@@ -11,20 +11,19 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 
 /**
  * General helper class for outsourced, common methods.
  *
- * @author Sophie
  */
 public final class CommonUtilities {
 
@@ -184,9 +183,9 @@ public final class CommonUtilities {
     }
 
     /**
-     * Creates {@link IRecommendedInstance}s for the given {@link INounMapping}s using the given information about
-     * similar types and probability and type mappings. Adds the created {@link IRecommendedInstance}s to the given
-     * {@link IRecommendationState}
+     * Creates {@link RecommendedInstance}s for the given {@link NounMapping}s using the given information about similar
+     * types and probability and type mappings. Adds the created {@link RecommendedInstance}s to the given
+     * {@link RecommendationState}
      *
      * @param similarTypes        The list of similar types
      * @param nameMappings        the noun mappings
@@ -194,8 +193,8 @@ public final class CommonUtilities {
      * @param recommendationState the state the new RecommendedInstances should be added to
      * @param probability         the probability that should be annotated
      */
-    public static void addRecommendedInstancesFromNounMappings(ImmutableList<String> similarTypes, ImmutableList<INounMapping> nameMappings,
-            ImmutableList<INounMapping> typeMappings, IRecommendationState recommendationState, IClaimant claimant, double probability) {
+    public static void addRecommendedInstancesFromNounMappings(ImmutableList<String> similarTypes, ImmutableList<NounMapping> nameMappings,
+            ImmutableList<NounMapping> typeMappings, RecommendationState recommendationState, Claimant claimant, double probability) {
         for (var nameMapping : nameMappings) {
             var name = nameMapping.getReference();
             for (var type : similarTypes) {
@@ -211,7 +210,7 @@ public final class CommonUtilities {
      * @param modelState the model state containing information about types
      * @return List of type names in the model state that are similar to the given word
      */
-    public static ImmutableList<String> getSimilarTypes(IWord word, IModelState modelState) {
+    public static ImmutableList<String> getSimilarTypes(Word word, ModelExtractionState modelState) {
         var identifiers = getTypeIdentifiers(modelState);
         return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
     }
@@ -222,7 +221,7 @@ public final class CommonUtilities {
      * @param modelState the model state
      * @return Set of identifiers for existing types
      */
-    public static Set<String> getTypeIdentifiers(IModelState modelState) {
+    public static Set<String> getTypeIdentifiers(ModelExtractionState modelState) {
         Set<String> identifiers = modelState.getInstanceTypes()
                 .stream()
                 .map(CommonUtilities::splitSnakeAndKebabCase)
@@ -312,8 +311,8 @@ public final class CommonUtilities {
      * @param phrase the given phrase
      * @return a reference that consists of the words in the given phrase
      */
-    public static String createReferenceForPhrase(ImmutableList<IWord> phrase) {
-        var sortedPhrase = phrase.toSortedListBy(IWord::getPosition);
+    public static String createReferenceForPhrase(ImmutableList<Word> phrase) {
+        var sortedPhrase = phrase.toSortedListBy(Word::getPosition);
         var referenceJoiner = new StringJoiner(" ");
         for (var w : sortedPhrase) {
             referenceJoiner.add(w.getText());
@@ -321,18 +320,18 @@ public final class CommonUtilities {
         return referenceJoiner.toString();
     }
 
-    public static ImmutableList<IWord> getCompoundPhrase(IWord word) {
+    public static ImmutableList<Word> getCompoundPhrase(Word word) {
         var deps = Lists.mutable.of(word);
         deps.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.COMPOUND).toList());
-        var sortedWords = deps.toSortedListBy(IWord::getPosition);
+        var sortedWords = deps.toSortedListBy(Word::getPosition);
         if (deps.size() < 2) {
             return Lists.immutable.empty();
         }
         return Lists.immutable.ofAll(sortedWords);
     }
 
-    public static ImmutableList<IWord> filterWordsOfTypeMappings(ImmutableList<IWord> words, ITextState textState) {
-        MutableList<IWord> filteredWords = Lists.mutable.empty();
+    public static ImmutableList<Word> filterWordsOfTypeMappings(ImmutableList<Word> words, TextState textState) {
+        MutableList<Word> filteredWords = Lists.mutable.empty();
         for (var word : words) {
             if (!textState.isWordContainedByMappingKind(word, MappingKind.TYPE)) {
                 filteredWords.add(word);
@@ -356,15 +355,15 @@ public final class CommonUtilities {
     }
 
     /**
-     * Checks a given list of {@link IWord words} to find out if there are words that the given recommendedInstance has
-     * in its {@link INounMapping NounMappings}.
+     * Checks a given list of {@link Word words} to find out if there are words that the given recommendedInstance has
+     * in its {@link NounMapping NounMappings}.
      *
      * @param wordList            the word list to check
      * @param recommendedInstance the RecommendedInstance in question
      * @return true if at least one word is also covered by the RecommendedInstance, else false
      */
-    public static boolean wordListContainsAnyWordFromRecommendedInstance(ImmutableList<IWord> wordList, IRecommendedInstance recommendedInstance) {
-        var recommendedInstanceWords = recommendedInstance.getNameMappings().flatCollect(INounMapping::getWords);
+    public static boolean wordListContainsAnyWordFromRecommendedInstance(ImmutableList<Word> wordList, RecommendedInstance recommendedInstance) {
+        var recommendedInstanceWords = recommendedInstance.getNameMappings().flatCollect(NounMapping::getWords);
         for (var recommendedInstanceWord : recommendedInstanceWords) {
             if (wordList.contains(recommendedInstanceWord)) {
                 return true;

@@ -1,16 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.base;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IText;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.ITextConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public abstract class TextTest {
-    private static IText text;
+    private static Text text;
+
 
     @BeforeEach
     void beforeEach() {
@@ -18,12 +19,12 @@ public abstract class TextTest {
         text = provider.getAnnotatedText();
     }
 
-    protected abstract ITextConnector getProvider();
+    protected abstract TextProvider getProvider();
 
     @Test
     void getWordsTest() {
-        var words = text.getWords();
-        IWord word = words.get(739);
+        var words = text.words();
+        Word word = words.get(739);
 
         Assertions.assertAll(//
                 () -> Assertions.assertEquals("test", word.getText()), //
@@ -41,6 +42,6 @@ public abstract class TextTest {
         Assertions.assertAll(//
                 () -> Assertions.assertEquals("The TeaStore is a test application.", sentence.getText()), //
                 () -> Assertions.assertEquals(7, words.size()), //
-                () -> Assertions.assertEquals(text.getWords().get(739), words.get(4)));
+                () -> Assertions.assertEquals(text.words().get(739), words.get(4)));
     }
 }

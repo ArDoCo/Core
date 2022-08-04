@@ -1,7 +1,19 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import java.util.Map;
-
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.WordImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
@@ -9,68 +21,52 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.DataStructure;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.IPhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.ITextState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextState;
+import java.util.Map;
 
-class MappingCombinerTest implements IClaimant {
+class MappingCombinerTest implements Claimant {
 
     private MappingCombiner agent;
 
-    private ITextState preTextState;
-    private ITextState textState;
+    private TextState preTextState;
+    private TextState textState;
 
-    private IWord fox0;
-    private IWord dog1;
-    private IWord fox2;
-    private IWord dog3;
-    private IWord hut3;
-    private IWord turtle4;
+    private WordImpl fox0;
+    private WordImpl dog1;
+    private WordImpl fox2;
+    private WordImpl dog3;
+    private WordImpl hut3;
+    private WordImpl turtle4;
 
-    private IWord doggy5;
+    private WordImpl doggy5;
 
-    private IWord dog6;
+    private WordImpl dog6;
 
-    private IPhrase dogPhrase0;
+    private PhraseImpl dogPhrase0;
 
-    private IPhrase dogPhrase1;
+    private PhraseImpl dogPhrase1;
 
-    private IPhrase turtlePhrase2;
+    private PhraseImpl turtlePhrase2;
 
-    private IPhrase dogPhrase3;
+    private PhraseImpl dogPhrase3;
 
-    private IPhrase dogPhrase4;
-
-    private IAgent claimant;
-    private DataStructure data;
+    private PhraseImpl dogPhrase4;
+    private DataRepository data;
 
     @BeforeEach
     void setup() {
-        this.claimant = new MyAgent();
-        this.agent = new MappingCombiner();
-        preTextState = new TextState(Map.of());
+        this.data = new DataRepository();
+        this.agent = new MappingCombiner(data);
+        preTextState = new TextStateImpl();
 
-        IWord a0 = Mockito.mock(IWord.class);
-        IWord fast0 = Mockito.mock(IWord.class);
-        IWord fox0 = Mockito.mock(IWord.class);
-        IWord the1 = Mockito.mock(IWord.class);
-        IWord brown1 = Mockito.mock(IWord.class);
-        IWord dog1 = Mockito.mock(IWord.class);
+        WordImpl a0 = Mockito.mock(WordImpl.class);
+        WordImpl fast0 = Mockito.mock(WordImpl.class);
+        WordImpl fox0 = Mockito.mock(WordImpl.class);
+        WordImpl the1 = Mockito.mock(WordImpl.class);
+        WordImpl brown1 = Mockito.mock(WordImpl.class);
+        WordImpl dog1 = Mockito.mock(WordImpl.class);
 
-        Phrase foxPhrase0 = Mockito.mock(Phrase.class);
-        Phrase dogPhrase0 = Mockito.mock(Phrase.class);
+        PhraseImpl foxPhrase0 = Mockito.mock(PhraseImpl.class);
+        PhraseImpl dogPhrase0 = Mockito.mock(PhraseImpl.class);
 
         mockPhrase(foxPhrase0, "A fast fox", 0, Lists.immutable.with(a0, fast0, fox0));
         mockPhrase(dogPhrase0, "the brown dog", 0, Lists.immutable.with(the1, brown1, dog1));
@@ -83,16 +79,16 @@ class MappingCombinerTest implements IClaimant {
         mockWord(brown1, "brown", "brown", 0, dogPhrase0, 7);
         mockWord(dog1, "dog", "dog", 0, dogPhrase0, 8);
 
-        IWord the2 = Mockito.mock(IWord.class);
-        IWord lazy2 = Mockito.mock(IWord.class);
-        IWord fox2 = Mockito.mock(IWord.class);
-        IWord the3 = Mockito.mock(IWord.class);
-        IWord brown3 = Mockito.mock(IWord.class);
-        IWord dog3 = Mockito.mock(IWord.class);
-        IWord hut3 = Mockito.mock(IWord.class);
+        WordImpl the2 = Mockito.mock(WordImpl.class);
+        WordImpl lazy2 = Mockito.mock(WordImpl.class);
+        WordImpl fox2 = Mockito.mock(WordImpl.class);
+        WordImpl the3 = Mockito.mock(WordImpl.class);
+        WordImpl brown3 = Mockito.mock(WordImpl.class);
+        WordImpl dog3 = Mockito.mock(WordImpl.class);
+        WordImpl hut3 = Mockito.mock(WordImpl.class);
 
-        Phrase foxPhrase1 = Mockito.mock(Phrase.class);
-        Phrase dogPhrase1 = Mockito.mock(Phrase.class);
+        PhraseImpl foxPhrase1 = Mockito.mock(PhraseImpl.class);
+        PhraseImpl dogPhrase1 = Mockito.mock(PhraseImpl.class);
 
         mockPhrase(foxPhrase1, "The lazy fox", 1, Lists.immutable.with(the2, lazy2, fox2));
         mockPhrase(dogPhrase1, "the brown dog hut", 1, Lists.immutable.with(the3, brown3, dog3, hut3));
@@ -106,13 +102,13 @@ class MappingCombinerTest implements IClaimant {
         mockWord(dog3, "dog", "dog", 1, dogPhrase1, 7);
         mockWord(hut3, "hut", "hut", 1, dogPhrase1, 8);
 
-        IWord i4 = Mockito.mock(IWord.class);
-        IWord green4 = Mockito.mock(IWord.class);
-        IWord turtle4 = Mockito.mock(IWord.class);
-        IWord hats4 = Mockito.mock(IWord.class);
+        WordImpl i4 = Mockito.mock(WordImpl.class);
+        WordImpl green4 = Mockito.mock(WordImpl.class);
+        WordImpl turtle4 = Mockito.mock(WordImpl.class);
+        WordImpl hats4 = Mockito.mock(WordImpl.class);
 
-        Phrase iPhrase2 = Mockito.mock(Phrase.class);
-        Phrase turtlePhrase2 = Mockito.mock(Phrase.class);
+        PhraseImpl iPhrase2 = Mockito.mock(PhraseImpl.class);
+        PhraseImpl turtlePhrase2 = Mockito.mock(PhraseImpl.class);
 
         mockPhrase(iPhrase2, "I", 2, Lists.immutable.with(i4));
         mockPhrase(turtlePhrase2, "green turtle hats", 2, Lists.immutable.with(green4, turtle4, hats4));
@@ -122,11 +118,11 @@ class MappingCombinerTest implements IClaimant {
         mockWord(turtle4, "turtles", "turtles", 2, turtlePhrase2, 3);
         mockWord(hats4, "hats", "hat", 2, turtlePhrase2, 4);
 
-        IWord a5 = Mockito.mock(IWord.class);
-        IWord brown5 = Mockito.mock(IWord.class);
-        IWord doggy5 = Mockito.mock(IWord.class);
-        IWord hut5 = Mockito.mock(IWord.class);
-        Phrase dogPhrase3 = Mockito.mock(Phrase.class);
+        WordImpl a5 = Mockito.mock(WordImpl.class);
+        WordImpl brown5 = Mockito.mock(WordImpl.class);
+        WordImpl doggy5 = Mockito.mock(WordImpl.class);
+        WordImpl hut5 = Mockito.mock(WordImpl.class);
+        PhraseImpl dogPhrase3 = Mockito.mock(PhraseImpl.class);
 
         mockPhrase(dogPhrase3, "A brown doggy hut", 3, Lists.immutable.with(a5, brown5, doggy5, hut5));
 
@@ -135,10 +131,10 @@ class MappingCombinerTest implements IClaimant {
         mockWord(doggy5, "doggy", "dog", 3, dogPhrase3, 2);
         mockWord(hut5, "hut", "hut", 3, dogPhrase3, 3);
 
-        IWord green6 = Mockito.mock(IWord.class);
-        IWord dog6 = Mockito.mock(IWord.class);
-        IWord hats6 = Mockito.mock(IWord.class);
-        Phrase dogPhrase4 = Mockito.mock(Phrase.class);
+        WordImpl green6 = Mockito.mock(WordImpl.class);
+        WordImpl dog6 = Mockito.mock(WordImpl.class);
+        WordImpl hats6 = Mockito.mock(WordImpl.class);
+        PhraseImpl dogPhrase4 = Mockito.mock(PhraseImpl.class);
 
         mockPhrase(dogPhrase4, "green dog hats", 4, Lists.immutable.with(green6, dog6, hats6));
 
@@ -159,23 +155,20 @@ class MappingCombinerTest implements IClaimant {
         this.turtlePhrase2 = turtlePhrase2;
         this.dogPhrase3 = dogPhrase3;
         this.dogPhrase4 = dogPhrase4;
-
-        this.data = new DataStructure(null, null);
-
     }
 
     @Test
     void copy() {
-        preTextState.addNounMapping(fox0, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings());
         Assertions.assertEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
 
-        preTextState.addNounMapping(dog3, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
 
         Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings());
         Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
@@ -184,19 +177,19 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addEqualNounMappingWithEqualPhrase() {
 
-        preTextState.addNounMapping(fox0, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
 
         Assertions.assertEquals(1, preTextState.getNounMappingsByWord(fox0).size());
         var fox0NM = preTextState.getNounMappingsByWord(fox0).get(0);
         Assertions.assertNotNull(preTextState.getPhraseMappingByNounMapping(fox0NM));
 
-        preTextState.addNounMapping(fox0, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
         Assertions.assertEquals(1, preTextState.getNounMappings().size());
         Assertions.assertEquals(1, preTextState.getPhraseMappings().size());
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings());
         Assertions.assertEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
@@ -205,8 +198,8 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addTextualEqualNounMappingWithSimilarPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(dog3, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
         Assertions.assertTrue(
@@ -216,8 +209,8 @@ class MappingCombinerTest implements IClaimant {
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertTrue(nounMappingsWereMerged(preTextState, dog1, dog3, textState));
         Assertions.assertTrue(phraseMappingsWereMerged(preTextState, dog1, dog3, textState));
@@ -226,8 +219,8 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addTextualEqualNounMappingWithDifferentPhrase() {
 
-        preTextState.addNounMapping(fox0, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(fox2, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(fox2, MappingKind.NAME, this, 0.5);
 
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, fox0, fox2));
 
@@ -235,8 +228,8 @@ class MappingCombinerTest implements IClaimant {
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertEquals(2, textState.getNounMappings().size());
         Assertions.assertEquals(2, textState.getPhraseMappings().size());
@@ -247,21 +240,21 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addSimilarNounMappingWithEqualPhrase() {
 
-        IWord alternativeDog = Mockito.mock(IWord.class);
+        Word alternativeDog = Mockito.mock(WordImpl.class);
         mockWord(alternativeDog, "doggy", "doggy", 0, dogPhrase0, 0);
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(alternativeDog, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(alternativeDog, MappingKind.NAME, this, 0.5);
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertFalse(textState.getNounMappingsByWord(dog1).isEmpty());
         Assertions.assertEquals(1, textState.getNounMappingsByWord(alternativeDog).size());
         Assertions.assertEquals(textState.getNounMappingsByWord(dog1), textState.getNounMappingsByWord(alternativeDog));
 
-        INounMapping doggyNounMapping = textState.getNounMappingsByWord(alternativeDog).get(0);
+        NounMapping doggyNounMapping = textState.getNounMappingsByWord(alternativeDog).get(0);
 
         Assertions.assertAll(//
                 () -> Assertions.assertTrue(doggyNounMapping.getWords().contains(alternativeDog)), //
@@ -277,21 +270,21 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addSimilarNounMappingWithSimilarPhraseContainingSimilarNounMapping() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(dog3, MappingKind.TYPE, claimant, 0.5);
+        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(dog3, MappingKind.TYPE, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertTrue(nounMappingsWereMerged(preTextState, dog1, dog3, textState));
 
-        textState.addNounMapping(doggy5, MappingKind.TYPE, claimant, 0.5);
-        ITextState textState2 = textState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        textState.addNounMapping(doggy5, MappingKind.TYPE, this, 0.5);
+        TextState textState2 = textState.createCopy();
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertTrue(nounMappingsWereMerged(textState, dog1, doggy5, textState2));
         Assertions.assertTrue(nounMappingsWereMerged(textState, dog3, doggy5, textState2));
@@ -300,14 +293,14 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addSimilarNounMappingWithSimilarPhraseContainingNoSimilarNounMapping() {
 
-        preTextState.addNounMapping(turtle4, MappingKind.TYPE, claimant, 0.5);
-        preTextState.addNounMapping(dog6, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(turtle4, MappingKind.TYPE, this, 0.5);
+        preTextState.addNounMapping(dog6, MappingKind.NAME, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, turtle4, dog6));
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertAll(//
                 () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()),
@@ -317,14 +310,14 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addSimilarNounMappingWithDifferentPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(doggy5, MappingKind.TYPE, claimant, 0.5);
+        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(doggy5, MappingKind.TYPE, this, 0.5);
 
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, doggy5));
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertAll(//
                 () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()),
@@ -335,18 +328,18 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addDifferentNounMappingWithEqualPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(dog3, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(hut3, MappingKind.TYPE, claimant, 0.5);
+        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(hut3, MappingKind.TYPE, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
-        IPhraseMapping dog1PhraseMapping = textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).get(0);
+        PhraseMapping dog1PhraseMapping = textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).get(0);
 
         Assertions.assertAll(//
 
@@ -369,14 +362,14 @@ class MappingCombinerTest implements IClaimant {
     @Test
     void addDifferentNounMappingWithSimilarPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(hut3, MappingKind.TYPE, claimant, 0.5);
+        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(hut3, MappingKind.TYPE, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertAll(//
                 () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()),
@@ -386,21 +379,21 @@ class MappingCombinerTest implements IClaimant {
 
     @Test
     void addDifferentNounMappingWithDifferentPhrase() {
-        preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
-        preTextState.addNounMapping(turtle4, MappingKind.NAME, claimant, 0.5);
+        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
+        preTextState.addNounMapping(turtle4, MappingKind.NAME, this, 0.5);
 
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, turtle4));
 
         textState = preTextState.createCopy();
-        this.data.setTextState(textState);
-        agent.execute(data);
+        this.data.addData(TextState.ID, textState);
+        agent.run();
 
         Assertions.assertAll(//
                 () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()),
                 () -> Assertions.assertEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()));
     }
 
-    private boolean phraseMappingsAreSimilar(ITextState textState, IWord word1, IWord word2) {
+    private boolean phraseMappingsAreSimilar(TextState textState, Word word1, Word word2) {
         var nm0 = textState.getNounMappingsByWord(word1).get(0);
         var nm1 = textState.getNounMappingsByWord(word2).get(0);
 
@@ -411,7 +404,7 @@ class MappingCombinerTest implements IClaimant {
         return false;
     }
 
-    private boolean nounMappingsWereMerged(ITextState preTextState, IWord word1, IWord word2, ITextState afterTextState) {
+    private boolean nounMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
 
         Assertions.assertNotEquals(preTextState.getNounMappings().size(), afterTextState.getNounMappings().size());
         Assertions.assertFalse(textState.getNounMappingsByWord(word1).isEmpty());
@@ -428,7 +421,7 @@ class MappingCombinerTest implements IClaimant {
         return true;
     }
 
-    private boolean phraseMappingsWereMerged(ITextState preTextState, IWord word1, IWord word2, ITextState afterTextState) {
+    private boolean phraseMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
 
         var nounMappings1 = afterTextState.getNounMappingsByWord(word1);
         var nounMappings2 = afterTextState.getNounMappingsByWord(word2);
@@ -448,7 +441,7 @@ class MappingCombinerTest implements IClaimant {
         return true;
     }
 
-    private void mockPhrase(Phrase phrase, String text, int sentenceNumber, ImmutableList<IWord> containedWords) {
+    private void mockPhrase(PhraseImpl phrase, String text, int sentenceNumber, ImmutableList<Word> containedWords) {
         Mockito.when(phrase.getText()).thenReturn(text);
         Mockito.when(phrase.getPhraseType()).thenReturn(PhraseType.NP);
         Mockito.when(phrase.getSentenceNo()).thenReturn(sentenceNumber);
@@ -457,7 +450,7 @@ class MappingCombinerTest implements IClaimant {
         Mockito.when(phrase.toString()).thenCallRealMethod();
     }
 
-    private void mockWord(IWord word, String text, String lemma, int sentenceNumber, IPhrase phrase, int position) {
+    private void mockWord(Word word, String text, String lemma, int sentenceNumber, Phrase phrase, int position) {
         Mockito.when(word.getText()).thenReturn(text);
         Mockito.when(word.getPosition()).thenReturn(position);
         Mockito.when(word.getSentenceNo()).thenReturn(sentenceNumber);
@@ -465,7 +458,11 @@ class MappingCombinerTest implements IClaimant {
         Mockito.when(word.getPhrase()).thenReturn(phrase);
     }
 
-    private static class MyAgent extends TextAgent {
+    private static class MyAgent extends PipelineAgent {
+
+        protected MyAgent(DataRepository dataRepository) {
+            super(MyAgent.class.getSimpleName(), dataRepository);
+        }
 
         @Override
         protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
@@ -473,8 +470,8 @@ class MappingCombinerTest implements IClaimant {
         }
 
         @Override
-        public void execute(TextAgentData data) {
-            throw new UnsupportedOperationException();
+        public void run() {
+
         }
     }
 

@@ -1,35 +1,33 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
-import java.util.Objects;
-
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IPhrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import java.util.Objects;
 
 /**
- * @author Jan Keim
  *
  */
 public abstract class AbstractInconsistencyTypeTest {
 
-    protected abstract IInconsistency getInconsistency();
+    protected abstract Inconsistency getInconsistency();
 
     protected abstract String getTypeString();
 
     protected abstract String getReasonString();
 
-    protected abstract IInconsistency getUnequalInconsistency();
+    protected abstract Inconsistency getUnequalInconsistency();
 
-    protected abstract IInconsistency getEqualInconsistency();
+    protected abstract Inconsistency getEqualInconsistency();
 
     protected abstract String[] getFileOutputEntry();
 
@@ -81,7 +79,7 @@ public abstract class AbstractInconsistencyTypeTest {
                 () -> Assertions.assertFalse(inequality));
     }
 
-    protected static class DummyWord implements IWord {
+    protected static class DummyWord implements Word {
 
         @Override
         public int getSentenceNo() {
@@ -89,7 +87,7 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public IPhrase getPhrase() {
+        public Phrase getPhrase() {
             return null;
         }
 
@@ -104,12 +102,12 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public IWord getPreWord() {
+        public Word getPreWord() {
             return null;
         }
 
         @Override
-        public IWord getNextWord() {
+        public Word getNextWord() {
             return null;
         }
 
@@ -124,12 +122,12 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
+        public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
         }
 
         @Override
-        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
+        public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
         }
 
