@@ -13,6 +13,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,6 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
     @Test
     void testSetProbability() {
-
         this.agent.run();
         var nounMappingProbability = nounMapping.getProbability();
         var invalidNounMappingProbability = textState.getNounMappingsByWord(invalidWord).get(0).getProbability();
@@ -142,7 +142,8 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
         @Override
         public Phrase getPhrase() {
-            throw new UnsupportedOperationException();
+            // TODO @Phi: Phrases are now needed for the TextState
+            return Mockito.mock(Phrase.class);
         }
     }
 }

@@ -22,12 +22,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 /**
  * The Class TextState defines the basic implementation of a {@link TextState}.
  *
  */
 public class TextStateImpl extends AbstractState implements TextState {
+    private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = nm -> Objects.hash(nm.getReference(), nm.getPhrases());
+    private static final BiPredicate<NounMapping,NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> (Objects.equals(nm1.getPhrases(), nm2.getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference()));
 
     private MutableSet<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
@@ -241,10 +245,10 @@ public class TextStateImpl extends AbstractState implements TextState {
         this.nounMappings.remove(wrap(nounMapping));
     }
 
+
     private ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {
 
-        return new ElementWrapper<>(NounMapping.class, nounMapping, nm -> Objects.hash(nm.getReference(), nm.getPhrases()),
-                (nm1, nm2) -> (Objects.equals(nm1.getPhrases(), nm2.getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference())));
+        return new ElementWrapper<>(NounMapping.class, nounMapping, NOUN_MAPPING_HASH,NOUN_MAPPING_EQUALS);
     }
 
     @Override
