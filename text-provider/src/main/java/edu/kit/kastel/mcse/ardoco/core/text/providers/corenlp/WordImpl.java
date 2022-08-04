@@ -42,13 +42,13 @@ public class WordImpl implements Word {
     }
 
     private Phrase loadPhrase() {
-        var phrase = parent.getSentences().get(sentenceNo).getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
-        var subPhrases = List.of(phrase);
+        var currentPhrase = parent.getSentences().get(sentenceNo).getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
+        var subPhrases = List.of(currentPhrase);
         while (!subPhrases.isEmpty()) {
-            phrase = subPhrases.get(0);
-            subPhrases = phrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
+            currentPhrase = subPhrases.get(0);
+            subPhrases = currentPhrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
         }
-        return phrase;
+        return currentPhrase;
     }
 
     @Override
