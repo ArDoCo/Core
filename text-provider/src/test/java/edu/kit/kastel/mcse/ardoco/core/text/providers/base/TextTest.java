@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 public abstract class TextTest {
     private static Text text;
 
-
     @BeforeEach
     void beforeEach() {
         var provider = getProvider();

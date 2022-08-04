@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.ToDoubleBiFunction;
 import java.util.stream.Collectors;
 
-
 /**
  * This class is a utility class.
  *

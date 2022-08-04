@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import edu.kit.kastel.informalin.data.DataRepository;
@@ -18,9 +19,9 @@ public class MappingCombiner extends PipelineAgent {
 
     public static final double MIN_COSINE_SIMILARITY = 0.4;
 
-	public MappingCombiner(DataRepository dataRepository) {
-        super(MappingCombiner.class.getSimpleName(),dataRepository);
-	}
+    public MappingCombiner(DataRepository dataRepository) {
+        super(MappingCombiner.class.getSimpleName(), dataRepository);
+    }
 
     @Override
     public void run() {
@@ -28,14 +29,13 @@ public class MappingCombiner extends PipelineAgent {
         combineSimilarPhraseMappings(textState);
     }
 
-
     private void combineSimilarPhraseMappings(TextState textState) {
 
         ImmutableList<PhraseMapping> phraseMappings = textState.getPhraseMappings();
 
         for (PhraseMapping phraseMapping : phraseMappings) {
-            ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState,
-                    phraseMapping, p, SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
+            ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState, phraseMapping,
+                    p, SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
             ImmutableList<NounMapping> nounMappingsOfPhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping);
 
             for (PhraseMapping similarPhraseMapping : similarPhraseMappings) {

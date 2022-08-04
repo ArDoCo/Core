@@ -211,7 +211,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     private void addNounMappingOrExtendExistingNounMapping(ImmutableList<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<String> occurrences) {
 
-       NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, Lists.immutable.withAll(words), occurrences);
+        NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, Lists.immutable.withAll(words), occurrences);
         addNounMappingAddPhraseMapping(nounMapping);
     }
 

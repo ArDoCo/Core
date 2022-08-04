@@ -55,13 +55,10 @@ public class PhraseRecommendationExtractor extends Informant {
             ModelExtractionState modelState) {
         // TODO: nounmapping does not contain #isPhrase anymore
         /*
-        for (var nounMapping : textState.getNounMappings()) {
-            if (nounMapping.isPhrase()) {
-                var typeMappings = getRelatedTypeMappings(nounMapping, textState);
-                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
-            }
-        }
-        */
+         * for (var nounMapping : textState.getNounMappings()) { if (nounMapping.isPhrase()) { var typeMappings =
+         * getRelatedTypeMappings(nounMapping, textState); addRecommendedInstance(nounMapping, typeMappings,
+         * recommendationState, modelState); } }
+         */
     }
 
     /**

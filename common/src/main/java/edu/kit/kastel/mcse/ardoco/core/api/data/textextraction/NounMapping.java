@@ -13,7 +13,6 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import java.util.Collection;
 import java.util.Map;
 
-
 /**
  * The Interface INounMapping defines the mapping .
  */
@@ -130,7 +129,6 @@ public interface NounMapping extends ICopyable<NounMapping> {
      */
     ImmutableList<Word> getCoreferences();
 
-
     AggregationFunctions getAggregationFunction();
 
     /**
@@ -141,7 +139,6 @@ public interface NounMapping extends ICopyable<NounMapping> {
      * @return new INounMapping that is a merge of the given INounMappings
      */
     NounMapping merge(NounMapping other);
-
 
     /**
      * Adds the kind with probability.

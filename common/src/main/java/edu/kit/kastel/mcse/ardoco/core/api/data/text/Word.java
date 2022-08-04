@@ -72,5 +72,6 @@ public interface Word {
      * @return the words that are dependent on this
      */
     Phrase getPhrase();
+
     ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyTag dependencyTag);
 }
