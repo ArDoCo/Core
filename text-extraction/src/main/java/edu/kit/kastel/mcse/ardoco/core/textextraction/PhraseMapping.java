@@ -104,7 +104,7 @@ public class PhraseMapping implements IPhraseMapping {
         if (phraseMapping.getPhraseType() != this.getPhraseType()) {
             throw new IllegalArgumentException("If two phrase mappings are merged, they should have the same phrase type!");
         }
-        this.phrases.addAllIterable(phrases.select(p -> !this.getPhrases().contains(p)));
+        this.phrases.addAllIterable(phraseMapping.getPhrases());
         return this;
     }
 

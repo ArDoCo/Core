@@ -280,7 +280,7 @@ class MappingCombinerTest implements IClaimant {
         preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
         preTextState.addNounMapping(dog3, MappingKind.TYPE, claimant, 0.5);
 
-        Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, dog3));
+        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
 
         textState = preTextState.createCopy();
         this.data.setTextState(textState);
@@ -337,14 +337,9 @@ class MappingCombinerTest implements IClaimant {
 
         preTextState.addNounMapping(dog1, MappingKind.NAME, claimant, 0.5);
         preTextState.addNounMapping(dog3, MappingKind.NAME, claimant, 0.5);
-
-        Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, dog3));
-
-        this.data.setTextState(preTextState);
-        agent.execute(data);
-
         preTextState.addNounMapping(hut3, MappingKind.TYPE, claimant, 0.5);
 
+        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
 
         textState = preTextState.createCopy();
@@ -409,10 +404,11 @@ class MappingCombinerTest implements IClaimant {
         var nm0 = textState.getNounMappingsByWord(word1).get(0);
         var nm1 = textState.getNounMappingsByWord(word2).get(0);
 
-        Assertions.assertTrue(SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0),
-                textState.getPhraseMappingByNounMapping(nm1),
-                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombiner.MIN_COSINE_SIMILARITY);
-        return true;
+        if (SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
+                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombiner.MIN_COSINE_SIMILARITY) {
+            return true;
+        }
+        return false;
     }
 
     private boolean nounMappingsWereMerged(ITextState preTextState, IWord word1, IWord word2, ITextState afterTextState) {

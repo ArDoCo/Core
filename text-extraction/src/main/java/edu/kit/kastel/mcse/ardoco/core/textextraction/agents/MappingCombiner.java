@@ -21,39 +21,7 @@ public class MappingCombiner extends TextAgent {
     @Override
     public void execute(TextAgentData data) {
 
-        // combineTextuallyEqualNounMappings(data.getTextState());
         combineSimilarPhraseMappings(data.getTextState());
-        logger.info(data.getTextState().toString());
-    }
-
-    private void combineTextuallyEqualNounMappings(ITextState textState) {
-
-        ImmutableList<INounMapping> nounMappings = textState.getNounMappings();
-
-        for (INounMapping nounMapping : nounMappings) {
-
-            ImmutableList<INounMapping> nounMappingsOfTheSamePhraseMapping = textState.getNounMappingsThatBelongToTheSamePhraseMapping(nounMapping);
-
-            var textuallyEqualNounMappings = nounMappings.select(nounMapping::sharesTextualWordRepresentation);
-
-            for (INounMapping textuallyEqualNounMapping : textuallyEqualNounMappings) {
-                if (textuallyEqualNounMapping == nounMapping) {
-                    continue;
-                }
-
-                ImmutableList<INounMapping> nounMappingsOfTheSamePhraseMappingAsTheTextuallyEqualNounMapping = textState
-                        .getNounMappingsThatBelongToTheSamePhraseMapping(textuallyEqualNounMapping);
-
-                if (nounMappingsOfTheSamePhraseMapping.containsAllIterable(nounMappingsOfTheSamePhraseMappingAsTheTextuallyEqualNounMapping)
-                        && nounMappingsOfTheSamePhraseMappingAsTheTextuallyEqualNounMapping.containsAllIterable(nounMappingsOfTheSamePhraseMapping)) {
-
-                    textState.mergeNounMappings(nounMapping, textuallyEqualNounMapping);
-                }
-
-            }
-
-        }
-
     }
 
     private void combineSimilarPhraseMappings(ITextState textState) {
@@ -100,7 +68,7 @@ public class MappingCombiner extends TextAgent {
                     continue;
                 }
 
-                if (similarPhraseMappings.size() != similarNounMappings.collect(Pair::second).distinct().size()) {
+                if (similarPhraseMappings.size() != similarNounMappings.collect(Pair::second).distinct().size() * 2) {
                     continue;
                 }
 
