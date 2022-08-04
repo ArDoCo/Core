@@ -5,8 +5,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
  * The Class WordHelper contains some helper methods to work with words.
@@ -23,9 +23,9 @@ public final class WordHelper {
      * @param word the word
      * @return true, if found
      */
-    public static boolean hasDeterminerAsPreWord(IWord word) {
+    public static boolean hasDeterminerAsPreWord(Word word) {
 
-        IWord preWord = word.getPreWord();
+        Word preWord = word.getPreWord();
         if (preWord == null) {
             return false;
         }
@@ -41,7 +41,7 @@ public final class WordHelper {
      * @param word the word
      * @return true, if found
      */
-    public static boolean hasIndirectDeterminerAsPreWord(IWord word) {
+    public static boolean hasIndirectDeterminerAsPreWord(Word word) {
         return hasDeterminerAsPreWord(word) && ("a".equalsIgnoreCase(word.getText()) || "an".equalsIgnoreCase(word.getText()));
     }
 
@@ -51,7 +51,7 @@ public final class WordHelper {
      * @param word the word
      * @return the incoming dependency tags
      */
-    public static ImmutableList<DependencyTag> getIncomingDependencyTags(IWord word) {
+    public static ImmutableList<DependencyTag> getIncomingDependencyTags(Word word) {
         return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getIncomingDependencyWordsWithType(d).isEmpty());
     }
 
@@ -61,31 +61,31 @@ public final class WordHelper {
      * @param word the word
      * @return the outgoing dependency tags
      */
-    public static ImmutableList<DependencyTag> getOutgoingDependencyTags(IWord word) {
+    public static ImmutableList<DependencyTag> getOutgoingDependencyTags(Word word) {
         return Lists.immutable.with(DependencyTag.values()).select(d -> !word.getOutgoingDependencyWordsWithType(d).isEmpty());
     }
 
-    public static boolean isVerb(IWord word) {
+    public static boolean isVerb(Word word) {
         String tag = word.getPosTag().getTag();
         return tag.startsWith("VB") || tag.startsWith("MD");
     }
 
-    public static boolean isAdjective(IWord word) {
+    public static boolean isAdjective(Word word) {
         String tag = word.getPosTag().getTag();
         return tag.startsWith("JJ");
     }
 
-    public static boolean isAdverb(IWord word) {
+    public static boolean isAdverb(Word word) {
         String tag = word.getPosTag().getTag();
         return tag.startsWith("RB");
     }
 
-    public static boolean isNoun(IWord word) {
+    public static boolean isNoun(Word word) {
         String tag = word.getPosTag().getTag();
         return tag.startsWith("NN");
     }
 
-    public static boolean isPronoun(IWord word) {
+    public static boolean isPronoun(Word word) {
         String tag = word.getPosTag().getTag();
         return tag.startsWith("PR") || tag.startsWith("WP");
     }

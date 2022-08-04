@@ -11,33 +11,30 @@ import org.eclipse.collections.impl.tuple.Tuples;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.IClaimant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 
 /**
  *
  *
- * @author Sophie Schulz
- * @author Dominik Fuchß
- * @author Jan Keim
  *
  */
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
     private final AggregationFunctions confidenceAggregator;
 
-    private List<Pair<IClaimant, Double>> agentConfidences;
+    private List<Pair<Claimant, Double>> agentConfidences;
 
     public Confidence(AggregationFunctions confidenceAggregator) {
         this.confidenceAggregator = confidenceAggregator;
         this.agentConfidences = new ArrayList<>();
     }
 
-    public Confidence(IClaimant claimant, double probability, AggregationFunctions confidenceAggregator) {
+    public Confidence(Claimant claimant, double probability, AggregationFunctions confidenceAggregator) {
         this(confidenceAggregator);
         this.addAgentConfidence(claimant, probability);
     }
 
-    private Confidence(AggregationFunctions confidenceAggregator, List<Pair<IClaimant, Double>> agentConfidence) {
+    private Confidence(AggregationFunctions confidenceAggregator, List<Pair<Claimant, Double>> agentConfidence) {
         this(confidenceAggregator);
         this.agentConfidences = agentConfidence;
     }
@@ -47,7 +44,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidences));
     }
 
-    public void addAgentConfidence(IClaimant claimant, double confidence) {
+    public void addAgentConfidence(Claimant claimant, double confidence) {
         agentConfidences.add(Tuples.pair(claimant, confidence));
     }
 

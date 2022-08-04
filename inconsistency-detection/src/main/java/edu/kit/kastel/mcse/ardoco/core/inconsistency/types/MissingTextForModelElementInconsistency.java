@@ -7,25 +7,24 @@ import java.util.Objects;
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
 /**
- * @author Jan Keim
  */
-public class MissingTextForModelElementInconsistency implements IInconsistency {
+public class MissingTextForModelElementInconsistency implements Inconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingTextForModelElement";
 
     private static final String REASON_FORMAT_STRING = "Model contains an Instance that should be documented (because it is not whitelisted and its type \"%s\" is configured to need documentation) but could not be found in documentation: %s";
 
-    private final IModelInstance instance;
+    private final ModelInstance instance;
 
-    public MissingTextForModelElementInconsistency(IModelInstance instance) {
+    public MissingTextForModelElementInconsistency(ModelInstance instance) {
         this.instance = instance;
     }
 
     @Override
-    public IInconsistency createCopy() {
+    public Inconsistency createCopy() {
         return new MissingTextForModelElementInconsistency(instance.createCopy());
     }
 
