@@ -208,7 +208,11 @@ public class TextState extends AbstractState implements ITextState {
     @Override
     public ITextState createCopy() {
         var textExtractionState = new TextState(this.configs);
-        textExtractionState.nounMappings = nounMappings.collect(ElementWrapper::getElement).collect(INounMapping::createCopy).collect(this::wrap);
+        textExtractionState.nounMappings = nounMappings.toList()
+                .collect(ElementWrapper::getElement)
+                .collect(INounMapping::createCopy)
+                .collect(this::wrap)
+                .toSet();
         textExtractionState.phraseMappings = phraseMappings.collect(IPhraseMapping::createCopy);
         return textExtractionState;
     }
