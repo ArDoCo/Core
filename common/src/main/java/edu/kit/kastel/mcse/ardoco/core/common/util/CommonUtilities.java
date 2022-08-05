@@ -333,7 +333,8 @@ public final class CommonUtilities {
     public static ImmutableList<Word> filterWordsOfTypeMappings(ImmutableList<Word> words, TextState textState) {
         MutableList<Word> filteredWords = Lists.mutable.empty();
         for (var word : words) {
-            if (!textState.isWordContainedByMappingKind(word, MappingKind.TYPE)) {
+
+            if (textState.getNounMappingByWord(word).getKind() != MappingKind.TYPE) {
                 filteredWords.add(word);
             }
         }

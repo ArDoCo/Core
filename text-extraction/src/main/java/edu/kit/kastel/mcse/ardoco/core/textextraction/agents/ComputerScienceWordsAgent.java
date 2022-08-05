@@ -3,12 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -89,9 +84,8 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
 
         Set<NounMapping> processed = new HashSet<>();
         for (var word : text.words()) {
-            var nounMappings = textState.getNounMappingsByWord(word);
-            for (var nounMapping : nounMappings)
-                processNounMapping(textState, word, nounMapping, processed);
+            var nounMapping = textState.getNounMappingByWord(word);
+            processNounMapping(textState, word, nounMapping, processed);
         }
     }
 

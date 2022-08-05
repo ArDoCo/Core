@@ -1,6 +1,21 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
+
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
+
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
@@ -11,25 +26,16 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
-
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
 public class NounMappingImpl implements NounMapping {
+
+    /**
+     * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
+     */
+    private static final double MAPPINGKIND_MAX_DIFF = 0.1;
 
     /* Main reference */
     private final ImmutableList<Word> referenceWords;
@@ -323,6 +329,16 @@ public class NounMappingImpl implements NounMapping {
         var sharedWords = this.words.select(words::contains);
         this.words.removeAll(sharedWords.toList());
         return new NounMappingImpl(sharedWords.toImmutable(), distribution, referenceWords, surfaceForms.toImmutable());
+    }
+
+    @Override
+    public boolean couldBeMultipleKinds(MappingKind... kinds) {
+        ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(this::getProbabilityForKind);
+        if (probabilities.anySatisfy(p -> p <= 0)) {
+            return false;
+        }
+
+        return probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
     }
 
     @Override

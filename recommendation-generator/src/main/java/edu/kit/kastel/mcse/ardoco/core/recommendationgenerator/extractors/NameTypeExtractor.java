@@ -3,6 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
 import java.util.Map;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
@@ -12,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -75,10 +79,21 @@ public class NameTypeExtractor extends Informant {
         if (!similarTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getPreWord(), MappingKind.NAME);
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            NounMapping preMapping = textExtractionState.getNounMappingByWord(word.getPreWord());
+            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, this, probability);
+            MutableList<NounMapping> nameMappings = Lists.mutable.empty();
+            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
+
+            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
+                typeMappings.add(wordMapping);
+            }
+
+            if (preMapping != null && preMapping.couldBeOfKind(MappingKind.NAME)) {
+                nameMappings.add(preMapping);
+            }
+            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings.toImmutable(), typeMappings.toImmutable(), recommendationState,
+                    this, probability);
         }
     }
 
@@ -99,10 +114,22 @@ public class NameTypeExtractor extends Informant {
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getNextWord(), MappingKind.NAME);
+            NounMapping afterMapping = textExtractionState.getNounMappingByWord(word.getNextWord());
+            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
+            MutableList<NounMapping> nameMappings = Lists.mutable.empty();
+            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
+
+            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
+                typeMappings.add(wordMapping);
+            }
+
+            if (afterMapping != null && afterMapping.couldBeOfKind(MappingKind.NAME)) {
+                typeMappings.add(afterMapping);
+            }
+
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings.toImmutable(), typeMappings.toImmutable(), recommendationState,
+                    this, probability);
         }
     }
 
@@ -124,10 +151,22 @@ public class NameTypeExtractor extends Informant {
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getPreWord(), MappingKind.NAME, MappingKind.TYPE);
+            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
+            NounMapping preMapping = textExtractionState.getNounMappingByWord(word.getPreWord());
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
+            MutableList<NounMapping> nortMappings = Lists.mutable.empty();
+            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
+
+            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
+                typeMappings.add(wordMapping);
+            }
+
+            if (preMapping != null && preMapping.couldBeMultipleKinds(MappingKind.NAME, MappingKind.TYPE)) {
+                nortMappings.add(preMapping);
+            }
+
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings.toImmutable(), typeMappings.toImmutable(), recommendationState,
+                    this, probability);
         }
     }
 
@@ -148,10 +187,22 @@ public class NameTypeExtractor extends Informant {
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getNextWord(), MappingKind.NAME, MappingKind.TYPE);
+            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
+            NounMapping afterMapping = textExtractionState.getNounMappingByWord(word.getNextWord());
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
+            MutableList<NounMapping> nortMappings = Lists.mutable.empty();
+            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
+
+            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
+                typeMappings.add(wordMapping);
+            }
+
+            if (afterMapping != null && afterMapping.couldBeMultipleKinds(MappingKind.NAME, MappingKind.TYPE)) {
+                nortMappings.add(afterMapping);
+            }
+
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings.toImmutable(), typeMappings.toImmutable(), recommendationState,
+                    this, probability);
         }
     }
 

@@ -1,6 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
+import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
@@ -13,13 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
-
-import java.util.Map;
 
 public class PhraseRecommendationExtractor extends Informant {
 
@@ -130,7 +131,10 @@ public class PhraseRecommendationExtractor extends Informant {
         // find TypeMappings that come from the Phrase Words within the Compound Word
         var phrase = getPhraseWordsFromNounMapping(nounMapping);
         for (var word : phrase) {
-            typeMappings.addAll(textState.getNounMappingsByWordAndKind(word, MappingKind.TYPE).toList());
+            NounMapping nm = textState.getNounMappingByWord(word);
+            if (nm.getKind() == MappingKind.TYPE) {
+                typeMappings.add(nm);
+            }
         }
         return typeMappings.toImmutable();
     }
@@ -142,9 +146,9 @@ public class PhraseRecommendationExtractor extends Informant {
         }
 
         if (word.getPosTag().isNoun()) {
-            var typeMappings = textState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            if (!typeMappings.isEmpty()) {
-                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
+            NounMapping nm = textState.getNounMappingByWord(word);
+            if (nm.couldBeOfKind(MappingKind.TYPE)) {
+                addRecommendedInstance(nounMapping, Lists.immutable.with(nm), recommendationState, modelState);
             }
         }
     }

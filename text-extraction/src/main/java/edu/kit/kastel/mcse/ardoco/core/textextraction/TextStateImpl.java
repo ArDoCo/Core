@@ -1,6 +1,20 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+
+import org.eclipse.collections.api.block.predicate.Predicate;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
+
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
@@ -11,19 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
-import org.eclipse.collections.api.block.predicate.Predicate;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 /**
  * The Class TextState defines the basic implementation of a {@link TextState}.
@@ -102,11 +103,6 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public ImmutableList<NounMapping> getNounMappingsByWordAndKind(Word word, MappingKind type) {
-        return this.getNounMappingsByWord(word).select(nm -> nm.getKind() == type);
-    }
-
-    @Override
     public ImmutableList<NounMapping> getNounMappingsByPhraseMapping(PhraseMapping phraseMapping) {
         return getNounMappings().select(nm -> phraseMapping.getPhrases().toImmutableSet().equals(nm.getPhrases()));
     }
@@ -150,18 +146,14 @@ public class TextStateImpl extends AbstractState implements TextState {
         this.phraseMappings.remove(similarPhraseMapping);
     }
 
-    /**
-     * Returns all mappings containing the given word.
-     *
-     * @param word the given word
-     * @return all mappings containing the given node as list
-     */
     @Override
-    public ImmutableList<NounMapping> getNounMappingsByWord(Word word) {
+    public NounMapping getNounMappingByWord(Word word) {
         var result = getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
         assert (result.size() <= 1) : "A word should only contained by one noun mapping";
-        // TODO: Refactor
-        return result;
+        if (result.size() == 0) {
+            return null;
+        }
+        return result.get(0);
     }
 
     /**
@@ -177,18 +169,6 @@ public class TextStateImpl extends AbstractState implements TextState {
             referencesOfKind.add(nnm.getReference());
         }
         return Lists.immutable.withAll(referencesOfKind);
-    }
-
-    /**
-     * Returns if a node is contained by the name mappings.
-     *
-     * @param word        node to check
-     * @param mappingKind mappingKind to check for
-     * @return true if the node is contained by name mappings.
-     */
-    @Override
-    public boolean isWordContainedByMappingKind(Word word, MappingKind mappingKind) {
-        return getNounMappings().select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsOfKind(mappingKind));
     }
 
     private Predicate<? super NounMapping> nounMappingIsOfKind(MappingKind mappingKind) {

@@ -1,6 +1,15 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
@@ -15,14 +24,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.WordImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.Map;
 
 class MappingCombinerTest implements Claimant {
 
@@ -180,8 +181,7 @@ class MappingCombinerTest implements Claimant {
 
         preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
 
-        Assertions.assertEquals(1, preTextState.getNounMappingsByWord(fox0).size());
-        var fox0NM = preTextState.getNounMappingsByWord(fox0).get(0);
+        var fox0NM = preTextState.getNounMappingByWord(fox0);
         Assertions.assertNotNull(preTextState.getPhraseMappingByNounMapping(fox0NM));
 
         preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
@@ -203,8 +203,7 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
-        Assertions.assertTrue(
-                SimilarityUtils.areNounMappingsSimilar(preTextState.getNounMappingsByWord(dog1).get(0), preTextState.getNounMappingsByWord(dog3).get(0)));
+        Assertions.assertTrue(SimilarityUtils.areNounMappingsSimilar(preTextState.getNounMappingByWord(dog1), preTextState.getNounMappingByWord(dog3)));
 
         Assertions.assertEquals(2, preTextState.getNounMappings().size());
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
@@ -234,8 +233,6 @@ class MappingCombinerTest implements Claimant {
 
         Assertions.assertEquals(2, textState.getNounMappings().size());
         Assertions.assertEquals(2, textState.getPhraseMappings().size());
-        Assertions.assertEquals(1, textState.getNounMappingsByWord(fox0).size());
-        Assertions.assertEquals(1, textState.getNounMappingsByWord(fox2).size());
     }
 
     @Test
@@ -251,11 +248,10 @@ class MappingCombinerTest implements Claimant {
         this.data.addData(TextState.ID, textState);
         agent.run();
 
-        Assertions.assertFalse(textState.getNounMappingsByWord(dog1).isEmpty());
-        Assertions.assertEquals(1, textState.getNounMappingsByWord(alternativeDog).size());
-        Assertions.assertEquals(textState.getNounMappingsByWord(dog1), textState.getNounMappingsByWord(alternativeDog));
+        Assertions.assertNotEquals(null, textState.getNounMappingByWord(dog1));
+        Assertions.assertEquals(textState.getNounMappingByWord(dog1), textState.getNounMappingByWord(alternativeDog));
 
-        NounMapping doggyNounMapping = textState.getNounMappingsByWord(alternativeDog).get(0);
+        NounMapping doggyNounMapping = textState.getNounMappingByWord(alternativeDog);
 
         Assertions.assertAll(//
                 () -> Assertions.assertTrue(doggyNounMapping.getWords().contains(alternativeDog)), //
@@ -395,26 +391,21 @@ class MappingCombinerTest implements Claimant {
     }
 
     private boolean phraseMappingsAreSimilar(TextState textState, Word word1, Word word2) {
-        var nm0 = textState.getNounMappingsByWord(word1).get(0);
-        var nm1 = textState.getNounMappingsByWord(word2).get(0);
+        var nm0 = textState.getNounMappingByWord(word1);
+        var nm1 = textState.getNounMappingByWord(word2);
 
-        if (SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
-                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombiner.MIN_COSINE_SIMILARITY) {
-            return true;
-        }
-        return false;
+        return SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
+                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombiner.MIN_COSINE_SIMILARITY;
     }
 
     private boolean nounMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
 
         Assertions.assertNotEquals(preTextState.getNounMappings().size(), afterTextState.getNounMappings().size());
-        Assertions.assertFalse(textState.getNounMappingsByWord(word1).isEmpty());
-        Assertions.assertFalse(textState.getNounMappingsByWord(word2).isEmpty());
-        Assertions.assertEquals(textState.getNounMappingsByWord(word1), textState.getNounMappingsByWord(word2));
+        Assertions.assertNotEquals(null, textState.getNounMappingByWord(word1));
+        Assertions.assertNotEquals(null, textState.getNounMappingByWord(word2));
+        Assertions.assertEquals(textState.getNounMappingByWord(word1), textState.getNounMappingByWord(word2));
 
-        var nounMappings = textState.getNounMappingsByWord(word1);
-        Assertions.assertEquals(1, nounMappings.size());
-        var nounMapping = nounMappings.get(0);
+        var nounMapping = textState.getNounMappingByWord(word1);
 
         Assertions.assertTrue(nounMapping.getWords().contains(word1));
         Assertions.assertTrue(nounMapping.getWords().contains(word2));
@@ -424,12 +415,8 @@ class MappingCombinerTest implements Claimant {
 
     private boolean phraseMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
 
-        var nounMappings1 = afterTextState.getNounMappingsByWord(word1);
-        var nounMappings2 = afterTextState.getNounMappingsByWord(word2);
-        Assertions.assertEquals(1, nounMappings1.size());
-        Assertions.assertEquals(1, nounMappings2.size());
-        var nounMapping1 = nounMappings1.get(0);
-        var nounMapping2 = nounMappings2.get(0);
+        var nounMapping1 = afterTextState.getNounMappingByWord(word1);
+        var nounMapping2 = afterTextState.getNounMappingByWord(word2);
 
         Assertions.assertNotEquals(preTextState.getPhraseMappings().size(), afterTextState.getPhraseMappings().size());
         Assertions.assertEquals(textState.getPhraseMappingByNounMapping(nounMapping1), textState.getPhraseMappingByNounMapping(nounMapping2));

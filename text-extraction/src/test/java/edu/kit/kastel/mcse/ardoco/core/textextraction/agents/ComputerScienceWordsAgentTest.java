@@ -1,13 +1,11 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
@@ -15,10 +13,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
+import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 
 class ComputerScienceWordsAgentTest implements Claimant {
     private ComputerScienceWordsAgent agent;
@@ -54,7 +55,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
     void testSetProbability() {
         this.agent.run();
         var nounMappingProbability = nounMapping.getProbability();
-        var invalidNounMappingProbability = textState.getNounMappingsByWord(invalidWord).get(0).getProbability();
+        var invalidNounMappingProbability = textState.getNounMappingByWord(invalidWord).getProbability();
 
         Assertions.assertEquals((1.0 + this.modifier) / 2, nounMappingProbability);
         Assertions.assertEquals(1.0, invalidNounMappingProbability);
