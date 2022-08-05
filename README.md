@@ -3,6 +3,7 @@ This repository contains a benchmark for traceability link recovery (TLR) betwee
 
 Each project of the benchmark is structured as follows:
 
+* The README of each project contains some information about the used languages and lines of code created with [cloc](https://github.com/AlDanial/cloc).
 * The folder `pcm` contains a Palladio Component Model (PCM) of the system. It has at least the repository view (components) of the system.
 * The text file(s) in the project folder contains the SAD of the projects as plain text.
 * The file `goldstandard.csv` contains the traceability links between SAD and SAM. It links the model elements by id with the sentences by their number (index starting at 1).
