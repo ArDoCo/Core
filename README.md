@@ -12,7 +12,9 @@ In order to provide an easy approach to use the benchmark, we provide an example
 Therefore, the benchmark is linked to the STD repository via a [git subtree](https://github.com/ArDoCo/SimpleTracelinkDiscovery/tree/main/src/test/resources/benchmark).
 
 ## References
-:warning: The LICENSE does only apply to the PCM models and the Gold Standards (CSV files). The texts are licensed w.r.t. to the actual projects :warning:
+> **Note**
+>
+> Our LICENSE does only apply to the PCM models and the Gold Standards (CSV files). The texts are licensed w.r.t. to the actual projects.
 
 ### BigBlueButton
 BigBlueButton (BBB) is a non-scientific application that provides a web conferencing system with the focus on creating a "global teaching platform".
