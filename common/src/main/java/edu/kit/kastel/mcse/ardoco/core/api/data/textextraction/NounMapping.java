@@ -1,17 +1,18 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
+import java.util.Collection;
+import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * The Interface INounMapping defines the mapping .
@@ -156,4 +157,23 @@ public interface NounMapping extends ICopyable<NounMapping> {
     boolean sharesTextualWordRepresentation(NounMapping nounMapping);
 
     NounMapping split(ImmutableList<Word> words);
+
+    /**
+     * Check whether this noun mapping could have several kinds according to confidence levels.
+     * 
+     * @param kinds kinds that should be checked
+     * @return true if noun mapping could be of all kinds, false if some kind could be excluded.
+     */
+    boolean couldBeMultipleKinds(MappingKind... kinds);
+
+    /**
+     * Checks whether this noun mapping could be of the specified kind
+     * 
+     * @param kind the kind that should be checked
+     * @return true if the specified kind has a probability > 0
+     */
+    default boolean couldBeOfKind(MappingKind kind) {
+        return this.getProbabilityForKind(kind) > 0;
+    }
+
 }

@@ -1,29 +1,21 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.data.PipelineStepData;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 /**
  * The Interface ITextState.
  */
 public interface TextState extends ICopyable<TextState>, IConfigurable, PipelineStepData {
     String ID = "TextState";
-
-    /**
-     * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
-     * 
-     * @see #getMappingsThatCouldBeOfKind(Word, MappingKind)
-     * @see #isWordContainedByMappingKind(Word, MappingKind)
-     */
-    double MAPPINGKIND_MAX_DIFF = 0.1;
 
     /**
      * * Adds a name mapping to the state.
@@ -54,12 +46,12 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
     void removeNounMapping(NounMapping word);
 
     /**
-     * Returns all mappings containing the given word.
+     * Returns the noun mapping containing the given word.
      *
      * @param word the given word
-     * @return all mappings containing the given word as list
+     * @return the noun mapping of the word or null if the text state has no noun mapping containing the given word.
      */
-    ImmutableList<NounMapping> getNounMappingsByWord(Word word);
+    NounMapping getNounMappingByWord(Word word);
 
     PhraseMapping getPhraseMappingByNounMapping(NounMapping nounMapping);
 
@@ -72,15 +64,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      * @return all references of noun mappings with the specified kind as list.
      */
     ImmutableList<String> getListOfReferences(MappingKind kind);
-
-    /**
-     * Returns if a word is contained by the name mappings.
-     *
-     * @param word        word to check
-     * @param mappingKind mappingKind to check
-     * @return true if the word is contained by name mappings.
-     */
-    boolean isWordContainedByMappingKind(Word word, MappingKind mappingKind);
 
     /**
      * Gets the all noun mappings.
@@ -98,52 +81,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      */
     void addNounMapping(NounMapping nounMapping, Claimant claimant);
 
-    /**
-     * Gets the mappings that could be a type.
-     *
-     * @param word        the word
-     * @param mappingKind the mapping kind that
-     * @return the mappings that could be a type
-     */
-    default ImmutableList<NounMapping> getMappingsThatCouldBeOfKind(Word word, MappingKind mappingKind) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(mappingKind) > 0);
-    }
-
-    /**
-     * Gets the mappings that could be a Name or Type.
-     *
-     * @param word  the word
-     * @param kinds the required mappingKinds
-     * @return the mappings that could be a Name or Type
-     */
-    default ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind... kinds) {
-        if (kinds.length == 0) {
-            throw new IllegalArgumentException("You need to provide some mapping kinds!");
-        }
-
-        if (kinds.length < 2) {
-            return getNounMappingsOfKind(kinds[0]);
-        }
-
-        MutableList<NounMapping> result = Lists.mutable.empty();
-        ImmutableList<NounMapping> mappings = getNounMappingsByWord(word);
-
-        for (NounMapping mapping : mappings) {
-            ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(mapping::getProbabilityForKind);
-            if (probabilities.anySatisfy(p -> p <= 0)) {
-                continue;
-            }
-
-            boolean similar = probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
-            if (similar) {
-                result.add(mapping);
-            }
-
-        }
-
-        return result.toImmutable();
-    }
-
     ImmutableList<NounMapping> getNounMappingsOfKind(MappingKind mappingKind);
 
     ImmutableList<NounMapping> getNounMappingsThatBelongToTheSamePhraseMapping(NounMapping nounMapping);
@@ -155,5 +92,4 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
 
     void mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping);
 
-    ImmutableList<NounMapping> getNounMappingsByWordAndKind(Word word, MappingKind type);
 }
