@@ -17,7 +17,7 @@ Therefore, the benchmark is linked to the STD repository via a [git subtree](htt
 ### BigBlueButton
 BigBlueButton (BBB) is a non-scientific application that provides a web conferencing system with the focus on creating a "global teaching platform".
 The [documentation of BBB](https://docs.bigbluebutton.org/2.4/architecture.html) is licensed under LGPL.
-Therefore, the text we extracted from their documentation is licensed according to the [license of BBB]((https://bigbluebutton.org/open-source-project/open-source-license/) under LGPL.
+Therefore, the text we extracted from their documentation is licensed according to the [license of BBB](https://bigbluebutton.org/open-source-project/open-source-license/) under LGPL.
 
 ### MediaStore
 MediaStore is a "model application built after the iTunes Store".
