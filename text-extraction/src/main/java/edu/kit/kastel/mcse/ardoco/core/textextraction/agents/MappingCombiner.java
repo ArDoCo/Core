@@ -1,6 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
@@ -9,11 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-
-import java.util.Map;
 
 public class MappingCombiner extends PipelineAgent {
 

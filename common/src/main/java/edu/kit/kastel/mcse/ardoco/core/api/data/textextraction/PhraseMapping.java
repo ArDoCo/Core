@@ -1,13 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
+import java.util.Map;
+
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.util.Map;
 
 public interface PhraseMapping extends ICopyable<PhraseMapping> {
 
@@ -27,5 +28,4 @@ public interface PhraseMapping extends ICopyable<PhraseMapping> {
 
     void removePhrase(Phrase phrase);
 
-    boolean containsExactNounMapping(TextState textState, NounMapping nm);
 }

@@ -1,6 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
@@ -11,11 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWord
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.MappingCombiner;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * The Class TextExtractor.

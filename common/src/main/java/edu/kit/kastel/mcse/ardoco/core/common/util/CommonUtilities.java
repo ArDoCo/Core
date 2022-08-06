@@ -229,7 +229,7 @@ public final class CommonUtilities {
                 .map(type -> type.split(" "))
                 .flatMap(Arrays::stream)
                 .collect(Collectors.toSet());
-        identifiers.addAll(modelState.getInstanceTypes());
+        identifiers.addAll(modelState.getInstanceTypes().toSet());
         return identifiers;
     }
 
