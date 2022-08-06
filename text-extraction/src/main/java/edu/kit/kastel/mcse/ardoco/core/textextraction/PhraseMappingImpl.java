@@ -1,12 +1,10 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -14,9 +12,12 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 
 public class PhraseMappingImpl implements PhraseMapping {
 
@@ -105,11 +106,6 @@ public class PhraseMappingImpl implements PhraseMapping {
         }
         this.phrases.addAllIterable(phraseMapping.getPhrases());
         return this;
-    }
-
-    @Override
-    public boolean containsExactNounMapping(TextState textState, NounMapping nm) {
-        return getNounMappings(textState).anySatisfy(cnm -> cnm.containsSameWordsAs(nm));
     }
 
     public boolean isAlmostEqual(TextState textState, PhraseMapping other) {

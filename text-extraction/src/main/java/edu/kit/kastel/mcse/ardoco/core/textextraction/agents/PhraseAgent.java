@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
+import java.util.Map;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
@@ -12,8 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
-
-import java.util.Map;
 
 /**
  * Agent that is responsible for looking at phrases and extracting {@link NounMapping}s from compound nouns etc.
