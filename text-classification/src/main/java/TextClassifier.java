@@ -1,6 +1,6 @@
 import java.util.Map;
 
-public interface IClassifier {
+public interface TextClassifier {
 
     public ClassificationResponse classifyPhrases(Map<Integer, String> phrases);
     public ClassifierStatus getClassifierStatus();
