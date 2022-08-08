@@ -38,6 +38,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
@@ -59,6 +60,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
     private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
+    private static final ResultCalculator overallResultCalculator = new ResultCalculator();
     private static final boolean detailedDebug = true;
     public static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
@@ -74,6 +76,16 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     @AfterAll
     public static void afterAll() throws IOException {
+        if (logger.isInfoEnabled()) {
+            var name = "Overall Weighted";
+            var results = overallResultCalculator.getWeightedAveragePRF1();
+            logResults(name, results);
+
+            name = "Overall Macro";
+            results = overallResultCalculator.getMacroAveragePRF1();
+            logResults(name, results);
+        }
+
         if (detailedDebug) {
             var evalDir = Path.of(OUTPUT).resolve("tl_eval");
             Files.createDirectories(evalDir);
@@ -131,11 +143,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
-            var infoString = String.format(Locale.ENGLISH,
-                    "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
-                    results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
-                    expectedResults.getF1());
-            logger.info(infoString);
+            logResultsWithExpected(name, results, expectedResults);
 
             if (detailedDebug) {
                 if (results instanceof ExplicitEvaluationResults explicitResults) {
@@ -149,7 +157,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
                     logger.warn(e.getMessage(), e.getCause());
                 }
             }
-
         }
 
         Assertions.assertAll(//
@@ -162,8 +169,22 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     }
 
+    private static void logResults(String name, EvaluationResults results) {
+        String infoString = String.format(Locale.ENGLISH, "\n%s:\n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
+                results.getRecall(), results.getF1());
+        logger.info(infoString);
+    }
+
+    private static void logResultsWithExpected(String name, EvaluationResults results, EvaluationResults expectedResults) {
+        var infoString = String.format(Locale.ENGLISH,
+                "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
+                results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
+                expectedResults.getF1());
+        logger.info(infoString);
+    }
+
     private void printDetailedDebug(ExplicitEvaluationResults results, DataRepository data) {
-        var falseNegatives = results.getFalseNegative().stream().map(Object::toString);
+        var falseNegatives = results.getFalseNegatives().stream().map(Object::toString);
         var falsePositives = results.getFalsePositives().stream().map(Object::toString);
 
         var sentences = data.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText().getSentences();
@@ -222,7 +243,12 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         var goldStandard = getGoldStandard(project);
 
-        return TestUtil.compare(traceLinks.toSet(), goldStandard);
+        ExplicitEvaluationResults<String> evaluationResults = TestUtil.compare(traceLinks.toSet(), goldStandard);
+        int tp = evaluationResults.getTruePositives().size();
+        int fp = evaluationResults.getFalsePositives().size();
+        int fn = evaluationResults.getFalseNegatives().size();
+        overallResultCalculator.addEvaluationResults(tp, fp, fn);
+        return evaluationResults;
     }
 
     private List<String> getGoldStandard(Project project) {

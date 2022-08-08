@@ -101,7 +101,7 @@ class InconsistencyDetectionEvaluationIT {
         for (var run : runs.entrySet()) {
             var runEvalResults = evaluateRun(project, run.getKey(), run.getValue());
             if (runEvalResults != null) {
-                int fn = runEvalResults.getFalseNegative().size();
+                int fn = runEvalResults.getFalseNegatives().size();
                 int fp = runEvalResults.getFalsePositives().size();
                 int tp = runEvalResults.getTruePositives().size();
                 resultCalculator.addEvaluationResults(tp, fp, fn);
@@ -195,7 +195,7 @@ class InconsistencyDetectionEvaluationIT {
                 var falsePositives = result.getFalsePositives();
                 falsePositives = sortIntegerStrings(falsePositives);
                 outputBuilder.append(System.lineSeparator()).append("False Positives: ").append(listToString(falsePositives));
-                var falseNegatives = result.getFalseNegative();
+                var falseNegatives = result.getFalseNegatives();
                 falseNegatives = sortIntegerStrings(falseNegatives);
                 outputBuilder.append(System.lineSeparator()).append("False Negatives: ").append(listToString(falseNegatives));
             }
