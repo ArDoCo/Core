@@ -5,15 +5,20 @@ import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
@@ -39,11 +44,89 @@ public class TermBuilder extends PipelineAgent {
             var modelState = modelStates.getModelState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
-            combineMetaModelTypes(textState, modelState, recommendationState);
+            combineMetaModelTypes(textState, modelState);
         }
+
+        Text text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
+        invalidState(text, textState);
+
+        combineNameMappings(text, textState);
+
+        invalidState(text, textState);
+
+        System.out.println(textState);
+
     }
 
-    private void combineMetaModelTypes(TextState textState, ModelExtractionState modelState, RecommendationState recommendationState) {
+    private void invalidState(Text text, TextState textState) {
+
+        var words = text.getSentences().flatCollect(Sentence::getWords);
+        for (Word word : words) {
+            var nm = textState.getNounMappingByWord(word);
+        }
+
+    }
+
+    private void combineNameMappings(Text text, TextState textState) {
+
+        var nounMappings = textState.getNounMappingsOfKind(MappingKind.NAME);
+
+        int outer = 0;
+
+        for (NounMapping nounMapping : nounMappings) {
+            outer++;
+            if (outer == 104) {
+                int j = 0;
+            }
+            invalidState(text, textState);
+
+            if (!textState.getNounMappings().contains(nounMapping)) {
+                continue;
+            }
+
+            PhraseMapping phraseMapping = textState.getPhraseMappingByNounMapping(nounMapping);
+            ImmutableList<NounMapping> nounMappingsOfTheSamePhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping)
+                    .select(nm -> nm.getProbabilityForKind(MappingKind.NAME) > 0);
+
+            if (nounMappingsOfTheSamePhraseMapping.size() < 1)
+                continue;
+
+            int inner = 0;
+            for (NounMapping nounMappingOfTheSamePhraseMapping : nounMappingsOfTheSamePhraseMapping) {
+                inner++;
+                invalidState(text, textState);
+
+                int counter = 0;
+                var words = nounMapping.getWords();
+                for (Word word : words) {
+                    for (Word wordOfNounMappingOfTheSamePhraseMapping : nounMappingOfTheSamePhraseMapping.getWords())
+                        if (word.getNextWord().getText().equalsIgnoreCase(wordOfNounMappingOfTheSamePhraseMapping.getText())) {
+                            counter++;
+                            break;
+                        }
+                }
+                if (counter > 0.5 * words.size()) {
+                    invalidState(text, textState);
+                    nounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
+                    invalidState(text, textState);
+                    NounMapping currentNounMapping = nounMappingOfTheSamePhraseMapping;
+                    currentNounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
+                    invalidState(text, textState);
+                    textState.mergeNounMappings(nounMapping, currentNounMapping);
+                    invalidState(text, textState);
+                    var references = nounMapping.getReferenceWords().toList();
+                    references.addAllIterable(currentNounMapping.getReferenceWords());
+                    nounMapping.setReference(references.toImmutable());
+                    invalidState(text, textState);
+
+                }
+            }
+
+        }
+
+    }
+
+    private void combineMetaModelTypes(TextState textState, ModelExtractionState modelState) {
 
         ImmutableList<NounMapping> nounMappings = textState.getNounMappings();
         ImmutableSet<String> modelTypes = modelState.getInstanceTypes();
@@ -51,12 +134,16 @@ public class TermBuilder extends PipelineAgent {
         for (String modelType : modelTypes) {
             var modelTypeParts = modelType.split(" ");
 
+            if (modelTypeParts.length < 2) {
+                continue;
+            }
+
             MutableMap<String, MutableList<NounMapping>> modelTypePartMap = Maps.mutable.empty();
             MutableMap<String, MutableList<PhraseMapping>> containedPhraseMappings = Maps.mutable.empty();
 
             for (int i = 0; i < modelTypeParts.length; i++) {
                 String modelTypePart = modelTypeParts[i];
-                MutableList<NounMapping> nounMappingsWithExactWording = nounMappings.select(nm -> nm.getReference().equals(modelTypePart)).toList();
+                MutableList<NounMapping> nounMappingsWithExactWording = nounMappings.select(nm -> nm.getReference().equalsIgnoreCase(modelTypePart)).toList();
                 modelTypePartMap.put(modelTypePart, nounMappingsWithExactWording);
                 containedPhraseMappings.putIfAbsent(modelTypePart, Lists.mutable.empty());
                 nounMappingsWithExactWording.forEach(nm -> containedPhraseMappings.get(modelTypePart).add(textState.getPhraseMappingByNounMapping(nm)));
@@ -97,24 +184,47 @@ public class TermBuilder extends PipelineAgent {
             }
 
             MutableList<NounMapping> nounMappingsToMerge = Lists.mutable.empty();
+            MutableSet<PhraseMapping> phraseMappingsToMerge = Sets.mutable.empty();
 
             for (String modelTypePart : containedPhraseMappings.keySet()) {
 
                 MutableList<PhraseMapping> phraseMappings = containedPhraseMappings.get(modelTypePart);
                 final PhraseMapping finalMostUsedPhraseMapping = mostUsedPhraseMapping;
-                phraseMappings.removeIf(pm -> !pm.equals(finalMostUsedPhraseMapping));
+                phraseMappings.removeIf(pm -> SimilarityUtils.getPhraseMappingSimilarity(textState, pm, finalMostUsedPhraseMapping,
+                        SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) <= MIN_COSINE_SIMILARITY);
+
+                if (phraseMappings.size() > 1) {
+                    phraseMappings.removeIf(pm -> !pm.equals(finalMostUsedPhraseMapping));
+                }
                 if (phraseMappings.size() == 1) {
-                    var phraseMapping = phraseMappings.get(0);
                     var nounMappingsOfModelTypePart = modelTypePartMap.get(modelTypePart);
                     var nounMappingsWithPhraseMapping = nounMappingsOfModelTypePart
-                            .select(nm -> textState.getPhraseMappingByNounMapping(nm).equals(phraseMapping));
-                    assert (nounMappingsWithPhraseMapping.size() == 1) : "There should be only one noun mapping that is accessed by the phrase mapping";
-                    nounMappingsToMerge.add(nounMappingsWithPhraseMapping.get(0));
+                            .select(nm -> phraseMappings.contains(textState.getPhraseMappingByNounMapping(nm)));
+                    assert (nounMappingsWithPhraseMapping.size() == 1) : "There should be exactly one noun mapping that is accessed by the phrase mapping";
+                    nounMappingsToMerge.addAll(nounMappingsWithPhraseMapping);
+                    phraseMappingsToMerge.add(phraseMappings.getOnly());
                 }
             }
 
             if (nounMappingsToMerge.size() == modelTypeParts.length) {
-                // TODO: CREATE Merged Type!
+                NounMapping typeNounMapping = nounMappings.get(0);
+
+                typeNounMapping.addKindWithProbability(MappingKind.TYPE, this, 1.0);
+                for (int i = 1; i < nounMappingsToMerge.size(); i++) {
+                    NounMapping currentNounMapping = nounMappingsToMerge.get(i);
+                    currentNounMapping.addKindWithProbability(MappingKind.TYPE, this, 1.0);
+                    textState.mergeNounMappings(typeNounMapping, currentNounMapping);
+                    var references = typeNounMapping.getReferenceWords().toList();
+                    references.addAllIterable(currentNounMapping.getReferenceWords());
+                    typeNounMapping.setReference(references.toImmutable());
+                }
+
+                ImmutableList<PhraseMapping> phraseMappingListToMerge = usedPhraseMappings.toImmutableList();
+                PhraseMapping typePhraseMapping = phraseMappingListToMerge.get(0);
+                for (int i = 1; i < phraseMappingsToMerge.size(); i++) {
+                    textState.mergePhraseMappings(typePhraseMapping, phraseMappingListToMerge.get(i));
+                }
+
             }
         }
     }

@@ -83,11 +83,11 @@ public class TextStateImpl extends AbstractState implements TextState {
         return phraseMappings.toImmutableList();
     }
 
-    public ImmutableList<PhraseMapping> getPhraseMappingsByNounMapping(NounMapping nm) {
+    public ImmutableList<PhraseMapping> getPhraseMappingsByNounMapping(NounMapping nounMapping) {
 
         MutableList<PhraseMapping> result = Lists.mutable.empty();
 
-        for (Phrase phrase : nm.getPhrases()) {
+        for (Phrase phrase : nounMapping.getPhrases()) {
             result.addAll(phraseMappings.select(pm -> pm.getPhrases().contains(phrase)));
         }
 
@@ -187,8 +187,17 @@ public class TextStateImpl extends AbstractState implements TextState {
         return textExtractionState;
     }
 
+    private void checkValidNounMapping(NounMapping nounMapping) {
+        if (getNounMappings().contains(nounMapping)) {
+            return;
+        }
+
+        throw new IllegalArgumentException("This noun mapping is not contained in the current text state");
+    }
+
     @Override
     public void addNounMapping(NounMapping nounMapping, Claimant claimant) {
+
         addNounMappingOrExtendExistingNounMapping(nounMapping.getWords(), nounMapping.getKind(), claimant, nounMapping.getProbability(),
                 nounMapping.getSurfaceForms());
     }
