@@ -19,6 +19,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -59,11 +60,17 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
     private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
+    public static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
     private File inputText;
     private File inputModel;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
+
+    @BeforeAll
+    public static void beforeAll() {
+        System.setProperty(LOGGING_ARDOCO_CORE, "info");
+    }
 
     @AfterAll
     public static void afterAll() throws IOException {
@@ -78,6 +85,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
             TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
             TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
         }
+        System.setProperty(LOGGING_ARDOCO_CORE, "error");
     }
 
     @AfterEach
