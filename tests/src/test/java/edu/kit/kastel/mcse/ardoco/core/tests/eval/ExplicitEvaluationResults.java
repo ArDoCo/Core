@@ -38,7 +38,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     /**
      * @return the list of false negatives
      */
-    public List<T> getFalseNegative() {
+    public List<T> getFalseNegatives() {
         return falseNegatives;
     }
 
