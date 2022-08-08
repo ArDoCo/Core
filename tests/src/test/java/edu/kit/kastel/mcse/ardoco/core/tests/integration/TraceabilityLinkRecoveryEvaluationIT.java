@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -79,11 +78,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
             var results = overallResultCalculator.getWeightedAveragePRF1();
-            logResults(name, results);
+            TestUtil.logResults(logger, name, results);
 
             name = "Overall Macro";
             results = overallResultCalculator.getMacroAveragePRF1();
-            logResults(name, results);
+            TestUtil.logResults(logger, name, results);
         }
 
         if (detailedDebug) {
@@ -143,7 +142,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var expectedResults = project.getExpectedTraceLinkResults();
 
         if (logger.isInfoEnabled()) {
-            logResultsWithExpected(name, results, expectedResults);
+            TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
 
             if (detailedDebug) {
                 if (results instanceof ExplicitEvaluationResults explicitResults) {
@@ -167,20 +166,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
                         "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
 
-    }
-
-    private static void logResults(String name, EvaluationResults results) {
-        String infoString = String.format(Locale.ENGLISH, "\n%s:\n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
-                results.getRecall(), results.getF1());
-        logger.info(infoString);
-    }
-
-    private static void logResultsWithExpected(String name, EvaluationResults results, EvaluationResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH,
-                "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
-                results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
-                expectedResults.getF1());
-        logger.info(infoString);
     }
 
     private void printDetailedDebug(ExplicitEvaluationResults results, DataRepository data) {

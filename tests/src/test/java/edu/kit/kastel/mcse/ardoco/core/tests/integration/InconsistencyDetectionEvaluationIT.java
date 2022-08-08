@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -48,6 +49,33 @@ class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
     private static final String OUTPUT = "src/test/resources/testout";
 
+    private static final ResultCalculator overallResultCalculator = new ResultCalculator();
+    private static final ResultCalculator overallResultCalculatorBaseline = new ResultCalculator();
+    private static boolean ranBaseline = false;
+
+    @AfterAll
+    public static void afterAll() {
+        if (logger.isInfoEnabled()) {
+            var name = "Overall Weighted";
+            var results = overallResultCalculator.getWeightedAveragePRF1();
+            TestUtil.logResults(logger, name, results);
+
+            name = "Overall Macro";
+            results = overallResultCalculator.getMacroAveragePRF1();
+            TestUtil.logResults(logger, name, results);
+
+            if (ranBaseline) {
+                name = "BASELINE Overall Weighted";
+                results = overallResultCalculatorBaseline.getWeightedAveragePRF1();
+                TestUtil.logResults(logger, name, results);
+
+                name = "BASELINE Overall Macro";
+                results = overallResultCalculatorBaseline.getMacroAveragePRF1();
+                TestUtil.logResults(logger, name, results);
+            }
+        }
+    }
+
     /**
      * Tests the inconsistency detection on all {@link Project projects}.
      *
@@ -63,6 +91,7 @@ class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
+        overallResultCalculator.addEvaluationResultsFromOtherResultCalculator(resultCalculator);
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
@@ -83,6 +112,8 @@ class InconsistencyDetectionEvaluationIT {
     @EnumSource(Project.class)
     void inconsistencyBaselineIT(Project project) {
         logger.info("Start evaluation of inconsistency baseline for {}", project.name());
+        ranBaseline = true;
+
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
         Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, true);
 
@@ -90,6 +121,7 @@ class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
+        overallResultCalculatorBaseline.addEvaluationResultsFromOtherResultCalculator(resultCalculator);
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, resultCalculator, expectedInconsistencyResults);
@@ -138,20 +170,13 @@ class InconsistencyDetectionEvaluationIT {
 
     private void logResults(Project project, ResultCalculator resultCalculator, EvaluationResults expectedResults) {
         if (logger.isInfoEnabled()) {
-            var weightedAverageResults = resultCalculator.getWeightedAveragePRF1();
-            String projectNameWeighted = project.name() + " (weighted)";
-            String formatString = "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)";
-            String infoString = String.format(Locale.ENGLISH, formatString, projectNameWeighted, weightedAverageResults.getPrecision(),
-                    expectedResults.getPrecision(), weightedAverageResults.getRecall(), expectedResults.getRecall(), weightedAverageResults.getF1(),
-                    expectedResults.getF1());
-            logger.info(infoString);
+            var results = resultCalculator.getWeightedAveragePRF1();
+            String name = project.name() + " (weighted)";
+            TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
 
-            var macroAverageResults = resultCalculator.getMacroAveragePRF1();
-            String projectNameMacro = project.name() + " (macro)";
-            formatString = "\n%s:\n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f";
-            infoString = String.format(Locale.ENGLISH, formatString, projectNameMacro, macroAverageResults.getPrecision(), macroAverageResults.getRecall(),
-                    macroAverageResults.getF1());
-            logger.info(infoString);
+            results = resultCalculator.getMacroAveragePRF1();
+            name = project.name() + " (macro)";
+            TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
         }
     }
 
