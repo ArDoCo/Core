@@ -4,6 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 import java.util.Locale;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+
 /**
  * This class represents evaluation results. Implementing classes should be able to return precision, recall, and
  * F1-score of an evaluation.
@@ -29,23 +31,9 @@ public class EvaluationResults {
      * @param f1        the f1
      */
     public EvaluationResults(double precision, double recall, double f1) {
-        if (Double.isNaN(precision)) {
-            this.precision = 0.0;
-        } else {
-            this.precision = precision;
-        }
-
-        if (Double.isNaN(recall)) {
-            this.recall = 0.0;
-        } else {
-            this.recall = recall;
-        }
-
-        if (Double.isNaN(f1)) {
-            this.f1 = 0.0;
-        } else {
-            this.f1 = f1;
-        }
+        this.precision = TestUtil.checkAndRepairPrecision(precision);
+        this.recall = TestUtil.checkAndRepairRecall(recall);
+        this.f1 = TestUtil.checkAndRepairF1(f1);
     }
 
     /**
@@ -57,26 +45,9 @@ public class EvaluationResults {
      * @param falseNegatives number of false negatives
      */
     public EvaluationResults(int truePositives, int falsePositives, int falseNegatives) {
-        var calculatedPrecision = 1.0 * truePositives / (truePositives + falsePositives);
-        if (Double.isNaN(calculatedPrecision)) {
-            this.precision = 0.0;
-        } else {
-            this.precision = calculatedPrecision;
-        }
-
-        var calculatedRecall = 1.0 * truePositives / (truePositives + falseNegatives);
-        if (Double.isNaN(calculatedRecall)) {
-            this.recall = 0.0;
-        } else {
-            this.recall = calculatedRecall;
-        }
-
-        var calculatedF1 = 2 * precision * recall / (precision + recall);
-        if (Double.isNaN(calculatedF1)) {
-            this.f1 = 0.0;
-        } else {
-            this.f1 = calculatedF1;
-        }
+        this.precision = TestUtil.calculatePrecision(truePositives, falsePositives);
+        this.recall = TestUtil.calculateRecall(truePositives, falseNegatives);
+        this.f1 = TestUtil.calculateF1(this.precision, this.recall);
     }
 
     /**

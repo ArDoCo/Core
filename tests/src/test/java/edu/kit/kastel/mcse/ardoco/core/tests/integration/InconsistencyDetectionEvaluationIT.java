@@ -82,6 +82,7 @@ class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating Baseline For {0}")
     @EnumSource(Project.class)
     void inconsistencyBaselineIT(Project project) {
+        logger.info("Start evaluation of inconsistency baseline for {}", project.name());
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
         Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, true);
 
@@ -177,7 +178,7 @@ class InconsistencyDetectionEvaluationIT {
                 var initialInconsistencies = getInitialInconsistencies(data);
                 outputBuilder.append("Initial Inconsistencies: ").append(initialInconsistencies.size());
                 var initialInconsistenciesSentences = initialInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
-                        .toSortedList()
+                        .toSortedSet()
                         .collect(i -> i.toString());
                 outputBuilder.append(System.lineSeparator()).append(listToString(initialInconsistenciesSentences));
             } else {
