@@ -38,12 +38,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.Hol
 /**
  * Integration test that evaluates the inconsistency detection capabilities of ArDoCo. Runs on the projects that are
  * defined in the enum {@link Project}.
- *
+ * <p>
  * Currently, the focus lies on detecting elements that are mentioned in the text but are not represented in the model.
  * For this, we run an evaluation that holds back (removes) one element from the model. This way, we know that there is
  * a missing element and the trace links to this element (in the gold standard) are the spots of inconsistency then. We
  * run this multiple times so each element was held back once.
- *
  */
 class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
@@ -58,6 +57,7 @@ class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(Project.class)
     void inconsistencyIT(Project project) {
+        logger.info("Start evaluation of inconsistency for {}", project.name());
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
         Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
 
@@ -66,7 +66,7 @@ class InconsistencyDetectionEvaluationIT {
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
-        logResults(project, weightedResults, expectedInconsistencyResults);
+        logResults(project, resultCalculator, expectedInconsistencyResults);
         checkResults(weightedResults, expectedInconsistencyResults);
         writeOutResults(project, results.getTwo(), runs);
     }
@@ -89,10 +89,9 @@ class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
-        var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
-        logResults(project, weightedResults, expectedInconsistencyResults);
+        logResults(project, resultCalculator, expectedInconsistencyResults);
     }
 
     private Pair<ResultCalculator, List<ExplicitEvaluationResults<String>>> calculateEvaluationResults(Project project, Map<ModelInstance, ArDoCoResult> runs) {
@@ -136,12 +135,21 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private void logResults(Project project, EvaluationResults results, EvaluationResults expectedResults) {
+    private void logResults(Project project, ResultCalculator resultCalculator, EvaluationResults expectedResults) {
         if (logger.isInfoEnabled()) {
-            String infoString = String.format(Locale.ENGLISH,
-                    "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)",
-                    project.name(), results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
+            var weightedAverageResults = resultCalculator.getWeightedAveragePRF1();
+            String projectNameWeighted = project.name() + " (weighted)";
+            String formatString = "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)";
+            String infoString = String.format(Locale.ENGLISH, formatString, projectNameWeighted, weightedAverageResults.getPrecision(),
+                    expectedResults.getPrecision(), weightedAverageResults.getRecall(), expectedResults.getRecall(), weightedAverageResults.getF1(),
                     expectedResults.getF1());
+            logger.info(infoString);
+
+            var macroAverageResults = resultCalculator.getMacroAveragePRF1();
+            String projectNameMacro = project.name() + " (macro)";
+            formatString = "\n%s:\n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f";
+            infoString = String.format(Locale.ENGLISH, formatString, projectNameMacro, macroAverageResults.getPrecision(), macroAverageResults.getRecall(),
+                    macroAverageResults.getF1());
             logger.info(infoString);
         }
     }
