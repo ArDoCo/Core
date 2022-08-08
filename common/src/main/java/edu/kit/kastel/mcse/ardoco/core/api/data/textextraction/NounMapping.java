@@ -120,6 +120,8 @@ public interface NounMapping extends ICopyable<NounMapping> {
      */
     void addCoreference(Word coreference);
 
+    void setReference(ImmutableList<Word> referenceWords);
+
     /**
      * @param coreferences the coreferences to add
      */

@@ -38,7 +38,7 @@ public class NounMappingImpl implements NounMapping {
     private static final double MAPPINGKIND_MAX_DIFF = 0.1;
 
     /* Main reference */
-    private final ImmutableList<Word> referenceWords;
+    private ImmutableList<Word> referenceWords;
 
     /* Words are the references within the text */
     private final MutableList<Word> words;
@@ -51,6 +51,7 @@ public class NounMappingImpl implements NounMapping {
     private Map<MappingKind, Confidence> distribution;
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
+    private String reference;
 
     /**
      * Instantiates a new noun mapping.
@@ -136,10 +137,26 @@ public class NounMappingImpl implements NounMapping {
      */
     @Override
     public final String getReference() {
-        if (referenceWords.size() == 1) {
-            return referenceWords.get(0).getText();
+        if (this.reference != null) {
+
+            return this.reference;
+        } else {
+            recalculateReference();
+            return this.reference;
         }
-        return CommonUtilities.createReferenceForPhrase(referenceWords);
+    }
+
+    private void recalculateReference() {
+        words.toSortedListBy(Word::getPosition);
+        words.toSortedListBy(Word::getSentenceNo);
+
+        String reference = "";
+
+        for (int i = 0; i < words.size() - 1; i++) {
+            reference += words.get(i).getText() + " ";
+        }
+        reference += words.get(words.size() - 1).getText();
+        this.reference = reference;
     }
 
     /**
@@ -312,9 +329,15 @@ public class NounMappingImpl implements NounMapping {
     }
 
     @Override
+    public void setReference(ImmutableList<Word> words) {
+        this.referenceWords = words;
+        recalculateReference();
+    }
+
+    @Override
     public NounMapping merge(NounMapping other) {
         Map<MappingKind, Confidence> otherDistribution = other.getDistribution();
-
+        // TODO This method does nothing with the result values
         otherDistribution.keySet()
                 .forEach(kind -> Confidence.merge(distribution.get(kind), otherDistribution.get(kind), DEFAULT_AGGREGATOR, DEFAULT_AGGREGATOR));
 
