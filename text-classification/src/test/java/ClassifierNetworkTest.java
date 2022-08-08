@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
@@ -50,12 +52,12 @@ public class ClassifierNetworkTest {
         when(mockedRestApi.sendApiRequest("/classify", classificationResponse)).thenReturn(classificationResponse);
     }
 
-    @Test
-    public void getClassifierStatus_statusIsReady_returnTrue(){
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void getClassifierStatus_ifStatusContainsReady_returnReady(boolean ready){
 
-        mockApiStatusResponse(true);
-        Assertions.assertTrue(classifier.getClassifierStatus().ready());
-
+        mockApiStatusResponse(ready);
+        Assertions.assertEquals(classifier.getClassifierStatus().ready(), ready);
     }
 
     @Test
