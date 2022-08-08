@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 
 /**
@@ -146,5 +150,35 @@ public class TestUtil {
         var precision = calculatePrecision(truePositives, falsePositives);
         var recall = calculateRecall(truePositives, falseNegatives);
         return calculateF1(precision, recall);
+    }
+
+    /**
+     * Log the provided {@link EvaluationResults} using the provided logger and name.
+     * 
+     * @param logger  Logger to use
+     * @param name    Name to show in the output
+     * @param results the results
+     */
+    public static void logResults(Logger logger, String name, EvaluationResults results) {
+        String infoString = String.format(Locale.ENGLISH, "\n%s:\n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
+                results.getRecall(), results.getF1());
+        logger.info(infoString);
+    }
+
+    /**
+     * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, provided the
+     * expected results.
+     * 
+     * @param logger          Logger to use
+     * @param name            Name to show in the output
+     * @param results         the results
+     * @param expectedResults the expected results
+     */
+    public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, EvaluationResults expectedResults) {
+        var infoString = String.format(Locale.ENGLISH,
+                "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
+                results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
+                expectedResults.getF1());
+        logger.info(infoString);
     }
 }
