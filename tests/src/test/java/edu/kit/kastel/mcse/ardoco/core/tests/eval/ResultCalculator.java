@@ -16,6 +16,13 @@ public class ResultCalculator {
         reset();
     }
 
+    /**
+     * Adds a new evaluation result using the provided True Positives, False Positives, and False Negatives.
+     * 
+     * @param truePositives  the TPs
+     * @param falsePositives the FPs
+     * @param falseNegatives the FNs
+     */
     public void addEvaluationResults(int truePositives, int falsePositives, int falseNegatives) {
         this.truePositives += truePositives;
         this.falsePositives += falsePositives;
@@ -23,6 +30,17 @@ public class ResultCalculator {
 
         var evalResults = new EvaluationResults(truePositives, falsePositives, falseNegatives);
         results.add(evalResults);
+    }
+
+    /**
+     * Adds the results from another ResultCalculator to this one. To do so, grabs the True Positives, False Positives,
+     * and False Negatives and calls {@link #addEvaluationResults(int, int, int)}, therefore treating the other
+     * ResultCalculator as one result. There is no copying of the detailed results of the other ResultCalculator!
+     * 
+     * @param other the other ResultCalculator
+     */
+    public void addEvaluationResultsFromOtherResultCalculator(ResultCalculator other) {
+        this.addEvaluationResults(other.truePositives, other.falsePositives, other.falseNegatives);
     }
 
     /**
@@ -75,4 +93,5 @@ public class ResultCalculator {
         falseNegatives = 0;
         this.results = Lists.mutable.empty();
     }
+
 }
