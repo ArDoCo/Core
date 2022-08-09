@@ -15,7 +15,6 @@ import org.eclipse.collections.api.set.MutableSet;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
@@ -48,22 +47,10 @@ public class TermBuilder extends PipelineAgent {
         }
 
         Text text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
-        invalidState(text, textState);
 
         combineNameMappings(text, textState);
 
-        invalidState(text, textState);
-
         System.out.println(textState);
-
-    }
-
-    private void invalidState(Text text, TextState textState) {
-
-        var words = text.getSentences().flatCollect(Sentence::getWords);
-        for (Word word : words) {
-            var nm = textState.getNounMappingByWord(word);
-        }
 
     }
 
@@ -71,14 +58,7 @@ public class TermBuilder extends PipelineAgent {
 
         var nounMappings = textState.getNounMappingsOfKind(MappingKind.NAME);
 
-        int outer = 0;
-
         for (NounMapping nounMapping : nounMappings) {
-            outer++;
-            if (outer == 104) {
-                int j = 0;
-            }
-            invalidState(text, textState);
 
             if (!textState.getNounMappings().contains(nounMapping)) {
                 continue;
@@ -91,10 +71,7 @@ public class TermBuilder extends PipelineAgent {
             if (nounMappingsOfTheSamePhraseMapping.size() < 1)
                 continue;
 
-            int inner = 0;
             for (NounMapping nounMappingOfTheSamePhraseMapping : nounMappingsOfTheSamePhraseMapping) {
-                inner++;
-                invalidState(text, textState);
 
                 int counter = 0;
                 var words = nounMapping.getWords();
@@ -106,18 +83,13 @@ public class TermBuilder extends PipelineAgent {
                         }
                 }
                 if (counter > 0.5 * words.size()) {
-                    invalidState(text, textState);
                     nounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
-                    invalidState(text, textState);
                     NounMapping currentNounMapping = nounMappingOfTheSamePhraseMapping;
                     currentNounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
-                    invalidState(text, textState);
                     textState.mergeNounMappings(nounMapping, currentNounMapping);
-                    invalidState(text, textState);
                     var references = nounMapping.getReferenceWords().toList();
                     references.addAllIterable(currentNounMapping.getReferenceWords());
-                    nounMapping.setReference(references.toImmutable());
-                    invalidState(text, textState);
+                    textState.setReferenceOfNounMapping(currentNounMapping, references.toImmutable(), null);
 
                 }
             }
@@ -216,7 +188,7 @@ public class TermBuilder extends PipelineAgent {
                     textState.mergeNounMappings(typeNounMapping, currentNounMapping);
                     var references = typeNounMapping.getReferenceWords().toList();
                     references.addAllIterable(currentNounMapping.getReferenceWords());
-                    typeNounMapping.setReference(references.toImmutable());
+                    textState.setReferenceOfNounMapping(typeNounMapping, references.toImmutable(), null);
                 }
 
                 ImmutableList<PhraseMapping> phraseMappingListToMerge = usedPhraseMappings.toImmutableList();
