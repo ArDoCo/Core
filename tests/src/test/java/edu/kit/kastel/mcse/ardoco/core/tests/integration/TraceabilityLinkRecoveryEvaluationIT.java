@@ -49,8 +49,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSumma
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
  * defined in the enum {@link Project}.
- * 
- *
  */
 class TraceabilityLinkRecoveryEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluationIT.class);
@@ -61,7 +59,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
     private static final ResultCalculator overallResultCalculator = new ResultCalculator();
     private static final boolean detailedDebug = true;
-    public static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
+    private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
     private File inputText;
     private File inputModel;
