@@ -1,16 +1,19 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import java.util.List;
-
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 
 public class ResultCalculator {
 
     private int truePositives;
     private int falsePositives;
     private int falseNegatives;
-    private List<EvaluationResults> results;
+    private MutableList<Pair<EvaluationResults, Integer>> results;
 
     public ResultCalculator() {
         reset();
@@ -28,8 +31,13 @@ public class ResultCalculator {
         this.falsePositives += falsePositives;
         this.falseNegatives += falseNegatives;
 
-        var evalResults = new EvaluationResults(truePositives, falsePositives, falseNegatives);
-        results.add(evalResults);
+        int weight = truePositives + falseNegatives;
+        var precision = TestUtil.calculatePrecision(truePositives, falsePositives);
+        var recall = TestUtil.calculateRecall(truePositives, falseNegatives);
+        var f1 = TestUtil.calculateF1(precision, recall);
+
+        var evalResults = new EvaluationResults(precision, recall, f1);
+        results.add(Tuples.pair(evalResults, weight));
     }
 
     /**
@@ -50,7 +58,26 @@ public class ResultCalculator {
      * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}
      */
     public EvaluationResults getWeightedAveragePRF1() {
-        return new EvaluationResults(truePositives, falsePositives, falseNegatives);
+        int weight = truePositives + falseNegatives;
+        double precision = 0.0;
+        double recall = 0.0;
+        double f1 = 0.0;
+
+        for (var result : results) {
+            var prf1 = result.getOne();
+            int localWeight = result.getTwo();
+            double localPrecision = prf1.getPrecision();
+            double localRecall = prf1.getRecall();
+            double localF1 = prf1.getF1();
+
+            if (!Double.isNaN(localPrecision) && !Double.isNaN(localRecall) && !Double.isNaN(localF1)) {
+                precision += (localWeight * localPrecision) / weight;
+                recall += (localWeight * localRecall) / weight;
+                f1 += (localWeight * localF1) / weight;
+            }
+        }
+
+        return new EvaluationResults(precision, recall, f1);
     }
 
     /**
@@ -64,7 +91,8 @@ public class ResultCalculator {
         var avgF1 = 0.0;
 
         var counter = 0;
-        for (var prf1 : results) {
+        for (var result : results) {
+            var prf1 = result.getOne();
             var precision = prf1.getPrecision();
             var recall = prf1.getRecall();
             var f1 = prf1.getF1();
