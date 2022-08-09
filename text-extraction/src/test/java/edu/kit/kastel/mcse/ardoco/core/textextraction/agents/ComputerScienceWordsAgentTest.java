@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 
@@ -36,16 +38,15 @@ class ComputerScienceWordsAgentTest implements Claimant {
         this.agent = new ComputerScienceWordsAgent(dataRepository);
         setData();
 
+        textState = new TextStateImpl();
         var validWord = wordToListOfIWord(data.get(0));
-        nounMapping = new NounMappingImpl(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
-                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()));
+        NounMapping nounMapping = textState.addNounMapping(Sets.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
+                Sets.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()), null, null);
         invalidWord = new MyWord("ASDFWJ", validWord.size());
         MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
         var preprocessingData = new PreprocessingData(text);
         dataRepository.addData(PreprocessingData.ID, preprocessingData);
 
-        textState = new TextStateImpl();
-        textState.addNounMapping(nounMapping, this);
         textState.addNounMapping(invalidWord, MappingKind.NAME, this, 1.0);
 
         dataRepository.addData(TextStateImpl.ID, textState);

@@ -3,12 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.data.PipelineStepData;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
@@ -24,26 +27,32 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      * @param kind        the kind of the mapping
      * @param probability probability to be a name mapping
      */
-    void addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability);
+    NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability);
 
     /**
      * * Adds a name mapping to the state.
      *
-     * @param word        word of the mapping
-     * @param kind        the kind of the mapping
-     * @param probability probability to be a name mapping
-     * @param occurrences list of the appearances of the mapping
+     * @param word         word of the mapping
+     * @param kind         the kind of the mapping
+     * @param probability  probability to be a name mapping
+     * @param surfaceForms list of the appearances of the mapping
      */
-    void addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> occurrences);
+    NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms);
+
+    NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences);
+
+    NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences);
 
     // --- remove section --->
 
     /**
      * Removes a noun mapping from the state.
      *
-     * @param word noun mapping to remove
+     * @param nounMapping noun mapping to remove
      */
-    void removeNounMapping(NounMapping word);
+    void removeNounMapping(NounMapping nounMapping);
 
     /**
      * Returns the noun mapping containing the given word.
@@ -74,13 +83,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
 
     ImmutableList<PhraseMapping> getPhraseMappings();
 
-    /**
-     * Adds the noun mapping.
-     *
-     * @param nounMapping the noun mapping.
-     */
-    void addNounMapping(NounMapping nounMapping, Claimant claimant);
-
     ImmutableList<NounMapping> getNounMappingsOfKind(MappingKind mappingKind);
 
     ImmutableList<NounMapping> getNounMappingsThatBelongToTheSamePhraseMapping(NounMapping nounMapping);
@@ -91,5 +93,7 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
             MutableList<Pair<NounMapping, NounMapping>> similarNounMappings);
 
     void mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping);
+
+    NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference);
 
 }
