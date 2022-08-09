@@ -160,7 +160,7 @@ public class TestUtil {
      * @param results the results
      */
     public static void logResults(Logger logger, String name, EvaluationResults results) {
-        String infoString = String.format(Locale.ENGLISH, "\n%s:\n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
+        String infoString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
                 results.getRecall(), results.getF1());
         logger.info(infoString);
     }
@@ -176,7 +176,7 @@ public class TestUtil {
      */
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, EvaluationResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH,
-                "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
+                "%n%s:%n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
                 results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
                 expectedResults.getF1());
         logger.info(infoString);
