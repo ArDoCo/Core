@@ -49,6 +49,8 @@ To test the Core, you could use case studies and benchmarks provided in ..
 * [ArDoCo Benchmark](https://github.com/ArDoCo/Benchmark)
 * [SWATTR](https://github.com/ArDoCo/SWATTR)
 
+You can find the generated JavaDocs here: [ArDoCo.github.io/Core-Docs](https://ArDoCo.github.io/Core-Docs/)
+
 ### Maven
 
 ```xml
