@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 
@@ -13,6 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
  * @see <a href="https://en.wikipedia.org/wiki/Precision_and_recall">Wikipedia: Precision and recall</a>
  */
 public class EvaluationResults {
+    private UUID id;
+
     private double precision;
     private double recall;
     private double f1;
@@ -34,20 +37,8 @@ public class EvaluationResults {
         this.precision = TestUtil.checkAndRepairPrecision(precision);
         this.recall = TestUtil.checkAndRepairRecall(recall);
         this.f1 = TestUtil.checkAndRepairF1(f1);
-    }
 
-    /**
-     * Creates results based on the number of true positives, false positives, and false negatives. Uses the provided
-     * data to calculate precision, recall, and F1-score.
-     * 
-     * @param truePositives  number of true positives
-     * @param falsePositives number of false positives
-     * @param falseNegatives number of false negatives
-     */
-    public EvaluationResults(int truePositives, int falsePositives, int falseNegatives) {
-        this.precision = TestUtil.calculatePrecision(truePositives, falsePositives);
-        this.recall = TestUtil.calculateRecall(truePositives, falseNegatives);
-        this.f1 = TestUtil.calculateF1(this.precision, this.recall);
+        this.id = UUID.randomUUID();
     }
 
     /**
@@ -78,7 +69,7 @@ public class EvaluationResults {
 
     @Override
     public int hashCode() {
-        return Objects.hash(f1, precision, recall);
+        return Objects.hash(id);
     }
 
     @Override
@@ -87,9 +78,7 @@ public class EvaluationResults {
             return true;
         }
         if (obj instanceof EvaluationResults other) {
-            return Double.doubleToLongBits(f1) == Double.doubleToLongBits(other.f1)
-                    && Double.doubleToLongBits(precision) == Double.doubleToLongBits(other.precision)
-                    && Double.doubleToLongBits(recall) == Double.doubleToLongBits(other.recall);
+            return this.id.equals(other.id);
         }
         return false;
     }

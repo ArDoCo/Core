@@ -176,7 +176,7 @@ class InconsistencyDetectionEvaluationIT {
 
             results = resultCalculator.getMacroAveragePRF1();
             name = project.name() + " (macro)";
-            TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
+            TestUtil.logResults(logger, name, results);
         }
     }
 

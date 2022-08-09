@@ -19,27 +19,27 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.0, .0, .164)//
+            new EvaluationResults(.0, .0, .246)//
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.0, .0, .196)//
+            new EvaluationResults(.0, .0, .222)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.999, .713, .832), //
-            new EvaluationResults(.0, .0, .146)),
+            new EvaluationResults(.0, .0, .251)),
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.0, .0, .198));
+            new EvaluationResults(.0, .0, .272));
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
     private final String model;
