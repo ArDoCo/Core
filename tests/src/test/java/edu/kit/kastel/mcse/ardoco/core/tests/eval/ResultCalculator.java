@@ -58,7 +58,7 @@ public class ResultCalculator {
      * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}
      */
     public EvaluationResults getWeightedAveragePRF1() {
-        int weight = truePositives + falseNegatives;
+        int weight = 0;
         double precision = 0.0;
         double recall = 0.0;
         double f1 = 0.0;
@@ -71,11 +71,16 @@ public class ResultCalculator {
             double localF1 = prf1.getF1();
 
             if (!Double.isNaN(localPrecision) && !Double.isNaN(localRecall) && !Double.isNaN(localF1)) {
-                precision += (localWeight * localPrecision) / weight;
-                recall += (localWeight * localRecall) / weight;
-                f1 += (localWeight * localF1) / weight;
+                precision += (localWeight * localPrecision);
+                recall += (localWeight * localRecall);
+                f1 += (localWeight * localF1);
+                weight += localWeight;
             }
         }
+
+        precision = precision / weight;
+        recall = recall / weight;
+        f1 = f1 / weight;
 
         return new EvaluationResults(precision, recall, f1);
     }

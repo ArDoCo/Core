@@ -142,6 +142,7 @@ class InconsistencyDetectionEvaluationIT {
                 explicitResults.add(runEvalResults);
             }
         }
+
         return Tuples.pair(resultCalculator, explicitResults);
     }
 
