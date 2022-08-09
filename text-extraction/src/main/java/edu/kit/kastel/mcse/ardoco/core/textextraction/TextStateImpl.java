@@ -52,11 +52,23 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms) {
-        assert (getNounMappingByWord(word) == null) : "You should not add a noun mapping that is already contained by the text state";
+
+        var nounMappingsWithWord = getNounMappings().select(nm -> nm.getWords().contains(word));
+
+        if (nounMappingsWithWord.size() > 0) {
+            NounMapping nounMapping = nounMappingsWithWord.get(0);
+            if (surfaceForms == null || surfaceForms.equals(nounMapping.getSurfaceForms())) {
+                nounMapping.addKindWithProbability(kind, claimant, probability);
+                return nounMapping;
+            }
+        } else if (nounMappingsWithWord.size() > 1) {
+            throw new IllegalStateException("The word '" + word.getText() + "' occurs several times in the text state.");
+        }
         ImmutableSet words = Sets.immutable.with(word);
         NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, words.toImmutableList(), surfaceForms);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
+
     }
 
     @Override
