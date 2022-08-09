@@ -5,9 +5,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,12 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
@@ -49,31 +55,77 @@ class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
     private static final String OUTPUT = "src/test/resources/testout";
 
-    private static final ResultCalculator overallResultCalculator = new ResultCalculator();
-    private static final ResultCalculator overallResultCalculatorBaseline = new ResultCalculator();
+    private static final OverallResultsCalculator overallResultCalculator = new OverallResultsCalculator();
+    private static final OverallResultsCalculator overallResultCalculatorBaseline = new OverallResultsCalculator();
     private static boolean ranBaseline = false;
+    private static Map<Project, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new HashMap<>();
 
     @AfterAll
     public static void afterAll() {
+        var weightedResults = overallResultCalculator.getWeightedAveragePRF1();
+        var macroResults = overallResultCalculator.getMacroAveragePRF1();
+        var macroWeightedResults = overallResultCalculator.getMacroWeightedAveragePRF1();
+
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
-            var results = overallResultCalculator.getWeightedAveragePRF1();
-            TestUtil.logResults(logger, name, results);
+            var resultString = TestUtil.createResultLogString(name, weightedResults);
+            logger.info(resultString);
 
             name = "Overall Macro";
-            results = overallResultCalculator.getMacroAveragePRF1();
-            TestUtil.logResults(logger, name, results);
+            resultString = TestUtil.createResultLogString(name, macroResults);
+            logger.info(resultString);
+
+            name = "Overall Weighted Macro";
+            resultString = TestUtil.createResultLogString(name, macroWeightedResults);
+            logger.info(resultString);
 
             if (ranBaseline) {
                 name = "BASELINE Overall Weighted";
-                results = overallResultCalculatorBaseline.getWeightedAveragePRF1();
+                var results = overallResultCalculatorBaseline.getWeightedAveragePRF1();
                 TestUtil.logResults(logger, name, results);
 
                 name = "BASELINE Overall Macro";
                 results = overallResultCalculatorBaseline.getMacroAveragePRF1();
                 TestUtil.logResults(logger, name, results);
+
+                name = "BASELINE Overall Weighted Macro";
+                results = overallResultCalculatorBaseline.getMacroWeightedAveragePRF1();
+                TestUtil.logResults(logger, name, results);
             }
         }
+
+        try {
+            writeOutput(weightedResults, macroResults, macroWeightedResults);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e.getCause());
+        }
+    }
+
+    private static void writeOutput(EvaluationResults weightedResults, EvaluationResults macroResults, EvaluationResults macroWeightedResults)
+            throws IOException {
+        var evalDir = Path.of(OUTPUT).resolve("id_eval");
+        Files.createDirectories(evalDir);
+        var outputFile = evalDir.resolve("base_results.md");
+
+        var outputBuilder = new StringBuilder("# Inconsistency Detection").append(System.lineSeparator());
+
+        var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
+        outputBuilder.append(resultString).append(System.lineSeparator());
+        resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
+        outputBuilder.append(resultString).append(System.lineSeparator());
+        resultString = TestUtil.createResultLogString("Overall Weighted Macro", macroWeightedResults);
+        outputBuilder.append(resultString).append(System.lineSeparator()).append(System.lineSeparator());
+
+        for (var entry : inconsistentSentencesPerProject.entrySet()) {
+            var project = entry.getKey();
+            outputBuilder.append("## ").append(project.name()).append(System.lineSeparator());
+            var inconsistentSentences = entry.getValue();
+            for (var inconsistentSentence : inconsistentSentences) {
+                outputBuilder.append(inconsistentSentence.getInfoString()).append(System.lineSeparator());
+            }
+        }
+
+        Files.writeString(outputFile, outputBuilder.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     /**
@@ -91,7 +143,7 @@ class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
-        overallResultCalculator.addEvaluationResultsFromOtherResultCalculator(resultCalculator);
+        overallResultCalculator.addResult(project, resultCalculator);
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
@@ -121,7 +173,7 @@ class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
-        overallResultCalculatorBaseline.addEvaluationResultsFromOtherResultCalculator(resultCalculator);
+        overallResultCalculatorBaseline.addResult(project, resultCalculator);
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, resultCalculator, expectedInconsistencyResults);
@@ -140,6 +192,9 @@ class InconsistencyDetectionEvaluationIT {
                 int tp = runEvalResults.getTruePositives().size();
                 resultCalculator.addEvaluationResults(tp, fp, fn);
                 explicitResults.add(runEvalResults);
+            } else {
+                // for the base case, instead of calculating results, save the found inconsistencies.
+                inconsistentSentencesPerProject.put(project, arDoCoResult.getInconsistentSentences());
             }
         }
 
