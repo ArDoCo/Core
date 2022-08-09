@@ -33,7 +33,7 @@ public enum Project {
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.999, .713, .832), //
-            new EvaluationResults(.0, .0, .251)),
+            new EvaluationResults(.0, .0, .250)),
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
