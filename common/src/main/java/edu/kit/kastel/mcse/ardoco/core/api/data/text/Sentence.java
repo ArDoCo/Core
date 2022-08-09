@@ -17,6 +17,8 @@ public interface Sentence {
      */
     int getSentenceNumber();
 
+    int getSentenceNumberForOutput();
+
     /**
      * Returns the words contained by this sentence
      *

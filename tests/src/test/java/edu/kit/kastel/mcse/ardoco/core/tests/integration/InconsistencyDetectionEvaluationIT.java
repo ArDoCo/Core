@@ -131,7 +131,9 @@ class InconsistencyDetectionEvaluationIT {
         List<ExplicitEvaluationResults<String>> explicitResults = new ArrayList<>();
         ResultCalculator resultCalculator = new ResultCalculator();
         for (var run : runs.entrySet()) {
-            var runEvalResults = evaluateRun(project, run.getKey(), run.getValue());
+            ModelInstance modelInstance = run.getKey();
+            ArDoCoResult arDoCoResult = run.getValue();
+            var runEvalResults = evaluateRun(project, modelInstance, arDoCoResult);
             if (runEvalResults != null) {
                 int fn = runEvalResults.getFalseNegatives().size();
                 int fp = runEvalResults.getFalsePositives().size();
