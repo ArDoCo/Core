@@ -10,13 +10,10 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 
 public class ResultCalculator {
 
-    private int truePositives;
-    private int falsePositives;
-    private int falseNegatives;
     private MutableList<Pair<EvaluationResults, Integer>> results;
 
     public ResultCalculator() {
-        reset();
+        results = Lists.mutable.empty();
     }
 
     /**
@@ -27,10 +24,6 @@ public class ResultCalculator {
      * @param falseNegatives the FNs
      */
     public void addEvaluationResults(int truePositives, int falsePositives, int falseNegatives) {
-        this.truePositives += truePositives;
-        this.falsePositives += falsePositives;
-        this.falseNegatives += falseNegatives;
-
         int weight = truePositives + falseNegatives;
         var precision = TestUtil.calculatePrecision(truePositives, falsePositives);
         var recall = TestUtil.calculateRecall(truePositives, falseNegatives);
@@ -38,17 +31,6 @@ public class ResultCalculator {
 
         var evalResults = new EvaluationResults(precision, recall, f1);
         results.add(Tuples.pair(evalResults, weight));
-    }
-
-    /**
-     * Adds the results from another ResultCalculator to this one. To do so, grabs the True Positives, False Positives,
-     * and False Negatives and calls {@link #addEvaluationResults(int, int, int)}, therefore treating the other
-     * ResultCalculator as one result. There is no copying of the detailed results of the other ResultCalculator!
-     * 
-     * @param other the other ResultCalculator
-     */
-    public void addEvaluationResultsFromOtherResultCalculator(ResultCalculator other) {
-        this.addEvaluationResults(other.truePositives, other.falsePositives, other.falseNegatives);
     }
 
     /**
@@ -117,14 +99,12 @@ public class ResultCalculator {
         return new EvaluationResults(avgPrecision, avgRecall, avgF1);
     }
 
-    /**
-     * Resets the evaluator, so previously committed results are removed.
-     */
-    public void reset() {
-        truePositives = 0;
-        falsePositives = 0;
-        falseNegatives = 0;
-        this.results = Lists.mutable.empty();
+    int getWeight() {
+        int weight = 0;
+        for (var entry : results) {
+            weight += entry.getTwo();
+        }
+        return weight;
     }
 
 }

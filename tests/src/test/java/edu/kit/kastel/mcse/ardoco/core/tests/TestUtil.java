@@ -160,9 +160,13 @@ public class TestUtil {
      * @param results the results
      */
     public static void logResults(Logger logger, String name, EvaluationResults results) {
-        String infoString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
-                results.getRecall(), results.getF1());
+        String infoString = createResultLogString(name, results);
         logger.info(infoString);
+    }
+
+    public static String createResultLogString(String name, EvaluationResults results) {
+        return String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
+                results.getRecall(), results.getF1());
     }
 
     /**
