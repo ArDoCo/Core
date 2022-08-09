@@ -212,6 +212,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <modules>
+        <module>text-classification</module>
         <module>text-extraction</module>
         <module>text-provider</module>
         <module>recommendation-generator</module>
@@ -248,6 +249,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
+        <module>text-classification</module>
         <module>text-extraction</module>
         <module>text-provider</module>
         <module>recommendation-generator</module>
