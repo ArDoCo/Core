@@ -31,9 +31,10 @@ public class PhraseMappingImpl implements PhraseMapping {
 
         PhraseType type = phrases.getAny().getPhraseType();
         for (Phrase phrase : phrases) {
-            if (phrase.getPhraseType() != type) {
-                throw new IllegalArgumentException("Multiple Types of Phrase mappings");
-            }
+            /*
+             * if (phrase.getPhraseType() != type) { throw new
+             * IllegalArgumentException("Multiple Types of Phrase mappings"); }
+             */
             this.phrases.add(phrase);
         }
     }
