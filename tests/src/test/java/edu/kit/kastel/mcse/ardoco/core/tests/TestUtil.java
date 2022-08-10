@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 /**
  * This utility class provides methods for running the tests, especially regarding the evaluations.
@@ -165,8 +168,8 @@ public class TestUtil {
     }
 
     public static String createResultLogString(String name, EvaluationResults results) {
-        return String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:\t%.3f %n\tRecall:\t\t%.3f %n\tF1:\t\t%.3f ", name, results.getPrecision(),
-                results.getRecall(), results.getF1());
+        return String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:\t%.3f%n\tRecall:\t\t%.3f%n\tF1:\t\t%.3f ", name, results.getPrecision(), results.getRecall(),
+                results.getF1());
     }
 
     /**
@@ -184,5 +187,24 @@ public class TestUtil {
                 results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
                 expectedResults.getF1());
         logger.info(infoString);
+    }
+
+    /**
+     * Constructs an {@link OverallResultsCalculator} using the provided list of {@link TLProjectEvalResult}s.
+     * 
+     * @param results the results to construct the {@link OverallResultsCalculator} from
+     * @return an {@link OverallResultsCalculator} with the provided results
+     */
+    public static OverallResultsCalculator getOverallResultsCalculator(List<TLProjectEvalResult> results) {
+        var overallResultsCalculator = new OverallResultsCalculator();
+        for (var result : results) {
+            var truePositives = result.getTruePositives().size();
+            var falsePositives = result.getFalsePositives().size();
+            var falseNegatives = result.getFalseNegatives().size();
+            ResultCalculator resultCalculator = new ResultCalculator();
+            resultCalculator.addEvaluationResults(truePositives, falsePositives, falseNegatives);
+            overallResultsCalculator.addResult(result.getProject(), resultCalculator);
+        }
+        return overallResultsCalculator;
     }
 }
