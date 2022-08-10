@@ -65,7 +65,6 @@ class InconsistencyDetectionEvaluationIT {
     public static void afterAll() {
         var weightedResults = OVERALL_RESULTS_CALCULATOR.calculateWeightedAveragePRF1();
         var macroResults = OVERALL_RESULTS_CALCULATOR.calculateMacroAveragePRF1();
-        var macroWeightedResults = OVERALL_RESULTS_CALCULATOR.calculateWeightedMacroAveragePRF1();
 
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
@@ -76,10 +75,6 @@ class InconsistencyDetectionEvaluationIT {
             resultString = TestUtil.createResultLogString(name, macroResults);
             logger.info(resultString);
 
-            name = "Overall Weighted Macro";
-            resultString = TestUtil.createResultLogString(name, macroWeightedResults);
-            logger.info(resultString);
-
             if (ranBaseline) {
                 name = "BASELINE Overall Weighted";
                 var results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateWeightedAveragePRF1();
@@ -88,22 +83,17 @@ class InconsistencyDetectionEvaluationIT {
                 name = "BASELINE Overall Macro";
                 results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateMacroAveragePRF1();
                 TestUtil.logResults(logger, name, results);
-
-                name = "BASELINE Overall Weighted Macro";
-                results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateWeightedMacroAveragePRF1();
-                TestUtil.logResults(logger, name, results);
             }
         }
 
         try {
-            writeOutput(weightedResults, macroResults, macroWeightedResults);
+            writeOutput(weightedResults, macroResults);
         } catch (IOException e) {
             logger.error(e.getMessage(), e.getCause());
         }
     }
 
-    private static void writeOutput(EvaluationResults weightedResults, EvaluationResults macroResults, EvaluationResults macroWeightedResults)
-            throws IOException {
+    private static void writeOutput(EvaluationResults weightedResults, EvaluationResults macroResults) throws IOException {
         var evalDir = Path.of(OUTPUT).resolve("id_eval");
         Files.createDirectories(evalDir);
         var outputFile = evalDir.resolve("base_results.md");
@@ -113,8 +103,6 @@ class InconsistencyDetectionEvaluationIT {
         var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
         outputBuilder.append(resultString).append(LINE_SEPARATOR);
         resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
-        outputBuilder.append(resultString).append(LINE_SEPARATOR);
-        resultString = TestUtil.createResultLogString("Overall Weighted Macro", macroWeightedResults);
         outputBuilder.append(resultString).append(LINE_SEPARATOR);
         outputBuilder.append(LINE_SEPARATOR);
 
@@ -235,10 +223,6 @@ class InconsistencyDetectionEvaluationIT {
             var results = resultCalculator.getWeightedAveragePRF1();
             String name = project.name() + " (weighted)";
             TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
-
-            results = resultCalculator.getMacroAveragePRF1();
-            name = project.name() + " (macro)";
-            TestUtil.logResults(logger, name, results);
         }
     }
 

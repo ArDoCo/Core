@@ -106,10 +106,7 @@ public class TestUtil {
     public static double calculatePrecision(double truePositives, double falsePositives) {
         double denominator = (truePositives + falsePositives);
         var precision = 1.0 * truePositives / denominator;
-        if (Double.isNaN(precision)) {
-            precision = 1.0;
-        }
-        return precision;
+        return checkAndRepairPrecision(precision);
     }
 
     /**
@@ -134,10 +131,7 @@ public class TestUtil {
      */
     public static double calculateF1(double precision, double recall) {
         var f1 = 2 * precision * recall / (precision + recall);
-        if (Double.isNaN(f1)) {
-            f1 = 0.0;
-        }
-        return f1;
+        return checkAndRepairF1(f1);
     }
 
     /**

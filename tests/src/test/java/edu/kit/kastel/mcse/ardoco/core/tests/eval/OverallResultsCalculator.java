@@ -40,19 +40,6 @@ public class OverallResultsCalculator {
         return calculateWeightedAveragePRF1(evaluationResultsFunction);
     }
 
-    /**
-     * Calculates the weighted average results (precision, recall, F1) as {@link EvaluationResults}. Each project's
-     * result is weighted with the number of expected instances (= true positives + false negatives).This method uses
-     * macro average results for each project if there are multiple runs per project, e.g., for holdback inconsistency
-     * detection evaluation.
-     * 
-     * @return the weighted macro average results
-     */
-    public EvaluationResults calculateWeightedMacroAveragePRF1() {
-        Function<ResultCalculator, EvaluationResults> evaluationResultsFunction = ResultCalculator::getMacroAveragePRF1;
-        return calculateWeightedAveragePRF1(evaluationResultsFunction);
-    }
-
     private EvaluationResults calculateWeightedAveragePRF1(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
         int weight = 0;
         double precision = .0;
@@ -78,8 +65,8 @@ public class OverallResultsCalculator {
     }
 
     /**
-     * /** Calculates the macro average results (precision, recall, F1) as {@link EvaluationResults}. Each project's
-     * result is treated equally and a simple average over all project results is calculated.
+     * Calculates the macro average results (precision, recall, F1) as {@link EvaluationResults}. Each project's result
+     * is treated equally and a simple average over all project results is calculated.
      * 
      * @return the macro average results
      */
@@ -90,7 +77,12 @@ public class OverallResultsCalculator {
         double f1 = .0;
 
         for (var entry : projectResults) {
-            var results = entry.getTwo().getMacroAveragePRF1();
+            var results = entry.getTwo().getWeightedAveragePRF1();
+            int weight = entry.getTwo().getWeight();
+            if (weight <= 0) {
+                numberOfProjects--;
+                continue;
+            }
             precision += results.getPrecision();
             recall += results.getRecall();
             f1 += results.getF1();
