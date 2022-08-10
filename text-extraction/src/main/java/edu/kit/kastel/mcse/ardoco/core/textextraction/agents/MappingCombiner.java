@@ -46,11 +46,13 @@ public class MappingCombiner extends PipelineAgent {
                 if (similarPhraseMapping == phraseMapping) {
                     for (NounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
                         for (NounMapping nounMapping : textState.getNounMappingsByPhraseMapping(phraseMapping)) {
-                            if (nounMapping.isTheSameAs(nounMappingOfSimilarPhraseMapping)) {
+                            if (nounMapping.isTheSameAs(nounMappingOfSimilarPhraseMapping)
+                                    || !textState.getNounMappings().contains(nounMappingOfSimilarPhraseMapping)
+                                    || !textState.getNounMappings().contains(nounMapping)) {
                                 continue;
                             }
                             if (SimilarityUtils.areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
-                                textState.mergeNounMappings(nounMapping, nounMappingOfSimilarPhraseMapping);
+                                textState.mergeNounMappings(nounMapping, nounMappingOfSimilarPhraseMapping, this);
                             }
                         }
                     }
@@ -78,7 +80,7 @@ public class MappingCombiner extends PipelineAgent {
                     continue;
                 }
 
-                textState.mergePhraseMappingsAndNounMappings(phraseMapping, similarPhraseMapping, similarNounMappings);
+                textState.mergePhraseMappingsAndNounMappings(phraseMapping, similarPhraseMapping, similarNounMappings, this);
 
             }
         }

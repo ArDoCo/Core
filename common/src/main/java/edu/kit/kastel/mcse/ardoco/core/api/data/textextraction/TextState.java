@@ -29,6 +29,9 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      */
     NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability);
 
+    NounMapping addWordToNounMapping(NounMapping nounMapping, Word word, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, String reference);
+
     /**
      * * Adds a name mapping to the state.
      *
@@ -87,10 +90,12 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
 
     ImmutableList<NounMapping> getNounMappingsThatBelongToTheSamePhraseMapping(NounMapping nounMapping);
 
-    void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping);
+    void mergeNounMappings(NounMapping nounMapping, NounMapping otherNounMapping, Claimant claimant, ImmutableList<Word> referenceWords);
+
+    void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant);
 
     void mergePhraseMappingsAndNounMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping,
-            MutableList<Pair<NounMapping, NounMapping>> similarNounMappings);
+            MutableList<Pair<NounMapping, NounMapping>> similarNounMappings, Claimant claimant);
 
     void mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping);
 

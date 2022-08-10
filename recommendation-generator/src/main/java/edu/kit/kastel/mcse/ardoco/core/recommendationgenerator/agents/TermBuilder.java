@@ -48,20 +48,20 @@ public class TermBuilder extends PipelineAgent {
 
         Text text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
 
-        combineNameMappings(text, textState);
-
-        System.out.println(textState);
-
+        combineNameMappings(textState);
     }
 
-    private void combineNameMappings(Text text, TextState textState) {
+    private void combineNameMappings(TextState textState) {
 
         var nounMappings = textState.getNounMappingsOfKind(MappingKind.NAME);
+
+        boolean restart = false;
 
         for (NounMapping nounMapping : nounMappings) {
 
             if (!textState.getNounMappings().contains(nounMapping)) {
-                continue;
+                restart = true;
+                break;
             }
 
             PhraseMapping phraseMapping = textState.getPhraseMappingByNounMapping(nounMapping);
@@ -86,14 +86,22 @@ public class TermBuilder extends PipelineAgent {
                     nounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
                     NounMapping currentNounMapping = nounMappingOfTheSamePhraseMapping;
                     currentNounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
-                    textState.mergeNounMappings(nounMapping, currentNounMapping);
                     var references = nounMapping.getReferenceWords().toList();
                     references.addAllIterable(currentNounMapping.getReferenceWords());
-                    textState.setReferenceOfNounMapping(currentNounMapping, references.toImmutable(), null);
+                    textState.mergeNounMappings(nounMapping, currentNounMapping, this, references.toImmutable());
+                    if (textState.getNounMappings()
+                            .select(nm -> nm.getWords().anySatisfy(w -> textState.getNounMappings().select(nm2 -> nm2.getWords().contains(w)).size() > 1))
+                            .size() > 0) {
+                        int j = 0;
+                    }
 
                 }
             }
 
+        }
+
+        if (restart) {
+            combineNameMappings(textState);
         }
 
     }
@@ -185,7 +193,7 @@ public class TermBuilder extends PipelineAgent {
                 for (int i = 1; i < nounMappingsToMerge.size(); i++) {
                     NounMapping currentNounMapping = nounMappingsToMerge.get(i);
                     currentNounMapping.addKindWithProbability(MappingKind.TYPE, this, 1.0);
-                    textState.mergeNounMappings(typeNounMapping, currentNounMapping);
+                    textState.mergeNounMappings(typeNounMapping, currentNounMapping, this);
                     var references = typeNounMapping.getReferenceWords().toList();
                     references.addAllIterable(currentNounMapping.getReferenceWords());
                     textState.setReferenceOfNounMapping(typeNounMapping, references.toImmutable(), null);

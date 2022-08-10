@@ -51,8 +51,16 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms) {
+    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability) {
+        return addOrExtendNounMapping(word, kind, claimant, probability, null);
+    }
 
+    @Override
+    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms) {
+        return addOrExtendNounMapping(word, kind, claimant, probability, surfaceForms);
+    }
+
+    private NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms) {
         var nounMappingsWithWord = getNounMappings().select(nm -> nm.getWords().contains(word));
 
         if (nounMappingsWithWord.size() > 0) {
@@ -65,17 +73,28 @@ public class TextStateImpl extends AbstractState implements TextState {
             throw new IllegalStateException("The word '" + word.getText() + "' occurs several times in the text state.");
         }
         ImmutableSet words = Sets.immutable.with(word);
+        if (surfaceForms == null) {
+            surfaceForms = Sets.immutable.with(word.getText());
+        }
         NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, words.toImmutableList(), surfaceForms);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
+    }
 
+    public NounMapping addWordToNounMapping(NounMapping nounMapping, Word word, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, String reference) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
             ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences) {
         NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, referenceWords, surfaceForms, reference, coreferences);
-        assert (!getNounMappings().contains(nounMapping)) : "You should not add a noun mapping that is already contained by the text state";
+
+        var nounMappings = getNounMappings();
+        for (Word word : words) {
+            assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
+        }
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
@@ -89,22 +108,12 @@ public class TextStateImpl extends AbstractState implements TextState {
         }
 
         NounMapping nounMapping = new NounMappingImpl(words, distribution, referenceWords, surfaceForms, reference, coreferences);
-        assert (!getNounMappings().contains(nounMapping)) : "You should not add a noun mapping that is already contained by the text state";
+        var nounMappings = getNounMappings();
+        for (Word word : words) {
+            assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
+        }
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
-    }
-
-    /***
-     * Adds a name mapping to the state
-     *
-     * @param word        word of the mapping
-     * @param kind        mapping kind of the future noun mapping
-     * @param probability probability to be a name mapping
-     */
-    @Override
-    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability) {
-        assert (getNounMappingByWord(word) == null) : "You should not add a noun mapping that is already contained by the text state";
-        return addNounMapping(word, kind, claimant, probability, Sets.immutable.with(word.getText()));
     }
 
     @Override
@@ -159,6 +168,12 @@ public class TextStateImpl extends AbstractState implements TextState {
         return this.getNounMappingsByPhraseMapping(this.getPhraseMappingByNounMapping(nounMapping)).select(nm -> !nm.equals(nounMapping));
     }
 
+    @Override
+    public void mergeNounMappings(NounMapping nounMapping, NounMapping otherNounMapping, Claimant claimant, ImmutableList<Word> referenceWords) {
+        this.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant,
+                nounMapping.getProbabilityForKind(nounMapping.getKind()));
+    }
+
     public NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference) {
 
         assert (nounMapping.getWords().containsAllIterable(referenceWords)) : "The reference words should be contained by the noun mapping";
@@ -169,9 +184,10 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping) {
-        this.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), null,
+    public void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
+        this.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant,
                 nounMapping.getProbabilityForKind(nounMapping.getKind()));
+
     }
 
     private NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping nounMapping2, ImmutableList<Word> referenceWords, String reference,
@@ -237,10 +253,10 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public void mergePhraseMappingsAndNounMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping,
-            MutableList<Pair<NounMapping, NounMapping>> similarNounMappings) {
+            MutableList<Pair<NounMapping, NounMapping>> similarNounMappings, Claimant claimant) {
         mergePhraseMappings(phraseMapping, similarPhraseMapping);
         for (Pair<NounMapping, NounMapping> nounMappingPair : similarNounMappings) {
-            this.mergeNounMappings(nounMappingPair.first(), nounMappingPair.second());
+            this.mergeNounMappings(nounMappingPair.first(), nounMappingPair.second(), claimant);
         }
     }
 
