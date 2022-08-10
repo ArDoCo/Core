@@ -8,26 +8,52 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
+/**
+ * This class implements functionality to calculate overall results (averaged) when evaluating a number of projects.
+ * There are different kinds of averages that can be calculated and that each return an instance of
+ * {@link EvaluationResults}.
+ */
 public class OverallResultsCalculator {
-    // TODO clean up, remove duplicate code etc.
 
     private MutableList<Pair<Project, ResultCalculator>> projectResults = Lists.mutable.empty();
 
+    /**
+     * Adds a result of a project to this calculator.
+     * 
+     * @param project Project the results belong to
+     * @param result  the ResultCalculator for the results
+     */
     public void addResult(Project project, ResultCalculator result) {
         projectResults.add(Tuples.pair(project, result));
     }
 
-    public EvaluationResults getWeightedAveragePRF1() {
+    /**
+     * Calculates the weighted average results (precision, recall, F1) as {@link EvaluationResults}. Each project's
+     * result is weighted with the number of expected instances (= true positives + false negatives). This method uses
+     * weighted results for each project if there are multiple runs per project, e.g., for holdback inconsistency
+     * detection evaluation.
+     * 
+     * @return the weighted average results
+     */
+    public EvaluationResults calculateWeightedAveragePRF1() {
         Function<ResultCalculator, EvaluationResults> evaluationResultsFunction = ResultCalculator::getWeightedAveragePRF1;
-        return getWeightedAveragePRF1(evaluationResultsFunction);
+        return calculateWeightedAveragePRF1(evaluationResultsFunction);
     }
 
-    public EvaluationResults getMacroWeightedAveragePRF1() {
+    /**
+     * Calculates the weighted average results (precision, recall, F1) as {@link EvaluationResults}. Each project's
+     * result is weighted with the number of expected instances (= true positives + false negatives).This method uses
+     * macro average results for each project if there are multiple runs per project, e.g., for holdback inconsistency
+     * detection evaluation.
+     * 
+     * @return the weighted macro average results
+     */
+    public EvaluationResults calculateWeightedMacroAveragePRF1() {
         Function<ResultCalculator, EvaluationResults> evaluationResultsFunction = ResultCalculator::getMacroAveragePRF1;
-        return getWeightedAveragePRF1(evaluationResultsFunction);
+        return calculateWeightedAveragePRF1(evaluationResultsFunction);
     }
 
-    private EvaluationResults getWeightedAveragePRF1(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
+    private EvaluationResults calculateWeightedAveragePRF1(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
         int weight = 0;
         double precision = .0;
         double recall = .0;
@@ -51,8 +77,13 @@ public class OverallResultsCalculator {
         return new EvaluationResults(precision, recall, f1);
     }
 
-    public EvaluationResults getMacroAveragePRF1() {
-        // TODO
+    /**
+     * /** Calculates the macro average results (precision, recall, F1) as {@link EvaluationResults}. Each project's
+     * result is treated equally and a simple average over all project results is calculated.
+     * 
+     * @return the macro average results
+     */
+    public EvaluationResults calculateMacroAveragePRF1() {
         int numberOfProjects = projectResults.size();
         double precision = .0;
         double recall = .0;
@@ -71,5 +102,4 @@ public class OverallResultsCalculator {
 
         return new EvaluationResults(precision, recall, f1);
     }
-
 }

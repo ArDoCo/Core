@@ -55,16 +55,17 @@ class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
     private static final String OUTPUT = "src/test/resources/testout";
 
-    private static final OverallResultsCalculator overallResultCalculator = new OverallResultsCalculator();
-    private static final OverallResultsCalculator overallResultCalculatorBaseline = new OverallResultsCalculator();
+    private static final OverallResultsCalculator OVERALL_RESULTS_CALCULATOR = new OverallResultsCalculator();
+    private static final OverallResultsCalculator OVERALL_RESULT_CALCULATOR_BASELINE = new OverallResultsCalculator();
+    public static final String LINE_SEPARATOR = System.lineSeparator();
     private static boolean ranBaseline = false;
     private static Map<Project, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new HashMap<>();
 
     @AfterAll
     public static void afterAll() {
-        var weightedResults = overallResultCalculator.getWeightedAveragePRF1();
-        var macroResults = overallResultCalculator.getMacroAveragePRF1();
-        var macroWeightedResults = overallResultCalculator.getMacroWeightedAveragePRF1();
+        var weightedResults = OVERALL_RESULTS_CALCULATOR.calculateWeightedAveragePRF1();
+        var macroResults = OVERALL_RESULTS_CALCULATOR.calculateMacroAveragePRF1();
+        var macroWeightedResults = OVERALL_RESULTS_CALCULATOR.calculateWeightedMacroAveragePRF1();
 
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
@@ -81,15 +82,15 @@ class InconsistencyDetectionEvaluationIT {
 
             if (ranBaseline) {
                 name = "BASELINE Overall Weighted";
-                var results = overallResultCalculatorBaseline.getWeightedAveragePRF1();
+                var results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateWeightedAveragePRF1();
                 TestUtil.logResults(logger, name, results);
 
                 name = "BASELINE Overall Macro";
-                results = overallResultCalculatorBaseline.getMacroAveragePRF1();
+                results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateMacroAveragePRF1();
                 TestUtil.logResults(logger, name, results);
 
                 name = "BASELINE Overall Weighted Macro";
-                results = overallResultCalculatorBaseline.getMacroWeightedAveragePRF1();
+                results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateWeightedMacroAveragePRF1();
                 TestUtil.logResults(logger, name, results);
             }
         }
@@ -107,21 +108,24 @@ class InconsistencyDetectionEvaluationIT {
         Files.createDirectories(evalDir);
         var outputFile = evalDir.resolve("base_results.md");
 
-        var outputBuilder = new StringBuilder("# Inconsistency Detection").append(System.lineSeparator());
+        var outputBuilder = new StringBuilder("# Inconsistency Detection").append(LINE_SEPARATOR);
 
         var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
-        outputBuilder.append(resultString).append(System.lineSeparator());
+        outputBuilder.append(resultString).append(LINE_SEPARATOR);
         resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
-        outputBuilder.append(resultString).append(System.lineSeparator());
+        outputBuilder.append(resultString).append(LINE_SEPARATOR);
         resultString = TestUtil.createResultLogString("Overall Weighted Macro", macroWeightedResults);
-        outputBuilder.append(resultString).append(System.lineSeparator()).append(System.lineSeparator());
+        outputBuilder.append(resultString).append(LINE_SEPARATOR);
+        outputBuilder.append(LINE_SEPARATOR);
 
         for (var entry : inconsistentSentencesPerProject.entrySet()) {
             var project = entry.getKey();
-            outputBuilder.append("## ").append(project.name()).append(System.lineSeparator());
+            outputBuilder.append("## ").append(project.name());
+            outputBuilder.append(LINE_SEPARATOR);
             var inconsistentSentences = entry.getValue();
             for (var inconsistentSentence : inconsistentSentences) {
-                outputBuilder.append(inconsistentSentence.getInfoString()).append(System.lineSeparator());
+                outputBuilder.append(inconsistentSentence.getInfoString());
+                outputBuilder.append(LINE_SEPARATOR);
             }
         }
 
@@ -143,7 +147,7 @@ class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
-        overallResultCalculator.addResult(project, resultCalculator);
+        OVERALL_RESULTS_CALCULATOR.addResult(project, resultCalculator);
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
@@ -173,7 +177,7 @@ class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
-        overallResultCalculatorBaseline.addResult(project, resultCalculator);
+        OVERALL_RESULT_CALCULATOR_BASELINE.addResult(project, resultCalculator);
 
         EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, resultCalculator, expectedInconsistencyResults);
@@ -251,7 +255,7 @@ class InconsistencyDetectionEvaluationIT {
     private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("### ").append(project.name()).append(" ###");
-        outputBuilder.append(System.lineSeparator());
+        outputBuilder.append(LINE_SEPARATOR);
 
         int counter = 0;
         for (var run : runs.entrySet()) {
@@ -263,27 +267,27 @@ class InconsistencyDetectionEvaluationIT {
                 var initialInconsistenciesSentences = initialInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
                         .toSortedSet()
                         .collect(i -> i.toString());
-                outputBuilder.append(System.lineSeparator()).append(listToString(initialInconsistenciesSentences));
+                outputBuilder.append(LINE_SEPARATOR).append(listToString(initialInconsistenciesSentences));
             } else {
-                outputBuilder.append("###").append(System.lineSeparator());
+                outputBuilder.append("###").append(LINE_SEPARATOR);
                 outputBuilder.append("Removed Instance: ").append(instance.getFullName());
-                outputBuilder.append(System.lineSeparator());
+                outputBuilder.append(LINE_SEPARATOR);
                 var result = results.get(counter++);
                 var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f", result.getPrecision(), result.getRecall(),
                         result.getF1());
                 outputBuilder.append(resultString);
                 var truePositives = result.getTruePositives();
                 truePositives = sortIntegerStrings(truePositives);
-                outputBuilder.append(System.lineSeparator()).append("True Positives: ").append(listToString(truePositives));
+                outputBuilder.append(LINE_SEPARATOR).append("True Positives: ").append(listToString(truePositives));
                 var falsePositives = result.getFalsePositives();
                 falsePositives = sortIntegerStrings(falsePositives);
-                outputBuilder.append(System.lineSeparator()).append("False Positives: ").append(listToString(falsePositives));
+                outputBuilder.append(LINE_SEPARATOR).append("False Positives: ").append(listToString(falsePositives));
                 var falseNegatives = result.getFalseNegatives();
                 falseNegatives = sortIntegerStrings(falseNegatives);
-                outputBuilder.append(System.lineSeparator()).append("False Negatives: ").append(listToString(falseNegatives));
+                outputBuilder.append(LINE_SEPARATOR).append("False Negatives: ").append(listToString(falseNegatives));
             }
 
-            outputBuilder.append(System.lineSeparator());
+            outputBuilder.append(LINE_SEPARATOR);
         }
 
         var filename = OUTPUT + "/inconsistencies_" + project.name().toLowerCase() + ".txt";

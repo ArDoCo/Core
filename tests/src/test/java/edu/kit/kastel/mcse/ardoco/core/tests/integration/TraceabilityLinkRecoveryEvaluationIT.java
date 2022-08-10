@@ -36,8 +36,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
@@ -57,7 +57,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
     private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
-    private static final ResultCalculator overallResultCalculator = new ResultCalculator();
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
@@ -72,27 +71,33 @@ class TraceabilityLinkRecoveryEvaluationIT {
     }
 
     @AfterAll
-    public static void afterAll() throws IOException {
+    public static void afterAll() {
         if (logger.isInfoEnabled()) {
+            OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(RESULTS);
             var name = "Overall Weighted";
-            var results = overallResultCalculator.getWeightedAveragePRF1();
+            var results = overallResultsCalculator.calculateWeightedAveragePRF1();
             TestUtil.logResults(logger, name, results);
 
             name = "Overall Macro";
-            results = overallResultCalculator.getMacroAveragePRF1();
+            results = overallResultsCalculator.calculateMacroAveragePRF1();
             TestUtil.logResults(logger, name, results);
         }
 
         if (detailedDebug) {
             var evalDir = Path.of(OUTPUT).resolve("tl_eval");
-            Files.createDirectories(evalDir);
 
-            TLSummaryFile.save(evalDir.resolve("summary.md"), RESULTS, DATA_MAP);
-            TLModelFile.save(evalDir.resolve("models.md"), DATA_MAP);
-            TLSentenceFile.save(evalDir.resolve("sentences.md"), DATA_MAP);
-            TLLogFile.append(evalDir.resolve("log.md"), RESULTS);
-            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
-            TLDiffFile.save(evalDir.resolve("diff.md"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
+            try {
+                Files.createDirectories(evalDir);
+
+                TLSummaryFile.save(evalDir.resolve("summary.txt"), RESULTS, DATA_MAP);
+                TLModelFile.save(evalDir.resolve("models.txt"), DATA_MAP);
+                TLSentenceFile.save(evalDir.resolve("sentences.txt"), DATA_MAP);
+                TLLogFile.append(evalDir.resolve("log.txt"), RESULTS);
+                TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
+                TLDiffFile.save(evalDir.resolve("diff.txt"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv")), DATA_MAP);
+            } catch (IOException e) {
+                logger.error("Failed to write output.", e);
+            }
         }
         System.setProperty(LOGGING_ARDOCO_CORE, "error");
     }
@@ -151,7 +156,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
                     DATA_MAP.put(project, arDoCoResult);
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
-                    logger.warn(e.getMessage(), e.getCause());
+                    logger.warn("Failed to load file for gold standard", e);
                 }
             }
         }
@@ -194,7 +199,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
             ImmutableList<ModelInstance> instances) {
         var outputList = Lists.mutable.<String> empty();
         for (var traceLinkString : traceLinkStrings.toList()) {
-            var parts = traceLinkString.split(",");
+            var parts = traceLinkString.split(",", -1);
             if (parts.length < 2) {
                 continue;
             }
@@ -220,18 +225,12 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     private EvaluationResults calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
         String modelId = modelState.getModelId();
-        var connectionState = arDoCoResult.getConnectionState(modelId);
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
 
         var goldStandard = getGoldStandard(project);
 
-        ExplicitEvaluationResults<String> evaluationResults = TestUtil.compare(traceLinks.toSet(), goldStandard);
-        int tp = evaluationResults.getTruePositives().size();
-        int fp = evaluationResults.getFalsePositives().size();
-        int fn = evaluationResults.getFalseNegatives().size();
-        overallResultCalculator.addEvaluationResults(tp, fp, fn);
-        return evaluationResults;
+        return TestUtil.compare(traceLinks.toSet(), goldStandard);
     }
 
     private List<String> getGoldStandard(Project project) {
