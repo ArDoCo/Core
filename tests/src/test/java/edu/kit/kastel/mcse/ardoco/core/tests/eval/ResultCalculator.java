@@ -10,10 +10,10 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 
 public class ResultCalculator {
 
-    private MutableList<Pair<EvaluationResults, Integer>> results;
+    private MutableList<Pair<EvaluationResults, Integer>> resultsWithWeight;
 
     public ResultCalculator() {
-        results = Lists.mutable.empty();
+        resultsWithWeight = Lists.mutable.empty();
     }
 
     /**
@@ -30,7 +30,7 @@ public class ResultCalculator {
         var f1 = TestUtil.calculateF1(precision, recall);
 
         var evalResults = new EvaluationResults(precision, recall, f1);
-        results.add(Tuples.pair(evalResults, weight));
+        resultsWithWeight.add(Tuples.pair(evalResults, weight));
     }
 
     /**
@@ -45,7 +45,7 @@ public class ResultCalculator {
         double recall = 0.0;
         double f1 = 0.0;
 
-        for (var result : results) {
+        for (var result : resultsWithWeight) {
             var prf1 = result.getOne();
             int localWeight = result.getTwo();
             double localPrecision = prf1.getPrecision();
@@ -78,8 +78,12 @@ public class ResultCalculator {
         var avgF1 = 0.0;
 
         var counter = 0;
-        for (var result : results) {
+        for (var result : resultsWithWeight) {
             var prf1 = result.getOne();
+            var weight = result.getTwo();
+            if (weight == 0) {
+                continue;
+            }
             var precision = prf1.getPrecision();
             var recall = prf1.getRecall();
             var f1 = prf1.getF1();
@@ -101,7 +105,7 @@ public class ResultCalculator {
 
     int getWeight() {
         int weight = 0;
-        for (var entry : results) {
+        for (var entry : resultsWithWeight) {
             weight += entry.getTwo();
         }
         return weight;
