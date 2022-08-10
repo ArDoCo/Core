@@ -221,7 +221,7 @@ class InconsistencyDetectionEvaluationIT {
     private void logResults(Project project, ResultCalculator resultCalculator, EvaluationResults expectedResults) {
         if (logger.isInfoEnabled()) {
             var results = resultCalculator.getWeightedAveragePRF1();
-            String name = project.name() + " (weighted)";
+            String name = project.name();
             TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
         }
     }
@@ -237,10 +237,41 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
+        StringBuilder outputBuilder = createStringBuilderWithHeader(project);
+        var resultCalculator = inspectAndWriteEachResult(results, runs, outputBuilder);
+        appendOverallResults(outputBuilder, resultCalculator);
+
+        var filename = OUTPUT + "/inconsistencies_" + project.name().toLowerCase() + ".txt";
+        writeToFile(filename, outputBuilder.toString());
+
+    }
+
+    private static void writeToFile(String filename, String text) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), UTF_8)) {
+            writer.write(text);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void appendOverallResults(StringBuilder outputBuilder, ResultCalculator resultCalculator) {
+        outputBuilder.append("###").append(LINE_SEPARATOR);
+        var weightedAveragePRF1 = resultCalculator.getWeightedAveragePRF1();
+        var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted Average", weightedAveragePRF1);
+        outputBuilder.append(resultString);
+        outputBuilder.append(LINE_SEPARATOR);
+    }
+
+    private static StringBuilder createStringBuilderWithHeader(Project project) {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("### ").append(project.name()).append(" ###");
         outputBuilder.append(LINE_SEPARATOR);
+        return outputBuilder;
+    }
 
+    private static ResultCalculator inspectAndWriteEachResult(List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs,
+            StringBuilder outputBuilder) {
+        var resultCalculator = new ResultCalculator();
         int counter = 0;
         for (var run : runs.entrySet()) {
             var data = run.getValue();
@@ -269,18 +300,13 @@ class InconsistencyDetectionEvaluationIT {
                 var falseNegatives = result.getFalseNegatives();
                 falseNegatives = sortIntegerStrings(falseNegatives);
                 outputBuilder.append(LINE_SEPARATOR).append("False Negatives: ").append(listToString(falseNegatives));
+
+                resultCalculator.addEvaluationResults(truePositives.size(), falsePositives.size(), falseNegatives.size());
             }
 
             outputBuilder.append(LINE_SEPARATOR);
         }
-
-        var filename = OUTPUT + "/inconsistencies_" + project.name().toLowerCase() + ".txt";
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), UTF_8)) {
-            writer.write(outputBuilder.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        return resultCalculator;
     }
 
     private static List<String> sortIntegerStrings(List<String> list) {
