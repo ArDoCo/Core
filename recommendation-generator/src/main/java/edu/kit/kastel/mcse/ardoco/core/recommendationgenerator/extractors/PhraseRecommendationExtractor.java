@@ -38,6 +38,12 @@ public class PhraseRecommendationExtractor extends Informant {
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
 
+        if (textState.getNounMappings()
+                .select(nm -> nm.getWords().anySatisfy(w -> textState.getNounMappings().select(nm2 -> nm2.getWords().contains(w)).size() > 1))
+                .size() > 0) {
+            int i = 0;
+        }
+
         for (var model : modelStatesData.modelIds()) {
             var modelState = modelStatesData.getModelState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());

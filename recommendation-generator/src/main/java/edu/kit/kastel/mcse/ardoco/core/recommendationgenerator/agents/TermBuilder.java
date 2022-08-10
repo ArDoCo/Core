@@ -71,7 +71,14 @@ public class TermBuilder extends PipelineAgent {
             if (nounMappingsOfTheSamePhraseMapping.size() < 1)
                 continue;
 
+            MutableList<NounMapping> nounMappingsToMerge = Lists.mutable.empty();
+
             for (NounMapping nounMappingOfTheSamePhraseMapping : nounMappingsOfTheSamePhraseMapping) {
+
+                if (!textState.getNounMappings().contains(nounMappingOfTheSamePhraseMapping)) {
+                    restart = true;
+                    break;
+                }
 
                 int counter = 0;
                 var words = nounMapping.getWords();
@@ -86,9 +93,9 @@ public class TermBuilder extends PipelineAgent {
                     nounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
                     NounMapping currentNounMapping = nounMappingOfTheSamePhraseMapping;
                     currentNounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
-                    var references = nounMapping.getReferenceWords().toList();
-                    references.addAllIterable(currentNounMapping.getReferenceWords());
-                    textState.mergeNounMappings(nounMapping, currentNounMapping, this, references.toImmutable());
+
+                    nounMappingsToMerge.add(currentNounMapping);
+
                     if (textState.getNounMappings()
                             .select(nm -> nm.getWords().anySatisfy(w -> textState.getNounMappings().select(nm2 -> nm2.getWords().contains(w)).size() > 1))
                             .size() > 0) {
@@ -96,6 +103,10 @@ public class TermBuilder extends PipelineAgent {
                     }
 
                 }
+
+            }
+            if (nounMappingsToMerge.size() > 0) {
+                textState.mergeNounMappings(nounMapping, nounMappingsToMerge, this);
             }
 
         }
