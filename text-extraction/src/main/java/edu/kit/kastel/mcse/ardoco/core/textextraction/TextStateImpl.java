@@ -184,6 +184,28 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
+    public void mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant) {
+        assert (getNounMappings().contains(nounMapping));
+
+        for (NounMapping otherNounMapping : nounMappingsToMerge) {
+
+            assert (getNounMappings().contains(otherNounMapping));
+
+            var references = nounMapping.getReferenceWords().toList();
+            references.addAllIterable(otherNounMapping.getReferenceWords());
+            this.mergeNounMappings(nounMapping, otherNounMapping, claimant, references.toImmutable());
+
+            var nounMappingsWithSameWordAndOtherReference = getNounMappings().select(
+                    nm -> nm.getWords().anySatisfy(w -> otherNounMapping.getWords().contains(w)) && !nm.getReference().equals(otherNounMapping.getReference()));
+
+            assert (nounMappingsWithSameWordAndOtherReference.size() == 1);
+
+            nounMapping = nounMappingsWithSameWordAndOtherReference.get(0);
+        }
+
+    }
+
+    @Override
     public void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
         this.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant,
                 nounMapping.getProbabilityForKind(nounMapping.getKind()));

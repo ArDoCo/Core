@@ -101,4 +101,5 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
 
     NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference);
 
+    void mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant);
 }
