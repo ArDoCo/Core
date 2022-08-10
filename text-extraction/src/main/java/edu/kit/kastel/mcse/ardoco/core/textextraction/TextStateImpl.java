@@ -189,18 +189,34 @@ public class TextStateImpl extends AbstractState implements TextState {
 
         for (NounMapping otherNounMapping : nounMappingsToMerge) {
 
+            if (!getNounMappings().contains(otherNounMapping)) {
+
+                final NounMapping finalOtherNounMapping = otherNounMapping;
+                var otherNounMapping2 = this.getNounMappings().select(nm -> nm.getWords().containsAllIterable(finalOtherNounMapping.getWords()));
+                if (otherNounMapping2.size() == 0) {
+                    continue;
+                } else if (otherNounMapping2.size() == 1) {
+                    otherNounMapping = otherNounMapping2.get(0);
+                } else {
+                    throw new IllegalStateException();
+                }
+            }
+
             assert (getNounMappings().contains(otherNounMapping));
 
             var references = nounMapping.getReferenceWords().toList();
             references.addAllIterable(otherNounMapping.getReferenceWords());
             this.mergeNounMappings(nounMapping, otherNounMapping, claimant, references.toImmutable());
 
-            var nounMappingsWithSameWordAndOtherReference = getNounMappings().select(
-                    nm -> nm.getWords().anySatisfy(w -> otherNounMapping.getWords().contains(w)) && !nm.getReference().equals(otherNounMapping.getReference()));
+            var mergedWords = Sets.mutable.empty();
+            mergedWords.addAllIterable(nounMapping.getWords());
+            mergedWords.addAllIterable(otherNounMapping.getWords());
 
-            assert (nounMappingsWithSameWordAndOtherReference.size() == 1);
+            var mergedNounMapping = getNounMappings().select(nm -> nm.getWords().equals(mergedWords));
 
-            nounMapping = nounMappingsWithSameWordAndOtherReference.get(0);
+            assert (mergedNounMapping.size() == 1);
+
+            nounMapping = mergedNounMapping.get(0);
         }
 
     }
@@ -243,7 +259,12 @@ public class TextStateImpl extends AbstractState implements TextState {
         String mergedReference = reference;
 
         if (mergedReference == null) {
-            mergedReference = calculateNounMappingReference(mergedReferenceWords);
+
+            if (nounMapping.getReference().equalsIgnoreCase(nounMapping2.getReference())) {
+                mergedReference = nounMapping.getReference();
+            } else {
+                mergedReference = calculateNounMappingReference(mergedReferenceWords);
+            }
         }
 
         MutableList<Word> mergedCoreferences = nounMapping.getCoreferences().toList();

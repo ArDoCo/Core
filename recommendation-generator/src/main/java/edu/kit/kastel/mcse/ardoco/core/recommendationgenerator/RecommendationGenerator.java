@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.InitialRecommendationAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseRecommendationAgent;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.RecallIncreaser;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.TermBuilder;
 
 /**
@@ -33,7 +34,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     public RecommendationGenerator(DataRepository dataRepository) {
         super("RecommendationGenerator", dataRepository);
 
-        this.agents = Lists.mutable.of(new TermBuilder(dataRepository), new InitialRecommendationAgent(dataRepository),
+        this.agents = Lists.mutable.of(new TermBuilder(dataRepository), new RecallIncreaser(dataRepository), new InitialRecommendationAgent(dataRepository),
                 new PhraseRecommendationAgent(dataRepository));
         this.enabledAgents = agents.collect(Agent::getId);
     }
