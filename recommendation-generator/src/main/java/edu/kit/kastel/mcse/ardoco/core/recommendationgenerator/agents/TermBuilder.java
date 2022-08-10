@@ -15,7 +15,6 @@ import org.eclipse.collections.api.set.MutableSet;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
@@ -41,19 +40,19 @@ public class TermBuilder extends PipelineAgent {
 
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelState(model);
-            var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
+            increaseProbabilityForKnownTypes(modelState, textState);
+            decreaseProbabilityForUnknownTypes(modelState, textState);
             combineMetaModelTypes(textState, modelState);
         }
+        combineMappings(textState, MappingKind.TYPE, 0.6);
+        combineMappings(textState, MappingKind.NAME, 0.1);
 
-        Text text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
-
-        combineNameMappings(textState);
     }
 
-    private void combineNameMappings(TextState textState) {
+    private void combineMappings(TextState textState, MappingKind kind, double threshold) {
 
-        var nounMappings = textState.getNounMappingsOfKind(MappingKind.NAME);
+        var nounMappings = textState.getNounMappingsOfKind(kind).select(nm -> nm.getProbabilityForKind(kind) > threshold);
 
         boolean restart = false;
 
@@ -66,7 +65,7 @@ public class TermBuilder extends PipelineAgent {
 
             PhraseMapping phraseMapping = textState.getPhraseMappingByNounMapping(nounMapping);
             ImmutableList<NounMapping> nounMappingsOfTheSamePhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping)
-                    .select(nm -> nm.getProbabilityForKind(MappingKind.NAME) > 0);
+                    .select(nm -> nm.getProbabilityForKind(kind) > threshold);
 
             if (nounMappingsOfTheSamePhraseMapping.size() < 1)
                 continue;
@@ -77,6 +76,7 @@ public class TermBuilder extends PipelineAgent {
 
                 if (!textState.getNounMappings().contains(nounMappingOfTheSamePhraseMapping)) {
                     restart = true;
+                    nounMappingsToMerge = Lists.mutable.empty();
                     break;
                 }
 
@@ -90,17 +90,11 @@ public class TermBuilder extends PipelineAgent {
                         }
                 }
                 if (counter > 0.5 * words.size()) {
-                    nounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
+                    nounMapping.addKindWithProbability(kind, this, 1.0);
                     NounMapping currentNounMapping = nounMappingOfTheSamePhraseMapping;
-                    currentNounMapping.addKindWithProbability(MappingKind.NAME, this, 1.0);
+                    currentNounMapping.addKindWithProbability(kind, this, 1.0);
 
                     nounMappingsToMerge.add(currentNounMapping);
-
-                    if (textState.getNounMappings()
-                            .select(nm -> nm.getWords().anySatisfy(w -> textState.getNounMappings().select(nm2 -> nm2.getWords().contains(w)).size() > 1))
-                            .size() > 0) {
-                        int j = 0;
-                    }
 
                 }
 
@@ -112,9 +106,49 @@ public class TermBuilder extends PipelineAgent {
         }
 
         if (restart) {
-            combineNameMappings(textState);
+            combineMappings(textState, kind, threshold);
         }
 
+    }
+
+    private void decreaseProbabilityForUnknownTypes(ModelExtractionState modelState, TextState textState) {
+        ImmutableSet<String> modelTypes = modelState.getInstanceTypes();
+
+        var nounMappingsOfTextState = textState.getNounMappings();
+        for (NounMapping nounMapping : nounMappingsOfTextState) {
+            for (String modelType : modelTypes) {
+                var modelTypeParts = modelType.split(" ");
+                for (String modelTypePart : modelTypeParts) {
+
+                    if (!SimilarityUtils.areWordsSimilar(modelTypePart, nounMapping.getReference())) {
+
+                        nounMapping.addKindWithProbability(MappingKind.TYPE, this, nounMapping.getProbabilityForKind(MappingKind.TYPE) * 0.5);
+                        nounMapping.addKindWithProbability(MappingKind.NAME, this, nounMapping.getProbabilityForKind(MappingKind.NAME) * 1.5);
+
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    private void increaseProbabilityForKnownTypes(ModelExtractionState modelState, TextState textState) {
+
+        ImmutableSet<String> modelTypes = modelState.getInstanceTypes();
+
+        for (String modelType : modelTypes) {
+            var modelTypeParts = modelType.split(" ");
+
+            for (String modelTypePart : modelTypeParts) {
+                var nounMappingsWithModelTypePart = textState.getNounMappings().select(nm -> SimilarityUtils.areWordsSimilar(modelTypePart, nm.getReference()));
+
+                for (NounMapping nounMappingThatIsModelTypePart : nounMappingsWithModelTypePart) {
+                    nounMappingThatIsModelTypePart.addKindWithProbability(MappingKind.TYPE, this, 1.0);
+                    nounMappingThatIsModelTypePart.addKindWithProbability(MappingKind.NAME, this, 0.0);
+                }
+            }
+        }
     }
 
     private void combineMetaModelTypes(TextState textState, ModelExtractionState modelState) {
