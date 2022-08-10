@@ -42,7 +42,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
     /**
      * Instantiates a new noun mapping.
      */
-    public NounMappingImpl(ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+    private NounMappingImpl(ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableSet<String> surfaceForms) {
         this(words, Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(referenceWords), Lists.immutable.empty());
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -59,7 +59,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-        this.distribution.put(kind, new Confidence(claimant, probability, DEFAULT_AGGREGATOR));
+        this.addKindWithProbability(kind, claimant, probability);
     }
 
     public NounMappingImpl(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
@@ -69,7 +69,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-        this.distribution.put(kind, new Confidence(claimant, probability, DEFAULT_AGGREGATOR));
+        this.addKindWithProbability(kind, claimant, probability);
 
     }
 
@@ -127,6 +127,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
     @Override
     public void addKindWithProbability(MappingKind kind, Claimant claimant, double probability) {
         var currentProbability = distribution.get(kind);
+        Objects.requireNonNull(claimant);
         currentProbability.addAgentConfidence(claimant, probability);
     }
 

@@ -45,6 +45,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     }
 
     public void addAgentConfidence(Claimant claimant, double confidence) {
+        Objects.requireNonNull(claimant);
         agentConfidences.add(Tuples.pair(claimant, confidence));
     }
 
