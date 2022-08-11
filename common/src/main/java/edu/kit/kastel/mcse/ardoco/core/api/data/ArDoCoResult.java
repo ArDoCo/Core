@@ -106,6 +106,11 @@ public record ArDoCoResult(DataRepository dataRepository) {
         return getAllInconsistenciesForModel(modelId).select(i -> inconsistencyType.isAssignableFrom(i.getClass())).collect(inconsistencyType::cast);
     }
 
+    /**
+     * Returns a list of all {@link Inconsistency inconsistencies} that were found.
+     * 
+     * @return all found inconsistencies
+     */
     public ImmutableList<Inconsistency> getAllInconsistencies() {
         MutableList<Inconsistency> inconsistencies = Lists.mutable.empty();
         for (var model : getModelIds()) {
@@ -114,12 +119,21 @@ public record ArDoCoResult(DataRepository dataRepository) {
         return inconsistencies.toImmutable();
     }
 
+    /**
+     * Returns all {@link TextInconsistency TextInconsistencies} that were found.
+     * 
+     * @return all found TextInconsistencies
+     */
     public ImmutableList<TextInconsistency> getAllTextInconsistencies() {
         var inconsistencies = getAllInconsistencies();
         return inconsistencies.select(i -> TextInconsistency.class.isAssignableFrom(i.getClass())).collect(TextInconsistency.class::cast);
     }
 
-    // TODO
+    /**
+     * Returns a list of {@link InconsistentSentence InconsistentSentences}.
+     * 
+     * @return all InconsistentSentences
+     */
     public ImmutableList<InconsistentSentence> getInconsistentSentences() {
         Map<Integer, InconsistentSentence> incSentenceMap = new HashMap<>();
 
@@ -140,6 +154,12 @@ public record ArDoCoResult(DataRepository dataRepository) {
         return sortedInconsistentSentences.toImmutable();
     }
 
+    /**
+     * Returns the {@link Sentence} with the given sentence number.
+     * 
+     * @param sentenceNo the sentence number
+     * @return Sentence with the given number
+     */
     public Sentence getSentence(int sentenceNo) {
         return getText().getSentences().detect(s -> s.getSentenceNumberForOutput() == sentenceNo);
     }
