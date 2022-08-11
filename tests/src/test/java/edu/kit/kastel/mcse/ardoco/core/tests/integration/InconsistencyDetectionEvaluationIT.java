@@ -237,13 +237,28 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
-        StringBuilder outputBuilder = createStringBuilderWithHeader(project);
-        var resultCalculator = inspectAndWriteEachResult(results, runs, outputBuilder);
-        appendOverallResults(outputBuilder, resultCalculator);
+        var outputs = createOutput(project, results, runs);
+        var outputBuilder = outputs.getOne();
+        var detailedOutputBuilder = outputs.getTwo();
 
-        var filename = OUTPUT + "/inconsistencies_" + project.name().toLowerCase() + ".txt";
+        String projectFileName = "inconsistencies_" + project.name().toLowerCase() + ".txt";
+        Path outputPath = Path.of(OUTPUT);
+        var filename = outputPath.resolve(projectFileName).toFile().getAbsolutePath();
         writeToFile(filename, outputBuilder.toString());
 
+        String detailedProjectFileName = "detailed_" + projectFileName;
+        var detailedFilename = outputPath.resolve("id_eval").resolve(detailedProjectFileName).toFile().getAbsolutePath();
+        writeToFile(detailedFilename, detailedOutputBuilder.toString());
+    }
+
+    private static Pair<StringBuilder, StringBuilder> createOutput(Project project, List<ExplicitEvaluationResults<String>> results,
+            Map<ModelInstance, ArDoCoResult> runs) {
+        StringBuilder outputBuilder = createStringBuilderWithHeader(project);
+        var resultCalculatorStringBuilderPair = inspectResults(results, runs, outputBuilder);
+        var resultCalculator = resultCalculatorStringBuilderPair.getOne();
+        outputBuilder.append(getOverallResultsString(resultCalculator));
+        var detailedOutputBuilder = resultCalculatorStringBuilderPair.getTwo();
+        return Tuples.pair(outputBuilder, detailedOutputBuilder);
     }
 
     private static void writeToFile(String filename, String text) {
@@ -254,12 +269,14 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private static void appendOverallResults(StringBuilder outputBuilder, ResultCalculator resultCalculator) {
+    private static String getOverallResultsString(ResultCalculator resultCalculator) {
+        StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("###").append(LINE_SEPARATOR);
         var weightedAveragePRF1 = resultCalculator.getWeightedAveragePRF1();
         var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted Average", weightedAveragePRF1);
         outputBuilder.append(resultString);
         outputBuilder.append(LINE_SEPARATOR);
+        return outputBuilder.toString();
     }
 
     private static StringBuilder createStringBuilderWithHeader(Project project) {
@@ -269,44 +286,85 @@ class InconsistencyDetectionEvaluationIT {
         return outputBuilder;
     }
 
-    private static ResultCalculator inspectAndWriteEachResult(List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs,
+    private static Pair<ResultCalculator, StringBuilder> inspectResults(List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs,
             StringBuilder outputBuilder) {
+        var detailedOutputBuilder = new StringBuilder();
         var resultCalculator = new ResultCalculator();
         int counter = 0;
         for (var run : runs.entrySet()) {
-            var data = run.getValue();
+            ArDoCoResult arDoCoResult = run.getValue();
             ModelInstance instance = run.getKey();
             if (instance == null) {
-                var initialInconsistencies = getInitialInconsistencies(data);
-                outputBuilder.append("Initial Inconsistencies: ").append(initialInconsistencies.size());
-                var initialInconsistenciesSentences = initialInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
-                        .toSortedSet()
-                        .collect(i -> i.toString());
-                outputBuilder.append(LINE_SEPARATOR).append(listToString(initialInconsistenciesSentences));
+                inspectBaseCase(outputBuilder, arDoCoResult);
             } else {
                 outputBuilder.append("###").append(LINE_SEPARATOR);
+                detailedOutputBuilder.append("###").append(LINE_SEPARATOR);
                 outputBuilder.append("Removed Instance: ").append(instance.getFullName());
+                detailedOutputBuilder.append("Removed Instance: ").append(instance.getFullName());
                 outputBuilder.append(LINE_SEPARATOR);
+                detailedOutputBuilder.append(LINE_SEPARATOR);
                 var result = results.get(counter++);
                 var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f", result.getPrecision(), result.getRecall(),
                         result.getF1());
                 outputBuilder.append(resultString);
-                var truePositives = result.getTruePositives();
-                truePositives = sortIntegerStrings(truePositives);
-                outputBuilder.append(LINE_SEPARATOR).append("True Positives: ").append(listToString(truePositives));
-                var falsePositives = result.getFalsePositives();
-                falsePositives = sortIntegerStrings(falsePositives);
-                outputBuilder.append(LINE_SEPARATOR).append("False Positives: ").append(listToString(falsePositives));
-                var falseNegatives = result.getFalseNegatives();
-                falseNegatives = sortIntegerStrings(falseNegatives);
-                outputBuilder.append(LINE_SEPARATOR).append("False Negatives: ").append(listToString(falseNegatives));
-
-                resultCalculator.addEvaluationResults(truePositives.size(), falsePositives.size(), falseNegatives.size());
+                detailedOutputBuilder.append(resultString);
+                inspectRun(outputBuilder, detailedOutputBuilder, resultCalculator, arDoCoResult, result);
             }
 
             outputBuilder.append(LINE_SEPARATOR);
         }
-        return resultCalculator;
+
+        return Tuples.pair(resultCalculator, detailedOutputBuilder);
+    }
+
+    private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder, ResultCalculator resultCalculator,
+            ArDoCoResult arDoCoResult, ExplicitEvaluationResults<String> result) {
+        var truePositives = result.getTruePositives();
+        appendResults(truePositives, detailedOutputBuilder, "True Positives", arDoCoResult, outputBuilder);
+
+        var falsePositives = result.getFalsePositives();
+        appendResults(falsePositives, detailedOutputBuilder, "False Positives", arDoCoResult, outputBuilder);
+
+        var falseNegatives = result.getFalseNegatives();
+        appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
+
+        resultCalculator.addEvaluationResults(truePositives.size(), falsePositives.size(), falseNegatives.size());
+    }
+
+    private static void appendResults(List<String> truePositives, StringBuilder detailedOutputBuilder, String type, ArDoCoResult arDoCoResult,
+            StringBuilder outputBuilder) {
+        truePositives = sortIntegerStrings(truePositives);
+        detailedOutputBuilder.append(LINE_SEPARATOR).append("== ").append(type).append(" ==");
+        detailedOutputBuilder.append(LINE_SEPARATOR).append(createDetailedOutputString(arDoCoResult, truePositives));
+        outputBuilder.append(LINE_SEPARATOR).append(type).append(": ").append(listToString(truePositives));
+    }
+
+    private static void inspectBaseCase(StringBuilder outputBuilder, ArDoCoResult data) {
+        var initialInconsistencies = getInitialInconsistencies(data);
+        outputBuilder.append("Initial Inconsistencies: ").append(initialInconsistencies.size());
+        var initialInconsistenciesSentences = initialInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
+                .toSortedSet()
+                .collect(i -> i.toString());
+        outputBuilder.append(LINE_SEPARATOR).append(listToString(initialInconsistenciesSentences));
+    }
+
+    private static String createDetailedOutputString(ArDoCoResult result, List<String> sentenceNumbers) {
+        var outputBuilder = new StringBuilder();
+
+        if (sentenceNumbers.isEmpty()) {
+            return outputBuilder.append("None").append(LINE_SEPARATOR).toString();
+        }
+
+        for (var inconsistentSentence : result.getInconsistentSentences()) {
+            int sentenceNumber = inconsistentSentence.sentence().getSentenceNumberForOutput();
+            var sentenceNumberString = Integer.toString(sentenceNumber);
+            if (sentenceNumbers.contains(sentenceNumberString)) {
+                outputBuilder.append(inconsistentSentence.getInfoString());
+                outputBuilder.append(LINE_SEPARATOR);
+            }
+        }
+
+        return outputBuilder.toString();
     }
 
     private static List<String> sortIntegerStrings(List<String> list) {
