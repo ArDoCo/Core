@@ -29,9 +29,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      */
     NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability);
 
-    NounMapping addWordToNounMapping(NounMapping nounMapping, Word word, MappingKind kind, Claimant claimant, double probability,
-            ImmutableList<Word> referenceWords, String reference);
-
     /**
      * * Adds a name mapping to the state.
      *
