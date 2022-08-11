@@ -1,6 +1,19 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.ToDoubleBiFunction;
+import java.util.stream.Collectors;
+
+import org.apache.commons.text.similarity.CosineSimilarity;
+import org.apache.commons.text.similarity.JaroWinklerSimilarity;
+import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
@@ -10,18 +23,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
-import org.apache.commons.text.similarity.CosineSimilarity;
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
-import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.ToDoubleBiFunction;
-import java.util.stream.Collectors;
 
 /**
  * This class is a utility class.
