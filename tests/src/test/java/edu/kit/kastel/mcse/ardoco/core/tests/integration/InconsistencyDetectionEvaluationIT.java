@@ -241,13 +241,21 @@ class InconsistencyDetectionEvaluationIT {
         var outputBuilder = outputs.getOne();
         var detailedOutputBuilder = outputs.getTwo();
 
-        String projectFileName = "inconsistencies_" + project.name().toLowerCase() + ".txt";
         Path outputPath = Path.of(OUTPUT);
+        Path idEvalPath = outputPath.resolve("id_eval");
+        try {
+            Files.createDirectories(outputPath);
+            Files.createDirectories(idEvalPath);
+        } catch (IOException e) {
+            logger.warn("Could not create directories.", e);
+        }
+
+        String projectFileName = "inconsistencies_" + project.name().toLowerCase() + ".txt";
         var filename = outputPath.resolve(projectFileName).toFile().getAbsolutePath();
         writeToFile(filename, outputBuilder.toString());
 
         String detailedProjectFileName = "detailed_" + projectFileName;
-        var detailedFilename = outputPath.resolve("id_eval").resolve(detailedProjectFileName).toFile().getAbsolutePath();
+        var detailedFilename = idEvalPath.resolve(detailedProjectFileName).toFile().getAbsolutePath();
         writeToFile(detailedFilename, detailedOutputBuilder.toString());
     }
 
