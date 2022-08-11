@@ -20,7 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 
 class ComputerScienceWordsAgentTest implements Claimant {
@@ -28,7 +27,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
     private ImmutableList<String> data;
     private double modifier;
 
-    private NounMappingImpl nounMapping;
+    private NounMapping nounMapping;
     private MyWord invalidWord;
     private TextStateImpl textState;
 
@@ -40,7 +39,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
         textState = new TextStateImpl();
         var validWord = wordToListOfIWord(data.get(0));
-        NounMapping nounMapping = textState.addNounMapping(Sets.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
+        nounMapping = textState.addNounMapping(Sets.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
                 Sets.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()), null, null);
         invalidWord = new MyWord("ASDFWJ", validWord.size());
         MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
