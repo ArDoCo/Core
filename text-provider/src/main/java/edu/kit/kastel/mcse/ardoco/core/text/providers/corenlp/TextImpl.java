@@ -1,13 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 public class TextImpl implements Text {
 

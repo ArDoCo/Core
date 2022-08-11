@@ -1,6 +1,15 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
+import java.util.List;
+import java.util.Objects;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
@@ -8,14 +17,6 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.Tree;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Objects;
 
 public class SentenceImpl implements Sentence {
     private static final Logger logger = LoggerFactory.getLogger(SentenceImpl.class);
