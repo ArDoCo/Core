@@ -1,30 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
@@ -45,6 +21,29 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLModel
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLPreviousFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSentenceFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
@@ -132,6 +131,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         // execute pipeline
         ArDoCoResult arDoCoResult = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
+        Assertions.assertNotNull(arDoCoResult);
 
         var data = arDoCoResult.dataRepository();
         Assertions.assertNotNull(data);
@@ -148,7 +148,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
             TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
 
             if (detailedDebug) {
-                if (results instanceof ExplicitEvaluationResults explicitResults) {
+                if (results instanceof ExplicitEvaluationResults<?> explicitResults) {
                     printDetailedDebug(explicitResults, data);
                 }
                 try {
@@ -162,16 +162,16 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
 
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(),
-                        "Precision " + results.getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(),
-                        "Recall " + results.getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
-                        "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(), "Precision " + results
+                        .getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(), "Recall " + results
+                        .getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(), "F1 " + results
+                        .getF1() + " is below the expected minimum value " + expectedResults.getF1()));
 
     }
 
-    private void printDetailedDebug(ExplicitEvaluationResults results, DataRepository data) {
+    private void printDetailedDebug(ExplicitEvaluationResults<?> results, DataRepository data) {
         var falseNegatives = results.getFalseNegatives().stream().map(Object::toString);
         var falsePositives = results.getFalsePositives().stream().map(Object::toString);
 
@@ -196,8 +196,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
     }
 
     private MutableList<String> createOutputStrings(Stream<String> traceLinkStrings, ImmutableList<Sentence> sentences,
-            ImmutableList<ModelInstance> instances) {
-        var outputList = Lists.mutable.<String> empty();
+                                                    ImmutableList<ModelInstance> instances) {
+        var outputList = Lists.mutable.<String>empty();
         for (var traceLinkString : traceLinkStrings.toList()) {
             var parts = traceLinkString.split(",", -1);
             if (parts.length < 2) {

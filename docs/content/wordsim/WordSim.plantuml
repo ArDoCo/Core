@@ -1,0 +1,45 @@
+@startuml
+
+class WordSimLoader {
++{static} loadUsingProperties(): List<WordSimMeasure>
+}
+
+interface WordSimMeasure {
++areWordsSimilar(ctx: ComparisonContext): boolean
+}
+
+class ComparisonContext {
++firstString: String
++secondString: String
++firstWord: IWord
++secondWord: IWord
++lemmatize: boolean
+
++firstTerm(): String
++secondTerm(): String
+}
+
+interface ComparisonStrategy {
++areWordsSimilar(ctx: ComparisonContext, measures: List<WordSimMeasure>): boolean
+}
+
+ComparisonStrategy <|.. AtleastOneStrategy
+WordSimMeasure "*"--o WordSimUtils
+
+class WordSimUtils {
+-measures: List<WordSimMeasure>
+-strategy: ComparisonStrategy
+
++{static} setMeasures(measures: Collection<WordSimMeasure>)
++{static} setStrategy(strategy: ComparisonStrategy)
++{static} areWordsSimilar(ctx: ComparisonContext, strategy: ComparisonStrategy): boolean
++{static} areWordsSimilar(ctx: ComparisonContext): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: String): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: String, strategy: ComparisonStrategy): boolean
++{static} areWordsSimilar(firstWord: IWord, secondWord: IWord): boolean
++{static} areWordsSimilar(firstWord: IWord, secondWord: IWord, strategy: ComparisonStrategy): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: IWord): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: IWord, strategy: ComparisonStrategy): boolean
+}
+
+@enduml
