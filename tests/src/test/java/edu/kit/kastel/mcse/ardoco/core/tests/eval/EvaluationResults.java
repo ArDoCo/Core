@@ -1,11 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import java.util.Locale;
-import java.util.Objects;
-import java.util.UUID;
-
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+
+import java.util.Locale;
 
 /**
  * This class represents evaluation results. Implementing classes should be able to return precision, recall, and
@@ -14,11 +12,9 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
  * @see <a href="https://en.wikipedia.org/wiki/Precision_and_recall">Wikipedia: Precision and recall</a>
  */
 public class EvaluationResults {
-    private UUID id;
-
-    private double precision;
-    private double recall;
-    private double f1;
+    private final double precision;
+    private final double recall;
+    private final double f1;
 
     protected EvaluationResults() {
         this.precision = 0.0;
@@ -28,7 +24,7 @@ public class EvaluationResults {
 
     /**
      * Constructs EvaluationResults, setting precision, recall, and F1.
-     * 
+     *
      * @param precision the precision
      * @param recall    the recall
      * @param f1        the f1
@@ -37,8 +33,6 @@ public class EvaluationResults {
         this.precision = TestUtil.checkAndRepairPrecision(precision);
         this.recall = TestUtil.checkAndRepairRecall(recall);
         this.f1 = TestUtil.checkAndRepairF1(f1);
-
-        this.id = UUID.randomUUID();
     }
 
     /**
@@ -68,19 +62,12 @@ public class EvaluationResults {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public final boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof EvaluationResults other) {
-            return this.id.equals(other.id);
-        }
-        return false;
+    public final int hashCode() {
+        return super.hashCode();
     }
-
 }
