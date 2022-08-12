@@ -25,8 +25,6 @@ public interface Sentence {
         return getSentenceNumber() + 1;
     }
 
-    ;
-
     /**
      * Returns the words contained by this sentence
      *
