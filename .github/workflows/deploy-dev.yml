@@ -40,3 +40,19 @@ jobs:
 
       - name: Publish Package
         run: mvn -P deployment -U -B deploy
+
+      - name: Aggregate JavaDocs
+        run: mvn -P deployment -U clean javadoc:aggregate
+
+      - name: Disable Jekyll
+        run: touch target/site/apidocs/.nojekyll
+
+      - name: Deploy JavaDocs
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@v4.4.0
+        with:
+          branch: javadoc
+          folder: target/site/apidocs/
+          repository-name: ArDoCo/Core-Docs
+          token: ${{ secrets.SDQ_TOKEN }}
+          clean: true

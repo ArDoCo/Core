@@ -16,8 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 /**
  * The analyzer examines the incoming dependency arcs of the current node.
  *
- * @author Sophie Schulz
- * @author Jan Keim
  */
 public class InDepArcsExtractor extends Informant {
 

@@ -33,7 +33,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 /**
  * This agent uses data from DBPedia to mark default words in computer science.
  *
- * @author Dominik Fuchss
  */
 public class ComputerScienceWordsAgent extends PipelineAgent {
 

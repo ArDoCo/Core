@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
  * contained by the model by their probability.
  *
- * @author Sophie
  */
 public class RecommendationStateImpl extends AbstractState implements RecommendationState {
 
