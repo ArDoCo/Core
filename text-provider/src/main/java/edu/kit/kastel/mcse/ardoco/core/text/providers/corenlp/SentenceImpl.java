@@ -37,11 +37,6 @@ class SentenceImpl implements Sentence {
     }
 
     @Override
-    public int getSentenceNumberForOutput() {
-        return sentenceNumber + 1;
-    }
-
-    @Override
     public ImmutableList<Word> getWords() {
         if (words.isEmpty()) {
             final MutableList<Word> wordsList = Lists.mutable.empty();
