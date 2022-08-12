@@ -34,7 +34,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     private MutableSet<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
-    private final TextStateStrategy strategy;
+    private final DefaultTextStateStrategy strategy;
 
     /**
      * Creates a new name type relation state
@@ -42,12 +42,12 @@ public class TextStateImpl extends AbstractState implements TextState {
     public TextStateImpl() {
         nounMappings = Sets.mutable.empty();
         phraseMappings = Sets.mutable.empty();
-        strategy = new PhraseConcerningTextStateStrategy(this);
+        strategy = new OriginalTextStateStrategy(this);
     }
 
     @Override
     public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability) {
-        return strategy.addOrExtendNounMapping(word, kind, claimant, probability, null);
+        return strategy.addOrExtendNounMapping(word, kind, claimant, probability, Sets.immutable.with(word.getText()));
     }
 
     @Override
@@ -182,6 +182,11 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public NounMapping getNounMappingByWord(Word word) {
         var result = getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
+
+        if (result.size() > 1) {
+            int i = 0;
+        }
+
         assert (result.size() <= 1) : "A word should only contained by one noun mapping";
         if (result.size() == 0) {
             return null;
