@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+
 /**
  * This class represents explicit evaluation results. The lists containing the true positives, false negatives, and
  * false positives are explicitly stored and can be retrieved, e.g., for analysing purposes.
@@ -36,7 +38,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     /**
      * @return the list of false negatives
      */
-    public List<T> getFalseNegative() {
+    public List<T> getFalseNegatives() {
         return falseNegatives;
     }
 
@@ -57,12 +59,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     @Override
     public double getPrecision() {
         if (precision < 0) {
-            double tp = truePositives.size();
-            double fp = falsePositives.size();
-            precision = tp / (tp + fp);
-            if (Double.isNaN(precision)) {
-                precision = 0.0;
-            }
+            precision = TestUtil.calculatePrecision(truePositives.size(), falsePositives.size());
         }
         return precision;
     }
@@ -70,12 +67,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     @Override
     public double getRecall() {
         if (recall < 0) {
-            double tp = truePositives.size();
-            double fn = falseNegatives.size();
-            recall = tp / (tp + fn);
-            if (Double.isNaN(recall)) {
-                recall = 0.0;
-            }
+            recall = TestUtil.calculateRecall(truePositives.size(), falseNegatives.size());
         }
         return recall;
     }
@@ -83,12 +75,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     @Override
     public double getF1() {
         if (f1 < 0) {
-            double precision = getPrecision();
-            double recall = getRecall();
-            f1 = 2 * precision * recall / (precision + recall);
-            if (Double.isNaN(f1)) {
-                f1 = 0.0;
-            }
+            f1 = TestUtil.calculateF1(truePositives.size(), falsePositives.size(), falseNegatives.size());
         }
         return f1;
     }

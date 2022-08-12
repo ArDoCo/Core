@@ -5,7 +5,7 @@ import edu.kit.kastel.informalin.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 
 public interface ConnectionStates extends PipelineStepData {
-    static final String ID = "ConnectionStates";
+    String ID = "ConnectionStates";
 
     ConnectionState getConnectionState(Metamodel mm);
 }

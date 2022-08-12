@@ -9,14 +9,15 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
-public class NameInconsistency implements Inconsistency {
+public class NameInconsistency implements TextInconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "NameInconsistency";
 
-    private static final String REASON_FORMAT_STRING = "Inconsistent naming in trace link between textual occurence \"%s\" (sentence %d) and model element \"%s\" (%s)";
+    private static final String REASON_FORMAT_STRING = "Inconsistent naming in trace link between textual occurence \"%s\" and model element \"%s\" (%s)";
 
     private final ModelInstance modelInstance;
     private final Word word;
@@ -30,10 +31,15 @@ public class NameInconsistency implements Inconsistency {
 
     @Override
     public String getReason() {
-        String textOccurence = word.getText();
-        String modelOccurence = modelInstance.getFullName();
+        String textOccurrence = word.getText();
+        String modelOccurrence = modelInstance.getFullName();
         String uid = modelInstance.getUid();
-        return String.format(Locale.US, REASON_FORMAT_STRING, textOccurence, sentenceNo, modelOccurence, uid);
+        return String.format(Locale.US, REASON_FORMAT_STRING, textOccurrence, modelOccurrence, uid);
+    }
+
+    @Override
+    public int getSentenceNumber() {
+        return sentenceNo;
     }
 
     @Override

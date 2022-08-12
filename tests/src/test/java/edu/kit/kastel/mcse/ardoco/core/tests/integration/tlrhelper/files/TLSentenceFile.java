@@ -13,13 +13,24 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
+/**
+ * This helper-class offers functionality to write out the sentences as seen by ArDoCo after the evaluation runs for TLR
+ * are done.
+ */
 public class TLSentenceFile {
+    private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private TLSentenceFile() {
-        // no instantiation
-        throw new IllegalAccessError("No instantiation allowed");
+        throw new IllegalAccessError("This constructor should not be called!");
     }
 
+    /**
+     * Write out the sentences from the given data map to the target file
+     * 
+     * @param targetFile file to write to
+     * @param dataMap    data to extract the sentences from
+     * @throws IOException if writing to file system fails
+     */
     public static void save(Path targetFile, Map<Project, ArDoCoResult> dataMap) throws IOException {
         var projects = dataMap.keySet().stream().sorted().toList();
         var builder = new StringBuilder();
@@ -27,13 +38,14 @@ public class TLSentenceFile {
         for (Project project : projects) {
             ImmutableList<Sentence> sentences = dataMap.get(project).getText().getSentences();
 
-            builder.append("# ").append(project.name()).append("\n\n");
+            builder.append("# ").append(project.name());
+            builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
             for (Sentence sentence : sentences) {
-                builder.append("- [").append(sentence.getSentenceNumber()).append("]: ").append(sentence.getText()).append('\n');
+                builder.append("- [").append(sentence.getSentenceNumber()).append("]: ").append(sentence.getText()).append(LINE_SEPARATOR);
             }
 
-            builder.append("\n\n");
+            builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
