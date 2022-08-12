@@ -30,7 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
 public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-        ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences) implements NounMapping {
+                              ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences) implements NounMapping {
 
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
@@ -188,8 +188,10 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
 
     @Override
     public String toString() {
-        return "NounMapping [" + "distribution="
-                + distribution.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + //
+        return "NounMapping [" + "distribution=" + distribution.entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(",")) + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
@@ -215,8 +217,8 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
 
     @Override
     public boolean isTheSameAs(NounMapping other) {
-        return Objects.equals(getReference(), other.getReference()) && Objects.equals(getWords(), other.getWords())
-                && Objects.equals(getKind(), other.getKind()) && Objects.equals(getPhrases(), other.getPhrases());
+        return Objects.equals(getReference(), other.getReference()) && Objects.equals(getWords(), other.getWords()) && Objects.equals(getKind(), other
+                .getKind()) && Objects.equals(getPhrases(), other.getPhrases());
     }
 
     @Override

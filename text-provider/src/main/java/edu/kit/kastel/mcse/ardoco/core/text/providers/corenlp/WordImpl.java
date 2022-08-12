@@ -169,13 +169,11 @@ public class WordImpl implements Word {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof WordImpl))
+        if (!(o instanceof WordImpl word))
             return false;
-        if (o instanceof WordImpl word) {
-            return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag()
-                    && getSentenceNo() == word.getSentenceNo();
-        }
-        return false;
+
+        return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag() && getSentenceNo() == word
+                .getSentenceNo();
     }
 
     @Override

@@ -17,7 +17,12 @@ import org.mockito.Mockito;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
@@ -38,7 +43,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
         setData();
 
         textState = new TextStateImpl();
-        var validWord = wordToListOfIWord(data.get(0));
+        var validWord = wordToListOfWord(data.get(0));
         nounMapping = textState.addNounMapping(Sets.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
                 Sets.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()), null, null);
         invalidWord = new MyWord("ASDFWJ", validWord.size());
@@ -62,7 +67,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
     }
 
-    private List<Word> wordToListOfIWord(String word) {
+    private List<Word> wordToListOfWord(String word) {
         var words = word.split("\\s+");
         List<Word> wordsList = new ArrayList<>();
         for (int i = 0; i < words.length; i++) {
@@ -94,7 +99,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
         }
     }
 
-    private record MyWord(String word, int pos) implements Word {
+    private record MyWord(String word, int position) implements Word {
 
         @Override
         public int getSentenceNo() {
@@ -123,7 +128,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
         @Override
         public int getPosition() {
-            return pos;
+            return position;
         }
 
         @Override

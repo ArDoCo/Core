@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Objects;
@@ -18,8 +19,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
 
     private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = nm -> Objects.hash(nm.getReferenceWords().toSet(), nm.getWords());
-    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1,
-            nm2) -> Objects.equals(nm1.getReferenceWords().toSet(), nm2.getReferenceWords().toSet()) && Objects.equals(nm1.getWords(), nm2.getWords());
+    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> Objects.equals(nm1.getReferenceWords().toSet(), nm2
+            .getReferenceWords()
+            .toSet()) && Objects.equals(nm1.getWords(), nm2.getWords());
 
     OriginalTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);

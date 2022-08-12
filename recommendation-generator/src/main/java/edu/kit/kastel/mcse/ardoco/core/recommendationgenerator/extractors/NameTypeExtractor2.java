@@ -114,8 +114,8 @@ public class NameTypeExtractor2 extends Informant {
             }
 
             if (name != null && type != null) {
-                recommendationState.addRecommendedInstance(name.getReference(), type.getReference(), this, 0.8, Lists.immutable.with(name),
-                        Lists.immutable.with(type));
+                recommendationState.addRecommendedInstance(name.getReference(), type.getReference(), this, 0.8, Lists.immutable.with(name), Lists.immutable
+                        .with(type));
 
             }
 
