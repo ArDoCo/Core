@@ -42,7 +42,7 @@ public class TLProjectEvalResult extends EvaluationResults implements Comparable
     }
 
     private static List<TestLink> getTraceLinks(Project project, DataRepository data) {
-        var traceLinks = Lists.mutable.<TestLink> empty();
+        var traceLinks = Lists.mutable.<TestLink>empty();
         var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 

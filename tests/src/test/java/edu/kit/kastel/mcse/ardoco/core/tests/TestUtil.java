@@ -177,9 +177,9 @@ public class TestUtil {
      */
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, EvaluationResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH,
-                "%n%s:%n\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", name,
-                results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
-                expectedResults.getF1());
+                "%n%s:%n\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", name, results
+                        .getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(), expectedResults
+                                .getF1());
         logger.info(infoString);
     }
 

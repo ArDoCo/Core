@@ -228,12 +228,12 @@ class InconsistencyDetectionEvaluationIT {
 
     private void checkResults(EvaluationResults results, EvaluationResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(),
-                        "Precision " + results.getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(),
-                        "Recall " + results.getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
-                        "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(), "Precision " + results
+                        .getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(), "Recall " + results
+                        .getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(), "F1 " + results
+                        .getF1() + " is below the expected minimum value " + expectedResults.getF1()));
     }
 
     private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
@@ -312,8 +312,8 @@ class InconsistencyDetectionEvaluationIT {
                 outputBuilder.append(LINE_SEPARATOR);
                 detailedOutputBuilder.append(LINE_SEPARATOR);
                 var result = results.get(counter++);
-                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f", result.getPrecision(), result.getRecall(),
-                        result.getF1());
+                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f", result.getPrecision(), result.getRecall(), result
+                        .getF1());
                 outputBuilder.append(resultString);
                 detailedOutputBuilder.append(resultString);
                 inspectRun(outputBuilder, detailedOutputBuilder, resultCalculator, arDoCoResult, result);
