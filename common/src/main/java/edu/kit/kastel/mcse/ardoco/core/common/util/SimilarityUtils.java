@@ -8,8 +8,6 @@ import java.util.function.ToDoubleBiFunction;
 import java.util.stream.Collectors;
 
 import org.apache.commons.text.similarity.CosineSimilarity;
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -23,15 +21,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
 /**
  * This class is a utility class.
- *
  */
 public final class SimilarityUtils {
-
-    private static final LevenshteinDistance levenShteinDistance = new LevenshteinDistance();
-    private static final JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
 
     private SimilarityUtils() {
         throw new IllegalAccessError();
@@ -75,8 +70,8 @@ public final class SimilarityUtils {
      * @return true, iff the {@link NounMapping} and {@link ModelInstance} are similar.
      */
     public static boolean isNounMappingSimilarToModelInstance(NounMapping nounMapping, ModelInstance instance) {
-        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference()))
-                || areWordsSimilar(instance.getFullName(), nounMapping.getReference())) {
+        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(instance.getFullName(),
+                nounMapping.getReference())) {
             return true;
         }
 
@@ -159,43 +154,7 @@ public final class SimilarityUtils {
      * @return true, if the test string is similar to the original; false if not.
      */
     public static boolean areWordsSimilar(String word1, String word2) {
-        return areWordsSimilar(word1, word2, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
-    }
-
-    public static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
-        if (original == null || word2test == null) {
-            return false;
-        }
-        var originalLowerCase = original.toLowerCase();
-        var word2TestLowerCase = word2test.toLowerCase();
-        if (originalLowerCase.split(" ").length != word2TestLowerCase.split(" ").length) {
-            return false;
-        }
-
-        var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test, similarityThreshold);
-        var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
-        return isJaroWinklerSimilar || isLevenshteinSimilar;
-    }
-
-    private static boolean jaroWinklerSimilarityTest(String original, String word2test, Double threshold) {
-        return jaroWinklerSimilarity.apply(original, word2test) >= threshold;
-    }
-
-    private static boolean levenshteinDistanceTest(String original, String word2test, double threshold) {
-        var originalLowerCase = original.toLowerCase();
-        var word2TestLowerCase = word2test.toLowerCase();
-
-        var areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
-        var areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
-        var maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, threshold * Math.min(original.length(), word2test.length()));
-
-        int levenshteinDistance = levenShteinDistance.apply(originalLowerCase, word2TestLowerCase);
-
-        if (original.length() <= areWordsSimilarMinLength) {
-            var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
-            return levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation;
-        } else
-            return levenshteinDistance <= maxLevenshteinDistance;
+        return WordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**
@@ -303,17 +262,16 @@ public final class SimilarityUtils {
         var instanceNames = instance.getNameParts();
         ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
         ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
-        if (areWordsSimilar(instance.getFullName(), ri.getName())
-                || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList, similarity)
-                || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
+        if (areWordsSimilar(instance.getFullName(), ri.getName()) || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList,
+                similarity) || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
             return true;
         }
         for (var nounMapping : ri.getNameMappings()) {
             for (var surfaceForm : nounMapping.getSurfaceForms()) {
                 var splitSurfaceForm = CommonUtilities.splitCases(surfaceForm);
                 var surfaceFormWords = CommonUtilities.splitAtSeparators(splitSurfaceForm);
-                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity)
-                        || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity)) {
+                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity) || SimilarityUtils.areWordsOfListsSimilar(
+                        longestNameSplit, surfaceFormWords, similarity)) {
                     return true;
                 }
             }
@@ -375,15 +333,13 @@ public final class SimilarityUtils {
         MAX_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
                 .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
                 .max()
-                .orElse(Double.NaN)),
-        MIN_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
-                .min()
-                .orElse(Double.NaN)),
-        AVG_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
-                .average()
-                .orElse(Double.NaN));
+                .orElse(Double.NaN)), MIN_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+                        .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
+                        .min()
+                        .orElse(Double.NaN)), AVG_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+                                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector(), p.second().getPhraseVector()))
+                                .average()
+                                .orElse(Double.NaN));
 
         private final ToDoubleBiFunction<PhraseMapping, PhraseMapping> mapper;
 
@@ -416,8 +372,8 @@ public final class SimilarityUtils {
         if (coversOtherPhraseVector(phraseMappingX, phraseMappingY) || coversOtherPhraseVector(phraseMappingY, phraseMappingX)) {
             // TODO: PHI : REWORK
             // TODO: NounMappings rausnehmen?
-            if (containsAllNounMappingsOfPhraseMapping(textState, phraseMappingX, phraseMappingY)
-                    && containsAllNounMappingsOfPhraseMapping(textState, phraseMappingY, phraseMappingX)) {
+            if (containsAllNounMappingsOfPhraseMapping(textState, phraseMappingX, phraseMappingY) && containsAllNounMappingsOfPhraseMapping(textState,
+                    phraseMappingY, phraseMappingX)) {
                 // TODO: HARD CODED
                 return 1.0;
             }

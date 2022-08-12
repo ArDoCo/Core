@@ -110,8 +110,8 @@ public class PhraseMappingImpl implements PhraseMapping {
     }
 
     public boolean isAlmostEqual(TextState textState, PhraseMapping other) {
-        return Objects.equals(getPhraseType(), other.getPhraseType()) && Objects.equals(getNounMappings(textState), other.getNounMappings(textState))
-                && Objects.equals(getPhraseVector(), other.getPhraseVector());
+        return Objects.equals(getPhraseType(), other.getPhraseType()) && Objects.equals(getNounMappings(textState), other.getNounMappings(textState)) && Objects
+                .equals(getPhraseVector(), other.getPhraseVector());
     }
 
     @Override

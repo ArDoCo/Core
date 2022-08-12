@@ -17,8 +17,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
     private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = nm -> Objects.hash(nm.getReference(), nm.getPhrases());
-    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1,
-            nm2) -> (Objects.equals(nm1.getPhrases(), nm2.getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference()));
+    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> (Objects.equals(nm1.getPhrases(), nm2
+            .getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference()));
 
     PhraseConcerningTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);

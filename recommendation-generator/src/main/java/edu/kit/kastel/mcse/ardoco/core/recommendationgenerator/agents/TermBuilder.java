@@ -223,8 +223,8 @@ public class TermBuilder extends PipelineAgent {
                 }
                 if (phraseMappings.size() == 1) {
                     var nounMappingsOfModelTypePart = modelTypePartMap.get(modelTypePart);
-                    var nounMappingsWithPhraseMapping = nounMappingsOfModelTypePart
-                            .select(nm -> phraseMappings.contains(textState.getPhraseMappingByNounMapping(nm)));
+                    var nounMappingsWithPhraseMapping = nounMappingsOfModelTypePart.select(nm -> phraseMappings.contains(textState
+                            .getPhraseMappingByNounMapping(nm)));
                     assert (nounMappingsWithPhraseMapping.size() == 1) : "There should be exactly one noun mapping that is accessed by the phrase mapping";
                     nounMappingsToMerge.addAll(nounMappingsWithPhraseMapping);
                     phraseMappingsToMerge.add(phraseMappings.getOnly());

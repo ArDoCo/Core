@@ -139,8 +139,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public void mergeNounMappings(NounMapping nounMapping, NounMapping otherNounMapping, Claimant claimant, ImmutableList<Word> referenceWords) {
-        strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant,
-                nounMapping.getProbabilityForKind(nounMapping.getKind()));
+        strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant, nounMapping.getProbabilityForKind(
+                nounMapping.getKind()));
     }
 
     public NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference) {
@@ -159,8 +159,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
-        strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant,
-                nounMapping.getProbabilityForKind(nounMapping.getKind()));
+        strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping.getProbabilityForKind(
+                nounMapping.getKind()));
 
     }
 

@@ -1,11 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
@@ -14,10 +17,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
@@ -98,6 +104,64 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public <T extends Inconsistency> ImmutableList<T> getInconsistenciesOfTypeForModel(String modelId, Class<T> inconsistencyType) {
         return getAllInconsistenciesForModel(modelId).select(i -> inconsistencyType.isAssignableFrom(i.getClass())).collect(inconsistencyType::cast);
+    }
+
+    /**
+     * Returns a list of all {@link Inconsistency inconsistencies} that were found.
+     * 
+     * @return all found inconsistencies
+     */
+    public ImmutableList<Inconsistency> getAllInconsistencies() {
+        MutableList<Inconsistency> inconsistencies = Lists.mutable.empty();
+        for (var model : getModelIds()) {
+            inconsistencies.addAll(getAllInconsistenciesForModel(model).castToCollection());
+        }
+        return inconsistencies.toImmutable();
+    }
+
+    /**
+     * Returns all {@link TextInconsistency TextInconsistencies} that were found.
+     * 
+     * @return all found TextInconsistencies
+     */
+    public ImmutableList<TextInconsistency> getAllTextInconsistencies() {
+        var inconsistencies = getAllInconsistencies();
+        return inconsistencies.select(i -> TextInconsistency.class.isAssignableFrom(i.getClass())).collect(TextInconsistency.class::cast);
+    }
+
+    /**
+     * Returns a list of {@link InconsistentSentence InconsistentSentences}.
+     * 
+     * @return all InconsistentSentences
+     */
+    public ImmutableList<InconsistentSentence> getInconsistentSentences() {
+        Map<Integer, InconsistentSentence> incSentenceMap = new HashMap<>();
+
+        var inconsistencies = getAllTextInconsistencies();
+        for (var inconsistency : inconsistencies) {
+            int sentenceNo = inconsistency.getSentenceNumber();
+            var incSentence = incSentenceMap.get(sentenceNo);
+            if (incSentence != null) {
+                incSentence.addInconsistency(inconsistency);
+            } else {
+                var sentence = getSentence(sentenceNo);
+                incSentence = new InconsistentSentence(sentence, inconsistency);
+                incSentenceMap.put(sentenceNo, incSentence);
+            }
+        }
+
+        var sortedInconsistentSentences = Lists.mutable.withAll(incSentenceMap.values()).sortThisByInt(i -> i.sentence().getSentenceNumberForOutput());
+        return sortedInconsistentSentences.toImmutable();
+    }
+
+    /**
+     * Returns the {@link Sentence} with the given sentence number.
+     * 
+     * @param sentenceNo the sentence number
+     * @return Sentence with the given number
+     */
+    public Sentence getSentence(int sentenceNo) {
+        return getText().getSentences().detect(s -> s.getSentenceNumberForOutput() == sentenceNo);
     }
 
     /**

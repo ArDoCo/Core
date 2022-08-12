@@ -27,7 +27,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
  * This agent uses data from DBPedia to mark default words in computer science.
- *
  */
 public class ComputerScienceWordsAgent extends PipelineAgent {
 
@@ -148,13 +147,14 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
             if (Math.min(csWord.length(), word.length()) < wordMinLengthForSimilarity && !csWord.equalsIgnoreCase(word)) {
                 return false;
             }
-            if (!SimilarityUtils.areWordsSimilar(csWord, word, wordSimilarityThreshold)) {
+            if (!SimilarityUtils.areWordsSimilar(csWord, word)) { // TODO: Check how to use wordSimilarityThreshold here
                 return false;
             }
         }
         if (logger.isDebugEnabled())
-            logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts),
-                    String.join(" ", Arrays.stream(wordsToMatch).map(Word::getText).toList()));
+            logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts), String.join(" ", Arrays.stream(wordsToMatch)
+                    .map(Word::getText)
+                    .toList()));
         return true;
     }
 
@@ -217,7 +217,7 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
     private List<String> loadWordsFromResource(String path) {
         try (InputStream data = this.getClass().getResourceAsStream(path)) {
             ObjectMapper oom = new ObjectMapper();
-            return oom.readValue(data, new TypeReference<List<String>>() {
+            return oom.readValue(data, new TypeReference<>() {
             });
         } catch (IOException e) {
             throw new IllegalStateException(e);

@@ -109,9 +109,10 @@ public class PhraseImpl implements Phrase {
         if (obj == null || this.getClass() != obj.getClass())
             return false;
         Phrase other = (Phrase) obj;
-        return Objects.equals(this.getSentenceNo(), other.getSentenceNo()) && Objects.equals(this.getText(), other.getText())
-                && Objects.equals(this.getPhraseType(), other.getPhraseType())
-                && Objects.equals(this.getContainedWords().get(0).getPosition(), other.getContainedWords().get(0).getPosition());
+        return Objects.equals(this.getSentenceNo(), other.getSentenceNo()) && Objects.equals(this.getText(), other.getText()) && Objects.equals(this
+                .getPhraseType(), other.getPhraseType()) && Objects.equals(this.getContainedWords().get(0).getPosition(), other.getContainedWords()
+                        .get(0)
+                        .getPosition());
     }
 
     @Override
