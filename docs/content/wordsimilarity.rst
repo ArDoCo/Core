@@ -4,7 +4,7 @@ Word similarity metrics
 
 In ArDoCo, we use Word Similarity Metrics to assess how similar words (or strings) are.
 To use these metrics, simply call the appropriate methods in the `SimilarityUtils class <https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/SimilarityUtils.java>`_.
-The package `edu.kit.kastel.mcse.ardoco.core.common.util.wordsim <https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/wordsim>` provides different means to tailor the comparisons, most notably via the `WordSimUtils class <https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/wordsim/WordSimUtils.java>`_.
+The package `edu.kit.kastel.mcse.ardoco.core.common.util.wordsim <https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/wordsim>`_ provides different means to tailor the comparisons, most notably via the `WordSimUtils class <https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/wordsim/WordSimUtils.java>`_.
 Example usages can be found below.
 
 Usage
