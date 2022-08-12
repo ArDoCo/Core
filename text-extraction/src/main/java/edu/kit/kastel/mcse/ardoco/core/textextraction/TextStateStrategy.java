@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
@@ -14,10 +12,6 @@ public interface TextStateStrategy {
 
     NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms);
 
-    void mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant);
-
-    NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping nounMapping2, ImmutableList<Word> referenceWords, String reference,
-            MappingKind mappingKind, Claimant claimant, double probability);
-
     ElementWrapper<NounMapping> wrap(NounMapping nounMapping);
+
 }
