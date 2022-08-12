@@ -1,17 +1,18 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.stanford.nlp.trees.Tree;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.stanford.nlp.trees.Tree;
 
 public class PhraseImpl implements Phrase {
     private final Tree tree;
