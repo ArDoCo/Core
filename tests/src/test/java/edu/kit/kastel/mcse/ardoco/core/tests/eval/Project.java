@@ -1,9 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-
 import java.io.File;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.
@@ -47,7 +47,8 @@ public enum Project {
     private final EvaluationResults expectedTraceLinkResults;
     private final EvaluationResults expectedInconsistencyResults;
 
-    Project(String model, String textFile, String goldStandard, String diagramDir, EvaluationResults expectedTraceLinkResults, EvaluationResults expectedInconsistencyResults) {
+    Project(String model, String textFile, String goldStandard, String diagramDir, EvaluationResults expectedTraceLinkResults,
+            EvaluationResults expectedInconsistencyResults) {
         this.model = model;
         this.textFile = textFile;
         this.goldStandard = goldStandard;
@@ -86,9 +87,11 @@ public enum Project {
     }
 
     public File getDiagramDir() {
-        if (diagramDir == null) return null;
+        if (diagramDir == null)
+            return null;
         File file = new File(diagramDir);
-        if (file.exists() && file.isDirectory()) return file;
+        if (file.exists() && file.isDirectory())
+            return file;
         return null;
     }
 
