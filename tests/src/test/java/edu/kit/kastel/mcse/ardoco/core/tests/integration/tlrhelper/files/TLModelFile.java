@@ -13,6 +13,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 public class TLModelFile {
 
+    private TLModelFile() {
+        // no instantiation
+        throw new IllegalAccessError("No instantiation allowed");
+    }
+
     public static void save(Path targetFile, Map<Project, ArDoCoResult> dataMap) throws IOException {
         var projects = dataMap.keySet().stream().sorted().toList();
         var builder = new StringBuilder();

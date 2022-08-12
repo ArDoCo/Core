@@ -22,6 +22,11 @@ public class TLDiffFile {
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("+##0.00%;-##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    private TLDiffFile() {
+        // no instantiation
+        throw new IllegalAccessError("No instantiation allowed");
+    }
+
     public static void save(Path targetFile, Collection<TLProjectEvalResult> newResults, Collection<TLProjectEvalResult> oldResults,
             Map<Project, ArDoCoResult> dataMap) throws IOException {
         // Assumption: Both collections contain the same projects

@@ -125,8 +125,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
         if (logger.isInfoEnabled()) {
             var infoString = String.format(Locale.ENGLISH,
                     "\n%s:\n\tPrecision:\t%.3f (min. expected: %.3f)%n\tRecall:\t\t%.3f (min. expected: %.3f)%n\tF1:\t\t%.3f (min. expected: %.3f)", name,
-                    results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(),
-                    expectedResults.getF1());
+                    results.getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(), expectedResults
+                            .getF1());
             logger.info(infoString);
 
             if (detailedDebug) {
@@ -141,16 +141,15 @@ class TraceabilityLinkRecoveryEvaluationIT {
                     logger.warn(e.getMessage(), e.getCause());
                 }
             }
-
         }
 
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(),
-                        "Precision " + results.getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(),
-                        "Recall " + results.getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(),
-                        "F1 " + results.getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(), "Precision " + results
+                        .getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(), "Recall " + results
+                        .getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(), "F1 " + results
+                        .getF1() + " is below the expected minimum value " + expectedResults.getF1()));
 
     }
 
@@ -180,7 +179,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     private MutableList<String> createOutputStrings(Stream<String> traceLinkStrings, ImmutableList<Sentence> sentences,
             ImmutableList<ModelInstance> instances) {
-        var outputList = Lists.mutable.<String> empty();
+        var outputList = Lists.mutable.<String>empty();
         for (var traceLinkString : traceLinkStrings.toList()) {
             var parts = traceLinkString.split(",");
             if (parts.length < 2) {

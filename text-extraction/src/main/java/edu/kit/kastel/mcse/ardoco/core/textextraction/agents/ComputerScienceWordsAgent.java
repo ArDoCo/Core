@@ -154,13 +154,14 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
             if (Math.min(csWord.length(), word.length()) < wordMinLengthForSimilarity && !csWord.equalsIgnoreCase(word)) {
                 return false;
             }
-            if (!SimilarityUtils.areWordsSimilar(csWord, word, wordSimilarityThreshold)) {
+            if (!SimilarityUtils.areWordsSimilar(csWord, word)) { // TODO: Check how to use wordSimilarityThreshold here
                 return false;
             }
         }
         if (logger.isDebugEnabled())
-            logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts),
-                    String.join(" ", Arrays.stream(wordsToMatch).map(Word::getText).toList()));
+            logger.debug("Matched CS Word [{}] with Words in Text [{}] ", String.join(" ", csParts), String.join(" ", Arrays.stream(wordsToMatch)
+                    .map(Word::getText)
+                    .toList()));
         return true;
     }
 

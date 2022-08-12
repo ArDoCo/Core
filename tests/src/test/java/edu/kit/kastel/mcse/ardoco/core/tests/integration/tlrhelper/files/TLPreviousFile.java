@@ -17,6 +17,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 public class TLPreviousFile {
 
+    private TLPreviousFile() {
+        // no instantiation
+        throw new IllegalAccessError("No instantiation allowed");
+    }
+
     public static Collection<TLProjectEvalResult> load(Path sourceFile) throws IOException {
         List<String> lines = Files.readAllLines(sourceFile);
         Map<Project, List<TestLink>> foundLinkMap = new HashMap<>();

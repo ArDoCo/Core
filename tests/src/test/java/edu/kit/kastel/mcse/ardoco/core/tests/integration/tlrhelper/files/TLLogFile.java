@@ -13,9 +13,13 @@ import java.util.List;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 public class TLLogFile {
-
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    private TLLogFile() {
+        // no instantiation
+        throw new IllegalAccessError("No instantiation allowed");
+    }
 
     public static void append(Path targetFile, List<TLProjectEvalResult> results) throws IOException {
         var sortedResults = results.stream().sorted().toList();
