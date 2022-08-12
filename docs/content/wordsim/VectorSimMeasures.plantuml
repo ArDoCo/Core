@@ -1,0 +1,30 @@
+@startuml
+abstract class VectorBasedWordSimMeasure {
+- vectorDataSource: WordVectorDataSource
+- vectorCache: Map<String, float[]>
+
++ <<Create>> VectorBasedWordSimMeasure(vectorDataSource: WordVectorDataSource)
++ compareVectors(firstWord: String, secondWord: String)
+}
+
+interface WordSimMeasure
+WordSimMeasure <|.. VectorBasedWordSimMeasure
+
+interface WordVectorDataSource {
++ getWordVector(word: String): Optional<float[]>
+}
+WordVectorDataSource <|.. VectorSqliteDatabase
+class VectorSqliteDatabase {
++ <<Create>> VectorSqliteDatabase(sqliteFile: Path)
++ getWordVector(word: String): Optional<float[]>
++ close()
+}
+
+class VectorUtils {
++{static} cosineSimilarity(firstVec: float[], secondVec: float[]): double
++{static} isZero(vector: float[]): boolean
++{static} add(result: double[], toAdd: double[])
++{static} scale(vector: double[], scalar: double)
+}
+
+@enduml

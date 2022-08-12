@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,14 +13,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
-
 /**
  * This helper-class offer functionality to write out a log of the results for TLR.
  */
 public class TLLogFile {
     private static final String LINE_SEPARATOR = System.lineSeparator();
-
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -28,7 +27,7 @@ public class TLLogFile {
 
     /**
      * Appends the given results to the given file.
-     * 
+     *
      * @param targetFile file to append to
      * @param results    the results to write out
      * @throws IOException if writing to file system fails
@@ -48,10 +47,10 @@ public class TLLogFile {
 
         for (TLProjectEvalResult result : sortedResults) {
             String alias = switch (result.getProject()) {
-            case BIGBLUEBUTTON -> "BBB";
-            case MEDIASTORE -> "MS";
-            case TEAMMATES -> "TM";
-            case TEASTORE -> "TS";
+                case BIGBLUEBUTTON -> "BBB";
+                case MEDIASTORE -> "MS";
+                case TEAMMATES -> "TM";
+                case TEASTORE -> "TS";
             };
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());

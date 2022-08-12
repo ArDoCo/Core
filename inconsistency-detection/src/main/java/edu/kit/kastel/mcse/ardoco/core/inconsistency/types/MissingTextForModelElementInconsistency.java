@@ -63,7 +63,7 @@ public class MissingTextForModelElementInconsistency implements Inconsistency {
     @Override
     public ImmutableCollection<String[]> toFileOutput() {
         String[] entry = { getType(), instance.getFullName(), instance.getFullType() };
-        var list = Lists.mutable.<String[]> empty();
+        var list = Lists.mutable.<String[]>empty();
         list.add(entry);
         return list.toImmutable();
     }
