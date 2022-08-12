@@ -32,7 +32,7 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
     private double minSupport = 1;
 
     public MissingModelElementInconsistencyExtractor(DataRepository dataRepository) {
-        super("MissingModelElementInconsistencyExtractor", dataRepository);
+        super(MissingModelElementInconsistencyExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
         var inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
         var connectionState = connectionStates.getConnectionState(metamodel);
 
-        var candidates = Sets.mutable.<MissingElementInconsistencyCandidate> empty();
+        var candidates = Sets.mutable.<MissingElementInconsistencyCandidate>empty();
 
         var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
         var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(InstanceLink::getTextualInstance);
@@ -84,7 +84,7 @@ public class MissingModelElementInconsistencyExtractor extends Informant {
             ImmutableList<RecommendedInstance> linkedRecommendedInstances) {
         for (var linkedRecommendedInstance : linkedRecommendedInstances) {
             var linkedWords = linkedRecommendedInstance.getNameMappings().flatCollect(NounMapping::getWords);
-            var candidatesToRemove = Lists.mutable.<RecommendedInstance> empty();
+            var candidatesToRemove = Lists.mutable.<RecommendedInstance>empty();
             for (var candidate : candidateElements) {
                 if (CommonUtilities.wordListContainsAnyWordFromRecommendedInstance(linkedWords, candidate)) {
                     candidatesToRemove.add(candidate);

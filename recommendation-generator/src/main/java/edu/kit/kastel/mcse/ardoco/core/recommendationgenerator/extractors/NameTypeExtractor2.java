@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 public class NameTypeExtractor2 extends Informant {
 
     public NameTypeExtractor2(DataRepository dataRepository) {
-        super("NameTypeExtractor2", dataRepository);
+        super(NameTypeExtractor2.class.getSimpleName(), dataRepository);
     }
 
     @Override

@@ -39,14 +39,14 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     private MutableSortedBag<Double> probabilities = SortedBags.mutable.empty();
 
     public RecommendedInstanceProbabilityFilter(DataRepository dataRepository) {
-        super("RecommendedInstanceProbabilityFilter", dataRepository);
+        super(RecommendedInstanceProbabilityFilter.class.getSimpleName(), dataRepository);
     }
 
     /**
      * Filter RecommendedInstances based on various heuristics. First, filter unlikely ones (low probability).
      */
     protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
-        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
+        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance>empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
         if (dynamicThreshold) {
@@ -110,8 +110,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
         var highestTypeProbability = getHighestTypeProbability(recommendedInstance.getTypeMappings());
         var highestNameProbability = getHighestNameProbability(recommendedInstance.getTypeMappings());
 
-        return highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability
-                || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
+        return highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
 
     }
 

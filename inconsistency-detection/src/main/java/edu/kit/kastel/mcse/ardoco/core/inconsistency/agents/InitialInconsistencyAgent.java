@@ -23,7 +23,7 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     private List<String> enabledFilters;
 
     public InitialInconsistencyAgent(DataRepository dataRepository) {
-        super("InitialInconsistencyAgent", dataRepository);
+        super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
 
         filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository));
         enabledFilters = filters.collect(Informant::getId);

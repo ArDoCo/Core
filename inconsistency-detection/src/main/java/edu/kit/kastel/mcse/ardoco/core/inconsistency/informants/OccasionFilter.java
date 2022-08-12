@@ -24,11 +24,11 @@ public class OccasionFilter extends Filter {
     private int expectedAppearances = 2;
 
     public OccasionFilter(DataRepository dataRepository) {
-        super("OccasionFilter", dataRepository);
+        super(OccasionFilter.class.getSimpleName(), dataRepository);
     }
 
     protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
-        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
+        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance>empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
         for (var recommendedInstance : recommendedInstances) {

@@ -25,7 +25,7 @@ public interface NounMapping extends ICopyable<NounMapping> {
     ImmutableSet<String> getSurfaceForms();
 
     /**
-     * Returns all words that are contained by the mapping. This should include coreferences.
+     * Returns all words that are contained by the mapping.
      *
      * @return all words that are referenced with this mapping
      */
@@ -87,11 +87,6 @@ public interface NounMapping extends ICopyable<NounMapping> {
     AggregationFunctions getLocalAggregationFunction();
 
     /**
-     * @return the coreferences
-     */
-    ImmutableList<Word> getCoreferences();
-
-    /**
      * Adds the kind with probability.
      *
      * @param kind        the kind
@@ -120,4 +115,5 @@ public interface NounMapping extends ICopyable<NounMapping> {
         return this.getProbabilityForKind(kind) > 0;
     }
 
+    boolean isTerm();
 }

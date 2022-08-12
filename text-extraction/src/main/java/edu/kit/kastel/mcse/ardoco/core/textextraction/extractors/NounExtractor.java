@@ -29,7 +29,7 @@ public class NounExtractor extends Informant {
      * Prototype constructor.
      */
     public NounExtractor(DataRepository data) {
-        super("NounExtractor", data);
+        super(NounExtractor.class.getSimpleName(), data);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ReferenceAgent extends PipelineAgent {
      * Create the agent.
      */
     public ReferenceAgent(DataRepository dataRepository) {
-        super("ReferenceAgent", dataRepository);
+        super(ReferenceAgent.class.getSimpleName(), dataRepository);
 
         extractors = List.of(new ReferenceExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();

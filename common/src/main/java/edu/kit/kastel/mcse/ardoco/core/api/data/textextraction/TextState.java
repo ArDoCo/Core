@@ -40,10 +40,10 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
     NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms);
 
     NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences);
+            ImmutableSet<String> surfaceForms, String reference);
 
     NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences);
+            ImmutableSet<String> surfaceForms, String reference);
 
     // --- remove section --->
 
@@ -99,4 +99,22 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
     NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference);
 
     void mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant);
+
+    @Deprecated
+    ImmutableList<NounMapping> getMappingsThatCouldBeOfKind(Word word, MappingKind kind);
+
+    @Deprecated
+    ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind name, MappingKind... kinds);
+
+    @Deprecated
+    ImmutableList<NounMapping> getNounMappingsByWord(Word word);
+
+    @Deprecated
+    ImmutableList<NounMapping> getNounMappingsByWordAndKind(Word word, MappingKind kind);
+
+    @Deprecated
+    boolean isWordContainedByMappingKind(Word word, MappingKind kind);
+
+    @Deprecated
+    ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference);
 }

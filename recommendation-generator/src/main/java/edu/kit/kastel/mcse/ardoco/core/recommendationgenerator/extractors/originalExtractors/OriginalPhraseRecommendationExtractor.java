@@ -1,5 +1,4 @@
-/* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.originalExtractors;
 
 import java.util.Map;
 
@@ -22,13 +21,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class PhraseRecommendationExtractor extends Informant {
+@Deprecated
+public class OriginalPhraseRecommendationExtractor extends Informant {
 
     @Configurable
     private double confidence = 0.8;
 
-    public PhraseRecommendationExtractor(DataRepository dataRepository) {
-        super(PhraseRecommendationExtractor.class.getSimpleName(), dataRepository);
+    public OriginalPhraseRecommendationExtractor(DataRepository dataRepository) {
+        super(OriginalPhraseRecommendationExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override
@@ -37,12 +37,6 @@ public class PhraseRecommendationExtractor extends Informant {
         var modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-
-        if (textState.getNounMappings()
-                .select(nm -> nm.getWords().anySatisfy(w -> textState.getNounMappings().select(nm2 -> nm2.getWords().contains(w)).size() > 1))
-                .size() > 0) {
-            int i = 0;
-        }
 
         for (var model : modelStatesData.modelIds()) {
             var modelState = modelStatesData.getModelState(model);
@@ -60,12 +54,12 @@ public class PhraseRecommendationExtractor extends Informant {
      */
     private void createRecommendationInstancesFromPhraseNounMappings(TextState textState, RecommendationState recommendationState,
             ModelExtractionState modelState) {
-        // TODO: nounmapping does not contain #isPhrase anymore
-        /*
-         * for (var nounMapping : textState.getNounMappings()) { if (nounMapping.isPhrase()) { var typeMappings =
-         * getRelatedTypeMappings(nounMapping, textState); addRecommendedInstance(nounMapping, typeMappings,
-         * recommendationState, modelState); } }
-         */
+        for (var nounMapping : textState.getNounMappings()) {
+            if (nounMapping.isTerm()) {
+                var typeMappings = getRelatedTypeMappings(nounMapping, textState);
+                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
+            }
+        }
     }
 
     /**
@@ -137,10 +131,7 @@ public class PhraseRecommendationExtractor extends Informant {
         // find TypeMappings that come from the Phrase Words within the Compound Word
         var phrase = getPhraseWordsFromNounMapping(nounMapping);
         for (var word : phrase) {
-            NounMapping nm = textState.getNounMappingByWord(word);
-            if (nm.getKind() == MappingKind.TYPE) {
-                typeMappings.add(nm);
-            }
+            typeMappings.addAll(textState.getNounMappingsByWordAndKind(word, MappingKind.TYPE).toList());
         }
         return typeMappings.toImmutable();
     }
@@ -152,9 +143,9 @@ public class PhraseRecommendationExtractor extends Informant {
         }
 
         if (word.getPosTag().isNoun()) {
-            NounMapping nm = textState.getNounMappingByWord(word);
-            if (nm.couldBeOfKind(MappingKind.TYPE)) {
-                addRecommendedInstance(nounMapping, Lists.immutable.with(nm), recommendationState, modelState);
+            var typeMappings = textState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            if (!typeMappings.isEmpty()) {
+                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
             }
         }
     }
