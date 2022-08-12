@@ -1,9 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-
 import java.util.Locale;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 
 /**
  * This class represents evaluation results. Implementing classes should be able to return precision, recall, and
