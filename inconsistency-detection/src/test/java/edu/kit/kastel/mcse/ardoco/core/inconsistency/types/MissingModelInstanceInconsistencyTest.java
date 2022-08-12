@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 /**
  * This class tests the record MissingModelInconsistency.
  * 
- * @author Jan Keim
  */
 public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements Claimant {
 

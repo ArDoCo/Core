@@ -44,7 +44,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.Hol
  * a missing element and the trace links to this element (in the gold standard) are the spots of inconsistency then. We
  * run this multiple times so each element was held back once.
  *
- * @author Jan Keim
  */
 class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);

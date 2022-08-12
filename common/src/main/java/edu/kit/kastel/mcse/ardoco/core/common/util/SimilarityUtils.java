@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 /**
  * This class is a utility class.
  *
- * @author Sophie, Jan
  */
 public final class SimilarityUtils {
 

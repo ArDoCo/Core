@@ -49,7 +49,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSumma
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
  * defined in the enum {@link Project}.
  * 
- * @author Jan Keim
  *
  */
 class TraceabilityLinkRecoveryEvaluationIT {

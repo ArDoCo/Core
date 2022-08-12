@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 /**
  * The analyzer examines the outgoing arcs of the current node.
  *
- * @author Sophie
  */
 
 public class OutDepArcsExtractor extends Informant {

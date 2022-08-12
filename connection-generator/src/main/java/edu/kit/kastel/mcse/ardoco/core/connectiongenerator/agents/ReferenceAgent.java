@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ReferenceE
  * The reference solver finds instances mentioned in the text extraction state as names. If it founds some similar names
  * it creates recommendations.
  *
- * @author Sophie
  */
 public class ReferenceAgent extends PipelineAgent {
 

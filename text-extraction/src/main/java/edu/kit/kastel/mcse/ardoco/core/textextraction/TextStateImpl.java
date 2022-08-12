@@ -20,8 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 /**
  * The Class TextState defines the basic implementation of a {@link TextState}.
  *
- * @author Sophie Schulz
- * @author Jan Keim
  */
 public class TextStateImpl extends AbstractState implements TextState {
 

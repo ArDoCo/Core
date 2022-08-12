@@ -24,7 +24,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 /**
  * General helper class for outsourced, common methods.
  *
- * @author Sophie
  */
 public final class CommonUtilities {
 
