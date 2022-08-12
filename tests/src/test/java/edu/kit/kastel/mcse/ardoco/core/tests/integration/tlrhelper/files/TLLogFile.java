@@ -1,8 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 /**
  * This helper-class offer functionality to write out a log of the results for TLR.
@@ -47,10 +47,10 @@ public class TLLogFile {
 
         for (TLProjectEvalResult result : sortedResults) {
             String alias = switch (result.getProject()) {
-                case BIGBLUEBUTTON -> "BBB";
-                case MEDIASTORE -> "MS";
-                case TEAMMATES -> "TM";
-                case TEASTORE -> "TS";
+            case BIGBLUEBUTTON -> "BBB";
+            case MEDIASTORE -> "MS";
+            case TEAMMATES -> "TM";
+            case TEASTORE -> "TS";
             };
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());

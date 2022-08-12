@@ -33,13 +33,12 @@ public enum Project {
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.999, .713, .832), //
-            new EvaluationResults(.0, .0, .250)),
-    BIGBLUEBUTTON( //
-            "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
-            "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
-            "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
-            new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.0, .0, .272));
+            new EvaluationResults(.0, .0, .250)), BIGBLUEBUTTON( //
+                    "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
+                    "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
+                    "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
+                    new EvaluationResults(.877, .826, .850), //
+                    new EvaluationResults(.0, .0, .272));
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
     private final String model;
