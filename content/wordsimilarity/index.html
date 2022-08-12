@@ -1,0 +1,508 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="prev" title="Inconsistency Data" href="../data/inconsistencyData/" />
+
+    <meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
+        <title>Word similarity metrics - </title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../"><div class="brand"> </div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/ArDoCo-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/ArDoCo-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text"> </span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../quickstart/">Quickstart</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart/cli/">Command Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart/standardConfiguration/">Standard Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart/saveActions/">Save Actions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline/">Pipeline</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../stages/">Stages</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stages/textPreprocessing/">Text Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/textExtraction/">Text Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/modelExtraction/">Model Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/recommendationGeneration/">Recommendation Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/connectionGeneration/">Connection Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stages/inconsistencyGeneration/">Inconstistency Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datastructures/">Data Structures</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../data/textData/">Text Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/textextractionData/">Extracted Text Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/modelData/">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/recommendationData/">Recommendation Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/connectionData/">Connection Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/inconsistencyData/">Inconsistency Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Word similarity metrics</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="word-similarity-metrics">
+<h1>Word similarity metrics<a class="headerlink" href="#word-similarity-metrics" title="Permalink to this heading">#</a></h1>
+<p>In ArDoCo, we use Word Similarity Metrics to assess how similar words (or strings) are.
+To use these metrics, simply call the appropriate methods in the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/SimilarityUtils.java">SimilarityUtils class</a>.
+The package <cite>edu.kit.kastel.mcse.ardoco.core.common.util.wordsim &lt;https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/wordsim&gt;</cite> provides different means to tailor the comparisons, most notably via the <a class="reference external" href="https://github.com/ArDoCo/Core/blob/main/common/src/main/java/edu/kit/kastel/mcse/ardoco/core/common/util/wordsim/WordSimUtils.java">WordSimUtils class</a>.
+Example usages can be found below.</p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
+<p>To compare similarity between words in ArDoCo, simply call the static <cite>WordSimUtils</cite> class.
+Words can be represented as strings or as <cite>IWord</cite> instances which may allow some similarity measures to utilize additional contextual information.</p>
+<p>To configure the similarity computation, individual word similarity measures can be enabled/disabled and configured
+using either the <cite>CommonTextToolsConfig.properties</cite> (which is only loaded on startup) or by dynamically setting
+the measures during runtime, using the <cite>setMeasures()</cite> method in <cite>WordSimUtils</cite>.</p>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h3>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Basic usage</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;database&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="kd">var</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;datastore&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="kt">boolean</span><span class="w"> </span><span class="n">similar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WordSimUtils</span><span class="p">.</span><span class="na">areWordsSimilar</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">second</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Using a specific strategy</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;database&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="kd">var</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;datastore&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="kd">var</span><span class="w"> </span><span class="n">similar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WordSimUtils</span><span class="p">.</span><span class="na">areWordsSimilar</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">second</span><span class="p">,</span><span class="w"> </span><span class="n">ComparisonStrategy</span><span class="p">.</span><span class="na">MAJORITY</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Using a custom context</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">IWord</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span><span class="w"></span>
+<span class="n">IWord</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span><span class="w"></span>
+<span class="kd">var</span><span class="w"> </span><span class="n">similar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WordSimUtils</span><span class="p">.</span><span class="na">areWordsSimilar</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ComparisonContext</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">first</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">second</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kc">true</span><span class="w"> </span><span class="c1">// lemmatize?</span><span class="w"></span>
+<span class="p">));</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this heading">#</a></h2>
+<p>ArDoCo provides a main access point for word similarity comparison in the <cite>edu.kit.kastel.mcse.ardoco.core.common.util.wordsim</cite> package.</p>
+<p>The main classes of this package are the following:</p>
+<p class="plantuml">
+<img src="../../_images/plantuml-779cf4fd4d7ab67888fd2e394beb33acae5ede29.svg" alt="&#64;startuml
+
+class WordSimLoader {
++{static} loadUsingProperties(): List&lt;WordSimMeasure&gt;
+}
+
+interface WordSimMeasure {
++areWordsSimilar(ctx: ComparisonContext): boolean
+}
+
+class ComparisonContext {
++firstString: String
++secondString: String
++firstWord: IWord
++secondWord: IWord
++lemmatize: boolean
+
++firstTerm(): String
++secondTerm(): String
+}
+
+interface ComparisonStrategy {
++areWordsSimilar(ctx: ComparisonContext, measures: List&lt;WordSimMeasure&gt;): boolean
+}
+
+ComparisonStrategy &lt;|.. AtleastOneStrategy
+WordSimMeasure &quot;*&quot;--o WordSimUtils
+
+class WordSimUtils {
+-measures: List&lt;WordSimMeasure&gt;
+-strategy: ComparisonStrategy
+
++{static} setMeasures(measures: Collection&lt;WordSimMeasure&gt;)
++{static} setStrategy(strategy: ComparisonStrategy)
++{static} areWordsSimilar(ctx: ComparisonContext, strategy: ComparisonStrategy): boolean
++{static} areWordsSimilar(ctx: ComparisonContext): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: String): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: String, strategy: ComparisonStrategy): boolean
++{static} areWordsSimilar(firstWord: IWord, secondWord: IWord): boolean
++{static} areWordsSimilar(firstWord: IWord, secondWord: IWord, strategy: ComparisonStrategy): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: IWord): boolean
++{static} areWordsSimilar(firstWord: String, secondWord: IWord, strategy: ComparisonStrategy): boolean
+}
+
+&#64;enduml
+"/></p>
+<section id="wordsimutils">
+<h3>WordSimUtils<a class="headerlink" href="#wordsimutils" title="Permalink to this heading">#</a></h3>
+<p>The static <cite>WordSimUtils</cite> class is the main access point for word similarity comparison.
+It provides multiple static methods that allow easy comparison between strings or <cite>IWord</cite> instances.
+The class allows customizing how it performs its comparisons, by either passing a custom comparison strategy to
+one of its methods, or by setting the strategy and used measures with the <cite>setMeasures()</cite> and <cite>setStrategy()</cite> methods.
+Changes through <cite>setMeasures()</cite> and <cite>setStrategy()</cite> will persist, meaning that any subsequent calls for word comparisons
+will use the default measures and strategy that was previously set.</p>
+</section>
+<section id="comparisoncontext">
+<h3>ComparisonContext<a class="headerlink" href="#comparisoncontext" title="Permalink to this heading">#</a></h3>
+<p>A <cite>ComparisonContext</cite> is meant to contain all necessary information to recognize whether two words are similar.
+Since not all comparisons involve <cite>IWord</cite> instances, the fields <cite>firstWord: IWord</cite> and <cite>secondWord: IWord</cite> are nullable.
+However, these fields can provide additional information (like the corresponding sentence of a word) which similarity
+measures can utilize. The <cite>lemmatize</cite> field decides whether the word similarity measures should use the lemmatized
+version of the words.</p>
+</section>
+<section id="comparisonstrategy">
+<h3>ComparisonStrategy<a class="headerlink" href="#comparisonstrategy" title="Permalink to this heading">#</a></h3>
+<p>A <cite>ComparisonStrategy</cite> decides how the verdicts of multiple WSMs regarding a specific comparison are combined.
+As of right now, two strategies are already implemented:</p>
+<ul class="simple">
+<li><p>The <cite>AtleastOneStrategy</cite> is the initial default strategy. With this strategy, a word pair is considered similar if at least one of the given measures consider the word pair as similar.</p></li>
+<li><p>The <cite>MajorityStrategy</cite> considers a word pair as similar enough, if the majority of all WSMs agree that the word pair is similar.</p></li>
+</ul>
+</section>
+<section id="measures">
+<h3>Measures<a class="headerlink" href="#measures" title="Permalink to this heading">#</a></h3>
+<p>Each word similarity measure implements the <cite>WordSimMeasure</cite> interface and is located under its own package
+inside the <cite>measures</cite> subpackage.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>edu.kit.kastel.mcse.ardoco.core.common.util.wordsim</cite></dt><dd><ul>
+<li><p>…</p></li>
+<li><dl class="simple">
+<dt><cite>measures</cite></dt><dd><ul>
+<li><p><cite>equality</cite></p></li>
+<li><p><cite>fastText</cite></p></li>
+<li><p><cite>glove</cite></p></li>
+<li><p><cite>jarowinkler</cite></p></li>
+<li><p><cite>levenshtein</cite></p></li>
+<li><p><cite>ngram</cite></p></li>
+<li><p><cite>sewordsim</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="wordsimloader">
+<h3>WordSimLoader<a class="headerlink" href="#wordsimloader" title="Permalink to this heading">#</a></h3>
+<p>On startup, <cite>WordSimUtils</cite> will load measures by calling the <cite>loadUsingProperties()</cite> method from the <cite>WordSimLoader</cite> class.
+The measures that are loaded can be configured in the <cite>CommonTextToolsConfig.properties</cite> file.</p>
+</section>
+<section id="vector-based-similarity-measures">
+<h3>Vector-based similarity measures<a class="headerlink" href="#vector-based-similarity-measures" title="Permalink to this heading">#</a></h3>
+<p>Some word similarity measures use vector representations of words which are then compared with cosine similarity.
+Since many of these measures work almost the same, common behaviour is abstracted away.</p>
+<p class="plantuml">
+<img src="../../_images/plantuml-70f792340d6e32938be822f6586771c6e39dca07.svg" alt="&#64;startuml
+abstract class VectorBasedWordSimMeasure {
+- vectorDataSource: WordVectorDataSource
+- vectorCache: Map&lt;String, float[]&gt;
+
++ &lt;&lt;Create&gt;&gt; VectorBasedWordSimMeasure(vectorDataSource: WordVectorDataSource)
++ compareVectors(firstWord: String, secondWord: String)
+}
+
+interface WordSimMeasure
+WordSimMeasure &lt;|.. VectorBasedWordSimMeasure
+
+interface WordVectorDataSource {
++ getWordVector(word: String): Optional&lt;float[]&gt;
+}
+WordVectorDataSource &lt;|.. VectorSqliteDatabase
+class VectorSqliteDatabase {
++ &lt;&lt;Create&gt;&gt; VectorSqliteDatabase(sqliteFile: Path)
++ getWordVector(word: String): Optional&lt;float[]&gt;
++ close()
+}
+
+class VectorUtils {
++{static} cosineSimilarity(firstVec: float[], secondVec: float[]): double
++{static} isZero(vector: float[]): boolean
++{static} add(result: double[], toAdd: double[])
++{static} scale(vector: double[], scalar: double)
+}
+
+&#64;enduml
+"/></p>
+<p>The <cite>VectorBasedWordSimMeasure</cite> acts as a base class for vector-based measures.
+It requires a <cite>WordVectorDataSource</cite> to fetch vector representations of the words it wants to compare.
+One implementation of such a data source is <cite>VectorSqliteDatabase</cite> that fetches vector representations from an sqlite file.
+To create such a sqlite database from an existing word2vec-like embedding text file, the <cite>WordVectorSqliteImporter</cite> can be used.
+It scans the embedding text file and inserts the vectors into the sqlite database.
+The importer can be extended to allow filtering and pre-processing the words before they are inserted.
+The <cite>VectorUtils</cite> class provides helper methods for calculating the cosine similarity and other basic vector arithmetic.</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="../data/inconsistencyData/">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Inconsistency Data</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Sophie Corallo, Jan Keim, Dominik Fuchß
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/ArDoCo/Core" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Word similarity metrics</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#architecture">Architecture</a><ul>
+<li><a class="reference internal" href="#wordsimutils">WordSimUtils</a></li>
+<li><a class="reference internal" href="#comparisoncontext">ComparisonContext</a></li>
+<li><a class="reference internal" href="#comparisonstrategy">ComparisonStrategy</a></li>
+<li><a class="reference internal" href="#measures">Measures</a></li>
+<li><a class="reference internal" href="#wordsimloader">WordSimLoader</a></li>
+<li><a class="reference internal" href="#vector-based-similarity-measures">Vector-based similarity measures</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    </body>
+</html>
