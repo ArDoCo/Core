@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
  * The connection state encapsulates all connections between the model extraction state and the recommendation state.
  * These connections are stored in instance and relation links.
  *
- * @author Sophie
  */
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 

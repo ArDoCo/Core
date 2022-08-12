@@ -1,7 +1,11 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getConnectionStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getInconsistencyStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getModelStatesData;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getRecommendationStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getTextState;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,7 +82,7 @@ public final class ArDoCo extends Pipeline {
         classLogger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
-        ArDoCo arDoCo = null;
+        ArDoCo arDoCo;
         try {
             arDoCo = defineArDoCo(inputText, inputArchitectureModel, inputCodeModel, additionalConfigs, diagramDirectory);
         } catch (IOException e) {
@@ -192,8 +196,9 @@ public final class ArDoCo extends Pipeline {
                     }
                     var values = line.split(KEY_VALUE_CONNECTOR, 2);
                     if (values.length != 2) {
-                        classLogger.error("Found config line \"{}\". Layout has to be: 'KEY" + KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName"
-                                + CLASS_ATTRIBUTE_CONNECTOR + "AttributeName" + KEY_VALUE_CONNECTOR + "42", line);
+                        classLogger.error(
+                                "Found config line \"{}\". Layout has to be: 'KEY" + KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName" + CLASS_ATTRIBUTE_CONNECTOR + "AttributeName" + KEY_VALUE_CONNECTOR + "42",
+                                line);
                     } else {
                         additionalConfigs.put(values[0], values[1]);
                     }

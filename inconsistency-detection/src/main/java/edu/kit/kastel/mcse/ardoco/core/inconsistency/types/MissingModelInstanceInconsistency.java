@@ -9,15 +9,21 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 
-public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements Inconsistency {
+public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements TextInconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
-    private static final String REASON_FORMAT_STRING = "Text indicates (confidence: %.2f) that \"%s\" (sentence %d) should be contained in the model(s) but could not be found.";
+    private static final String REASON_FORMAT_STRING = "Text indicates that \"%s\" should be contained in the model(s) but could not be found. (confidence: %.2f)";
 
     @Override
     public String getReason() {
-        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, sentence);
+        return String.format(Locale.US, REASON_FORMAT_STRING, name, confidence);
+    }
+
+    @Override
+    public int getSentenceNumber() {
+        return sentence;
     }
 
     @Override

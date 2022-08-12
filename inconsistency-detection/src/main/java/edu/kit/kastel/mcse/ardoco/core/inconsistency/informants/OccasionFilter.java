@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 /**
  * Filters {@link RecommendedInstance}s that occur only once in the text, thus are unlikely to be important entities.
  *
- * @author Jan Keim
  *
  */
 public class OccasionFilter extends Filter {
@@ -29,7 +28,7 @@ public class OccasionFilter extends Filter {
     }
 
     protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
-        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
+        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance>empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
         for (var recommendedInstance : recommendedInstances) {

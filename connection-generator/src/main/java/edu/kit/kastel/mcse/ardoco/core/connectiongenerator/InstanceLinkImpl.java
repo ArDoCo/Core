@@ -20,7 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 /**
  * Represents a trace link between an instance of the extracted model and a recommended instance.
  *
- * @author Sophie
  */
 public class InstanceLinkImpl implements InstanceLink {
 

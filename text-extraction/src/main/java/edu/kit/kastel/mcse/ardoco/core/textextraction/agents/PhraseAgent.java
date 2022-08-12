@@ -21,7 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 /**
  * Agent that is responsible for looking at phrases and extracting {@link NounMapping}s from compound nouns etc.
  *
- * @author Jan Keim
  */
 public class PhraseAgent extends PipelineAgent {
     @Configurable

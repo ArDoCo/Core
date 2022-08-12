@@ -63,8 +63,8 @@ public class DiagramRecommendationAgent extends PipelineAgent {
         var diagramState = diagramStateOptional.get();
         for (var diagram : diagramState.getDiagramIds()) {
             // TODO For now we assume the architectural sketches belong to architecture not code.
-            processDiagram(diagramState.detectedBoxes(diagram),
-                    DataRepositoryHelper.getRecommendationStates(getDataRepository()).getRecommendationState(Metamodel.ARCHITECTURE));
+            processDiagram(diagramState.detectedBoxes(diagram), DataRepositoryHelper.getRecommendationStates(getDataRepository())
+                    .getRecommendationState(Metamodel.ARCHITECTURE));
         }
 
     }

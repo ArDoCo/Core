@@ -1,17 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import java.io.File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+
+import java.io.File;
 
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.
- *
- * @author Jan Keim
  */
 public enum Project {
     MEDIASTORE(//
@@ -20,7 +15,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             null, //
             new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.0, .0, .164)//
+            new EvaluationResults(.0, .0, .246)//
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
@@ -28,7 +23,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             "src/test/resources/diagrams/teammates", //
             new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.0, .0, .196)//
+            new EvaluationResults(.0, .0, .222)//
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
@@ -36,26 +31,23 @@ public enum Project {
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             null, //
             new EvaluationResults(.999, .713, .832), //
-            new EvaluationResults(.0, .0, .146)),
+            new EvaluationResults(.0, .0, .250)), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             "src/test/resources/diagrams/bbb", //
             new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.0, .0, .198));
+            new EvaluationResults(.0, .0, .272));
 
-    private static final Logger logger = LoggerFactory.getLogger(Project.class);
     private final String model;
     private final String textFile;
     private final String goldStandard;
     private final String diagramDir;
     private final EvaluationResults expectedTraceLinkResults;
     private final EvaluationResults expectedInconsistencyResults;
-    private volatile ModelConnector modelConnector = null;
 
-    Project(String model, String textFile, String goldStandard, String diagramDir, EvaluationResults expectedTraceLinkResults,
-            EvaluationResults expectedInconsistencyResults) {
+    Project(String model, String textFile, String goldStandard, String diagramDir, EvaluationResults expectedTraceLinkResults, EvaluationResults expectedInconsistencyResults) {
         this.model = model;
         this.textFile = textFile;
         this.goldStandard = goldStandard;
@@ -94,11 +86,9 @@ public enum Project {
     }
 
     public File getDiagramDir() {
-        if (diagramDir == null)
-            return null;
+        if (diagramDir == null) return null;
         File file = new File(diagramDir);
-        if (file.exists() && file.isDirectory())
-            return file;
+        if (file.exists() && file.isDirectory()) return file;
         return null;
     }
 

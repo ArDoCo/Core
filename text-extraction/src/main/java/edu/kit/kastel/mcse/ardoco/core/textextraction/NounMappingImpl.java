@@ -27,8 +27,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  *
- * @author Sophie Schulz
- * @author Jan Keim
  */
 public class NounMappingImpl implements NounMapping {
 
@@ -205,8 +203,8 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public NounMapping createCopy() {
-        var nm = new NounMappingImpl(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(),
-                surfaceForms.toImmutable());
+        var nm = new NounMappingImpl(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(), surfaceForms
+                .toImmutable());
         nm.hasPhrase = hasPhrase;
         return nm;
     }
@@ -292,8 +290,10 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public String toString() {
-        return "NounMapping [" + "distribution="
-                + distribution.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + //
+        return "NounMapping [" + "distribution=" + distribution.entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(",")) + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //

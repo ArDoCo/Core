@@ -11,12 +11,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
 /**
- * @author Jan Keim
  */
 public class MissingTextForModelElementInconsistency implements Inconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingTextForModelElement";
 
-    private static final String REASON_FORMAT_STRING = "Model contains an Instance that should be documented (because it is not whitelisted and its type \"%s\" is configured to need documentation) but could not be found in documentation: %s";
+    private static final String REASON_FORMAT_STRING = "Model contains an Instance \"%s\" (type: \"%s\")  that seems to be undocumented.";
 
     private final ModelInstance instance;
 
@@ -31,7 +30,7 @@ public class MissingTextForModelElementInconsistency implements Inconsistency {
 
     @Override
     public String getReason() {
-        return String.format(Locale.US, REASON_FORMAT_STRING, instance.getFullType(), instance.getFullName());
+        return String.format(Locale.US, REASON_FORMAT_STRING, instance.getFullName(), instance.getFullType());
     }
 
     @Override
@@ -64,7 +63,7 @@ public class MissingTextForModelElementInconsistency implements Inconsistency {
     @Override
     public ImmutableCollection<String[]> toFileOutput() {
         String[] entry = { getType(), instance.getFullName(), instance.getFullType() };
-        var list = Lists.mutable.<String[]> empty();
+        var list = Lists.mutable.<String[]>empty();
         list.add(entry);
         return list.toImmutable();
     }

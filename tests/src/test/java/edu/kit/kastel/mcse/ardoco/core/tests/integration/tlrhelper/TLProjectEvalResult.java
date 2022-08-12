@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
@@ -41,7 +42,7 @@ public class TLProjectEvalResult extends EvaluationResults implements Comparable
     }
 
     private static List<TestLink> getTraceLinks(Project project, DataRepository data) {
-        var traceLinks = Lists.mutable.<TestLink> empty();
+        var traceLinks = Lists.mutable.<TestLink>empty();
         var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
@@ -62,7 +63,6 @@ public class TLProjectEvalResult extends EvaluationResults implements Comparable
         this.foundLinks.addAll(foundLinks);
         this.correctLinks.addAll(correctLinks);
 
-        // --- copied from TestUtil#compare but with TestLink instead of strings ---
         Set<TestLink> distinctTraceLinks = new HashSet<>(this.foundLinks);
         Set<TestLink> distinctGoldStandard = new HashSet<>(this.correctLinks);
 
@@ -78,10 +78,9 @@ public class TLProjectEvalResult extends EvaluationResults implements Comparable
         Set<TestLink> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         double fn = falseNegatives.size();
 
-        this.precision = tp / (tp + fp);
-        this.recall = tp / (tp + fn);
-        this.f1Score = 2 * precision * recall / (precision + recall);
-        // --- end of copy ---
+        this.precision = TestUtil.calculatePrecision(tp, fp);
+        this.recall = TestUtil.calculateRecall(tp, fn);
+        this.f1Score = TestUtil.calculateF1(precision, recall);
 
         this.truePositives.addAll(truePositives);
         this.falsePositives.addAll(falsePositives);

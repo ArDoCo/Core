@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * This analyzer classifies all nodes, containing separators, as names and adds them as mappings to the current text
  * extraction state.
  *
- * @author Sophie
  */
 
 public class SeparatedNamesExtractor extends Informant {

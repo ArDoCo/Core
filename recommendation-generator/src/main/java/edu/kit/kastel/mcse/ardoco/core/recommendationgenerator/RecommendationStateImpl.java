@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
  * contained by the model by their probability.
  *
- * @author Sophie
  */
 public class RecommendationStateImpl extends AbstractState implements RecommendationState {
 
@@ -74,8 +73,8 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public RecommendedInstance addRecommendedInstance(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameMappings,
             ImmutableList<NounMapping> typeMappings) {
         var recommendedInstance = new RecommendedInstanceImpl(name, type, claimant, probability, //
-                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),
-                Lists.immutable.withAll(new HashSet<>(typeMappings.castToCollection())));
+                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())), Lists.immutable.withAll(new HashSet<>(typeMappings
+                        .castToCollection())));
         this.addRecommendedInstance(recommendedInstance);
 
         return recommendedInstance;
