@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.originalExtractors;
 
 import java.util.Map;
