@@ -32,7 +32,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
  * This agent uses data from DBPedia to mark default words in computer science.
- *
  */
 public class ComputerScienceWordsAgent extends PipelineAgent {
 
@@ -224,7 +223,7 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
     private List<String> loadWordsFromResource(String path) {
         try (InputStream data = this.getClass().getResourceAsStream(path)) {
             ObjectMapper oom = new ObjectMapper();
-            return oom.readValue(data, new TypeReference<List<String>>() {
+            return oom.readValue(data, new TypeReference<>() {
             });
         } catch (IOException e) {
             throw new IllegalStateException(e);
