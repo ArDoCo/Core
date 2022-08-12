@@ -65,7 +65,7 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
     private final ImmutableList<String> commonCSWords;
 
     public ComputerScienceWordsAgent(DataRepository dataRepository) {
-        super("ComputerScienceWordsAgent", dataRepository);
+        super(ComputerScienceWordsAgent.class.getSimpleName(), dataRepository);
         this.commonCSWords = loadWords();
     }
 

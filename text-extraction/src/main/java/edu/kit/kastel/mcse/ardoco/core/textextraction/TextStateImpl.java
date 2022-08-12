@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
@@ -25,6 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 /**
  * The Class TextState defines the basic implementation of a {@link TextState}.
@@ -32,6 +34,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
  */
 public class TextStateImpl extends AbstractState implements TextState {
 
+    /**
+     * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
+     *
+     * @see #getMappingsThatCouldBeOfKind(Word, MappingKind)
+     */
+    @Deprecated
+    double MAPPINGKIND_MAX_DIFF = 0.1;
     private MutableSet<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
     private final DefaultTextStateStrategy strategy;
@@ -57,30 +66,30 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences) {
-        NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, referenceWords, surfaceForms, reference, coreferences);
+            ImmutableSet<String> surfaceForms, String reference) {
+        NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, referenceWords, surfaceForms, reference);
 
         var nounMappings = getNounMappings();
-        for (Word word : words) {
+        /* for (Word word : words) {
             assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
-        }
+        }*/
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
 
     @Override
     public NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences) {
+            ImmutableSet<String> surfaceForms, String reference) {
 
         if (reference == null) {
             reference = calculateNounMappingReference(referenceWords);
         }
 
-        NounMapping nounMapping = new NounMappingImpl(words, distribution, referenceWords, surfaceForms, reference, coreferences);
+        NounMapping nounMapping = new NounMappingImpl(words, distribution, referenceWords, surfaceForms, reference, new AtomicBoolean(false));
         var nounMappings = getNounMappings();
-        for (Word word : words) {
+        /*for (Word word : words) {
             assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
-        }
+        }*/
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
@@ -147,14 +156,67 @@ public class TextStateImpl extends AbstractState implements TextState {
 
         assert (nounMapping.getWords().containsAllIterable(referenceWords)) : "The reference words should be contained by the noun mapping";
 
-        return this.addNounMapping(nounMapping.getWords(), nounMapping.getDistribution().toMap(), referenceWords, nounMapping.getSurfaceForms(), reference,
-                nounMapping.getCoreferences());
+        return this.addNounMapping(nounMapping.getWords(), nounMapping.getDistribution().toMap(), referenceWords, nounMapping.getSurfaceForms(), reference);
 
     }
 
     @Override
     public void mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant) {
         strategy.mergeNounMappings(nounMapping, nounMappingsToMerge, claimant);
+    }
+
+    @Override
+    public ImmutableList<NounMapping> getMappingsThatCouldBeOfKind(Word word, MappingKind kind) {
+        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(kind) > 0);
+    }
+
+    @Override
+    public ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind name, MappingKind... kinds) {
+        if (kinds.length == 0) {
+            throw new IllegalArgumentException("You need to provide some mapping kinds!");
+        }
+
+        if (kinds.length < 2) {
+            return getNounMappingsOfKind(kinds[0]);
+        }
+
+        MutableList<NounMapping> result = Lists.mutable.empty();
+        ImmutableList<NounMapping> mappings = getNounMappingsByWord(word);
+
+        for (NounMapping mapping : mappings) {
+            final ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(mapping::getProbabilityForKind);
+            if (probabilities.anySatisfy(p -> p <= 0)) {
+                continue;
+            }
+
+            boolean similar = probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
+            if (similar) {
+                result.add(mapping);
+            }
+
+        }
+
+        return result.toImmutable();
+    }
+
+    @Override
+    public ImmutableList<NounMapping> getNounMappingsByWord(Word word) {
+        return getNounMappings().select(nm -> nm.getWords().contains(word));
+    }
+
+    @Override
+    public ImmutableList<NounMapping> getNounMappingsByWordAndKind(Word word, MappingKind kind) {
+        return getNounMappings().select(n -> n.getWords().contains(word)).select(nounMappingIsOfKind(kind)).toImmutable();
+    }
+
+    @Override
+    public boolean isWordContainedByMappingKind(Word word, MappingKind kind) {
+        return getNounMappings().select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsOfKind(kind));
+    }
+
+    @Override
+    public ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference) {
+        return getNounMappings().select(nm -> SimilarityUtils.areWordsSimilar(reference, nm.getReference())).toImmutable();
     }
 
     @Override
@@ -182,10 +244,6 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public NounMapping getNounMappingByWord(Word word) {
         var result = getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
-
-        if (result.size() > 1) {
-            int i = 0;
-        }
 
         assert (result.size() <= 1) : "A word should only contained by one noun mapping";
         if (result.size() == 0) {

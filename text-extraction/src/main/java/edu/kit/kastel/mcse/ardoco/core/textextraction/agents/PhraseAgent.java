@@ -28,7 +28,7 @@ public class PhraseAgent extends PipelineAgent {
      * Instantiates a new initial text agent.
      */
     public PhraseAgent(DataRepository dataRepository) {
-        super("PhraseAgent", dataRepository);
+        super(PhraseAgent.class.getSimpleName(), dataRepository);
     }
 
     @Override

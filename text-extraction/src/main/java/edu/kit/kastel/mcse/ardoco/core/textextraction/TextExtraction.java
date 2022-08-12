@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.originalAgents.OriginalPhraseAgent;
 
 /**
  * The Class TextExtractor.
@@ -32,7 +32,8 @@ public class TextExtraction extends AbstractExecutionStage {
      */
     public TextExtraction(DataRepository dataRepository) {
         super("TextExtraction", dataRepository);
-        this.agents = Lists.mutable.of(new InitialTextAgent(dataRepository), new PhraseAgent(dataRepository), new ComputerScienceWordsAgent(dataRepository));
+        this.agents = Lists.mutable.of(new InitialTextAgent(dataRepository), new OriginalPhraseAgent(dataRepository), new ComputerScienceWordsAgent(
+                dataRepository));
         this.enabledAgents = agents.collect(Agent::getId);
     }
 

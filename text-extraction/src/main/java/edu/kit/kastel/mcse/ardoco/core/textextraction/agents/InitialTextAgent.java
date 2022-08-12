@@ -27,7 +27,7 @@ public class InitialTextAgent extends PipelineAgent {
      * Instantiates a new initial text agent.
      */
     public InitialTextAgent(DataRepository data) {
-        super("InitialTextAgent", data);
+        super(InitialTextAgent.class.getSimpleName(), data);
         extractors = List.of(new NounExtractor(data), new InDepArcsExtractor(data), new OutDepArcsExtractor(data), new SeparatedNamesExtractor(data));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
     }

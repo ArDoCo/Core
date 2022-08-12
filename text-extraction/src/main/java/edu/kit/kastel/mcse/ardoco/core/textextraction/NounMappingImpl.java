@@ -5,6 +5,7 @@ import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AV
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -30,7 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
 public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-                              ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences) implements NounMapping {
+                              ImmutableSet<String> surfaceForms, String reference, @Deprecated AtomicBoolean isDefinedAsTerm) implements NounMapping {
 
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
@@ -44,7 +45,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
      */
     private NounMappingImpl(ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableSet<String> surfaceForms) {
-        this(words, Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(referenceWords), Lists.immutable.empty());
+        this(words, Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(referenceWords), new AtomicBoolean(false));
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
     }
@@ -54,7 +55,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
      */
     public NounMappingImpl(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
             ImmutableSet<String> surfaceForms) {
-        this(words, Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords), Lists.immutable.empty());
+        this(words, Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords), new AtomicBoolean(false));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -63,8 +64,8 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
     }
 
     public NounMappingImpl(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference, ImmutableList<Word> coreferences) {
-        this(words, Maps.mutable.empty(), referenceWords, surfaceForms, reference, coreferences);
+            ImmutableSet<String> surfaceForms, String reference) {
+        this(words, Maps.mutable.empty(), referenceWords, surfaceForms, reference, new AtomicBoolean(false));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -167,11 +168,6 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
         return MappingKind.TYPE;
     }
 
-    @Override
-    public ImmutableList<Word> getCoreferences() {
-        return coreferences.toImmutable();
-    }
-
     private AggregationFunctions getAggregationFunction() {
         return DEFAULT_AGGREGATOR;
     }
@@ -184,6 +180,10 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
         }
 
         return probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
+    }
+
+    public boolean isTerm() {
+        return isDefinedAsTerm.get();
     }
 
     @Override

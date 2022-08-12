@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -108,11 +110,8 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
             }
         }
 
-        MutableList<Word> mergedCoreferences = nounMapping.getCoreferences().toList();
-        mergedCoreferences.addAllIterable(nounMapping2.getCoreferences());
-
         NounMapping mergedNounMapping = new NounMappingImpl(mergedWords.toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(),
-                mergedSurfaceForms.toImmutable(), mergedReference, mergedCoreferences.toImmutable());
+                mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(false));
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
 
         textState.removeNounMappingFromState(nounMapping);

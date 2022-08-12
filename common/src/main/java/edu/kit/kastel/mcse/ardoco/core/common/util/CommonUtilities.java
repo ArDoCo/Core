@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
@@ -17,9 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 
 /**
  * General helper class for outsourced, common methods.
@@ -328,17 +325,6 @@ public final class CommonUtilities {
             return Lists.immutable.empty();
         }
         return Lists.immutable.ofAll(sortedWords);
-    }
-
-    public static ImmutableList<Word> filterWordsOfTypeMappings(ImmutableList<Word> words, TextState textState) {
-        MutableList<Word> filteredWords = Lists.mutable.empty();
-        for (var word : words) {
-
-            if (textState.getNounMappingByWord(word).getKind() != MappingKind.TYPE) {
-                filteredWords.add(word);
-            }
-        }
-        return filteredWords.toImmutable();
     }
 
     /**
