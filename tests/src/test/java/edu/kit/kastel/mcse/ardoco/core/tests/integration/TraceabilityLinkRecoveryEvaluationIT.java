@@ -86,7 +86,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
 
         if (detailedDebug) {
-            var evalDir = Path.of(OUTPUT).resolve("tl_eval");
+            var evalDir = Path.of(OUTPUT).resolve("ardoco_eval_tl");
 
             try {
                 Files.createDirectories(evalDir);

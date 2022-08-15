@@ -242,7 +242,7 @@ class InconsistencyDetectionEvaluationIT {
         var detailedOutputBuilder = outputs.getTwo();
 
         Path outputPath = Path.of(OUTPUT);
-        Path idEvalPath = outputPath.resolve("id_eval");
+        Path idEvalPath = outputPath.resolve("ardoco_eval_id");
         try {
             Files.createDirectories(outputPath);
             Files.createDirectories(idEvalPath);

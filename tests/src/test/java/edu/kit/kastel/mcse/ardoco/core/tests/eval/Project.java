@@ -3,9 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 
 /**
@@ -43,13 +40,11 @@ public enum Project {
             new EvaluationResults(.000, .000, .272) //
     );
 
-    private static final Logger logger = LoggerFactory.getLogger(Project.class);
     private final String model;
     private final String textFile;
     private final String goldStandard;
     private final EvaluationResults expectedTraceLinkResults;
     private final EvaluationResults expectedInconsistencyResults;
-    private volatile ModelConnector modelConnector = null;
 
     Project(String model, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults, EvaluationResults expectedInconsistencyResults) {
         this.model = model;
