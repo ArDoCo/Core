@@ -131,8 +131,7 @@ public final class ArDoCo extends Pipeline {
     private static File getOutputFile(String name, File outputDir, String prefix) {
         var filename = prefix + name + ".txt";
         var filepath = outputDir.toPath().resolve(filename);
-        var file = filepath.toFile();
-        return file;
+        return filepath.toFile();
     }
 
     public static InconsistencyChecker getInconsistencyChecker(Map<String, String> additionalConfigs, DataRepository dataRepository) {

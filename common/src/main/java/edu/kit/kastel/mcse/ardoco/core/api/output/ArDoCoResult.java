@@ -79,7 +79,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @return Trace links as Strings
      */
     public List<String> getAllTraceLinksAsBeautifiedStrings() {
-        return getAllTraceLinks().toSortedList(TraceLink::compareTo).collect(tl -> formatTraceLinksHumanReadable(tl));
+        return getAllTraceLinks().toSortedList(TraceLink::compareTo).collect(ArDoCoResult::formatTraceLinksHumanReadable);
     }
 
     private static String formatTraceLinksHumanReadable(TraceLink traceLink) {
