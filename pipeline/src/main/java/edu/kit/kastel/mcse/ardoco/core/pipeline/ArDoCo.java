@@ -101,8 +101,7 @@ public final class ArDoCo extends Pipeline {
         return arDoCoResult;
     }
 
-    private static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs)
-            throws IOException {
+    static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs) throws IOException {
         var arDoCo = new ArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
