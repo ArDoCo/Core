@@ -41,6 +41,7 @@ public class DL4JFastTextDataSource implements WordVectorDataSource, AutoCloseab
      * @param word the word
      * @return the word vector, or {@link Optional#empty()} if no vector representation for the given word exists.
      */
+    @Override
     public Optional<float[]> getWordVector(String word) {
         Objects.requireNonNull(word);
 

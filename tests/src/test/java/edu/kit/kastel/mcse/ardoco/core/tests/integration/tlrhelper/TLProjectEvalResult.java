@@ -38,10 +38,10 @@ public class TLProjectEvalResult extends EvaluationResults implements Comparable
     private final List<TestLink> falseNegatives = new ArrayList<>();
 
     public TLProjectEvalResult(Project project, DataRepository data) throws IOException {
-        this(project, getTraceLinks(project, data), TLGoldStandardFile.loadLinks(project));
+        this(project, getTraceLinks(data), TLGoldStandardFile.loadLinks(project));
     }
 
-    private static List<TestLink> getTraceLinks(Project project, DataRepository data) {
+    private static List<TestLink> getTraceLinks(DataRepository data) {
         var traceLinks = Lists.mutable.<TestLink>empty();
         var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();

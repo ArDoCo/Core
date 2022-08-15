@@ -54,13 +54,9 @@ public class MissingElementInconsistencyCandidate {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (!(obj instanceof MissingElementInconsistencyCandidate other)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MissingElementInconsistencyCandidate other = (MissingElementInconsistencyCandidate) obj;
         return Objects.equals(recommendedInstance, other.recommendedInstance);
     }
 

@@ -66,7 +66,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
     }
 
     private List<Word> wordToListOfWord(String word) {
-        var words = word.split("\\s+");
+        var words = word.split("\\s+", -1);
         List<Word> wordsList = new ArrayList<>();
         for (int i = 0; i < words.length; i++) {
             wordsList.add(new MyWord(words[i], i));
