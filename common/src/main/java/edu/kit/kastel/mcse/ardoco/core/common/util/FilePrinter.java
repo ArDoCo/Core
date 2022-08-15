@@ -386,7 +386,7 @@ public final class FilePrinter {
         try (BufferedWriter writer = Files.newBufferedWriter(file, UTF_8)) {
             writer.write(text);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.error("Could not write to file", e);
         }
     }
 
@@ -470,7 +470,7 @@ public final class FilePrinter {
     }
 
     public static void writeTraceabilityLinkRecoveryOutput(File file, ArDoCoResult arDoCoResult) {
-        Supplier<List<String>> outputExtractor = () -> arDoCoResult.getAllTraceLinksAsBeautifiedStrings();
+        Supplier<List<String>> outputExtractor = arDoCoResult::getAllTraceLinksAsBeautifiedStrings;
         writeOutput(file, "Trace Links", outputExtractor);
     }
 
