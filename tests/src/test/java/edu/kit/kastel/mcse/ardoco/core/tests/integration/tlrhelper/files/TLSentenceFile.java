@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 /**

@@ -3,16 +3,21 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
 public class GoldStandard {
+    private Logger logger = LoggerFactory.getLogger(GoldStandard.class);
+
     private File goldStandard;
     private ModelConnector model;
 
@@ -25,7 +30,7 @@ public class GoldStandard {
     }
 
     private void load() {
-        try (Scanner scan = new Scanner(goldStandard)) {
+        try (Scanner scan = new Scanner(goldStandard, StandardCharsets.UTF_8.name())) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
                 if (line == null || line.isBlank() || line.contains("modelElementID")) {
@@ -33,7 +38,7 @@ public class GoldStandard {
                     continue;
                 }
 
-                String[] idXline = line.strip().split(",");
+                String[] idXline = line.strip().split(",", -1);
                 ModelInstance instance = model.getInstances().select(i -> i.getUid().equals(idXline[0])).getFirst();
                 if (instance == null) {
                     System.err.println("No instance found for id \"" + idXline[0] + "\"");
@@ -46,7 +51,7 @@ public class GoldStandard {
                 sentence2instance.get(sentence).add(instance);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.warn(e.getMessage(), e.getCause());
         }
     }
 

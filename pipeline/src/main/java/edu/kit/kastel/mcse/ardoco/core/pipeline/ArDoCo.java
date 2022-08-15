@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;

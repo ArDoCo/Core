@@ -25,9 +25,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;

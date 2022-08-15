@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;

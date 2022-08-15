@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;

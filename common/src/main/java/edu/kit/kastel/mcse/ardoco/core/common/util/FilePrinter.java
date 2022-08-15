@@ -27,7 +27,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
@@ -44,6 +43,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
@@ -414,8 +414,8 @@ public final class FilePrinter {
 
     private static Comparator<? super String> getInconsistencyStringComparator() {
         return (i, j) -> {
-            var values1 = i.split(DELIMITER);
-            var values2 = j.split(DELIMITER);
+            var values1 = i.split(DELIMITER, -1);
+            var values2 = j.split(DELIMITER, -1);
             var name1 = values1[2];
             var name2 = values2[2];
             var wordComparisonResult = name1.compareTo(name2);
