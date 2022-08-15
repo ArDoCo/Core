@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_0VhvsByHEe2Nmfzuf7bXsw" name="New Repository">
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvsRyHEe2Nmfzuf7bXsw" name="Client"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvshyHEe2Nmfzuf7bXsw" name="UI"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvsxyHEe2Nmfzuf7bXsw" name="E2E"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvtByHEe2Nmfzuf7bXsw" name="Logic"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvtRyHEe2Nmfzuf7bXsw" name="GAE Datastore"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvthyHEe2Nmfzuf7bXsw" name="Storage"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvtxyHEe2Nmfzuf7bXsw" name="Test Driver"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0VhvuByHEe2Nmfzuf7bXsw" name="Common"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvuRyHEe2Nmfzuf7bXsw" name="Test Driver">
+    <interfaceRealization xmi:id="_0VhvuhyHEe2Nmfzuf7bXsw" client="_0VhvuRyHEe2Nmfzuf7bXsw" supplier="_0VhvtxyHEe2Nmfzuf7bXsw" contract="_0VhvtxyHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvuxyHEe2Nmfzuf7bXsw" client="_0VhvuRyHEe2Nmfzuf7bXsw" supplier="_0VhvshyHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvvByHEe2Nmfzuf7bXsw" name="GAE Datastore">
+    <interfaceRealization xmi:id="_0VhvvRyHEe2Nmfzuf7bXsw" client="_0VhvvByHEe2Nmfzuf7bXsw" supplier="_0VhvtRyHEe2Nmfzuf7bXsw" contract="_0VhvtRyHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvvhyHEe2Nmfzuf7bXsw" name="Common">
+    <interfaceRealization xmi:id="_0VhvvxyHEe2Nmfzuf7bXsw" client="_0VhvvhyHEe2Nmfzuf7bXsw" supplier="_0VhvuByHEe2Nmfzuf7bXsw" contract="_0VhvuByHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvwByHEe2Nmfzuf7bXsw" client="_0VhvvhyHEe2Nmfzuf7bXsw" supplier="_0VhvthyHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvwRyHEe2Nmfzuf7bXsw" name="Logic">
+    <interfaceRealization xmi:id="_0VhvwhyHEe2Nmfzuf7bXsw" client="_0VhvwRyHEe2Nmfzuf7bXsw" supplier="_0VhvtByHEe2Nmfzuf7bXsw" contract="_0VhvtByHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvwxyHEe2Nmfzuf7bXsw" client="_0VhvwRyHEe2Nmfzuf7bXsw" supplier="_0VhvthyHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvxByHEe2Nmfzuf7bXsw" client="_0VhvwRyHEe2Nmfzuf7bXsw" supplier="_0VhvuByHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvxRyHEe2Nmfzuf7bXsw" name="Client">
+    <interfaceRealization xmi:id="_0VhvxhyHEe2Nmfzuf7bXsw" client="_0VhvxRyHEe2Nmfzuf7bXsw" supplier="_0VhvsRyHEe2Nmfzuf7bXsw" contract="_0VhvsRyHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvxxyHEe2Nmfzuf7bXsw" client="_0VhvxRyHEe2Nmfzuf7bXsw" supplier="_0VhvtRyHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvyByHEe2Nmfzuf7bXsw" name="UI">
+    <interfaceRealization xmi:id="_0VhvyRyHEe2Nmfzuf7bXsw" client="_0VhvyByHEe2Nmfzuf7bXsw" supplier="_0VhvshyHEe2Nmfzuf7bXsw" contract="_0VhvshyHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvyhyHEe2Nmfzuf7bXsw" client="_0VhvyByHEe2Nmfzuf7bXsw" supplier="_0VhvtByHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvyxyHEe2Nmfzuf7bXsw" client="_0VhvyByHEe2Nmfzuf7bXsw" supplier="_0VhvuByHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvzByHEe2Nmfzuf7bXsw" name="E2E">
+    <interfaceRealization xmi:id="_0VhvzRyHEe2Nmfzuf7bXsw" client="_0VhvzByHEe2Nmfzuf7bXsw" supplier="_0VhvsxyHEe2Nmfzuf7bXsw" contract="_0VhvsxyHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0VhvzhyHEe2Nmfzuf7bXsw" client="_0VhvzByHEe2Nmfzuf7bXsw" supplier="_0VhvshyHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_0VhvzxyHEe2Nmfzuf7bXsw" name="Storage">
+    <interfaceRealization xmi:id="_0Vhv0ByHEe2Nmfzuf7bXsw" client="_0VhvzxyHEe2Nmfzuf7bXsw" supplier="_0VhvthyHEe2Nmfzuf7bXsw" contract="_0VhvthyHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0Vhv0RyHEe2Nmfzuf7bXsw" client="_0VhvzxyHEe2Nmfzuf7bXsw" supplier="_0VhvtRyHEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_0Vhv0hyHEe2Nmfzuf7bXsw" client="_0VhvzxyHEe2Nmfzuf7bXsw" supplier="_0VhvuByHEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+</uml:Model>

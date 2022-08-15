@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_RcdNIByJEe2Nmfzuf7bXsw" name="defaultRepository">
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNIRyJEe2Nmfzuf7bXsw" name="ILogic">
+    <ownedOperation xmi:id="_RcdNIhyJEe2Nmfzuf7bXsw" name="createStudent"/>
+    <ownedOperation xmi:id="_RcdNIxyJEe2Nmfzuf7bXsw" name="createInstructor"/>
+    <ownedOperation xmi:id="_RcdNJByJEe2Nmfzuf7bXsw" name="isInstructor"/>
+    <ownedOperation xmi:id="_RcdNJRyJEe2Nmfzuf7bXsw" name="deletePicture"/>
+    <ownedOperation xmi:id="_RcdNJhyJEe2Nmfzuf7bXsw" name="createCourseAndInstructor"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNJxyJEe2Nmfzuf7bXsw" name="IStudentsLogic">
+    <ownedOperation xmi:id="_RcdNKByJEe2Nmfzuf7bXsw" name="createStudent"/>
+    <ownedOperation xmi:id="_RcdNKRyJEe2Nmfzuf7bXsw" name="deleteStudentCascade"/>
+    <ownedOperation xmi:id="_RcdNKhyJEe2Nmfzuf7bXsw" name="updateStudentCascade"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNKxyJEe2Nmfzuf7bXsw" name="TaskQueuesLogic">
+    <ownedOperation xmi:id="_RcdNLByJEe2Nmfzuf7bXsw" name="addDeferredTask"/>
+    <ownedOperation xmi:id="_RcdNLRyJEe2Nmfzuf7bXsw" name="addTask"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNLhyJEe2Nmfzuf7bXsw" name="IEmailSender">
+    <ownedOperation xmi:id="_RcdNLxyJEe2Nmfzuf7bXsw" name="sendEmail"/>
+    <ownedOperation xmi:id="_RcdNMByJEe2Nmfzuf7bXsw" name="sendReport"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNMRyJEe2Nmfzuf7bXsw" name="IUtilOperations">
+    <ownedOperation xmi:id="_RcdNMhyJEe2Nmfzuf7bXsw" name="getRequestBody"/>
+    <ownedOperation xmi:id="_RcdNMxyJEe2Nmfzuf7bXsw" name="getRequestParametersAsString"/>
+    <ownedOperation xmi:id="_RcdNNByJEe2Nmfzuf7bXsw" name="getBackEndAppUrl"/>
+    <ownedOperation xmi:id="_RcdNNRyJEe2Nmfzuf7bXsw" name="assertFalse"/>
+    <ownedOperation xmi:id="_RcdNNhyJEe2Nmfzuf7bXsw" name="getFrontEndAppUrl"/>
+    <ownedOperation xmi:id="_RcdNNxyJEe2Nmfzuf7bXsw" name="assertTrue"/>
+    <ownedOperation xmi:id="_RcdNOByJEe2Nmfzuf7bXsw" name="toJson"/>
+    <ownedOperation xmi:id="_RcdNORyJEe2Nmfzuf7bXsw" name="fromJson"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNOhyJEe2Nmfzuf7bXsw" name="IActionResult">
+    <ownedOperation xmi:id="_RcdNOxyJEe2Nmfzuf7bXsw" name="send"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNPByJEe2Nmfzuf7bXsw" name="IGateKeeper">
+    <ownedOperation xmi:id="_RcdNPRyJEe2Nmfzuf7bXsw" name="verifyInstructorPriviliges"/>
+    <ownedOperation xmi:id="_RcdNPhyJEe2Nmfzuf7bXsw" name="verifyAccessible"/>
+    <ownedOperation xmi:id="_RcdNPxyJEe2Nmfzuf7bXsw" name="verifyAdminPriviliges"/>
+    <ownedOperation xmi:id="_RcdNQByJEe2Nmfzuf7bXsw" name="verifyAnswerableForStudent"/>
+    <ownedOperation xmi:id="_RcdNQRyJEe2Nmfzuf7bXsw" name="verifyStudentPriviliges"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNQhyJEe2Nmfzuf7bXsw" name="ISearchQuery">
+    <ownedOperation xmi:id="_RcdNQxyJEe2Nmfzuf7bXsw" name="toQuery"/>
+    <ownedOperation xmi:id="_RcdNRByJEe2Nmfzuf7bXsw" name="getFilterSize"/>
+    <ownedOperation xmi:id="_RcdNRRyJEe2Nmfzuf7bXsw" name="prepareVisibilityQueryString"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNRhyJEe2Nmfzuf7bXsw" name="IEmailGenerator">
+    <ownedOperation xmi:id="_RcdNRxyJEe2Nmfzuf7bXsw" name="generateStudentCourseJoinEmail"/>
+    <ownedOperation xmi:id="_RcdNSByJEe2Nmfzuf7bXsw" name="generateFeedbackSessionOpeningEmails"/>
+    <ownedOperation xmi:id="_RcdNSRyJEe2Nmfzuf7bXsw" name="generateSessionLinksRecoveryEmailForStudent"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNShyJEe2Nmfzuf7bXsw" name="IAutomatedServlet">
+    <ownedOperation xmi:id="_RcdNSxyJEe2Nmfzuf7bXsw" name="executeTask"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNTByJEe2Nmfzuf7bXsw" name="IWebApiServlet">
+    <ownedOperation xmi:id="_RcdNTRyJEe2Nmfzuf7bXsw" name="doDelete"/>
+    <ownedOperation xmi:id="_RcdNThyJEe2Nmfzuf7bXsw" name="invokeServlet"/>
+    <ownedOperation xmi:id="_RcdNTxyJEe2Nmfzuf7bXsw" name="doGet"/>
+    <ownedOperation xmi:id="_RcdNUByJEe2Nmfzuf7bXsw" name="doPut"/>
+    <ownedOperation xmi:id="_RcdNURyJEe2Nmfzuf7bXsw" name="doPost"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNUhyJEe2Nmfzuf7bXsw" name="IRemoteApiClient">
+    <ownedOperation xmi:id="_RcdNUxyJEe2Nmfzuf7bXsw" name="doOperation"/>
+    <ownedOperation xmi:id="_RcdNVByJEe2Nmfzuf7bXsw" name="doOperationRemotely"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNVRyJEe2Nmfzuf7bXsw" name="IEntityAttributes">
+    <ownedOperation xmi:id="_RcdNVhyJEe2Nmfzuf7bXsw" name="sanitizeForSaving"/>
+    <ownedOperation xmi:id="_RcdNVxyJEe2Nmfzuf7bXsw" name="isValid"/>
+    <ownedOperation xmi:id="_RcdNWByJEe2Nmfzuf7bXsw" name="addNonEmptyError"/>
+    <ownedOperation xmi:id="_RcdNWRyJEe2Nmfzuf7bXsw" name="toEntity"/>
+    <ownedOperation xmi:id="_RcdNWhyJEe2Nmfzuf7bXsw" name="getInvalidityInfo"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNWxyJEe2Nmfzuf7bXsw" name="IAutomatedActionFactory">
+    <ownedOperation xmi:id="_RcdNXByJEe2Nmfzuf7bXsw" name="getAction"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNXRyJEe2Nmfzuf7bXsw" name="ICoursesLogic">
+    <ownedOperation xmi:id="_RcdNXhyJEe2Nmfzuf7bXsw" name="isCoursePresent"/>
+    <ownedOperation xmi:id="_RcdNXxyJEe2Nmfzuf7bXsw" name="createCourse"/>
+    <ownedOperation xmi:id="_RcdNYByJEe2Nmfzuf7bXsw" name="deleteCourseCascade"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNYRyJEe2Nmfzuf7bXsw" name="IEntitiesDB">
+    <ownedOperation xmi:id="_RcdNYhyJEe2Nmfzuf7bXsw" name="deleteDocument"/>
+    <ownedOperation xmi:id="_RcdNYxyJEe2Nmfzuf7bXsw" name="saveEntity"/>
+    <ownedOperation xmi:id="_RcdNZByJEe2Nmfzuf7bXsw" name="deleteEntity"/>
+    <ownedOperation xmi:id="_RcdNZRyJEe2Nmfzuf7bXsw" name="createEntity"/>
+    <ownedOperation xmi:id="_RcdNZhyJEe2Nmfzuf7bXsw" name="searchDocuments"/>
+    <ownedOperation xmi:id="_RcdNZxyJEe2Nmfzuf7bXsw" name="putDocument"/>
+    <ownedOperation xmi:id="_RcdNaByJEe2Nmfzuf7bXsw" name="searchDocuments"/>
+    <ownedOperation xmi:id="_RcdNaRyJEe2Nmfzuf7bXsw" name="updateEntity"/>
+    <ownedOperation xmi:id="_RcdNahyJEe2Nmfzuf7bXsw" name="hasExistingEntities"/>
+    <ownedOperation xmi:id="_RcdNaxyJEe2Nmfzuf7bXsw" name="putEntity"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNbByJEe2Nmfzuf7bXsw" name="IDataMigrationEntititiesBaseScript">
+    <ownedOperation xmi:id="_RcdNbRyJEe2Nmfzuf7bXsw" name="logError"/>
+    <ownedOperation xmi:id="_RcdNbhyJEe2Nmfzuf7bXsw" name="isMigrationNeeded"/>
+    <ownedOperation xmi:id="_RcdNbxyJEe2Nmfzuf7bXsw" name="log"/>
+    <ownedOperation xmi:id="_RcdNcByJEe2Nmfzuf7bXsw" name="shouldUseTransaction"/>
+    <ownedOperation xmi:id="_RcdNcRyJEe2Nmfzuf7bXsw" name="migrateEntity"/>
+    <ownedOperation xmi:id="_RcdNchyJEe2Nmfzuf7bXsw" name="saveEntityDeferred"/>
+    <ownedOperation xmi:id="_RcdNcxyJEe2Nmfzuf7bXsw" name="isPreview"/>
+    <ownedOperation xmi:id="_RcdNdByJEe2Nmfzuf7bXsw" name="doOperation"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNdRyJEe2Nmfzuf7bXsw" name="IProfilesLogic">
+    <ownedOperation xmi:id="_RcdNdhyJEe2Nmfzuf7bXsw" name="deletePicture"/>
+    <ownedOperation xmi:id="_RcdNdxyJEe2Nmfzuf7bXsw" name="deleteStudentProfile"/>
+    <ownedOperation xmi:id="_RcdNeByJEe2Nmfzuf7bXsw" name="updateOrCreateStudentProfile"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNeRyJEe2Nmfzuf7bXsw" name="IAction">
+    <ownedOperation xmi:id="_RcdNehyJEe2Nmfzuf7bXsw" name="init"/>
+    <ownedOperation xmi:id="_RcdNexyJEe2Nmfzuf7bXsw" name="checkAccessControl"/>
+    <ownedOperation xmi:id="_RcdNfByJEe2Nmfzuf7bXsw" name="execute"/>
+    <ownedOperation xmi:id="_RcdNfRyJEe2Nmfzuf7bXsw" name="checkSpecificAccessControl"/>
+    <ownedOperation xmi:id="_RcdNfhyJEe2Nmfzuf7bXsw" name="getRequestParamValue"/>
+    <ownedOperation xmi:id="_RcdNfxyJEe2Nmfzuf7bXsw" name="getMinAuthLevel"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNgByJEe2Nmfzuf7bXsw" name="IEntities">
+    <ownedOperation xmi:id="_RcdNgRyJEe2Nmfzuf7bXsw" name="createValueTranslator"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNghyJEe2Nmfzuf7bXsw" name="ITaskQueuer">
+    <ownedOperation xmi:id="_RcdNgxyJEe2Nmfzuf7bXsw" name="scheduleEmailsForSending"/>
+    <ownedOperation xmi:id="_RcdNhByJEe2Nmfzuf7bXsw" name="scheduleFeedbackSessionReminders"/>
+    <ownedOperation xmi:id="_RcdNhRyJEe2Nmfzuf7bXsw" name="scheduleFeedbackSessionPublishedEmail"/>
+    <ownedOperation xmi:id="_RcdNhhyJEe2Nmfzuf7bXsw" name="scheduleCourseRegistrationInviteToStudent"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNhxyJEe2Nmfzuf7bXsw" name="IAutomatedAction">
+    <ownedOperation xmi:id="_RcdNiByJEe2Nmfzuf7bXsw" name="getRequestParamValue"/>
+    <ownedOperation xmi:id="_RcdNiRyJEe2Nmfzuf7bXsw" name="execute"/>
+    <ownedOperation xmi:id="_RcdNihyJEe2Nmfzuf7bXsw" name="setForRetry"/>
+    <ownedOperation xmi:id="_RcdNixyJEe2Nmfzuf7bXsw" name="getNonNullRequestParamValue"/>
+    <ownedOperation xmi:id="_RcdNjByJEe2Nmfzuf7bXsw" name="getBooleanRequestParamValue"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNjRyJEe2Nmfzuf7bXsw" name="ISearchManager">
+    <ownedOperation xmi:id="_RcdNjhyJEe2Nmfzuf7bXsw" name="putDocument"/>
+    <ownedOperation xmi:id="_RcdNjxyJEe2Nmfzuf7bXsw" name="searchDocuments"/>
+    <ownedOperation xmi:id="_RcdNkByJEe2Nmfzuf7bXsw" name="deleteDocument"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNkRyJEe2Nmfzuf7bXsw" name="ISearchDocument">
+    <ownedOperation xmi:id="_RcdNkhyJEe2Nmfzuf7bXsw" name="toDocument"/>
+    <ownedOperation xmi:id="_RcdNkxyJEe2Nmfzuf7bXsw" name="prepareData"/>
+    <ownedOperation xmi:id="_RcdNlByJEe2Nmfzuf7bXsw" name="filterOutCourseId"/>
+    <ownedOperation xmi:id="_RcdNlRyJEe2Nmfzuf7bXsw" name="build"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_RcdNlhyJEe2Nmfzuf7bXsw" name="IActionFactory">
+    <ownedOperation xmi:id="_RcdNlxyJEe2Nmfzuf7bXsw" name="getAction"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNmByJEe2Nmfzuf7bXsw" name="AutomatedAction">
+    <interfaceRealization xmi:id="_RcdNmRyJEe2Nmfzuf7bXsw" client="_RcdNmByJEe2Nmfzuf7bXsw" supplier="_RcdNhxyJEe2Nmfzuf7bXsw" contract="_RcdNhxyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNmhyJEe2Nmfzuf7bXsw" client="_RcdNmByJEe2Nmfzuf7bXsw" supplier="_RcdNIRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNmxyJEe2Nmfzuf7bXsw" client="_RcdNmByJEe2Nmfzuf7bXsw" supplier="_RcdNRhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNnByJEe2Nmfzuf7bXsw" client="_RcdNmByJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNnRyJEe2Nmfzuf7bXsw" client="_RcdNmByJEe2Nmfzuf7bXsw" supplier="_RcdNLhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNnhyJEe2Nmfzuf7bXsw" client="_RcdNmByJEe2Nmfzuf7bXsw" supplier="_RcdNVRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNnxyJEe2Nmfzuf7bXsw" client="_RcdNmByJEe2Nmfzuf7bXsw" supplier="_RcdNghyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNoByJEe2Nmfzuf7bXsw" name="AutomatedActionFactory">
+    <interfaceRealization xmi:id="_RcdNoRyJEe2Nmfzuf7bXsw" client="_RcdNoByJEe2Nmfzuf7bXsw" supplier="_RcdNWxyJEe2Nmfzuf7bXsw" contract="_RcdNWxyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNohyJEe2Nmfzuf7bXsw" client="_RcdNoByJEe2Nmfzuf7bXsw" supplier="_RcdNhxyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNoxyJEe2Nmfzuf7bXsw" name="Action">
+    <interfaceRealization xmi:id="_RcdNpByJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNOhyJEe2Nmfzuf7bXsw" contract="_RcdNOhyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdNpRyJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNeRyJEe2Nmfzuf7bXsw" contract="_RcdNeRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNphyJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNghyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNpxyJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNLhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNqByJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNRhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNqRyJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNqhyJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNPByJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNqxyJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNVRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNrByJEe2Nmfzuf7bXsw" client="_RcdNoxyJEe2Nmfzuf7bXsw" supplier="_RcdNIRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNrRyJEe2Nmfzuf7bXsw" name="Exception"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNrhyJEe2Nmfzuf7bXsw" name="Util">
+    <interfaceRealization xmi:id="_RcdNrxyJEe2Nmfzuf7bXsw" client="_RcdNrhyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw" contract="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNsByJEe2Nmfzuf7bXsw" name="Search">
+    <interfaceRealization xmi:id="_RcdNsRyJEe2Nmfzuf7bXsw" client="_RcdNsByJEe2Nmfzuf7bXsw" supplier="_RcdNkRyJEe2Nmfzuf7bXsw" contract="_RcdNkRyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdNshyJEe2Nmfzuf7bXsw" client="_RcdNsByJEe2Nmfzuf7bXsw" supplier="_RcdNjRyJEe2Nmfzuf7bXsw" contract="_RcdNjRyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdNsxyJEe2Nmfzuf7bXsw" client="_RcdNsByJEe2Nmfzuf7bXsw" supplier="_RcdNQhyJEe2Nmfzuf7bXsw" contract="_RcdNQhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNtByJEe2Nmfzuf7bXsw" client="_RcdNsByJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNtRyJEe2Nmfzuf7bXsw" client="_RcdNsByJEe2Nmfzuf7bXsw" supplier="_RcdNVRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNthyJEe2Nmfzuf7bXsw" client="_RcdNsByJEe2Nmfzuf7bXsw" supplier="_RcdNYRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNtxyJEe2Nmfzuf7bXsw" name="ActionFactory">
+    <interfaceRealization xmi:id="_RcdNuByJEe2Nmfzuf7bXsw" client="_RcdNtxyJEe2Nmfzuf7bXsw" supplier="_RcdNlhyJEe2Nmfzuf7bXsw" contract="_RcdNlhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNuRyJEe2Nmfzuf7bXsw" client="_RcdNtxyJEe2Nmfzuf7bXsw" supplier="_RcdNeRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNuhyJEe2Nmfzuf7bXsw" name="Scripts">
+    <interfaceRealization xmi:id="_RcdNuxyJEe2Nmfzuf7bXsw" client="_RcdNuhyJEe2Nmfzuf7bXsw" supplier="_RcdNbByJEe2Nmfzuf7bXsw" contract="_RcdNbByJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNvByJEe2Nmfzuf7bXsw" client="_RcdNuhyJEe2Nmfzuf7bXsw" supplier="_RcdNUhyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNvRyJEe2Nmfzuf7bXsw" name="LogicCore">
+    <interfaceRealization xmi:id="_RcdNvhyJEe2Nmfzuf7bXsw" client="_RcdNvRyJEe2Nmfzuf7bXsw" supplier="_RcdNXRyJEe2Nmfzuf7bXsw" contract="_RcdNXRyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdNvxyJEe2Nmfzuf7bXsw" client="_RcdNvRyJEe2Nmfzuf7bXsw" supplier="_RcdNdRyJEe2Nmfzuf7bXsw" contract="_RcdNdRyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdNwByJEe2Nmfzuf7bXsw" client="_RcdNvRyJEe2Nmfzuf7bXsw" supplier="_RcdNJxyJEe2Nmfzuf7bXsw" contract="_RcdNJxyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdNwRyJEe2Nmfzuf7bXsw" client="_RcdNvRyJEe2Nmfzuf7bXsw" supplier="_RcdNKxyJEe2Nmfzuf7bXsw" contract="_RcdNKxyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNwhyJEe2Nmfzuf7bXsw" client="_RcdNvRyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNwxyJEe2Nmfzuf7bXsw" client="_RcdNvRyJEe2Nmfzuf7bXsw" supplier="_RcdNYRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNxByJEe2Nmfzuf7bXsw" name="Entities">
+    <interfaceRealization xmi:id="_RcdNxRyJEe2Nmfzuf7bXsw" client="_RcdNxByJEe2Nmfzuf7bXsw" supplier="_RcdNgByJEe2Nmfzuf7bXsw" contract="_RcdNgByJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNxhyJEe2Nmfzuf7bXsw" client="_RcdNxByJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNxxyJEe2Nmfzuf7bXsw" name="RemoteApi">
+    <interfaceRealization xmi:id="_RcdNyByJEe2Nmfzuf7bXsw" client="_RcdNxxyJEe2Nmfzuf7bXsw" supplier="_RcdNUhyJEe2Nmfzuf7bXsw" contract="_RcdNUhyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNyRyJEe2Nmfzuf7bXsw" name="EntitiesDB">
+    <interfaceRealization xmi:id="_RcdNyhyJEe2Nmfzuf7bXsw" client="_RcdNyRyJEe2Nmfzuf7bXsw" supplier="_RcdNYRyJEe2Nmfzuf7bXsw" contract="_RcdNYRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNyxyJEe2Nmfzuf7bXsw" client="_RcdNyRyJEe2Nmfzuf7bXsw" supplier="_RcdNkRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNzByJEe2Nmfzuf7bXsw" client="_RcdNyRyJEe2Nmfzuf7bXsw" supplier="_RcdNjRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNzRyJEe2Nmfzuf7bXsw" client="_RcdNyRyJEe2Nmfzuf7bXsw" supplier="_RcdNQhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdNzhyJEe2Nmfzuf7bXsw" client="_RcdNyRyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdNzxyJEe2Nmfzuf7bXsw" name="WebApiServlet">
+    <interfaceRealization xmi:id="_RcdN0ByJEe2Nmfzuf7bXsw" client="_RcdNzxyJEe2Nmfzuf7bXsw" supplier="_RcdNTByJEe2Nmfzuf7bXsw" contract="_RcdNTByJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN0RyJEe2Nmfzuf7bXsw" client="_RcdNzxyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN0hyJEe2Nmfzuf7bXsw" client="_RcdNzxyJEe2Nmfzuf7bXsw" supplier="_RcdNOhyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN0xyJEe2Nmfzuf7bXsw" client="_RcdNzxyJEe2Nmfzuf7bXsw" supplier="_RcdNeRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN1ByJEe2Nmfzuf7bXsw" client="_RcdNzxyJEe2Nmfzuf7bXsw" supplier="_RcdNlhyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdN1RyJEe2Nmfzuf7bXsw" name="Attributes">
+    <interfaceRealization xmi:id="_RcdN1hyJEe2Nmfzuf7bXsw" client="_RcdN1RyJEe2Nmfzuf7bXsw" supplier="_RcdNVRyJEe2Nmfzuf7bXsw" contract="_RcdNVRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN1xyJEe2Nmfzuf7bXsw" client="_RcdN1RyJEe2Nmfzuf7bXsw" supplier="_RcdNgByJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN2ByJEe2Nmfzuf7bXsw" client="_RcdN1RyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdN2RyJEe2Nmfzuf7bXsw" name="Bundles"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdN2hyJEe2Nmfzuf7bXsw" name="AutomatedServlet">
+    <interfaceRealization xmi:id="_RcdN2xyJEe2Nmfzuf7bXsw" client="_RcdN2hyJEe2Nmfzuf7bXsw" supplier="_RcdNShyJEe2Nmfzuf7bXsw" contract="_RcdNShyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN3ByJEe2Nmfzuf7bXsw" client="_RcdN2hyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN3RyJEe2Nmfzuf7bXsw" client="_RcdN2hyJEe2Nmfzuf7bXsw" supplier="_RcdNhxyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN3hyJEe2Nmfzuf7bXsw" client="_RcdN2hyJEe2Nmfzuf7bXsw" supplier="_RcdNWxyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RcdN3xyJEe2Nmfzuf7bXsw" name="LogicApi">
+    <interfaceRealization xmi:id="_RcdN4ByJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNLhyJEe2Nmfzuf7bXsw" contract="_RcdNLhyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdN4RyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNghyJEe2Nmfzuf7bXsw" contract="_RcdNghyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdN4hyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNRhyJEe2Nmfzuf7bXsw" contract="_RcdNRhyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdN4xyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNIRyJEe2Nmfzuf7bXsw" contract="_RcdNIRyJEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_RcdN5ByJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNPByJEe2Nmfzuf7bXsw" contract="_RcdNPByJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN5RyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNdRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN5hyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNJxyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN5xyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNVRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN6ByJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNMRyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN6RyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNKxyJEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_RcdN6hyJEe2Nmfzuf7bXsw" client="_RcdN3xyJEe2Nmfzuf7bXsw" supplier="_RcdNXRyJEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+</uml:Model>

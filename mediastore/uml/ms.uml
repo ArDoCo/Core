@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_DK4vgByKEe2Nmfzuf7bXsw" name="defaultRepository">
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vgRyKEe2Nmfzuf7bXsw" name="IMediaAccess">
+    <ownedOperation xmi:id="_DK4vghyKEe2Nmfzuf7bXsw" name="upload"/>
+    <ownedOperation xmi:id="_DK4vgxyKEe2Nmfzuf7bXsw" name="getFileList"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vhByKEe2Nmfzuf7bXsw" name="IUserDB">
+    <ownedOperation xmi:id="_DK4vhRyKEe2Nmfzuf7bXsw" name="addUser"/>
+    <ownedOperation xmi:id="_DK4vhhyKEe2Nmfzuf7bXsw" name="getUserData"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vhxyKEe2Nmfzuf7bXsw" name="IFileStorage">
+    <ownedOperation xmi:id="_DK4viByKEe2Nmfzuf7bXsw" name="getFiles"/>
+    <ownedOperation xmi:id="_DK4viRyKEe2Nmfzuf7bXsw" name="storeFile"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vihyKEe2Nmfzuf7bXsw" name="IMediaManagement">
+    <ownedOperation xmi:id="_DK4vixyKEe2Nmfzuf7bXsw" name="getFileList"/>
+    <ownedOperation xmi:id="_DK4vjByKEe2Nmfzuf7bXsw" name="download"/>
+    <ownedOperation xmi:id="_DK4vjRyKEe2Nmfzuf7bXsw" name="upload"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vjhyKEe2Nmfzuf7bXsw" name="IFacade">
+    <ownedOperation xmi:id="_DK4vjxyKEe2Nmfzuf7bXsw" name="register"/>
+    <ownedOperation xmi:id="_DK4vkByKEe2Nmfzuf7bXsw" name="getFileList"/>
+    <ownedOperation xmi:id="_DK4vkRyKEe2Nmfzuf7bXsw" name="login"/>
+    <ownedOperation xmi:id="_DK4vkhyKEe2Nmfzuf7bXsw" name="download"/>
+    <ownedOperation xmi:id="_DK4vkxyKEe2Nmfzuf7bXsw" name="upload"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vlByKEe2Nmfzuf7bXsw" name="IDB">
+    <ownedOperation xmi:id="_DK4vlRyKEe2Nmfzuf7bXsw" name="query"/>
+    <ownedOperation xmi:id="_DK4vlhyKEe2Nmfzuf7bXsw" name="getFileList"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vlxyKEe2Nmfzuf7bXsw" name="IPackaging">
+    <ownedOperation xmi:id="_DK4vmByKEe2Nmfzuf7bXsw" name="zip"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vmRyKEe2Nmfzuf7bXsw" name="IUserManagement">
+    <ownedOperation xmi:id="_DK4vmhyKEe2Nmfzuf7bXsw" name="login"/>
+    <ownedOperation xmi:id="_DK4vmxyKEe2Nmfzuf7bXsw" name="register"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DK4vnByKEe2Nmfzuf7bXsw" name="IDownload">
+    <ownedOperation xmi:id="_DK4vnRyKEe2Nmfzuf7bXsw" name="download"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vnhyKEe2Nmfzuf7bXsw" name="TagWatermarking">
+    <interfaceRealization xmi:id="_DK4vnxyKEe2Nmfzuf7bXsw" client="_DK4vnhyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw" contract="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4voByKEe2Nmfzuf7bXsw" client="_DK4vnhyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4voRyKEe2Nmfzuf7bXsw" name="FileStorage">
+    <interfaceRealization xmi:id="_DK4vohyKEe2Nmfzuf7bXsw" client="_DK4voRyKEe2Nmfzuf7bXsw" supplier="_DK4vhxyKEe2Nmfzuf7bXsw" contract="_DK4vhxyKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4voxyKEe2Nmfzuf7bXsw" name="MediaAccess">
+    <interfaceRealization xmi:id="_DK4vpByKEe2Nmfzuf7bXsw" client="_DK4voxyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw" contract="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <interfaceRealization xmi:id="_DK4vpRyKEe2Nmfzuf7bXsw" client="_DK4voxyKEe2Nmfzuf7bXsw" supplier="_DK4vgRyKEe2Nmfzuf7bXsw" contract="_DK4vgRyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vphyKEe2Nmfzuf7bXsw" client="_DK4voxyKEe2Nmfzuf7bXsw" supplier="_DK4vhxyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vpxyKEe2Nmfzuf7bXsw" client="_DK4voxyKEe2Nmfzuf7bXsw" supplier="_DK4vlByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vqByKEe2Nmfzuf7bXsw" name="UserDBAdapter">
+    <interfaceRealization xmi:id="_DK4vqRyKEe2Nmfzuf7bXsw" client="_DK4vqByKEe2Nmfzuf7bXsw" supplier="_DK4vhByKEe2Nmfzuf7bXsw" contract="_DK4vhByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vqhyKEe2Nmfzuf7bXsw" client="_DK4vqByKEe2Nmfzuf7bXsw" supplier="_DK4vlByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vqxyKEe2Nmfzuf7bXsw" name="DB">
+    <interfaceRealization xmi:id="_DK4vrByKEe2Nmfzuf7bXsw" client="_DK4vqxyKEe2Nmfzuf7bXsw" supplier="_DK4vlByKEe2Nmfzuf7bXsw" contract="_DK4vlByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vrRyKEe2Nmfzuf7bXsw" name="Packaging">
+    <interfaceRealization xmi:id="_DK4vrhyKEe2Nmfzuf7bXsw" client="_DK4vrRyKEe2Nmfzuf7bXsw" supplier="_DK4vlxyKEe2Nmfzuf7bXsw" contract="_DK4vlxyKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vrxyKEe2Nmfzuf7bXsw" name="MediaManagement">
+    <interfaceRealization xmi:id="_DK4vsByKEe2Nmfzuf7bXsw" client="_DK4vrxyKEe2Nmfzuf7bXsw" supplier="_DK4vihyKEe2Nmfzuf7bXsw" contract="_DK4vihyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vsRyKEe2Nmfzuf7bXsw" client="_DK4vrxyKEe2Nmfzuf7bXsw" supplier="_DK4vlxyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vshyKEe2Nmfzuf7bXsw" client="_DK4vrxyKEe2Nmfzuf7bXsw" supplier="_DK4vgRyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vsxyKEe2Nmfzuf7bXsw" client="_DK4vrxyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vtByKEe2Nmfzuf7bXsw" name="ParallelWatermarking">
+    <interfaceRealization xmi:id="_DK4vtRyKEe2Nmfzuf7bXsw" client="_DK4vtByKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw" contract="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vthyKEe2Nmfzuf7bXsw" client="_DK4vtByKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vtxyKEe2Nmfzuf7bXsw" name="Facade">
+    <interfaceRealization xmi:id="_DK4vuByKEe2Nmfzuf7bXsw" client="_DK4vtxyKEe2Nmfzuf7bXsw" supplier="_DK4vjhyKEe2Nmfzuf7bXsw" contract="_DK4vjhyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vuRyKEe2Nmfzuf7bXsw" client="_DK4vtxyKEe2Nmfzuf7bXsw" supplier="_DK4vmRyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vuhyKEe2Nmfzuf7bXsw" client="_DK4vtxyKEe2Nmfzuf7bXsw" supplier="_DK4vihyKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vuxyKEe2Nmfzuf7bXsw" name="Reencoding">
+    <interfaceRealization xmi:id="_DK4vvByKEe2Nmfzuf7bXsw" client="_DK4vuxyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw" contract="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vvRyKEe2Nmfzuf7bXsw" client="_DK4vuxyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vvhyKEe2Nmfzuf7bXsw" name="AudioWatermarking">
+    <interfaceRealization xmi:id="_DK4vvxyKEe2Nmfzuf7bXsw" client="_DK4vvhyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw" contract="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vwByKEe2Nmfzuf7bXsw" client="_DK4vvhyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vwRyKEe2Nmfzuf7bXsw" name="UserManagement">
+    <interfaceRealization xmi:id="_DK4vwhyKEe2Nmfzuf7bXsw" client="_DK4vwRyKEe2Nmfzuf7bXsw" supplier="_DK4vmRyKEe2Nmfzuf7bXsw" contract="_DK4vmRyKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vwxyKEe2Nmfzuf7bXsw" client="_DK4vwRyKEe2Nmfzuf7bXsw" supplier="_DK4vhByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vxByKEe2Nmfzuf7bXsw" name="Cache">
+    <interfaceRealization xmi:id="_DK4vxRyKEe2Nmfzuf7bXsw" client="_DK4vxByKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw" contract="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vxhyKEe2Nmfzuf7bXsw" client="_DK4vxByKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_DK4vxxyKEe2Nmfzuf7bXsw" name="DownloadLoadBalancer">
+    <interfaceRealization xmi:id="_DK4vyByKEe2Nmfzuf7bXsw" client="_DK4vxxyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw" contract="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vyRyKEe2Nmfzuf7bXsw" client="_DK4vxxyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_DK4vyhyKEe2Nmfzuf7bXsw" client="_DK4vxxyKEe2Nmfzuf7bXsw" supplier="_DK4vnByKEe2Nmfzuf7bXsw"/>
+  </packagedElement>
+</uml:Model>
