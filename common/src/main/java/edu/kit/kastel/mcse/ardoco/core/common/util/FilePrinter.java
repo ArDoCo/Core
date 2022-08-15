@@ -73,21 +73,22 @@ public final class FilePrinter {
         var inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
 
         for (var model : getModelStatesData(data).modelIds()) {
-            var currName = name + "_" + model;
             var modelState = getModelStatesData(data).getModelState(model);
             var metaModel = modelState.getMetamodel();
             var recommendationState = getRecommendationStates(data).getRecommendationState(metaModel);
             var connectionState = getConnectionStates(data).getConnectionState(metaModel);
+            String metaModelTypeName = metaModel.toString().toLowerCase();
 
-            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), currName + "-instances-" + metaModel + ".csv").toFile(), modelState,
-                    currName);
-            FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), currName + "_noun_mappings.csv").toFile(), //
+            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "-instances-" + metaModelTypeName + model + ".csv").toFile(),
+                    modelState, name);
+            FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings" + model + ".csv").toFile(), //
                     textState);
-            FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), currName + "_trace_links.csv").toFile(), //
+            FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_trace_links" + model + ".csv").toFile(), //
                     connectionState);
-            FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), currName + "_states.csv").toFile(), //
+            FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states" + model + ".csv").toFile(), //
                     modelState, textState, recommendationState, connectionState);
-            FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), currName + "_inconsistencies.csv").toFile(), inconsistencyState);
+            FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies" + model + ".csv").toFile(),
+                    inconsistencyState);
         }
     }
 
@@ -125,7 +126,6 @@ public final class FilePrinter {
         try {
             if (file.createNewFile()) {
                 logger.info("File created: {}", file.getAbsolutePath());
-
             } else {
                 logger.info("File already exists.");
             }
@@ -253,9 +253,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "UID", "Name", "Type" });
 
         for (ModelInstance instance : modelState.getInstances()) {
-
             dataLines.add(new String[] { instance.getUid(), instance.getFullName(), instance.getFullType() });
-
         }
 
         return dataLines.toImmutable();
