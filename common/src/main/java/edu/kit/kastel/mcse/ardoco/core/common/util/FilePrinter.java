@@ -1,12 +1,14 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.pipeline.helpers;
+package edu.kit.kastel.mcse.ardoco.core.common.util;
+
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,11 +21,13 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
@@ -33,7 +37,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
@@ -51,6 +54,41 @@ public final class FilePrinter {
 
     private FilePrinter() {
         throw new IllegalAccessError();
+    }
+
+    /**
+     * Prints details of the {@link ArDoCoResult results} of a run into files within the given directory (path).
+     * Writes out detailed info about model instances, noun mappings, trace links, all states, and inconsistencies.
+     * Uses the provided (project) name as part of the file names.
+     * 
+     * @param path         the directory where the files should be written
+     * @param name         name of the project
+     * @param arDoCoResult the results that should be written
+     */
+    public static void printResultsInFiles(Path path, String name, ArDoCoResult arDoCoResult) {
+        var outputDir = path.toFile();
+        var data = arDoCoResult.dataRepository();
+        var textState = getTextState(data);
+        var inconsistencyStates = getInconsistencyStates(data);
+        var inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
+
+        for (var model : getModelStatesData(data).modelIds()) {
+            var currName = name + "_" + model;
+            var modelState = getModelStatesData(data).getModelState(model);
+            var metaModel = modelState.getMetamodel();
+            var recommendationState = getRecommendationStates(data).getRecommendationState(metaModel);
+            var connectionState = getConnectionStates(data).getConnectionState(metaModel);
+
+            FilePrinter.writeModelInstancesInCsvFile(Path.of(outputDir.getAbsolutePath(), currName + "-instances-" + metaModel + ".csv").toFile(), modelState,
+                    currName);
+            FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), currName + "_noun_mappings.csv").toFile(), //
+                    textState);
+            FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), currName + "_trace_links.csv").toFile(), //
+                    connectionState);
+            FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), currName + "_states.csv").toFile(), //
+                    modelState, textState, recommendationState, connectionState);
+            FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), currName + "_inconsistencies.csv").toFile(), inconsistencyState);
+        }
     }
 
     /**
@@ -100,7 +138,7 @@ public final class FilePrinter {
     }
 
     private static void writeStates(Writer myWriter, ModelExtractionState extractionState, TextState ntrState, //
-            RecommendationState recommendationState, ConnectionState connectionState, Duration duration) throws IOException {
+            RecommendationState recommendationState, ConnectionState connectionState) throws IOException {
         myWriter.write("Results of ModelConnector: ");
         myWriter.append(LINE_SEPARATOR);
         myWriter.write(HORIZONTAL_RULE);
@@ -163,13 +201,6 @@ public final class FilePrinter {
 
         myWriter.write(HORIZONTAL_RULE);
         myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-        myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-        myWriter.write("ExecutionTime: " + duration);
-        myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-        myWriter.write(HORIZONTAL_RULE);
-        myWriter.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         logger.info(SUCCESS_WRITE);
     }
@@ -184,17 +215,16 @@ public final class FilePrinter {
      * @param recommendationState the supposing state, containing the supposing mappings for instances, as well as
      *                            relations
      * @param connectionState     containing all instances and relations, matched by supposed mappings
-     * @param duration            past time the approach needed to calculate the results
      */
     public static void writeStatesToFile(File resultFile, ModelExtractionState extractionState, TextState ntrState, //
-            RecommendationState recommendationState, ConnectionState connectionState, Duration duration) {
+            RecommendationState recommendationState, ConnectionState connectionState) {
         var fileCreated = createFileIfNonExistent(resultFile);
         if (!fileCreated) {
             return;
         }
 
         try (var myWriter = new FileWriter(resultFile, StandardCharsets.UTF_8)) {
-            writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState, duration);
+            writeStates(myWriter, extractionState, ntrState, recommendationState, connectionState);
 
         } catch (IOException e) {
             logger.error(GENERIC_ERROR);
@@ -210,7 +240,7 @@ public final class FilePrinter {
      * @param modelState  the model state
      * @param name        the name
      */
-    public static void writeModelInstancesInCsvFile(File destination, ModelExtractionState modelState, String name) {
+    private static void writeModelInstancesInCsvFile(File destination, ModelExtractionState modelState, String name) {
         var dataLines = getInstancesFromModelState(modelState, name);
         writeDataLinesInFile(destination, dataLines);
     }
@@ -237,7 +267,7 @@ public final class FilePrinter {
      * @param resultFile      the result file
      * @param connectionState the connection state
      */
-    public static void writeTraceLinksInCsvFile(File resultFile, ConnectionState connectionState) {
+    private static void writeTraceLinksInCsvFile(File resultFile, ConnectionState connectionState) {
         var dataLines = getLinksAsDataLinesOfConnectionState(connectionState);
         writeDataLinesInFile(resultFile, dataLines);
     }
@@ -248,7 +278,7 @@ public final class FilePrinter {
      * @param resultFile the result file
      * @param textState  the text state
      */
-    public static void writeNounMappingsInCsvFile(File resultFile, TextState textState) {
+    private static void writeNounMappingsInCsvFile(File resultFile, TextState textState) {
         var dataLines = getMappingsAsDataLinesOfTextState(textState);
         writeDataLinesInFile(resultFile, dataLines);
     }
@@ -260,7 +290,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type" });
 
-        if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMappingImpl)) {
+        if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMapping)) {
             for (NounMapping mapping : textState.getNounMappings()) {
 
                 var kind = mapping.getKind();
@@ -328,7 +358,7 @@ public final class FilePrinter {
 
     }
 
-    public static void writeInconsistenciesToFile(File file, InconsistencyState inconsistencyState) {
+    private static void writeInconsistenciesToFile(File file, InconsistencyState inconsistencyState) {
         var inconsistencies = inconsistencyState.getInconsistencies();
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
