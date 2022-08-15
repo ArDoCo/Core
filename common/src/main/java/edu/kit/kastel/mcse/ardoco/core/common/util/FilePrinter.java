@@ -2,16 +2,22 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,6 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
@@ -288,7 +295,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "Reference", "Name", "Type" });
 
-        if (textState.getNounMappings().isEmpty() || !(textState.getNounMappings().get(0) instanceof NounMapping)) {
+        if (textState.getNounMappings().isEmpty()) {
             for (NounMapping mapping : textState.getNounMappings()) {
 
                 var kind = mapping.getKind();
@@ -354,6 +361,33 @@ public final class FilePrinter {
             logger.debug(e.getMessage(), e);
         }
 
+    }
+
+    /**
+     * Writes the given text to the file with the given name/path.
+     * Truncates existing files, creates the file if not existent and writes in UTF-8.
+     * 
+     * @param filename the name/path of the file
+     * @param text     the text to write
+     */
+    public static void writeToFile(String filename, String text) {
+        var file = Paths.get(filename);
+        writeToFile(file, text);
+    }
+
+    /**
+     * Writes the given text to the given file (as path).
+     * Truncates existing files, creates the file if not existent and writes in UTF-8.
+     * 
+     * @param file the path of the file
+     * @param text the text to write
+     */
+    public static void writeToFile(Path file, String text) {
+        try (BufferedWriter writer = Files.newBufferedWriter(file, UTF_8)) {
+            writer.write(text);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void writeInconsistenciesToFile(File file, InconsistencyState inconsistencyState) {
@@ -429,4 +463,28 @@ public final class FilePrinter {
     private static Comparator<InstanceLink> getInstanceLinkComparator() {
         return Comparator.comparing(i -> i.getModelInstance().getUid());
     }
+
+    public static void writeInconsistencyOutput(File file, ArDoCoResult arDoCoResult) {
+        Supplier<List<String>> outputExtractor = () -> arDoCoResult.getInconsistentSentences().collect(InconsistentSentence::getInfoString).toList();
+        writeOutput(file, "Inconsistencies", outputExtractor);
+    }
+
+    public static void writeTraceabilityLinkRecoveryOutput(File file, ArDoCoResult arDoCoResult) {
+        Supplier<List<String>> outputExtractor = () -> arDoCoResult.getAllTraceLinksAsBeautifiedStrings();
+        writeOutput(file, "Trace Links", outputExtractor);
+    }
+
+    private static void writeOutput(File file, String title, Supplier<List<String>> outputSupplier) {
+        var outputBuilder = new StringBuilder("# ").append(title);
+        outputBuilder.append(LINE_SEPARATOR).append(CommonUtilities.getCurrentTimeAsString());
+        outputBuilder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+
+        for (var outputString : outputSupplier.get()) {
+            outputBuilder.append(outputString);
+            outputBuilder.append(LINE_SEPARATOR);
+        }
+
+        writeToFile(file.toPath(), outputBuilder.toString());
+    }
+
 }
