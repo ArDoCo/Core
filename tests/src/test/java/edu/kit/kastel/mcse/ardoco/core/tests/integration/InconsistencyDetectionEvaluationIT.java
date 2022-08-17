@@ -126,7 +126,7 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluate Inconsistency Analyses")
     @ParameterizedTest(name = "Evaluating {0}")
-    @EnumSource(Project.class)
+    @EnumSource(value = Project.class)
     void inconsistencyIT(Project project) {
         logger.info("Start evaluation of inconsistency for {}", project.name());
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
@@ -152,7 +152,7 @@ class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluate Inconsistency Analyses Baseline")
     @ParameterizedTest(name = "Evaluating Baseline For {0}")
-    @EnumSource(Project.class)
+    @EnumSource(value = Project.class)
     void inconsistencyBaselineIT(Project project) {
         logger.info("Start evaluation of inconsistency baseline for {}", project.name());
         ranBaseline = true;
