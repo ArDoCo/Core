@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.api.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
@@ -36,8 +37,39 @@ public final class ArDoCo extends Pipeline {
 
     private static final Logger classLogger = LoggerFactory.getLogger(ArDoCo.class);
 
-    public ArDoCo() {
+    private final String projectName;
+
+    /**
+     * Default constructor to adhere simplify tests that do not care about the project's name
+     */
+    private ArDoCo() {
+        this("");
+    }
+
+    /**
+     * Creates a new instance of ArDoCo. The provided name should be the project's name and will be used to identify spots within the text where the project is
+     * mentioned.
+     * 
+     * @param projectName the project's name
+     */
+    public ArDoCo(String projectName) {
         super("ArDoCo", new DataRepository());
+        this.projectName = projectName;
+        initDataRepository();
+    }
+
+    private void initDataRepository() {
+        ProjectPipelineData projectPipelineData = new ProjectPipelineDataImpl(projectName);
+        getDataRepository().addData(ProjectPipelineData.ID, projectPipelineData);
+    }
+
+    /**
+     * Return the project's name
+     * 
+     * @return the project's name
+     */
+    public String getProjectName() {
+        return projectName;
     }
 
     @Override
@@ -85,7 +117,7 @@ public final class ArDoCo extends Pipeline {
 
         ArDoCo arDoCo;
         try {
-            arDoCo = defineArDoCo(inputText, inputArchitectureModel, inputCodeModel, additionalConfigs);
+            arDoCo = defineArDoCo(name, inputText, inputArchitectureModel, inputCodeModel, additionalConfigs);
         } catch (IOException e) {
             classLogger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             return null;
@@ -101,8 +133,9 @@ public final class ArDoCo extends Pipeline {
         return arDoCoResult;
     }
 
-    static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs) throws IOException {
-        var arDoCo = new ArDoCo();
+    static ArDoCo defineArDoCo(String projectName, File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs)
+            throws IOException {
+        var arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
 
         arDoCo.addPipelineStep(getTextProvider(inputText, additionalConfigs, dataRepository));
@@ -134,40 +167,93 @@ public final class ArDoCo extends Pipeline {
         return filepath.toFile();
     }
 
+    /**
+     * Creates an {@link InconsistencyChecker} and applies the additional configuration to it.
+     * 
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of InconsistencyChecker
+     */
     public static InconsistencyChecker getInconsistencyChecker(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var inconsistencyChecker = new InconsistencyChecker(dataRepository);
         inconsistencyChecker.applyConfiguration(additionalConfigs);
         return inconsistencyChecker;
     }
 
+    /**
+     * Creates a {@link ConnectionGenerator} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of connectionGenerator
+     */
     public static ConnectionGenerator getConnectionGenerator(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var connectionGenerator = new ConnectionGenerator(dataRepository);
         connectionGenerator.applyConfiguration(additionalConfigs);
         return connectionGenerator;
     }
 
+    /**
+     * Creates a {@link RecommendationGenerator} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of {@link RecommendationGenerator}
+     */
     public static RecommendationGenerator getRecommendationGenerator(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var recommendationGenerator = new RecommendationGenerator(dataRepository);
         recommendationGenerator.applyConfiguration(additionalConfigs);
         return recommendationGenerator;
     }
 
+    /**
+     * Creates a {@link TextExtraction} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of InconsistencyChecker
+     */
     public static TextExtraction getTextExtraction(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         var textExtractor = new TextExtraction(dataRepository);
         textExtractor.applyConfiguration(additionalConfigs);
         return textExtractor;
     }
 
+    /**
+     * Creates a {@link ModelProvider} for Java.
+     * 
+     * @param inputCodeModel the path to the input Java Code Model
+     * @param dataRepository the data repository
+     * @return A ModelProvider for the Java Code Model
+     * @throws IOException if the Code Model cannot be accessed
+     */
     public static ModelProvider getJavaModelProvider(File inputCodeModel, DataRepository dataRepository) throws IOException {
         ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
         return new ModelProvider(dataRepository, javaModel);
     }
 
+    /**
+     * Creates a {@link ModelProvider} for PCM.
+     * 
+     * @param inputArchitectureModel the path to the input PCM
+     * @param dataRepository         the data repository
+     * @return A ModelProvider for the PCM
+     * @throws IOException if the Code Model cannot be accessed
+     */
     public static ModelProvider getPcmModelProvider(File inputArchitectureModel, DataRepository dataRepository) throws IOException {
         ModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
         return new ModelProvider(dataRepository, pcmModel);
     }
 
+    /**
+     * Creates a {@link CoreNLPProvider} as {@link edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider} and reads the provided text.
+     * 
+     * @param inputText         the text that should be read
+     * @param additionalConfigs the additional configuration that should be applied
+     * @param dataRepository    the data repository
+     * @return a CoreNLPProvider with the provided text read in
+     * @throws FileNotFoundException if the text file cannot be found
+     */
     public static CoreNLPProvider getTextProvider(File inputText, Map<String, String> additionalConfigs, DataRepository dataRepository)
             throws FileNotFoundException {
         var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
@@ -175,6 +261,12 @@ public final class ArDoCo extends Pipeline {
         return textProvider;
     }
 
+    /**
+     * Loads the file that contains additional configurations and returns the Map that consists of the configuration options.
+     * 
+     * @param additionalConfigsFile the file containing the additional configurations
+     * @return a Map with the additional configurations
+     */
     public static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
         Map<String, String> additionalConfigs = new HashMap<>();
         if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
@@ -199,5 +291,4 @@ public final class ArDoCo extends Pipeline {
         }
         return additionalConfigs;
     }
-
 }

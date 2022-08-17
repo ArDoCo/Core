@@ -124,21 +124,21 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @ParameterizedTest(name = "Evaluating {0} (Text)")
     @EnumSource(value = Project.class)
     void evaluateTraceLinkRecoveryIT(Project project) {
-        var name = project.name().toLowerCase();
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
 
         // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(name, inputText, inputModel, null, additionalConfigs, outputDir);
+        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, null, additionalConfigs, outputDir);
         Assertions.assertNotNull(arDoCoResult);
 
         // calculate results and compare to expected results
-        checkResults(project, name, arDoCoResult);
+        checkResults(project, arDoCoResult);
 
         writeDetailedOutput(project, arDoCoResult);
     }
 
-    private void checkResults(Project project, String name, ArDoCoResult arDoCoResult) {
+    private void checkResults(Project project, ArDoCoResult arDoCoResult) {
+        String name = project.name().toLowerCase();
         var modelIds = arDoCoResult.getModelIds();
         var modelId = modelIds.stream().findFirst().orElseThrow();
         var model = arDoCoResult.getModelState(modelId);
