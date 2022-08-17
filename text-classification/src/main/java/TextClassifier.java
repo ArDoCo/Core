@@ -1,3 +1,6 @@
+import records.ClassificationResponse;
+import records.ClassifierStatus;
+
 import java.util.Map;
 
 public interface TextClassifier {

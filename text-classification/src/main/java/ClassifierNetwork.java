@@ -2,6 +2,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import records.ClassificationResponse;
+import records.ClassifierStatus;
 
 import java.io.*;
 import java.util.HashMap;
@@ -10,18 +12,18 @@ import java.util.Map;
 public class ClassifierNetwork implements TextClassifier {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
-    private RestAPI classificationAPI;
+    private WebAPI<JSONObject, JSONObject> classificationAPI;
 
-    public ClassifierNetwork(RestAPI classificationAPI) {
+    public ClassifierNetwork(WebAPI<JSONObject, JSONObject> classificationAPI) {
         this.classificationAPI = classificationAPI;
     }
 
     @Override
     public ClassifierStatus getClassifierStatus(){
 
-        JSONObject js = classificationAPI.sendApiRequest("/status");
+        JSONObject response  = classificationAPI.sendApiRequest("/status");
 
-        if((js.get("status")).equals("ready")){
+        if((response.get("status")).equals("ready")){
             return new ClassifierStatus(true);
         }
         return new ClassifierStatus(false);
@@ -29,9 +31,9 @@ public class ClassifierNetwork implements TextClassifier {
 
     @Override
     public ClassificationResponse classifyPhrases(Map<Integer, String> phrases){
-       JSONObject response = classificationAPI.sendApiRequest("/classify", new JSONObject(phrases));
+        JSONObject response = classificationAPI.sendApiRequest("/classify", new JSONObject(phrases));
 
-       try {
+        try {
             HashMap<Integer,String> result = new ObjectMapper().readValue(response.toJSONString(), HashMap.class);
             return new ClassificationResponse(result);
         } catch (IOException e) {

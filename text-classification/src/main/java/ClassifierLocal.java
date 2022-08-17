@@ -5,6 +5,8 @@ import edu.kit.kastel.informalin.framework.docker.ContainerResponse;
 import edu.kit.kastel.informalin.framework.docker.DockerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import records.ClassificationResponse;
+import records.ClassifierStatus;
 
 import java.util.Map;
 
@@ -15,18 +17,18 @@ public class ClassifierLocal implements TextClassifier {
     private String dockerImageName;
     private TextClassifier classifier;
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassifierLocal.class);
 
     public ClassifierLocal(String dockerImageName){
         init(dockerImageName);
         startContainer(-1);
-        this.classifier =  new ClassifierNetwork(new RestAPI("http://127.0.0.1", container.apiPort()));
+        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()));
     }
 
     public ClassifierLocal(String dockerImageName, int apiPort){
         init(dockerImageName);
         startContainer(apiPort);
-        this.classifier =  new ClassifierNetwork(new RestAPI("http://127.0.0.1", container.apiPort()));
+        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()));
     }
 
     private void init(String dockerImageName){

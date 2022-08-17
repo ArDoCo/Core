@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class RestAPI {
+public class RestAPI implements WebAPI<JSONObject, JSONObject>{
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
     private String url;
@@ -35,7 +35,7 @@ public class RestAPI {
         return js;
     }
 
-
+    @Override
     public JSONObject sendApiRequest(String endpoint, JSONObject requestData) {
         HttpURLConnection connection;
         BufferedReader reader;
@@ -93,7 +93,7 @@ public class RestAPI {
         }
         return new JSONObject();
     }
-
+    @Override
     public JSONObject sendApiRequest(String endpoint){
         HttpURLConnection connection;
         BufferedReader reader;
