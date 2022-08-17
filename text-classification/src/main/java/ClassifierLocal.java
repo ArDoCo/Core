@@ -15,7 +15,7 @@ public class ClassifierLocal implements TextClassifier {
     private ContainerResponse container;
     private DockerManager dockerManager;
     private String dockerImageName;
-    private TextClassifier classifier;
+    private final TextClassifier classifier;
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierLocal.class);
 

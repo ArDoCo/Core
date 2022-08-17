@@ -12,7 +12,7 @@ import java.util.Map;
 public class ClassifierNetwork implements TextClassifier {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
-    private WebAPI<JSONObject, JSONObject> classificationAPI;
+    private final WebAPI<JSONObject, JSONObject> classificationAPI;
 
     public ClassifierNetwork(WebAPI<JSONObject, JSONObject> classificationAPI) {
         this.classificationAPI = classificationAPI;

@@ -12,8 +12,8 @@ import java.util.concurrent.*;
 
 public class ClassifierNetworkAsync implements TextClassifier {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
-    private WebAPI<Future<JSONObject>, JSONObject> classificationAPI;
+    private static final Logger logger = LoggerFactory.getLogger(ClassifierNetworkAsync.class);
+    private final WebAPI<Future<JSONObject>, JSONObject> classificationAPI;
 
     public ClassifierNetworkAsync(WebAPI<Future<JSONObject>, JSONObject> classificationAPI) {
         this.classificationAPI = classificationAPI;
@@ -23,44 +23,37 @@ public class ClassifierNetworkAsync implements TextClassifier {
     public ClassifierStatus getClassifierStatus(){
 
         Future<JSONObject> futureResponse = classificationAPI.sendApiRequest("/status");
-
         JSONObject response = null;
+
         try {
-            response = (JSONObject) futureResponse.get(1000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
+            response = futureResponse.get(1000, TimeUnit.MILLISECONDS);
+            if((response.get("status")).equals("ready")){
+                return new ClassifierStatus(true);
+            }
+        } catch (ExecutionException | TimeoutException e) {
+            logger.error(e.getMessage(), e);
+        } catch (InterruptedException ie) {
+            logger.error("InterruptedException: ", ie);
+            Thread.currentThread().interrupt();
         }
 
-        if((response.get("status")).equals("ready")){
-            return new ClassifierStatus(true);
-        }
         return new ClassifierStatus(false);
     }
 
     @Override
     public ClassificationResponse classifyPhrases(Map<Integer, String> phrases){
-        Future futureResponse = classificationAPI.sendApiRequest("/classify", new JSONObject(phrases));
-
+        Future<JSONObject> futureResponse = classificationAPI.sendApiRequest("/classify", new JSONObject(phrases));
         JSONObject response = null;
-        try {
-            response = (JSONObject) futureResponse.get(1000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
 
         try {
+            response = futureResponse.get(1000, TimeUnit.MILLISECONDS);
             HashMap<Integer,String> result = new ObjectMapper().readValue(response.toJSONString(), HashMap.class);
             return new ClassificationResponse(result);
-        } catch (IOException e) {
-            logger.error("Failed to parse json response: " + e.getMessage(), e);
+        } catch (ExecutionException | TimeoutException | IOException e) {
+            logger.error(e.getMessage(), e);
+        } catch (InterruptedException ie) {
+            logger.error("InterruptedException: ", ie);
+            Thread.currentThread().interrupt();
         }
 
         return null;

@@ -9,18 +9,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
-    private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
-    private String url;
-    private int port;
+    private static final Logger logger = LoggerFactory.getLogger(AsyncRestAPI.class);
+    private final String url;
+    private final int port;
 
-    private ExecutorService executor;
+    private final ExecutorService executor;
 
     public AsyncRestAPI(String url, int port) {
         this.url = url;
@@ -35,9 +36,7 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
         } catch (ParseException e) {
             logger.error("Failed to parse json string" + e.getMessage(), e);
         }
-
-        JSONObject js = (JSONObject) ob;
-        return js;
+        return  (JSONObject) ob;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
             }
 
             try{
-                URL u = new URL(this.url + ":" + String.valueOf(port) + ep);
+                URL u = new URL(this.url + ":" + port + ep);
                 connection = (HttpURLConnection) u.openConnection();
                 connection.setConnectTimeout(5000);
                 connection.setReadTimeout(5000);
@@ -67,7 +66,7 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
                 String jsonInputString = requestData.toJSONString();
 
                 try(OutputStream os = connection.getOutputStream()) {
-                    byte[] input = jsonInputString.getBytes("utf-8");
+                    byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                     os.write(input, 0, input.length);
                 }
 
@@ -91,9 +90,6 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
                 connection.disconnect();
                 return parseJsonString(responseContent.toString());
 
-            }
-            catch (MalformedURLException e) {
-                logger.error(e.getMessage(), e);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -115,7 +111,7 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
             }
 
             try {
-                URL u = new URL(this.url + ":" + String.valueOf(port) + ep);
+                URL u = new URL(this.url + ":" + port + ep);
                 connection = (HttpURLConnection) u.openConnection();
 
                 connection.setRequestMethod("POST");
@@ -141,8 +137,6 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
                 connection.disconnect();
                 return parseJsonString(responseContent.toString());
 
-            } catch (MalformedURLException e) {
-                logger.error("Failed to request status: " + e.getMessage(), e);
             } catch (IOException e) {
                 logger.error("Failed to request status: " + e.getMessage(), e);
             }
