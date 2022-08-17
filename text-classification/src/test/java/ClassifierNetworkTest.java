@@ -19,7 +19,7 @@ import java.util.Map;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ClassifierNetworkTest {
+class ClassifierNetworkTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
 
@@ -55,14 +55,14 @@ public class ClassifierNetworkTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    public void getClassifierStatus_ifStatusContainsReady_returnReady(boolean ready){
+    void getClassifierStatus_ifStatusContainsReady_returnReady(boolean ready){
 
         mockApiStatusResponse(ready);
         Assertions.assertEquals(classifier.getClassifierStatus().ready(), ready);
     }
 
     @Test
-    public void classifyPhrases_jsonResponse_parseResponse(){
+    void classifyPhrases_jsonResponse_parseResponse(){
 
         Map<Integer, String> testRequest = new HashMap<>() {{
             put(1, "test-phrase-1");

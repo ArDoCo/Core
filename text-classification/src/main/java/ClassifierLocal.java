@@ -1,6 +1,3 @@
-//import docker.ContainerResponse;
-//import docker.DockerManager;
-
 import edu.kit.kastel.informalin.framework.docker.ContainerResponse;
 import edu.kit.kastel.informalin.framework.docker.DockerManager;
 import org.slf4j.Logger;
@@ -52,7 +49,7 @@ public class ClassifierLocal implements TextClassifier {
         } else {
             this.container = dockerManager.createContainerByImage(dockerImageName, apiPort,true, true);
         }
-        logger.info(" successfully started container: " + container.toString());
+        logger.info(" successfully started container: {}", container);
 
     }
 
