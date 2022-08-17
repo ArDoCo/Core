@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ProjectNameFilterAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent;
 
 /**
@@ -36,7 +37,8 @@ public class ConnectionGenerator extends AbstractExecutionStage {
     public ConnectionGenerator(DataRepository dataRepository) {
         super("ConnectionGenerator", dataRepository);
 
-        agents = Lists.mutable.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new InstanceConnectionAgent(dataRepository));
+        agents = Lists.mutable.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new ProjectNameFilterAgent(dataRepository),
+                new InstanceConnectionAgent(dataRepository));
         enabledAgents = agents.collect(Agent::getId);
     }
 
