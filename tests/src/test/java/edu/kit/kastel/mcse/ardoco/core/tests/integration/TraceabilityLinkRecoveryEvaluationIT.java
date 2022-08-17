@@ -129,7 +129,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         inputText = project.getTextFile();
 
         // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave("test_" + name, inputText, inputModel, null, additionalConfigs, outputDir);
+        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(name, inputText, inputModel, null, additionalConfigs, outputDir);
         Assertions.assertNotNull(arDoCoResult);
 
         // calculate results and compare to expected results
