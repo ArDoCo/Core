@@ -23,7 +23,7 @@ public class ArchitectureTest {
             .haveSimpleName("ModelInstance")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..tests..");
+            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..output..", "..tests..");
 
     @ArchTest
     public static final ArchRule linksOnlyAfterConnectionGenerator = classes().that()
@@ -36,7 +36,7 @@ public class ArchitectureTest {
     public static final ArchRule usingLinkAsNamingOnlyInConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()
-            .resideInAnyPackage("..connectiongenerator..", "..tests..");
+            .resideInAnyPackage("..connectiongenerator..", "..output..", "..tests..");
 
     @ArchTest
     public static final ArchRule inconsistencyOnlyAfterInconsistencyDetection = classes().that()

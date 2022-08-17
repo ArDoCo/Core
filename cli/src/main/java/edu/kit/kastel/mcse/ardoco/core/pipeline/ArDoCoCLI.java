@@ -1,8 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo.runAndSave;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -51,18 +49,25 @@ public final class ArDoCoCLI {
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
 
+        ArDoCoRunner arDoCoRunner = parseCommandLineAndBuildArDoCoRunner(args);
+        if (arDoCoRunner == null)
+            return;
+        arDoCoRunner.runArDoCo();
+    }
+
+    static ArDoCoRunner parseCommandLineAndBuildArDoCoRunner(String[] args) {
         CommandLine cmd;
         try {
             cmd = parseCommandLine(args);
         } catch (IllegalArgumentException | ParseException e) {
             logger.error(e.getMessage());
             printUsage();
-            return;
+            return null;
         }
 
         if (cmd.hasOption(CMD_HELP)) {
             printUsage();
-            return;
+            return null;
         }
 
         File inputText;
@@ -73,7 +78,7 @@ public final class ArDoCoCLI {
 
         if (!cmd.hasOption(CMD_TEXT)) {
             printUsage();
-            return;
+            return null;
         }
 
         try {
@@ -87,20 +92,17 @@ public final class ArDoCoCLI {
             outputDir = ensureDir(cmd.getOptionValue(CMD_OUT_DIR));
         } catch (IOException e) {
             logger.error(e.getMessage());
-            return;
+            return null;
         }
 
         var name = cmd.getOptionValue(CMD_NAME);
 
         if (!name.matches("\\w+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
-            return;
+            return null;
         }
-        try {
-            runAndSave(name, inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+
+        return new ArDoCoRunner(inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir, name);
     }
 
     private static void printUsage() {

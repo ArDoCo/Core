@@ -243,10 +243,9 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof RecommendedInstanceImpl other)) {
             return false;
         }
-        var other = (RecommendedInstanceImpl) obj;
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
     }
 

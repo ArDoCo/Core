@@ -14,11 +14,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements TextInconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
-    private static final String REASON_FORMAT_STRING = "Text indicates that \"%s\" should be contained in the model(s) but could not be found. (confidence: %.2f)";
 
     @Override
     public String getReason() {
-        return String.format(Locale.US, REASON_FORMAT_STRING, name, confidence);
+        return String.format(Locale.US, "Text indicates that \"%s\" should be contained in the model(s) but could not be found. (confidence: %.2f)", name,
+                confidence);
     }
 
     @Override

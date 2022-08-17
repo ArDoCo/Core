@@ -1,21 +1,15 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getConnectionStates;
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getInconsistencyStates;
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getModelStatesData;
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getRecommendationStates;
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getTextState;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -23,16 +17,14 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.helpers.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
@@ -102,15 +94,14 @@ public final class ArDoCo extends Pipeline {
 
         // save step
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        saveOutput(name, outputDir, arDoCo, duration);
+        ArDoCoResult arDoCoResult = new ArDoCoResult(arDoCo.getDataRepository());
+        saveOutput(name, outputDir, arDoCoResult);
 
         classLogger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
-
-        return new ArDoCoResult(arDoCo.getDataRepository());
+        return arDoCoResult;
     }
 
-    private static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs)
-            throws IOException {
+    static ArDoCo defineArDoCo(File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs) throws IOException {
         var arDoCo = new ArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
@@ -126,23 +117,21 @@ public final class ArDoCo extends Pipeline {
         return arDoCo;
     }
 
-    private static void saveOutput(String name, File outputDir, ArDoCo arDoCo, Duration duration) {
-        if (outputDir == null) {
-            return;
-        }
-        var dataRepository = arDoCo.getDataRepository();
-        var modelStatesData = getModelStatesData(dataRepository);
-        classLogger.info("Writing output.");
-        for (String modelId : modelStatesData.modelIds()) {
-            // write model states
-            ModelExtractionState modelState = modelStatesData.getModelState(modelId);
-            var metaModel = modelState.getMetamodel();
-            var modelStateFile = Path.of(outputDir.getAbsolutePath(), name + "-instances-" + metaModel + ".csv").toFile();
-            FilePrinter.writeModelInstancesInCsvFile(modelStateFile, modelState, name);
+    private static void saveOutput(String name, File outputDir, ArDoCoResult arDoCoResult) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(outputDir);
+        Objects.requireNonNull(arDoCoResult);
 
-            // write results
-            arDoCo.printResultsInFiles(outputDir, modelId, name, dataRepository, duration);
-        }
+        classLogger.info("Starting to write output...");
+        FilePrinter.writeTraceabilityLinkRecoveryOutput(getOutputFile(name, outputDir, "traceLinks_"), arDoCoResult);
+        FilePrinter.writeInconsistencyOutput(getOutputFile(name, outputDir, "inconsistencyDetection_"), arDoCoResult);
+        classLogger.info("Finished to write output.");
+    }
+
+    private static File getOutputFile(String name, File outputDir, String prefix) {
+        var filename = prefix + name + ".txt";
+        var filepath = outputDir.toPath().resolve(filename);
+        return filepath.toFile();
     }
 
     public static InconsistencyChecker getInconsistencyChecker(Map<String, String> additionalConfigs, DataRepository dataRepository) {
@@ -209,27 +198,6 @@ public final class ArDoCo extends Pipeline {
             }
         }
         return additionalConfigs;
-    }
-
-    private void printResultsInFiles(File outputDir, String modelId, String name, DataRepository data, Duration duration) {
-        var textState = getTextState(data);
-        var modelState = getModelStatesData(data).getModelState(modelId);
-        var metaModel = modelState.getMetamodel();
-        var recommendationState = getRecommendationStates(data).getRecommendationState(metaModel);
-        var connectionState = getConnectionStates(data).getConnectionState(metaModel);
-        var inconsistencyStates = getInconsistencyStates(data);
-        var inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
-
-        FilePrinter.writeNounMappingsInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_noun_mappings.csv").toFile(), //
-                textState);
-
-        FilePrinter.writeTraceLinksInCsvFile(Path.of(outputDir.getAbsolutePath(), name + "_trace_links.csv").toFile(), //
-                connectionState);
-
-        FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states.csv").toFile(), //
-                modelState, textState, recommendationState, connectionState, duration);
-
-        FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies.csv").toFile(), inconsistencyState);
     }
 
 }
