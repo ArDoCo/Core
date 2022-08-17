@@ -56,6 +56,7 @@ public class VectorSqliteDatabase implements WordVectorDataSource, AutoCloseable
      * @return the vector representation, or {@link Optional#empty()} if no representation exists in the database.
      * @throws RetrieveVectorException if a database access error occurs
      */
+    @Override
     public Optional<float[]> getWordVector(String word) throws RetrieveVectorException {
         try {
             this.selectStatement.setString(1, word);

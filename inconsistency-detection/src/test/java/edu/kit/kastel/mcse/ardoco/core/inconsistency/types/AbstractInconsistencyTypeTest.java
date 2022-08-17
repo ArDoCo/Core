@@ -142,10 +142,9 @@ public abstract class AbstractInconsistencyTypeTest {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (!(obj instanceof DummyWord other)) {
                 return false;
             }
-            var other = (DummyWord) obj;
             return getPosition() == other.getPosition() && getSentence() == other.getSentence() && Objects.equals(getText(), other.getText());
         }
     }

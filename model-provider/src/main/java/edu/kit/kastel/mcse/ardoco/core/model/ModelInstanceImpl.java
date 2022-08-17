@@ -128,10 +128,9 @@ public class ModelInstanceImpl implements ModelInstance {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof ModelInstanceImpl other)) {
             return false;
         }
-        ModelInstanceImpl other = (ModelInstanceImpl) obj;
         return Objects.equals(fullName, other.fullName) && Objects.equals(fullType, other.fullType) && Objects.equals(uid, other.uid);
     }
 

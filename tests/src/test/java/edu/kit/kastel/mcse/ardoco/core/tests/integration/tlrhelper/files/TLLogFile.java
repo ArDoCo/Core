@@ -6,11 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 /**
@@ -19,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEval
 public class TLLogFile {
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("##0.00%");
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private TLLogFile() {
         throw new IllegalAccessError("This constructor should not be called!");
@@ -36,7 +33,7 @@ public class TLLogFile {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
 
-        builder.append("- `").append(DATE_FORMATTER.format(LocalDateTime.now(ZoneId.systemDefault()))).append("` ");
+        builder.append("- `").append(CommonUtilities.getCurrentTimeAsString()).append("` ");
 
         // calc average
         double avgPrecision = results.stream().mapToDouble(TLProjectEvalResult::getPrecision).average().orElse(Double.NaN);

@@ -45,8 +45,9 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     /**
      * Filter RecommendedInstances based on various heuristics. First, filter unlikely ones (low probability).
      */
+    @Override
     protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
-        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance> empty();
+        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance>empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
         if (dynamicThreshold) {
@@ -110,8 +111,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
         var highestTypeProbability = getHighestTypeProbability(recommendedInstance.getTypeMappings());
         var highestNameProbability = getHighestNameProbability(recommendedInstance.getTypeMappings());
 
-        return highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability
-                || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
+        return highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
 
     }
 

@@ -12,8 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
  * This record represents an inconsistent sentence consisting of a sentence and all the inconsistencies that were found
  * within this sentence.
  * 
- * @param sentence        The sentence
- * @param inconsistencies the list of inconsistencies within the sentence
  */
 public record InconsistentSentence(Sentence sentence, List<Inconsistency> inconsistencies) {
 
