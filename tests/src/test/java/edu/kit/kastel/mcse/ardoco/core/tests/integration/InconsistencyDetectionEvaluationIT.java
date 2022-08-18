@@ -67,12 +67,10 @@ class InconsistencyDetectionEvaluationIT {
 
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
-            var resultString = TestUtil.createResultLogString(name, weightedResults);
-            logger.info(resultString);
+            TestUtil.logResults(logger, name, weightedResults);
 
             name = "Overall Macro";
-            resultString = TestUtil.createResultLogString(name, macroResults);
-            logger.info(resultString);
+            TestUtil.logResults(logger, name, weightedResults);
 
             if (ranBaseline) {
                 name = "BASELINE Overall Weighted";
