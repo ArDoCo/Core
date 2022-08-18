@@ -20,12 +20,21 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class ProjectNameExtractor extends Informant {
+/**
+ * This informant looks for (parts of) the project's name within RecommendedInstances and if it finds the project's name, influences the probability of the
+ * RecommendedInstance negatively because it then should not be a recommended instance.
+ */
+public class ProjectNameFinder extends Informant {
 
     @Configurable
     public static final double PENALTY = Double.NEGATIVE_INFINITY;
 
-    public ProjectNameExtractor(DataRepository dataRepository) {
+    /**
+     * Constructs a new instance of the {@link ProjectNameFinder} with the given data repository.
+     * 
+     * @param dataRepository the data repository
+     */
+    public ProjectNameFinder(DataRepository dataRepository) {
         super("ProjectNameExtractor", dataRepository);
     }
 
