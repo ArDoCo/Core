@@ -59,7 +59,7 @@ To test the Core, you could use case studies and benchmarks provided in ..
 	<dependency>
 		<groupId>io.github.ardoco.core</groupId>
 		<artifactId>pipeline</artifactId> <!-- or any other subproject -->
-		<version>0.5-SNAPSHOT</version>
+		<version>0.6.0-SNAPSHOT</version>
 	</dependency>
 </dependencies>
 ```

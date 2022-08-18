@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.api.data;
+package edu.kit.kastel.mcse.ardoco.core.api.output;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,9 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
@@ -32,9 +34,17 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * Besides accessing all data from the calculation steps, this record also provides some convenience methods to directly
  * access results such as found trace links and detected inconsistencies.
  * 
- * @param dataRepository the repository that backs the results
  */
 public record ArDoCoResult(DataRepository dataRepository) {
+
+    /**
+     * Returns the name of the project the results are based on.
+     * 
+     * @return the name of the project the results are based on.
+     */
+    public String getProjectName() {
+        return DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
+    }
 
     /**
      * Returns the set of {@link TraceLink}s that were found for the Model with the given ID.
@@ -63,23 +73,35 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * 
      * @return set of Trace links
      */
-    public ImmutableSet<TraceLink> getAllTraceLinks() {
+    public ImmutableList<TraceLink> getAllTraceLinks() {
         MutableSet<TraceLink> traceLinks = Sets.mutable.empty();
 
         for (var modelId : getModelIds()) {
             traceLinks.addAll(getTraceLinksForModel(modelId).castToCollection());
         }
-        return traceLinks.toImmutableSet();
+        return traceLinks.toImmutableList();
     }
 
     /**
-     * Returns the set of {@link TraceLink}s as strings in the format "ModelElementId,SentenceNo".
+     * Returns the set of {@link TraceLink}s as strings. The strings are beautified to have a human-readable format
      * 
      * @return Trace links as Strings
      */
-    public ImmutableSet<String> getAllTraceLinksAsStrings() {
-        var formatString = "%s,%d";
-        return getAllTraceLinks().collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1));
+    public List<String> getAllTraceLinksAsBeautifiedStrings() {
+        return getAllTraceLinks().toSortedList(TraceLink::compareTo).collect(ArDoCoResult::formatTraceLinksHumanReadable);
+    }
+
+    private static String formatTraceLinksHumanReadable(TraceLink traceLink) {
+        InstanceLink instanceLink = traceLink.getInstanceLink();
+        String modelElementName = instanceLink.getModelInstance().getFullName();
+        String modelElementUid = traceLink.getModelElementUid();
+        String modelInfo = String.format("%s (%s)", modelElementName, modelElementUid);
+
+        var sentence = traceLink.getSentence();
+        int sentenceNumber = sentence.getSentenceNumberForOutput();
+        String sentenceInfo = String.format("S%3d: \"%s\"", sentenceNumber, sentence.getText());
+
+        return String.format("%-42s <--> %s", modelInfo, sentenceInfo);
     }
 
     /**

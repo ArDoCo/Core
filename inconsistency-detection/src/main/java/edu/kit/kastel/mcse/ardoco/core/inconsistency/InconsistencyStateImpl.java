@@ -12,8 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 
-/**
- */
 public class InconsistencyStateImpl extends AbstractState implements InconsistencyState {
 
     private transient MutableList<RecommendedInstance> recommendedInstances;

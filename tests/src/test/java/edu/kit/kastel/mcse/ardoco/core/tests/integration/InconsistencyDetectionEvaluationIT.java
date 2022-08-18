@@ -1,14 +1,10 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +25,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
@@ -53,11 +50,13 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.Hol
  */
 class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
+
     private static final String OUTPUT = "src/test/resources/testout";
+    public static final String DIRECTORY_NAME = "ardoco_eval_id";
 
     private static final OverallResultsCalculator OVERALL_RESULTS_CALCULATOR = new OverallResultsCalculator();
     private static final OverallResultsCalculator OVERALL_RESULT_CALCULATOR_BASELINE = new OverallResultsCalculator();
-    public static final String LINE_SEPARATOR = System.lineSeparator();
+    private static final String LINE_SEPARATOR = System.lineSeparator();
     private static boolean ranBaseline = false;
     private static Map<Project, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new HashMap<>();
 
@@ -68,12 +67,10 @@ class InconsistencyDetectionEvaluationIT {
 
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
-            var resultString = TestUtil.createResultLogString(name, weightedResults);
-            logger.info(resultString);
+            TestUtil.logResults(logger, name, weightedResults);
 
             name = "Overall Macro";
-            resultString = TestUtil.createResultLogString(name, macroResults);
-            logger.info(resultString);
+            TestUtil.logResults(logger, name, weightedResults);
 
             if (ranBaseline) {
                 name = "BASELINE Overall Weighted";
@@ -94,7 +91,7 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     private static void writeOutput(EvaluationResults weightedResults, EvaluationResults macroResults) throws IOException {
-        var evalDir = Path.of(OUTPUT).resolve("id_eval");
+        var evalDir = Path.of(OUTPUT).resolve(DIRECTORY_NAME);
         Files.createDirectories(evalDir);
         var outputFile = evalDir.resolve("base_results.md");
 
@@ -127,7 +124,7 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluate Inconsistency Analyses")
     @ParameterizedTest(name = "Evaluating {0}")
-    @EnumSource(Project.class)
+    @EnumSource(value = Project.class)
     void inconsistencyIT(Project project) {
         logger.info("Start evaluation of inconsistency for {}", project.name());
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
@@ -153,7 +150,7 @@ class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluate Inconsistency Analyses Baseline")
     @ParameterizedTest(name = "Evaluating Baseline For {0}")
-    @EnumSource(Project.class)
+    @EnumSource(value = Project.class)
     void inconsistencyBaselineIT(Project project) {
         logger.info("Start evaluation of inconsistency baseline for {}", project.name());
         ranBaseline = true;
@@ -242,7 +239,7 @@ class InconsistencyDetectionEvaluationIT {
         var detailedOutputBuilder = outputs.getTwo();
 
         Path outputPath = Path.of(OUTPUT);
-        Path idEvalPath = outputPath.resolve("id_eval");
+        Path idEvalPath = outputPath.resolve(DIRECTORY_NAME);
         try {
             Files.createDirectories(outputPath);
             Files.createDirectories(idEvalPath);
@@ -251,12 +248,12 @@ class InconsistencyDetectionEvaluationIT {
         }
 
         String projectFileName = "inconsistencies_" + project.name().toLowerCase() + ".txt";
-        var filename = outputPath.resolve(projectFileName).toFile().getAbsolutePath();
-        writeToFile(filename, outputBuilder.toString());
+        var filename = idEvalPath.resolve(projectFileName).toFile().getAbsolutePath();
+        FilePrinter.writeToFile(filename, outputBuilder.toString());
 
         String detailedProjectFileName = "detailed_" + projectFileName;
         var detailedFilename = idEvalPath.resolve(detailedProjectFileName).toFile().getAbsolutePath();
-        writeToFile(detailedFilename, detailedOutputBuilder.toString());
+        FilePrinter.writeToFile(detailedFilename, detailedOutputBuilder.toString());
     }
 
     private static Pair<StringBuilder, StringBuilder> createOutput(Project project, List<ExplicitEvaluationResults<String>> results,
@@ -267,14 +264,6 @@ class InconsistencyDetectionEvaluationIT {
         outputBuilder.append(getOverallResultsString(resultCalculator));
         var detailedOutputBuilder = resultCalculatorStringBuilderPair.getTwo();
         return Tuples.pair(outputBuilder, detailedOutputBuilder);
-    }
-
-    private static void writeToFile(String filename, String text) {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), UTF_8)) {
-            writer.write(text);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static String getOverallResultsString(ResultCalculator resultCalculator) {

@@ -1,6 +1,9 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +26,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
  *
  */
 public final class CommonUtilities {
+
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private CommonUtilities() {
         throw new IllegalAccessError();
@@ -359,4 +364,7 @@ public final class CommonUtilities {
         return false;
     }
 
+    public static String getCurrentTimeAsString() {
+        return DATE_FORMATTER.format(LocalDateTime.now(ZoneId.systemDefault()));
+    }
 }

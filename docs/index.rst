@@ -9,6 +9,8 @@ You can find `ArDoCo on GitHub <https://github.com/ArDoCo>`_.
 
 Before contributing, please read the :doc:`quickstart guide </content/quickstart>`.
 
+JavaDocs can be found `here <https://ardoco.github.io/Core-Docs/>`_.
+
 
 Case Studies & Benchmarks
 -----------------------------
@@ -52,3 +54,4 @@ You find us on our websites: `Jan Keim <https://mcse.kastel.kit.edu/staff_Keim_J
    content/stages
    content/datastructures
    content/wordsimilarity
+   JavaDocs <https://ardoco.github.io/Core-Docs/>

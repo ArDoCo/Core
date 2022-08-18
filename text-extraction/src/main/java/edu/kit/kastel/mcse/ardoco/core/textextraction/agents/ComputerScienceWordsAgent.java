@@ -165,7 +165,7 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
         loadStandardGlossary(result);
         result.addAll(additionalWords);
         // Remove after bracket (
-        result = result.stream().map(e -> e.split("\\(")[0].trim()).collect(Collectors.toSet());
+        result = result.stream().map(e -> e.split("\\(", -1)[0].trim()).collect(Collectors.toSet());
         return Lists.immutable.withAll(result.stream().map(w -> w.trim().toLowerCase()).toList());
     }
 
