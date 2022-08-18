@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -25,9 +25,10 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * RecommendedInstance negatively because it then should not be a recommended instance.
  */
 public class ProjectNameFinder extends Informant {
+    private static final String ERROR_EMPTY_LIST = "List cannot be empty";
 
     @Configurable
-    public static final double PENALTY = Double.NEGATIVE_INFINITY;
+    private static final double PENALTY = Double.NEGATIVE_INFINITY;
 
     /**
      * Constructs a new instance of the {@link ProjectNameFinder} with the given data repository.
@@ -80,11 +81,11 @@ public class ProjectNameFinder extends Informant {
 
     private String concatenateWords(MutableList<Word> words) {
         var sortedWords = words.sortThisByInt(Word::getPosition);
-        String concatenatedWords = "";
+        StringBuilder concatenatedWords = new StringBuilder();
         for (var word : sortedWords) {
-            concatenatedWords += word.getText().toLowerCase();
+            concatenatedWords.append(word.getText().toLowerCase());
         }
-        return concatenatedWords;
+        return concatenatedWords.toString();
     }
 
     private MutableList<Word> expandWordForName(String projectName, Word word) {
@@ -100,28 +101,28 @@ public class ProjectNameFinder extends Informant {
     private void expandWordForNameLeft(String name, MutableList<Word> words) {
         Objects.requireNonNull(name);
         if (words.isEmpty()) {
-            throw new IllegalArgumentException("List cannot be empty");
+            throw new IllegalArgumentException(ERROR_EMPTY_LIST);
         }
 
         Word currWord = words.sortThisByInt(Word::getPosition).getFirstOptional().orElseThrow(IllegalArgumentException::new);
-        expandWordForName(name, currWord, words, (w) -> w.getPreWord(), (text, addition) -> addition + text);
+        expandWordForName(name, currWord, words, Word::getPreWord, (text, addition) -> addition + text);
     }
 
     private void expandWordForNameRight(String name, MutableList<Word> words) {
         Objects.requireNonNull(name);
         if (words.isEmpty()) {
-            throw new IllegalArgumentException("List cannot be empty");
+            throw new IllegalArgumentException(ERROR_EMPTY_LIST);
         }
 
         var currWord = words.sortThisByInt(Word::getPosition).getLastOptional().orElseThrow(IllegalArgumentException::new);
-        expandWordForName(name, currWord, words, (w) -> w.getNextWord(), (text, addition) -> text + addition);
+        expandWordForName(name, currWord, words, Word::getNextWord, (text, addition) -> text + addition);
     }
 
-    private void expandWordForName(String name, Word currWord, MutableList<Word> words, Function<Word, Word> wordExpansion,
-            BiFunction<String, String, String> concatenation) {
+    private void expandWordForName(String name, Word currWord, MutableList<Word> words, UnaryOperator<Word> wordExpansion,
+            BinaryOperator<String> concatenation) {
         Objects.requireNonNull(name);
         if (words.isEmpty()) {
-            throw new IllegalArgumentException("List cannot be empty");
+            throw new IllegalArgumentException(ERROR_EMPTY_LIST);
         }
 
         var testWordText = concatenateWords(words);
@@ -139,7 +140,7 @@ public class ProjectNameFinder extends Informant {
 
     private static String getEditedProjectName(String projectName) {
         // remove white spaces from project name
-        return projectName.replaceAll("\s", "");
+        return projectName.replace("\s", "");
     }
 
     @Override
