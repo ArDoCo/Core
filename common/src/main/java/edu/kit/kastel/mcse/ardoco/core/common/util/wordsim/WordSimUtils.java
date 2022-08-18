@@ -1,11 +1,11 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
@@ -23,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonSt
  */
 public class WordSimUtils {
 
-    private static List<WordSimMeasure> measures = WordSimLoader.loadUsingProperties();
+    private static ImmutableList<WordSimMeasure> measures = WordSimLoader.loadUsingProperties();
     private static ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
 
     private WordSimUtils() {
@@ -36,7 +36,7 @@ public class WordSimUtils {
      * @param measures the measures to use
      */
     public static void setMeasures(Collection<WordSimMeasure> measures) {
-        WordSimUtils.measures = new ArrayList<>(measures);
+        WordSimUtils.measures = Lists.immutable.withAll(measures);
     }
 
     /**
@@ -66,7 +66,7 @@ public class WordSimUtils {
             return false;
         }
 
-        return strategy.areWordsSimilar(ctx, measures);
+        return strategy.areWordsSimilar(ctx, measures.toList());
     }
 
     private static boolean splitLengthTest(ComparisonContext ctx) {

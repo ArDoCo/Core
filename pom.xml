@@ -143,7 +143,6 @@
     <dependency>
       <groupId>io.github.informalin.framework</groupId>
       <artifactId>pipeline</artifactId>
-      <version>0.8-SNAPSHOT</version>
     </dependency>
     <!-- Eclipse collections -->
     <dependency>
