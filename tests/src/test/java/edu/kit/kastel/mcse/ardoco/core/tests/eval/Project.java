@@ -16,7 +16,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.000, .000, .246) //
+            new EvaluationResults(.000, .000, .256) //
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
