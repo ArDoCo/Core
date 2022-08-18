@@ -1,20 +1,11 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
@@ -70,55 +61,10 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         return nounMapping;
     }
 
-    public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping nounMapping2, ImmutableList<Word> referenceWords, String reference,
-            MappingKind mappingKind, Claimant claimant, double probability) {
-        /*
-         * if (!textState.getNounMappings().contains(nounMapping) ||
-         * !textState.getNounMappings().contains(nounMapping2)) { throw new
-         * IllegalArgumentException("The noun mappings that are merged should be in the current text state!"); }
-         */
+    protected final Confidence putAllConfidencesTogether(Confidence confidence, Confidence confidence1) {
 
-        MutableSet<Word> mergedWords = nounMapping.getWords().toSet();
-        mergedWords.addAllIterable(nounMapping2.getWords());
-
-        MutableMap<MappingKind, Confidence> mergedDistribution = nounMapping.getDistribution().toMap();
-        AggregationFunctions globalAggregationFunc = nounMapping.getGlobalAggregationFunction();
-        AggregationFunctions localAggregationFunc = nounMapping.getLocalAggregationFunction();
-        var distribution2 = nounMapping2.getDistribution().toMap();
-        mergedDistribution.keySet()
-                .forEach(kind -> Confidence.merge(distribution2.get(kind), distribution2.get(kind), globalAggregationFunc, localAggregationFunc));
-
-        MutableSet<String> mergedSurfaceForms = nounMapping.getSurfaceForms().toSet();
-        mergedSurfaceForms.addAllIterable(nounMapping2.getSurfaceForms());
-
-        ImmutableList<Word> mergedReferenceWords = referenceWords;
-
-        if (mergedReferenceWords == null) {
-            MutableList<Word> mergedRefWords = Lists.mutable.withAll(nounMapping.getReferenceWords());
-            mergedRefWords.addAllIterable(nounMapping2.getReferenceWords());
-            mergedReferenceWords = mergedRefWords.toImmutable();
-        }
-
-        String mergedReference = reference;
-
-        if (mergedReference == null) {
-
-            if (nounMapping.getReference().equalsIgnoreCase(nounMapping2.getReference())) {
-                mergedReference = nounMapping.getReference();
-            } else {
-                mergedReference = textState.calculateNounMappingReference(mergedReferenceWords);
-            }
-        }
-
-        NounMapping mergedNounMapping = new NounMappingImpl(mergedWords.toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(),
-                mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(false));
-        mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
-
-        textState.removeNounMappingFromState(nounMapping);
-        textState.removeNounMappingFromState(nounMapping2);
-
-        textState.addNounMappingAddPhraseMapping(mergedNounMapping);
-
-        return mergedNounMapping;
+        Confidence result = confidence.createCopy();
+        result.addAllConfidences(confidence1);
+        return result;
     }
 }
