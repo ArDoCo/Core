@@ -161,6 +161,14 @@ public class TestUtil {
         logger.info(infoString);
     }
 
+    /**
+     * Creates a string from the given results that can be used, e.g., for logging. Extracts the name as well as precision, recall and F1-score and displays
+     * them line by line.
+     * 
+     * @param name    the name that should be displayed
+     * @param results the results
+     * @return a String containing the name and the results (precision, recall, F1) line by line
+     */
     public static String createResultLogString(String name, EvaluationResults results) {
         return String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", name, results.getPrecision(), results.getRecall(),
                 results.getF1());
