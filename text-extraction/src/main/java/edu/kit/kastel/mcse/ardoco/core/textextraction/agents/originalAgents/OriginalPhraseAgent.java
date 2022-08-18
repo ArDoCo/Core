@@ -81,8 +81,10 @@ public class OriginalPhraseAgent extends PipelineAgent {
         var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
         if (similarReferenceNounMappings.isEmpty()) {
 
-            textState.addNounMapping(phrase.toImmutableSet(), MappingKind.NAME, this, phraseConfidence, phrase.toImmutableList(), phrase.collect(Word::getText)
+            var nounMapping = textState.addNounMapping(phrase.toImmutableSet(), MappingKind.NAME, this, phraseConfidence, phrase.toImmutableList(), phrase
+                    .collect(Word::getText)
                     .toImmutableSet(), createReferenceForTerm(phrase));
+            ((NounMappingImpl) nounMapping).isDefinedAsTerm().set(true);
         } else {
             for (var nounMapping : similarReferenceNounMappings) {
 

@@ -17,6 +17,7 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.JavaUtils;
@@ -30,7 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
-public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
                               ImmutableSet<String> surfaceForms, String reference, @Deprecated AtomicBoolean isDefinedAsTerm) implements NounMapping {
 
     /**
@@ -45,7 +46,8 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
      */
     private NounMappingImpl(ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableSet<String> surfaceForms) {
-        this(words, Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(referenceWords), new AtomicBoolean(false));
+        this(words.toSortedSet().toImmutable(), Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(referenceWords),
+                new AtomicBoolean(false));
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
     }
@@ -55,7 +57,8 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
      */
     public NounMappingImpl(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
             ImmutableSet<String> surfaceForms) {
-        this(words, Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords), new AtomicBoolean(false));
+        this(words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords), new AtomicBoolean(
+                false));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -65,7 +68,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
 
     public NounMappingImpl(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
             ImmutableSet<String> surfaceForms, String reference) {
-        this(words, Maps.mutable.empty(), referenceWords, surfaceForms, reference, new AtomicBoolean(false));
+        this(words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, reference, new AtomicBoolean(false));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -80,7 +83,7 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
     }
 
     @Override
-    public final ImmutableSet<Word> getWords() {
+    public final ImmutableSortedSet<Word> getWords() {
         return words;
     }
 
@@ -134,8 +137,8 @@ public record NounMappingImpl(ImmutableSet<Word> words, MutableMap<MappingKind, 
 
     @Override
     public NounMapping createCopy() {
-        return new NounMappingImpl(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable.withAll(referenceWords),
-                surfaceForms.toImmutable());
+        return new NounMappingImpl(words.toImmutableSet(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable.withAll(
+                referenceWords), surfaceForms.toImmutable());
     }
 
     @Override

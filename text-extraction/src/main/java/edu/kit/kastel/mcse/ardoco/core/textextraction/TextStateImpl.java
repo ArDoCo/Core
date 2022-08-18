@@ -43,7 +43,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     double MAPPINGKIND_MAX_DIFF = 0.1;
     private MutableSet<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
-    private final DefaultTextStateStrategy strategy;
+    private final TextStateStrategy strategy;
 
     /**
      * Creates a new name type relation state
@@ -85,7 +85,8 @@ public class TextStateImpl extends AbstractState implements TextState {
             reference = calculateNounMappingReference(referenceWords);
         }
 
-        NounMapping nounMapping = new NounMappingImpl(words, distribution, referenceWords, surfaceForms, reference, new AtomicBoolean(false));
+        NounMapping nounMapping = new NounMappingImpl(words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms, reference,
+                new AtomicBoolean(false));
         var nounMappings = getNounMappings();
         /*for (Word word : words) {
             assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
@@ -156,7 +157,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
         assert (nounMapping.getWords().containsAllIterable(referenceWords)) : "The reference words should be contained by the noun mapping";
 
-        return this.addNounMapping(nounMapping.getWords(), nounMapping.getDistribution().toMap(), referenceWords, nounMapping.getSurfaceForms(), reference);
+        return this.addNounMapping(nounMapping.getWords().toImmutableSet(), nounMapping.getDistribution().toMap(), referenceWords, nounMapping
+                .getSurfaceForms(), reference);
 
     }
 
@@ -171,7 +173,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind name, MappingKind... kinds) {
+    public ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind... kinds) {
         if (kinds.length == 0) {
             throw new IllegalArgumentException("You need to provide some mapping kinds!");
         }
@@ -314,7 +316,9 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     private void addNounMappingToState(NounMapping nounMapping) {
-        this.nounMappings.add(wrap(nounMapping));
+        if (!this.nounMappings.add(wrap(nounMapping))) {
+            throw new IllegalArgumentException("Nounmapping was already in state");
+        }
     }
 
     void removeNounMappingFromState(NounMapping nounMapping) {

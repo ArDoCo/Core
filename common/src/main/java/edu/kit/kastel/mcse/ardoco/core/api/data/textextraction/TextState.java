@@ -104,7 +104,7 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
     ImmutableList<NounMapping> getMappingsThatCouldBeOfKind(Word word, MappingKind kind);
 
     @Deprecated
-    ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind name, MappingKind... kinds);
+    ImmutableList<NounMapping> getMappingsThatCouldBeMultipleKinds(Word word, MappingKind... kinds);
 
     @Deprecated
     ImmutableList<NounMapping> getNounMappingsByWord(Word word);

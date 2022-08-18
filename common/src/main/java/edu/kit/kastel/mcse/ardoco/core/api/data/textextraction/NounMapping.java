@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
@@ -29,7 +30,7 @@ public interface NounMapping extends ICopyable<NounMapping> {
      *
      * @return all words that are referenced with this mapping
      */
-    ImmutableSet<Word> getWords();
+    ImmutableSortedSet<Word> getWords();
 
     /**
      * Returns the probability of being a mapping of its kind.
