@@ -12,7 +12,7 @@ class ArDoCoCLITest {
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String TEXT = "../tests/src/test/resources/benchmark/teastore/teastore.txt";
     private static final String MODEL = "../tests/src/test/resources/benchmark/teastore/original_model/teastore.repository";
-    private static final String NAME = "test_teastore";
+    private static final String NAME = "teastore";
 
     @BeforeAll
     public static void beforeAll() {
@@ -30,7 +30,7 @@ class ArDoCoCLITest {
         var additionalConfigs = ArDoCo.loadAdditionalConfigs(runner.additionalConfigs());
         ArDoCo arDoCo = null;
         try {
-            arDoCo = ArDoCo.defineArDoCo(runner.inputText(), runner.inputModelArchitecture(), runner.inputModelCode(), additionalConfigs);
+            arDoCo = ArDoCo.defineArDoCo(runner.name(), runner.inputText(), runner.inputModelArchitecture(), runner.inputModelCode(), additionalConfigs);
         } catch (IOException e) {
             Assertions.fail("Could not define ArDoCo");
         }

@@ -38,6 +38,15 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 public record ArDoCoResult(DataRepository dataRepository) {
 
     /**
+     * Returns the name of the project the results are based on.
+     * 
+     * @return the name of the project the results are based on.
+     */
+    public String getProjectName() {
+        return DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
+    }
+
+    /**
      * Returns the set of {@link TraceLink}s that were found for the Model with the given ID.
      * 
      * @param modelId the ID of the model that should be traced

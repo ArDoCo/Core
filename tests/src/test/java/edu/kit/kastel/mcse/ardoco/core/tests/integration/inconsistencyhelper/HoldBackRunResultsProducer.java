@@ -42,6 +42,7 @@ public class HoldBackRunResultsProducer {
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
         Map<ModelInstance, ArDoCoResult> runs = new HashMap<ModelInstance, ArDoCoResult>();
 
+        var projectName = project.name().toLowerCase();
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
 
@@ -49,7 +50,7 @@ public class HoldBackRunResultsProducer {
 
         ArDoCo arDoCoBaseRun;
         try {
-            arDoCoBaseRun = definePipelineBase(inputText, holdElementsBackModelConnector, useBaselineApproach);
+            arDoCoBaseRun = definePipelineBase(projectName, inputText, holdElementsBackModelConnector, useBaselineApproach);
         } catch (IOException e) {
             Assertions.fail(e);
             return runs;
@@ -77,9 +78,9 @@ public class HoldBackRunResultsProducer {
         return new HoldElementsBackModelConnector(pcmModel);
     }
 
-    private static ArDoCo definePipelineBase(File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector, boolean useInconsistencyBaseline)
-            throws FileNotFoundException {
-        ArDoCo arDoCo = new ArDoCo();
+    private static ArDoCo definePipelineBase(String projectName, File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector,
+            boolean useInconsistencyBaseline) throws FileNotFoundException {
+        ArDoCo arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
         var additionalConfigs = ArDoCo.loadAdditionalConfigs(null);
 
@@ -98,7 +99,8 @@ public class HoldBackRunResultsProducer {
 
     private static ArDoCo defineArDoCoWithPreComputedData(ArDoCoResult precomputedResults, HoldElementsBackModelConnector holdElementsBackModelConnector,
             boolean useInconsistencyBaseline) {
-        ArDoCo arDoCo = new ArDoCo();
+        var projectName = precomputedResults.getProjectName();
+        ArDoCo arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
         var additionalConfigs = ArDoCo.loadAdditionalConfigs(null);
 
