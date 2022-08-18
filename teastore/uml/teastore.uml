@@ -1,82 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_HSRboByKEe2Nmfzuf7bXsw" name="aName">
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRboRyKEe2Nmfzuf7bXsw" name="ProductActions">
-    <ownedOperation xmi:id="_HSRbohyKEe2Nmfzuf7bXsw" name="getRecommendations"/>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_gecE8B8CEe2st8EPFuwF6A" name="aName[_VdKBIDVWEeqPG_FgW3bi6Q]">
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecE8R8CEe2st8EPFuwF6A" name="Recommender[_Sb4SYDVfEeqPG_FgW3bi6Q]">
+    <ownedOperation xmi:id="_gecE8h8CEe2st8EPFuwF6A" name="trainRecommender[_yF_BwDVhEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecE8x8CEe2st8EPFuwF6A" name="recommendProducts[_CtRPADVgEeqPG_FgW3bi6Q]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRboxyKEe2Nmfzuf7bXsw" name="RecommenderStrategy">
-    <ownedOperation xmi:id="_HSRbpByKEe2Nmfzuf7bXsw" name="recommend"/>
-    <ownedOperation xmi:id="_HSRbpRyKEe2Nmfzuf7bXsw" name="train"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecE9B8CEe2st8EPFuwF6A" name="ProductActions[_uy1agDVXEeqPG_FgW3bi6Q]">
+    <ownedOperation xmi:id="_gecE9R8CEe2st8EPFuwF6A" name="getRecommendations[_v-0FcDVXEeqPG_FgW3bi6Q]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRbphyKEe2Nmfzuf7bXsw" name="Persistence">
-    <ownedOperation xmi:id="_HSRbpxyKEe2Nmfzuf7bXsw" name="persistOrderItem"/>
-    <ownedOperation xmi:id="_HSRbqByKEe2Nmfzuf7bXsw" name="persistOrder"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecE9h8CEe2st8EPFuwF6A" name="LoadBalancer[_gGczsDVZEeqPG_FgW3bi6Q]">
+    <ownedOperation xmi:id="_gecE9x8CEe2st8EPFuwF6A" name="updateOrder[_h3laIDVZEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecE-B8CEe2st8EPFuwF6A" name="trainRecommender[_J1GicDViEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecE-R8CEe2st8EPFuwF6A" name="persistOrderItem[_XirUcDVcEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecE-h8CEe2st8EPFuwF6A" name="placeOrder[_hE4K0DVZEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecE-x8CEe2st8EPFuwF6A" name="recommendProducts[_pKnpQDVhEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecE_B8CEe2st8EPFuwF6A" name="persistOrder[_WvtmcDVcEeqPG_FgW3bi6Q]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRbqRyKEe2Nmfzuf7bXsw" name="AuthCart">
-    <ownedOperation xmi:id="_HSRbqhyKEe2Nmfzuf7bXsw" name="placeOrder"/>
-    <ownedOperation xmi:id="_HSRbqxyKEe2Nmfzuf7bXsw" name="updateOrder"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecE_R8CEe2st8EPFuwF6A" name="CartActions[_g6IlUDVXEeqPG_FgW3bi6Q]">
+    <ownedOperation xmi:id="_gecE_h8CEe2st8EPFuwF6A" name="confirmOrder[_i1PnIDVXEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecE_x8CEe2st8EPFuwF6A" name="updateOrder[_ju390DVXEeqPG_FgW3bi6Q]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRbrByKEe2Nmfzuf7bXsw" name="Recommender">
-    <ownedOperation xmi:id="_HSRbrRyKEe2Nmfzuf7bXsw" name="trainRecommender"/>
-    <ownedOperation xmi:id="_HSRbrhyKEe2Nmfzuf7bXsw" name="recommendProducts"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecFAB8CEe2st8EPFuwF6A" name="RecommenderStrategy[_BYKdQDVgEeqPG_FgW3bi6Q]">
+    <ownedOperation xmi:id="_gecFAR8CEe2st8EPFuwF6A" name="recommend[_URhv8DVgEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecFAh8CEe2st8EPFuwF6A" name="train[_OJ2AADVgEeqPG_FgW3bi6Q]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRbrxyKEe2Nmfzuf7bXsw" name="LoadBalancer">
-    <ownedOperation xmi:id="_HSRbsByKEe2Nmfzuf7bXsw" name="persistOrderItem"/>
-    <ownedOperation xmi:id="_HSRbsRyKEe2Nmfzuf7bXsw" name="persistOrder"/>
-    <ownedOperation xmi:id="_HSRbshyKEe2Nmfzuf7bXsw" name="trainRecommender"/>
-    <ownedOperation xmi:id="_HSRbsxyKEe2Nmfzuf7bXsw" name="recommendProducts"/>
-    <ownedOperation xmi:id="_HSRbtByKEe2Nmfzuf7bXsw" name="updateOrder"/>
-    <ownedOperation xmi:id="_HSRbtRyKEe2Nmfzuf7bXsw" name="placeOrder"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecFAx8CEe2st8EPFuwF6A" name="ImageProvider[_oPBcMKTJEeqKjI323B3R3w]">
+    <ownedOperation xmi:id="_gecFBB8CEe2st8EPFuwF6A" name="getImages[_wsW_cKTKEeqKjI323B3R3w]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRbthyKEe2Nmfzuf7bXsw" name="CartActions">
-    <ownedOperation xmi:id="_HSRbtxyKEe2Nmfzuf7bXsw" name="confirmOrder"/>
-    <ownedOperation xmi:id="_HSRbuByKEe2Nmfzuf7bXsw" name="updateOrder"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecFBR8CEe2st8EPFuwF6A" name="Persistence[_Mh_1QDVcEeqPG_FgW3bi6Q]">
+    <ownedOperation xmi:id="_gecFBh8CEe2st8EPFuwF6A" name="persistOrder[_NiisQDVcEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecFBx8CEe2st8EPFuwF6A" name="persistOrderItem[_OShXsDVcEeqPG_FgW3bi6Q]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Interface" xmi:id="_HSRbuRyKEe2Nmfzuf7bXsw" name="ImageProvider">
-    <ownedOperation xmi:id="_HSRbuhyKEe2Nmfzuf7bXsw" name="getImages"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gecFCB8CEe2st8EPFuwF6A" name="AuthCart[_py9KsDVYEeqPG_FgW3bi6Q]">
+    <ownedOperation xmi:id="_gecFCR8CEe2st8EPFuwF6A" name="placeOrder[_v-SrkDVYEeqPG_FgW3bi6Q]"/>
+    <ownedOperation xmi:id="_gecFCh8CEe2st8EPFuwF6A" name="updateOrder[_XZ23ADVZEeqPG_FgW3bi6Q]"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRbuxyKEe2Nmfzuf7bXsw" name="Auth">
-    <interfaceRealization xmi:id="_HSRbvByKEe2Nmfzuf7bXsw" client="_HSRbuxyKEe2Nmfzuf7bXsw" supplier="_HSRbqRyKEe2Nmfzuf7bXsw" contract="_HSRbqRyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbvRyKEe2Nmfzuf7bXsw" client="_HSRbuxyKEe2Nmfzuf7bXsw" supplier="_HSRbrxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFCx8CEe2st8EPFuwF6A" name="DummyRecommender[_ouzFYDVgEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFDB8CEe2st8EPFuwF6A" client="_gecFCx8CEe2st8EPFuwF6A" supplier="_gecFAB8CEe2st8EPFuwF6A" contract="_gecFAB8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRbvhyKEe2Nmfzuf7bXsw" name="OrderBasedRecommender">
-    <interfaceRealization xmi:id="_HSRbvxyKEe2Nmfzuf7bXsw" client="_HSRbvhyKEe2Nmfzuf7bXsw" supplier="_HSRboxyKEe2Nmfzuf7bXsw" contract="_HSRboxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFDR8CEe2st8EPFuwF6A" name="SlopeOneRecommender[_YkXeIDVgEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFDh8CEe2st8EPFuwF6A" client="_gecFDR8CEe2st8EPFuwF6A" supplier="_gecFAB8CEe2st8EPFuwF6A" contract="_gecFAB8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRbwByKEe2Nmfzuf7bXsw" name="SlopeOneRecommender">
-    <interfaceRealization xmi:id="_HSRbwRyKEe2Nmfzuf7bXsw" client="_HSRbwByKEe2Nmfzuf7bXsw" supplier="_HSRboxyKEe2Nmfzuf7bXsw" contract="_HSRboxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFDx8CEe2st8EPFuwF6A" name="Persistence[_lnx1oDVWEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFEB8CEe2st8EPFuwF6A" client="_gecFDx8CEe2st8EPFuwF6A" supplier="_gecFBR8CEe2st8EPFuwF6A" contract="_gecFBR8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRbwhyKEe2Nmfzuf7bXsw" name="PreprocessedSlopeOneRecommender">
-    <interfaceRealization xmi:id="_HSRbwxyKEe2Nmfzuf7bXsw" client="_HSRbwhyKEe2Nmfzuf7bXsw" supplier="_HSRboxyKEe2Nmfzuf7bXsw" contract="_HSRboxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFER8CEe2st8EPFuwF6A" name="WebUI[_bC13QDVWEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFEh8CEe2st8EPFuwF6A" client="_gecFER8CEe2st8EPFuwF6A" supplier="_gecE_R8CEe2st8EPFuwF6A" contract="_gecE_R8CEe2st8EPFuwF6A"/>
+    <interfaceRealization xmi:id="_gecFEx8CEe2st8EPFuwF6A" client="_gecFER8CEe2st8EPFuwF6A" supplier="_gecE9B8CEe2st8EPFuwF6A" contract="_gecE9B8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFFB8CEe2st8EPFuwF6A" client="_gecFER8CEe2st8EPFuwF6A" supplier="_gecE9h8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRbxByKEe2Nmfzuf7bXsw" name="PopularityBasedRecommender">
-    <interfaceRealization xmi:id="_HSRbxRyKEe2Nmfzuf7bXsw" client="_HSRbxByKEe2Nmfzuf7bXsw" supplier="_HSRboxyKEe2Nmfzuf7bXsw" contract="_HSRboxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFFR8CEe2st8EPFuwF6A" name="ImageProvider[_yA04AKTKEeqKjI323B3R3w]">
+    <interfaceRealization xmi:id="_gecFFh8CEe2st8EPFuwF6A" client="_gecFFR8CEe2st8EPFuwF6A" supplier="_gecFAx8CEe2st8EPFuwF6A" contract="_gecFAx8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRbxhyKEe2Nmfzuf7bXsw" name="Registry">
-    <interfaceRealization xmi:id="_HSRbxxyKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbrxyKEe2Nmfzuf7bXsw" contract="_HSRbrxyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbyByKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbphyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbyRyKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbqRyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbyhyKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbrByKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbyxyKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbqRyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbzByKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbuRyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbzRyKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbqRyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbzhyKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbphyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRbzxyKEe2Nmfzuf7bXsw" client="_HSRbxhyKEe2Nmfzuf7bXsw" supplier="_HSRbphyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFFx8CEe2st8EPFuwF6A" name="PreprocessedSlopeOneRecommender[_iaElgKpwEeqHXcsU55mirw]">
+    <interfaceRealization xmi:id="_gecFGB8CEe2st8EPFuwF6A" client="_gecFFx8CEe2st8EPFuwF6A" supplier="_gecFAB8CEe2st8EPFuwF6A" contract="_gecFAB8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRb0ByKEe2Nmfzuf7bXsw" name="DummyRecommender">
-    <interfaceRealization xmi:id="_HSRb0RyKEe2Nmfzuf7bXsw" client="_HSRb0ByKEe2Nmfzuf7bXsw" supplier="_HSRboxyKEe2Nmfzuf7bXsw" contract="_HSRboxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFGR8CEe2st8EPFuwF6A" name="PopularityBasedRecommender[_raxjcDVgEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFGh8CEe2st8EPFuwF6A" client="_gecFGR8CEe2st8EPFuwF6A" supplier="_gecFAB8CEe2st8EPFuwF6A" contract="_gecFAB8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRb0hyKEe2Nmfzuf7bXsw" name="Recommender">
-    <interfaceRealization xmi:id="_HSRb0xyKEe2Nmfzuf7bXsw" client="_HSRb0hyKEe2Nmfzuf7bXsw" supplier="_HSRbrByKEe2Nmfzuf7bXsw" contract="_HSRbrByKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRb1ByKEe2Nmfzuf7bXsw" client="_HSRb0hyKEe2Nmfzuf7bXsw" supplier="_HSRboxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFGx8CEe2st8EPFuwF6A" name="OrderBasedRecommender[_kgbngDVgEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFHB8CEe2st8EPFuwF6A" client="_gecFGx8CEe2st8EPFuwF6A" supplier="_gecFAB8CEe2st8EPFuwF6A" contract="_gecFAB8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRb1RyKEe2Nmfzuf7bXsw" name="WebUI">
-    <interfaceRealization xmi:id="_HSRb1hyKEe2Nmfzuf7bXsw" client="_HSRb1RyKEe2Nmfzuf7bXsw" supplier="_HSRbthyKEe2Nmfzuf7bXsw" contract="_HSRbthyKEe2Nmfzuf7bXsw"/>
-    <interfaceRealization xmi:id="_HSRb1xyKEe2Nmfzuf7bXsw" client="_HSRb1RyKEe2Nmfzuf7bXsw" supplier="_HSRboRyKEe2Nmfzuf7bXsw" contract="_HSRboRyKEe2Nmfzuf7bXsw"/>
-    <packagedElement xmi:type="uml:Usage" xmi:id="_HSRb2ByKEe2Nmfzuf7bXsw" client="_HSRb1RyKEe2Nmfzuf7bXsw" supplier="_HSRbrxyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFHR8CEe2st8EPFuwF6A" name="Registry[_dhM6oDVXEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFHh8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecE9h8CEe2st8EPFuwF6A" contract="_gecE9h8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFHx8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecFBR8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFIB8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecFCB8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFIR8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecFBR8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFIh8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecFCB8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFIx8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecFAx8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFJB8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecE8R8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFJR8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecFBR8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFJh8CEe2st8EPFuwF6A" client="_gecFHR8CEe2st8EPFuwF6A" supplier="_gecFCB8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRb2RyKEe2Nmfzuf7bXsw" name="ImageProvider">
-    <interfaceRealization xmi:id="_HSRb2hyKEe2Nmfzuf7bXsw" client="_HSRb2RyKEe2Nmfzuf7bXsw" supplier="_HSRbuRyKEe2Nmfzuf7bXsw" contract="_HSRbuRyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFJx8CEe2st8EPFuwF6A" name="Auth[_AiuxcDVdEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFKB8CEe2st8EPFuwF6A" client="_gecFJx8CEe2st8EPFuwF6A" supplier="_gecFCB8CEe2st8EPFuwF6A" contract="_gecFCB8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFKR8CEe2st8EPFuwF6A" client="_gecFJx8CEe2st8EPFuwF6A" supplier="_gecE9h8CEe2st8EPFuwF6A"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Component" xmi:id="_HSRb2xyKEe2Nmfzuf7bXsw" name="Persistence">
-    <interfaceRealization xmi:id="_HSRb3ByKEe2Nmfzuf7bXsw" client="_HSRb2xyKEe2Nmfzuf7bXsw" supplier="_HSRbphyKEe2Nmfzuf7bXsw" contract="_HSRbphyKEe2Nmfzuf7bXsw"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_gecFKh8CEe2st8EPFuwF6A" name="Recommender[_m3fxEDVWEeqPG_FgW3bi6Q]">
+    <interfaceRealization xmi:id="_gecFKx8CEe2st8EPFuwF6A" client="_gecFKh8CEe2st8EPFuwF6A" supplier="_gecE8R8CEe2st8EPFuwF6A" contract="_gecE8R8CEe2st8EPFuwF6A"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_gecFLB8CEe2st8EPFuwF6A" client="_gecFKh8CEe2st8EPFuwF6A" supplier="_gecFAB8CEe2st8EPFuwF6A"/>
   </packagedElement>
 </uml:Model>
