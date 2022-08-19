@@ -8,7 +8,7 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.originalExtractors.OriginalNameTypeExtractor;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.NameTypeExtractor;
 
 /**
  * The Class InitialRecommendationAgent runs all extractors of this stage.
@@ -25,7 +25,7 @@ public class InitialRecommendationAgent extends PipelineAgent {
      */
     public InitialRecommendationAgent(DataRepository dataRepository) {
         super(InitialRecommendationAgent.class.getSimpleName(), dataRepository);
-        extractors = List.of(new OriginalNameTypeExtractor(dataRepository));
+        extractors = List.of(new NameTypeExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
     }
 

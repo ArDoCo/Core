@@ -1,5 +1,4 @@
-/* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.textextraction.agents.originalAgents;
+package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.util.Map;
 import java.util.StringJoiner;
@@ -10,38 +9,29 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 
-/**
- * Agent that is responsible for looking at phrases and extracting {@link NounMapping}s from compound nouns etc.
- *
- */
 @Deprecated
-public class OriginalPhraseAgent extends PipelineAgent {
+public class PhraseAgentInformant extends Informant {
     @Configurable
     private double phraseConfidence = 0.6;
     @Configurable
     private double specialNamedEntityConfidence = 0.6;
 
-    /**
-     * Instantiates a new initial text agent.
-     */
-    public OriginalPhraseAgent(DataRepository dataRepository) {
-        super(OriginalPhraseAgent.class.getSimpleName(), dataRepository);
+    public PhraseAgentInformant(DataRepository dataRepository) {
+        super(PhraseAgentInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override
     public void run() {
-        var text = getAnnotatedText();
+        var text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
         var textState = getDataRepository().getData(TextState.ID, TextStateImpl.class).orElseThrow();
         for (var word : text.words()) {
             createNounMappingIfPhrase(word, textState);
@@ -117,12 +107,7 @@ public class OriginalPhraseAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // handle additional config
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+        // none
     }
-
-    private Text getAnnotatedText() {
-        return this.getDataRepository().getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
-    }
-
 }

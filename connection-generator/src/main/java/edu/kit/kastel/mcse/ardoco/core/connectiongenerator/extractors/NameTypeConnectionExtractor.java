@@ -1,5 +1,5 @@
-/* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
+/* Licensed under MIT 2022. */
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.originalExtractors;
 
 import java.util.Map;
 
@@ -27,13 +27,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
  */
-public class NameTypeConnectionExtractor extends Informant {
+@Deprecated
+public class OriginalNameTypeConnectionExtractor extends Informant {
 
     @Configurable
     private double probability = 1.0;
 
-    public NameTypeConnectionExtractor(DataRepository dataRepository) {
-        super(NameTypeConnectionExtractor.class.getSimpleName(), dataRepository);
+    public OriginalNameTypeConnectionExtractor(DataRepository dataRepository) {
+        super(OriginalNameTypeConnectionExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override
@@ -75,22 +76,11 @@ public class NameTypeConnectionExtractor extends Informant {
         if (!similarTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            NounMapping preMapping = textExtractionState.getNounMappingByWord(pre);
-            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
-
-            MutableList<NounMapping> nameMappings = Lists.mutable.empty();
-            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
-
-            if (preMapping != null && preMapping.couldBeOfKind(MappingKind.NAME)) {
-                nameMappings.add(preMapping);
-            }
-            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
-                typeMappings.add(wordMapping);
-            }
+            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(pre, MappingKind.NAME);
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
 
             var instance = tryToIdentify(textExtractionState, similarTypes, pre, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings.toImmutable(), typeMappings.toImmutable(),
-                    recommendationState);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
 
@@ -114,23 +104,11 @@ public class NameTypeConnectionExtractor extends Informant {
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
-            NounMapping afterMapping = textExtractionState.getNounMappingByWord(after);
-
-            MutableList<NounMapping> nameMappings = Lists.mutable.empty();
-            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
-
-            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
-                typeMappings.add(wordMapping);
-            }
-
-            if (afterMapping != null && afterMapping.couldBeOfKind(MappingKind.NAME)) {
-                nameMappings.add(afterMapping);
-            }
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(after, MappingKind.NAME);
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings.toImmutable(), typeMappings.toImmutable(),
-                    recommendationState);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
 
@@ -150,23 +128,11 @@ public class NameTypeConnectionExtractor extends Informant {
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
-            NounMapping preMapping = textExtractionState.getNounMappingByWord(pre);
-
-            MutableList<NounMapping> nortMappings = Lists.mutable.empty();
-            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
-
-            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
-                typeMappings.add(wordMapping);
-            }
-
-            if (preMapping != null && preMapping.couldBeMultipleKinds(MappingKind.NAME, MappingKind.TYPE)) {
-                nortMappings.add(preMapping);
-            }
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(pre, MappingKind.NAME, MappingKind.TYPE);
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings.toImmutable(), typeMappings.toImmutable(),
-                    recommendationState);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
 
@@ -185,23 +151,11 @@ public class NameTypeConnectionExtractor extends Informant {
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            NounMapping wordMapping = textExtractionState.getNounMappingByWord(word);
-            NounMapping afterMapping = textExtractionState.getNounMappingByWord(after);
-
-            MutableList<NounMapping> nortMappings = Lists.mutable.empty();
-            MutableList<NounMapping> typeMappings = Lists.mutable.empty();
-
-            if (wordMapping.couldBeOfKind(MappingKind.TYPE)) {
-                typeMappings.add(wordMapping);
-            }
-
-            if (afterMapping != null && afterMapping.couldBeMultipleKinds(MappingKind.NAME, MappingKind.TYPE)) {
-                nortMappings.add(afterMapping);
-            }
+            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(after, MappingKind.NAME, MappingKind.TYPE);
 
             var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings.toImmutable(), typeMappings.toImmutable(),
-                    recommendationState);
+            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
 
@@ -218,11 +172,13 @@ public class NameTypeConnectionExtractor extends Informant {
     private void addRecommendedInstanceIfNodeNotNull(//
             Word currentWord, TextState textExtractionState, ModelInstance instance, ImmutableList<NounMapping> nameMappings,
             ImmutableList<NounMapping> typeMappings, RecommendationState recommendationState) {
-        var nounMappingByCurrentWord = textExtractionState.getNounMappingByWord(currentWord);
-        if (instance != null && nounMappingByCurrentWord != null) {
-            var name = instance.getFullName();
-            var type = nounMappingByCurrentWord.getReference();
-            recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
+        var nounMappingsByCurrentWord = textExtractionState.getNounMappingsByWord(currentWord);
+        if (instance != null && nounMappingsByCurrentWord != null) {
+            for (NounMapping nmapping : nounMappingsByCurrentWord) {
+                var name = instance.getFullName();
+                var type = nmapping.getReference();
+                recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
+            }
         }
     }
 
