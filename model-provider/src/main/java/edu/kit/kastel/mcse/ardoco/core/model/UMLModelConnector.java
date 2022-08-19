@@ -23,7 +23,7 @@ public class UMLModelConnector implements ModelConnector {
         this(new FileInputStream(file));
     }
 
-    public UMLModelConnector(InputStream is) throws IOException {
+    public UMLModelConnector(InputStream is) {
         UMLModel umlModel = new UMLModel(is);
         this.model = Objects.requireNonNull(umlModel.getModel());
     }
