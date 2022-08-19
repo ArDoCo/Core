@@ -1,8 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
-import java.util.Map;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
@@ -12,7 +10,6 @@ import org.mockito.Mockito;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
@@ -23,6 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.MappingCombinerInformant;
 
 class MappingCombinerTest implements Claimant {
 
@@ -396,7 +394,7 @@ class MappingCombinerTest implements Claimant {
         var nm1 = textState.getNounMappingByWord(word2);
 
         return SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
-                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombiner.MIN_COSINE_SIMILARITY;
+                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerInformant.MIN_COSINE_SIMILARITY;
     }
 
     private boolean nounMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
@@ -445,23 +443,6 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(word.getSentenceNo()).thenReturn(sentenceNumber);
         Mockito.when(word.getLemma()).thenReturn(lemma);
         Mockito.when(word.getPhrase()).thenReturn(phrase);
-    }
-
-    private static class MyAgent extends PipelineAgent {
-
-        protected MyAgent(DataRepository dataRepository) {
-            super(MyAgent.class.getSimpleName(), dataRepository);
-        }
-
-        @Override
-        protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void run() {
-
-        }
     }
 
 }
