@@ -28,7 +28,7 @@ class WordImpl implements Word {
     private Word nextWord = null;
 
     private final int sentenceNo;
-    private final Sentence sentence;
+    private Sentence sentence;
     private Phrase phrase;
     private final String text;
     private final POSTag posTag;
@@ -41,19 +41,6 @@ class WordImpl implements Word {
         this.sentenceNo = token.sentIndex();
         this.text = token.get(CoreAnnotations.TextAnnotation.class);
         this.posTag = POSTag.get(token.get(CoreAnnotations.PartOfSpeechAnnotation.class));
-
-        var coreSentence = parent.coreDocument.sentences().get(sentenceNo);
-        sentence = new SentenceImpl(coreSentence, sentenceNo, parent);
-    }
-
-    private Phrase loadPhrase() {
-        var currentPhrase = sentence.getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
-        var subPhrases = List.of(currentPhrase);
-        while (!subPhrases.isEmpty()) {
-            currentPhrase = subPhrases.get(0);
-            subPhrases = currentPhrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
-        }
-        return currentPhrase;
     }
 
     @Override
@@ -63,6 +50,9 @@ class WordImpl implements Word {
 
     @Override
     public Sentence getSentence() {
+        if (sentence == null) {
+            sentence = this.parent.getSentences().get(this.sentenceNo);
+        }
         return sentence;
     }
 
@@ -72,6 +62,16 @@ class WordImpl implements Word {
             this.phrase = loadPhrase();
         }
         return this.phrase;
+    }
+
+    private Phrase loadPhrase() {
+        var currentPhrase = getSentence().getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
+        var subPhrases = List.of(currentPhrase);
+        while (!subPhrases.isEmpty()) {
+            currentPhrase = subPhrases.get(0);
+            subPhrases = currentPhrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
+        }
+        return currentPhrase;
     }
 
     @Override
