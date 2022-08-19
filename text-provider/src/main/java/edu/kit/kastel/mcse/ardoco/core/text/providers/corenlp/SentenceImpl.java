@@ -18,7 +18,7 @@ import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.Tree;
 
-public class SentenceImpl implements Sentence {
+class SentenceImpl implements Sentence {
     private static final Logger logger = LoggerFactory.getLogger(SentenceImpl.class);
 
     private ImmutableList<Word> words = Lists.immutable.empty();

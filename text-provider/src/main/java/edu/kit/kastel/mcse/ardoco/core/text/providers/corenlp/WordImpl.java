@@ -11,6 +11,7 @@ import org.eclipse.collections.impl.factory.Lists;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -18,7 +19,7 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 import edu.stanford.nlp.trees.TypedDependency;
 
-public class WordImpl implements Word {
+class WordImpl implements Word {
 
     private final CoreLabel token;
     private final TextImpl parent;
@@ -27,6 +28,7 @@ public class WordImpl implements Word {
     private Word nextWord = null;
 
     private final int sentenceNo;
+    private final Sentence sentence;
     private Phrase phrase;
     private final String text;
     private final POSTag posTag;
@@ -40,16 +42,12 @@ public class WordImpl implements Word {
         this.text = token.get(CoreAnnotations.TextAnnotation.class);
         this.posTag = POSTag.get(token.get(CoreAnnotations.PartOfSpeechAnnotation.class));
 
+        var coreSentence = parent.coreDocument.sentences().get(sentenceNo);
+        sentence = new SentenceImpl(coreSentence, sentenceNo, parent);
     }
 
     private Phrase loadPhrase() {
-        var currentPhrase = parent.getSentences()
-                .get(sentenceNo)
-                .getPhrases()
-                .stream()
-                .filter(p -> p.getContainedWords().contains(this))
-                .findFirst()
-                .orElseThrow();
+        var currentPhrase = sentence.getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
         var subPhrases = List.of(currentPhrase);
         while (!subPhrases.isEmpty()) {
             currentPhrase = subPhrases.get(0);
@@ -61,6 +59,11 @@ public class WordImpl implements Word {
     @Override
     public int getSentenceNo() {
         return sentenceNo;
+    }
+
+    @Override
+    public Sentence getSentence() {
+        return sentence;
     }
 
     @Override
