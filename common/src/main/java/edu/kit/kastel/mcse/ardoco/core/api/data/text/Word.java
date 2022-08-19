@@ -16,6 +16,13 @@ public interface Word extends Comparable<Word> {
     int getSentenceNo();
 
     /**
+     * Return the sentence the word is contained in
+     *
+     * @return the sentence the word is contained in
+     */
+    Sentence getSentence();
+
+    /**
      * Gets the text representation of the word.
      *
      * @return the text

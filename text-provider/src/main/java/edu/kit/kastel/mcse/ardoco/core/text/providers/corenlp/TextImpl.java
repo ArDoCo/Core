@@ -10,9 +10,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.stanford.nlp.pipeline.CoreDocument;
 
-public class TextImpl implements Text {
+class TextImpl implements Text {
 
-    private final CoreDocument coreDocument;
+    final CoreDocument coreDocument;
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
 

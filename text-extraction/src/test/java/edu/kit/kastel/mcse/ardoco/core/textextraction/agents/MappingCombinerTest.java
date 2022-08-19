@@ -22,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.WordImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 
 class MappingCombinerTest implements Claimant {
@@ -32,16 +31,16 @@ class MappingCombinerTest implements Claimant {
     private TextState preTextState;
     private TextState textState;
 
-    private WordImpl fox0;
-    private WordImpl dog1;
-    private WordImpl fox2;
-    private WordImpl dog3;
-    private WordImpl hut3;
-    private WordImpl turtle4;
+    private Word fox0;
+    private Word dog1;
+    private Word fox2;
+    private Word dog3;
+    private Word hut3;
+    private Word turtle4;
 
-    private WordImpl doggy5;
+    private Word doggy5;
 
-    private WordImpl dog6;
+    private Word dog6;
 
     private PhraseImpl dogPhrase0;
 
@@ -60,12 +59,12 @@ class MappingCombinerTest implements Claimant {
         this.agent = new MappingCombiner(data);
         preTextState = new TextStateImpl();
 
-        WordImpl a0 = Mockito.mock(WordImpl.class);
-        WordImpl fast0 = Mockito.mock(WordImpl.class);
-        WordImpl fox0 = Mockito.mock(WordImpl.class);
-        WordImpl the1 = Mockito.mock(WordImpl.class);
-        WordImpl brown1 = Mockito.mock(WordImpl.class);
-        WordImpl dog1 = Mockito.mock(WordImpl.class);
+        Word a0 = Mockito.mock(Word.class);
+        Word fast0 = Mockito.mock(Word.class);
+        Word fox0 = Mockito.mock(Word.class);
+        Word the1 = Mockito.mock(Word.class);
+        Word brown1 = Mockito.mock(Word.class);
+        Word dog1 = Mockito.mock(Word.class);
 
         PhraseImpl foxPhrase0 = Mockito.mock(PhraseImpl.class);
         PhraseImpl dogPhrase0 = Mockito.mock(PhraseImpl.class);
@@ -81,13 +80,13 @@ class MappingCombinerTest implements Claimant {
         mockWord(brown1, "brown", "brown", 0, dogPhrase0, 7);
         mockWord(dog1, "dog", "dog", 0, dogPhrase0, 8);
 
-        WordImpl the2 = Mockito.mock(WordImpl.class);
-        WordImpl lazy2 = Mockito.mock(WordImpl.class);
-        WordImpl fox2 = Mockito.mock(WordImpl.class);
-        WordImpl the3 = Mockito.mock(WordImpl.class);
-        WordImpl brown3 = Mockito.mock(WordImpl.class);
-        WordImpl dog3 = Mockito.mock(WordImpl.class);
-        WordImpl hut3 = Mockito.mock(WordImpl.class);
+        Word the2 = Mockito.mock(Word.class);
+        Word lazy2 = Mockito.mock(Word.class);
+        Word fox2 = Mockito.mock(Word.class);
+        Word the3 = Mockito.mock(Word.class);
+        Word brown3 = Mockito.mock(Word.class);
+        Word dog3 = Mockito.mock(Word.class);
+        Word hut3 = Mockito.mock(Word.class);
 
         PhraseImpl foxPhrase1 = Mockito.mock(PhraseImpl.class);
         PhraseImpl dogPhrase1 = Mockito.mock(PhraseImpl.class);
@@ -104,10 +103,10 @@ class MappingCombinerTest implements Claimant {
         mockWord(dog3, "dog", "dog", 1, dogPhrase1, 7);
         mockWord(hut3, "hut", "hut", 1, dogPhrase1, 8);
 
-        WordImpl i4 = Mockito.mock(WordImpl.class);
-        WordImpl green4 = Mockito.mock(WordImpl.class);
-        WordImpl turtle4 = Mockito.mock(WordImpl.class);
-        WordImpl hats4 = Mockito.mock(WordImpl.class);
+        Word i4 = Mockito.mock(Word.class);
+        Word green4 = Mockito.mock(Word.class);
+        Word turtle4 = Mockito.mock(Word.class);
+        Word hats4 = Mockito.mock(Word.class);
 
         PhraseImpl iPhrase2 = Mockito.mock(PhraseImpl.class);
         PhraseImpl turtlePhrase2 = Mockito.mock(PhraseImpl.class);
@@ -120,10 +119,10 @@ class MappingCombinerTest implements Claimant {
         mockWord(turtle4, "turtles", "turtles", 2, turtlePhrase2, 3);
         mockWord(hats4, "hats", "hat", 2, turtlePhrase2, 4);
 
-        WordImpl a5 = Mockito.mock(WordImpl.class);
-        WordImpl brown5 = Mockito.mock(WordImpl.class);
-        WordImpl doggy5 = Mockito.mock(WordImpl.class);
-        WordImpl hut5 = Mockito.mock(WordImpl.class);
+        Word a5 = Mockito.mock(Word.class);
+        Word brown5 = Mockito.mock(Word.class);
+        Word doggy5 = Mockito.mock(Word.class);
+        Word hut5 = Mockito.mock(Word.class);
         PhraseImpl dogPhrase3 = Mockito.mock(PhraseImpl.class);
 
         mockPhrase(dogPhrase3, "A brown doggy hut", 3, Lists.immutable.with(a5, brown5, doggy5, hut5));
@@ -133,9 +132,9 @@ class MappingCombinerTest implements Claimant {
         mockWord(doggy5, "doggy", "dog", 3, dogPhrase3, 2);
         mockWord(hut5, "hut", "hut", 3, dogPhrase3, 3);
 
-        WordImpl green6 = Mockito.mock(WordImpl.class);
-        WordImpl dog6 = Mockito.mock(WordImpl.class);
-        WordImpl hats6 = Mockito.mock(WordImpl.class);
+        Word green6 = Mockito.mock(Word.class);
+        Word dog6 = Mockito.mock(Word.class);
+        Word hats6 = Mockito.mock(Word.class);
         PhraseImpl dogPhrase4 = Mockito.mock(PhraseImpl.class);
 
         mockPhrase(dogPhrase4, "green dog hats", 4, Lists.immutable.with(green6, dog6, hats6));
@@ -238,7 +237,7 @@ class MappingCombinerTest implements Claimant {
     @Test
     void addSimilarNounMappingWithEqualPhrase() {
 
-        Word alternativeDog = Mockito.mock(WordImpl.class);
+        Word alternativeDog = Mockito.mock(Word.class);
         mockWord(alternativeDog, "doggy", "doggy", 0, dogPhrase0, 0);
 
         preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
