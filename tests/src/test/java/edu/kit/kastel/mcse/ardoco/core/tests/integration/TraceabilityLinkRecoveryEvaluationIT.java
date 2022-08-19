@@ -15,11 +15,7 @@ import java.util.stream.Stream;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
@@ -27,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
@@ -65,7 +62,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     private File inputText;
     private File inputModel;
-    private ArchitectureModelType inputModelType;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
@@ -127,17 +123,36 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @EnumSource(value = Project.class)
     void evaluateTraceLinkRecoveryIT(Project project) {
         inputModel = project.getModelFile();
-        inputModelType = project.getModelType();
         inputText = project.getTextFile();
 
         // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, inputModelType, null, additionalConfigs, outputDir);
+        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, ArchitectureModelType.PCM, null, additionalConfigs,
+                outputDir);
         Assertions.assertNotNull(arDoCoResult);
 
         // calculate results and compare to expected results
         checkResults(project, arDoCoResult);
 
         writeDetailedOutput(project, arDoCoResult);
+    }
+
+    @DisplayName("Evaluate TLR for UML/PCM and compare (Text-based)")
+    @ParameterizedTest(name = "Evaluating {0} (Text)")
+    @EnumSource(value = Project.class)
+    @Disabled("Just for local use to compare UML / PCM")
+    void compareTraceLinkRecoveryForPCMandUMLIT(Project project) {
+        var ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
+                additionalConfigs, outputDir);
+        Assertions.assertNotNull(ardocoRunForPCM);
+        var ardocoRunForUML = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(ArchitectureModelType.UML),
+                ArchitectureModelType.UML, null, additionalConfigs, outputDir);
+        Assertions.assertNotNull(ardocoRunForUML);
+
+        var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
+        var umlTLs = ardocoRunForUML.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
+
+        Assertions.assertEquals(pcmTLs.size(), umlTLs.size());
+        Assertions.assertIterableEquals(pcmTLs, umlTLs);
     }
 
     private void checkResults(Project project, ArDoCoResult arDoCoResult) {

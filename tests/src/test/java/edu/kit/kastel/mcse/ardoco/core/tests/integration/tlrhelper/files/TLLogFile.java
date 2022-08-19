@@ -48,7 +48,6 @@ public class TLLogFile {
             case MEDIASTORE -> "MS";
             case TEAMMATES -> "TM";
             case TEASTORE -> "TS";
-            case MEDIASTORE_UML -> "MS_UML";
             };
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Locale;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;

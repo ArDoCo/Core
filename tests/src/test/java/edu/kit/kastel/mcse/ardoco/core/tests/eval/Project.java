@@ -37,15 +37,7 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
             new EvaluationResults(.000, .000, .272) //
-    ), //
-    MEDIASTORE_UML(//
-            "src/test/resources/benchmark/mediastore/uml/ms.uml", //
-            "src/test/resources/benchmark/mediastore/mediastore.txt", //
-            "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.000, .000, .256) //
-    )//
-    ;
+    );
 
     private final String model;
     private final String textFile;
@@ -68,12 +60,11 @@ public enum Project {
         return new File(model);
     }
 
-    public ArchitectureModelType getModelType() {
-        if (this.model.endsWith("repository"))
-            return ArchitectureModelType.PCM;
-        if (this.model.endsWith("uml"))
-            return ArchitectureModelType.UML;
-        throw new IllegalStateException("Unknown file ending");
+    public File getModelFile(ArchitectureModelType modelType) {
+        return switch (modelType) {
+        case PCM -> getModelFile();
+        case UML -> new File(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+        };
     }
 
     /**
