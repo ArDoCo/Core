@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 class ArDoCoCLITest {
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String TEXT = "../tests/src/test/resources/benchmark/teastore/teastore.txt";
-    private static final String MODEL = "../tests/src/test/resources/benchmark/teastore/original_model/teastore.repository";
-    private static final String MODEL_UML = "../tests/src/test/resources/benchmark/teastore/original_model/teastore.uml";
+    private static final String MODEL = "../tests/src/test/resources/benchmark/teastore/pcm/teastore.repository";
+    private static final String MODEL_UML = "../tests/src/test/resources/benchmark/teastore/uml/teastore.uml";
     private static final String NAME = "teastore";
 
     @BeforeAll

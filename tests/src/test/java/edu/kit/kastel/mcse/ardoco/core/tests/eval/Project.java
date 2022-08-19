@@ -11,35 +11,35 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
  */
 public enum Project {
     MEDIASTORE(//
-            "src/test/resources/benchmark/mediastore/original_model/ms.repository", //
+            "src/test/resources/benchmark/mediastore/pcm/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.999, .620, .765), //
             new EvaluationResults(.000, .000, .256) //
     ), //
     TEAMMATES( //
-            "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
+            "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new EvaluationResults(.913, .880, .896), //
             new EvaluationResults(.000, .000, .222) //
     ), //
     TEASTORE( //
-            "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
+            "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.999, .713, .832), //
             new EvaluationResults(.000, .000, .250) //
     ), //
     BIGBLUEBUTTON( //
-            "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
+            "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
             new EvaluationResults(.000, .000, .272) //
     ), //
     MEDIASTORE_UML(//
-            "src/test/resources/benchmark/mediastore/original_model/ms.uml", //
+            "src/test/resources/benchmark/mediastore/uml/ms.uml", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.999, .620, .765), //
