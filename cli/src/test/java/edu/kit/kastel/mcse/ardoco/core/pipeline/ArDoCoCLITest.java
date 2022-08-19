@@ -12,6 +12,7 @@ class ArDoCoCLITest {
     private static final String OUTPUT = "src/test/resources/testout";
     private static final String TEXT = "../tests/src/test/resources/benchmark/teastore/teastore.txt";
     private static final String MODEL = "../tests/src/test/resources/benchmark/teastore/original_model/teastore.repository";
+    private static final String MODEL_UML = "../tests/src/test/resources/benchmark/teastore/original_model/teastore.uml";
     private static final String NAME = "teastore";
 
     @BeforeAll
@@ -30,7 +31,27 @@ class ArDoCoCLITest {
         var additionalConfigs = ArDoCo.loadAdditionalConfigs(runner.additionalConfigs());
         ArDoCo arDoCo = null;
         try {
-            arDoCo = ArDoCo.defineArDoCo(runner.name(), runner.inputText(), runner.inputModelArchitecture(), runner.inputModelCode(), additionalConfigs);
+            arDoCo = ArDoCo.defineArDoCo(runner.name(), runner.inputText(), runner.inputModelArchitecture(), runner.inputArchitectureModelType(), runner
+                    .inputModelCode(), additionalConfigs);
+        } catch (IOException e) {
+            Assertions.fail("Could not define ArDoCo");
+        }
+        Assertions.assertNotNull(arDoCo);
+    }
+
+    @Test
+    @DisplayName("Testing CLI with provided text file and UML Model")
+    void pipelineWithTextAndUMLTest() {
+        String[] args = { "-n", NAME, "-ma", MODEL_UML, "-mt", ArchitectureModelType.UML.name(), "-t", TEXT, "-o", OUTPUT };
+        var runner = ArDoCoCLI.parseCommandLineAndBuildArDoCoRunner(args);
+
+        Assertions.assertNotNull(runner);
+
+        var additionalConfigs = ArDoCo.loadAdditionalConfigs(runner.additionalConfigs());
+        ArDoCo arDoCo = null;
+        try {
+            arDoCo = ArDoCo.defineArDoCo(runner.name(), runner.inputText(), runner.inputModelArchitecture(), runner.inputArchitectureModelType(), runner
+                    .inputModelCode(), additionalConfigs);
         } catch (IOException e) {
             Assertions.fail("Could not define ArDoCo");
         }

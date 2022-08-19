@@ -34,6 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
@@ -64,6 +65,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     private File inputText;
     private File inputModel;
+    private ArchitectureModelType inputModelType;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
@@ -125,10 +127,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @EnumSource(value = Project.class)
     void evaluateTraceLinkRecoveryIT(Project project) {
         inputModel = project.getModelFile();
+        inputModelType = project.getModelType();
         inputText = project.getTextFile();
 
         // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, null, additionalConfigs, outputDir);
+        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, inputModelType, null, additionalConfigs, outputDir);
         Assertions.assertNotNull(arDoCoResult);
 
         // calculate results and compare to expected results

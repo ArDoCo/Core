@@ -4,11 +4,10 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 import java.io.File;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.
- *
- *
  */
 public enum Project {
     MEDIASTORE(//
@@ -38,7 +37,15 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
             new EvaluationResults(.000, .000, .272) //
-    );
+    ), //
+    MEDIASTORE_UML(//
+            "src/test/resources/benchmark/mediastore/original_model/ms.uml", //
+            "src/test/resources/benchmark/mediastore/mediastore.txt", //
+            "src/test/resources/benchmark/mediastore/goldstandard.csv", //
+            new EvaluationResults(.999, .620, .765), //
+            new EvaluationResults(.000, .000, .256) //
+    )//
+    ;
 
     private final String model;
     private final String textFile;
@@ -59,6 +66,14 @@ public enum Project {
      */
     public File getModelFile() {
         return new File(model);
+    }
+
+    public ArchitectureModelType getModelType() {
+        if (this.model.endsWith("repository"))
+            return ArchitectureModelType.PCM;
+        if (this.model.endsWith("uml"))
+            return ArchitectureModelType.UML;
+        throw new IllegalStateException("Unknown file ending");
     }
 
     /**

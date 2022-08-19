@@ -26,6 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.UMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
@@ -88,11 +89,12 @@ public final class ArDoCo extends Pipeline {
      *
      * @param name                   Name of the run
      * @param inputText              File of the input text.
-     * @param inputArchitectureModel File of the input model (PCM)
+     * @param inputArchitectureModel File of the input model (PCM or UML)
+     * @param architectureModel      the architecture model to use
      * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
-    public static ArDoCoResult run(String name, File inputText, File inputArchitectureModel, File additionalConfigs) {
-        return runAndSave(name, inputText, inputArchitectureModel, null, additionalConfigs, null);
+    public static ArDoCoResult run(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModel, File additionalConfigs) {
+        return runAndSave(name, inputText, inputArchitectureModel, architectureModel, null, additionalConfigs, null);
     }
 
     /**
@@ -100,14 +102,15 @@ public final class ArDoCo extends Pipeline {
      *
      * @param name                   Name of the run
      * @param inputText              File of the input text.
-     * @param inputArchitectureModel File of the input model (PCM)
+     * @param inputArchitectureModel File of the input model (PCM or UML)
+     * @param architectureModelType  the architecture model to use
      * @param inputCodeModel         File of the input model (Java Code JSON)
      * @param additionalConfigsFile  File with the additional or overwriting config parameters that should be used
      * @param outputDir              File that represents the output directory where the results should be written to
      * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
-    public static ArDoCoResult runAndSave(String name, File inputText, File inputArchitectureModel, File inputCodeModel, File additionalConfigsFile,
-            File outputDir) {
+    public static ArDoCoResult runAndSave(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
+            File inputCodeModel, File additionalConfigsFile, File outputDir) {
 
         classLogger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
@@ -117,7 +120,7 @@ public final class ArDoCo extends Pipeline {
 
         ArDoCo arDoCo;
         try {
-            arDoCo = defineArDoCo(name, inputText, inputArchitectureModel, inputCodeModel, additionalConfigs);
+            arDoCo = defineArDoCo(name, inputText, inputArchitectureModel, architectureModelType, inputCodeModel, additionalConfigs);
         } catch (IOException e) {
             classLogger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             return null;
@@ -133,13 +136,13 @@ public final class ArDoCo extends Pipeline {
         return arDoCoResult;
     }
 
-    static ArDoCo defineArDoCo(String projectName, File inputText, File inputArchitectureModel, File inputCodeModel, Map<String, String> additionalConfigs)
-            throws IOException {
+    static ArDoCo defineArDoCo(String projectName, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
+            File inputCodeModel, Map<String, String> additionalConfigs) throws IOException {
         var arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
 
         arDoCo.addPipelineStep(getTextProvider(inputText, additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(getPcmModelProvider(inputArchitectureModel, dataRepository));
+        arDoCo.addPipelineStep(getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
         if (inputCodeModel != null) {
             arDoCo.addPipelineStep(getJavaModelProvider(inputCodeModel, dataRepository));
         }
@@ -234,15 +237,20 @@ public final class ArDoCo extends Pipeline {
 
     /**
      * Creates a {@link ModelProvider} for PCM.
-     * 
+     *
      * @param inputArchitectureModel the path to the input PCM
+     * @param architectureModelType  the architecture model to use
      * @param dataRepository         the data repository
      * @return A ModelProvider for the PCM
      * @throws IOException if the Code Model cannot be accessed
      */
-    public static ModelProvider getPcmModelProvider(File inputArchitectureModel, DataRepository dataRepository) throws IOException {
-        ModelConnector pcmModel = new PcmXMLModelConnector(inputArchitectureModel);
-        return new ModelProvider(dataRepository, pcmModel);
+    public static ModelProvider getArchitectureModelProvider(File inputArchitectureModel, ArchitectureModelType architectureModelType,
+            DataRepository dataRepository) throws IOException {
+        ModelConnector connector = switch (architectureModelType) {
+        case PCM -> new PcmXMLModelConnector(inputArchitectureModel);
+        case UML -> new UMLModelConnector(inputArchitectureModel);
+        };
+        return new ModelProvider(dataRepository, connector);
     }
 
     /**
