@@ -30,7 +30,7 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     }
 
     @Override
-    public void run() {
+    protected void setUpPipelineSteps() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
@@ -44,11 +44,14 @@ public class InitialInconsistencyAgent extends PipelineAgent {
             inconsistencyState.addRecommendedInstances(recommendationState.getRecommendedInstances().toList());
         }
 
-        for (var filter : findByClassName(enabledFilters, filters)) {
+        for (var filter : getEnabledPipelineSteps()) {
             this.addPipelineStep(filter);
         }
+    }
 
-        super.run();
+    @Override
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledFilters, filters);
     }
 
     @Override

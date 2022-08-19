@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.originalExtractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
 import java.util.Map;
 
@@ -28,13 +28,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  *
  */
 @Deprecated
-public class OriginalNameTypeConnectionExtractor extends Informant {
+public class NameTypeConnectionExtractor extends Informant {
 
     @Configurable
     private double probability = 1.0;
 
-    public OriginalNameTypeConnectionExtractor(DataRepository dataRepository) {
-        super(OriginalNameTypeConnectionExtractor.class.getSimpleName(), dataRepository);
+    public NameTypeConnectionExtractor(DataRepository dataRepository) {
+        super(NameTypeConnectionExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override

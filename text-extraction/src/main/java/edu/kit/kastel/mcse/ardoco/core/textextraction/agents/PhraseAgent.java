@@ -31,10 +31,8 @@ public class PhraseAgent extends PipelineAgent {
     }
 
     @Override
-    protected void setUpPipelineSteps() {
-        for (var extractor : findByClassName(enabledExtractors, extractors)) {
-            this.addPipelineStep(extractor);
-        }
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledExtractors, extractors);
     }
 
     @Override

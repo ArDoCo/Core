@@ -25,11 +25,8 @@ public final class PhraseRecommendationAgent extends PipelineAgent {
     }
 
     @Override
-    public void run() {
-        for (var extractor : findByClassName(enabledExtractors, extractors)) {
-            this.addPipelineStep(extractor);
-        }
-        super.run();
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledExtractors, extractors);
     }
 
     @Override
