@@ -49,7 +49,7 @@ public class NounExtractor extends Informant {
      */
     private void findSingleNouns(TextState textState, Word word) {
         var pos = word.getPosTag();
-        if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos) {
+        if (POSTag.NOUN_PROPER_SINGULAR == pos || POSTag.NOUN == pos || POSTag.NOUN_PROPER_PLURAL == pos || specialCase(word)) {
             textState.addNounMapping(word, MappingKind.NAME, this, probability * nameOrTypeWeight);
             textState.addNounMapping(word, MappingKind.TYPE, this, probability * nameOrTypeWeight);
         }
@@ -57,6 +57,21 @@ public class NounExtractor extends Informant {
             textState.addNounMapping(word, MappingKind.TYPE, this, probability);
         }
 
+    }
+
+    // TODO FIXME
+    // Problem is that somehow in instances like "the Common component" that "Common" is labelled as JJ (adjective) and not recognized.
+    // other extractors do not seem to catch it either. However, older versions seem to have caught this cases.
+    // Need to inspect further!
+    private boolean specialCase(Word word) {
+        var text = word.getText();
+        if (text.length() == 0)
+            return false;
+        var firstLetter = text.charAt(0);
+        if (Character.isUpperCase(firstLetter)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
