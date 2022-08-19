@@ -29,7 +29,7 @@ public class InitialTextAgent extends PipelineAgent {
     public InitialTextAgent(DataRepository data) {
         super(InitialTextAgent.class.getSimpleName(), data);
         extractors = List.of(new NounExtractor(data), new InDepArcsExtractor(data), new OutDepArcsExtractor(data), new SeparatedNamesExtractor(data));
-        enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
+        enabledExtractors = extractors.stream().map(e -> e.getId()).toList();
     }
 
     @Override

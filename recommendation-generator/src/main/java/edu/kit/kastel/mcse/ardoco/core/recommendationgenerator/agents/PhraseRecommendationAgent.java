@@ -8,7 +8,7 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.originalExtractors.OriginalPhraseRecommendationExtractor;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.PhraseRecommendationExtractor;
 
 public final class PhraseRecommendationAgent extends PipelineAgent {
 
@@ -20,7 +20,7 @@ public final class PhraseRecommendationAgent extends PipelineAgent {
     public PhraseRecommendationAgent(DataRepository dataRepository) {
         super(PhraseRecommendationAgent.class.getSimpleName(), dataRepository);
 
-        extractors = List.of(new OriginalPhraseRecommendationExtractor(dataRepository));
+        extractors = List.of(new PhraseRecommendationExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
     }
 
