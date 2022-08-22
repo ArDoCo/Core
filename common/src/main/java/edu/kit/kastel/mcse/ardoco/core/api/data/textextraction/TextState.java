@@ -37,13 +37,13 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      * @param probability  probability to be a name mapping
      * @param surfaceForms list of the appearances of the mapping
      */
-    NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms);
+    NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms);
 
     NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference);
+            ImmutableList<String> surfaceForms, String reference);
 
     NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference);
+            ImmutableList<String> surfaceForms, String reference);
 
     // --- remove section --->
 

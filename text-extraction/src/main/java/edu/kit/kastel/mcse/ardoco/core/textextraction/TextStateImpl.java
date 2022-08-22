@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,19 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  */
 public class TextStateImpl extends AbstractState implements TextState {
 
+    private static final Comparator<ElementWrapper<NounMapping>> ORDER_NOUNMAPPING = (n1, n2) -> {
+        if (n1.equals(n2))
+            return 0;
+        var nm1 = (NounMappingImpl) n1.getElement();
+        var nm2 = (NounMappingImpl) n2.getElement();
+        int compare = Long.compare(nm1.earliestCreationTime(), nm2.earliestCreationTime());
+        if (compare != 0)
+            return compare;
+
+        // Not equal but at same time -> order by something .. e.g., hash ..
+        return Integer.compare(n1.hashCode(), n2.hashCode());
+    };
+
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
      *
@@ -41,7 +55,7 @@ public class TextStateImpl extends AbstractState implements TextState {
      */
     @Deprecated
     double MAPPINGKIND_MAX_DIFF = 0.1;
-    private MutableSet<ElementWrapper<NounMapping>> nounMappings;
+    private MutableList<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
     private final TextStateStrategy strategy;
 
@@ -49,25 +63,25 @@ public class TextStateImpl extends AbstractState implements TextState {
      * Creates a new name type relation state
      */
     public TextStateImpl() {
-        nounMappings = Sets.mutable.empty();
+        nounMappings = Lists.mutable.empty();
         phraseMappings = Sets.mutable.empty();
         strategy = new OriginalTextStateStrategy(this);
     }
 
     @Override
     public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability) {
-        return strategy.addOrExtendNounMapping(word, kind, claimant, probability, Sets.immutable.with(word.getText()));
+        return strategy.addOrExtendNounMapping(word, kind, claimant, probability, Lists.immutable.with(word.getText()));
     }
 
     @Override
-    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms) {
+    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
         return strategy.addOrExtendNounMapping(word, kind, claimant, probability, surfaceForms);
     }
 
     @Override
     public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference) {
-        NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, referenceWords, surfaceForms, reference);
+            ImmutableList<String> surfaceForms, String reference) {
+        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words, kind, claimant, probability, referenceWords, surfaceForms, reference);
 
         var nounMappings = getNounMappings();
         /* for (Word word : words) {
@@ -79,14 +93,14 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference) {
+            ImmutableList<String> surfaceForms, String reference) {
 
         if (reference == null) {
             reference = calculateNounMappingReference(referenceWords);
         }
 
-        NounMapping nounMapping = new NounMappingImpl(words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms, reference,
-                new AtomicBoolean(false));
+        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
+                reference, new AtomicBoolean(false));
         var nounMappings = getNounMappings();
         /*for (Word word : words) {
             assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
@@ -280,7 +294,7 @@ public class TextStateImpl extends AbstractState implements TextState {
                 .collect(ElementWrapper::getElement)
                 .collect(NounMapping::createCopy)
                 .collect(this::wrap)
-                .toSet();
+                .toList();
         textExtractionState.phraseMappings = phraseMappings.collect(PhraseMapping::createCopy);
         return textExtractionState;
     }
@@ -316,9 +330,11 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     private void addNounMappingToState(NounMapping nounMapping) {
-        if (!this.nounMappings.add(wrap(nounMapping))) {
+        if (this.nounMappings.contains(wrap(nounMapping))) {
             throw new IllegalArgumentException("Nounmapping was already in state");
         }
+        this.nounMappings.add(wrap(nounMapping));
+        this.nounMappings.sortThis(ORDER_NOUNMAPPING);
     }
 
     void removeNounMappingFromState(NounMapping nounMapping) {
@@ -326,7 +342,6 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     private ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {
-
         return strategy.wrap(nounMapping);
     }
 

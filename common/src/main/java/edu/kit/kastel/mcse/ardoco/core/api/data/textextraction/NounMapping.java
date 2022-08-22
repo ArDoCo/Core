@@ -23,7 +23,7 @@ public interface NounMapping extends ICopyable<NounMapping> {
      *
      * @return all appearances of the mapping
      */
-    ImmutableSet<String> getSurfaceForms();
+    ImmutableList<String> getSurfaceForms();
 
     /**
      * Returns all words that are contained by the mapping.
