@@ -74,7 +74,7 @@ public class PhraseAgentInformant extends Informant {
 
             var nounMapping = textState.addNounMapping(phrase.toImmutableSet(), MappingKind.NAME, this, phraseConfidence, phrase.toImmutableList(), phrase
                     .collect(Word::getText)
-                    .toImmutableSet(), createReferenceForTerm(phrase));
+                    .toImmutableList(), createReferenceForTerm(phrase));
             ((NounMappingImpl) nounMapping).isDefinedAsTerm().set(true);
         } else {
             for (var nounMapping : similarReferenceNounMappings) {

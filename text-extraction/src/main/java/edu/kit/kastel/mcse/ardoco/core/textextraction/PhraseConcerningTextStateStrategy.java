@@ -40,7 +40,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     }
 
     @Override
-    public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableSet<String> surfaceForms) {
+    public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
         var nounMappingsWithWord = super.getTextState().getNounMappings().select(nm -> nm.getWords().contains(word));
 
         if (nounMappingsWithWord.size() > 0) {
@@ -54,9 +54,9 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         }
         ImmutableSet<Word> words = Sets.immutable.with(word);
         if (surfaceForms == null) {
-            surfaceForms = Sets.immutable.with(word.getText());
+            surfaceForms = Lists.immutable.with(word.getText());
         }
-        NounMapping nounMapping = new NounMappingImpl(words, kind, claimant, probability, words.toImmutableList(), surfaceForms);
+        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words, kind, claimant, probability, words.toImmutableList(), surfaceForms);
         super.getTextState().addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
@@ -83,8 +83,12 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
                 ));
         MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
 
-        MutableSet<String> mergedSurfaceForms = nounMapping.getSurfaceForms().toSet();
-        mergedSurfaceForms.addAllIterable(nounMapping2.getSurfaceForms());
+        MutableList<String> mergedSurfaceForms = nounMapping.getSurfaceForms().toList();
+        for (var surface : nounMapping2.getSurfaceForms()) {
+            if (mergedSurfaceForms.contains(surface))
+                continue;
+            mergedSurfaceForms.add(surface);
+        }
 
         // TODO: Overwork similarity metrics & references
         ImmutableList<Word> mergedReferenceWords = referenceWords;
@@ -106,8 +110,9 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
             }
         }
 
-        NounMapping mergedNounMapping = new NounMappingImpl(mergedWords.toSortedSet().toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(),
-                mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(false));
+        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(nounMapping, nounMapping2), mergedWords.toSortedSet()
+                .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(
+                        false));
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
 
         this.getTextState().removeNounMappingFromState(nounMapping);

@@ -31,8 +31,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
-public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-                              ImmutableSet<String> surfaceForms, String reference, @Deprecated AtomicBoolean isDefinedAsTerm) implements NounMapping {
+public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
+                              ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference,
+                              @Deprecated AtomicBoolean isDefinedAsTerm) implements NounMapping, Comparable<NounMappingImpl> {
 
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
@@ -44,10 +45,10 @@ public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<Mapping
     /**
      * Instantiates a new noun mapping.
      */
-    private NounMappingImpl(ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms) {
-        this(words.toSortedSet().toImmutable(), Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(referenceWords),
-                new AtomicBoolean(false));
+    private NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms) {
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(
+                referenceWords), new AtomicBoolean(false));
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
     }
@@ -55,10 +56,10 @@ public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<Mapping
     /**
      * Instantiates a new noun mapping.
      */
-    public NounMappingImpl(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms) {
-        this(words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords), new AtomicBoolean(
-                false));
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords),
+                new AtomicBoolean(false));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -66,20 +67,15 @@ public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<Mapping
         this.addKindWithProbability(kind, claimant, probability);
     }
 
-    public NounMappingImpl(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableSet<String> surfaceForms, String reference) {
-        this(words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, reference, new AtomicBoolean(false));
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, reference, new AtomicBoolean(false));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
         this.addKindWithProbability(kind, claimant, probability);
 
-    }
-
-    @Override
-    public final ImmutableSet<String> getSurfaceForms() {
-        return surfaceForms.toImmutable();
     }
 
     @Override
@@ -137,8 +133,8 @@ public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<Mapping
 
     @Override
     public NounMapping createCopy() {
-        return new NounMappingImpl(words.toImmutableSet(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable.withAll(
-                referenceWords), surfaceForms.toImmutable());
+        return new NounMappingImpl(earliestCreationTime, words.toImmutableSet(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable
+                .withAll(referenceWords), surfaceForms.toImmutable());
     }
 
     @Override
@@ -198,7 +194,7 @@ public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<Mapping
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
-                ", probability=" + getProbability() + "]";
+                ", probability=" + getProbability() + ", hasPhrase=" + isTerm() + "]";
     }
 
     @Override
@@ -227,5 +223,25 @@ public record NounMappingImpl(ImmutableSortedSet<Word> words, MutableMap<Mapping
     @Override
     public double getProbabilityForKind(MappingKind mappingKind) {
         return distribution.get(mappingKind).getConfidence();
+    }
+
+    @Override
+    public ImmutableList<String> getSurfaceForms() {
+        return this.surfaceForms;
+    }
+
+    public static Long earliestCreationTime(NounMapping... nounMappings) {
+        Long earliest = Long.MAX_VALUE;
+        for (var nounmapping : nounMappings) {
+            if (nounmapping instanceof NounMappingImpl impl)
+                if (impl.earliestCreationTime() < earliest)
+                    earliest = impl.earliestCreationTime();
+        }
+        return earliest == Long.MAX_VALUE ? null : earliest;
+    }
+
+    @Override
+    public int compareTo(NounMappingImpl o) {
+        return Long.compare(this.earliestCreationTime, o.earliestCreationTime);
     }
 }
