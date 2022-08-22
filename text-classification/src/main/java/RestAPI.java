@@ -34,29 +34,57 @@ public class RestAPI implements WebAPI<JSONObject, JSONObject>{
         return (JSONObject) ob;
     }
 
-    @Override
-    public JSONObject sendApiRequest(String endpoint, JSONObject requestData) {
-        HttpURLConnection connection;
-        BufferedReader reader;
-        String line;
-        StringBuilder responseContent = new StringBuilder();
+    private HttpURLConnection setUpConnection(String endpoint) throws IOException {
+        HttpURLConnection connection = null;
 
         String ep = endpoint;
         if(!endpoint.startsWith("/")){
             ep = "/"+endpoint;
         }
 
+        URL u = new URL(this.url + ":" + port + ep);
+        connection = (HttpURLConnection) u.openConnection();
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Accept", "application/json");
+        connection.setDoOutput(true);
+
+        return connection;
+    }
+
+    private JSONObject receiveRequestResponse(HttpURLConnection connection) throws IOException {
+        BufferedReader reader;
+        String line;
+        StringBuilder responseContent = new StringBuilder();
+
+        int status = connection.getResponseCode();
+
+        if (status >= 300) {
+            reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+            while ((line = reader.readLine()) != null) {
+                responseContent.append(line);
+            }
+            reader.close();
+        }
+        else {
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                responseContent.append(line);
+            }
+            reader.close();
+        }
+
+        connection.disconnect();
+        return parseJsonString(responseContent.toString());
+    }
+    @Override
+    public JSONObject sendApiRequest(String endpoint, JSONObject requestData) {
+
         try{
-            URL u = new URL(this.url + ":" + port + ep);
-            connection = (HttpURLConnection) u.openConnection();
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
-
+            HttpURLConnection connection = setUpConnection(endpoint);
             String jsonInputString = requestData.toJSONString();
 
             try(OutputStream os = connection.getOutputStream()) {
@@ -64,25 +92,7 @@ public class RestAPI implements WebAPI<JSONObject, JSONObject>{
                 os.write(input, 0, input.length);
             }
 
-            int status = connection.getResponseCode();
-
-            if (status >= 300) {
-                reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-                while ((line = reader.readLine()) != null) {
-                    responseContent.append(line);
-                }
-                reader.close();
-            }
-            else {
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                while ((line = reader.readLine()) != null) {
-                    responseContent.append(line);
-                }
-                reader.close();
-            }
-
-            connection.disconnect();
-            return parseJsonString(responseContent.toString());
+            return receiveRequestResponse(connection);
 
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -91,43 +101,10 @@ public class RestAPI implements WebAPI<JSONObject, JSONObject>{
     }
     @Override
     public JSONObject sendApiRequest(String endpoint){
-        HttpURLConnection connection;
-        BufferedReader reader;
-        String line;
-        StringBuilder responseContent = new StringBuilder();
-
-        String ep = endpoint;
-        if(!endpoint.startsWith("/")){
-            ep = "/"+endpoint;
-        }
 
         try{
-            URL u = new URL(this.url + ":" + port + ep);
-            connection = (HttpURLConnection) u.openConnection();
-
-            connection.setRequestMethod("POST");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-
-            int status = connection.getResponseCode();
-
-            if (status >= 300) {
-                reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-                while ((line = reader.readLine()) != null) {
-                    responseContent.append(line);
-                }
-                reader.close();
-            }
-            else {
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                while ((line = reader.readLine()) != null) {
-                    responseContent.append(line);
-                }
-                reader.close();
-            }
-
-            connection.disconnect();
-            return parseJsonString(responseContent.toString());
+            HttpURLConnection connection = setUpConnection(endpoint);
+            return receiveRequestResponse(connection);
 
         } catch (IOException e) {
             logger.error("Failed to request status: " + e.getMessage(), e);
