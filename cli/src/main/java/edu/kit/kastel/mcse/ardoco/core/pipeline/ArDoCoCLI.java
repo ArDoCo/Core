@@ -23,6 +23,7 @@ public final class ArDoCoCLI {
     private static final String CMD_HELP = "h";
     private static final String CMD_NAME = "n";
     private static final String CMD_MODEL_ARCHITECTURE = "ma";
+    private static final String CMD_MODEL_ARCHITECTURE_TYPE = "mt";
     private static final String CMD_MODEL_CODE = "mc";
     private static final String CMD_TEXT = "t";
     private static final String CMD_CONF = "c";
@@ -45,6 +46,7 @@ public final class ArDoCoCLI {
         // -n : Name of the Run
         // -ma : Model Path (Architecture)
         // -mc : Model Path (Java Code)
+        // -mt : Model Type (PCM or UML)
         // -t : Path to Text File
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
@@ -72,6 +74,7 @@ public final class ArDoCoCLI {
 
         File inputText;
         File inputModelArchitecture;
+        ArchitectureModelType inputArchitectureModelType = ArchitectureModelType.PCM;
         File inputModelCode;
         File additionalConfigs = null;
         File outputDir;
@@ -79,6 +82,10 @@ public final class ArDoCoCLI {
         if (!cmd.hasOption(CMD_TEXT)) {
             printUsage();
             return null;
+        }
+
+        if (cmd.hasOption(CMD_MODEL_ARCHITECTURE_TYPE)) {
+            inputArchitectureModelType = ArchitectureModelType.valueOf(cmd.getOptionValue(CMD_MODEL_ARCHITECTURE_TYPE));
         }
 
         try {
@@ -102,7 +109,7 @@ public final class ArDoCoCLI {
             return null;
         }
 
-        return new ArDoCoRunner(inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir, name);
+        return new ArDoCoRunner(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, outputDir, name);
     }
 
     private static void printUsage() {
@@ -160,6 +167,11 @@ public final class ArDoCoCLI {
 
         opt = new Option(CMD_MODEL_ARCHITECTURE, "model-architecture", true, "path to the architecture model");
         opt.setRequired(true);
+        opt.setType(String.class);
+        options.addOption(opt);
+
+        opt = new Option(CMD_MODEL_ARCHITECTURE_TYPE, "archtype", true, "type of the architecture model (PCM or UML)");
+        opt.setRequired(false);
         opt.setType(String.class);
         options.addOption(opt);
 

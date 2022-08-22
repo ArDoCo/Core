@@ -8,10 +8,11 @@ import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
-record ArDoCoRunner(File inputText, File inputModelArchitecture, File inputModelCode, File additionalConfigs, File outputDir, String name) {
+record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, File inputModelCode, File additionalConfigs,
+                    File outputDir, String name) {
 
     ArDoCoResult runArDoCo() {
-        return runAndSave(name, inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir);
+        return runAndSave(name, inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, outputDir);
     }
 
     @Override
@@ -21,8 +22,9 @@ record ArDoCoRunner(File inputText, File inputModelArchitecture, File inputModel
         if (!(obj instanceof ArDoCoRunner other))
             return false;
         return Objects.equals(this.inputText, other.inputText) && Objects.equals(this.inputModelArchitecture, other.inputModelArchitecture) && Objects.equals(
-                this.inputModelCode, other.inputModelCode) && Objects.equals(this.additionalConfigs, other.additionalConfigs) && Objects.equals(this.outputDir,
-                        other.outputDir) && Objects.equals(this.name, other.name);
+                this.inputArchitectureModelType, other.inputArchitectureModelType) && Objects.equals(this.inputModelCode, other.inputModelCode) && Objects
+                        .equals(this.additionalConfigs, other.additionalConfigs) && Objects.equals(this.outputDir, other.outputDir) && Objects.equals(this.name,
+                                other.name);
     }
 
     @Override
