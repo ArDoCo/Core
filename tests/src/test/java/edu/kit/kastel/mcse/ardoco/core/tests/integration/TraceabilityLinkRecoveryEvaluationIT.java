@@ -15,7 +15,11 @@ import java.util.stream.Stream;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
@@ -136,10 +140,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
         writeDetailedOutput(project, arDoCoResult);
     }
 
-    @DisplayName("Evaluate TLR for UML/PCM and compare (Text-based)")
+    @DisplayName("Compare TLR for UML/PCM (Text-based)")
     @ParameterizedTest(name = "Evaluating {0} (Text)")
-    @EnumSource(value = Project.class)
-    @Disabled("Just for local use to compare UML / PCM")
+    @EnumSource(value = Project.class, names = { "MEDIASTORE" })
     void compareTraceLinkRecoveryForPCMandUMLIT(Project project) {
         var ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
                 additionalConfigs, outputDir);
