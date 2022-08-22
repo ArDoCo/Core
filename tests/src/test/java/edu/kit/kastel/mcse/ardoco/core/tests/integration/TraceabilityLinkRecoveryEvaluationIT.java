@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
@@ -34,6 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
@@ -128,13 +130,32 @@ class TraceabilityLinkRecoveryEvaluationIT {
         inputText = project.getTextFile();
 
         // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, null, additionalConfigs, outputDir);
+        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, ArchitectureModelType.PCM, null, additionalConfigs,
+                outputDir);
         Assertions.assertNotNull(arDoCoResult);
 
         // calculate results and compare to expected results
         checkResults(project, arDoCoResult);
 
         writeDetailedOutput(project, arDoCoResult);
+    }
+
+    @DisplayName("Compare TLR for UML/PCM (Text-based)")
+    @ParameterizedTest(name = "Evaluating {0} (Text)")
+    @EnumSource(value = Project.class, names = { "MEDIASTORE" })
+    void compareTraceLinkRecoveryForPCMandUMLIT(Project project) {
+        var ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
+                additionalConfigs, outputDir);
+        Assertions.assertNotNull(ardocoRunForPCM);
+        var ardocoRunForUML = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(ArchitectureModelType.UML),
+                ArchitectureModelType.UML, null, additionalConfigs, outputDir);
+        Assertions.assertNotNull(ardocoRunForUML);
+
+        var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
+        var umlTLs = ardocoRunForUML.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
+
+        Assertions.assertEquals(pcmTLs.size(), umlTLs.size());
+        Assertions.assertIterableEquals(pcmTLs, umlTLs);
     }
 
     private void checkResults(Project project, ArDoCoResult arDoCoResult) {
