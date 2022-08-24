@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -15,13 +15,7 @@ import java.util.stream.Stream;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
@@ -55,6 +49,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSumma
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
  * defined in the enum {@link Project}.
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TraceabilityLinkRecoveryEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluationIT.class);
 
@@ -62,7 +57,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
-    private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
+    private static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
@@ -127,6 +122,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @DisplayName("Evaluate TLR")
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(value = Project.class)
+    @Order(1)
     void evaluateTraceLinkRecoveryIT(Project project) {
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
@@ -142,31 +138,23 @@ class TraceabilityLinkRecoveryEvaluationIT {
         writeDetailedOutput(project, arDoCoResult);
     }
 
-    @DisplayName("Compare TLR for UML/PCM for Mediastore")
-    @Test
-    void compareTraceLinkRecoveryForPcmAndUmlMediastoreIT() {
-        compareTraceLinkRecoveryForPcmAndUml(Project.MEDIASTORE);
-    }
-
     /**
      * Test if the results from executing ArDoCo with UML are the same as with PCM
-     * Disabled as {@link ArchitectureModelProviderIT} should test mostly the same without executing ArDoCo.
-     * You can execute this by providing the environment variable "testPcmAndUml".
      * 
      * @param project the project, provided by the EnumSource
      */
-    @EnabledIfEnvironmentVariable(named = "testPcmAndUml", matches = ".*")
     @DisplayName("Compare TLR for UML/PCM")
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(value = Project.class)
+    @Order(2)
     void compareTraceLinkRecoveryForPcmAndUmlIT(Project project) {
-        compareTraceLinkRecoveryForPcmAndUml(project);
-    }
-
-    private void compareTraceLinkRecoveryForPcmAndUml(Project project) {
-        var ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
-                additionalConfigs, outputDir);
+        var ardocoRunForPCM = DATA_MAP.get(project);
+        if (ardocoRunForPCM == null) {
+            ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
+                    additionalConfigs, outputDir);
+        }
         Assertions.assertNotNull(ardocoRunForPCM);
+
         var ardocoRunForUML = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(ArchitectureModelType.UML),
                 ArchitectureModelType.UML, null, additionalConfigs, outputDir);
         Assertions.assertNotNull(ardocoRunForUML);
