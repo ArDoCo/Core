@@ -1,8 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo.runAndSave;
-
 import java.io.File;
 import java.util.Objects;
 
@@ -12,7 +10,8 @@ record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureMod
                     File outputDir, String name) {
 
     ArDoCoResult runArDoCo() {
-        return runAndSave(name, inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, outputDir);
+        ArDoCo arDoCo = ArDoCo.getInstance(name);
+        return arDoCo.runAndSave(name, inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, outputDir);
     }
 
     @Override
