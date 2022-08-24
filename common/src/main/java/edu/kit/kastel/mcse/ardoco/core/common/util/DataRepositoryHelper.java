@@ -174,4 +174,14 @@ public final class DataRepositoryHelper {
     public static InconsistencyStates getInconsistencyStates(DataRepository dataRepository) {
         return dataRepository.getData(InconsistencyStates.ID, InconsistencyStates.class).orElseThrow();
     }
+
+    /**
+     * Put the given {@link PreprocessingData} into the given {@link DataRepository}. This will override existing data!
+     * 
+     * @param dataRepository    the dataRepository
+     * @param preprocessingData the preprocessingData
+     */
+    public static void putPreprocessingData(DataRepository dataRepository, PreprocessingData preprocessingData) {
+        dataRepository.addData(PreprocessingData.ID, preprocessingData);
+    }
 }

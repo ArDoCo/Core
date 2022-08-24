@@ -8,14 +8,14 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
-public class CoreNLPProvider extends AbstractPipelineStep implements TextProvider {
+public class CoreNLPProvider extends TextProvider {
     private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
     private final InputStream text;
@@ -57,7 +57,11 @@ public class CoreNLPProvider extends AbstractPipelineStep implements TextProvide
     @Override
     public synchronized Text getAnnotatedText() {
         if (annotatedText == null) {
-            annotatedText = processText(text);
+            if (DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
+                annotatedText = DataRepositoryHelper.getAnnotatedText(getDataRepository());
+            } else {
+                annotatedText = processText(text);
+            }
         }
         return annotatedText;
     }
@@ -81,8 +85,10 @@ public class CoreNLPProvider extends AbstractPipelineStep implements TextProvide
 
     @Override
     public void run() {
-        var preprocessingData = new PreprocessingData(getAnnotatedText());
-        this.getDataRepository().addData(PreprocessingData.ID, preprocessingData);
+        if (!DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
+            var preprocessingData = new PreprocessingData(getAnnotatedText());
+            DataRepositoryHelper.putPreprocessingData(getDataRepository(), preprocessingData);
+        }
     }
 
     @Override

@@ -29,6 +29,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
@@ -61,8 +62,10 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
+    private String name;
     private File inputText;
     private File inputModel;
+    private File inputCodeModel = null;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
@@ -124,18 +127,27 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @EnumSource(value = Project.class)
     @Order(1)
     void evaluateTraceLinkRecoveryIT(Project project) {
-        inputModel = project.getModelFile();
-        inputText = project.getTextFile();
-
-        // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, ArchitectureModelType.PCM, null, additionalConfigs,
-                outputDir);
+        ArDoCoResult arDoCoResult = getArDoCoResult(project);
         Assertions.assertNotNull(arDoCoResult);
 
         // calculate results and compare to expected results
         checkResults(project, arDoCoResult);
 
         writeDetailedOutput(project, arDoCoResult);
+    }
+
+    private ArDoCoResult getArDoCoResult(Project project) {
+        inputModel = project.getModelFile();
+        inputText = project.getTextFile();
+        name = project.name().toLowerCase();
+        ArDoCo arDoCo = ArDoCo.getInstance(name);
+
+        var arDoCoResult = DATA_MAP.get(project);
+        if (arDoCoResult == null) {
+            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigs, outputDir);
+            DATA_MAP.put(project, arDoCoResult);
+        }
+        return arDoCoResult;
     }
 
     /**
@@ -148,15 +160,14 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @EnumSource(value = Project.class)
     @Order(2)
     void compareTraceLinkRecoveryForPcmAndUmlIT(Project project) {
-        var ardocoRunForPCM = DATA_MAP.get(project);
-        if (ardocoRunForPCM == null) {
-            ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
-                    additionalConfigs, outputDir);
-        }
+        var ardocoRunForPCM = getArDoCoResult(project);
         Assertions.assertNotNull(ardocoRunForPCM);
 
-        var ardocoRunForUML = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(ArchitectureModelType.UML),
-                ArchitectureModelType.UML, null, additionalConfigs, outputDir);
+        var arDoCo = ArDoCo.getInstance(name);
+        var preprocessingData = ardocoRunForPCM.getPreprocessingData();
+        DataRepositoryHelper.putPreprocessingData(arDoCo.getDataRepository(), preprocessingData);
+        File umlModelFile = project.getModelFile(ArchitectureModelType.UML);
+        var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
