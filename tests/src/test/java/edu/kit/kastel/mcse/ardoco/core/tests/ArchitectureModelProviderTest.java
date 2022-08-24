@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.integration;
+package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.model.UMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
-class ArchitectureModelProviderIT {
+class ArchitectureModelProviderTest {
 
     @DisplayName("Test Model Providers")
     @ParameterizedTest(name = "Testing for {0}")
