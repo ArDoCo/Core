@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
@@ -98,4 +99,6 @@ public interface RecommendedInstance extends ICopyable<RecommendedInstance> {
      * @param name the new name
      */
     void setName(String name);
+
+    ImmutableSet<Claimant> getClaimants();
 }

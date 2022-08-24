@@ -27,6 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
@@ -238,6 +239,15 @@ public record ArDoCoResult(DataRepository dataRepository) {
     public ModelExtractionState getModelState(String modelId) {
         ModelStates modelStates = getModelStates();
         return modelStates.getModelState(modelId);
+    }
+
+    /**
+     * Returns the internal {@link TextState}.
+     *
+     * @return the TextState
+     */
+    public TextState getTextState() {
+        return DataRepositoryHelper.getTextState(dataRepository);
     }
 
     /**
