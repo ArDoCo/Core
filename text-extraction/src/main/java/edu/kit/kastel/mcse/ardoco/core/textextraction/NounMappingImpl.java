@@ -3,16 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.informalin.framework.common.AggregationFunctions.AVERAGE;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.JavaUtils;
@@ -41,7 +40,7 @@ public class NounMappingImpl implements NounMapping {
     /* the different surface forms */
     private final MutableList<String> surfaceForms;
 
-    private Map<MappingKind, Confidence> distribution;
+    private MutableMap<MappingKind, Confidence> distribution;
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
 
@@ -65,7 +64,7 @@ public class NounMappingImpl implements NounMapping {
             ImmutableList<String> occurrences) {
         Objects.requireNonNull(claimant);
 
-        distribution = new EnumMap<>(MappingKind.class);
+        distribution = Maps.mutable.empty();
         distribution.put(kind, new Confidence(claimant, probability, DEFAULT_AGGREGATOR));
 
         this.words = Lists.mutable.withAll(words);
@@ -82,7 +81,7 @@ public class NounMappingImpl implements NounMapping {
     }
 
     private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
-        this.distribution = new EnumMap<>(distribution);
+        this.distribution = Maps.mutable.withMap(distribution);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
     }
@@ -203,8 +202,8 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public NounMapping createCopy() {
-        var nm = new NounMappingImpl(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(),
-                surfaceForms.toImmutable());
+        var nm = new NounMappingImpl(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(), surfaceForms
+                .toImmutable());
         nm.hasPhrase = hasPhrase;
         return nm;
     }
@@ -290,8 +289,10 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public String toString() {
-        return "NounMapping [" + "distribution="
-                + distribution.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + //
+        return "NounMapping [" + "distribution=" + distribution.entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(",")) + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
@@ -331,6 +332,11 @@ public class NounMappingImpl implements NounMapping {
     @Override
     public double getProbabilityForKind(MappingKind mappingKind) {
         return distribution.get(mappingKind).getConfidence();
+    }
+
+    @Override
+    public ImmutableSet<Claimant> getClaimants() {
+        return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSet();
     }
 
     @Override
