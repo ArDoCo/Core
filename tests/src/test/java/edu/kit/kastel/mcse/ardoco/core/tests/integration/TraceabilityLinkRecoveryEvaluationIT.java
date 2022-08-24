@@ -20,6 +20,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
@@ -122,8 +124,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
     // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
     // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
-    @DisplayName("Evaluate TLR (Text-based)")
-    @ParameterizedTest(name = "Evaluating {0} (Text)")
+    @DisplayName("Evaluate TLR")
+    @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(value = Project.class)
     void evaluateTraceLinkRecoveryIT(Project project) {
         inputModel = project.getModelFile();
@@ -140,10 +142,28 @@ class TraceabilityLinkRecoveryEvaluationIT {
         writeDetailedOutput(project, arDoCoResult);
     }
 
-    @DisplayName("Compare TLR for UML/PCM (Text-based)")
-    @ParameterizedTest(name = "Evaluating {0} (Text)")
-    @EnumSource(value = Project.class, names = { "MEDIASTORE" })
-    void compareTraceLinkRecoveryForPCMandUMLIT(Project project) {
+    @DisplayName("Compare TLR for UML/PCM for Mediastore")
+    @Test
+    void compareTraceLinkRecoveryForPcmAndUmlMediastoreIT() {
+        compareTraceLinkRecoveryForPcmAndUml(Project.MEDIASTORE);
+    }
+
+    /**
+     * Test if the results from executing ArDoCo with UML are the same as with PCM
+     * Disabled as {@link ArchitectureModelProviderIT} should test mostly the same without executing ArDoCo.
+     * You can execute this by providing the environment variable "testPcmAndUml".
+     * 
+     * @param project the project, provided by the EnumSource
+     */
+    @EnabledIfEnvironmentVariable(named = "testPcmAndUml", matches = ".*")
+    @DisplayName("Compare TLR for UML/PCM")
+    @ParameterizedTest(name = "Evaluating {0}")
+    @EnumSource(value = Project.class)
+    void compareTraceLinkRecoveryForPcmAndUmlIT(Project project) {
+        compareTraceLinkRecoveryForPcmAndUml(project);
+    }
+
+    private void compareTraceLinkRecoveryForPcmAndUml(Project project) {
         var ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
                 additionalConfigs, outputDir);
         Assertions.assertNotNull(ardocoRunForPCM);
@@ -154,8 +174,10 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
         var umlTLs = ardocoRunForUML.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
 
-        Assertions.assertEquals(pcmTLs.size(), umlTLs.size());
-        Assertions.assertIterableEquals(pcmTLs, umlTLs);
+        Assertions.assertAll( //
+                () -> Assertions.assertEquals(pcmTLs.size(), umlTLs.size()), //
+                () -> Assertions.assertIterableEquals(pcmTLs, umlTLs) //
+        );
     }
 
     private void checkResults(Project project, ArDoCoResult arDoCoResult) {
