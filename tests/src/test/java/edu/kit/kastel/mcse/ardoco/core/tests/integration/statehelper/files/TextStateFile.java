@@ -41,9 +41,7 @@ public class TextStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(
-                "Reference" + VALUE_SEPARATOR + "Name" + VALUE_SEPARATOR + "Type" + VALUE_SEPARATOR + "SurfaceForms" + VALUE_SEPARATOR + "Words" + VALUE_SEPARATOR + "Claimants")
-                .append(LINE_SEPARATOR);
+        builder.append(String.join(VALUE_SEPARATOR, "Reference", "Name", "Type", "SurfaceForms", "Words", "Claimants", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         for (var nounMapping : textState.getNounMappings().toSortedListBy(NounMapping::getReference)) {
@@ -75,9 +73,7 @@ public class TextStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(
-                "Reference" + VALUE_SEPARATOR + "Name" + VALUE_SEPARATOR + "Type" + VALUE_SEPARATOR + "SurfaceForms" + VALUE_SEPARATOR + "Words" + VALUE_SEPARATOR + "Claimants")
-                .append(LINE_SEPARATOR);
+        builder.append(String.join(VALUE_SEPARATOR, "Reference", "Name", "Type", "SurfaceForms", "Words", "Claimants", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         List<String> lines = Files.readAllLines(sourceFile);
@@ -112,16 +108,14 @@ public class TextStateFile {
                             !parts[4].equals(words) ||//
                             !parts[5].equals(claimants)) {
 
-                        differentNounMappings.add(
-                                ref + VALUE_SEPARATOR + nameProb + VALUE_SEPARATOR + typeProb + VALUE_SEPARATOR + surfaceForms + VALUE_SEPARATOR + words + VALUE_SEPARATOR + claimants + LINE_SEPARATOR);
+                        differentNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, claimants, LINE_SEPARATOR));
                         differentNounMappings.add("instead of" + LINE_SEPARATOR);
                         differentNounMappings.add(line);
                         differentNounMappings.add(LINE_SEPARATOR);
                     }
 
                 } else {
-                    additionalNounMappings.add(
-                            ref + VALUE_SEPARATOR + nameProb + VALUE_SEPARATOR + typeProb + VALUE_SEPARATOR + surfaceForms + VALUE_SEPARATOR + words + VALUE_SEPARATOR + claimants + LINE_SEPARATOR);
+                    additionalNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, claimants, LINE_SEPARATOR));
                 }
             } else {
                 missingNounMappings.add(line);
