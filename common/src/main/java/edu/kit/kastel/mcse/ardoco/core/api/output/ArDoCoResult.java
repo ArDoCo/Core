@@ -261,13 +261,17 @@ public record ArDoCoResult(DataRepository dataRepository) {
         return recommendationStates.getRecommendationState(metamodel);
     }
 
+    public PreprocessingData getPreprocessingData() {
+        return dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow();
+    }
+
     /**
      * Returns the {@link Text}
      * 
      * @return the Text
      */
     public Text getText() {
-        var preprocessingData = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow();
+        var preprocessingData = getPreprocessingData();
         return preprocessingData.getText();
     }
 }
