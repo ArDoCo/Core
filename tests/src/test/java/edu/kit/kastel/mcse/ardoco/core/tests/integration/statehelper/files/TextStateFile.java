@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
@@ -104,7 +106,7 @@ public class TextStateFile {
                 String typeProb = String.valueOf(currentNounMapping.getProbabilityForKind(MappingKind.TYPE));
                 String surfaceForms = String.join(LIST_SEPARATOR, currentNounMapping.getSurfaceForms());
                 String words = String.join(LIST_SEPARATOR, currentNounMapping.getWords().collect(Word::getText).toSet());
-                String claimants = String.join(LIST_SEPARATOR, currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName()));
+                ImmutableSet<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 if (order == 0) {
 
@@ -112,16 +114,21 @@ public class TextStateFile {
                             !parts[2].equals(typeProb) ||//
                             !parts[3].equals(surfaceForms) ||//
                             !parts[4].equals(words) ||//
-                            !parts[5].equals(claimants)) {
+                            !TextStateFile.claimantsEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
-                        differentNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, claimants, LINE_SEPARATOR));
+                        differentNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, String.join(LIST_SEPARATOR,
+                                claimants)));
+                        differentNounMappings.add(LINE_SEPARATOR);
                         differentNounMappings.add("instead of" + LINE_SEPARATOR);
                         differentNounMappings.add(line);
+                        differentNounMappings.add(LINE_SEPARATOR);
                         differentNounMappings.add(LINE_SEPARATOR);
                     }
 
                 } else {
-                    additionalNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, claimants, LINE_SEPARATOR));
+                    additionalNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, String.join(LIST_SEPARATOR,
+                            claimants)));
+                    additionalNounMappings.add(LINE_SEPARATOR);
                 }
             } else {
                 missingNounMappings.add(line);
@@ -145,6 +152,26 @@ public class TextStateFile {
         Files.writeString(diffFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         TextStateFile.write(targetFile, arDoCoResult);
+    }
+
+    public static boolean claimantsEqual(String[] a1, MutableList<String> list2) {
+
+        MutableList<String> list1 = Lists.mutable.withAll(Arrays.asList(a1));
+        MutableList<String> removed = Lists.mutable.empty();
+
+        for (var element : list1) {
+            if (list2.contains(element)) {
+                removed.add(element);
+            } else {
+                if (list2.collect(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
+                    removed.add(element);
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return removed.size() == list1.size() && removed.size() == list2.size();
     }
 
 }

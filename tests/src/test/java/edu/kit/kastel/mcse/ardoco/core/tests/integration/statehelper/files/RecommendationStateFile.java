@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
@@ -113,23 +114,27 @@ public class RecommendationStateFile {
                 String probability = String.valueOf(currentRecommendedInstance.getProbability());
                 String names = String.join(LIST_SEPARATOR, currentRecommendedInstance.getNameMappings().collect(NounMapping::getReference));
                 String types = String.join(LIST_SEPARATOR, currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference));
-                String claimants = String.join(LIST_SEPARATOR, currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName()));
+                ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 if (nameOrder == 0 && typeOrder == 0) {
 
                     if (!parts[2].equals(probability) ||//
                             !parts[3].equals(names) ||//
                             !parts[4].equals(types) ||//
-                            !parts[5].equals(claimants)) {
+                            !TextStateFile.claimantsEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
-                        differentRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, names, types, claimants, LINE_SEPARATOR));
+                        differentRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, names, types, String.join(LIST_SEPARATOR,
+                                claimants)));
+                        differentRecommendations.add(LINE_SEPARATOR);
                         differentRecommendations.add("instead of" + LINE_SEPARATOR);
                         differentRecommendations.add(line);
+                        differentRecommendations.add(LINE_SEPARATOR);
                         differentRecommendations.add(LINE_SEPARATOR);
                     }
 
                 } else if (nameOrder > 0 || typeOrder > 0) {
-                    additionalRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, names, types, claimants, LINE_SEPARATOR));
+                    additionalRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, names, types, String.join(LIST_SEPARATOR, claimants)));
+                    additionalRecommendations.add(LINE_SEPARATOR);
                 } else {
                     missingRecommendations.add(line);
                     missingRecommendations.add(LINE_SEPARATOR);
@@ -155,7 +160,7 @@ public class RecommendationStateFile {
 
         Files.writeString(diffFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-        TextStateFile.write(targetFile, arDoCoResult);
+        RecommendationStateFile.write(targetFile, arDoCoResult, metaModel);
     }
 
 }
