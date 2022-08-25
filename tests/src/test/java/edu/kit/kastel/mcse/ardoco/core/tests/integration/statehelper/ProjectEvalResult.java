@@ -81,7 +81,7 @@ public class ProjectEvalResult {
 
     private static void writeTextStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
         String name = project.name().toLowerCase();
-        var evalDir = Path.of(OUTPUT).resolve(name);
+        var evalDir = Path.of(OUTPUT).resolve(name).resolve("textState");
         try {
             Files.createDirectories(evalDir);
         } catch (IOException e) {
@@ -101,31 +101,30 @@ public class ProjectEvalResult {
         TextStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult);
     }
 
-    private static void writeTextState(Project project, ArDoCoResult arDoCoResult) throws IOException {
+    private static void writeRecommendationStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
         String name = project.name().toLowerCase();
-        var evalDir = Path.of(OUTPUT).resolve(name);
-        try {
-            Files.createDirectories(evalDir);
-        } catch (IOException e) {
-            logger.warn("Could not create directories.", e);
-        }
-        TextStateFile.write(evalDir.resolve("textState_" + name + ".txt"), arDoCoResult);
-    }
-
-    private static void writeRecommendationStates(Project project, ArDoCoResult arDoCoResult) throws IOException {
-        String name = project.name().toLowerCase();
-        var evalDir = Path.of(OUTPUT).resolve(name);
-        try {
-            Files.createDirectories(evalDir);
-        } catch (IOException e) {
-            logger.warn("Could not create directories.", e);
-        }
 
         for (var modelId : arDoCoResult.getModelIds()) {
 
             var metaModel = arDoCoResult.getModelState(modelId).getMetamodel();
+            var evalDir = Path.of(OUTPUT).resolve(name).resolve("recommendationStates").resolve(metaModel.name());
+            try {
+                Files.createDirectories(evalDir);
+            } catch (IOException e) {
+                logger.warn("Could not create directories.", e);
+            }
 
-            RecommendationStateFile.save(evalDir.resolve("recommendationState_" + metaModel.name() + "_" + name + ".txt"), arDoCoResult, modelId);
+            var currentPath = evalDir.resolve("recommendationState_" + metaModel.name() + "_" + name + ".txt");
+            var previousPath = evalDir.resolve("recommendationState_" + metaModel.name() + "_" + name + "_previous" + ".txt");
+            var diffPath = evalDir.resolve("recommendationState_" + metaModel.name() + "_" + name + "_diff" + ".txt");
+            try {
+                Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                RecommendationStateFile.write(currentPath, arDoCoResult, metaModel);
+                Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            RecommendationStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult, metaModel);
         }
     }
 
@@ -139,7 +138,7 @@ public class ProjectEvalResult {
         }
 
         writeTextStateDiff(project, arDoCoResult);
-        writeRecommendationStates(project, arDoCoResult);
+        writeRecommendationStateDiff(project, arDoCoResult);
     }
 
 }
