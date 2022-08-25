@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -19,9 +22,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 public class RecommendationStateFile {
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
-
     private static final String VALUE_SEPARATOR = "|";
     private static final String LIST_SEPARATOR = ",";
+
+    private static DecimalFormat df = new DecimalFormat("#.####", new DecimalFormatSymbols(Locale.US));
 
     private RecommendationStateFile() {
         throw new IllegalAccessError("This constructor should not be called!");
@@ -53,7 +57,7 @@ public class RecommendationStateFile {
             builder.append(VALUE_SEPARATOR);
             builder.append(recommendation.getType());
             builder.append(VALUE_SEPARATOR);
-            builder.append(recommendation.getProbability());
+            builder.append(df.format(recommendation.getProbability()));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, recommendation.getNameMappings().collect(NounMapping::getReference)));
             builder.append(VALUE_SEPARATOR);
@@ -69,6 +73,9 @@ public class RecommendationStateFile {
     }
 
     public static void writeDiff(Path sourceFile, Path targetFile, Path diffFile, ArDoCoResult arDoCoResult, Metamodel metaModel) throws IOException {
+
+        Locale locale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
 
         var builder = new StringBuilder();
 
@@ -111,7 +118,7 @@ public class RecommendationStateFile {
 
                 int typeOrder = parts[1].compareTo(type);
 
-                String probability = String.valueOf(currentRecommendedInstance.getProbability());
+                String probability = df.format(currentRecommendedInstance.getProbability());
                 String names = String.join(LIST_SEPARATOR, currentRecommendedInstance.getNameMappings().collect(NounMapping::getReference));
                 String types = String.join(LIST_SEPARATOR, currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference));
                 ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
@@ -161,6 +168,8 @@ public class RecommendationStateFile {
         Files.writeString(diffFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         RecommendationStateFile.write(targetFile, arDoCoResult, metaModel);
+
+        Locale.setDefault(locale);
     }
 
 }
