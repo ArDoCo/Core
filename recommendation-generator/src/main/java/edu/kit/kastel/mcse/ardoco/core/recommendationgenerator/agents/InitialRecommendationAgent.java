@@ -20,9 +20,6 @@ public class InitialRecommendationAgent extends PipelineAgent {
     @Configurable
     private List<String> enabledExtractors;
 
-    /**
-     * Prototype constructor.
-     */
     public InitialRecommendationAgent(DataRepository dataRepository) {
         super("InitialRecommendationAgent", dataRepository);
         extractors = List.of(new NameTypeExtractor(dataRepository));
@@ -30,12 +27,8 @@ public class InitialRecommendationAgent extends PipelineAgent {
     }
 
     @Override
-    public void run() {
-        for (var extractor : findByClassName(enabledExtractors, extractors)) {
-            this.addPipelineStep(extractor);
-        }
-
-        super.run();
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledExtractors, extractors);
     }
 
     @Override

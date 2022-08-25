@@ -23,14 +23,14 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     private List<String> enabledFilters;
 
     public InitialInconsistencyAgent(DataRepository dataRepository) {
-        super("InitialInconsistencyAgent", dataRepository);
+        super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
 
         filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository));
         enabledFilters = filters.collect(Informant::getId);
     }
 
     @Override
-    public void run() {
+    protected void initializeState() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
@@ -43,12 +43,11 @@ public class InitialInconsistencyAgent extends PipelineAgent {
 
             inconsistencyState.addRecommendedInstances(recommendationState.getRecommendedInstances().toList());
         }
+    }
 
-        for (var filter : findByClassName(enabledFilters, filters)) {
-            this.addPipelineStep(filter);
-        }
-
-        super.run();
+    @Override
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledFilters, filters);
     }
 
     @Override

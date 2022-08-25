@@ -33,15 +33,14 @@ public class InconsistencyChecker extends AbstractExecutionStage {
     }
 
     @Override
-    public void run() {
+    protected void initializeState() {
         var inconsistencyStates = InconsistencyStatesImpl.build();
         getDataRepository().addData(InconsistencyStates.ID, inconsistencyStates);
+    }
 
-        for (PipelineAgent agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
-        }
-
-        super.run();
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
     }
 
     @Override

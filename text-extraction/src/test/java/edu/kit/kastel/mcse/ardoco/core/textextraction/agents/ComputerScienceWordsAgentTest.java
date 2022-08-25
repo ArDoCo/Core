@@ -23,9 +23,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ComputerScienceWordsInformant;
 
 class ComputerScienceWordsAgentTest implements Claimant {
     private ComputerScienceWordsAgent agent;
+    private ComputerScienceWordsInformant informant;
     private ImmutableList<String> data;
     private double modifier;
 
@@ -37,6 +39,8 @@ class ComputerScienceWordsAgentTest implements Claimant {
     void setup() throws NoSuchFieldException, IllegalAccessException {
         var dataRepository = new DataRepository();
         this.agent = new ComputerScienceWordsAgent(dataRepository);
+        this.informant = (ComputerScienceWordsInformant) agent.getEnabledPipelineSteps().get(0);
+
         setData();
 
         var validWord = wordToListOfWord(data.get(0));
@@ -77,17 +81,17 @@ class ComputerScienceWordsAgentTest implements Claimant {
     @SuppressWarnings("unchecked")
     private void setData() throws NoSuchFieldException, IllegalAccessException {
         // FORCE ENABLE
-        var enabledField = this.agent.getClass().getDeclaredField("enabled");
+        var enabledField = this.informant.getClass().getDeclaredField("enabled");
         enabledField.setAccessible(true);
-        enabledField.set(this.agent, true);
+        enabledField.set(this.informant, true);
 
-        var wordsField = this.agent.getClass().getDeclaredField("commonCSWords");
+        var wordsField = this.informant.getClass().getDeclaredField("commonCSWords");
         wordsField.setAccessible(true);
-        this.data = (ImmutableList<String>) wordsField.get(this.agent);
+        this.data = (ImmutableList<String>) wordsField.get(this.informant);
 
-        var probField = this.agent.getClass().getDeclaredField("probabilityOfFoundWords");
+        var probField = this.informant.getClass().getDeclaredField("probabilityOfFoundWords");
         probField.setAccessible(true);
-        this.modifier = (double) probField.get(this.agent);
+        this.modifier = (double) probField.get(this.informant);
     }
 
     private record MyText(ImmutableList<Word> words) implements Text {

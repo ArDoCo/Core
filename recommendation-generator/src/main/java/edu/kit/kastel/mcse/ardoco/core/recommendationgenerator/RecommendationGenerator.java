@@ -37,14 +37,14 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     }
 
     @Override
-    public void run() {
+    protected void initializeState() {
         var recommendationStates = RecommendationStatesImpl.build();
         getDataRepository().addData(RecommendationStates.ID, recommendationStates);
+    }
 
-        for (var agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
-        }
-        super.run();
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
     }
 
     @Override

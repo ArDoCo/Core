@@ -38,22 +38,18 @@ public class TextExtraction extends AbstractExecutionStage {
     }
 
     @Override
-    public void run() {
-        initializeTextState();
-
-        for (var agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
-        }
-        super.run();
-    }
-
-    private void initializeTextState() {
+    protected void initializeState() {
         var dataRepository = getDataRepository();
         var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
             var textState = new TextStateImpl();
             dataRepository.addData(TextState.ID, textState);
         }
+    }
+
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
     }
 
     @Override

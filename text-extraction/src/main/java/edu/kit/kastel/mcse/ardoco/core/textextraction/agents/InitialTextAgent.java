@@ -33,16 +33,12 @@ public class InitialTextAgent extends PipelineAgent {
     }
 
     @Override
-    public void run() {
-        for (var extractor : findByClassName(enabledExtractors, extractors)) {
-            this.addPipelineStep(extractor);
-        }
-        super.run();
-    }
-
-    @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 
+    @Override
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledExtractors, extractors);
+    }
 }
