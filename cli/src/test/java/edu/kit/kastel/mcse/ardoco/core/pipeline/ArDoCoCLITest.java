@@ -29,10 +29,10 @@ class ArDoCoCLITest {
         Assertions.assertNotNull(runner);
 
         var additionalConfigs = ArDoCo.loadAdditionalConfigs(runner.additionalConfigs());
-        ArDoCo arDoCo = null;
+        ArDoCo arDoCo = ArDoCo.getInstance(runner.name());
         try {
-            arDoCo = ArDoCo.defineArDoCo(runner.name(), runner.inputText(), runner.inputModelArchitecture(), runner.inputArchitectureModelType(), runner
-                    .inputModelCode(), additionalConfigs);
+            arDoCo.definePipeline(runner.inputText(), runner.inputModelArchitecture(), runner.inputArchitectureModelType(), runner.inputModelCode(),
+                    additionalConfigs);
         } catch (IOException e) {
             Assertions.fail("Could not define ArDoCo");
         }
@@ -48,10 +48,10 @@ class ArDoCoCLITest {
         Assertions.assertNotNull(runner);
 
         var additionalConfigs = ArDoCo.loadAdditionalConfigs(runner.additionalConfigs());
-        ArDoCo arDoCo = null;
+        ArDoCo arDoCo = ArDoCo.getInstance(runner.name());
         try {
-            arDoCo = ArDoCo.defineArDoCo(runner.name(), runner.inputText(), runner.inputModelArchitecture(), runner.inputArchitectureModelType(), runner
-                    .inputModelCode(), additionalConfigs);
+            arDoCo.definePipeline(runner.inputText(), runner.inputModelArchitecture(), runner.inputArchitectureModelType(), runner.inputModelCode(),
+                    additionalConfigs);
         } catch (IOException e) {
             Assertions.fail("Could not define ArDoCo");
         }

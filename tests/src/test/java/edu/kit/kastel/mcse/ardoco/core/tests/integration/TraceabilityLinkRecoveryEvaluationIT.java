@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -29,6 +29,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
@@ -44,6 +45,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
  * defined in the enum {@link Project}.
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TraceabilityLinkRecoveryEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluationIT.class);
 
@@ -51,12 +53,14 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
-    private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
+    private static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
+    private String name;
     private File inputText;
     private File inputModel;
+    private File inputCodeModel = null;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
@@ -113,16 +117,12 @@ class TraceabilityLinkRecoveryEvaluationIT {
     // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
     // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
-    @DisplayName("Evaluate TLR (Text-based)")
-    @ParameterizedTest(name = "Evaluating {0} (Text)")
+    @DisplayName("Evaluate TLR")
+    @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(value = Project.class)
+    @Order(1)
     void evaluateTraceLinkRecoveryIT(Project project) {
-        inputModel = project.getModelFile();
-        inputText = project.getTextFile();
-
-        // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, ArchitectureModelType.PCM, null, additionalConfigs,
-                outputDir);
+        ArDoCoResult arDoCoResult = getArDoCoResult(project);
         Assertions.assertNotNull(arDoCoResult);
 
         // calculate results and compare to expected results
@@ -131,22 +131,47 @@ class TraceabilityLinkRecoveryEvaluationIT {
         writeDetailedOutput(project, arDoCoResult);
     }
 
-    @DisplayName("Compare TLR for UML/PCM (Text-based)")
-    @ParameterizedTest(name = "Evaluating {0} (Text)")
-    @EnumSource(value = Project.class, names = { "MEDIASTORE" })
-    void compareTraceLinkRecoveryForPCMandUMLIT(Project project) {
-        var ardocoRunForPCM = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, null,
-                additionalConfigs, outputDir);
+    private ArDoCoResult getArDoCoResult(Project project) {
+        inputModel = project.getModelFile();
+        inputText = project.getTextFile();
+        name = project.name().toLowerCase();
+        ArDoCo arDoCo = ArDoCo.getInstance(name);
+
+        var arDoCoResult = DATA_MAP.get(project);
+        if (arDoCoResult == null) {
+            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigs, outputDir);
+            DATA_MAP.put(project, arDoCoResult);
+        }
+        return arDoCoResult;
+    }
+
+    /**
+     * Test if the results from executing ArDoCo with UML are the same as with PCM
+     * 
+     * @param project the project, provided by the EnumSource
+     */
+    @DisplayName("Compare TLR for UML/PCM")
+    @ParameterizedTest(name = "Evaluating {0}")
+    @EnumSource(value = Project.class)
+    @Order(2)
+    void compareTraceLinkRecoveryForPcmAndUmlIT(Project project) {
+        var ardocoRunForPCM = getArDoCoResult(project);
         Assertions.assertNotNull(ardocoRunForPCM);
-        var ardocoRunForUML = ArDoCo.runAndSave(project.name().toLowerCase(), project.getTextFile(), project.getModelFile(ArchitectureModelType.UML),
-                ArchitectureModelType.UML, null, additionalConfigs, outputDir);
+
+        var arDoCo = ArDoCo.getInstance(name);
+        var preprocessingData = ardocoRunForPCM.getPreprocessingData();
+        DataRepositoryHelper.putPreprocessingData(arDoCo.getDataRepository(), preprocessingData);
+        File umlModelFile = project.getModelFile(ArchitectureModelType.UML);
+        var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigs, outputDir);
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
         var umlTLs = ardocoRunForUML.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
 
-        Assertions.assertEquals(pcmTLs.size(), umlTLs.size());
-        Assertions.assertIterableEquals(pcmTLs, umlTLs);
+        Assertions.assertAll( //
+                () -> Assertions.assertEquals(pcmTLs.size(), umlTLs.size()), //
+                () -> Assertions.assertIterableEquals(pcmTLs, umlTLs) //
+        );
     }
 
     private void checkResults(Project project, ArDoCoResult arDoCoResult) {

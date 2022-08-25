@@ -19,6 +19,7 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
@@ -41,7 +42,7 @@ public final class ArDoCo extends Pipeline {
     private final String projectName;
 
     /**
-     * Default constructor to adhere simplify tests that do not care about the project's name
+     * Default constructor to adhere simplify tests that do not care about the project's name. Additionally, it is needed for testing the configurations
      */
     private ArDoCo() {
         this("");
@@ -59,29 +60,18 @@ public final class ArDoCo extends Pipeline {
         initDataRepository();
     }
 
+    public static ArDoCo getInstance(String projectName) {
+        return new ArDoCo(projectName);
+    }
+
     private void initDataRepository() {
         ProjectPipelineData projectPipelineData = new ProjectPipelineDataImpl(projectName);
         getDataRepository().addData(ProjectPipelineData.ID, projectPipelineData);
     }
 
-    /**
-     * Return the project's name
-     * 
-     * @return the project's name
-     */
-    public String getProjectName() {
-        return projectName;
-    }
-
     @Override
     public DataRepository getDataRepository() {
         return super.getDataRepository();
-    }
-
-    @Override
-    public void run() {
-        classLogger.info("Starting ArDoCo");
-        super.run();
     }
 
     /**
@@ -94,7 +84,8 @@ public final class ArDoCo extends Pipeline {
      * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
     public static ArDoCoResult run(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModel, File additionalConfigs) {
-        return runAndSave(name, inputText, inputArchitectureModel, architectureModel, null, additionalConfigs, null);
+        ArDoCo arDoCo = getInstance(name);
+        return arDoCo.runAndSave(name, inputText, inputArchitectureModel, architectureModel, null, additionalConfigs, null);
     }
 
     /**
@@ -109,48 +100,44 @@ public final class ArDoCo extends Pipeline {
      * @param outputDir              File that represents the output directory where the results should be written to
      * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
-    public static ArDoCoResult runAndSave(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
-            File inputCodeModel, File additionalConfigsFile, File outputDir) {
-
+    public ArDoCoResult runAndSave(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCodeModel,
+            File additionalConfigsFile, File outputDir) {
         classLogger.info("Loading additional configs ..");
         var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
 
         classLogger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
 
-        ArDoCo arDoCo;
         try {
-            arDoCo = defineArDoCo(name, inputText, inputArchitectureModel, architectureModelType, inputCodeModel, additionalConfigs);
+            definePipeline(inputText, inputArchitectureModel, architectureModelType, inputCodeModel, additionalConfigs);
         } catch (IOException e) {
             classLogger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             return null;
         }
-        arDoCo.run();
+        this.run();
 
         // save step
         var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
-        ArDoCoResult arDoCoResult = new ArDoCoResult(arDoCo.getDataRepository());
+        ArDoCoResult arDoCoResult = new ArDoCoResult(this.getDataRepository());
         saveOutput(name, outputDir, arDoCoResult);
 
         classLogger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
         return arDoCoResult;
     }
 
-    static ArDoCo defineArDoCo(String projectName, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
-            File inputCodeModel, Map<String, String> additionalConfigs) throws IOException {
-        var arDoCo = new ArDoCo(projectName);
-        var dataRepository = arDoCo.getDataRepository();
+    public void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCodeModel,
+            Map<String, String> additionalConfigs) throws IOException {
+        var dataRepository = this.getDataRepository();
 
-        arDoCo.addPipelineStep(getTextProvider(inputText, additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
+        this.addPipelineStep(getTextProvider(inputText, additionalConfigs, this.getDataRepository()));
+        this.addPipelineStep(getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
         if (inputCodeModel != null) {
-            arDoCo.addPipelineStep(getJavaModelProvider(inputCodeModel, dataRepository));
+            this.addPipelineStep(getJavaModelProvider(inputCodeModel, dataRepository));
         }
-        arDoCo.addPipelineStep(getTextExtraction(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(getRecommendationGenerator(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(getConnectionGenerator(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(getInconsistencyChecker(additionalConfigs, dataRepository));
-        return arDoCo;
+        this.addPipelineStep(getTextExtraction(additionalConfigs, dataRepository));
+        this.addPipelineStep(getRecommendationGenerator(additionalConfigs, dataRepository));
+        this.addPipelineStep(getConnectionGenerator(additionalConfigs, dataRepository));
+        this.addPipelineStep(getInconsistencyChecker(additionalConfigs, dataRepository));
     }
 
     private static void saveOutput(String name, File outputDir, ArDoCoResult arDoCoResult) {
@@ -262,7 +249,7 @@ public final class ArDoCo extends Pipeline {
      * @return a CoreNLPProvider with the provided text read in
      * @throws FileNotFoundException if the text file cannot be found
      */
-    public static CoreNLPProvider getTextProvider(File inputText, Map<String, String> additionalConfigs, DataRepository dataRepository)
+    public static TextProvider getTextProvider(File inputText, Map<String, String> additionalConfigs, DataRepository dataRepository)
             throws FileNotFoundException {
         var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
         textProvider.applyConfiguration(additionalConfigs);
