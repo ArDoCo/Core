@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,9 +36,10 @@ public class ProjectEvalResult {
     private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
-
+    private String name;
     private File inputText;
     private File inputModel;
+    private File inputCodeModel = null;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
@@ -70,11 +70,14 @@ public class ProjectEvalResult {
     void evaluateStates(Project project) throws IOException {
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
+        name = project.name().toLowerCase();
+        ArDoCo arDoCo = ArDoCo.getInstance(name);
 
-        // execute pipeline
-        ArDoCoResult arDoCoResult = ArDoCo.runAndSave(project.name().toLowerCase(), inputText, inputModel, ArchitectureModelType.PCM, null, additionalConfigs,
-                outputDir);
-        Assertions.assertNotNull(arDoCoResult);
+        var arDoCoResult = DATA_MAP.get(project);
+        if (arDoCoResult == null) {
+            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigs, outputDir);
+            DATA_MAP.put(project, arDoCoResult);
+        }
 
         writeDetailedOutput(project, arDoCoResult);
     }
