@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -20,6 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 public class TextStateFile {
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
+    private static DecimalFormat df = new DecimalFormat("#.####", new DecimalFormatSymbols(Locale.US));
     private static final String VALUE_SEPARATOR = "|";
     private static final String LIST_SEPARATOR = ",";
 
@@ -50,9 +54,9 @@ public class TextStateFile {
 
             builder.append(nounMapping.getReference());
             builder.append(VALUE_SEPARATOR);
-            builder.append(nounMapping.getProbabilityForKind(MappingKind.NAME));
+            builder.append(df.format(nounMapping.getProbabilityForKind(MappingKind.NAME)));
             builder.append(VALUE_SEPARATOR);
-            builder.append(nounMapping.getProbabilityForKind(MappingKind.TYPE));
+            builder.append(df.format(nounMapping.getProbabilityForKind(MappingKind.TYPE)));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getSurfaceForms()));
             builder.append(VALUE_SEPARATOR);
@@ -102,8 +106,8 @@ public class TextStateFile {
             if (order >= 0) {
 
                 String ref = currentNounMapping.getReference();
-                String nameProb = String.valueOf(currentNounMapping.getProbabilityForKind(MappingKind.NAME));
-                String typeProb = String.valueOf(currentNounMapping.getProbabilityForKind(MappingKind.TYPE));
+                String nameProb = df.format(currentNounMapping.getProbabilityForKind(MappingKind.NAME));
+                String typeProb = df.format(currentNounMapping.getProbabilityForKind(MappingKind.TYPE));
                 String surfaceForms = String.join(LIST_SEPARATOR, currentNounMapping.getSurfaceForms());
                 String words = String.join(LIST_SEPARATOR, currentNounMapping.getWords().collect(Word::getText).toSet());
                 ImmutableSet<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName());
