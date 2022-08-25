@@ -88,6 +88,12 @@ public class TextStateFile {
             String line = lines.get(i);
             var parts = line.split(Pattern.quote(VALUE_SEPARATOR), -1);
 
+            if (i - valueStart >= currentNounMappings.size()) {
+                missingNounMappings.add(line);
+                missingNounMappings.add(LINE_SEPARATOR);
+                continue;
+            }
+
             var currentNounMapping = currentNounMappings.get(i - valueStart);
             int order = parts[0].compareTo(currentNounMapping.getReference());
 
