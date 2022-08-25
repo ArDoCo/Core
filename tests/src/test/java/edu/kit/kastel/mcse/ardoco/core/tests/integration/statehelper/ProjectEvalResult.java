@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +79,28 @@ public class ProjectEvalResult {
         writeDetailedOutput(project, arDoCoResult);
     }
 
+    private static void writeTextStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
+        String name = project.name().toLowerCase();
+        var evalDir = Path.of(OUTPUT).resolve(name);
+        try {
+            Files.createDirectories(evalDir);
+        } catch (IOException e) {
+            logger.warn("Could not create directories.", e);
+        }
+
+        var currentPath = evalDir.resolve("textState_" + name + ".txt");
+        var previousPath = evalDir.resolve("textState_" + name + "_previous" + ".txt");
+        var diffPath = evalDir.resolve("textState_" + name + "_diff" + ".txt");
+        try {
+            Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            TextStateFile.write(currentPath, arDoCoResult);
+            Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        TextStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult);
+    }
+
     private static void writeTextState(Project project, ArDoCoResult arDoCoResult) throws IOException {
         String name = project.name().toLowerCase();
         var evalDir = Path.of(OUTPUT).resolve(name);
@@ -86,7 +109,7 @@ public class ProjectEvalResult {
         } catch (IOException e) {
             logger.warn("Could not create directories.", e);
         }
-        TextStateFile.save(evalDir.resolve("textState_" + name + ".txt"), arDoCoResult);
+        TextStateFile.write(evalDir.resolve("textState_" + name + ".txt"), arDoCoResult);
     }
 
     private static void writeRecommendationStates(Project project, ArDoCoResult arDoCoResult) throws IOException {
@@ -115,7 +138,7 @@ public class ProjectEvalResult {
             logger.warn("Could not create directories.", e);
         }
 
-        writeTextState(project, arDoCoResult);
+        writeTextStateDiff(project, arDoCoResult);
         writeRecommendationStates(project, arDoCoResult);
     }
 
