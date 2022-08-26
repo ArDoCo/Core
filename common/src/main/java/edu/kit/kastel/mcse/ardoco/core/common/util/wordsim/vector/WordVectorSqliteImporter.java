@@ -143,7 +143,7 @@ public class WordVectorSqliteImporter {
                     continue;
                 }
 
-                var parts = line.split(" ");
+                var parts = line.split(" ", -1);
                 if (parts.length - 1 != this.dimension) {
                     throw new IllegalStateException("importer has read line with invalid vector dimension: \"" + line + "\"");
                 }

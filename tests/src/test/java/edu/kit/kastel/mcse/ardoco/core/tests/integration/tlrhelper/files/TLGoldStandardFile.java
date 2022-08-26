@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Locale;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
@@ -18,7 +17,7 @@ public class TLGoldStandardFile {
     }
 
     public static List<TestLink> loadLinks(Project project) throws IOException {
-        Path path = Path.of(String.format("src/test/resources/benchmark/%s/goldstandard.csv", project.name().toLowerCase(Locale.ROOT)));
+        Path path = project.getGoldStandardFile().toPath();
         List<String> lines = Files.readAllLines(path);
 
         return lines.stream()

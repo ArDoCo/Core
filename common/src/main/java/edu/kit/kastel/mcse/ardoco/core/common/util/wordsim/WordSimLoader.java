@@ -3,9 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class WordSimLoader {
      *
      * @return a list of word similarity measures
      */
-    public static List<WordSimMeasure> loadUsingProperties() {
+    public static ImmutableList<WordSimMeasure> loadUsingProperties() {
         try {
             var list = new ArrayList<WordSimMeasure>();
 
@@ -66,10 +66,10 @@ public class WordSimLoader {
                 }
             }
 
-            return list;
+            return Lists.immutable.withAll(list);
         } catch (Exception e) {
             LOGGER.error("Failed to load word similarity measures", e);
-            return Collections.emptyList();
+            return Lists.immutable.empty();
         }
     }
 

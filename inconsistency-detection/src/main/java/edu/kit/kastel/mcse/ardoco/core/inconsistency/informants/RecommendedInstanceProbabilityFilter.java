@@ -45,6 +45,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     /**
      * Filter RecommendedInstances based on various heuristics. First, filter unlikely ones (low probability).
      */
+    @Override
     protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
         var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance>empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();

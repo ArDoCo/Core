@@ -1,18 +1,10 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import static edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo.runAndSave;
-
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +17,7 @@ public final class ArDoCoCLI {
     private static final String CMD_HELP = "h";
     private static final String CMD_NAME = "n";
     private static final String CMD_MODEL_ARCHITECTURE = "ma";
+    private static final String CMD_MODEL_ARCHITECTURE_TYPE = "mt";
     private static final String CMD_MODEL_CODE = "mc";
     private static final String CMD_TEXT = "t";
     private static final String CMD_CONF = "c";
@@ -49,27 +42,36 @@ public final class ArDoCoCLI {
         // -n : Name of the Run
         // -ma : Model Path (Architecture)
         // -mc : Model Path (Java Code)
+        // -mt : Model Type (PCM or UML)
         // -t : Path to Text File
         // -c : Configuration Path (only property overrides)
         // -o : Output folder
         // -d : Diagram Folder (optional)
 
+        ArDoCoRunner arDoCoRunner = parseCommandLineAndBuildArDoCoRunner(args);
+        if (arDoCoRunner == null)
+            return;
+        arDoCoRunner.runArDoCo();
+    }
+
+    static ArDoCoRunner parseCommandLineAndBuildArDoCoRunner(String[] args) {
         CommandLine cmd;
         try {
             cmd = parseCommandLine(args);
         } catch (IllegalArgumentException | ParseException e) {
             logger.error(e.getMessage());
             printUsage();
-            return;
+            return null;
         }
 
         if (cmd.hasOption(CMD_HELP)) {
             printUsage();
-            return;
+            return null;
         }
 
         File inputText;
         File inputModelArchitecture;
+        ArchitectureModelType inputArchitectureModelType = ArchitectureModelType.PCM;
         File inputModelCode;
         File additionalConfigs = null;
         File outputDir;
@@ -77,7 +79,11 @@ public final class ArDoCoCLI {
 
         if (!cmd.hasOption(CMD_TEXT)) {
             printUsage();
-            return;
+            return null;
+        }
+
+        if (cmd.hasOption(CMD_MODEL_ARCHITECTURE_TYPE)) {
+            inputArchitectureModelType = ArchitectureModelType.valueOf(cmd.getOptionValue(CMD_MODEL_ARCHITECTURE_TYPE));
         }
 
         try {
@@ -94,20 +100,17 @@ public final class ArDoCoCLI {
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
-            return;
+            return null;
         }
 
         var name = cmd.getOptionValue(CMD_NAME);
 
         if (!name.matches("\\w+")) {
             logger.error("Name does not match [A-Za-z0-9_]+");
-            return;
+            return null;
         }
-        try {
-            runAndSave(name, inputText, inputModelArchitecture, inputModelCode, additionalConfigs, outputDir, diagramDir);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+
+        return new ArDoCoRunner(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, diagramDir, additionalConfigs, outputDir, name);
     }
 
     private static void printUsage() {
@@ -165,6 +168,11 @@ public final class ArDoCoCLI {
 
         opt = new Option(CMD_MODEL_ARCHITECTURE, "model-architecture", true, "path to the architecture model");
         opt.setRequired(true);
+        opt.setType(String.class);
+        options.addOption(opt);
+
+        opt = new Option(CMD_MODEL_ARCHITECTURE_TYPE, "archtype", true, "type of the architecture model (PCM or UML)");
+        opt.setRequired(false);
         opt.setType(String.class);
         options.addOption(opt);
 

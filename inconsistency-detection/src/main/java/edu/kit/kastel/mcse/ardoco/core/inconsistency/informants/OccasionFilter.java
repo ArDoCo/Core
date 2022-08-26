@@ -27,6 +27,7 @@ public class OccasionFilter extends Filter {
         super("OccasionFilter", dataRepository);
     }
 
+    @Override
     protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
         var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance>empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();

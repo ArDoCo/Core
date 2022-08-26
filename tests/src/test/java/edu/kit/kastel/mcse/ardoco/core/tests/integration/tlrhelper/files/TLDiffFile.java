@@ -6,14 +6,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
@@ -24,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 public class TLDiffFile {
 
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("+##0.00%;-##0.00%");
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private TLDiffFile() {
@@ -49,7 +46,7 @@ public class TLDiffFile {
 
         var builder = new StringBuilder();
 
-        builder.append("Time of evaluation: `").append(DATE_FORMATTER.format(LocalDateTime.now(ZoneId.systemDefault()))).append("`");
+        builder.append("Time of evaluation: `").append(CommonUtilities.getCurrentTimeAsString()).append("`");
         builder.append(LINE_SEPARATOR);
 
         // Append average differences in precision, recall, f1

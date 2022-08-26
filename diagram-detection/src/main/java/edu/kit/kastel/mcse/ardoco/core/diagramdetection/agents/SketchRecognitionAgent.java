@@ -12,8 +12,8 @@ import java.util.List;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
-import edu.kit.kastel.lissa.swa.api.sketches.SketchRecognitionResult;
-import edu.kit.kastel.lissa.swa.documentation.SketchRecognitionService;
+import edu.kit.kastel.lissa.swa.documentation.recognition.SketchRecognitionService;
+import edu.kit.kastel.lissa.swa.documentation.recognition.model.SketchRecognitionResult;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagram.DiagramDetectionState;
 

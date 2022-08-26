@@ -15,7 +15,7 @@
     </dependency>
     <dependency>
       <groupId>io.github.lissa-approach.lissa-core</groupId>
-      <artifactId>swa.documentation</artifactId>
+      <artifactId>recognition</artifactId>
       <version>0.3-SNAPSHOT</version>
     </dependency>
   </dependencies>

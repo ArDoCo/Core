@@ -4,41 +4,44 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 import java.io.File;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.
  */
 public enum Project {
     MEDIASTORE(//
-            "src/test/resources/benchmark/mediastore/original_model/ms.repository", //
+            "src/test/resources/benchmark/mediastore/pcm/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             null, //
             new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.0, .0, .246)//
+            new EvaluationResults(.000, .000, .256) //
     ), //
     TEAMMATES( //
-            "src/test/resources/benchmark/teammates/original_model/teammates.repository", //
+            "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             "src/test/resources/diagrams/teammates", //
             new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.0, .0, .222)//
+            new EvaluationResults(.000, .000, .222) //
     ), //
     TEASTORE( //
-            "src/test/resources/benchmark/teastore/original_model/teastore.repository", //
+            "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             null, //
             new EvaluationResults(.999, .713, .832), //
-            new EvaluationResults(.0, .0, .250)), //
+            new EvaluationResults(.000, .000, .250) //
+    ), //
     BIGBLUEBUTTON( //
-            "src/test/resources/benchmark/bigbluebutton/original_model/bbb.repository", //
+            "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             "src/test/resources/diagrams/bbb", //
             new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.0, .0, .272));
+            new EvaluationResults(.000, .000, .272) //
+    );
 
     private final String model;
     private final String textFile;
@@ -64,6 +67,13 @@ public enum Project {
         return new File(model);
     }
 
+    public File getModelFile(ArchitectureModelType modelType) {
+        return switch (modelType) {
+        case PCM -> getModelFile();
+        case UML -> new File(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+        };
+    }
+
     /**
      * @return the File that represents the text for this project
      */
@@ -79,13 +89,8 @@ public enum Project {
     }
 
     /**
-     * @param pcmModel the model connector (pcm)
-     * @return the {@link GoldStandard} for this project
+     * @return the directory that contains the diagrams for a project (or {@code null}).
      */
-    public GoldStandard getGoldStandard(ModelConnector pcmModel) {
-        return new GoldStandard(getGoldStandardFile(), pcmModel);
-    }
-
     public File getDiagramDir() {
         if (diagramDir == null)
             return null;
@@ -93,6 +98,14 @@ public enum Project {
         if (file.exists() && file.isDirectory())
             return file;
         return null;
+    }
+
+    /**
+     * @param pcmModel the model connector (pcm)
+     * @return the {@link GoldStandard} for this project
+     */
+    public GoldStandard getGoldStandard(ModelConnector pcmModel) {
+        return new GoldStandard(getGoldStandardFile(), pcmModel);
     }
 
     /**
