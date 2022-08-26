@@ -27,6 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.TextS
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 public class ProjectEvalResult {
+    private static final boolean OVERWRITE_PREVIOUS = false;
     private static final Logger logger = LoggerFactory.getLogger(ProjectEvalResult.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
@@ -94,11 +95,16 @@ public class ProjectEvalResult {
         var currentPath = evalDir.resolve("textState_" + name + ".txt");
         var previousPath = evalDir.resolve("textState_" + name + "_previous" + ".txt");
         var diffPath = evalDir.resolve("textState_" + name + "_diff" + ".txt");
-        try {
-            Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            TextStateFile.write(currentPath, arDoCoResult);
-            Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+
+        if (OVERWRITE_PREVIOUS) {
+            try {
+                Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                TextStateFile.write(currentPath, arDoCoResult);
+                Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } else {
+            assert Files.exists(previousPath);
         }
 
         TextStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult);
