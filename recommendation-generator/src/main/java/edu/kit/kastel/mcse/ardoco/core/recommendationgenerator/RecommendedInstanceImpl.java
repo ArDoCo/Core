@@ -6,6 +6,7 @@ import java.util.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
@@ -243,6 +244,11 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
             return false;
         }
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
+    }
+
+    @Override
+    public ImmutableSet<Claimant> getClaimants() {
+        return this.internalConfidence.getClaimants();
     }
 
 }
