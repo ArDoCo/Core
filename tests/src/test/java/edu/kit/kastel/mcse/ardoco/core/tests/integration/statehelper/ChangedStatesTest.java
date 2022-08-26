@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,9 +27,9 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.Recom
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.TextStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
-public class ProjectEvalResult {
-    private static final boolean OVERWRITE_PREVIOUS = false;
-    private static final Logger logger = LoggerFactory.getLogger(ProjectEvalResult.class);
+public class ChangedStatesTest {
+    private static final boolean OVERWRITE_PREVIOUS = true;
+    private static final Logger logger = LoggerFactory.getLogger(ChangedStatesTest.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
@@ -37,10 +38,7 @@ public class ProjectEvalResult {
     private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
-    private String name;
-    private File inputText;
-    private File inputModel;
-    private File inputCodeModel = null;
+    private final File inputCodeModel = null;
     private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
@@ -65,13 +63,13 @@ public class ProjectEvalResult {
     // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
     // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
     // However, make sure to revert this before you commit and push!
-    @DisplayName("Evaluate TLR (Text-based)")
-    @ParameterizedTest(name = "Evaluating {0} (Text)")
+    @DisplayName("Evaluate Changed States (Text-based)")
+    @ParameterizedTest(name = "Evaluating {0} (Changed States)")
     @EnumSource(value = Project.class)
     void evaluateStates(Project project) throws IOException {
-        inputModel = project.getModelFile();
-        inputText = project.getTextFile();
-        name = project.name().toLowerCase();
+        File inputModel = project.getModelFile();
+        File inputText = project.getTextFile();
+        String name = project.name().toLowerCase();
         ArDoCo arDoCo = ArDoCo.getInstance(name);
 
         var arDoCoResult = DATA_MAP.get(project);
@@ -83,7 +81,7 @@ public class ProjectEvalResult {
         writeDetailedOutput(project, arDoCoResult);
     }
 
-    private static void writeTextStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
+    private static boolean writeTextStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
         String name = project.name().toLowerCase();
         var evalDir = Path.of(OUTPUT).resolve(name).resolve("textState");
         try {
@@ -107,11 +105,13 @@ public class ProjectEvalResult {
             assert Files.exists(previousPath);
         }
 
-        TextStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult);
+        return TextStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult);
     }
 
-    private static void writeRecommendationStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
+    private static boolean writeRecommendationStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
         String name = project.name().toLowerCase();
+
+        boolean result = true;
 
         for (var modelId : arDoCoResult.getModelIds()) {
 
@@ -132,9 +132,11 @@ public class ProjectEvalResult {
                 RecommendationStateFile.write(currentPath, arDoCoResult, metaModel);
                 Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
             }
-
-            RecommendationStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult, metaModel);
+            var tempResult = RecommendationStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult, metaModel);
+            if (!tempResult)
+                result = tempResult;
         }
+        return result;
     }
 
     private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) throws IOException {
@@ -146,8 +148,8 @@ public class ProjectEvalResult {
             logger.warn("Could not create directories.", e);
         }
 
-        writeTextStateDiff(project, arDoCoResult);
-        writeRecommendationStateDiff(project, arDoCoResult);
+        Assertions.assertTrue(writeTextStateDiff(project, arDoCoResult));
+        Assertions.assertTrue(writeRecommendationStateDiff(project, arDoCoResult));
     }
 
 }

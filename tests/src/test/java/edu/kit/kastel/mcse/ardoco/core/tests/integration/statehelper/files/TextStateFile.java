@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 public class TextStateFile {
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
-    private static DecimalFormat df = new DecimalFormat("#.####", new DecimalFormatSymbols(Locale.US));
+    private static final DecimalFormat df = new DecimalFormat("#.####", new DecimalFormatSymbols(Locale.US));
     private static final String VALUE_SEPARATOR = "|";
     private static final String LIST_SEPARATOR = ",";
 
@@ -70,7 +70,7 @@ public class TextStateFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    public static void writeDiff(Path sourceFile, Path targetFile, Path diffFile, ArDoCoResult arDoCoResult) throws IOException {
+    public static boolean writeDiff(Path sourceFile, Path targetFile, Path diffFile, ArDoCoResult arDoCoResult) throws IOException {
 
         var builder = new StringBuilder();
 
@@ -113,16 +113,17 @@ public class TextStateFile {
                 ImmutableList<String> words = currentNounMapping.getWords().collect(Word::getText).toSet().toImmutableList();
                 ImmutableSet<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName());
 
+                String currentLine = String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String.join(
+                        LIST_SEPARATOR, claimants));
                 if (order == 0) {
 
                     if (!parts[1].equals(nameProb) ||//
                             !parts[2].equals(typeProb) ||//
                             !parts[3].equals(surfaceForms) ||//
-                            !TextStateFile.wordsEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), words) ||//
-                            !TextStateFile.claimantsEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
+                            TextStateFile.wordsNotEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), words) ||//
+                            TextStateFile.claimantsNotEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
-                        differentNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String
-                                .join(LIST_SEPARATOR, claimants)));
+                        differentNounMappings.add(currentLine);
                         differentNounMappings.add(LINE_SEPARATOR);
                         differentNounMappings.add("instead of" + LINE_SEPARATOR);
                         differentNounMappings.add(line);
@@ -131,8 +132,7 @@ public class TextStateFile {
                     }
 
                 } else {
-                    additionalNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String
-                            .join(LIST_SEPARATOR, claimants)));
+                    additionalNounMappings.add(currentLine);
                     additionalNounMappings.add(LINE_SEPARATOR);
                 }
             } else {
@@ -157,12 +157,14 @@ public class TextStateFile {
         Files.writeString(diffFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         TextStateFile.write(targetFile, arDoCoResult);
+
+        return missingNounMappings.size() == 0 && differentNounMappings.size() == 0 && additionalNounMappings.size() == 0;
     }
 
-    public static boolean wordsEqual(String[] a1, ImmutableList<String> list2) {
+    public static boolean wordsNotEqual(String[] a1, ImmutableList<String> list2) {
 
         if (a1.length == 1 && a1[0].equals("") && list2.size() == 0) {
-            return true;
+            return false;
         }
 
         MutableList<String> list1 = Lists.mutable.withAll(Arrays.asList(a1));
@@ -175,19 +177,19 @@ public class TextStateFile {
                 if (list2.select(e -> !removed.contains(e) && e.equals(element)).size() == 1) {
                     removed.add(element);
                 } else {
-                    return false;
+                    return true;
                 }
             }
         }
 
-        return removed.size() == list1.size() && removed.size() == list2.size();
+        return removed.size() != list1.size() || removed.size() != list2.size();
 
     }
 
-    public static boolean claimantsEqual(String[] a1, MutableList<String> list2) {
+    public static boolean claimantsNotEqual(String[] a1, MutableList<String> list2) {
 
         if (a1.length == 0 && list2.size() == 0) {
-            return true;
+            return false;
         }
 
         MutableList<String> list1 = Lists.mutable.withAll(Arrays.asList(a1));
@@ -200,12 +202,12 @@ public class TextStateFile {
                 if (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
                     removed.add(element);
                 } else {
-                    return false;
+                    return true;
                 }
             }
         }
 
-        return removed.size() == list1.size() && removed.size() == list2.size();
+        return removed.size() != list1.size() || removed.size() != list2.size();
     }
 
 }

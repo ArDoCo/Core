@@ -26,7 +26,7 @@ public class RecommendationStateFile {
     private static final String VALUE_SEPARATOR = "|";
     private static final String LIST_SEPARATOR = ",";
 
-    private static DecimalFormat df = new DecimalFormat("#.####", new DecimalFormatSymbols(Locale.US));
+    private static final DecimalFormat df = new DecimalFormat("#.####", new DecimalFormatSymbols(Locale.US));
 
     private RecommendationStateFile() {
         throw new IllegalAccessError("This constructor should not be called!");
@@ -73,10 +73,7 @@ public class RecommendationStateFile {
 
     }
 
-    public static void writeDiff(Path sourceFile, Path targetFile, Path diffFile, ArDoCoResult arDoCoResult, Metamodel metaModel) throws IOException {
-
-        Locale locale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
+    public static boolean writeDiff(Path sourceFile, Path targetFile, Path diffFile, ArDoCoResult arDoCoResult, Metamodel metaModel) throws IOException {
 
         var builder = new StringBuilder();
 
@@ -124,15 +121,16 @@ public class RecommendationStateFile {
                 ImmutableList<String> types = currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
+                String currentLine = String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR,
+                        types), String.join(LIST_SEPARATOR, claimants));
                 if (nameOrder == 0 && typeOrder == 0) {
 
                     if (!parts[2].equals(probability) ||//
-                            !TextStateFile.wordsEqual(parts[3].split(Pattern.quote(LIST_SEPARATOR), -1), names) ||//
-                            !TextStateFile.wordsEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), types) ||//
-                            !TextStateFile.claimantsEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
+                            TextStateFile.wordsNotEqual(parts[3].split(Pattern.quote(LIST_SEPARATOR), -1), names) ||//
+                            TextStateFile.wordsNotEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), types) ||//
+                            TextStateFile.claimantsNotEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
-                        differentRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(
-                                LIST_SEPARATOR, types), String.join(LIST_SEPARATOR, claimants)));
+                        differentRecommendations.add(currentLine);
                         differentRecommendations.add(LINE_SEPARATOR);
                         differentRecommendations.add("instead of" + LINE_SEPARATOR);
                         differentRecommendations.add(line);
@@ -141,8 +139,7 @@ public class RecommendationStateFile {
                     }
 
                 } else if (nameOrder > 0 || typeOrder > 0) {
-                    additionalRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(
-                            LIST_SEPARATOR, types), String.join(LIST_SEPARATOR, claimants)));
+                    additionalRecommendations.add(currentLine);
                     additionalRecommendations.add(LINE_SEPARATOR);
                 } else {
                     missingRecommendations.add(line);
@@ -171,7 +168,7 @@ public class RecommendationStateFile {
 
         RecommendationStateFile.write(targetFile, arDoCoResult, metaModel);
 
-        Locale.setDefault(locale);
+        return missingRecommendations.size() == 0 && differentRecommendations.size() == 0 && additionalRecommendations.size() == 0;
     }
 
 }
