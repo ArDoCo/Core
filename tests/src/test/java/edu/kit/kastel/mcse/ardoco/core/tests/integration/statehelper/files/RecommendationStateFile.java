@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 
@@ -119,19 +120,19 @@ public class RecommendationStateFile {
                 int typeOrder = parts[1].compareTo(type);
 
                 String probability = df.format(currentRecommendedInstance.getProbability());
-                String names = String.join(LIST_SEPARATOR, currentRecommendedInstance.getNameMappings().collect(NounMapping::getReference));
-                String types = String.join(LIST_SEPARATOR, currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference));
+                ImmutableList<String> names = currentRecommendedInstance.getNameMappings().collect(NounMapping::getReference).toSet().toImmutableList();
+                ImmutableList<String> types = currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 if (nameOrder == 0 && typeOrder == 0) {
 
                     if (!parts[2].equals(probability) ||//
-                            !parts[3].equals(names) ||//
-                            !parts[4].equals(types) ||//
+                            !TextStateFile.wordsEqual(parts[3].split(Pattern.quote(LIST_SEPARATOR), -1), names) ||//
+                            !TextStateFile.wordsEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), types) ||//
                             !TextStateFile.claimantsEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
-                        differentRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, names, types, String.join(LIST_SEPARATOR,
-                                claimants)));
+                        differentRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(
+                                LIST_SEPARATOR, types), String.join(LIST_SEPARATOR, claimants)));
                         differentRecommendations.add(LINE_SEPARATOR);
                         differentRecommendations.add("instead of" + LINE_SEPARATOR);
                         differentRecommendations.add(line);
@@ -140,7 +141,8 @@ public class RecommendationStateFile {
                     }
 
                 } else if (nameOrder > 0 || typeOrder > 0) {
-                    additionalRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, names, types, String.join(LIST_SEPARATOR, claimants)));
+                    additionalRecommendations.add(String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(
+                            LIST_SEPARATOR, types), String.join(LIST_SEPARATOR, claimants)));
                     additionalRecommendations.add(LINE_SEPARATOR);
                 } else {
                     missingRecommendations.add(line);

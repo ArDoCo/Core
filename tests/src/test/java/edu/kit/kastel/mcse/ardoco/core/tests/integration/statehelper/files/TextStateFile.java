@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 
@@ -60,7 +61,7 @@ public class TextStateFile {
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getSurfaceForms()));
             builder.append(VALUE_SEPARATOR);
-            builder.append(String.join(LIST_SEPARATOR, nounMapping.getWords().collect(Word::getText).toSet()));
+            builder.append(String.join(LIST_SEPARATOR, nounMapping.getWords().collect(Word::getText).toSet().toImmutableList()));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getClaimants().collect(c -> c.getClass().getSimpleName())));
             builder.append(LINE_SEPARATOR);
@@ -109,7 +110,7 @@ public class TextStateFile {
                 String nameProb = df.format(currentNounMapping.getProbabilityForKind(MappingKind.NAME));
                 String typeProb = df.format(currentNounMapping.getProbabilityForKind(MappingKind.TYPE));
                 String surfaceForms = String.join(LIST_SEPARATOR, currentNounMapping.getSurfaceForms());
-                String words = String.join(LIST_SEPARATOR, currentNounMapping.getWords().collect(Word::getText).toSet());
+                ImmutableList<String> words = currentNounMapping.getWords().collect(Word::getText).toSet().toImmutableList();
                 ImmutableSet<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 if (order == 0) {
@@ -117,11 +118,11 @@ public class TextStateFile {
                     if (!parts[1].equals(nameProb) ||//
                             !parts[2].equals(typeProb) ||//
                             !parts[3].equals(surfaceForms) ||//
-                            !parts[4].equals(words) ||//
+                            !TextStateFile.wordsEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), words) ||//
                             !TextStateFile.claimantsEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
-                        differentNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, String.join(LIST_SEPARATOR,
-                                claimants)));
+                        differentNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String
+                                .join(LIST_SEPARATOR, claimants)));
                         differentNounMappings.add(LINE_SEPARATOR);
                         differentNounMappings.add("instead of" + LINE_SEPARATOR);
                         differentNounMappings.add(line);
@@ -130,8 +131,8 @@ public class TextStateFile {
                     }
 
                 } else {
-                    additionalNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, words, String.join(LIST_SEPARATOR,
-                            claimants)));
+                    additionalNounMappings.add(String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String
+                            .join(LIST_SEPARATOR, claimants)));
                     additionalNounMappings.add(LINE_SEPARATOR);
                 }
             } else {
@@ -158,7 +159,11 @@ public class TextStateFile {
         TextStateFile.write(targetFile, arDoCoResult);
     }
 
-    public static boolean claimantsEqual(String[] a1, MutableList<String> list2) {
+    public static boolean wordsEqual(String[] a1, ImmutableList<String> list2) {
+
+        if (a1.length == 1 && a1[0].equals("") && list2.size() == 0) {
+            return true;
+        }
 
         MutableList<String> list1 = Lists.mutable.withAll(Arrays.asList(a1));
         MutableList<String> removed = Lists.mutable.empty();
@@ -167,7 +172,32 @@ public class TextStateFile {
             if (list2.contains(element)) {
                 removed.add(element);
             } else {
-                if (list2.collect(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
+                if (list2.select(e -> !removed.contains(e) && e.equals(element)).size() == 1) {
+                    removed.add(element);
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return removed.size() == list1.size() && removed.size() == list2.size();
+
+    }
+
+    public static boolean claimantsEqual(String[] a1, MutableList<String> list2) {
+
+        if (a1.length == 0 && list2.size() == 0) {
+            return true;
+        }
+
+        MutableList<String> list1 = Lists.mutable.withAll(Arrays.asList(a1));
+        MutableList<String> removed = Lists.mutable.empty();
+
+        for (var element : list1) {
+            if (list2.contains(element)) {
+                removed.add(element);
+            } else {
+                if (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
                     removed.add(element);
                 } else {
                     return false;
