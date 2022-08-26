@@ -1,11 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
@@ -17,11 +20,11 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
     private final AggregationFunctions confidenceAggregator;
 
-    private List<Pair<Claimant, Double>> agentConfidences;
+    private MutableList<Pair<Claimant, Double>> agentConfidences;
 
     public Confidence(AggregationFunctions confidenceAggregator) {
         this.confidenceAggregator = confidenceAggregator;
-        this.agentConfidences = new ArrayList<>();
+        this.agentConfidences = Lists.mutable.empty();
     }
 
     public Confidence(Claimant claimant, double probability, AggregationFunctions confidenceAggregator) {
@@ -29,14 +32,18 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         this.addAgentConfidence(claimant, probability);
     }
 
-    private Confidence(AggregationFunctions confidenceAggregator, List<Pair<Claimant, Double>> agentConfidence) {
+    private Confidence(AggregationFunctions confidenceAggregator, ImmutableList<Pair<Claimant, Double>> agentConfidence) {
         this(confidenceAggregator);
-        this.agentConfidences = agentConfidence;
+        this.agentConfidences = Lists.mutable.withAll(agentConfidence);
+    }
+
+    public ImmutableSet<Claimant> getClaimants() {
+        return this.agentConfidences.collect(Pair::getOne).toImmutableSet();
     }
 
     @Override
     public Confidence createCopy() {
-        return new Confidence(this.confidenceAggregator, new ArrayList<>(this.agentConfidences));
+        return new Confidence(this.confidenceAggregator, this.agentConfidences.toImmutable());
     }
 
     public void addAgentConfidence(Claimant claimant, double confidence) {

@@ -1,15 +1,12 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
@@ -247,6 +244,11 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
             return false;
         }
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
+    }
+
+    @Override
+    public ImmutableSet<Claimant> getClaimants() {
+        return this.internalConfidence.getClaimants();
     }
 
 }

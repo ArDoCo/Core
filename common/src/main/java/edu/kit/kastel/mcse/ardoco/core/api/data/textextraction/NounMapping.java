@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
@@ -122,6 +123,8 @@ public interface NounMapping extends ICopyable<NounMapping> {
      * @return the coreferences
      */
     ImmutableList<Word> getCoreferences();
+
+    ImmutableSet<Claimant> getClaimants();
 
     /**
      * Creates a new INounMapping that resutls when merging the data from the INounMapping with a given other
