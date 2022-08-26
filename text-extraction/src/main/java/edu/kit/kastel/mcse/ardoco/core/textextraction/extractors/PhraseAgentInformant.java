@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.util.Map;
-import java.util.StringJoiner;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -78,15 +77,6 @@ public class PhraseAgentInformant extends Informant {
                 nounMapping.setAsPhrase(true);
             }
         }
-    }
-
-    private static String createReferenceForTerm(ImmutableList<Word> phrase) {
-        var sortedPhrase = phrase.toSortedListBy(Word::getPosition);
-        var referenceJoiner = new StringJoiner(" ");
-        for (var w : sortedPhrase) {
-            referenceJoiner.add(w.getText());
-        }
-        return referenceJoiner.toString();
     }
 
     private void createNounMappingIfSpecialNamedEntity(Word word, TextState textState) {
