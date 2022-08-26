@@ -87,6 +87,8 @@ public interface NounMapping extends ICopyable<NounMapping> {
 
     AggregationFunctions getLocalAggregationFunction();
 
+    ImmutableSet<Claimant> getClaimants();
+
     /**
      * Adds the kind with probability.
      *

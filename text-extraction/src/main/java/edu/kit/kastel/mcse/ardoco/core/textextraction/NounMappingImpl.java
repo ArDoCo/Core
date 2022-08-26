@@ -47,8 +47,10 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
      */
     private NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms) {
+
         this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(
                 referenceWords), new AtomicBoolean(false));
+
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
     }
@@ -133,6 +135,7 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
 
     @Override
     public NounMapping createCopy() {
+
         return new NounMappingImpl(earliestCreationTime, words.toImmutableSet(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable
                 .withAll(referenceWords), surfaceForms.toImmutable());
     }
@@ -226,8 +229,15 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
     }
 
     @Override
+
     public ImmutableList<String> getSurfaceForms() {
         return this.surfaceForms;
+    }
+
+    @Override
+
+    public ImmutableSet<Claimant> getClaimants() {
+        return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSet();
     }
 
     public static Long earliestCreationTime(NounMapping... nounMappings) {
