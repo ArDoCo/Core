@@ -104,16 +104,7 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
     }
 
     private static String calculateReference(ImmutableList<Word> words) {
-        words.toSortedListBy(Word::getPosition);
-        words.toSortedListBy(Word::getSentenceNo);
-
-        String reference = "";
-
-        for (int i = 0; i < words.size() - 1; i++) {
-            reference += words.get(i).getText() + " ";
-        }
-        reference += words.get(words.size() - 1).getText();
-        return reference;
+        return words.collect(Word::getText).makeString(" ");
     }
 
     @Override
