@@ -72,6 +72,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
         return new ElementWrapper<>(NounMapping.class, nounMapping, NOUN_MAPPING_HASH, NOUN_MAPPING_EQUALS);
     }
 
+    @Override
     public NounMapping mergeNounMappings(NounMapping existingNounMapping, NounMapping disposableNounMapping, ImmutableList<Word> referenceWords,
             String reference, MappingKind mappingKind, Claimant claimant, double probability) {
         /*
@@ -107,10 +108,10 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
         NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(existingNounMapping, disposableNounMapping), mergedWords
                 .toSortedSet()
                 .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(
-                        false));
+                        false), Sets.mutable.empty());
 
-        this.getTextState().removeNounMappingFromState(existingNounMapping);
-        this.getTextState().removeNounMappingFromState(disposableNounMapping);
+        this.getTextState().removeNounMappingFromState(existingNounMapping, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(disposableNounMapping, mergedNounMapping);
 
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 

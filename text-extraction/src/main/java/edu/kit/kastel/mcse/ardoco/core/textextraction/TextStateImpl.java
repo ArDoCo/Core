@@ -100,7 +100,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         }
 
         NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference, new AtomicBoolean(false));
+                reference, new AtomicBoolean(false), Sets.mutable.empty());
         var nounMappings = getNounMappings();
         /*for (Word word : words) {
             assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
@@ -167,6 +167,7 @@ public class TextStateImpl extends AbstractState implements TextState {
                 nounMapping.getKind()));
     }
 
+    @Override
     public NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference) {
 
         assert (nounMapping.getWords().containsAllIterable(referenceWords)) : "The reference words should be contained by the noun mapping";
@@ -200,7 +201,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         ImmutableList<NounMapping> mappings = getNounMappingsByWord(word);
 
         for (NounMapping mapping : mappings) {
-            final ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(mapping::getProbabilityForKind);
+            ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(mapping::getProbabilityForKind);
             if (probabilities.anySatisfy(p -> p <= 0)) {
                 continue;
             }
@@ -305,7 +306,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public void removeNounMapping(NounMapping nounMapping) {
+    public void removeNounMapping(NounMapping nounMapping, NounMapping replacement) {
         PhraseMapping phraseMapping = getPhraseMappingByNounMapping(nounMapping);
 
         var otherNounMappings = getNounMappingsThatBelongToTheSamePhraseMapping(nounMapping);
@@ -314,7 +315,7 @@ public class TextStateImpl extends AbstractState implements TextState {
             var phrases = nounMapping.getPhrases().select(p -> !otherNounMappings.flatCollect(NounMapping::getPhrases).contains(p));
             phrases.forEach(phraseMapping::removePhrase);
         }
-        removeNounMappingFromState(nounMapping);
+        removeNounMappingFromState(nounMapping, replacement);
     }
 
     String calculateNounMappingReference(ImmutableList<Word> referenceWords) {
@@ -337,8 +338,9 @@ public class TextStateImpl extends AbstractState implements TextState {
         this.nounMappings.sortThis(ORDER_NOUNMAPPING);
     }
 
-    void removeNounMappingFromState(NounMapping nounMapping) {
+    void removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {
         this.nounMappings.remove(wrap(nounMapping));
+        nounMapping.onDelete(replacement);
     }
 
     private ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {

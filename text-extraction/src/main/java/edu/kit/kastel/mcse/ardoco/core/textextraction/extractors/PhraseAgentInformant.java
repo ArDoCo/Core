@@ -79,13 +79,14 @@ public class PhraseAgentInformant extends Informant {
         } else {
             for (var nounMapping : similarReferenceNounMappings) {
 
-                textState.removeNounMapping(nounMapping);
+                textState.removeNounMapping(nounMapping, null);
 
                 var newWords = nounMapping.getWords().toSet();
                 newWords.addAllIterable(phrase);
 
                 var termMapping = textState.addNounMapping(newWords.toImmutable(), nounMapping.getDistribution().toMap(), nounMapping.getReferenceWords(),
                         nounMapping.getSurfaceForms(), nounMapping.getReference());
+                nounMapping.onDelete(termMapping);
                 ((NounMappingImpl) termMapping).isDefinedAsTerm().set(true);
             }
         }

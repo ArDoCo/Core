@@ -51,8 +51,10 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
      * Removes a noun mapping from the state.
      *
      * @param nounMapping noun mapping to remove
+     * @param replacement the (optional) future replacement of the noun mapping
+     * @see NounMapping#onDelete(NounMapping)
      */
-    void removeNounMapping(NounMapping nounMapping);
+    void removeNounMapping(NounMapping nounMapping, NounMapping replacement);
 
     /**
      * Returns the noun mapping containing the given word.
