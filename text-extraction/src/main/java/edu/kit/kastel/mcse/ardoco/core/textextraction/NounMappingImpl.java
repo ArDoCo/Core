@@ -27,13 +27,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMappingChangeListener;
 
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
 public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
                               ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference,
-                              @Deprecated AtomicBoolean isDefinedAsTerm) implements NounMapping, Comparable<NounMappingImpl> {
+                              @Deprecated AtomicBoolean isDefinedAsTerm, MutableSet<NounMappingChangeListener> changeListeners) implements NounMapping,
+        Comparable<NounMappingImpl> {
 
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
@@ -49,7 +51,7 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
             ImmutableList<String> surfaceForms) {
 
         this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(
-                referenceWords), new AtomicBoolean(false));
+                referenceWords), new AtomicBoolean(false), Sets.mutable.empty());
 
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
@@ -61,7 +63,7 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
     public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
         this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords),
-                new AtomicBoolean(false));
+                new AtomicBoolean(false), Sets.mutable.empty());
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -71,13 +73,24 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
 
     public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
-        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, reference, new AtomicBoolean(false));
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, reference, new AtomicBoolean(false),
+                Sets.mutable.empty());
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
         this.addKindWithProbability(kind, claimant, probability);
 
+    }
+
+    @Override
+    public void registerChangeListener(NounMappingChangeListener listener) {
+        changeListeners.add(listener);
+    }
+
+    @Override
+    public void onDelete(NounMapping replacement) {
+        changeListeners.forEach(l -> l.onDelete(this, replacement));
     }
 
     @Override
@@ -184,6 +197,7 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
         return probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
     }
 
+    @Override
     public boolean isTerm() {
         return isDefinedAsTerm.get();
     }

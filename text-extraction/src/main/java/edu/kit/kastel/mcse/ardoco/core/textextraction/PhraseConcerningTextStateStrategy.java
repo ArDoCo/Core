@@ -35,6 +35,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         super.setTextState(textState);
     }
 
+    @Override
     public ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {
         return new ElementWrapper<>(NounMapping.class, nounMapping, NOUN_MAPPING_HASH, NOUN_MAPPING_EQUALS);
     }
@@ -61,6 +62,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         return nounMapping;
     }
 
+    @Override
     public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping nounMapping2, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {
         /*
@@ -112,11 +114,11 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
 
         NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(nounMapping, nounMapping2), mergedWords.toSortedSet()
                 .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(
-                        false));
+                        false), Sets.mutable.empty());
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
 
-        this.getTextState().removeNounMappingFromState(nounMapping);
-        this.getTextState().removeNounMappingFromState(nounMapping2);
+        this.getTextState().removeNounMappingFromState(nounMapping, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(nounMapping2, mergedNounMapping);
 
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 

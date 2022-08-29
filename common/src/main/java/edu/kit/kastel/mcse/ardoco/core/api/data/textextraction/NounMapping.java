@@ -119,4 +119,20 @@ public interface NounMapping extends ICopyable<NounMapping> {
     }
 
     boolean isTerm();
+
+    /**
+     * Register a listener that will be notified on certain events.
+     * 
+     * @param listener the listener
+     * @see #onDelete(NounMapping)
+     */
+    void registerChangeListener(NounMappingChangeListener listener);
+
+    /**
+     * Will be invoked during the deletion from a state.
+     * Note: This can be invoked multiple times if the replacement is not available during deletion of the noun mapping
+     *
+     * @param replacement the replacing new noun mapping (or null if none exist)
+     */
+    void onDelete(NounMapping replacement);
 }
