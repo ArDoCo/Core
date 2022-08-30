@@ -23,6 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.ConnectionStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.RecommendationStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.TextStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
@@ -102,7 +103,9 @@ public class ChangedStatesTest {
                 Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
             }
         } else {
-            assert Files.exists(previousPath);
+            if (!Files.exists(previousPath)) {
+                throw new IllegalStateException("There is nothing to compare with - please set the overwrite option in ChangedStatesTest!");
+            }
         }
 
         return TextStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult);
@@ -126,13 +129,57 @@ public class ChangedStatesTest {
             var currentPath = evalDir.resolve("recommendationState_" + metaModel.name() + "_" + name + ".txt");
             var previousPath = evalDir.resolve("recommendationState_" + metaModel.name() + "_" + name + "_previous" + ".txt");
             var diffPath = evalDir.resolve("recommendationState_" + metaModel.name() + "_" + name + "_diff" + ".txt");
-            try {
-                Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                RecommendationStateFile.write(currentPath, arDoCoResult, metaModel);
-                Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+            if (OVERWRITE_PREVIOUS) {
+                try {
+                    Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    RecommendationStateFile.write(currentPath, arDoCoResult, metaModel);
+                    Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } else {
+                if (!Files.exists(previousPath)) {
+                    throw new IllegalStateException("There is nothing to compare with - please set the overwrite option in ChangedStatesTest!");
+                }
             }
+
             var tempResult = RecommendationStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult, metaModel);
+            if (!tempResult)
+                result = tempResult;
+        }
+        return result;
+    }
+
+    private static boolean writeConnectionStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
+        String name = project.name().toLowerCase();
+
+        boolean result = true;
+
+        for (var modelId : arDoCoResult.getModelIds()) {
+
+            var metaModel = arDoCoResult.getModelState(modelId).getMetamodel();
+            var evalDir = Path.of(OUTPUT).resolve(name).resolve("connectionStates").resolve(metaModel.name());
+            try {
+                Files.createDirectories(evalDir);
+            } catch (IOException e) {
+                logger.warn("Could not create directories.", e);
+            }
+
+            var currentPath = evalDir.resolve("connectionState_" + metaModel.name() + "_" + name + ".txt");
+            var previousPath = evalDir.resolve("connectionState_" + metaModel.name() + "_" + name + "_previous" + ".txt");
+            var diffPath = evalDir.resolve("connectionState_" + metaModel.name() + "_" + name + "_diff" + ".txt");
+            if (OVERWRITE_PREVIOUS) {
+                try {
+                    Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    ConnectionStateFile.write(currentPath, arDoCoResult, modelId);
+                    Files.copy(currentPath, previousPath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } else {
+                if (!Files.exists(previousPath)) {
+                    throw new IllegalStateException("There is nothing to compare with - please set the overwrite option in ChangedStatesTest!");
+                }
+            }
+            var tempResult = ConnectionStateFile.writeDiff(previousPath, currentPath, diffPath, arDoCoResult, modelId);
             if (!tempResult)
                 result = tempResult;
         }
@@ -150,6 +197,7 @@ public class ChangedStatesTest {
 
         Assertions.assertTrue(writeTextStateDiff(project, arDoCoResult));
         Assertions.assertTrue(writeRecommendationStateDiff(project, arDoCoResult));
+        Assertions.assertTrue(writeConnectionStateDiff(project, arDoCoResult));
     }
 
 }
