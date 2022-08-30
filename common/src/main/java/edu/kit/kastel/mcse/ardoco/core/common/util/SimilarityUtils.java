@@ -263,7 +263,10 @@ public final class SimilarityUtils {
         ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
         ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
         if (areWordsSimilar(instance.getFullName(), ri.getName()) || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList,
-                similarity) || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
+                similarity) || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity) || 1.0 * similarEntriesOfList(
+                        instanceNames, recommendedInstanceNameList) / Math.max(instanceNames.size(), recommendedInstanceNameList
+                                .size()) >= similarity || 1.0 * similarEntriesOfList(longestNameSplit, recommendedInstanceNameList) / Math.max(instanceNames
+                                        .size(), recommendedInstanceNameList.size()) >= similarity) {
             return true;
         }
         for (var nounMapping : ri.getNameMappings()) {
@@ -271,12 +274,32 @@ public final class SimilarityUtils {
                 var splitSurfaceForm = CommonUtilities.splitCases(surfaceForm);
                 var surfaceFormWords = CommonUtilities.splitAtSeparators(splitSurfaceForm);
                 if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity) || SimilarityUtils.areWordsOfListsSimilar(
-                        longestNameSplit, surfaceFormWords, similarity)) {
+                        longestNameSplit, surfaceFormWords, similarity) || 1.0 * similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames
+                                .size(), surfaceFormWords.size()) >= similarity || 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(
+                                        longestNameSplit.size(), surfaceFormWords.size()) >= similarity) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    //TODO: Move to common utilities
+    public static int similarEntriesOfList(ImmutableList<String> list1, ImmutableList<String> list2) {
+
+        MutableList<String> removed = Lists.mutable.empty();
+
+        for (var element : list1) {
+            if (list2.contains(element)) {
+                removed.add(element);
+            } else {
+                if (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
+                    removed.add(element);
+                }
+            }
+        }
+
+        return removed.size();
     }
 
     private static boolean coversOtherPhraseVector(PhraseMapping phraseMappingX, PhraseMapping phraseMappingY) {
