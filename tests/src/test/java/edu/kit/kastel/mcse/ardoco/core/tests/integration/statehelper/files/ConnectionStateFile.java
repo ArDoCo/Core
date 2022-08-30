@@ -137,7 +137,7 @@ public class ConnectionStateFile {
                 ImmutableSet<String> claimants = currentTextInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentModelLine = String.join(VALUE_SEPARATOR, uid, modelName, modelType);
-                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(
+                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, name, type, String.join(LIST_SEPARATOR, names), String.join(
                         LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
                 if (modelOrder == 0) {
 
@@ -155,7 +155,7 @@ public class ConnectionStateFile {
                         differentLinks.add(currentLinkLine);
                         differentLinks.add(LINE_SEPARATOR);
                         differentLinks.add("instead of" + LINE_SEPARATOR);
-                        differentLinks.add(String.join(VALUE_SEPARATOR, parts.subList(3, 9)));
+                        differentLinks.add(String.join(VALUE_SEPARATOR, parts.subList(3, 10)));
                         differentLinks.add(LINE_SEPARATOR);
                         differentLinks.add(LINE_SEPARATOR);
                     }
