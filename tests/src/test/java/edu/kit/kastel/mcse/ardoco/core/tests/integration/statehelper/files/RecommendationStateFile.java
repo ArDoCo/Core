@@ -152,15 +152,15 @@ public class RecommendationStateFile {
 
         }
 
-        builder.append("Different NounMappings:").append(LINE_SEPARATOR);
+        builder.append("Different RecommendedInstances:").append(LINE_SEPARATOR);
         differentRecommendations.forEach(builder::append);
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append("Missing NounMappings:").append(LINE_SEPARATOR);
+        builder.append("Missing RecommendedInstances:").append(LINE_SEPARATOR);
         missingRecommendations.forEach(builder::append);
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append("Additional NounMappings:").append(LINE_SEPARATOR);
+        builder.append("Additional RecommendedInstances:").append(LINE_SEPARATOR);
         additionalRecommendations.forEach(builder::append);
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
