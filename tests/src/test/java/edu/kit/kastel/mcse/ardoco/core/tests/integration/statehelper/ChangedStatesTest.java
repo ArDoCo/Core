@@ -28,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.TextS
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 public class ChangedStatesTest {
-    private static final boolean OVERWRITE_PREVIOUS = true;
+    private static final boolean OVERWRITE_PREVIOUS = false;
     private static final Logger logger = LoggerFactory.getLogger(ChangedStatesTest.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
