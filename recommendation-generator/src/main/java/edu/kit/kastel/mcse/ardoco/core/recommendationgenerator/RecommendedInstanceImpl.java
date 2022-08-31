@@ -7,11 +7,13 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMappingChangeListener;
@@ -237,6 +239,13 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
     @Override
     public void addProbability(Claimant claimant, double probability) {
         this.internalConfidence.addAgentConfidence(claimant, probability);
+    }
+
+    @Override
+    public ImmutableSet<Integer> getSentenceNumbers() {
+        MutableSet<Integer> sentenceNos = getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSet();
+        sentenceNos.addAll(getTypeMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSet());
+        return sentenceNos.toImmutableSet();
     }
 
     @Override
