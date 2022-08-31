@@ -247,10 +247,9 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
 
     public static Long earliestCreationTime(NounMapping... nounMappings) {
         Long earliest = Long.MAX_VALUE;
-        for (var nounmapping : nounMappings) {
-            if (nounmapping instanceof NounMappingImpl impl)
-                if (impl.earliestCreationTime() < earliest)
-                    earliest = impl.earliestCreationTime();
+        for (var mapping : nounMappings) {
+            if (mapping instanceof NounMappingImpl impl && impl.earliestCreationTime() < earliest)
+                earliest = impl.earliestCreationTime();
         }
         return earliest == Long.MAX_VALUE ? null : earliest;
     }
