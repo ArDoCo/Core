@@ -65,7 +65,7 @@ public class ConnectionStateFile {
 
             builder.append(df.format(instanceLink.getProbability()));
             builder.append(VALUE_SEPARATOR);
-            ImmutableList<String> sentences = textInstance.getSentenceNumbers().collect(no -> Integer.toString(no)).toImmutableSortedList();
+            ImmutableList<String> sentences = textInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
             builder.append(String.join(LIST_SEPARATOR, sentences));
             builder.append(VALUE_SEPARATOR);
 
@@ -132,7 +132,7 @@ public class ConnectionStateFile {
                 String modelName = currentModelInstance.getFullName();
                 String modelType = currentModelInstance.getFullType();
                 String linkProbability = df.format(currentLink.getProbability());
-                ImmutableList<String> sentences = currentTextInstance.getSentenceNumbers().collect(no -> Integer.toString(no)).toImmutableSortedList();
+                ImmutableList<String> sentences = currentTextInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
                 String name = currentTextInstance.getName();
                 String type = currentTextInstance.getType();
                 ImmutableList<String> names = currentTextInstance.getNameMappings().collect(NounMapping::getReference).toSet().toImmutableList();
@@ -160,7 +160,7 @@ public class ConnectionStateFile {
                         differentLinks.add(currentLinkLine);
                         differentLinks.add(LINE_SEPARATOR);
                         differentLinks.add("instead of" + LINE_SEPARATOR);
-                        differentLinks.add(String.join(VALUE_SEPARATOR, parts.subList(3, 10)));
+                        differentLinks.add(String.join(VALUE_SEPARATOR, parts.subList(3, 11)));
                         differentLinks.add(LINE_SEPARATOR);
                         differentLinks.add(LINE_SEPARATOR);
                     }
