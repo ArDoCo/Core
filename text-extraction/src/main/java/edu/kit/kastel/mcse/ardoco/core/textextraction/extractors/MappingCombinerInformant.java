@@ -11,6 +11,7 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
@@ -45,10 +46,10 @@ public class MappingCombinerInformant extends Informant {
 
                 ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping = textState.getNounMappingsByPhraseMapping(similarPhraseMapping);
 
-                if (similarPhraseMapping == phraseMapping) {
+                if (similarPhraseMapping.getPhrases().collect(Phrase::getText).equals(phraseMapping.getPhrases().collect(Phrase::getText))) {
                     for (NounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
                         for (NounMapping nounMapping : textState.getNounMappingsByPhraseMapping(phraseMapping)) {
-                            if (nounMapping.isTheSameAs(nounMappingOfSimilarPhraseMapping) || !textState.getNounMappings()
+                            if (nounMapping == nounMappingOfSimilarPhraseMapping || !textState.getNounMappings()
                                     .contains(nounMappingOfSimilarPhraseMapping) || !textState.getNounMappings().contains(nounMapping)) {
                                 continue;
                             }

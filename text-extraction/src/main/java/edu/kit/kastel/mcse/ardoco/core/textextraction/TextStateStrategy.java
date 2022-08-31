@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.util.function.Function;
+
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
@@ -21,4 +23,5 @@ public interface TextStateStrategy {
 
     NounMapping mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant);
 
+    Function<TextStateImpl, TextStateStrategy> creator();
 }

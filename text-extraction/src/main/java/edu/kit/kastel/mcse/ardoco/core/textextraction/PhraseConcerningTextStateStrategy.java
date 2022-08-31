@@ -31,7 +31,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> (Objects.equals(nm1.getPhrases(), nm2
             .getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference()));
 
-    PhraseConcerningTextStateStrategy(TextStateImpl textState) {
+    public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
     }
 
@@ -112,9 +112,9 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
             }
         }
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(nounMapping, nounMapping2), mergedWords.toSortedSet()
-                .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(
-                        false), Sets.mutable.empty());
+        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(nounMapping, nounMapping2), mergedWords.toImmutableSortedSet(),
+                mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(false),
+                Sets.mutable.empty());
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
 
         this.getTextState().removeNounMappingFromState(nounMapping, mergedNounMapping);
@@ -125,4 +125,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         return mergedNounMapping;
     }
 
+    @Override
+    public Function<TextStateImpl, TextStateStrategy> creator() {
+        return PhraseConcerningTextStateStrategy::new;
+    }
 }
