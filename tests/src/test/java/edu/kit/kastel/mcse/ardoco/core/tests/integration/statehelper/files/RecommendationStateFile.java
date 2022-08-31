@@ -64,7 +64,7 @@ public class RecommendationStateFile {
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, recommendation.getTypeMappings().collect(NounMapping::getReference)));
             builder.append(VALUE_SEPARATOR);
-            ImmutableList<String> sentences = recommendation.getSentenceNumbers().collect(no -> Integer.toString(no)).toImmutableSortedList();
+            ImmutableList<String> sentences = recommendation.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
             builder.append(String.join(LIST_SEPARATOR, sentences));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, recommendation.getClaimants().collect(c -> c.getClass().getSimpleName())));
@@ -122,7 +122,10 @@ public class RecommendationStateFile {
                 String probability = df.format(currentRecommendedInstance.getProbability());
                 ImmutableList<String> names = currentRecommendedInstance.getNameMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 ImmutableList<String> types = currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference).toSet().toImmutableList();
-                ImmutableList<String> sentences = currentRecommendedInstance.getSentenceNumbers().collect(no -> Integer.toString(no)).toImmutableSortedList();
+                ImmutableList<String> sentences = currentRecommendedInstance.getSentenceNumbers()
+                        .toSortedList()
+                        .collect(no -> Integer.toString(no))
+                        .toImmutable();
                 ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentLine = String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR,

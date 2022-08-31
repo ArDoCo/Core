@@ -64,9 +64,10 @@ public class TextStateFile {
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getWords().collect(Word::getText).toSet().toImmutableList()));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getWords()
-                    .collect(w -> Integer.toString(w.getSentenceNo()))
+                    .collect(Word::getSentenceNo)
                     .toSet()
-                    .toImmutableSortedList()));
+                    .toSortedList()
+                    .collect(no -> Integer.toString(no))));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getClaimants().collect(c -> c.getClass().getSimpleName())));
             builder.append(LINE_SEPARATOR);
@@ -117,9 +118,11 @@ public class TextStateFile {
                 String surfaceForms = String.join(LIST_SEPARATOR, currentNounMapping.getSurfaceForms());
                 ImmutableList<String> words = currentNounMapping.getWords().collect(Word::getText).toSet().toImmutableList();
                 ImmutableList<String> sentences = currentNounMapping.getWords()
-                        .collect(w -> Integer.toString(w.getSentenceNo()))
+                        .collect(Word::getSentenceNo)
                         .toSet()
-                        .toImmutableSortedList();
+                        .toSortedList()
+                        .collect(no -> Integer.toString(no))
+                        .toImmutable();
                 ImmutableSet<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentLine = String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String.join(
