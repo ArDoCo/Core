@@ -68,9 +68,11 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
 
         if (this.nameMappings.remove(deletedNounMapping)) {
             this.nameMappings.add(replacement);
+            replacement.registerChangeListener(this);
         }
         if (this.typeMappings.remove(deletedNounMapping)) {
             this.typeMappings.add(replacement);
+            replacement.registerChangeListener(this);
         }
     }
 
