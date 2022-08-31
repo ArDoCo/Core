@@ -118,4 +118,8 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
         return mergedNounMapping;
     }
 
+    @Override
+    public Function<TextStateImpl, TextStateStrategy> creator() {
+        return OriginalTextStateStrategy::new;
+    }
 }

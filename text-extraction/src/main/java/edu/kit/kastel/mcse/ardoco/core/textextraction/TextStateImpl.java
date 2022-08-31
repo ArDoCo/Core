@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
@@ -63,9 +64,13 @@ public class TextStateImpl extends AbstractState implements TextState {
      * Creates a new name type relation state
      */
     public TextStateImpl() {
+        this(OriginalTextStateStrategy::new);
+    }
+
+    public TextStateImpl(Function<TextStateImpl, TextStateStrategy> constructor) {
         nounMappings = Lists.mutable.empty();
         phraseMappings = Sets.mutable.empty();
-        strategy = new OriginalTextStateStrategy(this);
+        strategy = constructor.apply(this);
     }
 
     @Override
@@ -290,7 +295,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public TextState createCopy() {
-        var textExtractionState = new TextStateImpl();
+        var textExtractionState = new TextStateImpl(strategy.creator());
         textExtractionState.nounMappings = nounMappings.toList()
                 .collect(ElementWrapper::getElement)
                 .collect(NounMapping::createCopy)

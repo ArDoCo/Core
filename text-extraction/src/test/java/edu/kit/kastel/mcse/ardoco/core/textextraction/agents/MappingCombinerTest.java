@@ -19,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.PhraseConcerningTextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.MappingCombinerInformant;
 
@@ -55,7 +56,7 @@ class MappingCombinerTest implements Claimant {
     void setup() {
         this.data = new DataRepository();
         this.agent = new MappingCombiner(data);
-        preTextState = new TextStateImpl();
+        preTextState = new TextStateImpl(PhraseConcerningTextStateStrategy::new);
 
         Word a0 = Mockito.mock(Word.class);
         Word fast0 = Mockito.mock(Word.class);
@@ -274,14 +275,7 @@ class MappingCombinerTest implements Claimant {
         agent.run();
 
         Assertions.assertTrue(nounMappingsWereMerged(preTextState, dog1, dog3, textState));
-
-        textState.addNounMapping(doggy5, MappingKind.TYPE, this, 0.5);
-        TextState textState2 = textState.createCopy();
-        this.data.addData(TextState.ID, textState);
-        agent.run();
-
-        Assertions.assertTrue(nounMappingsWereMerged(textState, dog1, doggy5, textState2));
-        Assertions.assertTrue(nounMappingsWereMerged(textState, dog3, doggy5, textState2));
+        Assertions.assertEquals(1, textState.getNounMappings().size());
     }
 
     @Test
@@ -400,8 +394,8 @@ class MappingCombinerTest implements Claimant {
     private boolean nounMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
 
         Assertions.assertNotEquals(preTextState.getNounMappings().size(), afterTextState.getNounMappings().size());
-        Assertions.assertNotEquals(null, textState.getNounMappingByWord(word1));
-        Assertions.assertNotEquals(null, textState.getNounMappingByWord(word2));
+        Assertions.assertNotNull(textState.getNounMappingByWord(word1));
+        Assertions.assertNotNull(textState.getNounMappingByWord(word2));
         Assertions.assertEquals(textState.getNounMappingByWord(word1), textState.getNounMappingByWord(word2));
 
         var nounMapping = textState.getNounMappingByWord(word1);
@@ -443,6 +437,7 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(word.getSentenceNo()).thenReturn(sentenceNumber);
         Mockito.when(word.getLemma()).thenReturn(lemma);
         Mockito.when(word.getPhrase()).thenReturn(phrase);
+        Mockito.when(word.compareTo(Mockito.any())).thenCallRealMethod();
     }
 
 }
