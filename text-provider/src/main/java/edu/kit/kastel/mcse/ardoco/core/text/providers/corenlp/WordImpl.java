@@ -28,7 +28,6 @@ class WordImpl implements Word {
     private Word nextWord = null;
 
     private final int sentenceNo;
-    private Sentence sentence;
     private Phrase phrase;
     private final String text;
     private final POSTag posTag;
@@ -50,10 +49,7 @@ class WordImpl implements Word {
 
     @Override
     public Sentence getSentence() {
-        if (sentence == null) {
-            sentence = this.parent.getSentences().get(this.sentenceNo);
-        }
-        return sentence;
+        return this.parent.getSentences().get(this.sentenceNo);
     }
 
     @Override
