@@ -323,13 +323,10 @@ public final class SimilarityUtils {
 
         CosineSimilarity cosineSimilarity = new CosineSimilarity();
 
-        Map<CharSequence, Integer> stringVectorX = phraseVectorX.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), e -> e.getValue()));
-        Map<CharSequence, Integer> stringVectorY = phraseVectorY.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), e -> e.getValue()));
+        Map<CharSequence, Integer> leftVector = phraseVectorX.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+        Map<CharSequence, Integer> rightVector = phraseVectorY.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
 
-        double cosineDistance = cosineSimilarity.cosineSimilarity(stringVectorX, stringVectorY);
-
-        return cosineDistance;
-
+        return cosineSimilarity.cosineSimilarity(leftVector, rightVector);
     }
 
     public static PhraseMapping getMostSimilarPhraseMapping(TextState textState, PhraseMapping phraseMappingX, ImmutableList<PhraseMapping> phraseMappingYs,
@@ -384,26 +381,24 @@ public final class SimilarityUtils {
         return Lists.immutable.withAll(result);
     }
 
-    public static double getPhraseMappingSimilarity(TextState textState, PhraseMapping phraseMappingX, PhraseMapping phraseMappingY,
+    public static double getPhraseMappingSimilarity(TextState textState, PhraseMapping firstPhraseMapping, PhraseMapping secondPhraseMapping,
             PhraseMappingAggregatorStrategy strategy) {
-        PhraseType phraseTypeX = phraseMappingX.getPhraseType();
-        PhraseType phraseTypeY = phraseMappingY.getPhraseType();
-        if (!phraseTypeX.equals(phraseTypeY)) {
+        PhraseType firstPhraseType = firstPhraseMapping.getPhraseType();
+        PhraseType secondPhraseType = secondPhraseMapping.getPhraseType();
+        if (!firstPhraseType.equals(secondPhraseType)) {
             return 0;
         }
 
-        if (coversOtherPhraseVector(phraseMappingX, phraseMappingY) || coversOtherPhraseVector(phraseMappingY, phraseMappingX)) {
+        if (coversOtherPhraseVector(firstPhraseMapping, secondPhraseMapping) || coversOtherPhraseVector(secondPhraseMapping, firstPhraseMapping)) {
             // TODO: PHI : REWORK
             // TODO: NounMappings rausnehmen?
-            if (containsAllNounMappingsOfPhraseMapping(textState, phraseMappingX, phraseMappingY) && containsAllNounMappingsOfPhraseMapping(textState,
-                    phraseMappingY, phraseMappingX)) {
+            if (containsAllNounMappingsOfPhraseMapping(textState, firstPhraseMapping, secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState,
+                    secondPhraseMapping, firstPhraseMapping)) {
                 // TODO: HARD CODED
                 return 1.0;
             }
         }
 
-        double cosineSimilarity = strategy.applyAsDouble(phraseMappingX, phraseMappingY);
-        return cosineSimilarity;
-
+        return strategy.applyAsDouble(firstPhraseMapping, secondPhraseMapping);
     }
 }
