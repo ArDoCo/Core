@@ -26,9 +26,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ComputerScienceWordsExtractor;
 
-class ComputerScienceWordsAgentTest implements Claimant {
-    private ComputerScienceWordsAgent agent;
+class ComputerScienceWordsExtractorTest implements Claimant {
+    private ComputerScienceWordsExtractor agent;
     private ImmutableList<String> data;
     private double modifier;
 
@@ -39,13 +40,13 @@ class ComputerScienceWordsAgentTest implements Claimant {
     @BeforeEach
     void setup() throws NoSuchFieldException, IllegalAccessException {
         var dataRepository = new DataRepository();
-        this.agent = new ComputerScienceWordsAgent(dataRepository);
+        this.agent = new ComputerScienceWordsExtractor(dataRepository);
         setData();
 
         textState = new TextStateImpl();
         var validWord = wordToListOfWord(data.get(0));
         nounMapping = textState.addNounMapping(Sets.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
-                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()), null);
+                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()), validWord.get(0).getText());
         invalidWord = new MyWord("ASDFWJ", validWord.size());
         MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
         var preprocessingData = new PreprocessingData(text);
@@ -103,7 +104,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
         @Override
         public int getSentenceNo() {
-            throw new UnsupportedOperationException();
+            return 0;
         }
 
         @Override
