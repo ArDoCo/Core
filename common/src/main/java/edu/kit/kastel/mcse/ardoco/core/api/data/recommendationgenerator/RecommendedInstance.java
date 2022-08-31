@@ -100,5 +100,7 @@ public interface RecommendedInstance extends ICopyable<RecommendedInstance> {
      */
     void setName(String name);
 
+    ImmutableSet<Integer> getSentenceNumbers();
+
     ImmutableSet<Claimant> getClaimants();
 }

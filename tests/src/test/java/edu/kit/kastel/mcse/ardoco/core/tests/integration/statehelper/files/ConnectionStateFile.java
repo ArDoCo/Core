@@ -47,8 +47,8 @@ public class ConnectionStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(String.join(VALUE_SEPARATOR, "UID [M]", "Name [M]", "Type [M]", "Probability [L]", "Name [T]", "Type [T]", "Names [T]", "Types [T]",
-                "Probability [T]", "Claimants [T]", LINE_SEPARATOR));
+        builder.append(String.join(VALUE_SEPARATOR, "UID [M]", "Name [M]", "Type [M]", "Probability [L]", "Sentences [L]", "Name [T]", "Type [T]", "Names [T]",
+                "Types [T]", "Probability [T]", "Claimants [T]", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         for (InstanceLink instanceLink : connectionState.getInstanceLinks().toSortedListBy(il -> il.getModelInstance().getUid())) {
@@ -64,6 +64,9 @@ public class ConnectionStateFile {
             builder.append(VALUE_SEPARATOR);
 
             builder.append(df.format(instanceLink.getProbability()));
+            builder.append(VALUE_SEPARATOR);
+            ImmutableList<String> sentences = textInstance.getSentenceNumbers().collect(no -> Integer.toString(no)).toImmutableSortedList();
+            builder.append(String.join(LIST_SEPARATOR, sentences));
             builder.append(VALUE_SEPARATOR);
 
             builder.append(textInstance.getName());
@@ -95,8 +98,8 @@ public class ConnectionStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(String.join(VALUE_SEPARATOR, "Probability [L]", "Name [T]", "Type [T]", "Names [T]", "Types [T]", "Probability [T]", "Claimants [T]",
-                LINE_SEPARATOR));
+        builder.append(String.join(VALUE_SEPARATOR, "Probability [L]", "Sentences [L]", "Name [T]", "Type [T]", "Names [T]", "Types [T]", "Probability [T]",
+                "Claimants [T]", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         List<String> lines = Files.readAllLines(sourceFile);
@@ -129,6 +132,7 @@ public class ConnectionStateFile {
                 String modelName = currentModelInstance.getFullName();
                 String modelType = currentModelInstance.getFullType();
                 String linkProbability = df.format(currentLink.getProbability());
+                ImmutableList<String> sentences = currentTextInstance.getSentenceNumbers().collect(no -> Integer.toString(no)).toImmutableSortedList();
                 String name = currentTextInstance.getName();
                 String type = currentTextInstance.getType();
                 ImmutableList<String> names = currentTextInstance.getNameMappings().collect(NounMapping::getReference).toSet().toImmutableList();
@@ -137,17 +141,18 @@ public class ConnectionStateFile {
                 ImmutableSet<String> claimants = currentTextInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentModelLine = String.join(VALUE_SEPARATOR, uid, modelName, modelType);
-                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, name, type, String.join(LIST_SEPARATOR, names), String.join(
-                        LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
+                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type, String.join(
+                        LIST_SEPARATOR, names), String.join(LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
                 if (modelOrder == 0) {
 
                     if (!parts.get(3).equals(linkProbability) ||//
-                            !parts.get(4).equals(name) ||//
-                            !parts.get(5).equals(type) ||//
-                            TextStateFile.wordsNotEqual(parts.get(6).split(Pattern.quote(LIST_SEPARATOR), -1), names) ||//
-                            TextStateFile.wordsNotEqual(parts.get(7).split(Pattern.quote(LIST_SEPARATOR), -1), types) ||//
-                            !parts.get(8).equals(probability) ||//
-                            TextStateFile.claimantsNotEqual(parts.get(9).split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
+                            TextStateFile.wordsNotEqual(parts.get(4).split(Pattern.quote(LIST_SEPARATOR), -1), sentences) ||//
+                            !parts.get(5).equals(name) ||//
+                            !parts.get(6).equals(type) ||//
+                            TextStateFile.wordsNotEqual(parts.get(7).split(Pattern.quote(LIST_SEPARATOR), -1), names) ||//
+                            TextStateFile.wordsNotEqual(parts.get(8).split(Pattern.quote(LIST_SEPARATOR), -1), types) ||//
+                            !parts.get(9).equals(probability) ||//
+                            TextStateFile.claimantsNotEqual(parts.get(10).split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
                         differentLinks.add(currentModelLine);
                         differentLinks.add(": " + LINE_SEPARATOR);
