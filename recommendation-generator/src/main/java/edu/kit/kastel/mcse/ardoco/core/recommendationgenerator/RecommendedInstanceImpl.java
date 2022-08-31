@@ -244,7 +244,6 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
     @Override
     public ImmutableSet<Integer> getSentenceNumbers() {
         MutableSet<Integer> sentenceNos = getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSet();
-        sentenceNos.addAll(getTypeMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSet());
         return sentenceNos.toImmutableSet();
     }
 
