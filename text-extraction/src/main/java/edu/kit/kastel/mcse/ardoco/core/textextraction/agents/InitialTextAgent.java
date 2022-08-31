@@ -6,6 +6,7 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.InDepArcsExtractor;
@@ -29,7 +30,7 @@ public class InitialTextAgent extends PipelineAgent {
     public InitialTextAgent(DataRepository data) {
         super(InitialTextAgent.class.getSimpleName(), data);
         extractors = List.of(new NounExtractor(data), new InDepArcsExtractor(data), new OutDepArcsExtractor(data), new SeparatedNamesExtractor(data));
-        enabledExtractors = extractors.stream().map(e -> e.getId()).toList();
+        enabledExtractors = extractors.stream().map(AbstractPipelineStep::getId).toList();
     }
 
     @Override

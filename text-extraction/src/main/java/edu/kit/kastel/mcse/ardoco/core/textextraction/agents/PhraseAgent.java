@@ -6,6 +6,7 @@ import java.util.Map;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
@@ -27,7 +28,7 @@ public class PhraseAgent extends PipelineAgent {
     public PhraseAgent(DataRepository dataRepository) {
         super(PhraseAgent.class.getSimpleName(), dataRepository);
         extractors = List.of(new PhraseAgentInformant(dataRepository));
-        enabledExtractors = extractors.stream().map(e -> e.getId()).toList();
+        enabledExtractors = extractors.stream().map(AbstractPipelineStep::getId).toList();
     }
 
     @Override
