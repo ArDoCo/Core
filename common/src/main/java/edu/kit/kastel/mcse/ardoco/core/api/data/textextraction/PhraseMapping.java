@@ -24,8 +24,6 @@ public interface PhraseMapping extends ICopyable<PhraseMapping> {
 
     Map<Word, Integer> getPhraseVector();
 
-    PhraseMapping merge(PhraseMapping phraseMapping);
-
     void removePhrase(Phrase phrase);
 
 }
