@@ -258,9 +258,19 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public void mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping) {
-        phraseMapping.merge(similarPhraseMapping);
-        this.phraseMappings.remove(similarPhraseMapping);
+    public PhraseMapping mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping) {
+
+        MutableSet<Phrase> mergedPhrases = phraseMapping.getPhrases().toSet();
+        mergedPhrases.addAll(similarPhraseMapping.getPhrases().toList());
+
+        PhraseMapping mergedPhraseMapping = new PhraseMappingImpl(mergedPhrases.toImmutable());
+
+        this.phraseMappings.add(mergedPhraseMapping);
+
+        this.removePhraseMappingFromState(phraseMapping, mergedPhraseMapping);
+        this.removePhraseMappingFromState(similarPhraseMapping, mergedPhraseMapping);
+
+        return mergedPhraseMapping;
     }
 
     @Override
@@ -341,6 +351,10 @@ public class TextStateImpl extends AbstractState implements TextState {
         }
         this.nounMappings.add(wrap(nounMapping));
         this.nounMappings.sortThis(ORDER_NOUNMAPPING);
+    }
+
+    void removePhraseMappingFromState(PhraseMapping phraseMapping, PhraseMapping phraseMappingReplacement) {
+        this.phraseMappings.remove(phraseMapping);
     }
 
     void removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {

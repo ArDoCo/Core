@@ -99,16 +99,6 @@ public class PhraseMappingImpl implements PhraseMapping {
         return phraseVector;
     }
 
-    @Override
-    public PhraseMapping merge(PhraseMapping phraseMapping) {
-
-        if (phraseMapping.getPhraseType() != this.getPhraseType()) {
-            throw new IllegalArgumentException("If two phrase mappings are merged, they should have the same phrase type!");
-        }
-        this.phrases.addAllIterable(phraseMapping.getPhrases());
-        return this;
-    }
-
     public boolean isAlmostEqual(TextState textState, PhraseMapping other) {
         return Objects.equals(getPhraseType(), other.getPhraseType()) && Objects.equals(getNounMappings(textState), other.getNounMappings(textState)) && Objects
                 .equals(getPhraseVector(), other.getPhraseVector());

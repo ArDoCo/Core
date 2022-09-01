@@ -96,7 +96,7 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
     void mergePhraseMappingsAndNounMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping,
             MutableList<Pair<NounMapping, NounMapping>> similarNounMappings, Claimant claimant);
 
-    void mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping);
+    PhraseMapping mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping);
 
     NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference);
 
