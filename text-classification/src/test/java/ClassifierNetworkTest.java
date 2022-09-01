@@ -15,23 +15,30 @@ import records.ClassificationResponse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ClassifierNetworkTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassifierNetwork.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassifierNetworkAsync.class);
 
-    private RestAPI mockedRestApi;
+    private AsyncRestAPI mockedRestApi;
     private TextClassifier classifier;
 
     @BeforeEach
     private void init(){
-        this.mockedRestApi = Mockito.mock(RestAPI.class);
-        this.classifier = new ClassifierNetwork(mockedRestApi);
+        this.mockedRestApi = Mockito.mock(AsyncRestAPI.class);
+        this.classifier = new ClassifierNetworkAsync(mockedRestApi);
     }
 
+    private Future<JSONObject> futureFromJSONObject(JSONObject obj){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        return executor.submit(() -> obj);
+    }
 
     private void mockApiStatusResponse(Boolean classifierReady){
         JSONObject jsonStatusResponse = null;
@@ -42,7 +49,8 @@ class ClassifierNetworkTest {
                 jsonStatusResponse = (JSONObject) new JSONParser().parse("{\"status\":\"notready\"}");
             }
 
-        when(mockedRestApi.sendApiRequest("/status")).thenReturn(jsonStatusResponse);
+            //Future<JSONObject> futureJsonStatusResponse = new Future<JSONObject>(jsonStatusResponse);
+            when(mockedRestApi.sendApiRequest("/status")).thenReturn(futureFromJSONObject(jsonStatusResponse));
 
         } catch (ParseException e) {
             logger.error("Failed to parse json: " + e.getMessage(), e);
@@ -50,7 +58,7 @@ class ClassifierNetworkTest {
     }
 
     private void mockApiClassificationResponse(JSONObject classificationResponse){
-        when(mockedRestApi.sendApiRequest("/classify", classificationResponse)).thenReturn(classificationResponse);
+        when(mockedRestApi.sendApiRequest("/classify", classificationResponse)).thenReturn(futureFromJSONObject(classificationResponse));
     }
 
     @ParameterizedTest

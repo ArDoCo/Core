@@ -20,7 +20,6 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
     private static final Logger logger = LoggerFactory.getLogger(AsyncRestAPI.class);
     private final String url;
     private final int port;
-
     private final ExecutorService executor;
 
     public AsyncRestAPI(String url, int port) {
