@@ -23,6 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.Conne
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.RecommendationStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.TextStateFile;
 
+@Disabled("Disabled since it compares two testouts")
 public class ChangedStatesTest {
     private static final boolean OVERWRITE_PREVIOUS = false;
     private static final Logger logger = LoggerFactory.getLogger(ChangedStatesTest.class);
