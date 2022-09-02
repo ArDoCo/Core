@@ -4,12 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
@@ -49,9 +44,35 @@ class ConfigurationTest {
 
         System.out.println("-".repeat(50));
         System.out.println("Current Default Configuration");
-        System.out.println(
-                configs.entrySet().stream().map(e -> e.getKey() + AbstractConfigurable.KEY_VALUE_CONNECTOR + e.getValue()).collect(Collectors.joining("\n")));
+        System.out.println(configs.entrySet()
+                .stream()
+                .map(e -> e.getKey() + AbstractConfigurable.KEY_VALUE_CONNECTOR + e.getValue())
+                .collect(Collectors.joining("\n")));
         System.out.println("-".repeat(50));
+    }
+
+    @Test
+    void testValidityOfConfigurableFields() throws Exception {
+        var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
+        var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
+                .stream()
+                .filter(c -> c.getPackageName().startsWith("edu.kit.kastel.mcse.ardoco"))
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .filter(c -> !c.getPackageName().contains("tests"))
+                .toList();
+
+        for (var clazz : classesThatMayBeConfigured) {
+            List<Field> configurableFields = new ArrayList<>();
+            findImportantFields(clazz, configurableFields);
+
+            for (var field : configurableFields) {
+                int modifiers = field.getModifiers();
+                Assertions.assertFalse(Modifier.isFinal(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass()
+                        .getSimpleName() + " is final!");
+                Assertions.assertFalse(Modifier.isStatic(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass()
+                        .getSimpleName() + " is static!");
+            }
+        }
     }
 
     @Test
@@ -103,8 +124,8 @@ class ConfigurationTest {
 
     }
 
-    private void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    private void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException,
+            InstantiationException, IllegalAccessException {
         var object = createObject(clazz);
         List<Field> fields = new ArrayList<>();
         findImportantFields(object.getClass(), fields);
@@ -158,8 +179,8 @@ class ConfigurationTest {
         findImportantFields(clazz.getSuperclass(), fields);
     }
 
-    private AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    private AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
+            IllegalAccessException {
         var constructors = Arrays.asList(clazz.getDeclaredConstructors());
         if (constructors.stream().anyMatch(c -> c.getParameterCount() == 0)) {
             var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().get();

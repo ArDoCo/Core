@@ -21,9 +21,11 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.PhraseConcerningTextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.MappingCombinerInformant;
 
 class MappingCombinerTest implements Claimant {
+
+    // Has to be aligned to MappingCombinerInformant
+    private static final double MIN_COSINE_SIMILARITY = 0.4;
 
     private MappingCombiner agent;
 
@@ -388,7 +390,7 @@ class MappingCombinerTest implements Claimant {
         var nm1 = textState.getNounMappingByWord(word2);
 
         return SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
-                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerInformant.MIN_COSINE_SIMILARITY;
+                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
 
     private boolean nounMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
