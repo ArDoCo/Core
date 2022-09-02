@@ -118,7 +118,7 @@ public interface NounMapping extends ICopyable<NounMapping> {
         return this.getProbabilityForKind(kind) > 0;
     }
 
-    boolean isTerm();
+    boolean isCompound();
 
     /**
      * Register a listener that will be notified on certain events.

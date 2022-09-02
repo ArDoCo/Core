@@ -33,9 +33,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMappingChange
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
 public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
-                              ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference,
-                              @Deprecated AtomicBoolean isDefinedAsTerm, MutableSet<NounMappingChangeListener> changeListeners) implements NounMapping,
-        Comparable<NounMappingImpl> {
+                              ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference, AtomicBoolean isDefinedAsCompound,
+                              MutableSet<NounMappingChangeListener> changeListeners) implements NounMapping, Comparable<NounMappingImpl> {
 
     /**
      * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
@@ -189,8 +188,8 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
     }
 
     @Override
-    public boolean isTerm() {
-        return isDefinedAsTerm.get();
+    public boolean isCompound() {
+        return isDefinedAsCompound.get();
     }
 
     @Override
@@ -202,7 +201,7 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
-                ", probability=" + getProbability() + ", hasPhrase=" + isTerm() + "]";
+                ", probability=" + getProbability() + ", isCompound=" + isCompound() + "]";
     }
 
     @Override
