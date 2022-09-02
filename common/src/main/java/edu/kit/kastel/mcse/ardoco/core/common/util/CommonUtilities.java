@@ -308,13 +308,13 @@ public final class CommonUtilities {
     }
 
     /**
-     * Creates a reference given a list of words (phrase)
+     * Creates a reference given a list of words (compoundWords)
      *
-     * @param phrase the given phrase
-     * @return a reference that consists of the words in the given phrase
+     * @param compoundWords the given compoundWords
+     * @return a reference that consists of the words in the given compoundWords
      */
-    public static String createReferenceForPhrase(ImmutableList<Word> phrase) {
-        var sortedPhrase = phrase.toSortedListBy(Word::getPosition);
+    public static String createReferenceForCompound(ImmutableList<Word> compoundWords) {
+        var sortedPhrase = compoundWords.toSortedListBy(Word::getPosition);
         var referenceJoiner = new StringJoiner(" ");
         for (var w : sortedPhrase) {
             referenceJoiner.add(w.getText());
@@ -322,7 +322,7 @@ public final class CommonUtilities {
         return referenceJoiner.toString();
     }
 
-    public static ImmutableList<Word> getCompoundPhrase(Word word) {
+    public static ImmutableList<Word> getCompoundWords(Word word) {
         var deps = Lists.mutable.of(word);
         deps.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(Word::getPosition);

@@ -10,7 +10,7 @@ import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.PhraseAgentInformant;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.CompoundAgentInformant;
 
 /**
  * Agent that is responsible for looking at phrases and extracting {@link NounMapping}s from compound nouns etc.
@@ -27,7 +27,7 @@ public class PhraseAgent extends PipelineAgent {
      */
     public PhraseAgent(DataRepository dataRepository) {
         super(PhraseAgent.class.getSimpleName(), dataRepository);
-        extractors = List.of(new PhraseAgentInformant(dataRepository));
+        extractors = List.of(new CompoundAgentInformant(dataRepository));
         enabledExtractors = extractors.stream().map(AbstractPipelineStep::getId).toList();
     }
 
