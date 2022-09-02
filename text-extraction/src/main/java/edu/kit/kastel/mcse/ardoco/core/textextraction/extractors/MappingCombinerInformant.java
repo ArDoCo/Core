@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 public class MappingCombinerInformant extends Informant {
 
     @Configurable
-    public static final double MIN_COSINE_SIMILARITY = 0.4;
+    private double minCosineSimilarity = 0.4;
 
     public MappingCombinerInformant(DataRepository dataRepository) {
         super(MappingCombinerInformant.class.getSimpleName(), dataRepository);
@@ -39,7 +39,7 @@ public class MappingCombinerInformant extends Informant {
 
         for (PhraseMapping phraseMapping : phraseMappings) {
             ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState, phraseMapping,
-                    p, SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MIN_COSINE_SIMILARITY);
+                    p, SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
             ImmutableList<NounMapping> nounMappingsOfPhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping);
 
             for (PhraseMapping similarPhraseMapping : similarPhraseMappings) {
