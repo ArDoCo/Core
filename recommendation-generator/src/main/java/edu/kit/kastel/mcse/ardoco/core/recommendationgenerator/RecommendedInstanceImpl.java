@@ -45,9 +45,6 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
     public RecommendedInstance createCopy() {
         var copy = new RecommendedInstanceImpl(name, type);
         copy.internalConfidence = internalConfidence.createCopy();
-        // TODO Check I dont think that we want to copy noun mappings here ..
-        // copy.nameMappings.addAll(nameMappings.stream().map(ICopyable::createCopy).toList());
-        // copy.typeMappings.addAll(typeMappings.stream().map(ICopyable::createCopy).toList());
         copy.nameMappings.addAll(nameMappings);
         copy.typeMappings.addAll(typeMappings);
         return copy;

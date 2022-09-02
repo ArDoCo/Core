@@ -1,13 +1,14 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
@@ -88,13 +89,13 @@ public class PhraseImpl implements Phrase {
     }
 
     @Override
-    public Map<Word, Integer> getPhraseVector() {
-        Map<Word, Integer> phraseVector = new HashMap<>();
+    public ImmutableMap<Word, Integer> getPhraseVector() {
+        MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
 
         var grouped = getContainedWords().groupBy(Word::getText).toMap();
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
 
-        return phraseVector;
+        return phraseVector.toImmutable();
     }
 
     @Override

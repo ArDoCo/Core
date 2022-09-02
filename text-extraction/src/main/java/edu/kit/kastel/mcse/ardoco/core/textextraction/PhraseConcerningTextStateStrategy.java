@@ -17,7 +17,6 @@ import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
@@ -65,17 +64,10 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     @Override
     public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping nounMapping2, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {
-        /*
-         * if (!textState.getNounMappings().contains(nounMapping) ||
-         * !textState.getNounMappings().contains(nounMapping2)) { throw new
-         * IllegalArgumentException("The noun mappings that are merged should be in the current text state!"); }
-         */
 
         MutableSet<Word> mergedWords = nounMapping.getWords().toSet();
         mergedWords.addAllIterable(nounMapping2.getWords());
 
-        AggregationFunctions globalAggregationFunc = nounMapping.getGlobalAggregationFunction();
-        AggregationFunctions localAggregationFunc = nounMapping.getLocalAggregationFunction();
         var distribution1 = nounMapping.getDistribution().toMap();
         var distribution2 = nounMapping2.getDistribution().toMap();
         var mergedRawMap = Arrays.stream(MappingKind.values())

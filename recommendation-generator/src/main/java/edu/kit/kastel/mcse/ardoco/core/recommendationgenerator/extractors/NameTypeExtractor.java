@@ -20,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
  */
-@Deprecated
+
 public class NameTypeExtractor extends Informant {
 
     @Configurable

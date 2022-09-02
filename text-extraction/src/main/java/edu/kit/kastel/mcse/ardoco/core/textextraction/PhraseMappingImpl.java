@@ -1,14 +1,15 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
@@ -28,23 +29,8 @@ public class PhraseMappingImpl implements PhraseMapping {
 
     public PhraseMappingImpl(ImmutableSet<Phrase> phrases) {
         this.phrases = Sets.mutable.empty();
-
-        PhraseType type = phrases.getAny().getPhraseType();
         for (Phrase phrase : phrases) {
-            /*
-             * if (phrase.getPhraseType() != type) { throw new
-             * IllegalArgumentException("Multiple Types of Phrase mappings"); }
-             */
             this.phrases.add(phrase);
-        }
-    }
-
-    @Override
-    public void addPhrases(ImmutableList<Phrase> phrases) {
-        for (Phrase phrase : phrases) {
-            if (!this.phrases.contains(phrase)) {
-                this.phrases.add(phrase);
-            }
         }
     }
 
@@ -56,14 +42,6 @@ public class PhraseMappingImpl implements PhraseMapping {
     @Override
     public ImmutableList<Phrase> getPhrases() {
         return phrases.toImmutableList();
-    }
-
-    @Override
-    public void addPhrase(Phrase phrase) {
-        if (!phrase.getPhraseType().equals(this.getPhraseType())) {
-            throw new IllegalArgumentException("When added to a phrase mapping, phrases should have the same phrase type as the phrases of the mapping");
-        }
-        phrases.add(phrase);
     }
 
     @Override
@@ -83,7 +61,7 @@ public class PhraseMappingImpl implements PhraseMapping {
     }
 
     @Override
-    public Map<Word, Integer> getPhraseVector() {
+    public ImmutableMap<Word, Integer> getPhraseVector() {
 
         MutableList<Word> words = Lists.mutable.empty();
 
@@ -91,12 +69,12 @@ public class PhraseMappingImpl implements PhraseMapping {
             words.addAllIterable(phrase.getContainedWords());
         }
 
-        Map<Word, Integer> phraseVector = new HashMap<>();
+        MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
         var grouped = words.groupBy(Word::getText).toMap();
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
         // TODO: Think about norm
 
-        return phraseVector;
+        return phraseVector.toImmutable();
     }
 
     public boolean isAlmostEqual(TextState textState, PhraseMapping other) {

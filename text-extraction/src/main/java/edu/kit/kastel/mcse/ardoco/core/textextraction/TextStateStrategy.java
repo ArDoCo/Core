@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
@@ -20,8 +19,6 @@ public interface TextStateStrategy {
 
     NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping nounMapping2, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability);
-
-    NounMapping mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant);
 
     Function<TextStateImpl, TextStateStrategy> creator();
 }
