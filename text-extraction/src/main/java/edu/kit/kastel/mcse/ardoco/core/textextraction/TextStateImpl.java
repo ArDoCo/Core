@@ -54,8 +54,7 @@ public class TextStateImpl extends AbstractState implements TextState {
      *
      * @see #getMappingsThatCouldBeOfKind(Word, MappingKind)
      */
-    @Deprecated
-    double MAPPINGKIND_MAX_DIFF = 0.1;
+    private static final double MAPPINGKIND_MAX_DIFF = 0.1;
     private MutableList<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
     private final TextStateStrategy strategy;
@@ -87,11 +86,6 @@ public class TextStateImpl extends AbstractState implements TextState {
     public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms, String reference) {
         NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words, kind, claimant, probability, referenceWords, surfaceForms, reference);
-
-        var nounMappings = getNounMappings();
-        /* for (Word word : words) {
-            assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
-        }*/
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
@@ -106,10 +100,6 @@ public class TextStateImpl extends AbstractState implements TextState {
 
         NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
                 reference, new AtomicBoolean(false), Sets.mutable.empty());
-        var nounMappings = getNounMappings();
-        /*for (Word word : words) {
-            assert (nounMappings.select(nm -> nm.getWords().contains(word)).size() == 0);
-        }*/
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
@@ -175,16 +165,9 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference) {
 
-        assert (nounMapping.getWords().containsAllIterable(referenceWords)) : "The reference words should be contained by the noun mapping";
-
         return this.addNounMapping(nounMapping.getWords().toImmutableSet(), nounMapping.getDistribution().toMap(), referenceWords, nounMapping
                 .getSurfaceForms(), reference);
 
-    }
-
-    @Override
-    public void mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant) {
-        strategy.mergeNounMappings(nounMapping, nounMappingsToMerge, claimant);
     }
 
     @Override
@@ -267,8 +250,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
         this.phraseMappings.add(mergedPhraseMapping);
 
-        this.removePhraseMappingFromState(phraseMapping, mergedPhraseMapping);
-        this.removePhraseMappingFromState(similarPhraseMapping, mergedPhraseMapping);
+        this.removePhraseMappingFromState(phraseMapping);
+        this.removePhraseMappingFromState(similarPhraseMapping);
 
         return mergedPhraseMapping;
     }
@@ -353,7 +336,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         this.nounMappings.sortThis(ORDER_NOUNMAPPING);
     }
 
-    void removePhraseMappingFromState(PhraseMapping phraseMapping, PhraseMapping phraseMappingReplacement) {
+    void removePhraseMappingFromState(PhraseMapping phraseMapping) {
         this.phraseMappings.remove(phraseMapping);
     }
 

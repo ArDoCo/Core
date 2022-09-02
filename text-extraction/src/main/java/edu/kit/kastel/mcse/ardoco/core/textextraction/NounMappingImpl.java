@@ -36,11 +36,6 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
                               ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference, AtomicBoolean isDefinedAsCompound,
                               MutableSet<NounMappingChangeListener> changeListeners) implements NounMapping, Comparable<NounMappingImpl> {
 
-    /**
-     * Minimum difference that need to shall not be reached to identify a NounMapping as NameOrType.
-     */
-    private static final double MAPPINGKIND_MAX_DIFF = 0.1;
-
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
 
     /**
@@ -149,16 +144,6 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
     }
 
     @Override
-    public AggregationFunctions getGlobalAggregationFunction() {
-        return this.getAggregationFunction();
-    }
-
-    @Override
-    public AggregationFunctions getLocalAggregationFunction() {
-        return this.getAggregationFunction();
-    }
-
-    @Override
     public double getProbability() {
         return distribution.get(getKind()).getConfidence();
     }
@@ -171,20 +156,6 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
             return MappingKind.NAME;
         }
         return MappingKind.TYPE;
-    }
-
-    private AggregationFunctions getAggregationFunction() {
-        return DEFAULT_AGGREGATOR;
-    }
-
-    @Override
-    public boolean couldBeMultipleKinds(MappingKind... kinds) {
-        ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(this::getProbabilityForKind);
-        if (probabilities.anySatisfy(p -> p <= 0)) {
-            return false;
-        }
-
-        return probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
     }
 
     @Override
@@ -222,24 +193,16 @@ public record NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word
     }
 
     @Override
-    public boolean isTheSameAs(NounMapping other) {
-        return Objects.equals(getReference(), other.getReference()) && Objects.equals(getWords(), other.getWords()) && Objects.equals(getKind(), other
-                .getKind()) && Objects.equals(getPhrases(), other.getPhrases());
-    }
-
-    @Override
     public double getProbabilityForKind(MappingKind mappingKind) {
         return distribution.get(mappingKind).getConfidence();
     }
 
     @Override
-
     public ImmutableList<String> getSurfaceForms() {
         return this.surfaceForms;
     }
 
     @Override
-
     public ImmutableSet<Claimant> getClaimants() {
         return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSet();
     }

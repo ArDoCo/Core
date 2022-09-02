@@ -6,7 +6,6 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
@@ -83,10 +82,6 @@ public interface NounMapping extends ICopyable<NounMapping> {
      */
     ImmutableMap<MappingKind, Confidence> getDistribution();
 
-    AggregationFunctions getGlobalAggregationFunction();
-
-    AggregationFunctions getLocalAggregationFunction();
-
     ImmutableSet<Claimant> getClaimants();
 
     /**
@@ -97,26 +92,6 @@ public interface NounMapping extends ICopyable<NounMapping> {
      * @param probability the probability
      */
     void addKindWithProbability(MappingKind kind, Claimant claimant, double probability);
-
-    boolean isTheSameAs(NounMapping other);
-
-    /**
-     * Check whether this noun mapping could have several kinds according to confidence levels.
-     * 
-     * @param kinds kinds that should be checked
-     * @return true if noun mapping could be of all kinds, false if some kind could be excluded.
-     */
-    boolean couldBeMultipleKinds(MappingKind... kinds);
-
-    /**
-     * Checks whether this noun mapping could be of the specified kind
-     * 
-     * @param kind the kind that should be checked
-     * @return true if the specified kind has a probability > 0
-     */
-    default boolean couldBeOfKind(MappingKind kind) {
-        return this.getProbabilityForKind(kind) > 0;
-    }
 
     boolean isCompound();
 

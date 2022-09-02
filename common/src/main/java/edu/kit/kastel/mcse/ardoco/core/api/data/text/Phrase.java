@@ -1,9 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.text;
 
-import java.util.Map;
-
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
 
 public interface Phrase {
     int getSentenceNo();
@@ -20,5 +19,5 @@ public interface Phrase {
 
     boolean isSubPhraseOf(Phrase other);
 
-    Map<Word, Integer> getPhraseVector();
+    ImmutableMap<Word, Integer> getPhraseVector();
 }

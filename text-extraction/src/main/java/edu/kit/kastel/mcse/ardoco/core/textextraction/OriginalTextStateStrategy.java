@@ -46,10 +46,6 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
 
                 return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(), disposableNounMapping
                         .getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
-
-                // NounMapping extendedNounMapping = appendNounMappingToExistingNounMapping(nounMapping,
-                // existingNounMapping, claimant);
-                // return extendedNounMapping;
             }
         }
         super.getTextState().addNounMappingAddPhraseMapping(disposableNounMapping);
@@ -57,15 +53,6 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
         return disposableNounMapping;
     }
 
-    /*
-     * private NounMapping appendNounMappingToExistingNounMapping(NounMapping disposableNounMapping, NounMapping
-     * existingNounMapping, Claimant claimant) {
-     * 
-     * existingNounMapping.addKindWithProbability(disposableNounMapping.getKind(), claimant,
-     * disposableNounMapping.getProbability());
-     * existingNounMapping.addOccurrence(disposableNounMapping.getSurfaceForms());
-     * existingNounMapping.addWord(disposableNounMapping.getReferenceWords().get(0)); }
-     */
     @Override
     public ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {
 
@@ -75,15 +62,10 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
     @Override
     public NounMapping mergeNounMappings(NounMapping existingNounMapping, NounMapping disposableNounMapping, ImmutableList<Word> referenceWords,
             String reference, MappingKind mappingKind, Claimant claimant, double probability) {
-        /*
-         * if (!textState.getNounMappings().contains(nounMapping) ||
-         * !textState.getNounMappings().contains(nounMapping2)) { throw new
-         * IllegalArgumentException("The noun mappings that are merged should be in the current text state!"); }
-         */
 
         MutableSet<Word> mergedWords = existingNounMapping.getWords().toSet();
         mergedWords.add(disposableNounMapping.getReferenceWords().get(0));
-        //mergedWords.addAllIterable(nounMapping2.getWords());
+        //TODO: This makes only sense under specific conditions, since it is sequentially dependent. It should be fixed in future versions, so that the method is 
 
         var existingNounMappingDistribution = existingNounMapping.getDistribution().toMap();
         var disposableNounMappingDistribution = disposableNounMapping.getDistribution().toMap();

@@ -21,35 +21,30 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
     }
 
     public NounMapping mergeNounMappings(NounMapping nounMapping, MutableList<NounMapping> nounMappingsToMerge, Claimant claimant) {
-        /*
-         * if (!textState.getNounMappings().contains(nounMapping)) { throw new
-         * IllegalStateException("The text state should contain the noun mappings that are merged!"); }
-         */
+        for (NounMapping nounMappingToMerge : nounMappingsToMerge) {
 
-        for (NounMapping otherNounMapping : nounMappingsToMerge) {
+            if (!textState.getNounMappings().contains(nounMappingToMerge)) {
 
-            if (!textState.getNounMappings().contains(otherNounMapping)) {
-
-                final NounMapping finalOtherNounMapping = otherNounMapping;
-                var otherNounMapping2 = textState.getNounMappings().select(nm -> nm.getWords().containsAllIterable(finalOtherNounMapping.getWords()));
-                if (otherNounMapping2.size() == 0) {
+                final NounMapping finalNounMappingToMerge = nounMappingToMerge;
+                var fittingNounMappings = textState.getNounMappings().select(nm -> nm.getWords().containsAllIterable(finalNounMappingToMerge.getWords()));
+                if (fittingNounMappings.size() == 0) {
                     continue;
-                } else if (otherNounMapping2.size() == 1) {
-                    otherNounMapping = otherNounMapping2.get(0);
+                } else if (fittingNounMappings.size() == 1) {
+                    nounMappingToMerge = fittingNounMappings.get(0);
                 } else {
                     throw new IllegalStateException();
                 }
             }
 
-            assert (textState.getNounMappings().contains(otherNounMapping));
+            assert (textState.getNounMappings().contains(nounMappingToMerge));
 
             var references = nounMapping.getReferenceWords().toList();
-            references.addAllIterable(otherNounMapping.getReferenceWords());
-            textState.mergeNounMappings(nounMapping, otherNounMapping, claimant, references.toImmutable());
+            references.addAllIterable(nounMappingToMerge.getReferenceWords());
+            textState.mergeNounMappings(nounMapping, nounMappingToMerge, claimant, references.toImmutable());
 
             var mergedWords = Sets.mutable.empty();
             mergedWords.addAllIterable(nounMapping.getWords());
-            mergedWords.addAllIterable(otherNounMapping.getWords());
+            mergedWords.addAllIterable(nounMappingToMerge.getWords());
 
             var mergedNounMapping = textState.getNounMappings().select(nm -> nm.getWords().toSet().equals(mergedWords));
 
