@@ -15,45 +15,54 @@ public class ClassifierNetworkAsync implements TextClassifier {
     private static final Logger logger = LoggerFactory.getLogger(ClassifierNetworkAsync.class);
     private final WebAPI<Future<JSONObject>, JSONObject> classificationAPI;
 
-    public ClassifierNetworkAsync(WebAPI<Future<JSONObject>, JSONObject> classificationAPI) {
+    private final int timeout;
+
+    public ClassifierNetworkAsync(WebAPI<Future<JSONObject>, JSONObject> classificationAPI, int timeout) {
         this.classificationAPI = classificationAPI;
+        this.timeout = timeout;
     }
 
     @Override
-    public ClassifierStatus getClassifierStatus(){
+    public ClassifierStatus getClassifierStatus() throws TimeoutException {
 
         Future<JSONObject> futureResponse = classificationAPI.sendApiRequest("/status");
         JSONObject response = null;
 
         try {
-            response = futureResponse.get(1000, TimeUnit.MILLISECONDS);
+            response = futureResponse.get(this.timeout, TimeUnit.MILLISECONDS);
             if((response.get("status")).equals("ready")){
                 return new ClassifierStatus(true);
             }
-        } catch (ExecutionException | TimeoutException e) {
+        } catch (ExecutionException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException ie) {
             logger.error("InterruptedException: ", ie);
             Thread.currentThread().interrupt();
-        }
+        } catch (TimeoutException te) {
+        logger.error(te.getMessage(), te);
+        throw new TimeoutException("The result was not ready after" + this.timeout + "miliseconds.");
+    }
 
         return new ClassifierStatus(false);
     }
 
     @Override
-    public ClassificationResponse classifyPhrases(Map<Integer, String> phrases){
+    public ClassificationResponse classifyPhrases(Map<Integer, String> phrases) throws TimeoutException {
         Future<JSONObject> futureResponse = classificationAPI.sendApiRequest("/classify", new JSONObject(phrases));
         JSONObject response = null;
 
         try {
-            response = futureResponse.get(1000, TimeUnit.MILLISECONDS);
+            response = futureResponse.get(this.timeout, TimeUnit.MILLISECONDS);
             HashMap<Integer,String> result = new ObjectMapper().readValue(response.toJSONString(), HashMap.class);
             return new ClassificationResponse(result);
-        } catch (ExecutionException | TimeoutException | IOException e) {
+        } catch (ExecutionException | IOException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException ie) {
             logger.error("InterruptedException: ", ie);
             Thread.currentThread().interrupt();
+        } catch (TimeoutException te) {
+            logger.error(te.getMessage(), te);
+            throw new TimeoutException("The result was not ready after" + this.timeout + "miliseconds.");
         }
 
         return null;

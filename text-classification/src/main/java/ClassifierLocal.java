@@ -6,6 +6,7 @@ import records.ClassificationResponse;
 import records.ClassifierStatus;
 
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class ClassifierLocal implements TextClassifier {
 
@@ -16,16 +17,16 @@ public class ClassifierLocal implements TextClassifier {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierLocal.class);
 
-    public ClassifierLocal(String dockerImageName){
+    public ClassifierLocal(String dockerImageName, int timeout){
         init(dockerImageName);
         startContainer(-1);
-        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()));
+        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()), timeout);
     }
 
-    public ClassifierLocal(String dockerImageName, int apiPort){
+    public ClassifierLocal(String dockerImageName, int apiPort, int timeout){
         init(dockerImageName);
         startContainer(apiPort);
-        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()));
+        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()), timeout);
     }
 
     private void init(String dockerImageName){
@@ -54,12 +55,12 @@ public class ClassifierLocal implements TextClassifier {
     }
 
     @Override
-    public ClassificationResponse classifyPhrases(Map<Integer, String> phrases) {
+    public ClassificationResponse classifyPhrases(Map<Integer, String> phrases) throws TimeoutException {
         return classifier.classifyPhrases(phrases);
     }
 
     @Override
-    public ClassifierStatus getClassifierStatus(){
+    public ClassifierStatus getClassifierStatus() throws TimeoutException {
         return classifier.getClassifierStatus();
     }
 }
