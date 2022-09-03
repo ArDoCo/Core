@@ -49,7 +49,6 @@ class ClassifierNetworkTest {
                 jsonStatusResponse = (JSONObject) new JSONParser().parse("{\"status\":\"notready\"}");
             }
 
-            //Future<JSONObject> futureJsonStatusResponse = new Future<JSONObject>(jsonStatusResponse);
             when(mockedRestApi.sendApiRequest("/status"))
                     .thenReturn(futureFromJSONObject(jsonStatusResponse, time));
 
