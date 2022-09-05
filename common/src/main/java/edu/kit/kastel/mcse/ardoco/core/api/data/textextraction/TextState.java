@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 /**
  * The Interface ITextState.
  */
+// TODO @Phi: Add docs for the new methods
 public interface TextState extends ICopyable<TextState>, IConfigurable, PipelineStepData {
     String ID = "TextState";
 
@@ -44,8 +45,6 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
 
     NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms, String reference);
-
-    // --- remove section --->
 
     /**
      * Removes a noun mapping from the state.
@@ -91,7 +90,7 @@ public interface TextState extends ICopyable<TextState>, IConfigurable, Pipeline
 
     void mergeNounMappings(NounMapping nounMapping, NounMapping otherNounMapping, Claimant claimant, ImmutableList<Word> referenceWords);
 
-    void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant);
+    NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant);
 
     void mergePhraseMappingsAndNounMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping,
             MutableList<Pair<NounMapping, NounMapping>> similarNounMappings, Claimant claimant);

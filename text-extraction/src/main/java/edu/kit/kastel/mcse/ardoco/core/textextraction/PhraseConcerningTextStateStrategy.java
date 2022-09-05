@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -62,14 +61,14 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     }
 
     @Override
-    public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping nounMapping2, ImmutableList<Word> referenceWords, String reference,
+    public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {
 
-        MutableSet<Word> mergedWords = nounMapping.getWords().toSet();
-        mergedWords.addAllIterable(nounMapping2.getWords());
+        MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
+        mergedWords.addAllIterable(secondNounMapping.getWords());
 
-        var distribution1 = nounMapping.getDistribution().toMap();
-        var distribution2 = nounMapping2.getDistribution().toMap();
+        var distribution1 = firstNounMapping.getDistribution().toMap();
+        var distribution2 = secondNounMapping.getDistribution().toMap();
         var mergedRawMap = Arrays.stream(MappingKind.values())
                 .collect(Collectors.toMap( //
                         kind -> kind, //
@@ -77,8 +76,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
                 ));
         MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
 
-        MutableList<String> mergedSurfaceForms = nounMapping.getSurfaceForms().toList();
-        for (var surface : nounMapping2.getSurfaceForms()) {
+        MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
+        for (var surface : secondNounMapping.getSurfaceForms()) {
             if (mergedSurfaceForms.contains(surface))
                 continue;
             mergedSurfaceForms.add(surface);
@@ -88,8 +87,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         ImmutableList<Word> mergedReferenceWords = referenceWords;
 
         if (mergedReferenceWords == null) {
-            MutableList<Word> mergedRefWords = Lists.mutable.withAll(nounMapping.getReferenceWords());
-            mergedRefWords.addAllIterable(nounMapping2.getReferenceWords());
+            MutableList<Word> mergedRefWords = Lists.mutable.withAll(firstNounMapping.getReferenceWords());
+            mergedRefWords.addAllIterable(secondNounMapping.getReferenceWords());
             mergedReferenceWords = mergedRefWords.toImmutable();
         }
 
@@ -97,20 +96,19 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
 
         if (mergedReference == null) {
 
-            if (nounMapping.getReference().equalsIgnoreCase(nounMapping2.getReference())) {
-                mergedReference = nounMapping.getReference();
+            if (firstNounMapping.getReference().equalsIgnoreCase(secondNounMapping.getReference())) {
+                mergedReference = firstNounMapping.getReference();
             } else {
                 mergedReference = this.getTextState().calculateNounMappingReference(mergedReferenceWords);
             }
         }
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(nounMapping, nounMapping2), mergedWords.toImmutableSortedSet(),
-                mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(false),
-                Sets.mutable.empty());
+        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords
+                .toImmutableSortedSet(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
 
-        this.getTextState().removeNounMappingFromState(nounMapping, mergedNounMapping);
-        this.getTextState().removeNounMappingFromState(nounMapping2, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
 
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 

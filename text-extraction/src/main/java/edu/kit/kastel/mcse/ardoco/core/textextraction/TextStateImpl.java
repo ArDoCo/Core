@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
@@ -57,7 +56,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     private static final double MAPPINGKIND_MAX_DIFF = 0.1;
     private MutableList<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
-    private final TextStateStrategy strategy;
+    private final transient TextStateStrategy strategy;
 
     /**
      * Creates a new name type relation state
@@ -99,7 +98,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         }
 
         NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference, new AtomicBoolean(false), Sets.mutable.empty());
+                reference);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
@@ -136,6 +135,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsByPhraseMapping(PhraseMapping phraseMapping) {
+        // TODO Check whether equals for sets is good here
         return getNounMappings().select(nm -> phraseMapping.getPhrases().toImmutableSet().equals(nm.getPhrases()));
     }
 
@@ -225,9 +225,9 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public void mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
-        strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping.getProbabilityForKind(
-                nounMapping.getKind()));
+    public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
+        return strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping
+                .getProbabilityForKind(nounMapping.getKind()));
 
     }
 
@@ -246,13 +246,12 @@ public class TextStateImpl extends AbstractState implements TextState {
         MutableSet<Phrase> mergedPhrases = phraseMapping.getPhrases().toSet();
         mergedPhrases.addAll(similarPhraseMapping.getPhrases().toList());
 
-        PhraseMapping mergedPhraseMapping = new PhraseMappingImpl(mergedPhrases.toImmutable());
+        PhraseMapping mergedPhraseMapping = new PhraseMappingImpl(mergedPhrases);
 
         this.phraseMappings.add(mergedPhraseMapping);
 
-        this.removePhraseMappingFromState(phraseMapping);
-        this.removePhraseMappingFromState(similarPhraseMapping);
-
+        this.removePhraseMappingFromState(phraseMapping, mergedPhraseMapping);
+        this.removePhraseMappingFromState(similarPhraseMapping, mergedPhraseMapping);
         return mergedPhraseMapping;
     }
 
@@ -300,7 +299,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
         addNounMappingToState(nounMapping);
-        phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases()));
+        phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases().castToSet()));
     }
 
     @Override
@@ -336,8 +335,9 @@ public class TextStateImpl extends AbstractState implements TextState {
         this.nounMappings.sortThis(ORDER_NOUNMAPPING);
     }
 
-    void removePhraseMappingFromState(PhraseMapping phraseMapping) {
+    void removePhraseMappingFromState(PhraseMapping phraseMapping, PhraseMapping replacement) {
         this.phraseMappings.remove(phraseMapping);
+        phraseMapping.onDelete(replacement);
     }
 
     void removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {

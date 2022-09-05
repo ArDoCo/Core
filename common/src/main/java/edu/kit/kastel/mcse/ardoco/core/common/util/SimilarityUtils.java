@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.ToDoubleBiFunction;
 import java.util.stream.Collectors;
 
 import org.apache.commons.text.similarity.CosineSimilarity;
@@ -261,22 +260,32 @@ public final class SimilarityUtils {
     private static boolean checkRecommendedInstanceForSelection(ModelInstance instance, RecommendedInstance ri, double similarity) {
         var instanceNames = instance.getNameParts();
         ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
-        ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
-        if (areWordsSimilar(instance.getFullName(), ri.getName()) || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList,
-                similarity) || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity) || 1.0 * similarEntriesOfList(
-                        instanceNames, recommendedInstanceNameList) / Math.max(instanceNames.size(), recommendedInstanceNameList
-                                .size()) >= similarity || 1.0 * similarEntriesOfList(longestNameSplit, recommendedInstanceNameList) / Math.max(instanceNames
-                                        .size(), recommendedInstanceNameList.size()) >= similarity) {
+        ImmutableList<String> recommendedInstanceNames = Lists.immutable.with(ri.getName());
+
+        boolean instanceNameAndRIName = areWordsSimilar(instance.getFullName(), ri.getName());
+        boolean instanceNamesAndRIs = SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNames, similarity);
+        boolean longestNameSplitAndRINames = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNames, similarity);
+        boolean listOfNamesSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, recommendedInstanceNames) / Math.max(instanceNames.size(),
+                recommendedInstanceNames.size()) >= similarity;
+        boolean listOfNameSplitSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, recommendedInstanceNames) / Math.max(instanceNames.size(),
+                recommendedInstanceNames.size()) >= similarity;
+
+        if (instanceNameAndRIName || instanceNamesAndRIs || longestNameSplitAndRINames || listOfNamesSimilarEnough || listOfNameSplitSimilarEnough) {
             return true;
         }
         for (var nounMapping : ri.getNameMappings()) {
             for (var surfaceForm : nounMapping.getSurfaceForms()) {
                 var splitSurfaceForm = CommonUtilities.splitCases(surfaceForm);
                 var surfaceFormWords = CommonUtilities.splitAtSeparators(splitSurfaceForm);
-                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity) || SimilarityUtils.areWordsOfListsSimilar(
-                        longestNameSplit, surfaceFormWords, similarity) || 1.0 * similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames
-                                .size(), surfaceFormWords.size()) >= similarity || 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(
-                                        longestNameSplit.size(), surfaceFormWords.size()) >= similarity) {
+
+                boolean instanceNamesXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity);
+                boolean longestNameXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity);
+                boolean listOfNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames.size(),
+                        surfaceFormWords.size()) >= similarity;
+                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(longestNameSplit
+                        .size(), surfaceFormWords.size()) >= similarity;
+
+                if (instanceNamesXSurfaceForms || longestNameXSurfaceForms || listOfNamesXSurfaceFormSimilarEnough || listOfSplitNamesXSurfaceFormSimilarEnough) {
                     return true;
                 }
             }
@@ -314,14 +323,18 @@ public final class SimilarityUtils {
         return phraseMapping1.getNounMappings(textState).containsAllIterable(phraseMapping2.getNounMappings(textState));
     }
 
-    private static double cosineSimilarity(Map<Word, Integer> phraseVector1, Map<Word, Integer> phraseVector2) {
+    static double cosineSimilarity(Map<Word, Integer> firstPhraseVector, Map<Word, Integer> secondPhraseVector) {
 
         CosineSimilarity cosineSimilarity = new CosineSimilarity();
 
-        Map<CharSequence, Integer> vector1 = phraseVector1.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
-        Map<CharSequence, Integer> vector2 = phraseVector2.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+        Map<CharSequence, Integer> firstVector = firstPhraseVector.entrySet()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+        Map<CharSequence, Integer> secondVector = secondPhraseVector.entrySet()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
 
-        return cosineSimilarity.cosineSimilarity(vector1, vector2);
+        return cosineSimilarity.cosineSimilarity(firstVector, secondVector);
     }
 
     public static PhraseMapping getMostSimilarPhraseMapping(TextState textState, PhraseMapping phraseMapping, ImmutableList<PhraseMapping> otherPhraseMappings,
@@ -342,30 +355,6 @@ public final class SimilarityUtils {
 
         }
         return mostSimilarPhraseMapping;
-    }
-
-    public enum PhraseMappingAggregatorStrategy implements ToDoubleBiFunction<PhraseMapping, PhraseMapping> {
-        MAX_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toMap(), p.second().getPhraseVector().toMap()))
-                .max()
-                .orElse(Double.NaN)), MIN_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-                        .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toMap(), p.second().getPhraseVector().toMap()))
-                        .min()
-                        .orElse(Double.NaN)), AVG_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-                                .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toMap(), p.second().getPhraseVector().toMap()))
-                                .average()
-                                .orElse(Double.NaN));
-
-        private final ToDoubleBiFunction<PhraseMapping, PhraseMapping> mapper;
-
-        PhraseMappingAggregatorStrategy(ToDoubleBiFunction<PhraseMapping, PhraseMapping> mapper) {
-            this.mapper = mapper;
-        }
-
-        @Override
-        public double applyAsDouble(PhraseMapping phraseMapping, PhraseMapping phraseMapping2) {
-            return this.mapper.applyAsDouble(phraseMapping, phraseMapping2);
-        }
     }
 
     public static <A, B> ImmutableList<Pair<A, B>> uniqueDot(ImmutableList<A> first, ImmutableList<B> second) {
