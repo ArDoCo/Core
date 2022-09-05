@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.PhraseConcerningTextStateStrategy;
@@ -390,7 +391,7 @@ class MappingCombinerTest implements Claimant {
         var nm1 = textState.getNounMappingByWord(word2);
 
         return SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
-                SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
+                PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
 
     private boolean nounMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {

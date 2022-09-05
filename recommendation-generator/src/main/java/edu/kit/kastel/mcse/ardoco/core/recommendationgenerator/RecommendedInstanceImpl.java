@@ -8,6 +8,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
@@ -54,8 +55,8 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
         this.type = type;
         this.name = name;
         this.internalConfidence = new Confidence(AggregationFunctions.AVERAGE);
-        nameMappings = new HashSet<>();
-        typeMappings = new HashSet<>();
+        nameMappings = Collections.newSetFromMap(new IdentityHashMap<>());
+        typeMappings = Collections.newSetFromMap(new IdentityHashMap<>());
     }
 
     @Override
@@ -66,10 +67,11 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
         if (this.nameMappings.remove(deletedNounMapping)) {
             this.nameMappings.add(replacement);
             replacement.registerChangeListener(this);
-        }
-        if (this.typeMappings.remove(deletedNounMapping)) {
+        } else if (this.typeMappings.remove(deletedNounMapping)) {
             this.typeMappings.add(replacement);
             replacement.registerChangeListener(this);
+        } else {
+            throw new IllegalArgumentException("Try to delete an unknown noun mapping: " + deletedNounMapping);
         }
     }
 
@@ -241,9 +243,9 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
     }
 
     @Override
-    public ImmutableSet<Integer> getSentenceNumbers() {
+    public ImmutableSortedSet<Integer> getSentenceNumbers() {
         MutableSet<Integer> sentenceNos = getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSet();
-        return sentenceNos.toImmutableSet();
+        return sentenceNos.toImmutableSortedSet();
     }
 
     @Override

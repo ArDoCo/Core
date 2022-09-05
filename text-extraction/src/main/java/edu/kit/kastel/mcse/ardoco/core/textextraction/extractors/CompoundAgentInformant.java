@@ -73,7 +73,7 @@ public class CompoundAgentInformant extends Informant {
 
             var nounMapping = textState.addNounMapping(compoundWords.toImmutableSet(), MappingKind.NAME, this, compoundConfidence, compoundWords
                     .toImmutableList(), compoundWords.collect(Word::getText).toImmutableList(), createReferenceForCompound(compoundWords));
-            ((NounMappingImpl) nounMapping).isDefinedAsCompound().set(true);
+            ((NounMappingImpl) nounMapping).setIsDefinedAsCompound(true);
         } else {
             for (var nounMapping : similarReferenceNounMappings) {
 
@@ -85,7 +85,7 @@ public class CompoundAgentInformant extends Informant {
                 var compoundMapping = textState.addNounMapping(newWords.toImmutable(), nounMapping.getDistribution().toMap(), nounMapping.getReferenceWords(),
                         nounMapping.getSurfaceForms(), nounMapping.getReference());
                 nounMapping.onDelete(compoundMapping);
-                ((NounMappingImpl) compoundMapping).isDefinedAsCompound().set(true);
+                ((NounMappingImpl) compoundMapping).setIsDefinedAsCompound(true);
             }
         }
     }

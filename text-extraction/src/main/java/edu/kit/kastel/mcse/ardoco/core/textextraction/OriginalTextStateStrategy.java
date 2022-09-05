@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -60,15 +59,15 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
     }
 
     @Override
-    public NounMapping mergeNounMappings(NounMapping existingNounMapping, NounMapping disposableNounMapping, ImmutableList<Word> referenceWords,
-            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
+    public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
+            MappingKind mappingKind, Claimant claimant, double probability) {
 
-        MutableSet<Word> mergedWords = existingNounMapping.getWords().toSet();
-        mergedWords.add(disposableNounMapping.getReferenceWords().get(0));
+        MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
+        mergedWords.add(secondNounMapping.getReferenceWords().get(0));
         //TODO: This makes only sense under specific conditions, since it is sequentially dependent. It should be fixed in future versions, so that the method is 
 
-        var existingNounMappingDistribution = existingNounMapping.getDistribution().toMap();
-        var disposableNounMappingDistribution = disposableNounMapping.getDistribution().toMap();
+        var existingNounMappingDistribution = firstNounMapping.getDistribution().toMap();
+        var disposableNounMappingDistribution = secondNounMapping.getDistribution().toMap();
         var mergedRawMap = Arrays.stream(MappingKind.values())
                 .collect(Collectors.toMap( //
                         kind -> kind, //
@@ -76,24 +75,22 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
                 ));
         MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
 
-        MutableList<String> mergedSurfaceForms = existingNounMapping.getSurfaceForms().toList();
-        for (var surface : disposableNounMapping.getSurfaceForms()) {
+        MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
+        for (var surface : secondNounMapping.getSurfaceForms()) {
             if (mergedSurfaceForms.contains(surface))
                 continue;
             mergedSurfaceForms.add(surface);
         }
 
-        ImmutableList<Word> mergedReferenceWords = existingNounMapping.getReferenceWords();
+        ImmutableList<Word> mergedReferenceWords = firstNounMapping.getReferenceWords();
 
         String mergedReference = mergedReferenceWords.collect(Word::getText).makeString(" ");
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(existingNounMapping, disposableNounMapping), mergedWords
-                .toSortedSet()
-                .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference, new AtomicBoolean(
-                        false), Sets.mutable.empty());
+        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords.toSortedSet()
+                .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
 
-        this.getTextState().removeNounMappingFromState(existingNounMapping, mergedNounMapping);
-        this.getTextState().removeNounMappingFromState(disposableNounMapping, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
 
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 

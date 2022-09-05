@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
 public class MappingCombinerInformant extends Informant {
@@ -39,7 +40,7 @@ public class MappingCombinerInformant extends Informant {
 
         for (PhraseMapping phraseMapping : phraseMappings) {
             ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState, phraseMapping,
-                    p, SimilarityUtils.PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
+                    p, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
             ImmutableList<NounMapping> nounMappingsOfPhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping);
 
             for (PhraseMapping similarPhraseMapping : similarPhraseMappings) {
