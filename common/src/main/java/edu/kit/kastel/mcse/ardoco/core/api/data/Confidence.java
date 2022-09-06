@@ -133,4 +133,8 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         var other = (Confidence) obj;
         return Objects.equals(agentConfidences, other.agentConfidences) && confidenceAggregator == other.confidenceAggregator;
     }
+
+    public void addAllConfidences(Confidence other) {
+        this.agentConfidences.addAll(other.agentConfidences);
+    }
 }

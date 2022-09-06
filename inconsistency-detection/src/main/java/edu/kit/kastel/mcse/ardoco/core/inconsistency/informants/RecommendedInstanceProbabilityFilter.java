@@ -39,7 +39,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     private MutableSortedBag<Double> probabilities = SortedBags.mutable.empty();
 
     public RecommendedInstanceProbabilityFilter(DataRepository dataRepository) {
-        super("RecommendedInstanceProbabilityFilter", dataRepository);
+        super(RecommendedInstanceProbabilityFilter.class.getSimpleName(), dataRepository);
     }
 
     /**

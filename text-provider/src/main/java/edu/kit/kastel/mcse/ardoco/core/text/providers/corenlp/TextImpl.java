@@ -12,7 +12,7 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 
 class TextImpl implements Text {
 
-    private final CoreDocument coreDocument;
+    final CoreDocument coreDocument;
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
 
@@ -44,11 +44,11 @@ class TextImpl implements Text {
         int wordIndex = 0;
         for (int i = 0; i < coreSentences.size(); i++) {
             var coreSentence = coreSentences.get(i);
-            var sentence = new SentenceImpl(coreSentence, i);
+            var sentence = new SentenceImpl(coreSentence, i, this);
             sentenceList.add(sentence);
 
             for (var token : coreSentence.tokens()) {
-                var word = new WordImpl(token, wordIndex, coreDocument);
+                var word = new WordImpl(token, wordIndex, this);
                 wordList.add(word);
                 wordIndex++;
             }

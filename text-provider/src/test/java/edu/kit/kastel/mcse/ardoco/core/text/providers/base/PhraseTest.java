@@ -50,7 +50,7 @@ public abstract class PhraseTest {
 
     @Test
     void getSentenceTest() {
-        Assertions.assertEquals(sentence, npPhrase.getSentence());
+        Assertions.assertEquals(sentence.getSentenceNumber(), npPhrase.getSentenceNo());
     }
 
     @Test

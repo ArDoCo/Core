@@ -8,163 +8,121 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
 import edu.kit.kastel.informalin.framework.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMappingChangeListener;
 
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
- *
  */
-public class NounMappingImpl implements NounMapping {
-
-    /* Main reference */
-    private final ImmutableList<Word> referenceWords;
-
-    /* Words are the references within the text */
-    private final MutableList<Word> words;
-
-    private final MutableList<Word> coreferences = Lists.mutable.empty();
-
-    /* the different surface forms */
-    private final MutableList<String> surfaceForms;
-
-    private MutableMap<MappingKind, Confidence> distribution;
+public final class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
+    private final Long earliestCreationTime;
+    private final ImmutableSortedSet<Word> words;
+    private final MutableMap<MappingKind, Confidence> distribution;
+    private final ImmutableList<Word> referenceWords;
+    private final ImmutableList<String> surfaceForms;
+    private final String reference;
+    private boolean isDefinedAsCompound;
+    private final Set<NounMappingChangeListener> changeListeners;
 
-    private boolean hasPhrase = false;
+    /**
+     *
+     */
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
+        this.earliestCreationTime = earliestCreationTime;
+        this.words = words;
+        this.distribution = distribution;
+        this.referenceWords = referenceWords;
+        this.surfaceForms = surfaceForms;
+        this.reference = reference;
+        this.isDefinedAsCompound = false;
+        this.changeListeners = Collections.newSetFromMap(new IdentityHashMap<>());
+    }
 
     /**
      * Instantiates a new noun mapping.
      */
-    private NounMappingImpl(ImmutableList<Word> words, Map<MappingKind, Confidence> distribution, List<Word> referenceWords,
+    private NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms) {
-        this.words = Lists.mutable.withAll(words);
-        initializeDistribution(distribution);
-        this.referenceWords = Lists.immutable.withAll(referenceWords);
-        this.surfaceForms = Lists.mutable.withAll(surfaceForms);
-    }
 
-    /**
-     * Instantiates a new noun mapping.
-     */
-    public NounMappingImpl(ImmutableList<Word> words, MappingKind kind, Claimant claimant, double probability, List<Word> referenceWords,
-            ImmutableList<String> occurrences) {
-        Objects.requireNonNull(claimant);
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(
+                referenceWords));
 
-        distribution = Maps.mutable.empty();
-        distribution.put(kind, new Confidence(claimant, probability, DEFAULT_AGGREGATOR));
-
-        this.words = Lists.mutable.withAll(words);
-        initializeDistribution(distribution);
-        this.referenceWords = Lists.immutable.withAll(referenceWords);
-        surfaceForms = Lists.mutable.withAll(occurrences);
-    }
-
-    private NounMappingImpl(NounMapping nm) {
-        words = Lists.mutable.withAll(nm.getWords());
-        initializeDistribution(nm.getDistribution());
-        referenceWords = nm.getReferenceWords();
-        surfaceForms = Lists.mutable.withAll(nm.getSurfaceForms());
-    }
-
-    private void initializeDistribution(Map<MappingKind, Confidence> distribution) {
-        this.distribution = Maps.mutable.withMap(distribution);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
     }
 
-    public static NounMapping createPhraseNounMapping(ImmutableList<Word> phrase, Claimant claimant, double probability) {
-        var occurrences = phrase.collect(Word::getText);
-        var nm = new NounMappingImpl(phrase, MappingKind.NAME, claimant, probability, phrase.castToList(), occurrences);
-        nm.hasPhrase = true;
-        return nm;
+    /**
+     * Instantiates a new noun mapping.
+     */
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords));
+
+        Objects.requireNonNull(claimant);
+        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
+        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
+        this.addKindWithProbability(kind, claimant, probability);
     }
 
-    /**
-     * Returns the surface forms (previously called occurrences) of this mapping.
-     *
-     * @return all appearances of the mapping
-     */
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, reference);
+
+        Objects.requireNonNull(claimant);
+        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
+        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
+        this.addKindWithProbability(kind, claimant, probability);
+
+    }
+
     @Override
-    public final ImmutableList<String> getSurfaceForms() {
-        return Lists.immutable.withAll(surfaceForms);
+    public void registerChangeListener(NounMappingChangeListener listener) {
+        changeListeners.add(listener);
     }
 
-    /**
-     * Returns all words that are contained by the mapping. This should include coreferences.
-     *
-     * @return all words that are referenced with this mapping
-     */
     @Override
-    public final ImmutableList<Word> getWords() {
-        return Lists.immutable.withAll(words);
+    public void onDelete(NounMapping replacement) {
+        changeListeners.forEach(l -> l.onDelete(this, replacement));
     }
 
-    /**
-     * Adds nodes to the mapping, if they are not already contained.
-     *
-     * @param words graph nodes to add to the mapping
-     */
     @Override
-    public final void addWords(ImmutableList<Word> words) {
-        for (var word : words) {
-            addWord(word);
-        }
+    public final ImmutableSortedSet<Word> getWords() {
+        return words;
     }
 
-    /**
-     * Adds a node to the mapping, it its not already contained.
-     *
-     * @param word graph node to add.
-     */
     @Override
-    public final void addWord(Word word) {
-        if (!words.contains(word)) {
-            words.add(word);
-        }
+    public String getReference() {
+        return this.reference;
     }
 
-    /**
-     * Returns the reference, the comparable and naming attribute of this mapping.
-     *
-     * @return the reference
-     */
-    @Override
-    public final String getReference() {
-        if (referenceWords.size() == 1) {
-            return referenceWords.get(0).getText();
-        }
-        return CommonUtilities.createReferenceForPhrase(referenceWords);
+    private static String calculateReference(ImmutableList<Word> words) {
+        return words.collect(Word::getText).makeString(" ");
     }
 
-    /**
-     * Returns the reference words
-     *
-     * @return the reference words
-     */
     @Override
     public final ImmutableList<Word> getReferenceWords() {
         return referenceWords;
     }
 
-    /**
-     * Returns the sentence numbers of occurrences, sorted.
-     *
-     * @return sentence numbers of the occurrences of this mapping.
-     */
     @Override
     public final ImmutableList<Integer> getMappingSentenceNo() {
         MutableList<Integer> positions = Lists.mutable.empty();
@@ -174,85 +132,39 @@ public class NounMappingImpl implements NounMapping {
         return positions.toSortedList().toImmutable();
     }
 
-    /**
-     * Adds occurrences to the mapping
-     *
-     * @param newOccurances occurrences to add
-     */
     @Override
-    public final void addOccurrence(ImmutableList<String> newOccurances) {
-        for (String o : newOccurances) {
-            if (!surfaceForms.contains(o)) {
-                surfaceForms.add(o);
-            }
+    public ImmutableSet<Phrase> getPhrases() {
+        MutableSet<Phrase> phrases = Sets.mutable.empty();
+        for (Word word : this.words) {
+            phrases.add(word.getPhrase());
         }
+        return phrases.toImmutable();
     }
 
-    /**
-     * Adds the kind with probability.
-     *
-     * @param kind        the kind
-     * @param probability the probability
-     */
     @Override
     public void addKindWithProbability(MappingKind kind, Claimant claimant, double probability) {
         var currentProbability = distribution.get(kind);
+        Objects.requireNonNull(claimant);
         currentProbability.addAgentConfidence(claimant, probability);
     }
 
     @Override
     public NounMapping createCopy() {
-        var nm = new NounMappingImpl(words.toImmutable(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), referenceWords.toList(), surfaceForms
-                .toImmutable());
-        nm.hasPhrase = hasPhrase;
-        return nm;
+
+        return new NounMappingImpl(earliestCreationTime, words.toImmutableSet(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable
+                .withAll(referenceWords), surfaceForms.toImmutable());
     }
 
     @Override
-    public Map<MappingKind, Confidence> getDistribution() {
-        return new EnumMap<>(distribution);
+    public ImmutableMap<MappingKind, Confidence> getDistribution() {
+        return distribution.toImmutable();
     }
 
-    /**
-     * Splits all occurrences with a whitespace in it at their spaces and returns all parts that are similar to the
-     * reference. If it contains a separator or similar to the reference it is added to the comparables as a whole.
-     *
-     * @return all parts of occurrences (split at their spaces) that are similar to the reference.
-     */
-    @Override
-    public ImmutableList<String> getRepresentativeComparables() {
-        MutableList<String> comparables = Lists.mutable.empty();
-        for (String occ : surfaceForms) {
-            if (CommonUtilities.containsSeparator(occ)) {
-                var parts = CommonUtilities.splitAtSeparators(occ);
-                for (String part : parts) {
-                    if (SimilarityUtils.areWordsSimilar(getReference(), part)) {
-                        comparables.add(part);
-                    }
-                }
-                comparables.add(occ);
-            } else if (SimilarityUtils.areWordsSimilar(getReference(), occ)) {
-                comparables.add(occ);
-            }
-        }
-        return comparables.toImmutable();
-    }
-
-    /**
-     * Returns the probability of being a mapping of its kind.
-     *
-     * @return probability of being a mapping of its kind.
-     */
     @Override
     public double getProbability() {
         return distribution.get(getKind()).getConfidence();
     }
 
-    /**
-     * Returns the kind: name, type.
-     *
-     * @return the kind
-     */
     @Override
     public MappingKind getKind() {
         var probName = distribution.get(MappingKind.NAME).getConfidence();
@@ -263,28 +175,9 @@ public class NounMappingImpl implements NounMapping {
         return MappingKind.TYPE;
     }
 
-    /**
-     * @return the coreferences
-     */
     @Override
-    public ImmutableList<Word> getCoreferences() {
-        return coreferences.toImmutable();
-    }
-
-    /**
-     * @param coreferences the coreferences to add
-     */
-    @Override
-    public void addCoreferences(Collection<Word> coreferences) {
-        this.coreferences.addAll(coreferences);
-    }
-
-    /**
-     * @param coreference the coreference to add
-     */
-    @Override
-    public void addCoreference(Word coreference) {
-        coreferences.add(coreference);
+    public boolean isCompound() {
+        return isDefinedAsCompound;
     }
 
     @Override
@@ -295,8 +188,8 @@ public class NounMappingImpl implements NounMapping {
                 .collect(Collectors.joining(",")) + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
-                ", position=" + String.join(", ", words.collect(word -> String.valueOf(word.getPosition()))) + //
-                ", probability=" + getProbability() + ", hasPhrase=" + hasPhrase + "]";
+                ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
+                ", probability=" + getProbability() + ", isCompound=" + isCompound() + "]";
     }
 
     @Override
@@ -316,22 +209,14 @@ public class NounMappingImpl implements NounMapping {
         return Objects.equals(getReference(), other.getReference());
     }
 
-    /**
-     * @return if this is a phrase or contains a phrase
-     */
-    @Override
-    public boolean isPhrase() {
-        return hasPhrase;
-    }
-
-    @Override
-    public void setAsPhrase(boolean hasPhrase) {
-        this.hasPhrase = hasPhrase;
-    }
-
     @Override
     public double getProbabilityForKind(MappingKind mappingKind) {
         return distribution.get(mappingKind).getConfidence();
+    }
+
+    @Override
+    public ImmutableList<String> getSurfaceForms() {
+        return this.surfaceForms;
     }
 
     @Override
@@ -339,29 +224,45 @@ public class NounMappingImpl implements NounMapping {
         return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSet();
     }
 
-    @Override
-    public NounMapping merge(NounMapping other) {
-        if (other == null) {
-            return new NounMappingImpl(this);
+    public static Long earliestCreationTime(NounMapping... nounMappings) {
+        Long earliest = Long.MAX_VALUE;
+        for (var mapping : nounMappings) {
+            if (mapping instanceof NounMappingImpl impl && impl.earliestCreationTime() < earliest)
+                earliest = impl.earliestCreationTime();
         }
-        var newWords = Lists.mutable.ofAll(words);
-        newWords.addAll(other.getWords().castToCollection());
-        Map<MappingKind, Confidence> newDistribution = new EnumMap<>(MappingKind.class);
-
-        for (MappingKind mk : MappingKind.values()) {
-            newDistribution.put(mk, Confidence.merge(this.distribution.get(mk), other.getDistribution().get(mk), DEFAULT_AGGREGATOR, AggregationFunctions.MAX));
-        }
-
-        var newSurfaceForms = Lists.mutable.ofAll(surfaceForms);
-        newSurfaceForms.addAll(other.getSurfaceForms().castToCollection());
-
-        var usedReference = referenceWords.castToList();
-
-        NounMapping newNounMapping = new NounMappingImpl(newWords.toImmutable(), newDistribution, usedReference, newSurfaceForms.toImmutable());
-        newNounMapping.addCoreferences(coreferences);
-        newNounMapping.addCoreferences(other.getCoreferences().castToCollection());
-
-        return newNounMapping;
+        return earliest == Long.MAX_VALUE ? null : earliest;
     }
 
+    @Override
+    public int compareTo(NounMappingImpl o) {
+        return Long.compare(this.earliestCreationTime, o.earliestCreationTime);
+    }
+
+    public Long earliestCreationTime() {
+        return earliestCreationTime;
+    }
+
+    public ImmutableSortedSet<Word> words() {
+        return words;
+    }
+
+    public MutableMap<MappingKind, Confidence> distribution() {
+        return distribution;
+    }
+
+    public ImmutableList<Word> referenceWords() {
+        return referenceWords;
+    }
+
+    public ImmutableList<String> surfaceForms() {
+        return surfaceForms;
+    }
+
+    public String reference() {
+        return reference;
+    }
+
+    public void setIsDefinedAsCompound(boolean isDefinedAsCompound) {
+        this.isDefinedAsCompound = isDefinedAsCompound;
+    }
 }

@@ -10,10 +10,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 
 /**
  *
@@ -88,6 +85,16 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
+        public Sentence getSentence() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Phrase getPhrase() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public String getText() {
             return "text";
         }
@@ -128,13 +135,8 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public Sentence getSentence() {
-            return null;
-        }
-
-        @Override
         public int hashCode() {
-            return Objects.hash(getPosition(), getSentence(), getText());
+            return Objects.hash(getPosition(), getSentenceNo(), getText());
         }
 
         @Override
@@ -145,7 +147,8 @@ public abstract class AbstractInconsistencyTypeTest {
             if (!(obj instanceof DummyWord other)) {
                 return false;
             }
-            return getPosition() == other.getPosition() && getSentence() == other.getSentence() && Objects.equals(getText(), other.getText());
+
+            return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
         }
     }
 

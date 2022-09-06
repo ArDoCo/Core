@@ -29,7 +29,7 @@ public class InDepArcsExtractor extends Informant {
      * Prototype constructor.
      */
     public InDepArcsExtractor(DataRepository data) {
-        super("InDepArcsExtractor", data);
+        super(InDepArcsExtractor.class.getSimpleName(), data);
     }
 
     @Override

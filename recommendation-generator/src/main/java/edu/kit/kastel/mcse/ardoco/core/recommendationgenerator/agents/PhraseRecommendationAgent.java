@@ -8,7 +8,7 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.PhraseRecommendationExtractor;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors.CompoundRecommendationExtractor;
 
 public final class PhraseRecommendationAgent extends PipelineAgent {
 
@@ -18,19 +18,15 @@ public final class PhraseRecommendationAgent extends PipelineAgent {
     private List<String> enabledExtractors;
 
     public PhraseRecommendationAgent(DataRepository dataRepository) {
-        super("PhraseRecommendationAgent", dataRepository);
+        super(PhraseRecommendationAgent.class.getSimpleName(), dataRepository);
 
-        extractors = List.of(new PhraseRecommendationExtractor(dataRepository));
+        extractors = List.of(new CompoundRecommendationExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
     }
 
     @Override
-    public void run() {
-        for (var extractor : findByClassName(enabledExtractors, extractors)) {
-            this.addPipelineStep(extractor);
-        }
-
-        super.run();
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledExtractors, extractors);
     }
 
     @Override

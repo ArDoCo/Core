@@ -6,7 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 /**
  * The Interface IWord defines a word in a text.
  */
-public interface Word {
+public interface Word extends Comparable<Word> {
 
     /**
      * Gets the sentence number.
@@ -79,4 +79,15 @@ public interface Word {
      * @return the words that are dependent on this
      */
     ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyTag dependencyTag);
+
+    Phrase getPhrase();
+
+    @Override
+    default int compareTo(Word o) {
+        int compareSentences = Integer.compare(this.getSentenceNo(), o.getSentenceNo());
+        if (compareSentences != 0) {
+            return compareSentences;
+        }
+        return Integer.compare(this.getPosition(), o.getPosition());
+    }
 }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
 
 import java.util.Map;
@@ -33,7 +33,7 @@ public class NameTypeConnectionExtractor extends Informant {
     private double probability = 1.0;
 
     public NameTypeConnectionExtractor(DataRepository dataRepository) {
-        super("NameTypeConnectionExtractor", dataRepository);
+        super(NameTypeConnectionExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override
@@ -68,17 +68,17 @@ public class NameTypeConnectionExtractor extends Informant {
             return;
         }
 
-        var pre = word.getPreWord();
+        var preWord = word.getPreWord();
 
         var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
-            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(pre, MappingKind.NAME);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(preWord, MappingKind.NAME);
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
 
-            var instance = tryToIdentify(textExtractionState, similarTypes, pre, modelState);
+            var instance = tryToIdentify(textExtractionState, similarTypes, preWord, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
@@ -120,7 +120,7 @@ public class NameTypeConnectionExtractor extends Informant {
             return;
         }
 
-        var pre = word.getPreWord();
+        var preWord = word.getPreWord();
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
@@ -128,9 +128,9 @@ public class NameTypeConnectionExtractor extends Informant {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(pre, MappingKind.NAME, MappingKind.TYPE);
+            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(preWord, MappingKind.NAME, MappingKind.TYPE);
 
-            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, pre, modelState);
+            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, preWord, modelState);
             addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
