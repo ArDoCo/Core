@@ -1,22 +1,23 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.text;
 
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
 
 public interface Phrase {
     int getSentenceNo();
-
-    Sentence getSentence();
 
     String getText();
 
     PhraseType getPhraseType();
 
-    List<Word> getContainedWords();
+    ImmutableList<Word> getContainedWords();
 
-    List<Phrase> getSubPhrases();
+    ImmutableList<Phrase> getSubPhrases();
 
     boolean isSuperPhraseOf(Phrase other);
 
     boolean isSubPhraseOf(Phrase other);
+
+    ImmutableMap<Word, Integer> getPhraseVector();
 }

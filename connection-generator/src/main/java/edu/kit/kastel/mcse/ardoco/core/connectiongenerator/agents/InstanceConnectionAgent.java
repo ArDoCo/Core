@@ -24,19 +24,15 @@ public class InstanceConnectionAgent extends PipelineAgent {
      * Create the agent.
      */
     public InstanceConnectionAgent(DataRepository dataRepository) {
-        super("InstanceConnectionAgent", dataRepository);
+        super(InstanceConnectionAgent.class.getSimpleName(), dataRepository);
 
         extractors = List.of(new InstantConnectionExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
     }
 
     @Override
-    public void run() {
-        for (var extractor : findByClassName(enabledExtractors, extractors)) {
-            this.addPipelineStep(extractor);
-        }
-
-        super.run();
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledExtractors, extractors);
     }
 
     @Override

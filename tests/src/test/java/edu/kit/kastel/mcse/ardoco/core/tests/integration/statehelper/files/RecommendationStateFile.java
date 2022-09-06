@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class RecommendationStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(String.join(VALUE_SEPARATOR, "Name", "Type", "Probability", "Names", "Types", "Claimants", LINE_SEPARATOR));
+        builder.append(String.join(VALUE_SEPARATOR, "Name", "Type", "Probability", "Names", "Types", "Sentences", "Claimants", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         for (RecommendedInstance recommendation : recommendationState.getRecommendedInstances()
@@ -63,6 +64,9 @@ public class RecommendationStateFile {
             builder.append(String.join(LIST_SEPARATOR, recommendation.getNameMappings().collect(NounMapping::getReference)));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, recommendation.getTypeMappings().collect(NounMapping::getReference)));
+            builder.append(VALUE_SEPARATOR);
+            ImmutableList<String> sentences = recommendation.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
+            builder.append(String.join(LIST_SEPARATOR, sentences));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, recommendation.getClaimants().collect(c -> c.getClass().getSimpleName())));
             builder.append(LINE_SEPARATOR);
@@ -85,7 +89,7 @@ public class RecommendationStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(String.join(VALUE_SEPARATOR, "Name", "Type", "Probability", "Names", "Types", "Claimants", LINE_SEPARATOR));
+        builder.append(String.join(VALUE_SEPARATOR, "Name", "Type", "Probability", "Names", "Types", "Sentences", "Claimants", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         List<String> lines = Files.readAllLines(sourceFile);
@@ -119,16 +123,21 @@ public class RecommendationStateFile {
                 String probability = df.format(currentRecommendedInstance.getProbability());
                 ImmutableList<String> names = currentRecommendedInstance.getNameMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 ImmutableList<String> types = currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference).toSet().toImmutableList();
+                ImmutableList<String> sentences = currentRecommendedInstance.getSentenceNumbers()
+                        .toSortedList()
+                        .collect(no -> Integer.toString(no))
+                        .toImmutable();
                 ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentLine = String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR,
-                        types), String.join(LIST_SEPARATOR, claimants));
+                        types), String.join(LIST_SEPARATOR, sentences), String.join(LIST_SEPARATOR, claimants));
                 if (nameOrder == 0 && typeOrder == 0) {
 
                     if (!parts[2].equals(probability) ||//
                             TextStateFile.wordsNotEqual(parts[3].split(Pattern.quote(LIST_SEPARATOR), -1), names) ||//
                             TextStateFile.wordsNotEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), types) ||//
-                            TextStateFile.claimantsNotEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
+                            TextStateFile.wordsNotEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), sentences) ||//
+                            TextStateFile.claimantsNotEqual(parts[6].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
                         differentRecommendations.add(currentLine);
                         differentRecommendations.add(LINE_SEPARATOR);
@@ -152,15 +161,15 @@ public class RecommendationStateFile {
 
         }
 
-        builder.append("Different NounMappings:").append(LINE_SEPARATOR);
+        builder.append("Different RecommendedInstances:").append(LINE_SEPARATOR);
         differentRecommendations.forEach(builder::append);
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append("Missing NounMappings:").append(LINE_SEPARATOR);
+        builder.append("Missing RecommendedInstances:").append(LINE_SEPARATOR);
         missingRecommendations.forEach(builder::append);
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append("Additional NounMappings:").append(LINE_SEPARATOR);
+        builder.append("Additional RecommendedInstances:").append(LINE_SEPARATOR);
         additionalRecommendations.forEach(builder::append);
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 

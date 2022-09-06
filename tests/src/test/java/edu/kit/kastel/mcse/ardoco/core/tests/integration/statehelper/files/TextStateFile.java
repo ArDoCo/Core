@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class TextStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(String.join(VALUE_SEPARATOR, "Reference", "Name", "Type", "SurfaceForms", "Words", "Claimants", LINE_SEPARATOR));
+        builder.append(String.join(VALUE_SEPARATOR, "Reference", "Name", "Type", "SurfaceForms", "Words", "Sentences", "Claimants", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         for (var nounMapping : textState.getNounMappings().toSortedListBy(NounMapping::getReference)) {
@@ -62,6 +63,12 @@ public class TextStateFile {
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getSurfaceForms()));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getWords().collect(Word::getText).toSet().toImmutableList()));
+            builder.append(VALUE_SEPARATOR);
+            builder.append(String.join(LIST_SEPARATOR, nounMapping.getWords()
+                    .collect(Word::getSentenceNo)
+                    .toSet()
+                    .toSortedList()
+                    .collect(no -> Integer.toString(no))));
             builder.append(VALUE_SEPARATOR);
             builder.append(String.join(LIST_SEPARATOR, nounMapping.getClaimants().collect(c -> c.getClass().getSimpleName())));
             builder.append(LINE_SEPARATOR);
@@ -80,7 +87,7 @@ public class TextStateFile {
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-        builder.append(String.join(VALUE_SEPARATOR, "Reference", "Name", "Type", "SurfaceForms", "Words", "Claimants", LINE_SEPARATOR));
+        builder.append(String.join(VALUE_SEPARATOR, "Reference", "Name", "Type", "SurfaceForms", "Words", "Sentences", "Claimants", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
         List<String> lines = Files.readAllLines(sourceFile);
@@ -111,17 +118,24 @@ public class TextStateFile {
                 String typeProb = df.format(currentNounMapping.getProbabilityForKind(MappingKind.TYPE));
                 String surfaceForms = String.join(LIST_SEPARATOR, currentNounMapping.getSurfaceForms());
                 ImmutableList<String> words = currentNounMapping.getWords().collect(Word::getText).toSet().toImmutableList();
+                ImmutableList<String> sentences = currentNounMapping.getWords()
+                        .collect(Word::getSentenceNo)
+                        .toSet()
+                        .toSortedList()
+                        .collect(no -> Integer.toString(no))
+                        .toImmutable();
                 ImmutableSet<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentLine = String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String.join(
-                        LIST_SEPARATOR, claimants));
+                        LIST_SEPARATOR, sentences), String.join(LIST_SEPARATOR, claimants));
                 if (order == 0) {
 
                     if (!parts[1].equals(nameProb) ||//
                             !parts[2].equals(typeProb) ||//
                             !parts[3].equals(surfaceForms) ||//
                             TextStateFile.wordsNotEqual(parts[4].split(Pattern.quote(LIST_SEPARATOR), -1), words) ||//
-                            TextStateFile.claimantsNotEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
+                            TextStateFile.wordsNotEqual(parts[5].split(Pattern.quote(LIST_SEPARATOR), -1), sentences) ||//
+                            TextStateFile.claimantsNotEqual(parts[6].split(Pattern.quote(LIST_SEPARATOR), -1), claimants.toList())) {
 
                         differentNounMappings.add(currentLine);
                         differentNounMappings.add(LINE_SEPARATOR);

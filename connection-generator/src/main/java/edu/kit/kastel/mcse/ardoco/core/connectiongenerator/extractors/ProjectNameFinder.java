@@ -28,7 +28,7 @@ public class ProjectNameFinder extends Informant {
     private static final String ERROR_EMPTY_LIST = "List cannot be empty";
 
     @Configurable
-    private static final double PENALTY = Double.NEGATIVE_INFINITY;
+    private double penalty = Double.NEGATIVE_INFINITY;
 
     /**
      * Constructs a new instance of the {@link ProjectNameFinder} with the given data repository.
@@ -73,7 +73,7 @@ public class ProjectNameFinder extends Informant {
                 var words = expandWordForName(projectName, word);
                 var expandedWord = concatenateWords(words);
                 if (SimilarityUtils.areWordsSimilar(projectName, expandedWord)) {
-                    recommendedInstance.addProbability(this, PENALTY);
+                    recommendedInstance.addProbability(this, penalty);
                 }
             }
         }

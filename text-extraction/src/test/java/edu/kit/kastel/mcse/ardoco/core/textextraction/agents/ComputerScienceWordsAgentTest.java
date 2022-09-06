@@ -7,48 +7,51 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.NounMappingImpl;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ComputerScienceWordsExtractor;
 
-class ComputerScienceWordsAgentTest implements Claimant {
-    private ComputerScienceWordsAgent agent;
+class ComputerScienceWordsExtractorTest implements Claimant {
+    private ComputerScienceWordsExtractor agent;
     private ImmutableList<String> data;
     private double modifier;
 
-    private NounMappingImpl nounMapping;
+    private NounMapping nounMapping;
     private MyWord invalidWord;
     private TextStateImpl textState;
 
     @BeforeEach
     void setup() throws NoSuchFieldException, IllegalAccessException {
         var dataRepository = new DataRepository();
-        this.agent = new ComputerScienceWordsAgent(dataRepository);
+        this.agent = new ComputerScienceWordsExtractor(dataRepository);
         setData();
 
+        textState = new TextStateImpl();
         var validWord = wordToListOfWord(data.get(0));
-        nounMapping = new NounMappingImpl(Lists.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, List.copyOf(validWord), Lists.immutable.withAll(
-                Arrays.stream(data.get(0).split("\\s+")).toList()));
+        nounMapping = textState.addNounMapping(Sets.immutable.withAll(validWord), MappingKind.NAME, this, 1.0, Lists.immutable.withAll(validWord),
+                Lists.immutable.withAll(Arrays.stream(data.get(0).split("\\s+")).toList()), validWord.get(0).getText());
         invalidWord = new MyWord("ASDFWJ", validWord.size());
         MyText text = new MyText(Lists.immutable.withAll(Stream.concat(validWord.stream(), Stream.of(invalidWord)).toList()));
         var preprocessingData = new PreprocessingData(text);
         dataRepository.addData(PreprocessingData.ID, preprocessingData);
 
-        textState = new TextStateImpl();
-        textState.addNounMapping(nounMapping, this);
         textState.addNounMapping(invalidWord, MappingKind.NAME, this, 1.0);
 
         dataRepository.addData(TextStateImpl.ID, textState);
@@ -58,7 +61,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
     void testSetProbability() {
         this.agent.run();
         var nounMappingProbability = nounMapping.getProbability();
-        var invalidNounMappingProbability = textState.getNounMappingsByWord(invalidWord).get(0).getProbability();
+        var invalidNounMappingProbability = textState.getNounMappingByWord(invalidWord).getProbability();
 
         Assertions.assertEquals((1.0 + this.modifier) / 2, nounMappingProbability);
         Assertions.assertEquals(1.0, invalidNounMappingProbability);
@@ -74,7 +77,6 @@ class ComputerScienceWordsAgentTest implements Claimant {
         return wordsList;
     }
 
-    @SuppressWarnings("unchecked")
     private void setData() throws NoSuchFieldException, IllegalAccessException {
         // FORCE ENABLE
         var enabledField = this.agent.getClass().getDeclaredField("enabled");
@@ -102,7 +104,7 @@ class ComputerScienceWordsAgentTest implements Claimant {
 
         @Override
         public int getSentenceNo() {
-            throw new UnsupportedOperationException();
+            return 0;
         }
 
         @Override
@@ -148,6 +150,12 @@ class ComputerScienceWordsAgentTest implements Claimant {
         @Override
         public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Phrase getPhrase() {
+            // TODO @Phi: Phrases are now needed for the TextState
+            return Mockito.mock(Phrase.class);
         }
     }
 }

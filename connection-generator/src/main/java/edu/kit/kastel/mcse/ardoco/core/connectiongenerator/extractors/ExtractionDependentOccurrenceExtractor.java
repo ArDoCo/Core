@@ -25,7 +25,7 @@ public class ExtractionDependentOccurrenceExtractor extends Informant {
     private double probability = 1.0;
 
     public ExtractionDependentOccurrenceExtractor(DataRepository dataRepository) {
-        super("ExtractionDependentOccurrenceExtractor", dataRepository);
+        super(ExtractionDependentOccurrenceExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override

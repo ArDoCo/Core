@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
 
 import java.util.Map;
@@ -20,6 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
  */
+
 public class NameTypeExtractor extends Informant {
 
     @Configurable
@@ -29,7 +30,7 @@ public class NameTypeExtractor extends Informant {
      * Creates a new NameTypeAnalyzer
      */
     public NameTypeExtractor(DataRepository dataRepository) {
-        super("NameTypeExtractor", dataRepository);
+        super(NameTypeExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override

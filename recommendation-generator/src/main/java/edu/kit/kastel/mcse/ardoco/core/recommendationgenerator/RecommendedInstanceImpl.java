@@ -7,22 +7,24 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
  * measured by the probability. Every recommended instance has a unique name.
- *
  */
-public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
+public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, NounMappingChangeListener {
 
     private static final AggregationFunctions GLOBAL_AGGREGATOR = AggregationFunctions.AVERAGE;
     /**
@@ -44,8 +46,8 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     public RecommendedInstance createCopy() {
         var copy = new RecommendedInstanceImpl(name, type);
         copy.internalConfidence = internalConfidence.createCopy();
-        copy.nameMappings.addAll(nameMappings.stream().map(ICopyable::createCopy).toList());
-        copy.typeMappings.addAll(typeMappings.stream().map(ICopyable::createCopy).toList());
+        copy.nameMappings.addAll(nameMappings);
+        copy.typeMappings.addAll(typeMappings);
         return copy;
     }
 
@@ -53,8 +55,24 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
         this.type = type;
         this.name = name;
         this.internalConfidence = new Confidence(AggregationFunctions.AVERAGE);
-        nameMappings = new HashSet<>();
-        typeMappings = new HashSet<>();
+        nameMappings = Collections.newSetFromMap(new IdentityHashMap<>());
+        typeMappings = Collections.newSetFromMap(new IdentityHashMap<>());
+    }
+
+    @Override
+    public void onDelete(NounMapping deletedNounMapping, NounMapping replacement) {
+        if (replacement == null)
+            throw new IllegalArgumentException("Replacement should not be null!");
+
+        if (this.nameMappings.remove(deletedNounMapping)) {
+            this.nameMappings.add(replacement);
+            replacement.registerChangeListener(this);
+        } else if (this.typeMappings.remove(deletedNounMapping)) {
+            this.typeMappings.add(replacement);
+            replacement.registerChangeListener(this);
+        } else {
+            throw new IllegalArgumentException("Try to delete an unknown noun mapping: " + deletedNounMapping);
+        }
     }
 
     /**
@@ -73,6 +91,9 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
 
         nameMappings.addAll(nameNodes.castToCollection());
         typeMappings.addAll(typeNodes.castToCollection());
+
+        nameMappings.forEach(nm -> nm.registerChangeListener(this));
+        typeMappings.forEach(nm -> nm.registerChangeListener(this));
     }
 
     private static double calculateMappingProbability(ImmutableList<NounMapping> nameMappings, ImmutableList<NounMapping> typeMappings) {
@@ -135,6 +156,8 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     public void addMappings(NounMapping nameMapping, NounMapping typeMapping) {
         addName(nameMapping);
         addType(typeMapping);
+        nameMapping.registerChangeListener(this);
+        typeMapping.registerChangeListener(this);
     }
 
     /**
@@ -147,6 +170,9 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     public void addMappings(ImmutableList<NounMapping> nameMapping, ImmutableList<NounMapping> typeMapping) {
         nameMapping.forEach(this::addName);
         typeMapping.forEach(this::addType);
+
+        nameMapping.forEach(nm -> nm.registerChangeListener(this));
+        typeMapping.forEach(nm -> nm.registerChangeListener(this));
     }
 
     /**
@@ -157,6 +183,7 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     @Override
     public void addName(NounMapping nameMapping) {
         nameMappings.add(nameMapping);
+        nameMapping.registerChangeListener(this);
     }
 
     /**
@@ -167,6 +194,7 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     @Override
     public void addType(NounMapping typeMapping) {
         typeMappings.add(typeMapping);
+        typeMapping.registerChangeListener(this);
     }
 
     /**
@@ -212,6 +240,12 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant {
     @Override
     public void addProbability(Claimant claimant, double probability) {
         this.internalConfidence.addAgentConfidence(claimant, probability);
+    }
+
+    @Override
+    public ImmutableSortedSet<Integer> getSentenceNumbers() {
+        MutableSet<Integer> sentenceNos = getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSet();
+        return sentenceNos.toImmutableSortedSet();
     }
 
     @Override

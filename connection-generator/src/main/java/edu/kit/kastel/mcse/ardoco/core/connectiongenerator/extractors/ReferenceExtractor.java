@@ -23,7 +23,7 @@ public class ReferenceExtractor extends Informant {
     private double probability = 0.75;
 
     public ReferenceExtractor(DataRepository dataRepository) {
-        super("ReferenceExtractor", dataRepository);
+        super(ReferenceExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override
