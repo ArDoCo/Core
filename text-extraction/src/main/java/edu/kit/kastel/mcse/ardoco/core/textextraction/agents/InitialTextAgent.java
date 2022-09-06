@@ -34,13 +34,12 @@ public class InitialTextAgent extends PipelineAgent {
     }
 
     @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledExtractors, extractors);
-    }
-
-    @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 
+    @Override
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledExtractors, extractors);
+    }
 }

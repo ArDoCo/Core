@@ -9,7 +9,7 @@ import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ComputerScienceWordsExtractor;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ComputerScienceWordsInformant;
 
 /**
  * This agent uses data from DBPedia to mark default words in computer science.
@@ -23,7 +23,7 @@ public class ComputerScienceWordsAgent extends PipelineAgent {
 
     public ComputerScienceWordsAgent(DataRepository dataRepository) {
         super(ComputerScienceWordsAgent.class.getSimpleName(), dataRepository);
-        extractors = List.of(new ComputerScienceWordsExtractor(dataRepository));
+        extractors = List.of(new ComputerScienceWordsInformant(dataRepository));
         enabledExtractors = extractors.stream().map(AbstractPipelineStep::getId).toList();
     }
 

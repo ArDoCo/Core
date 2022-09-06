@@ -3,7 +3,12 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -25,7 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class ComputerScienceWordsExtractor extends Informant {
+public class ComputerScienceWordsInformant extends Informant {
 
     private static final int MAX_WIKI_LEVEL = 3;
 
@@ -61,8 +66,8 @@ public class ComputerScienceWordsExtractor extends Informant {
 
     private final ImmutableList<String> commonCSWords;
 
-    public ComputerScienceWordsExtractor(DataRepository data) {
-        super(ComputerScienceWordsExtractor.class.getSimpleName(), data);
+    public ComputerScienceWordsInformant(DataRepository data) {
+        super(ComputerScienceWordsInformant.class.getSimpleName(), data);
         this.commonCSWords = loadWords();
     }
 
@@ -79,8 +84,10 @@ public class ComputerScienceWordsExtractor extends Informant {
 
         Set<NounMapping> processed = new HashSet<>();
         for (var word : text.words()) {
-            var nounMapping = textState.getNounMappingByWord(word);
-            processNounMapping(textState, word, nounMapping, processed);
+            var nounMappings = textState.getNounMappingsByWord(word);
+            for (var nounMapping : nounMappings) {
+                processNounMapping(textState, word, nounMapping, processed);
+            }
         }
     }
 
@@ -96,9 +103,9 @@ public class ComputerScienceWordsExtractor extends Informant {
                 logger.trace("Found {} for {}", occurrence, word);
             }
 
-            if (mode == ComputerScienceWordsExtractor.CSWAgentMode.ADD_PROBABILITY) {
+            if (mode == ComputerScienceWordsInformant.CSWAgentMode.ADD_PROBABILITY) {
                 addProbability(nounMapping);
-            } else if (mode == ComputerScienceWordsExtractor.CSWAgentMode.DELETE_OCCURRENCE) {
+            } else if (mode == ComputerScienceWordsInformant.CSWAgentMode.DELETE_OCCURRENCE) {
                 deleteOccurrence(textState, nounMapping);
             }
 
