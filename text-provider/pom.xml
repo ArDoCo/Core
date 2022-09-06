@@ -11,7 +11,6 @@
 
   <properties>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
-    <stanford.corenlp.version>4.5.0</stanford.corenlp.version>
   </properties>
 
   <dependencies>

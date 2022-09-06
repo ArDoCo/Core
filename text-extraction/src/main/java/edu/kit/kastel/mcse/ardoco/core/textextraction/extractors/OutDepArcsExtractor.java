@@ -30,7 +30,7 @@ public class OutDepArcsExtractor extends Informant {
      * Prototype constructor.
      */
     public OutDepArcsExtractor(DataRepository dataRepository) {
-        super("OutDepArcsExtractor", dataRepository);
+        super(OutDepArcsExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override

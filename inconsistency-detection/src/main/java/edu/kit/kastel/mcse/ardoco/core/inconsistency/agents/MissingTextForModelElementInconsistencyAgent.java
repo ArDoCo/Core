@@ -18,7 +18,7 @@ public class MissingTextForModelElementInconsistencyAgent extends PipelineAgent 
     private List<String> enabledExtractors;
 
     public MissingTextForModelElementInconsistencyAgent(DataRepository dataRepository) {
-        super("MissingTextForModelElementInconsistencyAgent", dataRepository);
+        super(MissingTextForModelElementInconsistencyAgent.class.getSimpleName(), dataRepository);
 
         extractors = List.of(new MissingTextForModelElementInconsistencyExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();

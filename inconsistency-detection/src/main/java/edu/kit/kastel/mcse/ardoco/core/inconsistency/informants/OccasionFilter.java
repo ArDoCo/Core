@@ -24,7 +24,7 @@ public class OccasionFilter extends Filter {
     private int expectedAppearances = 2;
 
     public OccasionFilter(DataRepository dataRepository) {
-        super("OccasionFilter", dataRepository);
+        super(OccasionFilter.class.getSimpleName(), dataRepository);
     }
 
     @Override

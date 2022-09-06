@@ -21,7 +21,7 @@ public class InstantConnectionExtractor extends Informant {
     private double probabilityWithoutType = 0.8;
 
     public InstantConnectionExtractor(DataRepository dataRepository) {
-        super("InstantConnectionExtractor", dataRepository);
+        super(InstantConnectionExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override

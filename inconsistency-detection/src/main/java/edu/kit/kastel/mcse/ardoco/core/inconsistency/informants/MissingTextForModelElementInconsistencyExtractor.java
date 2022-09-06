@@ -25,7 +25,7 @@ public class MissingTextForModelElementInconsistencyExtractor extends Informant 
     private List<String> types = Lists.mutable.of("BasicComponent", "CompositeComponent");
 
     public MissingTextForModelElementInconsistencyExtractor(DataRepository dataRepository) {
-        super("MissingTextForModelElementInconsistencyExtractor", dataRepository);
+        super(MissingTextForModelElementInconsistencyExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MissingTextForModelElementInconsistencyExtractor extends Informant 
             var linkedModelInstances = connectionState.getInstanceLinks().collect(InstanceLink::getModelInstance).distinct();
 
             // find model instances of given types that are not linked and, thus, are candidates
-            var candidateModelInstances = Lists.mutable.<ModelInstance> empty();
+            var candidateModelInstances = Lists.mutable.<ModelInstance>empty();
             for (var modelInstance : modelState.getInstances()) {
                 if (modelInstanceHasTargetedType(modelInstance, types) && !linkedModelInstances.contains(modelInstance)) {
                     candidateModelInstances.add(modelInstance);

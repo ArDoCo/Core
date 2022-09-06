@@ -21,7 +21,7 @@ public class InitialRecommendationAgent extends PipelineAgent {
     private List<String> enabledExtractors;
 
     public InitialRecommendationAgent(DataRepository dataRepository) {
-        super("InitialRecommendationAgent", dataRepository);
+        super(InitialRecommendationAgent.class.getSimpleName(), dataRepository);
         extractors = List.of(new NameTypeExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
     }

@@ -32,7 +32,12 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     public RecommendationGenerator(DataRepository dataRepository) {
         super("RecommendationGenerator", dataRepository);
 
-        this.agents = Lists.mutable.of(new InitialRecommendationAgent(dataRepository), new PhraseRecommendationAgent(dataRepository));
+        this.agents = Lists.mutable.of(//
+                //new TermBuilder(dataRepository),//
+                new InitialRecommendationAgent(dataRepository),//
+                new PhraseRecommendationAgent(dataRepository)
+
+        );
         this.enabledAgents = agents.collect(Agent::getId);
     }
 

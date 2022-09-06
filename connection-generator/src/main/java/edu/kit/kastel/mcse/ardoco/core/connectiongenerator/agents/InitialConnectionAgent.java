@@ -24,7 +24,7 @@ public class InitialConnectionAgent extends PipelineAgent {
      * Create the agent.
      */
     public InitialConnectionAgent(DataRepository dataRepository) {
-        super("InitialConnectionAgent", dataRepository);
+        super(InitialConnectionAgent.class.getSimpleName(), dataRepository);
 
         extractors = List.of(new NameTypeConnectionExtractor(dataRepository), new ExtractionDependentOccurrenceExtractor(dataRepository));
         enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();

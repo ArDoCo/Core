@@ -10,11 +10,11 @@ import org.eclipse.collections.impl.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 import edu.stanford.nlp.trees.TypedDependency;
@@ -22,50 +22,69 @@ import edu.stanford.nlp.trees.TypedDependency;
 class WordImpl implements Word {
 
     private final CoreLabel token;
-    private final CoreDocument coreDocument;
+    private final TextImpl parent;
     private final int index;
-    private Sentence sentence = null;
     private Word preWord = null;
     private Word nextWord = null;
 
-    WordImpl(CoreLabel token, int index, CoreDocument coreDocument) {
+    private final int sentenceNo;
+    private Phrase phrase;
+    private final String text;
+    private final POSTag posTag;
+
+    WordImpl(CoreLabel token, int index, TextImpl parent) {
         this.token = token;
         this.index = index;
-        this.coreDocument = coreDocument;
+        this.parent = parent;
+
+        this.sentenceNo = token.sentIndex();
+        this.text = token.get(CoreAnnotations.TextAnnotation.class);
+        this.posTag = POSTag.get(token.get(CoreAnnotations.PartOfSpeechAnnotation.class));
     }
 
     @Override
     public int getSentenceNo() {
-        return token.sentIndex();
+        return sentenceNo;
     }
 
     @Override
     public Sentence getSentence() {
-        if (this.sentence == null) {
-            int sentenceNo = getSentenceNo();
-            var coreSentence = coreDocument.sentences().get(sentenceNo);
-            sentence = new SentenceImpl(coreSentence, sentenceNo);
+        return this.parent.getSentences().get(this.sentenceNo);
+    }
+
+    @Override
+    public Phrase getPhrase() {
+        if (this.phrase == null) {
+            this.phrase = loadPhrase();
         }
-        return sentence;
+        return this.phrase;
+    }
+
+    private Phrase loadPhrase() {
+        var currentPhrase = getSentence().getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
+        var subPhrases = List.of(currentPhrase);
+        while (!subPhrases.isEmpty()) {
+            currentPhrase = subPhrases.get(0);
+            subPhrases = currentPhrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
+        }
+        return currentPhrase;
     }
 
     @Override
     public String getText() {
-        return token.get(CoreAnnotations.TextAnnotation.class);
+        return text;
     }
 
     @Override
     public POSTag getPosTag() {
-        String posString = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-        return POSTag.get(posString);
+        return this.posTag;
     }
 
     @Override
     public Word getPreWord() {
         int preWordIndex = index - 1;
         if (preWord == null && preWordIndex > 0) {
-            var coreDocumentToken = coreDocument.tokens().get(preWordIndex);
-            preWord = new WordImpl(coreDocumentToken, preWordIndex, coreDocument);
+            preWord = parent.words().get(preWordIndex);
         }
         return preWord;
     }
@@ -73,10 +92,8 @@ class WordImpl implements Word {
     @Override
     public Word getNextWord() {
         int nextWordIndex = index + 1;
-        var tokens = coreDocument.tokens();
-        if (nextWord == null && nextWordIndex < tokens.size()) {
-            var coreDocumentToken = tokens.get(nextWordIndex);
-            nextWord = new WordImpl(coreDocumentToken, nextWordIndex, coreDocument);
+        if (nextWord == null && nextWordIndex < parent.getLength()) {
+            nextWord = parent.words().get(nextWordIndex);
         }
         return nextWord;
     }
@@ -131,13 +148,13 @@ class WordImpl implements Word {
 
     private Word getCorrespondingWordForFirstTokenBasedOnSecondToken(CoreLabel firstToken, CoreLabel secondToken) {
         var firstTokenIndex = (firstToken.index() - secondToken.index()) + index;
-        return new WordImpl(firstToken, firstTokenIndex, coreDocument);
+        return parent.words().get(firstTokenIndex);
     }
 
     private List<TypedDependency> getDependenciesOfType(DependencyTag dependencyTag) {
         List<TypedDependency> typedDependencies = Lists.mutable.empty();
-        var coreSentence = coreDocument.sentences().get(getSentenceNo());
-        SemanticGraph dependencies = coreSentence.dependencyParse();
+        var sentence = (SentenceImpl) parent.getSentences().get(getSentenceNo());
+        SemanticGraph dependencies = sentence.dependencyParse();
         for (var typedDependency : dependencies.typedDependencies()) {
             GrammaticalRelation rel = typedDependency.reln();
             if (dependencyTag.name().equalsIgnoreCase(rel.getShortName())) {
@@ -153,11 +170,13 @@ class WordImpl implements Word {
             return true;
         if (!(o instanceof WordImpl word))
             return false;
-        return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag();
+
+        return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag() && getSentenceNo() == word
+                .getSentenceNo();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPosition(), getPosTag(), getText());
+        return Objects.hash(getPosition(), getPosTag(), getText(), getSentenceNo());
     }
 }

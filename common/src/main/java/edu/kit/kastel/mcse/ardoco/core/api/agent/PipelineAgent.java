@@ -48,5 +48,4 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
      * @return the list of Informants
      */
     protected abstract List<Informant> getEnabledPipelineSteps();
-
 }

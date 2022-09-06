@@ -28,7 +28,7 @@ public class SeparatedNamesExtractor extends Informant {
      * Prototype constructor.
      */
     public SeparatedNamesExtractor(DataRepository dataRepository) {
-        super("SeparatedNamesExtractor", dataRepository);
+        super(SeparatedNamesExtractor.class.getSimpleName(), dataRepository);
     }
 
     @Override

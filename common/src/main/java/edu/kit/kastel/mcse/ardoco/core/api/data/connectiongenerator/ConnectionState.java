@@ -71,10 +71,6 @@ public interface ConnectionState extends ICopyable<ConnectionState>, IConfigurab
                     var tracelink = new TraceLink(instanceLink, instanceLink.getModelInstance(), word);
                     tracelinks.add(tracelink);
                 }
-                for (var word : nm.getCoreferences()) {
-                    var tracelink = new TraceLink(instanceLink, instanceLink.getModelInstance(), word);
-                    tracelinks.add(tracelink);
-                }
             }
         }
         return tracelinks.toImmutable();

@@ -32,8 +32,11 @@ public class TextExtraction extends AbstractExecutionStage {
      */
     public TextExtraction(DataRepository dataRepository) {
         super("TextExtraction", dataRepository);
-
-        this.agents = Lists.mutable.of(new InitialTextAgent(dataRepository), new PhraseAgent(dataRepository), new ComputerScienceWordsAgent(dataRepository));
+        this.agents = Lists.mutable.of(//
+                new InitialTextAgent(dataRepository),//
+                new PhraseAgent(dataRepository), //
+                new ComputerScienceWordsAgent(dataRepository)//
+        );
         this.enabledAgents = agents.collect(Agent::getId);
     }
 

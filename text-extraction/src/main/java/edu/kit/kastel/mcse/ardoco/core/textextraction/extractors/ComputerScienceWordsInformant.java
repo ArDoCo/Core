@@ -118,7 +118,7 @@ public class ComputerScienceWordsInformant extends Informant {
     }
 
     private void deleteOccurrence(TextState textState, NounMapping nounMapping) {
-        textState.removeNounMapping(nounMapping);
+        textState.removeNounMapping(nounMapping, null);
     }
 
     private boolean match(NounMapping nounMapping, String csWord) {
