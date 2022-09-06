@@ -43,15 +43,14 @@ public class ConnectionGenerator extends AbstractExecutionStage {
     }
 
     @Override
-    public void run() {
+    protected void initializeState() {
         var connectionStates = ConnectionStatesImpl.build();
         getDataRepository().addData(ConnectionStates.ID, connectionStates);
+    }
 
-        for (var agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
-        }
-
-        super.run();
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
     }
 
     @Override

@@ -20,9 +20,6 @@ public class InitialRecommendationAgent extends PipelineAgent {
     @Configurable
     private List<String> enabledExtractors;
 
-    /**
-     * Prototype constructor.
-     */
     public InitialRecommendationAgent(DataRepository dataRepository) {
         super(InitialRecommendationAgent.class.getSimpleName(), dataRepository);
         extractors = List.of(new NameTypeExtractor(dataRepository));
