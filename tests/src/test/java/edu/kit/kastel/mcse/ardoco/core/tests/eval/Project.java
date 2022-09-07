@@ -15,28 +15,28 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.000, .000, .256) //
+            new EvaluationResults(.000, .000, .315) //
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.000, .000, .222) //
+            new EvaluationResults(.000, .000, .293) //
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new EvaluationResults(.999, .713, .832), //
-            new EvaluationResults(.000, .000, .250) //
+            new EvaluationResults(.000, .000, .418) //
     ), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.000, .000, .272) //
+            new EvaluationResults(.000, .000, .287) //
     );
 
     private final String model;
