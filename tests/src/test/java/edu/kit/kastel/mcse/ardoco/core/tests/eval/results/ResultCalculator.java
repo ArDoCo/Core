@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;

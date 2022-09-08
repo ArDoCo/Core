@@ -32,12 +32,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.OverallResultsCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
 
 /**

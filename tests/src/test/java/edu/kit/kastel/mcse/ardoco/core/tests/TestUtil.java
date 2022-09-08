@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExtendedExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.OverallResultsCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 /**
