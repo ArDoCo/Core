@@ -54,12 +54,20 @@ public enum Project {
     }
 
     /**
+     * Returns the File that represents the model for this project.
+     * 
      * @return the File that represents the model for this project
      */
     public File getModelFile() {
         return new File(model);
     }
 
+    /**
+     * Returns the File that represents the model for this project with the given model type.
+     * 
+     * @param modelType the model type
+     * @return the File that represents the model for this project
+     */
     public File getModelFile(ArchitectureModelType modelType) {
         return switch (modelType) {
         case PCM -> getModelFile();
@@ -68,6 +76,8 @@ public enum Project {
     }
 
     /**
+     * Returns the File that represents the text for this project.
+     * 
      * @return the File that represents the text for this project
      */
     public File getTextFile() {
@@ -75,6 +85,8 @@ public enum Project {
     }
 
     /**
+     * Returns the {@link GoldStandard} for this project.
+     * 
      * @return the File that represents the gold standard for this project
      */
     public File getGoldStandardFile() {
@@ -82,6 +94,8 @@ public enum Project {
     }
 
     /**
+     * Returns the {@link GoldStandard} for this project for the given model connector.
+     * 
      * @param pcmModel the model connector (pcm)
      * @return the {@link GoldStandard} for this project
      */
@@ -90,6 +104,8 @@ public enum Project {
     }
 
     /**
+     * Returns the expected results for Traceability Link Recovery.
+     * 
      * @return the expectedTraceLinkResults
      */
     public ExpectedResults getExpectedTraceLinkResults() {
@@ -97,6 +113,8 @@ public enum Project {
     }
 
     /**
+     * Returns the expected results for Inconsistency Detection.
+     * 
      * @return the expectedInconsistencyResults
      */
     public ExpectedResults getExpectedInconsistencyResults() {
