@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExtendedExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
@@ -51,6 +53,30 @@ public class TestUtil {
         List<String> falseNegativesList = new ArrayList<>(falseNegatives);
 
         return new ExplicitEvaluationResults<>(truePositivesList, falseNegativesList, falsePositivesList);
+    }
+
+    /**
+     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link ExplicitEvaluationResults evaluation
+     * results}.
+     * Uses the total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
+     * 
+     * @param arDoCoResult      the output of ArDoCo
+     * @param evaluationResults the evaluation results
+     * @return the number of true negatives
+     */
+    public static int calculateTrueNegatives(ArDoCoResult arDoCoResult, ExplicitEvaluationResults<?> evaluationResults) {
+        var truePositives = evaluationResults.getTruePositives().size();
+        var falsePositives = evaluationResults.getFalsePositives().size();
+        var falseNegatives = evaluationResults.getFalseNegatives().size();
+
+        int sentences = arDoCoResult.getText().getSentences().size();
+        int modelElements = 0;
+        for (var model : arDoCoResult.getModelIds()) {
+            modelElements += arDoCoResult.getModelState(model).getInstances().size();
+        }
+
+        int confusionMatrixSum = sentences * modelElements;
+        return confusionMatrixSum - (truePositives + falsePositives + falseNegatives);
     }
 
     /**
@@ -188,6 +214,11 @@ public class TestUtil {
                 "%n%s:%n\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", name, results
                         .getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(), expectedResults
                                 .getF1());
+        if (results instanceof ExtendedExplicitEvaluationResults<?> extendedExplicitEvaluationResults) {
+            var accuracy = extendedExplicitEvaluationResults.getAccuracy();
+            var phiCoefficient = extendedExplicitEvaluationResults.getPhiCoefficient();
+            infoString += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f%n\tPhi Coef.:%7.3f", accuracy, phiCoefficient);
+        }
         logger.info(infoString);
     }
 
