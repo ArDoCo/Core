@@ -36,10 +36,16 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExtendedExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLModelFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLPreviousFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSentenceFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
 
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
@@ -228,7 +234,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         var goldStandard = getGoldStandard(project);
 
-        return TestUtil.compare(traceLinks.toSet(), goldStandard);
+        var results = TestUtil.compare(traceLinks.toSet(), goldStandard);
+        var trueNegatives = TestUtil.calculateTrueNegatives(arDoCoResult, results);
+        return new ExtendedExplicitEvaluationResults<>(results, trueNegatives);
     }
 
     private List<String> getGoldStandard(Project project) {
