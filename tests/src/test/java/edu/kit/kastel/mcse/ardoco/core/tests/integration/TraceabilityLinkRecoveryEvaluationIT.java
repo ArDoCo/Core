@@ -214,6 +214,13 @@ class TraceabilityLinkRecoveryEvaluationIT {
                         .getRecall() + " is below the expected minimum value " + expectedResults.recall()), //
                 () -> Assertions.assertTrue(results.getF1() >= expectedResults.f1(), "F1 " + results
                         .getF1() + " is below the expected minimum value " + expectedResults.f1()));
+        if (results instanceof ExtendedExplicitEvaluationResults<?> xxResults) {
+            Assertions.assertAll(//
+                    () -> Assertions.assertTrue(xxResults.getAccuracy() >= expectedResults.accuracy(), "Accuracy " + xxResults
+                            .getAccuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                    () -> Assertions.assertTrue(xxResults.getPhiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + xxResults
+                            .getPhiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+        }
     }
 
     private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {

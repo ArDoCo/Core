@@ -9,7 +9,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
  */
 public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResults<T> {
 
-    private int trueNegatives = 0;
+    private long trueNegatives = 0;
 
     /**
      * Create an instance of {@link ExtendedExplicitEvaluationResults} with the provided {@link ExplicitEvaluationResults} as base.
@@ -39,7 +39,7 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
     }
 
     /**
-     * Returns the Phi Coefficient (also know as mean square contingency coefficient (MCC)) based on the true positives, false positives, false negatives, and
+     * Returns the Phi Coefficient (also known as mean square contingency coefficient (MCC)) based on the true positives, false positives, false negatives, and
      * true negatives in the results.
      * The return value lies between -1 and +1. -1 show perfect disagreement, +1 shows perfect agreement and 0 indicates no relationship.
      * Therefore, good values should be close to +1.
@@ -49,9 +49,9 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
      * @return the value for Phi Coefficient (or MCC)
      */
     public double getPhiCoefficient() {
-        var truePositives = this.getTruePositives().size();
-        var falsePositives = this.getFalsePositives().size();
-        var falseNegatives = this.getFalseNegatives().size();
+        long truePositives = this.getTruePositives().size();
+        long falsePositives = this.getFalsePositives().size();
+        long falseNegatives = this.getFalseNegatives().size();
 
         double numerator = (truePositives * trueNegatives) - (falsePositives * falseNegatives);
 

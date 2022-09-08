@@ -53,6 +53,8 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     }
 
     /**
+     * Returns the list of false negatives.
+     * 
      * @return the list of false negatives
      */
     public ImmutableList<T> getFalseNegatives() {
@@ -60,6 +62,8 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     }
 
     /**
+     * Returns the list of false positives.
+     * 
      * @return the list of false positives
      */
     public ImmutableList<T> getFalsePositives() {
@@ -67,6 +71,8 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     }
 
     /**
+     * Returns the list of true positives.
+     * 
      * @return the list of true positives
      */
     public ImmutableList<T> getTruePositives() {
