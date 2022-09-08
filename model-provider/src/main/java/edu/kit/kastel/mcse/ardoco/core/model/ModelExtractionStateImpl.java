@@ -28,27 +28,12 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     private final MutableSet<String> names;
     private transient ImmutableList<ModelInstance> instances;
 
-    @Override
-    public ModelExtractionState createCopy() {
-        return new ModelExtractionStateImpl(modelId, metamodelType, instanceTypes.toImmutable(), names.toImmutable(), //
-                instances.collect(ModelInstance::createCopy));
-    }
-
     // For generation of configuration
     private ModelExtractionStateImpl() {
         this.modelId = null;
         this.metamodelType = null;
         this.instanceTypes = null;
         this.names = null;
-    }
-
-    private ModelExtractionStateImpl(String modelId, Metamodel metamodelType, ImmutableSet<String> instanceTypes, ImmutableSet<String> names,
-            ImmutableList<ModelInstance> instances) {
-        this.modelId = modelId;
-        this.metamodelType = metamodelType;
-        this.instanceTypes = instanceTypes.toSet();
-        this.instances = instances;
-        this.names = names.toSet();
     }
 
     /**

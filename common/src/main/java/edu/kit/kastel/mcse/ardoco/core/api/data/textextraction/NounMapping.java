@@ -6,7 +6,6 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
@@ -15,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 /**
  * The Interface INounMapping defines the mapping .
  */
-public interface NounMapping extends ICopyable<NounMapping> {
+public interface NounMapping {
 
     /**
      * Returns the surface forms (previously called occurrences) of this mapping.
