@@ -23,13 +23,6 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
 
     private transient MutableList<RecommendedInstance> recommendedInstances;
 
-    @Override
-    public RecommendationState createCopy() {
-        var recommendationState = new RecommendationStateImpl();
-        recommendationState.recommendedInstances = recommendedInstances.collect(RecommendedInstance::createCopy);
-        return recommendationState;
-    }
-
     /**
      * Creates a new recommendation state.
      */
@@ -73,8 +66,8 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public RecommendedInstance addRecommendedInstance(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameMappings,
             ImmutableList<NounMapping> typeMappings) {
         var recommendedInstance = new RecommendedInstanceImpl(name, type, claimant, probability, //
-                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),
-                Lists.immutable.withAll(new HashSet<>(typeMappings.castToCollection())));
+                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())), Lists.immutable.withAll(new HashSet<>(typeMappings
+                        .castToCollection())));
         this.addRecommendedInstance(recommendedInstance);
 
         return recommendedInstance;

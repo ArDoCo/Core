@@ -18,7 +18,6 @@ import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
-import edu.kit.kastel.informalin.framework.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
@@ -146,13 +145,6 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
         var currentProbability = distribution.get(kind);
         Objects.requireNonNull(claimant);
         currentProbability.addAgentConfidence(claimant, probability);
-    }
-
-    @Override
-    public NounMapping createCopy() {
-
-        return new NounMappingImpl(earliestCreationTime, words.toImmutableSet(), JavaUtils.copyMap(this.distribution, Confidence::createCopy), Lists.immutable
-                .withAll(referenceWords), surfaceForms.toImmutable());
     }
 
     @Override

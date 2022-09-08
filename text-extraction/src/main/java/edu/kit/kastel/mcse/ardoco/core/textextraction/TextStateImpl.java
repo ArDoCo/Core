@@ -285,18 +285,6 @@ public class TextStateImpl extends AbstractState implements TextState {
         return n -> n.getKind() == mappingKind;
     }
 
-    @Override
-    public TextState createCopy() {
-        var textExtractionState = new TextStateImpl(strategy.creator());
-        textExtractionState.nounMappings = nounMappings.toList()
-                .collect(ElementWrapper::getElement)
-                .collect(NounMapping::createCopy)
-                .collect(this::wrap)
-                .toList();
-        textExtractionState.phraseMappings = phraseMappings.collect(PhraseMapping::createCopy);
-        return textExtractionState;
-    }
-
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
         addNounMappingToState(nounMapping);
         phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases().castToSet()));
