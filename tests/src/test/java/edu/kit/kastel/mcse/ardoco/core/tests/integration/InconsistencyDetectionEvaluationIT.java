@@ -33,6 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceI
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
@@ -135,7 +136,7 @@ class InconsistencyDetectionEvaluationIT {
         OVERALL_RESULTS_CALCULATOR.addResult(project, resultCalculator);
         var weightedResults = resultCalculator.getWeightedAveragePRF1();
 
-        EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
+        var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, resultCalculator, expectedInconsistencyResults);
         checkResults(weightedResults, expectedInconsistencyResults);
         writeOutResults(project, results.getTwo(), runs);
@@ -164,7 +165,7 @@ class InconsistencyDetectionEvaluationIT {
         ResultCalculator resultCalculator = results.getOne();
         OVERALL_RESULT_CALCULATOR_BASELINE.addResult(project, resultCalculator);
 
-        EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
+        var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, resultCalculator, expectedInconsistencyResults);
     }
 
@@ -215,7 +216,7 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private void logResults(Project project, ResultCalculator resultCalculator, EvaluationResults expectedResults) {
+    private void logResults(Project project, ResultCalculator resultCalculator, ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
             var results = resultCalculator.getWeightedAveragePRF1();
             String name = project.name();
@@ -223,14 +224,14 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private void checkResults(EvaluationResults results, EvaluationResults expectedResults) {
+    private void checkResults(EvaluationResults results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(), "Precision " + results
-                        .getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(), "Recall " + results
-                        .getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(), "F1 " + results
-                        .getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.precision(), "Precision " + results
+                        .getPrecision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.recall(), "Recall " + results
+                        .getRecall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.f1(), "F1 " + results
+                        .getF1() + " is below the expected minimum value " + expectedResults.f1()));
     }
 
     private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {

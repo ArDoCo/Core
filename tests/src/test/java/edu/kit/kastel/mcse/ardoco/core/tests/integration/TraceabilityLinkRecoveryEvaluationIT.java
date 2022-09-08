@@ -208,12 +208,12 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
 
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(), "Precision " + results
-                        .getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(), "Recall " + results
-                        .getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(), "F1 " + results
-                        .getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.precision(), "Precision " + results
+                        .getPrecision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.recall(), "Recall " + results
+                        .getRecall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.f1(), "F1 " + results
+                        .getF1() + " is below the expected minimum value " + expectedResults.f1()));
     }
 
     private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {

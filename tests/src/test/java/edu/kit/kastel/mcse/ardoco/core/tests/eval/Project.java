@@ -14,38 +14,38 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/pcm/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new EvaluationResults(.999, .620, .765), //
-            new EvaluationResults(.000, .000, .256) //
+            new ExpectedResults(.999, .620, .765, .978, .778), //
+            new ExpectedResults(.000, .000, .256) //
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new EvaluationResults(.913, .880, .896), //
-            new EvaluationResults(.000, .000, .222) //
+            new ExpectedResults(.913, .880, .896, .988, .890), //
+            new ExpectedResults(.000, .000, .222) //
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
-            new EvaluationResults(.999, .713, .832), //
-            new EvaluationResults(.000, .000, .250) //
+            new ExpectedResults(.999, .713, .832, .982, .837), //
+            new ExpectedResults(.000, .000, .250) //
     ), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
-            new EvaluationResults(.877, .826, .850), //
-            new EvaluationResults(.000, .000, .272) //
+            new ExpectedResults(.877, .826, .850, .984, .844), //
+            new ExpectedResults(.000, .000, .272) //
     );
 
     private final String model;
     private final String textFile;
     private final String goldStandard;
-    private final EvaluationResults expectedTraceLinkResults;
-    private final EvaluationResults expectedInconsistencyResults;
+    private final ExpectedResults expectedTraceLinkResults;
+    private final ExpectedResults expectedInconsistencyResults;
 
-    Project(String model, String textFile, String goldStandard, EvaluationResults expectedTraceLinkResults, EvaluationResults expectedInconsistencyResults) {
+    Project(String model, String textFile, String goldStandard, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
         this.model = model;
         this.textFile = textFile;
         this.goldStandard = goldStandard;
@@ -92,14 +92,14 @@ public enum Project {
     /**
      * @return the expectedTraceLinkResults
      */
-    public EvaluationResults getExpectedTraceLinkResults() {
+    public ExpectedResults getExpectedTraceLinkResults() {
         return expectedTraceLinkResults;
     }
 
     /**
      * @return the expectedInconsistencyResults
      */
-    public EvaluationResults getExpectedInconsistencyResults() {
+    public ExpectedResults getExpectedInconsistencyResults() {
         return expectedInconsistencyResults;
     }
 }

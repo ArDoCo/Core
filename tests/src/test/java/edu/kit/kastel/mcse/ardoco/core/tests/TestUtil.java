@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExtendedExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
@@ -209,15 +210,15 @@ public class TestUtil {
      * @param results         the results
      * @param expectedResults the expected results
      */
-    public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, EvaluationResults expectedResults) {
+    public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH,
                 "%n%s:%n\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", name, results
-                        .getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(), expectedResults
-                                .getF1());
+                        .getPrecision(), expectedResults.precision(), results.getRecall(), expectedResults.recall(), results.getF1(), expectedResults.f1());
         if (results instanceof ExtendedExplicitEvaluationResults<?> extendedExplicitEvaluationResults) {
             var accuracy = extendedExplicitEvaluationResults.getAccuracy();
             var phiCoefficient = extendedExplicitEvaluationResults.getPhiCoefficient();
-            infoString += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f%n\tPhi Coef.:%7.3f", accuracy, phiCoefficient);
+            infoString += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tPhi Coef.:%7.3f (min. expected: %.3f)", accuracy,
+                    expectedResults.accuracy(), phiCoefficient, expectedResults.phiCoefficient());
         }
         logger.info(infoString);
     }
