@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
 import java.util.Map;
 
@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
  * The analyzer examines the incoming dependency arcs of the current node.
  *
  */
-public class InDepArcsExtractor extends Informant {
+public class InDepArcsInformant extends Informant {
 
     @Configurable
     private double nameOrTypeWeight = 0.5;
@@ -28,8 +28,8 @@ public class InDepArcsExtractor extends Informant {
     /**
      * Prototype constructor.
      */
-    public InDepArcsExtractor(DataRepository data) {
-        super(InDepArcsExtractor.class.getSimpleName(), data);
+    public InDepArcsInformant(DataRepository data) {
+        super(InDepArcsInformant.class.getSimpleName(), data);
     }
 
     @Override

@@ -26,13 +26,13 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistency
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementSupport;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 
-public class MissingModelElementInconsistencyExtractor extends Informant {
+public class MissingModelElementInconsistencyInformant extends Informant {
 
     @Configurable
     private double minSupport = 1;
 
-    public MissingModelElementInconsistencyExtractor(DataRepository dataRepository) {
-        super(MissingModelElementInconsistencyExtractor.class.getSimpleName(), dataRepository);
+    public MissingModelElementInconsistencyInformant(DataRepository dataRepository) {
+        super(MissingModelElementInconsistencyInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override
