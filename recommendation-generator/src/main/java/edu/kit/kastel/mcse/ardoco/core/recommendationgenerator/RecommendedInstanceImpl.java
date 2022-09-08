@@ -42,15 +42,6 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
     private final Set<NounMapping> typeMappings;
     private final Set<NounMapping> nameMappings;
 
-    @Override
-    public RecommendedInstance createCopy() {
-        var copy = new RecommendedInstanceImpl(name, type);
-        copy.internalConfidence = internalConfidence.createCopy();
-        copy.nameMappings.addAll(nameMappings);
-        copy.typeMappings.addAll(typeMappings);
-        return copy;
-    }
-
     private RecommendedInstanceImpl(String name, String type) {
         this.type = type;
         this.name = name;

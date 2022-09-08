@@ -92,11 +92,6 @@ public final class PhraseMappingImpl implements PhraseMapping {
     }
 
     @Override
-    public PhraseMapping createCopy() {
-        return new PhraseMappingImpl(phrases);
-    }
-
-    @Override
     public String toString() {
         return "PhraseMapping{" + "phrases=" + phrases + '}';
     }

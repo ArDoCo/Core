@@ -24,9 +24,4 @@ public class ProjectPipelineDataImpl implements ProjectPipelineData {
     public String getProjectName() {
         return projectName;
     }
-
-    @Override
-    public ProjectPipelineData createCopy() {
-        return new ProjectPipelineDataImpl(projectName);
-    }
 }

@@ -52,13 +52,6 @@ public class InconsistencyStateImpl extends AbstractState implements Inconsisten
     }
 
     @Override
-    public InconsistencyState createCopy() {
-        var newInconsistencyState = new InconsistencyStateImpl();
-        newInconsistencyState.inconsistencies = inconsistencies.collect(Inconsistency::createCopy);
-        return newInconsistencyState;
-    }
-
-    @Override
     public boolean addRecommendedInstance(RecommendedInstance recommendedInstance) {
         return this.recommendedInstances.add(recommendedInstance);
     }
