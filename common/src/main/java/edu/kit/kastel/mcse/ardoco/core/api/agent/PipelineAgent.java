@@ -30,8 +30,8 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
      */
     protected final void initialize() {
         initializeState();
-        for (var extractor : getEnabledPipelineSteps()) {
-            this.addPipelineStep(extractor);
+        for (var informant : getEnabledPipelineSteps()) {
+            this.addPipelineStep(informant);
         }
     }
 
