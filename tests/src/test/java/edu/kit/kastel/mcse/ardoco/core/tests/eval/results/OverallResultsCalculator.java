@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 import java.util.function.Function;
 
@@ -7,6 +7,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 /**
  * This class implements functionality to calculate overall results (averaged) when evaluating a number of projects.

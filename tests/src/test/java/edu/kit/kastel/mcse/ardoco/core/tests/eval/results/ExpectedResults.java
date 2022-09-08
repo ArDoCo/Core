@@ -1,4 +1,5 @@
-package edu.kit.kastel.mcse.ardoco.core.tests.eval;
+/* Licensed under MIT 2022. */
+package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 /**
  * This record represents expected results for an evaluation

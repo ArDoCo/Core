@@ -5,6 +5,7 @@ import java.io.File;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.

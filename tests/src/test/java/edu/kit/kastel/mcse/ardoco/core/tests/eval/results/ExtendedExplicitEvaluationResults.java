@@ -1,4 +1,5 @@
-package edu.kit.kastel.mcse.ardoco.core.tests.eval;
+/* Licensed under MIT 2022. */
+package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 /**
  * This class extends {@link ExplicitEvaluationResults} and therefore also {@link EvaluationResults} to be able to set a number of true negatives.
