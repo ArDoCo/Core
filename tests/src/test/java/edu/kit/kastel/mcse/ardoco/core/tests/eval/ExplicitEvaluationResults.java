@@ -3,6 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.util.List;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 
 /**
@@ -17,9 +20,9 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
     private double recall = -1.337;
     private double f1 = -1.337;
 
-    private List<T> truePositives;
-    private List<T> falseNegatives;
-    private List<T> falsePositives;
+    private ImmutableList<T> truePositives;
+    private ImmutableList<T> falseNegatives;
+    private ImmutableList<T> falsePositives;
 
     /**
      * Construct explicit results by providing the lists containing the true positives, false negatives, and false
@@ -30,29 +33,43 @@ public class ExplicitEvaluationResults<T> extends EvaluationResults {
      * @param falsePositives the false positives
      */
     public ExplicitEvaluationResults(List<T> truePositives, List<T> falseNegatives, List<T> falsePositives) {
-        this.truePositives = truePositives;
-        this.falseNegatives = falseNegatives;
-        this.falsePositives = falsePositives;
+        this.truePositives = Lists.immutable.withAll(truePositives);
+        this.falseNegatives = Lists.immutable.withAll(falseNegatives);
+        this.falsePositives = Lists.immutable.withAll(falsePositives);
+    }
+
+    /**
+     * Construct explicit results by providing the lists containing the true positives, false negatives, and false
+     * positives.
+     *
+     * @param truePositives  the true positives
+     * @param falseNegatives the false negatives
+     * @param falsePositives the false positives
+     */
+    public ExplicitEvaluationResults(ImmutableList<T> truePositives, ImmutableList<T> falseNegatives, ImmutableList<T> falsePositives) {
+        this.truePositives = Lists.immutable.withAll(truePositives);
+        this.falseNegatives = Lists.immutable.withAll(falseNegatives);
+        this.falsePositives = Lists.immutable.withAll(falsePositives);
     }
 
     /**
      * @return the list of false negatives
      */
-    public List<T> getFalseNegatives() {
+    public ImmutableList<T> getFalseNegatives() {
         return falseNegatives;
     }
 
     /**
      * @return the list of false positives
      */
-    public List<T> getFalsePositives() {
+    public ImmutableList<T> getFalsePositives() {
         return falsePositives;
     }
 
     /**
      * @return the list of true positives
      */
-    public List<T> getTruePositives() {
+    public ImmutableList<T> getTruePositives() {
         return truePositives;
     }
 
