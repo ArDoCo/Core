@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
 import java.util.Map;
 
@@ -22,13 +22,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class CompoundRecommendationExtractor extends Informant {
+public class CompoundRecommendationInformant extends Informant {
 
     @Configurable
     private double confidence = 0.8;
 
-    public CompoundRecommendationExtractor(DataRepository dataRepository) {
-        super(CompoundRecommendationExtractor.class.getSimpleName(), dataRepository);
+    public CompoundRecommendationInformant(DataRepository dataRepository) {
+        super(CompoundRecommendationInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override

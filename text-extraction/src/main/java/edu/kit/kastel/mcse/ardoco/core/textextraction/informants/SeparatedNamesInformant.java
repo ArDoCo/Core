@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  *
  */
 
-public class SeparatedNamesExtractor extends Informant {
+public class SeparatedNamesInformant extends Informant {
 
     @Configurable
     private double probability = 0.8;
@@ -27,8 +27,8 @@ public class SeparatedNamesExtractor extends Informant {
     /**
      * Prototype constructor.
      */
-    public SeparatedNamesExtractor(DataRepository dataRepository) {
-        super(SeparatedNamesExtractor.class.getSimpleName(), dataRepository);
+    public SeparatedNamesInformant(DataRepository dataRepository) {
+        super(SeparatedNamesInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override
