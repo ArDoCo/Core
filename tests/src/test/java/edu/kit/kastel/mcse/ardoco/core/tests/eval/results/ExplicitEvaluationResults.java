@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
  * 
  * @param <T> Type of the lists that store true positives, false negatives, and false positives.
  */
-public class ExplicitEvaluationResults<T> extends EvaluationResults {
+public class ExplicitEvaluationResults<T> extends EvaluationResultsImpl {
 
     private double precision = -1.337;
     private double recall = -1.337;
