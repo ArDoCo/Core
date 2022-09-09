@@ -88,7 +88,7 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private static void writeOutput(EvaluationResultsImpl weightedResults, EvaluationResultsImpl macroResults) throws IOException {
+    private static void writeOutput(EvaluationResults weightedResults, EvaluationResults macroResults) throws IOException {
         var evalDir = Path.of(OUTPUT).resolve(DIRECTORY_NAME);
         Files.createDirectories(evalDir);
         var outputFile = evalDir.resolve("base_results.md");

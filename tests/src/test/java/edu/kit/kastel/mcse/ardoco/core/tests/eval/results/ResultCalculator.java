@@ -24,8 +24,8 @@ public class ResultCalculator {
      * @param <T>     type of the results, extending {@link EvaluationResults}
      */
     public <T extends EvaluationResults> void addEvaluationResults(T results, int weight) {
-        if (results instanceof ExtendedEvaluationResults xResults) {
-            resultsWithWeight.add(Tuples.pair(xResults, weight));
+        if (results instanceof ExtendedEvaluationResults extendedResults) {
+            resultsWithWeight.add(Tuples.pair(extendedResults, weight));
         } else {
             resultsWithWeight.add(Tuples.pair(results, weight));
         }
