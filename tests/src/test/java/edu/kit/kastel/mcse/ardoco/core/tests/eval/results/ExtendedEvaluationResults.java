@@ -31,13 +31,18 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
 
     @Override
     default String getResultString() {
-        return String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
+        String output = String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
+        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f%n\tPhi Coef.:%7.3f", getAccuracy(), getPhiCoefficient());
+        return output;
     }
 
     @Override
     default String getResultStringWithExpected(ExpectedResults expectedResults) {
-        return String.format(Locale.ENGLISH,
+        String output = String.format(Locale.ENGLISH,
                 "\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", getPrecision(),
                 expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
+        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tPhi Coef.:%7.3f (min. expected: %.3f)", getAccuracy(),
+                expectedResults.accuracy(), getPhiCoefficient(), expectedResults.phiCoefficient());
+        return output;
     }
 }
