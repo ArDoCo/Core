@@ -6,8 +6,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-
 public class ResultCalculator {
 
     private MutableList<Pair<EvaluationResults, Integer>> resultsWithWeight;
@@ -17,46 +15,55 @@ public class ResultCalculator {
     }
 
     /**
-     * Adds a new evaluation result using the provided True Positives, False Positives, and False Negatives.
+     * Adds evaluation results to this calculator
      * 
-     * @param truePositives  the TPs
-     * @param falsePositives the FPs
-     * @param falseNegatives the FNs
+     * @param results the results
+     * @param weight  the weight
+     * @param <T>     type of the results, extending {@link EvaluationResults}
      */
-    public void addEvaluationResults(int truePositives, int falsePositives, int falseNegatives) {
-        int weight = truePositives + falseNegatives;
-        var precision = TestUtil.calculatePrecision(truePositives, falsePositives);
-        var recall = TestUtil.calculateRecall(truePositives, falseNegatives);
-        var f1 = TestUtil.calculateF1(precision, recall);
-
-        var evalResults = new EvaluationResults(precision, recall, f1);
-        resultsWithWeight.add(Tuples.pair(evalResults, weight));
+    public <T extends EvaluationResults> void addEvaluationResults(T results, int weight) {
+        if (results instanceof ExtendedEvaluationResults xResults) {
+            resultsWithWeight.add(Tuples.pair(xResults, weight));
+        } else {
+            resultsWithWeight.add(Tuples.pair(results, weight));
+        }
     }
 
     /**
-     * Returns the weighted average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}. Weighted with
+     * Returns the weighted average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultsImpl}. Weighted with
      * number of occurrences.
      *
-     * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}
+     * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultsImpl}
      */
-    public EvaluationResults getWeightedAveragePRF1() {
+    public EvaluationResults getWeightedAverageResults() {
         int weight = 0;
         double precision = 0.0;
         double recall = 0.0;
         double f1 = 0.0;
 
-        for (var result : resultsWithWeight) {
-            var prf1 = result.getOne();
-            int localWeight = result.getTwo();
-            double localPrecision = prf1.getPrecision();
-            double localRecall = prf1.getRecall();
-            double localF1 = prf1.getF1();
+        double accuracy = 0.0;
+        double phi = 0.0;
 
+        for (var resultWithWeight : resultsWithWeight) {
+            var result = resultWithWeight.getOne();
+            int localWeight = resultWithWeight.getTwo();
+
+            double localPrecision = result.getPrecision();
+            double localRecall = result.getRecall();
+            double localF1 = result.getF1();
             if (!Double.isNaN(localPrecision) && !Double.isNaN(localRecall) && !Double.isNaN(localF1)) {
                 precision += (localWeight * localPrecision);
                 recall += (localWeight * localRecall);
                 f1 += (localWeight * localF1);
                 weight += localWeight;
+            }
+
+            if (result instanceof ExtendedEvaluationResults extendedResult) {
+                double localAccuracy = extendedResult.getAccuracy();
+                double localPhi = extendedResult.getPhiCoefficient();
+
+                phi += localPhi;
+                accuracy += localAccuracy;
             }
         }
 
@@ -64,43 +71,67 @@ public class ResultCalculator {
         recall = recall / weight;
         f1 = f1 / weight;
 
-        return new EvaluationResults(precision, recall, f1);
+        if (phi != 0.0 && accuracy > 0.0) {
+            phi = phi / weight;
+            accuracy = accuracy / weight;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+        } else {
+            return new EvaluationResultsImpl(precision, recall, f1);
+        }
     }
 
     /**
-     * Returns the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}.
+     * Returns the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultsImpl}.
      *
-     * @return the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}
+     * @return the average EvaluationResults (Precision, Recall, F1 as {@link EvaluationResultsImpl}
      */
-    public EvaluationResults getMacroAveragePRF1() {
-        var avgPrecision = 0.0;
-        var avgRecall = 0.0;
-        var avgF1 = 0.0;
+    public EvaluationResultsImpl getMacroAverageResults() {
+        var precision = 0.0;
+        var recall = 0.0;
+        var f1 = 0.0;
+
+        double accuracy = 0.0;
+        double phi = 0.0;
 
         var counter = 0;
-        for (var result : resultsWithWeight) {
-            var prf1 = result.getOne();
-            var weight = result.getTwo();
+        for (var resultWithWeight : resultsWithWeight) {
+            var result = resultWithWeight.getOne();
+            var weight = resultWithWeight.getTwo();
             if (weight == 0) {
                 continue;
             }
-            var precision = prf1.getPrecision();
-            var recall = prf1.getRecall();
-            var f1 = prf1.getF1();
 
-            if (!Double.isNaN(precision) && !Double.isNaN(recall) && !Double.isNaN(f1)) {
-                avgPrecision += precision;
-                avgRecall += recall;
-                avgF1 += f1;
+            var localPrecision = result.getPrecision();
+            var localRecall = result.getRecall();
+            var localF1 = result.getF1();
+
+            if (!Double.isNaN(localPrecision) && !Double.isNaN(localRecall) && !Double.isNaN(localF1)) {
+                precision += localPrecision;
+                recall += localRecall;
+                f1 += localF1;
                 counter++;
+            }
+
+            if (result instanceof ExtendedEvaluationResults extendedResult) {
+                double localAccuracy = extendedResult.getAccuracy();
+                double localPhi = extendedResult.getPhiCoefficient();
+
+                phi += localPhi;
+                accuracy += localAccuracy;
             }
         }
 
-        avgPrecision /= counter;
-        avgRecall /= counter;
-        avgF1 /= counter;
+        precision /= counter;
+        recall /= counter;
+        f1 /= counter;
 
-        return new EvaluationResults(avgPrecision, avgRecall, avgF1);
+        if (phi != 0.0 && accuracy > 0.0) {
+            phi /= counter;
+            accuracy /= counter;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+        } else {
+            return new EvaluationResultsImpl(precision, recall, f1);
+        }
     }
 
     int getWeight() {

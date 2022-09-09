@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 /**
  * This class implements functionality to calculate overall results (averaged) when evaluating a number of projects.
  * There are different kinds of averages that can be calculated and that each return an instance of
- * {@link EvaluationResults}.
+ * {@link EvaluationResultsImpl}.
  */
 public class OverallResultsCalculator {
 
@@ -30,19 +30,19 @@ public class OverallResultsCalculator {
     }
 
     /**
-     * Calculates the weighted average results (precision, recall, F1) as {@link EvaluationResults}. Each project's
+     * Calculates the weighted average results (precision, recall, F1) as {@link EvaluationResultsImpl}. Each project's
      * result is weighted with the number of expected instances (= true positives + false negatives). This method uses
      * weighted results for each project if there are multiple runs per project, e.g., for holdback inconsistency
      * detection evaluation.
      * 
      * @return the weighted average results
      */
-    public EvaluationResults calculateWeightedAveragePRF1() {
-        Function<ResultCalculator, EvaluationResults> evaluationResultsFunction = ResultCalculator::getWeightedAveragePRF1;
-        return calculateWeightedAveragePRF1(evaluationResultsFunction);
+    public EvaluationResultsImpl calculateWeightedAverageResults() {
+        Function<ResultCalculator, EvaluationResults> evaluationResultsFunction = ResultCalculator::getWeightedAverageResults;
+        return calculateWeightedAverageResults(evaluationResultsFunction);
     }
 
-    private EvaluationResults calculateWeightedAveragePRF1(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
+    private EvaluationResultsImpl calculateWeightedAverageResults(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
         int weight = 0;
         double precision = .0;
         double recall = .0;
@@ -63,23 +63,23 @@ public class OverallResultsCalculator {
         recall = recall / weight;
         f1 = f1 / weight;
 
-        return new EvaluationResults(precision, recall, f1);
+        return new EvaluationResultsImpl(precision, recall, f1);
     }
 
     /**
-     * Calculates the macro average results (precision, recall, F1) as {@link EvaluationResults}. Each project's result
+     * Calculates the macro average results (precision, recall, F1) as {@link EvaluationResultsImpl}. Each project's result
      * is treated equally and a simple average over all project results is calculated.
      * 
      * @return the macro average results
      */
-    public EvaluationResults calculateMacroAveragePRF1() {
+    public EvaluationResultsImpl calculateMacroAverageResults() {
         int numberOfProjects = projectResults.size();
         double precision = .0;
         double recall = .0;
         double f1 = .0;
 
         for (var entry : projectResults) {
-            var results = entry.getTwo().getWeightedAveragePRF1();
+            var results = entry.getTwo().getWeightedAverageResults();
             int weight = entry.getTwo().getWeight();
             if (weight <= 0) {
                 numberOfProjects--;
@@ -94,6 +94,6 @@ public class OverallResultsCalculator {
         recall = recall / numberOfProjects;
         f1 = f1 / numberOfProjects;
 
-        return new EvaluationResults(precision, recall, f1);
+        return new EvaluationResultsImpl(precision, recall, f1);
     }
 }

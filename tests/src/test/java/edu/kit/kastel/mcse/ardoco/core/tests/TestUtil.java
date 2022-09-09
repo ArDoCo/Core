@@ -13,9 +13,10 @@ import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultsImpl;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
@@ -65,7 +66,7 @@ public class TestUtil {
      * @param evaluationResults the evaluation results
      * @return the number of true negatives
      */
-    public static int calculateTrueNegatives(ArDoCoResult arDoCoResult, ExplicitEvaluationResults<?> evaluationResults) {
+    public static int calculateTrueNegativesForTLR(ArDoCoResult arDoCoResult, ExplicitEvaluationResults<?> evaluationResults) {
         var truePositives = evaluationResults.getTruePositives().size();
         var falsePositives = evaluationResults.getFalsePositives().size();
         var falseNegatives = evaluationResults.getFalseNegatives().size();
@@ -102,7 +103,7 @@ public class TestUtil {
      * @param falseNegatives number of FNs
      * @return the Recall; 1.0 iff TP+NP=0
      */
-    public static double calculateRecall(double truePositives, double falseNegatives) {
+    public static double calculateRecall(int truePositives, int falseNegatives) {
         double denominator = (truePositives + falseNegatives);
         var recall = 1.0 * truePositives / denominator;
         return checkAndRepairRecall(recall);
@@ -130,7 +131,7 @@ public class TestUtil {
      * @param falsePositives number of FPs
      * @return the Precision; 1.0 iff TP+FP=0
      */
-    public static double calculatePrecision(double truePositives, double falsePositives) {
+    public static double calculatePrecision(int truePositives, int falsePositives) {
         double denominator = (truePositives + falsePositives);
         var precision = 1.0 * truePositives / denominator;
         return checkAndRepairPrecision(precision);
@@ -170,14 +171,52 @@ public class TestUtil {
      * @param falseNegatives number of FNs
      * @return the F1-score. See also {@link #calculateF1(double, double)}
      */
-    public static double calculateF1(double truePositives, double falsePositives, double falseNegatives) {
+    public static double calculateF1(int truePositives, int falsePositives, int falseNegatives) {
         var precision = calculatePrecision(truePositives, falsePositives);
         var recall = calculateRecall(truePositives, falseNegatives);
         return calculateF1(precision, recall);
     }
 
     /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name.
+     * Calculates the accuracy based on the true positives, false positives, false negatives, and true negatives.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Accuracy_and_precision">Wikipedia: Accuracy and Precision</a>
+     * @return the accuracy
+     */
+    public static double calculateAccuracy(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
+        double numerator = truePositives + trueNegatives;
+        double denominator = truePositives + falsePositives + falseNegatives + trueNegatives;
+        return numerator / denominator;
+    }
+
+    /**
+     * Returns the Phi Coefficient (also known as mean square contingency coefficient (MCC)) based on the true positives, false positives, false negatives, and
+     * true negatives.
+     * The return value lies between -1 and +1. -1 show perfect disagreement, +1 shows perfect agreement and 0 indicates no relationship.
+     * Therefore, good values should be close to +1.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Phi_coefficient">Wikipedia: Phi coefficient</a>
+     *
+     * @return the value for Phi Coefficient (or MCC)
+     */
+    public static double calculatePhiCoefficient(long truePositives, long falsePositives, long falseNegatives, long trueNegatives) {
+        double numerator = (truePositives * trueNegatives) - (falsePositives * falseNegatives);
+
+        long a = truePositives + falsePositives;
+        long b = truePositives + falseNegatives;
+        long c = trueNegatives + falsePositives;
+        long d = trueNegatives + falseNegatives;
+        if (a == 0 || b == 0 || c == 0 || d == 0) {
+            return 0d;
+        }
+        long sumInDenominator = a * b * c * d;
+        double denominator = Math.sqrt(sumInDenominator);
+
+        return numerator / denominator;
+    }
+
+    /**
+     * Log the provided {@link EvaluationResultsImpl} using the provided logger and name.
      * 
      * @param logger  Logger to use
      * @param name    Name to show in the output
@@ -202,7 +241,7 @@ public class TestUtil {
     }
 
     /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, provided the
+     * Log the provided {@link EvaluationResultsImpl} using the provided logger and name. Additionally, provided the
      * expected results.
      * 
      * @param logger          Logger to use
@@ -214,7 +253,7 @@ public class TestUtil {
         var infoString = String.format(Locale.ENGLISH,
                 "%n%s:%n\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", name, results
                         .getPrecision(), expectedResults.precision(), results.getRecall(), expectedResults.recall(), results.getF1(), expectedResults.f1());
-        if (results instanceof ExtendedExplicitEvaluationResults<?> extendedExplicitEvaluationResults) {
+        if (results instanceof ExtendedEvaluationResults extendedExplicitEvaluationResults) {
             var accuracy = extendedExplicitEvaluationResults.getAccuracy();
             var phiCoefficient = extendedExplicitEvaluationResults.getPhiCoefficient();
             infoString += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tPhi Coef.:%7.3f (min. expected: %.3f)", accuracy,
@@ -235,8 +274,10 @@ public class TestUtil {
             var truePositives = result.getTruePositives().size();
             var falsePositives = result.getFalsePositives().size();
             var falseNegatives = result.getFalseNegatives().size();
+            var weight = truePositives + falseNegatives;
+
             ResultCalculator resultCalculator = new ResultCalculator();
-            resultCalculator.addEvaluationResults(truePositives, falsePositives, falseNegatives);
+            resultCalculator.addEvaluationResults(new EvaluationResultsImpl(truePositives, falsePositives, falseNegatives), weight);
             overallResultsCalculator.addResult(result.getProject(), resultCalculator);
         }
         return overallResultsCalculator;

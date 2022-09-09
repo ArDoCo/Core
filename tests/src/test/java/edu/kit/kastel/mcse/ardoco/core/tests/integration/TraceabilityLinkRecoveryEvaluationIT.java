@@ -35,8 +35,9 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultsImpl;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
@@ -80,11 +81,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
         if (logger.isInfoEnabled()) {
             OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(RESULTS);
             var name = "Overall Weighted";
-            var results = overallResultsCalculator.calculateWeightedAveragePRF1();
+            var results = overallResultsCalculator.calculateWeightedAverageResults();
             TestUtil.logResults(logger, name, results);
 
             name = "Overall Macro";
-            results = overallResultsCalculator.calculateMacroAveragePRF1();
+            results = overallResultsCalculator.calculateMacroAverageResults();
             TestUtil.logResults(logger, name, results);
         }
 
@@ -214,11 +215,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
                         .getRecall() + " is below the expected minimum value " + expectedResults.recall()), //
                 () -> Assertions.assertTrue(results.getF1() >= expectedResults.f1(), "F1 " + results
                         .getF1() + " is below the expected minimum value " + expectedResults.f1()));
-        if (results instanceof ExtendedExplicitEvaluationResults<?> xxResults) {
+        if (results instanceof ExtendedEvaluationResults extendedResults) {
             Assertions.assertAll(//
-                    () -> Assertions.assertTrue(xxResults.getAccuracy() >= expectedResults.accuracy(), "Accuracy " + xxResults
+                    () -> Assertions.assertTrue(extendedResults.getAccuracy() >= expectedResults.accuracy(), "Accuracy " + extendedResults
                             .getAccuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                    () -> Assertions.assertTrue(xxResults.getPhiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + xxResults
+                    () -> Assertions.assertTrue(extendedResults.getPhiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + extendedResults
                             .getPhiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
         }
     }
@@ -234,7 +235,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         FilePrinter.printResultsInFiles(path, name, arDoCoResult);
     }
 
-    private EvaluationResults calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
+    private EvaluationResultsImpl calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
         String modelId = modelState.getModelId();
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
@@ -242,7 +243,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var goldStandard = getGoldStandard(project);
 
         var results = TestUtil.compare(traceLinks.toSet(), goldStandard);
-        var trueNegatives = TestUtil.calculateTrueNegatives(arDoCoResult, results);
+        var trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, results);
         return new ExtendedExplicitEvaluationResults<>(results, trueNegatives);
     }
 
