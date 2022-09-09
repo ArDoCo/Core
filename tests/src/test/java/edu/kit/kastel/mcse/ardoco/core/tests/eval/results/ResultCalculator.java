@@ -6,6 +6,8 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+
 public class ResultCalculator {
 
     private MutableList<Pair<EvaluationResults, Integer>> resultsWithWeight;
@@ -43,6 +45,10 @@ public class ResultCalculator {
 
         double accuracy = 0.0;
         double phi = 0.0;
+        int truePositives = 0;
+        int trueNegatives = 0;
+        int falsePositives = 0;
+        int falseNegatives = 0;
 
         for (var resultWithWeight : resultsWithWeight) {
             var result = resultWithWeight.getOne();
@@ -58,12 +64,16 @@ public class ResultCalculator {
                 weight += localWeight;
             }
 
-            if (result instanceof ExtendedEvaluationResults extendedResult) {
-                double localAccuracy = extendedResult.getAccuracy();
-                double localPhi = extendedResult.getPhiCoefficient();
+            if (result instanceof ExtendedExplicitEvaluationResults<?> extendedExplicitResults) {
+                truePositives += extendedExplicitResults.getTruePositives().size();
+                falseNegatives += extendedExplicitResults.getFalseNegatives().size();
+                falsePositives += extendedExplicitResults.getFalsePositives().size();
+                trueNegatives += extendedExplicitResults.getNumberOfTrueNegatives();
 
-                phi += localPhi;
-                accuracy += localAccuracy;
+                accuracy += extendedExplicitResults.getAccuracy();
+            } else if (result instanceof ExtendedEvaluationResults extendedResult) {
+                phi += extendedResult.getPhiCoefficient();
+                accuracy += extendedResult.getAccuracy();
             }
         }
 
@@ -71,13 +81,17 @@ public class ResultCalculator {
         recall = recall / weight;
         f1 = f1 / weight;
 
+        if (truePositives > 0) {
+            phi = TestUtil.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
+            accuracy = accuracy / weight;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+        }
         if (phi != 0.0 && accuracy > 0.0) {
             phi = phi / weight;
             accuracy = accuracy / weight;
             return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
-        } else {
-            return new EvaluationResultsImpl(precision, recall, f1);
         }
+        return new EvaluationResultsImpl(precision, recall, f1);
     }
 
     /**
@@ -113,11 +127,8 @@ public class ResultCalculator {
             }
 
             if (result instanceof ExtendedEvaluationResults extendedResult) {
-                double localAccuracy = extendedResult.getAccuracy();
-                double localPhi = extendedResult.getPhiCoefficient();
-
-                phi += localPhi;
-                accuracy += localAccuracy;
+                phi += extendedResult.getPhiCoefficient();
+                accuracy += extendedResult.getAccuracy();
             }
         }
 
@@ -129,9 +140,9 @@ public class ResultCalculator {
             phi /= counter;
             accuracy /= counter;
             return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
-        } else {
-            return new EvaluationResultsImpl(precision, recall, f1);
         }
+        return new EvaluationResultsImpl(precision, recall, f1);
+
     }
 
     int getWeight() {

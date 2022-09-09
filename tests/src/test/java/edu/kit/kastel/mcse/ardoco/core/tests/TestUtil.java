@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultsImpl;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
@@ -223,8 +222,7 @@ public class TestUtil {
      * @param results the results
      */
     public static void logResults(Logger logger, String name, EvaluationResults results) {
-        String infoString = createResultLogString(name, results);
-        logger.info(infoString);
+        logger.info(createResultLogString(name, results));
     }
 
     /**
@@ -236,8 +234,7 @@ public class TestUtil {
      * @return a String containing the name and the results (precision, recall, F1) line by line
      */
     public static String createResultLogString(String name, EvaluationResults results) {
-        return String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", name, results.getPrecision(), results.getRecall(),
-                results.getF1());
+        return String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultString());
     }
 
     /**
@@ -250,15 +247,7 @@ public class TestUtil {
      * @param expectedResults the expected results
      */
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH,
-                "%n%s:%n\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", name, results
-                        .getPrecision(), expectedResults.precision(), results.getRecall(), expectedResults.recall(), results.getF1(), expectedResults.f1());
-        if (results instanceof ExtendedEvaluationResults extendedExplicitEvaluationResults) {
-            var accuracy = extendedExplicitEvaluationResults.getAccuracy();
-            var phiCoefficient = extendedExplicitEvaluationResults.getPhiCoefficient();
-            infoString += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tPhi Coef.:%7.3f (min. expected: %.3f)", accuracy,
-                    expectedResults.accuracy(), phiCoefficient, expectedResults.phiCoefficient());
-        }
+        var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultStringWithExpected(expectedResults));
         logger.info(infoString);
     }
 

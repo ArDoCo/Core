@@ -1,8 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
-import java.util.Locale;
-
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 
 /**
@@ -55,7 +53,7 @@ public class EvaluationResultsImpl implements EvaluationResults {
 
     @Override
     public String toString() {
-        return String.format(Locale.US, "Precision: %.3f\tRecall: %.3f\tF1: %.3f", precision, recall, f1);
+        return this.getResultString();
     }
 
     @Override

@@ -30,6 +30,10 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
         return this.getTruePositives().size() + this.getFalseNegatives().size();
     }
 
+    public long getNumberOfTrueNegatives() {
+        return trueNegatives;
+    }
+
     @Override
     public double getAccuracy() {
         var truePositives = this.getTruePositives().size();

@@ -316,8 +316,8 @@ class InconsistencyDetectionEvaluationIT {
                 outputBuilder.append(LINE_SEPARATOR);
                 detailedOutputBuilder.append(LINE_SEPARATOR);
                 var result = results.get(counter++);
-                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f", result.getPrecision(), result.getRecall(), result
-                        .getF1());
+                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f, Accuracy: %.3f, Phi Coef.: %.3f", result
+                        .getPrecision(), result.getRecall(), result.getF1(), result.getAccuracy(), result.getPhiCoefficient());
                 outputBuilder.append(resultString);
                 detailedOutputBuilder.append(resultString);
                 inspectRun(outputBuilder, detailedOutputBuilder, resultCalculator, arDoCoResult, result);
