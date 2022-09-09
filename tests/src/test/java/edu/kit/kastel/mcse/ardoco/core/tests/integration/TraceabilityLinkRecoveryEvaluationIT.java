@@ -35,7 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultsImpl;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedExplicitEvaluationResults;
@@ -60,6 +60,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
+    private static final Map<Project, ExtendedExplicitEvaluationResults<?>> EXTENDED_EVALUATION_RESULTS = new EnumMap<>(Project.class);
     private static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
@@ -79,7 +80,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @AfterAll
     public static void afterAll() {
         if (logger.isInfoEnabled()) {
-            OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(RESULTS);
+            OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(EXTENDED_EVALUATION_RESULTS);
             var name = "Overall Weighted";
             var results = overallResultsCalculator.calculateWeightedAverageResults();
             TestUtil.logResults(logger, name, results);
@@ -201,6 +202,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
                     DATA_MAP.put(project, arDoCoResult);
+                    if (results instanceof ExtendedExplicitEvaluationResults extendedEvaluationResults) {
+                        EXTENDED_EVALUATION_RESULTS.put(project, extendedEvaluationResults);
+                    }
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn("Failed to load file for gold standard", e);
@@ -235,7 +239,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         FilePrinter.printResultsInFiles(path, name, arDoCoResult);
     }
 
-    private EvaluationResultsImpl calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
+    private EvaluationResults calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
         String modelId = modelState.getModelId();
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
