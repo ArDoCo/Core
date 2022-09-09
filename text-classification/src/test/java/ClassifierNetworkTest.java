@@ -1,3 +1,6 @@
+import edu.kit.kastel.mcse.ardoco.core.textclassification.AsyncRestAPI;
+import edu.kit.kastel.mcse.ardoco.core.textclassification.ClassifierNetworkAsync;
+import edu.kit.kastel.mcse.ardoco.core.textclassification.TextClassifier;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,7 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import records.ClassificationResponse;
+import edu.kit.kastel.mcse.ardoco.core.textclassification.records.*;
 
 import java.util.HashMap;
 import java.util.Map;

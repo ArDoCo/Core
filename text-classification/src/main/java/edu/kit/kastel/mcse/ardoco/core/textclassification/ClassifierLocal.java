@@ -1,9 +1,11 @@
+package edu.kit.kastel.mcse.ardoco.core.textclassification;
+
 import edu.kit.kastel.informalin.framework.docker.ContainerResponse;
 import edu.kit.kastel.informalin.framework.docker.DockerManager;
+import edu.kit.kastel.mcse.ardoco.core.textclassification.records.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import records.ClassificationResponse;
-import records.ClassifierStatus;
 
 import java.util.Map;
 import java.util.concurrent.TimeoutException;

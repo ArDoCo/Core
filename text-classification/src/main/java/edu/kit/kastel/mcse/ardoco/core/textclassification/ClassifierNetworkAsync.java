@@ -1,9 +1,10 @@
+package edu.kit.kastel.mcse.ardoco.core.textclassification;
+
+import edu.kit.kastel.mcse.ardoco.core.textclassification.records.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import records.ClassificationResponse;
-import records.ClassifierStatus;
 
 import java.io.*;
 import java.util.HashMap;
@@ -14,7 +15,6 @@ public class ClassifierNetworkAsync implements TextClassifier {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierNetworkAsync.class);
     private final WebAPI<Future<JSONObject>, JSONObject> classificationAPI;
-
     private final int timeout;
 
     public ClassifierNetworkAsync(WebAPI<Future<JSONObject>, JSONObject> classificationAPI, int timeout) {
@@ -40,7 +40,7 @@ public class ClassifierNetworkAsync implements TextClassifier {
             Thread.currentThread().interrupt();
         } catch (TimeoutException te) {
         logger.error(te.getMessage(), te);
-        throw new TimeoutException("The result was not ready after" + this.timeout + "miliseconds.");
+        throw new TimeoutException("The result was not ready after" + this.timeout + "milliseconds.");
     }
 
         return new ClassifierStatus(false);
@@ -62,13 +62,14 @@ public class ClassifierNetworkAsync implements TextClassifier {
             Thread.currentThread().interrupt();
         } catch (TimeoutException te) {
             logger.error(te.getMessage(), te);
-            throw new TimeoutException("The result was not ready after" + this.timeout + "miliseconds.");
+            throw new TimeoutException("The result was not ready after" + this.timeout + "milliseconds.");
         }
 
         return null;
     }
     public Future<ClassificationResponse> classifyPhrasesAsync(Map<Integer, String> phrases){
         ExecutorService executor= Executors.newSingleThreadExecutor();
+
         return executor.submit(() -> this.classifyPhrases(phrases));
     }
 

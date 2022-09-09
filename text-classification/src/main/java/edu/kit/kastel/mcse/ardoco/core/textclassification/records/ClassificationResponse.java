@@ -1,4 +1,4 @@
-package records;
+package edu.kit.kastel.mcse.ardoco.core.textclassification.records;
 
 import java.util.Map;
 
