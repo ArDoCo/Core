@@ -68,7 +68,7 @@ class InconsistencyDetectionEvaluationIT {
             TestUtil.logResults(logger, name, weightedResults);
 
             name = "Overall Macro";
-            TestUtil.logResults(logger, name, weightedResults);
+            TestUtil.logResults(logger, name, macroResults);
 
             if (ranBaseline) {
                 name = "BASELINE Overall Weighted";
