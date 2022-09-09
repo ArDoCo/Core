@@ -70,7 +70,6 @@ public class ClassifierNetworkAsync implements TextClassifier {
     }
     public Future<ClassificationResponse> classifyPhrasesAsync(Map<Integer, String> phrases){
         ExecutorService executor= Executors.newSingleThreadExecutor();
-
         return executor.submit(() -> this.classifyPhrases(phrases));
     }
 

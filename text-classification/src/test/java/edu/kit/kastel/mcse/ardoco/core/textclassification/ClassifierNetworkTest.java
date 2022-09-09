@@ -36,7 +36,7 @@ class ClassifierNetworkTest {
 
     private ObjectMapper mapper;
     @BeforeEach
-    private void init(){
+    void init(){
         this.mockedRestApi = Mockito.mock(AsyncRestAPI.class);
         this.classifier = new ClassifierNetworkAsync(mockedRestApi, 1000);
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
