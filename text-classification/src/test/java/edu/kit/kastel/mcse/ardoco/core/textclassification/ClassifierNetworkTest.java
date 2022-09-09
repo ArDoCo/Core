@@ -1,12 +1,12 @@
+package edu.kit.kastel.mcse.ardoco.core.textclassification;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.kit.kastel.mcse.ardoco.core.textclassification.AsyncRestAPI;
-import edu.kit.kastel.mcse.ardoco.core.textclassification.ClassifierNetworkAsync;
-import edu.kit.kastel.mcse.ardoco.core.textclassification.TextClassifier;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,7 +63,6 @@ class ClassifierNetworkTest {
             logger.error("Failed to parse json: " + e.getMessage(), e);
         }
     }
-
     private void mockApiClassificationResponse(JsonNode classificationResponse, int time){
         when(mockedRestApi.sendApiRequest("/classify", classificationResponse))
                 .thenReturn(futureFromJSONObject(classificationResponse, time));
@@ -71,14 +70,18 @@ class ClassifierNetworkTest {
 
     @ParameterizedTest
     @CsvSource({"true,0", "false,250", "true,500", "false,900"})
-    void getClassifierStatus_ifStatusContainsReady_returnReady(boolean ready, int time) throws TimeoutException {
+    @DisplayName("getClassifierStatus-test: wait for response and map status response to ClassifierStatus")
+    void getClassifierStatus_statusContainsReady_waitForResponseAndReturnReady(
+            boolean ready, int time) throws TimeoutException {
         mockApiStatusResponse(ready, time);
         Assertions.assertEquals(ready, classifier.getClassifierStatus().ready());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0,500,900})
-    void classifyPhrases_jsonResponse_parseResponse(int time) throws TimeoutException {
+    @DisplayName("classifyPhrases-test: wait for response and map response to ClassificationResponse")
+    void classifyPhrases_delayedClassificationResponse_waitForResponseAndMapResponse(
+            int time) throws TimeoutException {
 
         Map<Integer, String> testRequest = new HashMap<>() {{
             put(1, "test-phrase-1");
@@ -93,18 +96,17 @@ class ClassifierNetworkTest {
     }
 
     @Test
+    @DisplayName("getClassifierStatus-test: throw timeout exception if response time exceeds the timeout")
     void getClassifierStatus_takesLongerThanTimeout_throwException(){
         mockApiStatusResponse(true, 2000);
-        Exception exception = assertThrows(TimeoutException.class, () -> classifier.getClassifierStatus().ready());
+        assertThrows(TimeoutException.class, () -> classifier.getClassifierStatus().ready());
     }
 
     @Test
+    @DisplayName("classifyPhrases-test: throw timeout exception if response time exceeds the timeout")
     void classifyPhrases_takesLongerThanTimeout_throwException(){
         JsonNode jsonResponse = mapper.convertValue(new HashMap<Integer, String>(), JsonNode.class);
         mockApiClassificationResponse(jsonResponse, 2000);
-        Exception exception = assertThrows(TimeoutException.class, () -> {
-            ClassificationResponse response =
-                    classifier.classifyPhrases(new HashMap<>());
-        });
+        assertThrows(TimeoutException.class, () -> classifier.classifyPhrases(new HashMap<>()));
     }
 }
