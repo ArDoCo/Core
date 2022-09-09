@@ -6,18 +6,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultsImpl;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.OverallResultsCalculator;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.*;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 /**
@@ -249,6 +246,21 @@ public class TestUtil {
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultStringWithExpected(expectedResults));
         logger.info(infoString);
+    }
+
+    public static OverallResultsCalculator getOverallResultsCalculator(Map<Project, ExtendedExplicitEvaluationResults<?>> results) {
+
+        var overallResultsCalculator = new OverallResultsCalculator();
+        for (var entry : results.entrySet()) {
+            var result = entry.getValue();
+            var project = entry.getKey();
+
+            ResultCalculator resultCalculator = new ResultCalculator();
+            resultCalculator.addEvaluationResults(new ExtendedEvaluationResultsImpl(result.getPrecision(), result.getRecall(), result.getF1(), result
+                    .getAccuracy(), result.getPhiCoefficient()), result.getWeight());
+            overallResultsCalculator.addResult(project, resultCalculator);
+        }
+        return overallResultsCalculator;
     }
 
     /**
