@@ -1,36 +1,35 @@
 package edu.kit.kastel.mcse.ardoco.core.textclassification;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import edu.kit.kastel.mcse.ardoco.core.textclassification.records.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
 public class ClassifierNetworkAsync implements TextClassifier {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierNetworkAsync.class);
-    private final WebAPI<Future<JSONObject>, JSONObject> classificationAPI;
+    private final WebAPI<Future<JsonNode>, JsonNode> classificationAPI;
     private final int timeout;
+    private final ObjectMapper mapper;
 
-    public ClassifierNetworkAsync(WebAPI<Future<JSONObject>, JSONObject> classificationAPI, int timeout) {
+    public ClassifierNetworkAsync(WebAPI<Future<JsonNode>, JsonNode> classificationAPI, int timeout) {
         this.classificationAPI = classificationAPI;
         this.timeout = timeout;
+        this.mapper = new ObjectMapper();
     }
 
     @Override
     public ClassifierStatus getClassifierStatus() throws TimeoutException {
 
-        Future<JSONObject> futureResponse = classificationAPI.sendApiRequest("/status");
-        JSONObject response = null;
-
+        Future<JsonNode> futureResponse = classificationAPI.sendApiRequest("/status");
         try {
-            response = futureResponse.get(this.timeout, TimeUnit.MILLISECONDS);
-            if((response.get("status")).equals("ready")){
+            JsonNode response = futureResponse.get(this.timeout, TimeUnit.MILLISECONDS);
+            if((response.get("status")).asText().equals("ready")){
                 return new ClassifierStatus(true);
             }
         } catch (ExecutionException e) {
@@ -48,14 +47,16 @@ public class ClassifierNetworkAsync implements TextClassifier {
 
     @Override
     public ClassificationResponse classifyPhrases(Map<Integer, String> phrases) throws TimeoutException {
-        Future<JSONObject> futureResponse = classificationAPI.sendApiRequest("/classify", new JSONObject(phrases));
-        JSONObject response = null;
-
+        JsonNode jsonRequest = mapper.convertValue(phrases, JsonNode.class);
+        Future<JsonNode> futureResponse = classificationAPI.sendApiRequest("/classify", jsonRequest);
         try {
-            response = futureResponse.get(this.timeout, TimeUnit.MILLISECONDS);
-            HashMap<Integer,String> result = new ObjectMapper().readValue(response.toJSONString(), HashMap.class);
+            JsonNode response = futureResponse.get(this.timeout, TimeUnit.MILLISECONDS);
+
+            Map<Integer, String> result = mapper.convertValue(response, new TypeReference<>() {
+            });
             return new ClassificationResponse(result);
-        } catch (ExecutionException | IOException e) {
+
+        } catch (ExecutionException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException ie) {
             logger.error("InterruptedException: ", ie);

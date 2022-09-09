@@ -1,8 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.textclassification;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,30 +19,31 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
+public class AsyncRestAPI implements WebAPI<Future<JsonNode>, JsonNode>{
     private static final Logger logger = LoggerFactory.getLogger(AsyncRestAPI.class);
     private final String url;
     private final int port;
     private final ExecutorService executor;
+    private final ObjectMapper mapper;
 
     public AsyncRestAPI(String url, int port) {
         this.url = url;
         this.port = port;
         this.executor= Executors.newSingleThreadExecutor();
+        this.mapper = new ObjectMapper();
     }
 
-    private JSONObject parseJsonString(String jsonString){
-        Object ob = null;
+    private JsonNode parseJsonString(String jsonString){
+        JsonNode obj = null;
         try {
-            ob = new JSONParser().parse(jsonString);
-        } catch (ParseException e) {
+            obj = this.mapper.readTree(jsonString);
+        } catch (JsonProcessingException e) {
             logger.error("Failed to parse json string" + e.getMessage(), e);
         }
-        return  (JSONObject) ob;
+        return  obj;
     }
 
     private HttpURLConnection setUpConnection(String endpoint) throws IOException {
-        HttpURLConnection connection = null;
 
         String ep = endpoint;
         if(!endpoint.startsWith("/")){
@@ -49,7 +51,7 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
         }
 
         URL u = new URL(this.url + ":" + port + ep);
-        connection = (HttpURLConnection) u.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) u.openConnection();
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
 
@@ -61,7 +63,7 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
         return connection;
     }
 
-    private JSONObject receiveRequestResponse(HttpURLConnection connection) throws IOException {
+    private JsonNode receiveRequestResponse(HttpURLConnection connection) throws IOException {
         BufferedReader reader;
         String line;
         StringBuilder responseContent = new StringBuilder();
@@ -70,29 +72,26 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
 
         if (status >= 300) {
             reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-            while ((line = reader.readLine()) != null) {
-                responseContent.append(line);
-            }
-            reader.close();
         }
         else {
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((line = reader.readLine()) != null) {
-                responseContent.append(line);
-            }
-            reader.close();
         }
+
+        while ((line = reader.readLine()) != null) {
+            responseContent.append(line);
+        }
+        reader.close();
 
         connection.disconnect();
         return parseJsonString(responseContent.toString());
     }
 
     @Override
-    public Future<JSONObject> sendApiRequest(String endpoint, JSONObject requestData) {
+    public Future<JsonNode> sendApiRequest(String endpoint, JsonNode requestData) {
         return executor.submit(() -> {
             try{
                 HttpURLConnection connection = setUpConnection(endpoint);
-                String jsonInputString = requestData.toJSONString();
+                String jsonInputString = mapper.writeValueAsString(requestData);
 
                 try(OutputStream os = connection.getOutputStream()) {
                     byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
@@ -104,12 +103,12 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
-            return new JSONObject();
+            return null;
         });
     }
 
     @Override
-    public Future<JSONObject> sendApiRequest(String endpoint) {
+    public Future<JsonNode> sendApiRequest(String endpoint) {
         return executor.submit(() -> {
             try{
                 HttpURLConnection connection = setUpConnection(endpoint);
@@ -118,7 +117,7 @@ public class AsyncRestAPI implements WebAPI<Future<JSONObject>, JSONObject>{
             } catch (IOException e) {
                 logger.error("Failed to request status: " + e.getMessage(), e);
             }
-            return new JSONObject();
+            return null;
         });
     }
 }

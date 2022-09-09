@@ -1,9 +1,10 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.kastel.mcse.ardoco.core.textclassification.AsyncRestAPI;
 import edu.kit.kastel.mcse.ardoco.core.textclassification.ClassifierNetworkAsync;
 import edu.kit.kastel.mcse.ardoco.core.textclassification.TextClassifier;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,46 +33,47 @@ class ClassifierNetworkTest {
     private AsyncRestAPI mockedRestApi;
     private TextClassifier classifier;
     private ScheduledExecutorService scheduler;
+
+    private ObjectMapper mapper;
     @BeforeEach
     private void init(){
         this.mockedRestApi = Mockito.mock(AsyncRestAPI.class);
         this.classifier = new ClassifierNetworkAsync(mockedRestApi, 1000);
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
+        this.mapper = new ObjectMapper();
     }
 
-    private Future<JSONObject> futureFromJSONObject(JSONObject obj, int time){
+    private Future<JsonNode> futureFromJSONObject(JsonNode obj, int time){
         return this. scheduler.schedule(() -> obj, time, TimeUnit.MILLISECONDS);
     }
 
     private void mockApiStatusResponse(Boolean classifierReady, int time){
-        JSONObject jsonStatusResponse = null;
+        JsonNode jsonStatusResponse;
         try {
             if(classifierReady) {
-                jsonStatusResponse = (JSONObject) new JSONParser().parse("{\"status\":\"ready\"}");
+                jsonStatusResponse = mapper.readTree("{\"status\":\"ready\"}");
             } else {
-                jsonStatusResponse = (JSONObject) new JSONParser().parse("{\"status\":\"notready\"}");
+                jsonStatusResponse = mapper.readTree("{\"status\":\"not-ready\"}");
             }
 
             when(mockedRestApi.sendApiRequest("/status"))
                     .thenReturn(futureFromJSONObject(jsonStatusResponse, time));
 
-        } catch (ParseException e) {
+        } catch (JsonProcessingException e) {
             logger.error("Failed to parse json: " + e.getMessage(), e);
         }
     }
 
-    private void mockApiClassificationResponse(JSONObject classificationResponse, int time){
+    private void mockApiClassificationResponse(JsonNode classificationResponse, int time){
         when(mockedRestApi.sendApiRequest("/classify", classificationResponse))
                 .thenReturn(futureFromJSONObject(classificationResponse, time));
     }
 
     @ParameterizedTest
-    @CsvSource({"true,0", "false,250", "true,500", "false, 900"})
+    @CsvSource({"true,0", "false,250", "true,500", "false,900"})
     void getClassifierStatus_ifStatusContainsReady_returnReady(boolean ready, int time) throws TimeoutException {
-
         mockApiStatusResponse(ready, time);
-        Assertions.assertEquals(classifier.getClassifierStatus().ready(), ready);
-
+        Assertions.assertEquals(ready, classifier.getClassifierStatus().ready());
     }
 
     @ParameterizedTest
@@ -84,25 +86,25 @@ class ClassifierNetworkTest {
             put(7, "test-phrase-7");
         }};
 
-        mockApiClassificationResponse(new JSONObject(testRequest), time);
-        ClassificationResponse response = classifier.classifyPhrases(new JSONObject(testRequest));
+        JsonNode jsonResponse = mapper.convertValue(testRequest, JsonNode.class);
+        mockApiClassificationResponse(jsonResponse, time);
+        ClassificationResponse response = classifier.classifyPhrases(testRequest);
         Assertions.assertEquals(response.classifications().size(), testRequest.size());
     }
 
     @Test
     void getClassifierStatus_takesLongerThanTimeout_throwException(){
         mockApiStatusResponse(true, 2000);
-        Exception exception = assertThrows(TimeoutException.class, () -> {
-            classifier.getClassifierStatus().ready();
-        });
+        Exception exception = assertThrows(TimeoutException.class, () -> classifier.getClassifierStatus().ready());
     }
 
     @Test
     void classifyPhrases_takesLongerThanTimeout_throwException(){
-        mockApiClassificationResponse(new JSONObject(new HashMap<Integer, String>()), 2000);
+        JsonNode jsonResponse = mapper.convertValue(new HashMap<Integer, String>(), JsonNode.class);
+        mockApiClassificationResponse(jsonResponse, 2000);
         Exception exception = assertThrows(TimeoutException.class, () -> {
             ClassificationResponse response =
-                    classifier.classifyPhrases(new JSONObject(new HashMap<Integer, String>()));
+                    classifier.classifyPhrases(new HashMap<>());
         });
     }
 }
