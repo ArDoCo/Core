@@ -1,4 +1,7 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
+
+import java.util.Locale;
 
 /**
  * This interface represents evaluation results. Implementing classes should be able to return precision, recall, and
@@ -27,4 +30,25 @@ public interface EvaluationResults {
      * @return the F1-score
      */
     double getF1();
+
+    /**
+     * Returns a string that formats the results in a human-readable manner.
+     * 
+     * @return a string that formats the results in a human-readable manner
+     */
+    default String getResultString() {
+        return String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
+    }
+
+    /**
+     * Returns a string that formats the results in a human-readable manner including the given expected results
+     * 
+     * @param expectedResults the expected results
+     * @return a string that formats the results in a human-readable manner
+     */
+    default String getResultStringWithExpected(ExpectedResults expectedResults) {
+        return String.format(Locale.ENGLISH,
+                "\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", getPrecision(),
+                expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
+    }
 }

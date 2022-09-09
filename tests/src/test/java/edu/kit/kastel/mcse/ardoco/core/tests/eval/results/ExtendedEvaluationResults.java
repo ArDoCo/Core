@@ -1,4 +1,7 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
+
+import java.util.Locale;
 
 /**
  * This interface extends {@link EvaluationResults} to capture the metrics Accuracy and Phi Coefficient. These metrics are different from the ones of
@@ -25,4 +28,16 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
      * @return the accuracy
      */
     double getAccuracy();
+
+    @Override
+    default String getResultString() {
+        return String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
+    }
+
+    @Override
+    default String getResultStringWithExpected(ExpectedResults expectedResults) {
+        return String.format(Locale.ENGLISH,
+                "\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", getPrecision(),
+                expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
+    }
 }

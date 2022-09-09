@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
@@ -28,5 +29,10 @@ public class ExtendedEvaluationResultsImpl extends EvaluationResultsImpl impleme
     @Override
     public double getAccuracy() {
         return this.accuracy;
+    }
+
+    @Override
+    public String toString() {
+        return this.getResultString();
     }
 }

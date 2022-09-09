@@ -43,13 +43,15 @@ public class OverallResultsCalculator {
     }
 
     private EvaluationResultsImpl calculateWeightedAverageResults(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
-        int weight = 0;
+        double weight = 0.0;
         double precision = .0;
         double recall = .0;
         double f1 = .0;
+        double accuracy = .0;
+        double phi = .0;
 
         for (var entry : projectResults) {
-            int localWeight = entry.getTwo().getWeight();
+            double localWeight = entry.getTwo().getWeight();
             var resultCalculator = entry.getTwo();
             var results = evaluationResultsFunction.apply(resultCalculator);
 
@@ -57,12 +59,22 @@ public class OverallResultsCalculator {
             recall += (localWeight * results.getRecall());
             f1 += (localWeight * results.getF1());
             weight += localWeight;
+
+            if (results instanceof ExtendedEvaluationResults extendedResults) {
+                accuracy += (localWeight * extendedResults.getAccuracy());
+                phi += (localWeight * extendedResults.getPhiCoefficient());
+            }
         }
 
         precision = precision / weight;
         recall = recall / weight;
         f1 = f1 / weight;
 
+        if (phi != 0.0 && accuracy > 0.0) {
+            phi = phi / weight;
+            accuracy = accuracy / weight;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+        }
         return new EvaluationResultsImpl(precision, recall, f1);
     }
 
@@ -77,6 +89,8 @@ public class OverallResultsCalculator {
         double precision = .0;
         double recall = .0;
         double f1 = .0;
+        double accuracy = .0;
+        double phi = .0;
 
         for (var entry : projectResults) {
             var results = entry.getTwo().getWeightedAverageResults();
@@ -88,12 +102,22 @@ public class OverallResultsCalculator {
             precision += results.getPrecision();
             recall += results.getRecall();
             f1 += results.getF1();
+
+            if (results instanceof ExtendedEvaluationResults extendedResult) {
+                phi += extendedResult.getPhiCoefficient();
+                accuracy += extendedResult.getAccuracy();
+            }
         }
 
         precision = precision / numberOfProjects;
         recall = recall / numberOfProjects;
         f1 = f1 / numberOfProjects;
 
+        if (phi != 0.0 && accuracy > 0.0) {
+            phi /= numberOfProjects;
+            accuracy /= numberOfProjects;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+        }
         return new EvaluationResultsImpl(precision, recall, f1);
     }
 }
