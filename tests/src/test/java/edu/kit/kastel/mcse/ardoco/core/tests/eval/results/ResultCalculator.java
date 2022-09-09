@@ -70,10 +70,10 @@ public class ResultCalculator {
                 falsePositives += extendedExplicitResults.getFalsePositives().size();
                 trueNegatives += extendedExplicitResults.getNumberOfTrueNegatives();
 
-                accuracy += extendedExplicitResults.getAccuracy();
+                accuracy += extendedExplicitResults.getAccuracy() * localWeight;
             } else if (result instanceof ExtendedEvaluationResults extendedResult) {
-                phi += extendedResult.getPhiCoefficient();
-                accuracy += extendedResult.getAccuracy();
+                phi += extendedResult.getPhiCoefficient() * localWeight;
+                accuracy += extendedResult.getAccuracy() * localWeight;
             }
         }
 
