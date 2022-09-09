@@ -16,28 +16,28 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778), //
-            new ExpectedResults(.000, .000, .256, .248, .178) //
+            new ExpectedResults(.000, .000, .256, .534, .178) //
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             new ExpectedResults(.913, .880, .896, .988, .890), //
-            new ExpectedResults(.000, .000, .222, .057, .227) //
+            new ExpectedResults(.000, .000, .222, .606, .227) //
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             new ExpectedResults(.999, .713, .832, .982, .837), //
-            new ExpectedResults(.000, .000, .250, .190, .103) //
+            new ExpectedResults(.000, .000, .250, .502, .103) //
     ), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new ExpectedResults(.877, .826, .850, .984, .844), //
-            new ExpectedResults(.000, .000, .272, .168, .190) //
+            new ExpectedResults(.000, .000, .272, .738, .190) //
     );
 
     private final String model;
