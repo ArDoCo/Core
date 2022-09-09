@@ -1,3 +1,4 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results.tests;
 
 import org.junit.jupiter.api.Assertions;
