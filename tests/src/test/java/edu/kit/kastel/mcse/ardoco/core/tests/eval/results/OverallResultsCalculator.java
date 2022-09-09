@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 /**
  * This class implements functionality to calculate overall results (averaged) when evaluating a number of projects.
  * There are different kinds of averages that can be calculated and that each return an instance of
- * {@link EvaluationResultsImpl}.
+ * {@link EvaluationResults}, in some circumstances even {@link ExtendedEvaluationResults}.
  */
 public class OverallResultsCalculator {
 
@@ -37,12 +37,12 @@ public class OverallResultsCalculator {
      * 
      * @return the weighted average results
      */
-    public EvaluationResultsImpl calculateWeightedAverageResults() {
+    public EvaluationResults calculateWeightedAverageResults() {
         Function<ResultCalculator, EvaluationResults> evaluationResultsFunction = ResultCalculator::getWeightedAverageResults;
         return calculateWeightedAverageResults(evaluationResultsFunction);
     }
 
-    private EvaluationResultsImpl calculateWeightedAverageResults(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
+    private EvaluationResults calculateWeightedAverageResults(Function<ResultCalculator, EvaluationResults> evaluationResultsFunction) {
         double weight = 0.0;
         double precision = .0;
         double recall = .0;
@@ -84,7 +84,7 @@ public class OverallResultsCalculator {
      * 
      * @return the macro average results
      */
-    public EvaluationResultsImpl calculateMacroAverageResults() {
+    public EvaluationResults calculateMacroAverageResults() {
         int numberOfProjects = projectResults.size();
         double precision = .0;
         double recall = .0;
