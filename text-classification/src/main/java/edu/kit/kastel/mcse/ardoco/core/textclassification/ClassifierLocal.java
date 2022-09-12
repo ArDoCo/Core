@@ -9,7 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
-
+/**
+ * ClassifierLocal implements a {@link TextClassifier} similar to {@link ClassifierNetworkAsync} by connecting
+ * to an external classifier via a {@link AsyncRestAPI}. When instantiating a ClassifierLocal,
+ * a Docker container is started on the local machine, in which the external classifier is deployed
+ * and reached on localhost (http://127.0.0.1)
+ */
 public class ClassifierLocal implements TextClassifier {
 
     private ContainerResponse container;
@@ -19,12 +24,22 @@ public class ClassifierLocal implements TextClassifier {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassifierLocal.class);
 
+    /**
+     * @param dockerImageName the name of the external classifiers Docker Image
+     * @param timeout the maximum time to wait for API responses.
+     */
     public ClassifierLocal(String dockerImageName, int timeout){
         init(dockerImageName);
         startContainer(-1);
         this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()), timeout);
     }
 
+    /**
+     *
+     * @param dockerImageName the name of the external classifiers Docker Image
+     * @param apiPort port of the external classifiers API
+     * @param timeout the maximum time to wait for API responses.
+     */
     public ClassifierLocal(String dockerImageName, int apiPort, int timeout){
         init(dockerImageName);
         startContainer(apiPort);

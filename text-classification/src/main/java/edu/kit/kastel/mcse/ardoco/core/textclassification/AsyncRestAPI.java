@@ -19,6 +19,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * AsyncRestAPI implements a {@link WebAPI} by sending and receiving to a web API via http.
+ * The AsyncRestAPI supports asynchronous responses by returning
+ * <a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html">Futures</a>
+ */
 public class AsyncRestAPI implements WebAPI<Future<JsonNode>, JsonNode>{
     private static final Logger logger = LoggerFactory.getLogger(AsyncRestAPI.class);
     private final String url;
@@ -26,6 +31,10 @@ public class AsyncRestAPI implements WebAPI<Future<JsonNode>, JsonNode>{
     private final ExecutorService executor;
     private final ObjectMapper mapper;
 
+    /**
+     * @param url the base URL of the web API
+     * @param port the port exposed by the web API
+     */
     public AsyncRestAPI(String url, int port) {
         this.url = url;
         this.port = port;

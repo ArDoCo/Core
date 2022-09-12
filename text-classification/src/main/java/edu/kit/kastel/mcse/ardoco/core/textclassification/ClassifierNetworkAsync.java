@@ -17,6 +17,13 @@ public class ClassifierNetworkAsync implements TextClassifier {
     private final int timeout;
     private final ObjectMapper mapper;
 
+    /**
+     * ClassifierNetworkAsync implements a {@link TextClassifier} by connecting over a {@link AsyncRestAPI} to an external classifier
+     * deployed as a web service. In addition to the methods defined in the interface, it provides methods that
+     * return asynchronous results.
+     * @param classificationAPI the {@link WebAPI}that connects to the external classifier and returns asynchronous results.
+     * @param timeout the maximum time to wait for API responses.
+     */
     public ClassifierNetworkAsync(WebAPI<Future<JsonNode>, JsonNode> classificationAPI, int timeout) {
         this.classificationAPI = classificationAPI;
         this.timeout = timeout;
@@ -68,11 +75,23 @@ public class ClassifierNetworkAsync implements TextClassifier {
 
         return null;
     }
+
+    /**
+     * equivalent to {@link #classifyPhrases(Map) classifyPhrases} but asynchronous i.e. do not wait for the result
+     * and return a <a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html">Future</a> instead.
+     * @param phrases a map with the phrases to be classified. The keys are identifiers for the phrases.
+     * @return future result of the classification
+     */
     public Future<ClassificationResponse> classifyPhrasesAsync(Map<Integer, String> phrases){
         ExecutorService executor= Executors.newSingleThreadExecutor();
         return executor.submit(() -> this.classifyPhrases(phrases));
     }
 
+    /**
+     * equivalent to {@link #getClassifierStatus() getClassiifierStatus} but asynchronous i.e. do not wait for the response
+     * and return a <a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html">Future</a> instead.
+     * @return future response of the classifiers' status request
+     */
     public Future<ClassifierStatus> getClassifierStatusAsync(){
         ExecutorService executor= Executors.newSingleThreadExecutor();
         return executor.submit(() -> this.getClassifierStatus());
