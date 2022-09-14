@@ -1,8 +1,10 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textclassification;
 
-import edu.kit.kastel.mcse.ardoco.core.textclassification.records.*;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+
+import edu.kit.kastel.mcse.ardoco.core.textclassification.records.*;
 
 /**
  * The TextClassifier interface defines methods for classifying text phrases
@@ -10,6 +12,7 @@ import java.util.concurrent.TimeoutException;
 public interface TextClassifier {
     /**
      * classifies all phrases given in a map
+     * 
      * @param phrases a map with the phrases to be classified. The keys are identifiers for the phrases.
      * @return the classified phrases
      * @throws TimeoutException in case the classification process takes too long
@@ -18,6 +21,7 @@ public interface TextClassifier {
 
     /**
      * returns the classifiers' status i.e. if the classifier is ready
+     * 
      * @return the status
      * @throws TimeoutException in case the status response takes too long
      */

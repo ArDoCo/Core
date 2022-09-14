@@ -1,14 +1,16 @@
+/* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.textclassification;
+
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.framework.docker.ContainerResponse;
 import edu.kit.kastel.informalin.framework.docker.DockerManager;
 import edu.kit.kastel.mcse.ardoco.core.textclassification.records.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
 /**
  * ClassifierLocal implements a {@link TextClassifier} similar to {@link ClassifierNetworkAsync} by connecting
  * to an external classifier via a {@link AsyncRestAPI}. When instantiating a ClassifierLocal,
@@ -26,28 +28,28 @@ public class ClassifierLocal implements TextClassifier {
 
     /**
      * @param dockerImageName the name of the external classifiers Docker Image
-     * @param timeout the maximum time to wait for API responses.
+     * @param timeout         the maximum time to wait for API responses.
      */
-    public ClassifierLocal(String dockerImageName, int timeout){
+    public ClassifierLocal(String dockerImageName, int timeout) {
         init(dockerImageName);
         startContainer(-1);
-        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()), timeout);
+        this.classifier = new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()), timeout);
     }
 
     /**
      *
      * @param dockerImageName the name of the external classifiers Docker Image
-     * @param apiPort port of the external classifiers API
-     * @param timeout the maximum time to wait for API responses.
+     * @param apiPort         port of the external classifiers API
+     * @param timeout         the maximum time to wait for API responses.
      */
-    public ClassifierLocal(String dockerImageName, int apiPort, int timeout){
+    public ClassifierLocal(String dockerImageName, int apiPort, int timeout) {
         init(dockerImageName);
         startContainer(apiPort);
-        this.classifier =  new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()), timeout);
+        this.classifier = new ClassifierNetworkAsync(new AsyncRestAPI("http://127.0.0.1", container.apiPort()), timeout);
     }
 
-    private void init(String dockerImageName){
-        if(dockerImageName.contains(":")){
+    private void init(String dockerImageName) {
+        if (dockerImageName.contains(":")) {
             this.dockerImageName = dockerImageName.split(":")[0];
             logger.warn("image tags will be ignored");
 
@@ -57,15 +59,15 @@ public class ClassifierLocal implements TextClassifier {
         this.dockerManager = new DockerManager(this.dockerImageName);
     }
 
-    private void startContainer(int apiPort){
-        for(String id: dockerManager.getContainerIds()) {
+    private void startContainer(int apiPort) {
+        for (String id : dockerManager.getContainerIds()) {
             dockerManager.shutdown(id);
         }
 
-        if(apiPort <= 0){
+        if (apiPort <= 0) {
             this.container = dockerManager.createContainerByImage(dockerImageName, true, true);
         } else {
-            this.container = dockerManager.createContainerByImage(dockerImageName, apiPort,true, true);
+            this.container = dockerManager.createContainerByImage(dockerImageName, apiPort, true, true);
         }
         logger.info(" successfully started container: {}", container);
 
