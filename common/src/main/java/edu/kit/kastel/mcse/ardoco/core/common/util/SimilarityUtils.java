@@ -1,39 +1,44 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
-import org.apache.commons.text.similarity.LevenshteinDistance;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.text.similarity.CosineSimilarity;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.MutableMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.INounMapping;
+import edu.kit.kastel.informalin.framework.common.tuple.Pair;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
 /**
  * This class is a utility class.
- *
- * @author Sophie, Jan
  */
 public final class SimilarityUtils {
-
-    private static final LevenshteinDistance levenShteinDistance = new LevenshteinDistance();
-    private static final JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
 
     private SimilarityUtils() {
         throw new IllegalAccessError();
     }
 
     /**
-     * Checks the similarity of two {@link INounMapping}s.
+     * Checks the similarity of two {@link NounMapping}s.
      *
      * @param nm1 the first NounMapping
      * @param nm2 the second NounMapping
-     * @return true, if the {@link INounMapping}s are similar; false if not.
+     * @return true, if the {@link NounMapping}s are similar; false if not.
      */
-    public static boolean areNounMappingsSimilar(INounMapping nm1, INounMapping nm2) {
+    public static boolean areNounMappingsSimilar(NounMapping nm1, NounMapping nm2) {
         var nm1Words = nm1.getReferenceWords();
         var nm2Words = nm2.getReferenceWords();
         var nm1Reference = nm1.getReference();
@@ -56,16 +61,16 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Compares a given {@link INounMapping} with a given {@link IModelInstance} for similarity. Checks if all names,
-     * the longest name or a single name are similar to the reference of the NounMapping.
+     * Compares a given {@link NounMapping} with a given {@link ModelInstance} for similarity. Checks if all names, the
+     * longest name or a single name are similar to the reference of the NounMapping.
      *
-     * @param nounMapping the {@link INounMapping}
-     * @param instance    the {@link IModelInstance}
-     * @return true, iff the {@link INounMapping} and {@link IModelInstance} are similar.
+     * @param nounMapping the {@link NounMapping}
+     * @param instance    the {@link ModelInstance}
+     * @return true, iff the {@link NounMapping} and {@link ModelInstance} are similar.
      */
-    public static boolean isNounMappingSimilarToModelInstance(INounMapping nounMapping, IModelInstance instance) {
-        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference()))
-                || areWordsSimilar(instance.getFullName(), nounMapping.getReference())) {
+    public static boolean isNounMappingSimilarToModelInstance(NounMapping nounMapping, ModelInstance instance) {
+        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(instance.getFullName(),
+                nounMapping.getReference())) {
             return true;
         }
 
@@ -78,43 +83,43 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Compares a given {@link IWord} with a given {@link IModelInstance} for similarity.
+     * Compares a given {@link Word} with a given {@link ModelInstance} for similarity.
      *
-     * @param word     the {@link IWord}
-     * @param instance the {@link IModelInstance}
-     * @return true, iff the {@link IWord} and {@link IModelInstance} are similar.
+     * @param word     the {@link Word}
+     * @param instance the {@link ModelInstance}
+     * @return true, iff the {@link Word} and {@link ModelInstance} are similar.
      */
-    public static boolean isWordSimilarToModelInstance(IWord word, IModelInstance instance) {
+    public static boolean isWordSimilarToModelInstance(Word word, ModelInstance instance) {
         var names = instance.getNameParts();
         return compareWordWithStringListEntries(word, names);
     }
 
     /**
-     * Compares a given {@link IRecommendedInstance} with a given {@link IModelInstance} for similarity.
+     * Compares a given {@link RecommendedInstance} with a given {@link ModelInstance} for similarity.
      *
-     * @param ri       the {@link IRecommendedInstance}
-     * @param instance the {@link IModelInstance}
-     * @return true, iff the {@link IRecommendedInstance} and {@link IModelInstance} are similar.
+     * @param ri       the {@link RecommendedInstance}
+     * @param instance the {@link ModelInstance}
+     * @return true, iff the {@link RecommendedInstance} and {@link ModelInstance} are similar.
      */
-    public static boolean isRecommendedInstanceSimilarToModelInstance(IRecommendedInstance ri, IModelInstance instance) {
+    public static boolean isRecommendedInstanceSimilarToModelInstance(RecommendedInstance ri, ModelInstance instance) {
         var name = ri.getName();
         var nameList = Lists.immutable.with(name.split(" "));
         return instance.getFullName().equalsIgnoreCase(ri.getName()) || areWordsOfListsSimilar(instance.getNameParts(), nameList);
     }
 
     /**
-     * Compares a given {@link IWord} with the type of a given {@link IModelInstance} for similarity.
+     * Compares a given {@link Word} with the type of a given {@link ModelInstance} for similarity.
      *
-     * @param word     the {@link IWord}
-     * @param instance the {@link IModelInstance}
-     * @return true, iff the {@link IWord} and the type of the {@link IModelInstance} are similar.
+     * @param word     the {@link Word}
+     * @param instance the {@link ModelInstance}
+     * @return true, iff the {@link Word} and the type of the {@link ModelInstance} are similar.
      */
-    public static boolean isWordSimilarToModelInstanceType(IWord word, IModelInstance instance) {
+    public static boolean isWordSimilarToModelInstanceType(Word word, ModelInstance instance) {
         var types = instance.getTypeParts();
         return compareWordWithStringListEntries(word, types);
     }
 
-    private static boolean compareWordWithStringListEntries(IWord word, ImmutableList<String> names) {
+    private static boolean compareWordWithStringListEntries(Word word, ImmutableList<String> names) {
         if (areWordsOfListsSimilar(names, Lists.immutable.with(word.getText()))) {
             return true;
         }
@@ -128,13 +133,13 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks the similarity of two {@link IWord}s.
+     * Checks the similarity of two {@link Word}s.
      *
      * @param word1 the first word
      * @param word2 the second word
      * @return true, if the words are similar; false if not.
      */
-    public static boolean areWordsSimilar(IWord word1, IWord word2) {
+    public static boolean areWordsSimilar(Word word1, Word word2) {
         var word1Text = word1.getText();
         var word2Text = word2.getText();
         return areWordsSimilar(word1Text, word2Text);
@@ -148,43 +153,7 @@ public final class SimilarityUtils {
      * @return true, if the test string is similar to the original; false if not.
      */
     public static boolean areWordsSimilar(String word1, String word2) {
-        return areWordsSimilar(word1, word2, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
-    }
-
-    public static boolean areWordsSimilar(String original, String word2test, double similarityThreshold) {
-        if (original == null || word2test == null) {
-            return false;
-        }
-        var originalLowerCase = original.toLowerCase();
-        var word2TestLowerCase = word2test.toLowerCase();
-        if (originalLowerCase.split(" ").length != word2TestLowerCase.split(" ").length) {
-            return false;
-        }
-
-        var isLevenshteinSimilar = levenshteinDistanceTest(original, word2test, similarityThreshold);
-        var isJaroWinklerSimilar = jaroWinklerSimilarityTest(original, word2test, similarityThreshold);
-        return isJaroWinklerSimilar || isLevenshteinSimilar;
-    }
-
-    private static boolean jaroWinklerSimilarityTest(String original, String word2test, Double threshold) {
-        return jaroWinklerSimilarity.apply(original, word2test) >= threshold;
-    }
-
-    private static boolean levenshteinDistanceTest(String original, String word2test, double threshold) {
-        var originalLowerCase = original.toLowerCase();
-        var word2TestLowerCase = word2test.toLowerCase();
-
-        var areWordsSimilarMinLength = CommonTextToolsConfig.LEVENSHTEIN_MIN_LENGTH;
-        var areWordsSimilarMaxLdist = CommonTextToolsConfig.LEVENSHTEIN_MAX_DISTANCE;
-        var maxLevenshteinDistance = (int) Math.min(areWordsSimilarMaxLdist, threshold * Math.min(original.length(), word2test.length()));
-
-        int levenshteinDistance = levenShteinDistance.apply(originalLowerCase, word2TestLowerCase);
-
-        if (original.length() <= areWordsSimilarMinLength) {
-            var wordsHaveContainmentRelation = word2TestLowerCase.contains(originalLowerCase) || originalLowerCase.contains(word2TestLowerCase);
-            return levenshteinDistance <= areWordsSimilarMaxLdist && wordsHaveContainmentRelation;
-        } else
-            return levenshteinDistance <= maxLevenshteinDistance;
+        return WordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**
@@ -239,8 +208,8 @@ public final class SimilarityUtils {
      * @param recommendedInstances recommended instances to check for similarity
      * @return a list of the most similar recommended instances (to the instance names)
      */
-    public static ImmutableList<IRecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(IModelInstance instance,
-            ImmutableList<IRecommendedInstance> recommendedInstances) {
+    public static ImmutableList<RecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(ModelInstance instance,
+            ImmutableList<RecommendedInstance> recommendedInstances) {
         var instanceNames = instance.getNameParts();
         var similarity = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD;
         var selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(instance, ri, similarity));
@@ -248,14 +217,14 @@ public final class SimilarityUtils {
         var getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
         var getMostRecommendedIByRefIncrease = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_INCREASE;
 
-        MutableList<IRecommendedInstance> whileSelection = Lists.mutable.withAll(selection);
+        MutableList<RecommendedInstance> whileSelection = Lists.mutable.withAll(selection);
         var allListsSimilar = 0;
 
         while (whileSelection.size() > 1 && getMostRecommendedIByRefMinProportion <= 1) {
             selection = Lists.immutable.withAll(whileSelection);
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
-            MutableList<IRecommendedInstance> risToRemove = Lists.mutable.empty();
-            for (IRecommendedInstance ri : whileSelection) {
+            MutableList<RecommendedInstance> risToRemove = Lists.mutable.empty();
+            for (RecommendedInstance ri : whileSelection) {
                 if (checkRecommendedInstanceWordSimilarityToInstance(instance, ri)) {
                     allListsSimilar++;
                 }
@@ -277,9 +246,9 @@ public final class SimilarityUtils {
 
     }
 
-    private static boolean checkRecommendedInstanceWordSimilarityToInstance(IModelInstance instance, IRecommendedInstance ri) {
+    private static boolean checkRecommendedInstanceWordSimilarityToInstance(ModelInstance instance, RecommendedInstance ri) {
         var instanceNames = instance.getNameParts();
-        for (var sf : ri.getNameMappings().flatCollect(INounMapping::getSurfaceForms)) {
+        for (var sf : ri.getNameMappings().flatCollect(NounMapping::getSurfaceForms)) {
             var splitSF = CommonUtilities.splitCases(String.join(" ", CommonUtilities.splitAtSeparators(sf)));
             if (areWordsSimilar(String.join(" ", instanceNames), splitSF)) {
                 return true;
@@ -288,25 +257,132 @@ public final class SimilarityUtils {
         return false;
     }
 
-    private static boolean checkRecommendedInstanceForSelection(IModelInstance instance, IRecommendedInstance ri, double similarity) {
+    private static boolean checkRecommendedInstanceForSelection(ModelInstance instance, RecommendedInstance ri, double similarity) {
         var instanceNames = instance.getNameParts();
         ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
-        ImmutableList<String> recommendedInstanceNameList = Lists.immutable.with(ri.getName());
-        if (areWordsSimilar(instance.getFullName(), ri.getName())
-                || SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNameList, similarity)
-                || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNameList, similarity)) {
+        ImmutableList<String> recommendedInstanceNames = Lists.immutable.with(ri.getName());
+
+        boolean instanceNameAndRIName = areWordsSimilar(instance.getFullName(), ri.getName());
+        boolean instanceNamesAndRIs = SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNames, similarity);
+        boolean longestNameSplitAndRINames = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNames, similarity);
+        boolean listOfNamesSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, recommendedInstanceNames) / Math.max(instanceNames.size(),
+                recommendedInstanceNames.size()) >= similarity;
+        boolean listOfNameSplitSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, recommendedInstanceNames) / Math.max(instanceNames.size(),
+                recommendedInstanceNames.size()) >= similarity;
+
+        if (instanceNameAndRIName || instanceNamesAndRIs || longestNameSplitAndRINames || listOfNamesSimilarEnough || listOfNameSplitSimilarEnough) {
             return true;
         }
         for (var nounMapping : ri.getNameMappings()) {
             for (var surfaceForm : nounMapping.getSurfaceForms()) {
                 var splitSurfaceForm = CommonUtilities.splitCases(surfaceForm);
                 var surfaceFormWords = CommonUtilities.splitAtSeparators(splitSurfaceForm);
-                if (SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity)
-                        || SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity)) {
+
+                boolean instanceNamesXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity);
+                boolean longestNameXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity);
+                boolean listOfNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames.size(),
+                        surfaceFormWords.size()) >= similarity;
+                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(longestNameSplit
+                        .size(), surfaceFormWords.size()) >= similarity;
+
+                if (instanceNamesXSurfaceForms || longestNameXSurfaceForms || listOfNamesXSurfaceFormSimilarEnough || listOfSplitNamesXSurfaceFormSimilarEnough) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    //TODO: Move to common utilities
+    public static int similarEntriesOfList(ImmutableList<String> list1, ImmutableList<String> list2) {
+
+        MutableList<String> removed = Lists.mutable.empty();
+
+        for (var element : list1) {
+            if (list2.contains(element)) {
+                removed.add(element);
+            } else {
+                if (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
+                    removed.add(element);
+                }
+            }
+        }
+
+        return removed.size();
+    }
+
+    private static boolean coversOtherPhraseVector(PhraseMapping phraseMapping1, PhraseMapping phraseMapping2) {
+
+        MutableMap<Word, Integer> phraseVector1 = phraseMapping1.getPhraseVector().toMap();
+        MutableMap<Word, Integer> phraseVector2 = phraseMapping2.getPhraseVector().toMap();
+
+        return phraseVector1.keySet().containsAll(phraseVector2.keySet());
+    }
+
+    private static boolean containsAllNounMappingsOfPhraseMapping(TextState textState, PhraseMapping phraseMapping1, PhraseMapping phraseMapping2) {
+        return phraseMapping1.getNounMappings(textState).containsAllIterable(phraseMapping2.getNounMappings(textState));
+    }
+
+    static double cosineSimilarity(Map<Word, Integer> firstPhraseVector, Map<Word, Integer> secondPhraseVector) {
+
+        CosineSimilarity cosineSimilarity = new CosineSimilarity();
+
+        Map<CharSequence, Integer> firstVector = firstPhraseVector.entrySet()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+        Map<CharSequence, Integer> secondVector = secondPhraseVector.entrySet()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+
+        return cosineSimilarity.cosineSimilarity(firstVector, secondVector);
+    }
+
+    public static PhraseMapping getMostSimilarPhraseMapping(TextState textState, PhraseMapping phraseMapping, ImmutableList<PhraseMapping> otherPhraseMappings,
+            double minCosineSimilarity) {
+
+        if (otherPhraseMappings.isEmpty()) {
+            return null;
+        }
+
+        double currentMinSimilarity = minCosineSimilarity;
+        PhraseMapping mostSimilarPhraseMapping = otherPhraseMappings.get(0);
+        for (PhraseMapping otherPhraseMapping : otherPhraseMappings) {
+            double similarity = getPhraseMappingSimilarity(textState, phraseMapping, otherPhraseMapping, PhraseMappingAggregatorStrategy.MAX_SIMILARITY);
+            if (similarity > currentMinSimilarity) {
+                currentMinSimilarity = similarity;
+                mostSimilarPhraseMapping = otherPhraseMapping;
+            }
+
+        }
+        return mostSimilarPhraseMapping;
+    }
+
+    public static <A, B> ImmutableList<Pair<A, B>> uniqueDot(ImmutableList<A> first, ImmutableList<B> second) {
+        List<Pair<A, B>> result = new ArrayList<>();
+        for (A a : first)
+            for (B b : second)
+                result.add(new Pair<>(a, b));
+        return Lists.immutable.withAll(result);
+    }
+
+    public static double getPhraseMappingSimilarity(TextState textState, PhraseMapping firstPhraseMapping, PhraseMapping secondPhraseMapping,
+            PhraseMappingAggregatorStrategy strategy) {
+        PhraseType firstPhraseType = firstPhraseMapping.getPhraseType();
+        PhraseType secondPhraseType = secondPhraseMapping.getPhraseType();
+        if (!firstPhraseType.equals(secondPhraseType)) {
+            return 0;
+        }
+
+        if (coversOtherPhraseVector(firstPhraseMapping, secondPhraseMapping) || coversOtherPhraseVector(secondPhraseMapping, firstPhraseMapping)) {
+            // TODO: PHI : REWORK
+            // TODO: NounMappings rausnehmen?
+            if (containsAllNounMappingsOfPhraseMapping(textState, firstPhraseMapping, secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState,
+                    secondPhraseMapping, firstPhraseMapping)) {
+                // TODO: HARD CODED
+                return 1.0;
+            }
+        }
+
+        return strategy.applyAsDouble(firstPhraseMapping, secondPhraseMapping);
     }
 }

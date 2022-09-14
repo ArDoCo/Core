@@ -9,37 +9,25 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.ISentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 
 /**
- * @author Jan Keim
  *
  */
 public abstract class AbstractInconsistencyTypeTest {
 
-    protected abstract IInconsistency getInconsistency();
+    protected abstract Inconsistency getInconsistency();
 
     protected abstract String getTypeString();
 
     protected abstract String getReasonString();
 
-    protected abstract IInconsistency getUnequalInconsistency();
+    protected abstract Inconsistency getUnequalInconsistency();
 
-    protected abstract IInconsistency getEqualInconsistency();
+    protected abstract Inconsistency getEqualInconsistency();
 
     protected abstract String[] getFileOutputEntry();
-
-    @Test
-    void createCopyTest() {
-        var copy = getInconsistency().createCopy();
-        Assertions.assertAll(//
-                () -> Assertions.assertNotSame(getInconsistency(), copy), //
-                () -> Assertions.assertEquals(getInconsistency(), copy));
-    }
 
     @Test
     void getTypeTest() {
@@ -81,11 +69,21 @@ public abstract class AbstractInconsistencyTypeTest {
                 () -> Assertions.assertFalse(inequality));
     }
 
-    protected static class DummyWord implements IWord {
+    protected static class DummyWord implements Word {
 
         @Override
         public int getSentenceNo() {
             return 0;
+        }
+
+        @Override
+        public Sentence getSentence() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Phrase getPhrase() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -99,12 +97,12 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public IWord getPreWord() {
+        public Word getPreWord() {
             return null;
         }
 
         @Override
-        public IWord getNextWord() {
+        public Word getNextWord() {
             return null;
         }
 
@@ -119,23 +117,18 @@ public abstract class AbstractInconsistencyTypeTest {
         }
 
         @Override
-        public ImmutableList<IWord> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
+        public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
         }
 
         @Override
-        public ImmutableList<IWord> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
+        public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
             return Lists.immutable.empty();
-        }
-
-        @Override
-        public ISentence getSentence() {
-            return null;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(getPosition(), getSentence(), getText());
+            return Objects.hash(getPosition(), getSentenceNo(), getText());
         }
 
         @Override
@@ -143,11 +136,11 @@ public abstract class AbstractInconsistencyTypeTest {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (!(obj instanceof DummyWord other)) {
                 return false;
             }
-            var other = (DummyWord) obj;
-            return getPosition() == other.getPosition() && getSentence() == other.getSentence() && Objects.equals(getText(), other.getText());
+
+            return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
         }
     }
 

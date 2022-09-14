@@ -3,65 +3,74 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
- * Represents a tracelink. Is a convenience data class that takes the necessary info from {@link IInstanceLink} and the
- * specific {@link IModelInstance} and {@link IWord} that are used in this tracelink.
+ * Represents a trace link. This is a convenience data class that takes the necessary info from {@link InstanceLink} and
+ * the specific {@link ModelInstance} and {@link Word} that are used in this trace link.
  *
- * @author Jan Keim
  */
-public class TraceLink {
-    private final IInstanceLink instanceLink;
-    private final IModelInstance modelInstance;
-    private final IWord word;
+public class TraceLink implements Comparable<TraceLink> {
+    private final InstanceLink instanceLink;
+    private final ModelInstance modelInstance;
+    private final Word word;
 
     /**
-     * Create a tracelink based on a {@link IInstanceLink} and a concrete {@link IModelInstance} along with a concrete
-     * {@link IWord}.
+     * Create a trace link based on a {@link InstanceLink} and a concrete {@link ModelInstance} along with a concrete
+     * {@link Word}.
      *
-     * @param instanceLink  InstanceLink of this tracelink
-     * @param modelInstance modelInstance that the tracelink points to
-     * @param word          word that the tracelink points to
+     * @param instanceLink  InstanceLink of this trace link
+     * @param modelInstance modelInstance that the trace link points to
+     * @param word          word that the trace link points to
      */
-    public TraceLink(IInstanceLink instanceLink, IModelInstance modelInstance, IWord word) {
+    public TraceLink(InstanceLink instanceLink, ModelInstance modelInstance, Word word) {
         this.instanceLink = instanceLink;
         this.modelInstance = modelInstance;
         this.word = word;
     }
 
     /**
-     * Get the sentence number of the word that the tracelink is based on.
+     * Get the sentence number of the word that the trace link is based on.
      *
-     * @return sentence number of the word that the tracelink is based on.
+     * @return sentence number of the word that the trace link is based on.
      */
     public int getSentenceNumber() {
         return word.getSentenceNo();
     }
 
     /**
-     * Get the UID of the model element that the tracelink is based on.
+     * Returns the sentence of the word that the trace link is based on.
+     * 
+     * @return the sentence of the word that the trace link is based on.
+     */
+    public Sentence getSentence() {
+        return word.getSentence();
+    }
+
+    /**
+     * Get the UID of the model element that the trace link is based on.
      *
-     * @return Uid of the model element that the tracelink is based on.
+     * @return Uid of the model element that the trace link is based on.
      */
     public String getModelElementUid() {
         return modelInstance.getUid();
     }
 
     /**
-     * Get the {@link IInstanceLink} that the tracelink is based on.
+     * Get the {@link InstanceLink} that the trace link is based on.
      *
-     * @return {@link IInstanceLink} that the tracelink is based on.
+     * @return {@link InstanceLink} that the trace link is based on.
      */
-    public IInstanceLink getInstanceLink() {
+    public InstanceLink getInstanceLink() {
         return instanceLink;
     }
 
     /**
-     * Get the probability/confidence of this tracelink
+     * Get the probability/confidence of this trace link
      *
-     * @return probability/confidence of this tracelink
+     * @return probability/confidence of this trace link
      */
     public double getProbability() {
         return instanceLink.getProbability();
@@ -85,4 +94,8 @@ public class TraceLink {
         return Objects.hash(getModelElementUid(), getSentenceNumber());
     }
 
+    @Override
+    public int compareTo(TraceLink o) {
+        return Integer.compare(this.getSentenceNumber(), o.getSentenceNumber());
+    }
 }

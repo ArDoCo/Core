@@ -17,13 +17,27 @@
 
 # -- Project information -----------------------------------------------------
 import os
+from datetime import datetime
 
-project = 'ArDoCo'
-copyright = '2022, Sophie Corallo, Jan Keim, Dominik Fuchß'
+project = 'ArDoCo - The Consistency Analyzer'
+copyright = f"2020-{datetime.now().year}, Sophie Corallo, Jan Keim, Dominik Fuchß"
 author = 'Sophie Corallo, Jan Keim, Dominik Fuchß'
 
+
 # The full version, including alpha/beta/rc tags
-release = '0.4'
+def _find_release():
+    with open(os.path.join(os.path.dirname(__file__), "..", ".mvn", "maven.config"), "r") as file:
+        for line in file.readlines():
+            line = line.strip()
+            if line.startswith("-Drevision="):
+                version = line[len("-Drevision="):].strip()
+                if "-SNAPSHOT" in version:
+                    version = version[0:version.index("-")] + " (dev)"
+                return version
+    return "unknown"
+
+
+release = _find_release()
 
 # -- General configuration ---------------------------------------------------
 
@@ -34,9 +48,9 @@ extensions = ['sphinxcontrib.plantuml']
 
 is_ci = os.environ.get("CI") == "true"
 if is_ci:
-    plantuml = '/usr/bin/java -jar %s' % os.path.join(os.path.dirname(__file__), "bin", "plantuml.jar")
+    plantuml = '/usr/bin/java -jar "%s"' % os.path.join(os.path.dirname(__file__), "bin", "plantuml.jar")
 else:
-    plantuml = 'java -jar %s' % os.path.join(os.path.dirname(__file__), "bin", "plantuml.jar")
+    plantuml = 'java -jar "%s"' % os.path.join(os.path.dirname(__file__), "bin", "plantuml.jar")
 plantuml_output_format = "svg_img"
 
 # Add any paths that contain templates here, relative to this directory.
@@ -59,8 +73,6 @@ html_theme = 'furo'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_title = " "
-
 from typing import Dict, Any
 
 html_theme_options: Dict[str, Any] = {
@@ -76,7 +88,7 @@ html_theme_options: Dict[str, Any] = {
             "class": "",
         },
     ],
-    "light_logo": "ArDoCo-light.svg",
-    "dark_logo": "ArDoCo-dark.svg",
+    # "light_logo": "ArDoCo-light.svg",
+    # "dark_logo": "ArDoCo-dark.svg",
     "navigation_with_keys": True,
 }

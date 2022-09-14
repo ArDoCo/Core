@@ -41,6 +41,7 @@ usage: java -jar ardoco-core-pipeline.jar
 
 For more information about the setup or the architecture have a look on the [docs](https://ardoco.github.io/Core).
 The docs are at some points deprecated, the general overview and setup should still hold.
+You can find the generated JavaDocs at [ArDoCo.github.io/Core-Docs](https://ArDoCo.github.io/Core-Docs/).
 
 ### Case Studies / Benchmarks
 
@@ -49,31 +50,33 @@ To test the Core, you could use case studies and benchmarks provided in ..
 * [ArDoCo Benchmark](https://github.com/ArDoCo/Benchmark)
 * [SWATTR](https://github.com/ArDoCo/SWATTR)
 
+
+
 ### Maven
 
 ```xml
 <dependencies>
-    <dependency>
-        <groupId>io.github.ardoco.core</groupId>
-        <artifactId>pipeline</artifactId> <!-- or any other subproject -->
-        <version>0.5-SNAPSHOT</version>
-    </dependency>
+	<dependency>
+		<groupId>io.github.ardoco.core</groupId>
+		<artifactId>pipeline</artifactId> <!-- or any other subproject -->
+		<version>0.6.0-SNAPSHOT</version>
+	</dependency>
 </dependencies>
 ```
 
 For snapshot releases, make sure to add the following repository
 ```xml
 <repositories>
-    <repository>
-        <releases>
-            <enabled>false</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-        <id>mavenSnapshot</id>
-        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
+	<repository>
+		<releases>
+			<enabled>false</enabled>
+		</releases>
+		<snapshots>
+			<enabled>true</enabled>
+		</snapshots>
+		<id>mavenSnapshot</id>
+		<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+	</repository>
 </repositories>
 ```
 

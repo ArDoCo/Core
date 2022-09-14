@@ -8,21 +8,19 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
-public class NameInconsistency implements IInconsistency {
+public class NameInconsistency implements TextInconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "NameInconsistency";
 
-    private static final String REASON_FORMAT_STRING = "Inconsistent naming in trace link between textual occurence \"%s\" (sentence %d) and model element \"%s\" (%s)";
-
-    private final IModelInstance modelInstance;
-    private final IWord word;
+    private final ModelInstance modelInstance;
+    private final Word word;
     private final int sentenceNo;
 
-    public NameInconsistency(IModelInstance modelInstance, IWord word) {
+    public NameInconsistency(ModelInstance modelInstance, Word word) {
         this.modelInstance = modelInstance;
         this.word = word;
         sentenceNo = word.getSentenceNo() + 1;
@@ -30,15 +28,16 @@ public class NameInconsistency implements IInconsistency {
 
     @Override
     public String getReason() {
-        String textOccurence = word.getText();
-        String modelOccurence = modelInstance.getFullName();
+        String textOccurrence = word.getText();
+        String modelOccurrence = modelInstance.getFullName();
         String uid = modelInstance.getUid();
-        return String.format(Locale.US, REASON_FORMAT_STRING, textOccurence, sentenceNo, modelOccurence, uid);
+        return String.format(Locale.US, "Inconsistent naming in trace link between textual occurence \"%s\" and model element \"%s\" (%s)", textOccurrence,
+                modelOccurrence, uid);
     }
 
     @Override
-    public IInconsistency createCopy() {
-        return new NameInconsistency(modelInstance.createCopy(), word);
+    public int getSentenceNumber() {
+        return sentenceNo;
     }
 
     @Override
@@ -64,13 +63,9 @@ public class NameInconsistency implements IInconsistency {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (!(obj instanceof NameInconsistency other)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        NameInconsistency other = (NameInconsistency) obj;
         return Objects.equals(modelInstance, other.modelInstance) && Objects.equals(word, other.word);
     }
 

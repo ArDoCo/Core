@@ -8,21 +8,21 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.IInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 
-public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements IInconsistency {
+public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements TextInconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
-    private static final String REASON_FORMAT_STRING = "Text indicates (confidence: %.2f) that \"%s\" (sentence %d) should be contained in the model(s) but could not be found.";
 
     @Override
     public String getReason() {
-        return String.format(Locale.US, REASON_FORMAT_STRING, confidence, name, sentence);
+        return String.format(Locale.US, "Text indicates that \"%s\" should be contained in the model(s) but could not be found. (confidence: %.2f)", name,
+                confidence);
     }
 
     @Override
-    public IInconsistency createCopy() {
-        return new MissingModelInstanceInconsistency(name, sentence, confidence);
+    public int getSentenceNumber() {
+        return sentence;
     }
 
     @Override

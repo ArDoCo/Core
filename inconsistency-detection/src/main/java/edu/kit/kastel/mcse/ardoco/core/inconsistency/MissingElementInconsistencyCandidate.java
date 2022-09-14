@@ -6,14 +6,14 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.IRecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 
 public class MissingElementInconsistencyCandidate {
 
-    private final IRecommendedInstance recommendedInstance;
+    private final RecommendedInstance recommendedInstance;
     private final MutableSet<MissingElementSupport> supports = Sets.mutable.empty();
 
-    public MissingElementInconsistencyCandidate(IRecommendedInstance recommendedInstance, MissingElementSupport support) {
+    public MissingElementInconsistencyCandidate(RecommendedInstance recommendedInstance, MissingElementSupport support) {
         this.recommendedInstance = recommendedInstance;
         supports.add(support);
     }
@@ -40,7 +40,7 @@ public class MissingElementInconsistencyCandidate {
     /**
      * @return the recommendedInstance
      */
-    public IRecommendedInstance getRecommendedInstance() {
+    public RecommendedInstance getRecommendedInstance() {
         return recommendedInstance;
     }
 
@@ -54,13 +54,9 @@ public class MissingElementInconsistencyCandidate {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (!(obj instanceof MissingElementInconsistencyCandidate other)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MissingElementInconsistencyCandidate other = (MissingElementInconsistencyCandidate) obj;
         return Objects.equals(recommendedInstance, other.recommendedInstance);
     }
 

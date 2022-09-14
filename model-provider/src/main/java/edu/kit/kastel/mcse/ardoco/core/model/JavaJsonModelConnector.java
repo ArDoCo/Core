@@ -15,10 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.informalin.framework.models.java.JavaClassOrInterface;
 import edu.kit.kastel.informalin.framework.models.java.JavaProject;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.IModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
-public class JavaJsonModelConnector implements IModelConnector {
+public class JavaJsonModelConnector implements ModelConnector {
     private final JavaProject javaProject;
 
     public JavaJsonModelConnector(File file) throws IOException {
@@ -47,14 +48,14 @@ public class JavaJsonModelConnector implements IModelConnector {
     }
 
     @Override
-    public ImmutableList<IModelInstance> getInstances() {
+    public ImmutableList<ModelInstance> getInstances() {
         return Lists.immutable.withAll(javaProject.getClassesAndInterfaces()).collect(this::toInstance);
     }
 
-    private Instance toInstance(JavaClassOrInterface javaClassOrInterface) {
+    private ModelInstanceImpl toInstance(JavaClassOrInterface javaClassOrInterface) {
         var name = javaClassOrInterface.getName();
         var identifier = javaClassOrInterface.getFullyQualifiedName();
         var type = javaClassOrInterface.isInterface() ? "Interface" : "Class";
-        return new Instance(name, type, identifier);
+        return new ModelInstanceImpl(name, type, identifier);
     }
 }

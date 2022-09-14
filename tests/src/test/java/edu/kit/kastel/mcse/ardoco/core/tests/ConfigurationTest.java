@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 
 /**
  * This test class deals with the configurations.
  *
- * @author Dominik Fuchss
  * @see AbstractConfigurable
  */
 class ConfigurationTest {
@@ -33,6 +33,7 @@ class ConfigurationTest {
         var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
                 .stream()
+                .filter(c -> c.getPackageName().startsWith("edu.kit.kastel.mcse.ardoco"))
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();
@@ -43,9 +44,35 @@ class ConfigurationTest {
 
         System.out.println("-".repeat(50));
         System.out.println("Current Default Configuration");
-        System.out.println(
-                configs.entrySet().stream().map(e -> e.getKey() + AbstractConfigurable.KEY_VALUE_CONNECTOR + e.getValue()).collect(Collectors.joining("\n")));
+        System.out.println(configs.entrySet()
+                .stream()
+                .map(e -> e.getKey() + AbstractConfigurable.KEY_VALUE_CONNECTOR + e.getValue())
+                .collect(Collectors.joining("\n")));
         System.out.println("-".repeat(50));
+    }
+
+    @Test
+    void testValidityOfConfigurableFields() throws Exception {
+        var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
+        var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
+                .stream()
+                .filter(c -> c.getPackageName().startsWith("edu.kit.kastel.mcse.ardoco"))
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .filter(c -> !c.getPackageName().contains("tests"))
+                .toList();
+
+        for (var clazz : classesThatMayBeConfigured) {
+            List<Field> configurableFields = new ArrayList<>();
+            findImportantFields(clazz, configurableFields);
+
+            for (var field : configurableFields) {
+                int modifiers = field.getModifiers();
+                Assertions.assertFalse(Modifier.isFinal(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass()
+                        .getSimpleName() + " is final!");
+                Assertions.assertFalse(Modifier.isStatic(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass()
+                        .getSimpleName() + " is static!");
+            }
+        }
     }
 
     @Test
@@ -97,8 +124,8 @@ class ConfigurationTest {
 
     }
 
-    private void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    private void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException,
+            InstantiationException, IllegalAccessException {
         var object = createObject(clazz);
         List<Field> fields = new ArrayList<>();
         findImportantFields(object.getClass(), fields);
@@ -152,8 +179,8 @@ class ConfigurationTest {
         findImportantFields(clazz.getSuperclass(), fields);
     }
 
-    private AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    private AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
+            IllegalAccessException {
         var constructors = Arrays.asList(clazz.getDeclaredConstructors());
         if (constructors.stream().anyMatch(c -> c.getParameterCount() == 0)) {
             var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().get();
@@ -164,6 +191,14 @@ class ConfigurationTest {
             var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().get();
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(Map.of());
+        }
+        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)) {
+            var constructor = constructors.stream()
+                    .filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)
+                    .findFirst()
+                    .get();
+            constructor.setAccessible(true);
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null });
         }
 
         Assertions.fail("No suitable constructor has been found for " + clazz);

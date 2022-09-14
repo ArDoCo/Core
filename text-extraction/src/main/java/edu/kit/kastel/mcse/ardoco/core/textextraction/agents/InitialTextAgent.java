@@ -4,46 +4,42 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.AbstractExtractor;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.TextAgentData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.IWord;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.InDepArcsExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.NounExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.OutDepArcsExtractor;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.SeparatedNamesExtractor;
+import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.InDepArcsInformant;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.NounInformant;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.OutDepArcsInformant;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.SeparatedNamesInformant;
 
 /**
  * The Class InitialTextAgent defines the agent that executes the extractors for the text stage.
  */
-public class InitialTextAgent extends TextAgent {
+public class InitialTextAgent extends PipelineAgent {
 
-    private final List<AbstractExtractor<TextAgentData>> extractors = List.of(new NounExtractor(), new InDepArcsExtractor(), new OutDepArcsExtractor(),
-            new SeparatedNamesExtractor());
+    private final List<Informant> informants;
 
     @Configurable
-    private List<String> enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
+    private List<String> enabledInformants;
 
     /**
      * Instantiates a new initial text agent.
      */
-    public InitialTextAgent() {
-        // empty
-    }
-
-    @Override
-    public void execute(TextAgentData data) {
-        var text = data.getText();
-        for (IWord word : text.getWords()) {
-            for (var extractor : findByClassName(enabledExtractors, extractors)) {
-                extractor.exec(data, word);
-            }
-        }
+    public InitialTextAgent(DataRepository data) {
+        super(InitialTextAgent.class.getSimpleName(), data);
+        informants = List.of(new NounInformant(data), new InDepArcsInformant(data), new OutDepArcsInformant(data), new SeparatedNamesInformant(data));
+        enabledInformants = informants.stream().map(AbstractPipelineStep::getId).toList();
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
+        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
+    }
+
+    @Override
+    protected List<Informant> getEnabledPipelineSteps() {
+        return findByClassName(enabledInformants, informants);
     }
 }
