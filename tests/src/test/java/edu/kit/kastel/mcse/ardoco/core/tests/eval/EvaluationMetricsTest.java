@@ -72,4 +72,16 @@ class EvaluationMetricsTest {
         );
     }
 
+    @Test
+    void calculateSpecificityTest() {
+        Assertions.assertAll( //
+                () -> Assertions.assertEquals(.5, EvaluationMetrics.calculateSpecificity(1, 1), 1e-3), //
+                () -> Assertions.assertEquals(.76, EvaluationMetrics.calculateSpecificity(1337, 420), 1e-3), //
+                () -> Assertions.assertEquals(.0, EvaluationMetrics.calculateSpecificity(0, 20), 1e-3), //
+                () -> Assertions.assertEquals(1., EvaluationMetrics.calculateSpecificity(20, 0), 1e-3), //
+                () -> Assertions.assertEquals(1., EvaluationMetrics.calculateSpecificity(0, 0), 1e-3), //
+                () -> Assertions.assertEquals(.375, EvaluationMetrics.calculateSpecificity(3, 5), 1e-3) //
+        );
+    }
+
 }
