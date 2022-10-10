@@ -101,16 +101,16 @@ class OverallResultsCalculatorTest {
         OverallResultsCalculator orc = new OverallResultsCalculator();
 
         ResultCalculator rc = new ResultCalculator();
-        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(1.0, 1.0, 1.0, 1.0, 1.0), 1);
-        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.0, 1.0, 0.0, 0.0, 0.0), 1);
+        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(1.0, 1.0, 1.0, 1.0, 1.0, 1.0), 1);
+        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.0, 1.0, 0.0, 0.0, 0.0, 0.0), 1);
         orc.addResult(Project.MEDIASTORE, rc);
 
         ResultCalculator rc2 = new ResultCalculator();
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.1, 0.18, 0.6, 0.1), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.7, 0.3), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.3, 0.7, 0.42, 0.5, 0.45), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.9, 0.9, 0.4, 0.6), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.3, 0.35), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.1, 0.18, 0.6, 0.1, 0.1), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.7, 0.3, 0.3), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.3, 0.7, 0.42, 0.5, 0.45, 0.45), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.9, 0.9, 0.4, 0.6, 0.6), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.3, 0.35, 0.35), 1);
         orc.addResult(Project.TEASTORE, rc2);
 
         var results = (ExtendedEvaluationResults) orc.calculateWeightedAverageResults();
@@ -120,7 +120,8 @@ class OverallResultsCalculatorTest {
                 () -> Assertions.assertEquals(0.643, results.getRecall(), 1e-3, "Unexpected Recall"), //
                 () -> Assertions.assertEquals(0.494, results.getF1(), 1e-3, "Unexpected F1"), //
                 () -> Assertions.assertEquals(0.5, results.getAccuracy(), 1e-3, "Unexpected Accuracy"), //
-                () -> Assertions.assertEquals(0.4, results.getPhiCoefficient(), 1e-3, "Unexpected Phi Coefficient") //
+                () -> Assertions.assertEquals(0.4, results.getPhiCoefficient(), 1e-3, "Unexpected Phi Coefficient"), //
+                () -> Assertions.assertEquals(0.4, results.getSpecificity(), 1e-3, "Unexpected Specificity") //
         );
     }
 
@@ -130,16 +131,16 @@ class OverallResultsCalculatorTest {
         OverallResultsCalculator orc = new OverallResultsCalculator();
 
         ResultCalculator rc = new ResultCalculator();
-        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(1.0, 1.0, 1.0, 1.0, 1.0), 1);
-        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.0, 1.0, 0.0, 0.0, 0.0), 1);
+        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(1.0, 1.0, 1.0, 1.0, 1.0, 1.0), 1);
+        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.0, 1.0, 0.0, 0.0, 0.0, 0.0), 1);
         orc.addResult(Project.MEDIASTORE, rc);
 
         ResultCalculator rc2 = new ResultCalculator();
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.1, 0.18, 0.6, 0.1), 2);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.7, 0.3), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.3, 0.7, 0.42, 0.5, 0.45), 2);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.9, 0.9, 0.4, 0.6), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.3, 0.35), 2);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.1, 0.18, 0.6, 0.1, 0.1), 2);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.7, 0.3, 0.3), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.3, 0.7, 0.42, 0.5, 0.45, 0.45), 2);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.9, 0.9, 0.4, 0.6, 0.6), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.3, 0.35, 0.35), 2);
         orc.addResult(Project.TEASTORE, rc2);
 
         var results = (ExtendedEvaluationResults) orc.calculateWeightedAverageResults();
@@ -149,7 +150,8 @@ class OverallResultsCalculatorTest {
                 () -> Assertions.assertEquals(0.57, results.getRecall(), 1e-3, "Unexpected Recall"), //
                 () -> Assertions.assertEquals(0.454, results.getF1(), 1e-3, "Unexpected F1"), //
                 () -> Assertions.assertEquals(0.49, results.getAccuracy(), 1e-3, "Unexpected Accuracy"), //
-                () -> Assertions.assertEquals(0.37, results.getPhiCoefficient(), 1e-3, "Unexpected Phi Coefficient") //
+                () -> Assertions.assertEquals(0.37, results.getPhiCoefficient(), 1e-3, "Unexpected Phi Coefficient"), //
+                () -> Assertions.assertEquals(0.37, results.getSpecificity(), 1e-3, "Unexpected Specificity") //
         );
     }
 
@@ -159,16 +161,16 @@ class OverallResultsCalculatorTest {
         OverallResultsCalculator orc = new OverallResultsCalculator();
 
         ResultCalculator rc = new ResultCalculator();
-        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(1.0, 1.0, 1.0, 1.0, 1.0), 1);
-        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.0, 1.0, 0.0, 0.0, 0.0), 1);
+        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(1.0, 1.0, 1.0, 1.0, 1.0, 1.0), 1);
+        rc.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.0, 1.0, 0.0, 0.0, 0.0, 0.0), 1);
         orc.addResult(Project.MEDIASTORE, rc);
 
         ResultCalculator rc2 = new ResultCalculator();
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.1, 0.18, 0.6, 0.1), 2);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.7, 0.3), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.3, 0.7, 0.42, 0.5, 0.45), 2);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.9, 0.9, 0.4, 0.6), 1);
-        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.3, 0.35), 2);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.1, 0.18, 0.6, 0.1, 0.1), 2);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.7, 0.3, 0.3), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.3, 0.7, 0.42, 0.5, 0.45, 0.45), 2);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.9, 0.9, 0.9, 0.4, 0.6, 0.6), 1);
+        rc2.addEvaluationResults(new ExtendedEvaluationResultsImpl(0.6, 0.4, 0.48, 0.3, 0.35, 0.35), 2);
         orc.addResult(Project.TEASTORE, rc2);
 
         var results = (ExtendedEvaluationResults) orc.calculateMacroAverageResults();
@@ -178,7 +180,8 @@ class OverallResultsCalculatorTest {
                 () -> Assertions.assertEquals(0.731, results.getRecall(), 1e-3, "Unexpected Recall"), //
                 () -> Assertions.assertEquals(0.471, results.getF1(), 1e-3, "Unexpected F1"), //
                 () -> Assertions.assertEquals(0.494, results.getAccuracy(), 1e-3, "Unexpected Accuracy"), //
-                () -> Assertions.assertEquals(0.419, results.getPhiCoefficient(), 1e-3, "Unexpected Phi Coefficient") //
+                () -> Assertions.assertEquals(0.419, results.getPhiCoefficient(), 1e-3, "Unexpected Phi Coefficient"), //
+                () -> Assertions.assertEquals(0.419, results.getSpecificity(), 1e-3, "Unexpected Specificity") //
         );
     }
 }

@@ -9,10 +9,11 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
  * @param f1             the expected F1 score
  * @param accuracy       the expected accuracy
  * @param phiCoefficient the expected Phi Coefficient
+ * @param specificity    the expected specificity
  */
-public record ExpectedResults(double precision, double recall, double f1, double accuracy, double phiCoefficient) {
+public record ExpectedResults(double precision, double recall, double f1, double accuracy, double phiCoefficient, double specificity) {
 
     public ExpectedResults(double precision, double recall, double f1) {
-        this(precision, recall, f1, .0, .0);
+        this(precision, recall, f1, .0, .0, 0.);
     }
 }

@@ -220,6 +220,18 @@ public class TestUtil {
     }
 
     /**
+     * Calculates the specificity, also known as selectivity or true negative rate, based on the number of true negatives and false positives.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Sensitivity_and_specificity">Wikipedia: Sensitivity and specificity</a>
+     * @param trueNegatives  the number of true negatives
+     * @param falsePositives the number of false positives
+     * @return the specificity
+     */
+    public static double calculateSpecificity(int trueNegatives, int falsePositives) {
+        return ((double) trueNegatives) / ((double) trueNegatives + falsePositives);
+    }
+
+    /**
      * Log the provided {@link EvaluationResultsImpl} using the provided logger and name.
      * 
      * @param logger  Logger to use
@@ -265,7 +277,7 @@ public class TestUtil {
 
             ResultCalculator resultCalculator = new ResultCalculator();
             resultCalculator.addEvaluationResults(new ExtendedEvaluationResultsImpl(result.getPrecision(), result.getRecall(), result.getF1(), result
-                    .getAccuracy(), result.getPhiCoefficient()), result.getWeight());
+                    .getAccuracy(), result.getPhiCoefficient(), result.getSpecificity()), result.getWeight());
             overallResultsCalculator.addResult(project, resultCalculator);
         }
         return overallResultsCalculator;

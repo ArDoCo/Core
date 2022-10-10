@@ -30,7 +30,7 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
         return this.getTruePositives().size() + this.getFalseNegatives().size();
     }
 
-    public long getNumberOfTrueNegatives() {
+    public int getNumberOfTrueNegatives() {
         return trueNegatives;
     }
 
@@ -41,6 +41,11 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
         var falseNegatives = this.getFalseNegatives().size();
 
         return TestUtil.calculateAccuracy(truePositives, falsePositives, falseNegatives, trueNegatives);
+    }
+
+    @Override
+    public double getSpecificity() {
+        return TestUtil.calculateSpecificity(trueNegatives, this.getFalsePositives().size());
     }
 
     @Override
