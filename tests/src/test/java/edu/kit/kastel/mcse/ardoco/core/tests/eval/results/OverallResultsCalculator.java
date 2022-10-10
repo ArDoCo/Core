@@ -49,6 +49,7 @@ public class OverallResultsCalculator {
         double f1 = .0;
         double accuracy = .0;
         double phi = .0;
+        double specificity = .0;
 
         for (var entry : projectResults) {
             double localWeight = entry.getTwo().getWeight();
@@ -62,6 +63,7 @@ public class OverallResultsCalculator {
 
             if (results instanceof ExtendedEvaluationResults extendedResults) {
                 accuracy += (localWeight * extendedResults.getAccuracy());
+                specificity += (localWeight * extendedResults.getSpecificity());
                 phi += (localWeight * extendedResults.getPhiCoefficient());
             }
         }
@@ -73,7 +75,8 @@ public class OverallResultsCalculator {
         if (phi != 0.0 && accuracy > 0.0) {
             phi = phi / weight;
             accuracy = accuracy / weight;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+            specificity = specificity / weight;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
         }
         return new EvaluationResultsImpl(precision, recall, f1);
     }
@@ -91,6 +94,7 @@ public class OverallResultsCalculator {
         double f1 = .0;
         double accuracy = .0;
         double phi = .0;
+        double specificity = .0;
 
         for (var entry : projectResults) {
             var results = entry.getTwo().getWeightedAverageResults();
@@ -106,6 +110,7 @@ public class OverallResultsCalculator {
             if (results instanceof ExtendedEvaluationResults extendedResult) {
                 phi += extendedResult.getPhiCoefficient();
                 accuracy += extendedResult.getAccuracy();
+                specificity += extendedResult.getSpecificity();
             }
         }
 
@@ -116,7 +121,8 @@ public class OverallResultsCalculator {
         if (phi != 0.0 && accuracy > 0.0) {
             phi /= numberOfProjects;
             accuracy /= numberOfProjects;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+            specificity /= numberOfProjects;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
         }
         return new EvaluationResultsImpl(precision, recall, f1);
     }

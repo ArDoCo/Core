@@ -29,6 +29,14 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
      */
     double getAccuracy();
 
+    /**
+     * Calculates the specificity, also known as selectivity or true negative rate, based on the number of true negatives and false positives.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Sensitivity_and_specificity">Wikipedia: Sensitivity and specificity</a>
+     * @return the specificity
+     */
+    double getSpecificity();
+
     @Override
     default String getResultString() {
         String output = String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
@@ -41,8 +49,10 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
         String output = String.format(Locale.ENGLISH,
                 "\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", getPrecision(),
                 expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
-        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tPhi Coef.:%7.3f (min. expected: %.3f)", getAccuracy(),
-                expectedResults.accuracy(), getPhiCoefficient(), expectedResults.phiCoefficient());
+        output += String.format(Locale.ENGLISH,
+                "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tPhi Coef.:%7.3f (min. expected: %.3f)%n\tSpecificity:%5.3f (min. expected: %.3f)", getAccuracy(),
+                expectedResults.accuracy(), getPhiCoefficient(), expectedResults.phiCoefficient(), getSpecificity(), expectedResults.specificity());
         return output;
     }
+
 }

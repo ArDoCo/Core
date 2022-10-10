@@ -44,6 +44,7 @@ public class ResultCalculator {
         double f1 = 0.0;
 
         double accuracy = 0.0;
+        double specificity = 0.0;
         double phi = 0.0;
         int truePositives = 0;
         int trueNegatives = 0;
@@ -71,9 +72,11 @@ public class ResultCalculator {
                 trueNegatives += extendedExplicitResults.getNumberOfTrueNegatives();
 
                 accuracy += extendedExplicitResults.getAccuracy() * localWeight;
+                specificity += extendedExplicitResults.getSpecificity() * localWeight;
             } else if (result instanceof ExtendedEvaluationResults extendedResult) {
                 phi += extendedResult.getPhiCoefficient() * localWeight;
                 accuracy += extendedResult.getAccuracy() * localWeight;
+                specificity += extendedResult.getSpecificity() * localWeight;
             }
         }
 
@@ -84,12 +87,14 @@ public class ResultCalculator {
         if (truePositives > 0) {
             phi = TestUtil.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
             accuracy = accuracy / weight;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+            specificity = specificity / weight;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
         }
         if (phi != 0.0 && accuracy > 0.0) {
             phi = phi / weight;
             accuracy = accuracy / weight;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+            specificity = specificity / weight;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
         }
         return new EvaluationResultsImpl(precision, recall, f1);
     }
@@ -105,6 +110,7 @@ public class ResultCalculator {
         var f1 = 0.0;
 
         double accuracy = 0.0;
+        double specificity = 0.0;
         double phi = 0.0;
 
         var counter = 0;
@@ -129,6 +135,7 @@ public class ResultCalculator {
             if (result instanceof ExtendedEvaluationResults extendedResult) {
                 phi += extendedResult.getPhiCoefficient();
                 accuracy += extendedResult.getAccuracy();
+                specificity += extendedResult.getSpecificity();
             }
         }
 
@@ -139,7 +146,8 @@ public class ResultCalculator {
         if (phi != 0.0 && accuracy > 0.0) {
             phi /= counter;
             accuracy /= counter;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi);
+            specificity /= counter;
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
         }
         return new EvaluationResultsImpl(precision, recall, f1);
 
