@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 
 /**
  * This class implements evaluation results by having the results as data within this class (no direct calculation).
@@ -25,15 +25,15 @@ public class EvaluationResultsImpl implements EvaluationResults {
      * @param f1        the f1
      */
     public EvaluationResultsImpl(double precision, double recall, double f1) {
-        this.precision = TestUtil.checkAndRepairPrecision(precision);
-        this.recall = TestUtil.checkAndRepairRecall(recall);
-        this.f1 = TestUtil.checkAndRepairF1(f1);
+        this.precision = EvaluationMetrics.checkAndRepairPrecision(precision);
+        this.recall = EvaluationMetrics.checkAndRepairRecall(recall);
+        this.f1 = EvaluationMetrics.checkAndRepairF1(f1);
     }
 
     public EvaluationResultsImpl(int truePositives, int falsePositives, int falseNegatives) {
-        this.precision = TestUtil.calculatePrecision(truePositives, falsePositives);
-        this.recall = TestUtil.calculateRecall(truePositives, falseNegatives);
-        this.f1 = TestUtil.calculateF1(precision, recall);
+        this.precision = EvaluationMetrics.calculatePrecision(truePositives, falsePositives);
+        this.recall = EvaluationMetrics.calculateRecall(truePositives, falseNegatives);
+        this.f1 = EvaluationMetrics.calculateF1(precision, recall);
     }
 
     @Override

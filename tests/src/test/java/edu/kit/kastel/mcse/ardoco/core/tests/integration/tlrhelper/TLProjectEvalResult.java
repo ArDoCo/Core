@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultsImpl;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
@@ -78,9 +78,9 @@ public class TLProjectEvalResult extends EvaluationResultsImpl implements Compar
         Set<TestLink> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         int fn = falseNegatives.size();
 
-        this.precision = TestUtil.calculatePrecision(tp, fp);
-        this.recall = TestUtil.calculateRecall(tp, fn);
-        this.f1Score = TestUtil.calculateF1(precision, recall);
+        this.precision = EvaluationMetrics.calculatePrecision(tp, fp);
+        this.recall = EvaluationMetrics.calculateRecall(tp, fn);
+        this.f1Score = EvaluationMetrics.calculateF1(precision, recall);
 
         this.truePositives.addAll(truePositives);
         this.falsePositives.addAll(falsePositives);

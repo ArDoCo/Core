@@ -6,7 +6,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 
 public class ResultCalculator {
 
@@ -85,7 +85,7 @@ public class ResultCalculator {
         f1 = f1 / weight;
 
         if (truePositives > 0) {
-            phi = TestUtil.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
+            phi = EvaluationMetrics.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
             accuracy = accuracy / weight;
             specificity = specificity / weight;
             return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);

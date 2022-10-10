@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 
 /**
  * This class extends {@link ExplicitEvaluationResults} and therefore also {@link EvaluationResultsImpl} and implements {@link ExtendedEvaluationResults} to be
@@ -40,12 +40,12 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
         var falsePositives = this.getFalsePositives().size();
         var falseNegatives = this.getFalseNegatives().size();
 
-        return TestUtil.calculateAccuracy(truePositives, falsePositives, falseNegatives, trueNegatives);
+        return EvaluationMetrics.calculateAccuracy(truePositives, falsePositives, falseNegatives, trueNegatives);
     }
 
     @Override
     public double getSpecificity() {
-        return TestUtil.calculateSpecificity(trueNegatives, this.getFalsePositives().size());
+        return EvaluationMetrics.calculateSpecificity(trueNegatives, this.getFalsePositives().size());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
         int falsePositives = this.getFalsePositives().size();
         int falseNegatives = this.getFalseNegatives().size();
 
-        return TestUtil.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
+        return EvaluationMetrics.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
     }
 
 }
