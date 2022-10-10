@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -195,20 +197,26 @@ public class TestUtil {
      *
      * @return the value for Phi Coefficient (or MCC)
      */
-    public static double calculatePhiCoefficient(long truePositives, long falsePositives, long falseNegatives, long trueNegatives) {
-        double numerator = (truePositives * trueNegatives) - (falsePositives * falseNegatives);
+    public static double calculatePhiCoefficient(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
+        var tp = BigDecimal.valueOf(truePositives);
+        var fp = BigDecimal.valueOf(falsePositives);
+        var fn = BigDecimal.valueOf(falseNegatives);
+        var tn = BigDecimal.valueOf(trueNegatives);
 
-        long a = truePositives + falsePositives;
-        long b = truePositives + falseNegatives;
-        long c = trueNegatives + falsePositives;
-        long d = trueNegatives + falseNegatives;
-        if (a == 0 || b == 0 || c == 0 || d == 0) {
+        var num = tp.multiply(tn).subtract((fp.multiply(fn)));
+
+        var a = tp.add(fp);
+        var b = tp.add(fn);
+        var c = tn.add(fp);
+        var d = tn.add(fn);
+        if (a.equals(BigDecimal.ZERO) || b.equals(BigDecimal.ZERO) || c.equals(BigDecimal.ZERO) || d.equals(BigDecimal.ZERO)) {
             return 0d;
         }
-        long sumInDenominator = a * b * c * d;
-        double denominator = Math.sqrt(sumInDenominator);
 
-        return numerator / denominator;
+        var sumInDenominator = a.multiply(b).multiply(c).multiply(d);
+        var denominator = sumInDenominator.sqrt(MathContext.DECIMAL128);
+
+        return num.divide(denominator, MathContext.DECIMAL128).doubleValue();
     }
 
     /**

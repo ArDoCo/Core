@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
  */
 public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResults<T> implements ExtendedEvaluationResults {
 
-    private long trueNegatives = 0;
+    private int trueNegatives = 0;
 
     /**
      * Create an instance of {@link ExtendedExplicitEvaluationResults} with the provided {@link ExplicitEvaluationResults} as base.
@@ -40,14 +40,14 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
         var falsePositives = this.getFalsePositives().size();
         var falseNegatives = this.getFalseNegatives().size();
 
-        return TestUtil.calculateAccuracy(truePositives, falsePositives, falseNegatives, (int) trueNegatives);
+        return TestUtil.calculateAccuracy(truePositives, falsePositives, falseNegatives, trueNegatives);
     }
 
     @Override
     public double getPhiCoefficient() {
-        long truePositives = this.getTruePositives().size();
-        long falsePositives = this.getFalsePositives().size();
-        long falseNegatives = this.getFalseNegatives().size();
+        int truePositives = this.getTruePositives().size();
+        int falsePositives = this.getFalsePositives().size();
+        int falseNegatives = this.getFalseNegatives().size();
 
         return TestUtil.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
     }
