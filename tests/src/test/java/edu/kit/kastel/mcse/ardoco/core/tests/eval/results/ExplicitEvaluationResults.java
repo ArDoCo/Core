@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 
 /**
  * This class represents explicit evaluation results. The lists containing the true positives, false negatives, and
@@ -82,7 +82,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResultsImpl {
     @Override
     public double getPrecision() {
         if (precision < 0) {
-            precision = TestUtil.calculatePrecision(truePositives.size(), falsePositives.size());
+            precision = EvaluationMetrics.calculatePrecision(truePositives.size(), falsePositives.size());
         }
         return precision;
     }
@@ -90,7 +90,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResultsImpl {
     @Override
     public double getRecall() {
         if (recall < 0) {
-            recall = TestUtil.calculateRecall(truePositives.size(), falseNegatives.size());
+            recall = EvaluationMetrics.calculateRecall(truePositives.size(), falseNegatives.size());
         }
         return recall;
     }
@@ -98,7 +98,7 @@ public class ExplicitEvaluationResults<T> extends EvaluationResultsImpl {
     @Override
     public double getF1() {
         if (f1 < 0) {
-            f1 = TestUtil.calculateF1(truePositives.size(), falsePositives.size(), falseNegatives.size());
+            f1 = EvaluationMetrics.calculateF1(truePositives.size(), falsePositives.size(), falseNegatives.size());
         }
         return f1;
     }
