@@ -37,6 +37,13 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new EvaluationResults(.877, .826, .850), //
             new EvaluationResults(.000, .000, .272) //
+    ), //
+    JABREF( //
+            "src/test/resources/benchmark/jabref/pcm/jabref.repository", //
+            "src/test/resources/benchmark/jabref/jabref.txt", //
+            "src/test/resources/benchmark/jabref/goldstandard.csv", //
+            new EvaluationResults(.849, .999, .918), //
+            new EvaluationResults(.000, .000, .355) //
     );
 
     private final String model;
