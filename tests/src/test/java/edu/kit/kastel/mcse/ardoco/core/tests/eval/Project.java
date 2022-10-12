@@ -75,7 +75,7 @@ public enum Project {
                 return Optional.of(project);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
