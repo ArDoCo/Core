@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 import java.util.Objects;
@@ -24,18 +24,18 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * This informant looks for (parts of) the project's name within RecommendedInstances and if it finds the project's name, influences the probability of the
  * RecommendedInstance negatively because it then should not be a recommended instance.
  */
-public class ProjectNameFinder extends Informant {
+public class ProjectNameInformant extends Informant {
     private static final String ERROR_EMPTY_LIST = "List cannot be empty";
 
     @Configurable
     private double penalty = Double.NEGATIVE_INFINITY;
 
     /**
-     * Constructs a new instance of the {@link ProjectNameFinder} with the given data repository.
+     * Constructs a new instance of the {@link ProjectNameInformant} with the given data repository.
      * 
      * @param dataRepository the data repository
      */
-    public ProjectNameFinder(DataRepository dataRepository) {
+    public ProjectNameInformant(DataRepository dataRepository) {
         super("ProjectNameExtractor", dataRepository);
     }
 

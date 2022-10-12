@@ -7,7 +7,6 @@ import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.informalin.data.PipelineStepData;
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
@@ -18,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
  * The Interface ITextState.
  */
 // TODO @Phi: Add docs for the new methods
-public interface TextState extends ICopyable<TextState>, IConfigurable, PipelineStepData {
+public interface TextState extends IConfigurable, PipelineStepData {
     String ID = "TextState";
 
     /**
