@@ -30,14 +30,6 @@ public abstract class AbstractInconsistencyTypeTest {
     protected abstract String[] getFileOutputEntry();
 
     @Test
-    void createCopyTest() {
-        var copy = getInconsistency().createCopy();
-        Assertions.assertAll(//
-                () -> Assertions.assertNotSame(getInconsistency(), copy), //
-                () -> Assertions.assertEquals(getInconsistency(), copy));
-    }
-
-    @Test
     void getTypeTest() {
         Assertions.assertEquals(getTypeString(), getInconsistency().getType());
     }

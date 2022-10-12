@@ -6,7 +6,6 @@ import java.util.List;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 
@@ -14,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
  * Inconsistency state holding data and information about inconsistency.
  * 
  */
-public interface InconsistencyState extends ICopyable<InconsistencyState>, IConfigurable {
+public interface InconsistencyState extends IConfigurable {
 
     /**
      * Returns a list of inconsistencies held by this state

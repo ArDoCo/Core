@@ -27,13 +27,6 @@ public class InstanceLinkImpl implements InstanceLink {
     private final ModelInstance modelInstance;
     private Confidence probability;
 
-    @Override
-    public InstanceLink createCopy() {
-        var copy = new InstanceLinkImpl(textualInstance.createCopy(), modelInstance.createCopy());
-        copy.probability = probability.createCopy();
-        return copy;
-    }
-
     private InstanceLinkImpl(RecommendedInstance textualInstance, ModelInstance modelInstance) {
         this.textualInstance = textualInstance;
         this.modelInstance = modelInstance;

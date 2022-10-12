@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
 import java.util.Map;
 
@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  *
  */
 
-public class NameTypeExtractor extends Informant {
+public class NameTypeInformant extends Informant {
 
     @Configurable
     private double probability = 1.0;
@@ -29,8 +29,8 @@ public class NameTypeExtractor extends Informant {
     /**
      * Creates a new NameTypeAnalyzer
      */
-    public NameTypeExtractor(DataRepository dataRepository) {
-        super(NameTypeExtractor.class.getSimpleName(), dataRepository);
+    public NameTypeInformant(DataRepository dataRepository) {
+        super(NameTypeInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override

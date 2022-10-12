@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
 import java.util.Map;
 import java.util.StringJoiner;

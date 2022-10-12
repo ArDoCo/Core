@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.textextraction.extractors;
+package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * The analyzer classifies nouns.
  *
  */
-public class NounExtractor extends Informant {
+public class NounInformant extends Informant {
     @Configurable
     private double nameOrTypeWeight = 0.5;
 
@@ -28,8 +28,8 @@ public class NounExtractor extends Informant {
     /**
      * Prototype constructor.
      */
-    public NounExtractor(DataRepository data) {
-        super(NounExtractor.class.getSimpleName(), data);
+    public NounInformant(DataRepository data) {
+        super(NounInformant.class.getSimpleName(), data);
     }
 
     @Override
