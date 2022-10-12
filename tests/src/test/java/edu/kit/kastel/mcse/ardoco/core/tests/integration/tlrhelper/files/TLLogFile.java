@@ -48,6 +48,7 @@ public class TLLogFile {
             case MEDIASTORE -> "MS";
             case TEAMMATES -> "TM";
             case TEASTORE -> "TS";
+            case JABREF -> "JR";
             };
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());
