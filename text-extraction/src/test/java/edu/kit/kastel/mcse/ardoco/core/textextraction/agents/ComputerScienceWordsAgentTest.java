@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.extractors.ComputerScienceWordsInformant;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.ComputerScienceWordsInformant;
 
 class ComputerScienceWordsAgentTest implements Claimant {
     private ComputerScienceWordsAgent agent;

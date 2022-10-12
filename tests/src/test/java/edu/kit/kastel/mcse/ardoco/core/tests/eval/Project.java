@@ -38,6 +38,13 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             new ExpectedResults(.877, .826, .850, .984, .844, 0.0), //
             new ExpectedResults(.000, .000, .272, .738, .190, 0.0) //
+    ), //
+    JABREF( //
+            "src/test/resources/benchmark/jabref/pcm/jabref.repository", //
+            "src/test/resources/benchmark/jabref/jabref.txt", //
+            "src/test/resources/benchmark/jabref/goldstandard.csv", //
+            new ExpectedResults(.849, .999, .918, .0, .0, .0), //
+            new ExpectedResults(.000, .000, .355, .0, .0, .0) //
     );
 
     private final String model;

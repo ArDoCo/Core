@@ -8,17 +8,17 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.ExtractionDependentOccurrenceExtractor;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors.NameTypeConnectionExtractor;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.ExtractionDependentOccurrenceInformant;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.NameTypeConnectionInformant;
 
 /**
  * The agent that executes the extractors of this stage.
  */
 public class InitialConnectionAgent extends PipelineAgent {
-    private final List<Informant> extractors;
+    private final List<Informant> informants;
 
     @Configurable
-    private List<String> enabledExtractors;
+    private List<String> enabledInformants;
 
     /**
      * Create the agent.
@@ -26,17 +26,17 @@ public class InitialConnectionAgent extends PipelineAgent {
     public InitialConnectionAgent(DataRepository dataRepository) {
         super(InitialConnectionAgent.class.getSimpleName(), dataRepository);
 
-        extractors = List.of(new NameTypeConnectionExtractor(dataRepository), new ExtractionDependentOccurrenceExtractor(dataRepository));
-        enabledExtractors = extractors.stream().map(e -> e.getClass().getSimpleName()).toList();
+        informants = List.of(new NameTypeConnectionInformant(dataRepository), new ExtractionDependentOccurrenceInformant(dataRepository));
+        enabledInformants = informants.stream().map(e -> e.getClass().getSimpleName()).toList();
     }
 
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledExtractors, extractors);
+        return findByClassName(enabledInformants, informants);
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        extractors.forEach(e -> e.applyConfiguration(additionalConfiguration));
+        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 }
