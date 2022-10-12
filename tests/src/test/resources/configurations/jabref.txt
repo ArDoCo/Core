@@ -1,1 +1,1 @@
-UnwantedWordsFilter::blacklist=
+UnwantedWordsFilter::blacklist=aspect,bibdatases,bibentries,bus,event

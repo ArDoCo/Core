@@ -24,7 +24,7 @@ public class UnwantedWordsFilter extends Filter {
             "groovy", "js", "ts", "css", "sc", "scala");
 
     @Configurable
-    private final List<String> blacklist = List.of("meta", "log", "browser", "task", "operation", "case", "instance", "log", "script");
+    private final List<String> blacklist = List.of("meta", "log", "browser", "task", "operation", "case", "instance", "script");
 
     public UnwantedWordsFilter(DataRepository dataRepository) {
         super(UnwantedWordsFilter.class.getSimpleName(), dataRepository);
