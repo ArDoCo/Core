@@ -1,13 +1,15 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
@@ -19,8 +21,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 // - maybe check if the word is a named entity or starts with capital letter in the middle of a sentence (sign of being a named entity)
 public class UnwantedWordsFilter extends Filter {
 
-    private final ImmutableList<String> unwantedWords = Lists.immutable.with("meta", "log", "browser", "task", "operation", "case", "instance", "log",
-            "script");
+    @Configurable
+    private final List<String> blacklist = new ArrayList<>();
 
     public UnwantedWordsFilter(DataRepository dataRepository) {
         super(UnwantedWordsFilter.class.getSimpleName(), dataRepository);
@@ -51,7 +53,7 @@ public class UnwantedWordsFilter extends Filter {
 
     private boolean referenceContainsUnwantedWord(NounMapping nounMapping) {
         var reference = nounMapping.getReference().toLowerCase();
-        if (unwantedWords.contains(reference)) {
+        if (blacklist.contains(reference)) {
             return true;
         }
         return false;
