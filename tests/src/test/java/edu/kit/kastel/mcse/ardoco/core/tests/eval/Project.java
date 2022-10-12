@@ -15,28 +15,28 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/pcm/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            new ExpectedResults(.999, .620, .765, .978, .778, 0.0), //
-            new ExpectedResults(.000, .000, .256, .534, .178, 0.0) //
+            new ExpectedResults(.999, .620, .765, .978, .778, .999), //
+            new ExpectedResults(.000, .000, .256, .534, .178, .498) //
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            new ExpectedResults(.913, .880, .896, .988, .890, 0.0), //
-            new ExpectedResults(.000, .000, .222, .606, .227, 0.0) //
+            new ExpectedResults(.913, .880, .896, .988, .890, .994), //
+            new ExpectedResults(.000, .000, .222, .606, .227, .584) //
     ), //
     TEASTORE( //
             "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
-            new ExpectedResults(.999, .713, .832, .982, .837, 0.0), //
-            new ExpectedResults(.000, .000, .250, .502, .103, 0.0) //
+            new ExpectedResults(.999, .713, .832, .982, .837, .999), //
+            new ExpectedResults(.000, .000, .250, .502, .103, .471) //
     ), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
-            new ExpectedResults(.877, .826, .850, .984, .844, 0.0), //
+            new ExpectedResults(.877, .826, .850, .984, .844, .993), //
             new ExpectedResults(.000, .000, .272, .738, .190, 0.0) //
     ), //
     JABREF( //
