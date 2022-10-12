@@ -120,6 +120,11 @@ class InconsistencyDetectionEvaluationIT {
     /**
      * Tests the inconsistency detection on all {@link Project projects}.
      *
+     * NOTE: if you only want to test a specific project, you can simply set up the EnumSource. For more details, see
+     * https://www.baeldung.com/parameterized-tests-junit-5#3-enum
+     * Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
+     * However, make sure to revert this before you commit and push!
+     *
      * @param project Project that gets inserted automatically with the enum {@link Project}.
      */
     @DisplayName("Evaluate Inconsistency Analyses")

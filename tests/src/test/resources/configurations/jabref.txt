@@ -1,1 +1,1 @@
-UnwantedWordsFilter::blacklist=meta,log,browser,task,operation,case,instance,log,script
+UnwantedWordsFilter::blacklist=

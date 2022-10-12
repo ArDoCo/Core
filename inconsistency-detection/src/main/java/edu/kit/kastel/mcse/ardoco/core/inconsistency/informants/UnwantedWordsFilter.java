@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -21,8 +20,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 // - maybe check if the word is a named entity or starts with capital letter in the middle of a sentence (sign of being a named entity)
 public class UnwantedWordsFilter extends Filter {
 
+    private final List<String> commonFileEndings = List.of("pdf", "png", "md", "xml", "yml", "json", "html", "sh", "bat", "java", "gradle", "cpp", "c", "h",
+            "groovy", "js", "ts", "css", "sc", "scala");
+
     @Configurable
-    private final List<String> blacklist = new ArrayList<>();
+    private final List<String> blacklist = List.of("meta", "log", "browser", "task", "operation", "case", "instance", "log", "script");
 
     public UnwantedWordsFilter(DataRepository dataRepository) {
         super(UnwantedWordsFilter.class.getSimpleName(), dataRepository);
@@ -30,32 +32,37 @@ public class UnwantedWordsFilter extends Filter {
 
     @Override
     protected void filterRecommendedInstances(InconsistencyState inconsistencyState) {
-        var filteredRecommendedInstances = Lists.mutable.<RecommendedInstance>empty();
+        var recommendedInstancesToKeep = Lists.mutable.<RecommendedInstance>empty();
         var recommendedInstances = inconsistencyState.getRecommendedInstances();
 
         for (var recommendedInstance : recommendedInstances) {
             boolean shallBeFiltered = checkRecommendedInstance(recommendedInstance);
             if (!shallBeFiltered)
-                filteredRecommendedInstances.add(recommendedInstance);
+                recommendedInstancesToKeep.add(recommendedInstance);
         }
 
-        inconsistencyState.setRecommendedInstances(filteredRecommendedInstances);
+        inconsistencyState.setRecommendedInstances(recommendedInstancesToKeep);
     }
 
     private boolean checkRecommendedInstance(RecommendedInstance recommendedInstance) {
         for (var nounMapping : recommendedInstance.getNameMappings()) {
             // apply heuristics
-            if (referenceContainsUnwantedWord(nounMapping) || referenceContainsPluralWord(nounMapping) || referenceContainsOnlyNumbers(nounMapping))
+            if (referenceContainsUnwantedWord(nounMapping) || referenceContainsPluralWord(nounMapping) || referenceContainsOnlyNumbers(
+                    nounMapping) || referenceEndsWithFileEnding(nounMapping))
                 return true;
         }
         return false;
     }
 
     private boolean referenceContainsUnwantedWord(NounMapping nounMapping) {
-        var reference = nounMapping.getReference().toLowerCase();
-        if (blacklist.contains(reference)) {
-            return true;
+        var referenceWords = nounMapping.getReferenceWords();
+        for (var referenceWord : referenceWords) {
+            var lemma = referenceWord.getLemma().toLowerCase();
+            if (blacklist.contains(lemma)) {
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -67,11 +74,24 @@ public class UnwantedWordsFilter extends Filter {
         return false;
     }
 
-    private boolean referenceContainsOnlyNumbers(NounMapping nounMapping) {
+    private static boolean referenceContainsOnlyNumbers(NounMapping nounMapping) {
         var reference = nounMapping.getReference().toLowerCase();
         Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
         Matcher matcher = pattern.matcher(reference);
         return matcher.matches();
+    }
+
+    private boolean referenceEndsWithFileEnding(NounMapping nounMapping) {
+        var referenceWords = nounMapping.getReferenceWords();
+        for (var referenceWord : referenceWords) {
+            var text = referenceWord.getText().toLowerCase();
+            for (var commonFileEnding : commonFileEndings) {
+                if (text.endsWith("." + commonFileEnding)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

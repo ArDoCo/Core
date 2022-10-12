@@ -69,8 +69,7 @@ public class ComputerScienceWordsFilter extends Filter {
             else
                 recommendedInstancesToDismiss.add(recommendedInstance);
         }
-        System.out.println("Orig: " + originalRecommendedInstances.size() + "; Filtered: " + recommendedInstancesToKeep
-                .size() + "; Dismisses: " + recommendedInstancesToDismiss.size());
+
         inconsistencyState.setRecommendedInstances(recommendedInstancesToKeep);
     }
 
