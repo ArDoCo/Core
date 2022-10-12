@@ -39,7 +39,12 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLModelFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLPreviousFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSentenceFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
 
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
@@ -61,7 +66,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private File inputText;
     private File inputModel;
     private File inputCodeModel = null;
-    private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
     @BeforeAll
@@ -107,9 +111,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
             var config = new File(ADDITIONAL_CONFIG);
             config.delete();
         }
-        if (additionalConfigs != null) {
-            additionalConfigs = null;
-        }
     }
 
     // NOTE: if you only want to test a specific project, you can simply set up the
@@ -139,7 +140,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         var arDoCoResult = DATA_MAP.get(project);
         if (arDoCoResult == null) {
-            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigs, outputDir);
+            File additionalConfigurations = project.getAdditionalConfigurationsFile();
+            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigurations, outputDir);
             DATA_MAP.put(project, arDoCoResult);
         }
         return arDoCoResult;
@@ -162,7 +164,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var preprocessingData = ardocoRunForPCM.getPreprocessingData();
         DataRepositoryHelper.putPreprocessingData(arDoCo.getDataRepository(), preprocessingData);
         File umlModelFile = project.getModelFile(ArchitectureModelType.UML);
-        var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigs, outputDir);
+        File additionalConfigurations = project.getAdditionalConfigurationsFile();
+        var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigurations, outputDir);
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
