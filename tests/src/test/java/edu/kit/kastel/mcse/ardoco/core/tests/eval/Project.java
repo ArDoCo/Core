@@ -43,8 +43,8 @@ public enum Project {
             "src/test/resources/benchmark/jabref/pcm/jabref.repository", //
             "src/test/resources/benchmark/jabref/jabref.txt", //
             "src/test/resources/benchmark/jabref/goldstandard.csv", //
-            new ExpectedResults(.849, .999, .918, .0, .0, .0), //
-            new ExpectedResults(.000, .000, .355, .0, .0, .0) //
+            new ExpectedResults(.849, .999, .918, .961, .898, .950), //
+            new ExpectedResults(.000, .000, .355, .565, .050, .594) //
     );
 
     private final String model;
