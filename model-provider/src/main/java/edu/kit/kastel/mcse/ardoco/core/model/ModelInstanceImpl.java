@@ -24,20 +24,6 @@ public class ModelInstanceImpl implements ModelInstance {
     private final MutableList<String> types;
     private final String uid;
 
-    @Override
-    public ModelInstance createCopy() {
-        return new ModelInstanceImpl(fullName, fullType, Lists.immutable.withAll(names), Lists.immutable.withAll(types), uid);
-
-    }
-
-    private ModelInstanceImpl(String fullName, String fullType, ImmutableList<String> names, ImmutableList<String> types, String uid) {
-        this.fullName = fullName;
-        this.fullType = fullType;
-        this.names = names.toList();
-        this.types = types.toList();
-        this.uid = uid;
-    }
-
     /**
      * Creates a new instance.
      *

@@ -81,7 +81,7 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
-    <stanford.corenlp.version>4.5.0</stanford.corenlp.version>
+    <stanford.corenlp.version>4.5.1</stanford.corenlp.version>
   </properties>
 
   <dependencyManagement>
@@ -135,7 +135,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.9</version>
+        <version>1.10.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

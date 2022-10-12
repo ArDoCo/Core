@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 
@@ -14,14 +14,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
-public class InstantConnectionExtractor extends Informant {
+public class InstantConnectionInformant extends Informant {
     @Configurable
     private double probability = 1.0;
     @Configurable
     private double probabilityWithoutType = 0.8;
 
-    public InstantConnectionExtractor(DataRepository dataRepository) {
-        super(InstantConnectionExtractor.class.getSimpleName(), dataRepository);
+    public InstantConnectionInformant(DataRepository dataRepository) {
+        super(InstantConnectionInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override

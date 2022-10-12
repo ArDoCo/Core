@@ -17,15 +17,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingTextForModelElementInconsistency;
 
-public class MissingTextForModelElementInconsistencyExtractor extends Informant {
+public class MissingTextForModelElementInconsistencyInformant extends Informant {
 
     @Configurable
     private List<String> whitelist = Lists.mutable.of("DummyRecommender", "Cache");
     @Configurable
     private List<String> types = Lists.mutable.of("BasicComponent", "CompositeComponent");
 
-    public MissingTextForModelElementInconsistencyExtractor(DataRepository dataRepository) {
-        super(MissingTextForModelElementInconsistencyExtractor.class.getSimpleName(), dataRepository);
+    public MissingTextForModelElementInconsistencyInformant(DataRepository dataRepository) {
+        super(MissingTextForModelElementInconsistencyInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override

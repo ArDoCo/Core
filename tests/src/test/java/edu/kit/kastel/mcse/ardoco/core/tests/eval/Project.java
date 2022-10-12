@@ -44,6 +44,14 @@ public enum Project {
             "src/test/resources/configurations/bigbluebutton.txt", //
             new EvaluationResults(.877, .826, .850), //
             new EvaluationResults(.000, .000, .287) //
+    ), //
+    JABREF( //
+            "src/test/resources/benchmark/jabref/pcm/jabref.repository", //
+            "src/test/resources/benchmark/jabref/jabref.txt", //
+            "src/test/resources/benchmark/jabref/goldstandard.csv", //
+            "src/test/resources/configurations/jabref.txt", //
+            new EvaluationResults(.849, .999, .918), //
+            new EvaluationResults(.000, .000, .355) //
     );
 
     private final String model;

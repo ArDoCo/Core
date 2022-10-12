@@ -20,11 +20,6 @@ public class MissingTextForModelElementInconsistency implements Inconsistency {
     }
 
     @Override
-    public Inconsistency createCopy() {
-        return new MissingTextForModelElementInconsistency(instance.createCopy());
-    }
-
-    @Override
     public String getReason() {
         return String.format(Locale.US, "Model contains an Instance \"%s\" (type: \"%s\")  that seems to be undocumented.", instance.getFullName(), instance
                 .getFullType());

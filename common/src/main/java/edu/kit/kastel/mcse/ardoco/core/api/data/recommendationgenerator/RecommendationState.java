@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
@@ -11,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 /**
  * The Interface IRecommendationState defines the state for recommendations.
  */
-public interface RecommendationState extends ICopyable<RecommendationState>, IConfigurable {
+public interface RecommendationState extends IConfigurable {
 
     /**
      * Returns all recommended instances.

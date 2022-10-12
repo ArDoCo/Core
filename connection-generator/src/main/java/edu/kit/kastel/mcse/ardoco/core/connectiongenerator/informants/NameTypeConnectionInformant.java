@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 
@@ -27,13 +27,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
  *
  */
-public class NameTypeConnectionExtractor extends Informant {
+public class NameTypeConnectionInformant extends Informant {
 
     @Configurable
     private double probability = 1.0;
 
-    public NameTypeConnectionExtractor(DataRepository dataRepository) {
-        super(NameTypeConnectionExtractor.class.getSimpleName(), dataRepository);
+    public NameTypeConnectionInformant(DataRepository dataRepository) {
+        super(NameTypeConnectionInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override

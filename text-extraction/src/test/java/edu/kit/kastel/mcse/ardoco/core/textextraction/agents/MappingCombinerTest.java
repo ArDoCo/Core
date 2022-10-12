@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
@@ -164,7 +167,7 @@ class MappingCombinerTest implements Claimant {
     void copy() {
         preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -189,7 +192,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertEquals(1, preTextState.getNounMappings().size());
         Assertions.assertEquals(1, preTextState.getPhraseMappings().size());
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -209,7 +212,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertEquals(2, preTextState.getNounMappings().size());
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -228,7 +231,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertEquals(2, preTextState.getNounMappings().size());
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -245,7 +248,7 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
         preTextState.addNounMapping(alternativeDog, MappingKind.NAME, this, 0.5);
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -273,7 +276,7 @@ class MappingCombinerTest implements Claimant {
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -289,7 +292,7 @@ class MappingCombinerTest implements Claimant {
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, turtle4, dog6));
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -306,7 +309,7 @@ class MappingCombinerTest implements Claimant {
 
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, doggy5));
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -326,7 +329,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -360,7 +363,7 @@ class MappingCombinerTest implements Claimant {
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -377,7 +380,7 @@ class MappingCombinerTest implements Claimant {
 
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, turtle4));
 
-        textState = preTextState.createCopy();
+        textState = createCopy(preTextState);
         this.data.addData(TextState.ID, textState);
         agent.run();
 
@@ -441,6 +444,31 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(word.getLemma()).thenReturn(lemma);
         Mockito.when(word.getPhrase()).thenReturn(phrase);
         Mockito.when(word.compareTo(Mockito.any())).thenCallRealMethod();
+    }
+
+    private TextState createCopy(TextState textState) {
+        TextStateImpl newTextState = new TextStateImpl();
+
+        MutableList<ElementWrapper<NounMapping>> nounMappings = getField(textState, "nounMappings");
+        MutableSet<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");
+
+        MutableList<ElementWrapper<NounMapping>> newNounMappings = getField(newTextState, "nounMappings");
+        MutableSet<PhraseMapping> newPhraseMappings = getField(newTextState, "phraseMappings");
+
+        newNounMappings.addAll(nounMappings);
+        newPhraseMappings.addAll(phraseMappings);
+        return newTextState;
+    }
+
+    private <T> T getField(Object data, String fieldName) {
+        try {
+            var field = data.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (T) field.get(data);
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+            throw new Error("Unreachable code!");
+        }
     }
 
 }

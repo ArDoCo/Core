@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.extractors;
+package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 
@@ -19,13 +19,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  * and types to the text extraction state.
  *
  */
-public class ExtractionDependentOccurrenceExtractor extends Informant {
+public class ExtractionDependentOccurrenceInformant extends Informant {
 
     @Configurable
     private double probability = 1.0;
 
-    public ExtractionDependentOccurrenceExtractor(DataRepository dataRepository) {
-        super(ExtractionDependentOccurrenceExtractor.class.getSimpleName(), dataRepository);
+    public ExtractionDependentOccurrenceInformant(DataRepository dataRepository) {
+        super(ExtractionDependentOccurrenceInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override
