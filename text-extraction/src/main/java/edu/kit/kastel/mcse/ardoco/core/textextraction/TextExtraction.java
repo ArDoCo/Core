@@ -1,21 +1,20 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class TextExtractor.
@@ -34,8 +33,7 @@ public class TextExtraction extends AbstractExecutionStage {
         super("TextExtraction", dataRepository);
         this.agents = Lists.mutable.of(//
                 new InitialTextAgent(dataRepository),//
-                new PhraseAgent(dataRepository), //
-                new ComputerScienceWordsAgent(dataRepository)//
+                new PhraseAgent(dataRepository)
         );
         this.enabledAgents = agents.collect(Agent::getId);
     }

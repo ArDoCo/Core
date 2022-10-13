@@ -1,28 +1,24 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This Filter checks for common computer science words and filters them. Unfortunately, this is very rigorous and filters a lot of words that we actually want
@@ -32,20 +28,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
  */
 public class ComputerScienceWordsFilter extends Filter {
 
-    private static final int MAX_WIKI_LEVEL = 3;
-
     private static final String WIKI = "WIKI";
     private static final String ISO24765 = "ISO24765";
     private static final String STANDARD_GLOSSARY = "STANDARD_GLOSSARY";
 
     @Configurable
-    private List<String> sources = List.of(WIKI, ISO24765, STANDARD_GLOSSARY);
-
-    @Configurable
-    private int maxWikiLevels = MAX_WIKI_LEVEL;
-
-    @Configurable
-    private double wordMinLengthForSimilarity = 4;
+    private List<String> sources = List.of(STANDARD_GLOSSARY);
 
     @Configurable
     private List<String> additionalWords = List.of();
@@ -111,9 +99,9 @@ public class ComputerScienceWordsFilter extends Filter {
         int before = result.size();
         logger.debug("Loading words from DBPedia");
 
-        for (int level = 0; level <= maxWikiLevels; level++) {
+        for (String name : List.of("design", "engineering")) {
             JsonNode tree;
-            try (InputStream data = this.getClass().getResourceAsStream("/dbpedia/common-cs-" + level + ".json")) {
+            try (InputStream data = this.getClass().getResourceAsStream("/dbpedia/" + name + ".json")) {
                 ObjectMapper oom = new ObjectMapper();
                 tree = oom.readTree(data);
             } catch (IOException e) {
@@ -124,6 +112,8 @@ public class ComputerScienceWordsFilter extends Filter {
             tree.spliterator().forEachRemaining(n -> result.add(n.get("alabel").get("value").textValue()));
         }
         result.removeIf(Objects::isNull);
+        // Check that word has a type
+        result.removeIf(w -> !w.contains("("));
         logger.debug("Found {} words by adding DBPedia", result.size() - before);
     }
 
