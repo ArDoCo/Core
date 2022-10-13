@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,11 +33,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.*;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
 
 /**
@@ -62,23 +60,23 @@ class InconsistencyDetectionEvaluationIT {
 
     @AfterAll
     public static void afterAll() {
-        var weightedResults = OVERALL_RESULTS_CALCULATOR.calculateWeightedAveragePRF1();
-        var macroResults = OVERALL_RESULTS_CALCULATOR.calculateMacroAveragePRF1();
+        var weightedResults = OVERALL_RESULTS_CALCULATOR.calculateWeightedAverageResults();
+        var macroResults = OVERALL_RESULTS_CALCULATOR.calculateMacroAverageResults();
 
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
             TestUtil.logResults(logger, name, weightedResults);
 
             name = "Overall Macro";
-            TestUtil.logResults(logger, name, weightedResults);
+            TestUtil.logResults(logger, name, macroResults);
 
             if (ranBaseline) {
                 name = "BASELINE Overall Weighted";
-                var results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateWeightedAveragePRF1();
+                var results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateWeightedAverageResults();
                 TestUtil.logResults(logger, name, results);
 
                 name = "BASELINE Overall Macro";
-                results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateMacroAveragePRF1();
+                results = OVERALL_RESULT_CALCULATOR_BASELINE.calculateMacroAverageResults();
                 TestUtil.logResults(logger, name, results);
             }
         }
@@ -133,9 +131,9 @@ class InconsistencyDetectionEvaluationIT {
         var results = calculateEvaluationResults(project, runs);
         ResultCalculator resultCalculator = results.getOne();
         OVERALL_RESULTS_CALCULATOR.addResult(project, resultCalculator);
-        var weightedResults = resultCalculator.getWeightedAveragePRF1();
+        var weightedResults = resultCalculator.getWeightedAverageResults();
 
-        EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
+        var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, resultCalculator, expectedInconsistencyResults);
         checkResults(weightedResults, expectedInconsistencyResults);
         writeOutResults(project, results.getTwo(), runs);
@@ -164,22 +162,20 @@ class InconsistencyDetectionEvaluationIT {
         ResultCalculator resultCalculator = results.getOne();
         OVERALL_RESULT_CALCULATOR_BASELINE.addResult(project, resultCalculator);
 
-        EvaluationResults expectedInconsistencyResults = project.getExpectedInconsistencyResults();
+        var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResults(project, resultCalculator, expectedInconsistencyResults);
     }
 
-    private Pair<ResultCalculator, List<ExplicitEvaluationResults<String>>> calculateEvaluationResults(Project project, Map<ModelInstance, ArDoCoResult> runs) {
-        List<ExplicitEvaluationResults<String>> explicitResults = new ArrayList<>();
+    private Pair<ResultCalculator, List<ExtendedExplicitEvaluationResults<String>>> calculateEvaluationResults(Project project,
+            Map<ModelInstance, ArDoCoResult> runs) {
+        List<ExtendedExplicitEvaluationResults<String>> explicitResults = new ArrayList<>();
         ResultCalculator resultCalculator = new ResultCalculator();
         for (var run : runs.entrySet()) {
             ModelInstance modelInstance = run.getKey();
             ArDoCoResult arDoCoResult = run.getValue();
             var runEvalResults = evaluateRun(project, modelInstance, arDoCoResult);
             if (runEvalResults != null) {
-                int fn = runEvalResults.getFalseNegatives().size();
-                int fp = runEvalResults.getFalsePositives().size();
-                int tp = runEvalResults.getTruePositives().size();
-                resultCalculator.addEvaluationResults(tp, fp, fn);
+                resultCalculator.addEvaluationResults(runEvalResults, runEvalResults.getWeight());
                 explicitResults.add(runEvalResults);
             } else {
                 // for the base case, instead of calculating results, save the found inconsistencies.
@@ -190,7 +186,7 @@ class InconsistencyDetectionEvaluationIT {
         return Tuples.pair(resultCalculator, explicitResults);
     }
 
-    private ExplicitEvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, ArDoCoResult arDoCoResult) {
+    private ExtendedExplicitEvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, ArDoCoResult arDoCoResult) {
         var modelId = arDoCoResult.getModelIds().get(0);
 
         ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(modelId,
@@ -204,7 +200,19 @@ class InconsistencyDetectionEvaluationIT {
         var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(i -> i.toString()).castToCollection();
         var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(i -> i.toString()).castToCollection();
 
-        return TestUtil.compare(actualSentences, expectedLines);
+        return calculateEvaluationResults(arDoCoResult, expectedLines, actualSentences);
+    }
+
+    private static ExtendedExplicitEvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, Collection<String> expectedLines,
+            Collection<String> actualSentences) {
+        var results = TestUtil.compare(actualSentences, expectedLines);
+        int numberOfSentences = arDoCoResult.getText().getSentences().size();
+        int truePositiveSentences = results.getTruePositives().distinct().size();
+        int falsePositiveSentences = results.getFalsePositives().distinct().size();
+        int falseNegativeSentences = results.getFalseNegatives().distinct().size();
+        int trueNegatives = numberOfSentences - (truePositiveSentences + falsePositiveSentences + falseNegativeSentences);
+        ExtendedExplicitEvaluationResults<String> extendedExplicitEvaluationResults = new ExtendedExplicitEvaluationResults<>(results, trueNegatives);
+        return extendedExplicitEvaluationResults;
     }
 
     private static PcmXMLModelConnector getPcmModel(Project project) {
@@ -215,25 +223,32 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private void logResults(Project project, ResultCalculator resultCalculator, EvaluationResults expectedResults) {
+    private void logResults(Project project, ResultCalculator resultCalculator, ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
-            var results = resultCalculator.getWeightedAveragePRF1();
+            var results = resultCalculator.getWeightedAverageResults();
             String name = project.name();
             TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
         }
     }
 
-    private void checkResults(EvaluationResults results, EvaluationResults expectedResults) {
+    private void checkResults(EvaluationResults results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(), "Precision " + results
-                        .getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(), "Recall " + results
-                        .getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(), "F1 " + results
-                        .getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.precision(), "Precision " + results
+                        .getPrecision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.recall(), "Recall " + results
+                        .getRecall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.f1(), "F1 " + results
+                        .getF1() + " is below the expected minimum value " + expectedResults.f1()));
+        if (results instanceof ExtendedEvaluationResults extendedResults) {
+            Assertions.assertAll(//
+                    () -> Assertions.assertTrue(extendedResults.getAccuracy() >= expectedResults.accuracy(), "Accuracy " + extendedResults
+                            .getAccuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                    () -> Assertions.assertTrue(extendedResults.getPhiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + extendedResults
+                            .getPhiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+        }
     }
 
-    private void writeOutResults(Project project, List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
+    private void writeOutResults(Project project, List<ExtendedExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
         var outputs = createOutput(project, results, runs);
         var outputBuilder = outputs.getOne();
         var detailedOutputBuilder = outputs.getTwo();
@@ -256,7 +271,7 @@ class InconsistencyDetectionEvaluationIT {
         FilePrinter.writeToFile(detailedFilename, detailedOutputBuilder.toString());
     }
 
-    private static Pair<StringBuilder, StringBuilder> createOutput(Project project, List<ExplicitEvaluationResults<String>> results,
+    private static Pair<StringBuilder, StringBuilder> createOutput(Project project, List<ExtendedExplicitEvaluationResults<String>> results,
             Map<ModelInstance, ArDoCoResult> runs) {
         StringBuilder outputBuilder = createStringBuilderWithHeader(project);
         var resultCalculatorStringBuilderPair = inspectResults(results, runs, outputBuilder);
@@ -269,8 +284,8 @@ class InconsistencyDetectionEvaluationIT {
     private static String getOverallResultsString(ResultCalculator resultCalculator) {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("###").append(LINE_SEPARATOR);
-        var weightedAveragePRF1 = resultCalculator.getWeightedAveragePRF1();
-        var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted Average", weightedAveragePRF1);
+        var weightedAverageResults = resultCalculator.getWeightedAverageResults();
+        var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted Average", weightedAverageResults);
         outputBuilder.append(resultString);
         outputBuilder.append(LINE_SEPARATOR);
         return outputBuilder.toString();
@@ -283,8 +298,8 @@ class InconsistencyDetectionEvaluationIT {
         return outputBuilder;
     }
 
-    private static Pair<ResultCalculator, StringBuilder> inspectResults(List<ExplicitEvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs,
-            StringBuilder outputBuilder) {
+    private static Pair<ResultCalculator, StringBuilder> inspectResults(List<ExtendedExplicitEvaluationResults<String>> results,
+            Map<ModelInstance, ArDoCoResult> runs, StringBuilder outputBuilder) {
         var detailedOutputBuilder = new StringBuilder();
         var resultCalculator = new ResultCalculator();
         int counter = 0;
@@ -301,8 +316,8 @@ class InconsistencyDetectionEvaluationIT {
                 outputBuilder.append(LINE_SEPARATOR);
                 detailedOutputBuilder.append(LINE_SEPARATOR);
                 var result = results.get(counter++);
-                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f", result.getPrecision(), result.getRecall(), result
-                        .getF1());
+                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f, Accuracy: %.3f, Phi Coef.: %.3f", result
+                        .getPrecision(), result.getRecall(), result.getF1(), result.getAccuracy(), result.getPhiCoefficient());
                 outputBuilder.append(resultString);
                 detailedOutputBuilder.append(resultString);
                 inspectRun(outputBuilder, detailedOutputBuilder, resultCalculator, arDoCoResult, result);
@@ -316,24 +331,26 @@ class InconsistencyDetectionEvaluationIT {
 
     private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder, ResultCalculator resultCalculator,
             ArDoCoResult arDoCoResult, ExplicitEvaluationResults<String> result) {
-        var truePositives = result.getTruePositives();
+        var truePositives = result.getTruePositives().toList();
         appendResults(truePositives, detailedOutputBuilder, "True Positives", arDoCoResult, outputBuilder);
 
-        var falsePositives = result.getFalsePositives();
+        var falsePositives = result.getFalsePositives().toList();
         appendResults(falsePositives, detailedOutputBuilder, "False Positives", arDoCoResult, outputBuilder);
 
-        var falseNegatives = result.getFalseNegatives();
+        var falseNegatives = result.getFalseNegatives().toList();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
 
-        resultCalculator.addEvaluationResults(truePositives.size(), falsePositives.size(), falseNegatives.size());
+        var results = new EvaluationResultsImpl(truePositives.size(), falsePositives.size(), falseNegatives.size());
+        var weight = truePositives.size() + falseNegatives.size();
+        resultCalculator.addEvaluationResults(results, weight);
     }
 
-    private static void appendResults(List<String> truePositives, StringBuilder detailedOutputBuilder, String type, ArDoCoResult arDoCoResult,
+    private static void appendResults(List<String> resultList, StringBuilder detailedOutputBuilder, String type, ArDoCoResult arDoCoResult,
             StringBuilder outputBuilder) {
-        truePositives = sortIntegerStrings(truePositives);
+        resultList = sortIntegerStrings(resultList);
         detailedOutputBuilder.append(LINE_SEPARATOR).append("== ").append(type).append(" ==");
-        detailedOutputBuilder.append(LINE_SEPARATOR).append(createDetailedOutputString(arDoCoResult, truePositives));
-        outputBuilder.append(LINE_SEPARATOR).append(type).append(": ").append(listToString(truePositives));
+        detailedOutputBuilder.append(LINE_SEPARATOR).append(createDetailedOutputString(arDoCoResult, resultList));
+        outputBuilder.append(LINE_SEPARATOR).append(type).append(": ").append(listToString(resultList));
     }
 
     private static void inspectBaseCase(StringBuilder outputBuilder, ArDoCoResult data) {
