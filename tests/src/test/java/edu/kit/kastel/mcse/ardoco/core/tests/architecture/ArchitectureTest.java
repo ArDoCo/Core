@@ -46,7 +46,7 @@ public class ArchitectureTest {
             .resideInAnyPackage("..inconsistency..", "..pipeline..", "..api..", "..common..", "..tests..");
 
     @ArchTest
-    public static final ArchRule layerRule = layeredArchitecture()
+    public static final ArchRule layerRule = layeredArchitecture().consideringAllDependencies()
             // Layer definition
             .layer("Common")
             .definedBy("..common..", "..api..", "..tests..")
