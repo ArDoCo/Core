@@ -34,10 +34,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExtendedExplicitEvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
@@ -58,6 +60,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
+    private static final Map<Project, ExtendedExplicitEvaluationResults<?>> EXTENDED_EVALUATION_RESULTS = new EnumMap<>(Project.class);
     private static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
@@ -77,13 +80,13 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @AfterAll
     public static void afterAll() {
         if (logger.isInfoEnabled()) {
-            OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(RESULTS);
+            OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(EXTENDED_EVALUATION_RESULTS);
             var name = "Overall Weighted";
-            var results = overallResultsCalculator.calculateWeightedAveragePRF1();
+            var results = overallResultsCalculator.calculateWeightedAverageResults();
             TestUtil.logResults(logger, name, results);
 
             name = "Overall Macro";
-            results = overallResultsCalculator.calculateMacroAveragePRF1();
+            results = overallResultsCalculator.calculateMacroAverageResults();
             TestUtil.logResults(logger, name, results);
         }
 
@@ -199,6 +202,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
                     DATA_MAP.put(project, arDoCoResult);
+                    if (results instanceof ExtendedExplicitEvaluationResults extendedEvaluationResults) {
+                        EXTENDED_EVALUATION_RESULTS.put(project, extendedEvaluationResults);
+                    }
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn("Failed to load file for gold standard", e);
@@ -207,12 +213,19 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
 
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.getPrecision(), "Precision " + results
-                        .getPrecision() + " is below the expected minimum value " + expectedResults.getPrecision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.getRecall(), "Recall " + results
-                        .getRecall() + " is below the expected minimum value " + expectedResults.getRecall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.getF1(), "F1 " + results
-                        .getF1() + " is below the expected minimum value " + expectedResults.getF1()));
+                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.precision(), "Precision " + results
+                        .getPrecision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.recall(), "Recall " + results
+                        .getRecall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.getF1() >= expectedResults.f1(), "F1 " + results
+                        .getF1() + " is below the expected minimum value " + expectedResults.f1()));
+        if (results instanceof ExtendedEvaluationResults extendedResults) {
+            Assertions.assertAll(//
+                    () -> Assertions.assertTrue(extendedResults.getAccuracy() >= expectedResults.accuracy(), "Accuracy " + extendedResults
+                            .getAccuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                    () -> Assertions.assertTrue(extendedResults.getPhiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + extendedResults
+                            .getPhiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+        }
     }
 
     private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {
@@ -233,7 +246,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         var goldStandard = getGoldStandard(project);
 
-        return TestUtil.compare(traceLinks.toSet(), goldStandard);
+        var results = TestUtil.compare(traceLinks.toSet(), goldStandard);
+        var trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, results);
+        return new ExtendedExplicitEvaluationResults<>(results, trueNegatives);
     }
 
     private List<String> getGoldStandard(Project project) {

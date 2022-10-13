@@ -6,15 +6,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ExplicitEvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.OverallResultsCalculator;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ResultCalculator;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.*;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
 
 /**
@@ -54,111 +54,38 @@ public class TestUtil {
     }
 
     /**
-     * Checks the provided recall. Returns 1.0 if it is NaN, because this means that there was no missing
-     * classification.
-     *
-     * @param recall the precision
-     * @return 1.0 if recall is NaN, else the original value
-     */
-    public static double checkAndRepairRecall(double recall) {
-        if (Double.isNaN(recall)) {
-            return 1.0;
-        }
-        return recall;
-    }
-
-    /**
-     * Calculates the recall for the given True Positives (TPs) and False Negatives (FNs). If TP+NP=0, then returns 1.0
-     * because there was no missing element.
-     *
-     * @param truePositives  number of TPs
-     * @param falseNegatives number of FNs
-     * @return the Recall; 1.0 iff TP+NP=0
-     */
-    public static double calculateRecall(double truePositives, double falseNegatives) {
-        double denominator = (truePositives + falseNegatives);
-        var recall = 1.0 * truePositives / denominator;
-        return checkAndRepairRecall(recall);
-    }
-
-    /**
-     * Checks the provided precision. Returns 1.0 if it is NaN, because this means that there was no wrong
-     * classification.
+     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link ExplicitEvaluationResults evaluation
+     * results}.
+     * Uses the total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
      * 
-     * @param precision the precision
-     * @return 1.0 if precision is NaN, else the original value
+     * @param arDoCoResult      the output of ArDoCo
+     * @param evaluationResults the evaluation results
+     * @return the number of true negatives
      */
-    public static double checkAndRepairPrecision(double precision) {
-        if (Double.isNaN(precision)) {
-            return 1.0;
+    public static int calculateTrueNegativesForTLR(ArDoCoResult arDoCoResult, ExplicitEvaluationResults<?> evaluationResults) {
+        var truePositives = evaluationResults.getTruePositives().size();
+        var falsePositives = evaluationResults.getFalsePositives().size();
+        var falseNegatives = evaluationResults.getFalseNegatives().size();
+
+        int sentences = arDoCoResult.getText().getSentences().size();
+        int modelElements = 0;
+        for (var model : arDoCoResult.getModelIds()) {
+            modelElements += arDoCoResult.getModelState(model).getInstances().size();
         }
-        return precision;
+
+        int confusionMatrixSum = sentences * modelElements;
+        return confusionMatrixSum - (truePositives + falsePositives + falseNegatives);
     }
 
     /**
-     * Calculates the precision for the given True Positives (TPs) and False Positives (FPs). If TP+FP=0, then returns
-     * 1.0 because there was no wrong classification.
-     *
-     * @param truePositives  number of TPs
-     * @param falsePositives number of FPs
-     * @return the Precision; 1.0 iff TP+FP=0
-     */
-    public static double calculatePrecision(double truePositives, double falsePositives) {
-        double denominator = (truePositives + falsePositives);
-        var precision = 1.0 * truePositives / denominator;
-        return checkAndRepairPrecision(precision);
-    }
-
-    /**
-     * Checks the provided F1-score. Iff it is NaN, returns 0.0, otherwise returns the original value
-     * 
-     * @param f1 the f1-score to check
-     * @return Iff score is NaN, returns 0.0, otherwise returns the original value
-     */
-    public static double checkAndRepairF1(double f1) {
-        if (Double.isNaN(f1)) {
-            return 0.0;
-        }
-        return f1;
-    }
-
-    /**
-     * Calculates the F1-score using the provided precision and recall. If precision+recall=0, returns 0.0.
-     *
-     * @param precision the precision
-     * @param recall    the recall
-     * @return the F1-Score; 0.0 iff precision+recall=0
-     */
-    public static double calculateF1(double precision, double recall) {
-        var f1 = 2 * precision * recall / (precision + recall);
-        return checkAndRepairF1(f1);
-    }
-
-    /**
-     * Calculates the F1-score using the provided True Positives (TPs), False Positives (FPs), and False Negatives
-     * (FNs). If intermediate calculation shows that precision+recall=0, returns 0.0.
-     *
-     * @param truePositives  number of TPs
-     * @param falsePositives number of FPs
-     * @param falseNegatives number of FNs
-     * @return the F1-score. See also {@link #calculateF1(double, double)}
-     */
-    public static double calculateF1(double truePositives, double falsePositives, double falseNegatives) {
-        var precision = calculatePrecision(truePositives, falsePositives);
-        var recall = calculateRecall(truePositives, falseNegatives);
-        return calculateF1(precision, recall);
-    }
-
-    /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name.
+     * Log the provided {@link EvaluationResultsImpl} using the provided logger and name.
      * 
      * @param logger  Logger to use
      * @param name    Name to show in the output
      * @param results the results
      */
     public static void logResults(Logger logger, String name, EvaluationResults results) {
-        String infoString = createResultLogString(name, results);
-        logger.info(infoString);
+        logger.info(createResultLogString(name, results));
     }
 
     /**
@@ -170,12 +97,11 @@ public class TestUtil {
      * @return a String containing the name and the results (precision, recall, F1) line by line
      */
     public static String createResultLogString(String name, EvaluationResults results) {
-        return String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", name, results.getPrecision(), results.getRecall(),
-                results.getF1());
+        return String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultString());
     }
 
     /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, provided the
+     * Log the provided {@link EvaluationResultsImpl} using the provided logger and name. Additionally, provided the
      * expected results.
      * 
      * @param logger          Logger to use
@@ -183,12 +109,24 @@ public class TestUtil {
      * @param results         the results
      * @param expectedResults the expected results
      */
-    public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, EvaluationResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH,
-                "%n%s:%n\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", name, results
-                        .getPrecision(), expectedResults.getPrecision(), results.getRecall(), expectedResults.getRecall(), results.getF1(), expectedResults
-                                .getF1());
+    public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
+        var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultStringWithExpected(expectedResults));
         logger.info(infoString);
+    }
+
+    public static OverallResultsCalculator getOverallResultsCalculator(Map<Project, ExtendedExplicitEvaluationResults<?>> results) {
+
+        var overallResultsCalculator = new OverallResultsCalculator();
+        for (var entry : results.entrySet()) {
+            var result = entry.getValue();
+            var project = entry.getKey();
+
+            ResultCalculator resultCalculator = new ResultCalculator();
+            resultCalculator.addEvaluationResults(new ExtendedEvaluationResultsImpl(result.getPrecision(), result.getRecall(), result.getF1(), result
+                    .getAccuracy(), result.getPhiCoefficient(), result.getSpecificity()), result.getWeight());
+            overallResultsCalculator.addResult(project, resultCalculator);
+        }
+        return overallResultsCalculator;
     }
 
     /**
@@ -203,8 +141,10 @@ public class TestUtil {
             var truePositives = result.getTruePositives().size();
             var falsePositives = result.getFalsePositives().size();
             var falseNegatives = result.getFalseNegatives().size();
+            var weight = truePositives + falseNegatives;
+
             ResultCalculator resultCalculator = new ResultCalculator();
-            resultCalculator.addEvaluationResults(truePositives, falsePositives, falseNegatives);
+            resultCalculator.addEvaluationResults(new EvaluationResultsImpl(truePositives, falsePositives, falseNegatives), weight);
             overallResultsCalculator.addResult(result.getProject(), resultCalculator);
         }
         return overallResultsCalculator;
