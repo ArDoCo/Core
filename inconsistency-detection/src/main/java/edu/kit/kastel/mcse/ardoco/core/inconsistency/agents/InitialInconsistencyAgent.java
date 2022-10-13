@@ -1,21 +1,21 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.ComputerScienceWordsFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.OccasionFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.RecommendedInstanceProbabilityFilter;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.UnwantedWordsFilter;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
+
+import java.util.List;
+import java.util.Map;
 
 public class InitialInconsistencyAgent extends PipelineAgent {
     private final MutableList<Informant> filters;
@@ -26,7 +26,7 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     public InitialInconsistencyAgent(DataRepository dataRepository) {
         super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
 
-        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(
+        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new ComputerScienceWordsFilter(
                 dataRepository));
         enabledFilters = filters.collect(Informant::getId);
     }
