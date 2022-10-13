@@ -14,6 +14,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 public record ExpectedResults(double precision, double recall, double f1, double accuracy, double phiCoefficient, double specificity) {
 
     public ExpectedResults(double precision, double recall, double f1) {
-        this(precision, recall, f1, .0, .0, 0.);
+        this(precision, recall, f1, .0, .0, .0);
     }
 }

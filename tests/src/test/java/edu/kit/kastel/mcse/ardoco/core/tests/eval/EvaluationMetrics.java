@@ -144,8 +144,8 @@ public class EvaluationMetrics {
             return 0d;
         }
 
-        var sumInDenominator = a.multiply(b).multiply(c).multiply(d);
-        var denominator = sumInDenominator.sqrt(MathContext.DECIMAL128);
+        var productOfSumsInDenominator = a.multiply(b).multiply(c).multiply(d);
+        var denominator = productOfSumsInDenominator.sqrt(MathContext.DECIMAL128);
 
         return num.divide(denominator, MathContext.DECIMAL128).doubleValue();
     }
