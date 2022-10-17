@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
@@ -171,7 +170,7 @@ class InconsistencyDetectionEvaluationIT {
         }
         Assertions.assertNotNull(projectResults, "No results found.");
 
-        List<String> expectedInconsistentModelElements = Lists.mutable.of(""); //TODO load goldstandard
+        List<String> expectedInconsistentModelElements = project.getMissingTextForModelElementGoldStandard();
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
         var results = TestUtil.compare(expectedInconsistentModelElements, inconsistentModelElements);
 
@@ -225,7 +224,7 @@ class InconsistencyDetectionEvaluationIT {
             return null;
         }
 
-        var goldStandard = project.getGoldStandard(getPcmModel(project));
+        var goldStandard = project.getTlrGoldStandard(getPcmModel(project));
         var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(i -> i.toString()).castToCollection();
         var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(i -> i.toString()).castToCollection();
 
