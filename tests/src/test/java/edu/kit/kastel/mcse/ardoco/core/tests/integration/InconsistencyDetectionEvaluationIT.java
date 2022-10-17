@@ -178,9 +178,8 @@ class InconsistencyDetectionEvaluationIT {
         resultCalculator.addEvaluationResults(results, expectedInconsistentModelElements.size());
         OVERALL_MTFMEI_RESULTS_CALCULATOR.addResult(project, resultCalculator);
 
-        // TODO: put out #TP, #FP, #FN instead?
         String name = project.name() + " missing text inconsistency";
-        TestUtil.logResults(logger, name, results);
+        TestUtil.logExplicitResults(logger, name, results);
         writeOutResults(project, results);
     }
 
