@@ -1,12 +1,17 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
@@ -22,14 +27,20 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 public class UnwantedWordsFilter extends Filter {
 
     @Configurable
-    private List<String> commonFileEndings = List.of("pdf", "png", "md", "xml", "yml", "json", "html", "sh", "bat", "java", "gradle", "cpp", "c", "h", "groovy",
-            "js", "ts", "css", "sc", "scala");
+    private List<String> commonFileEndings = //
+            List.of("pdf", "png", "md", "xml", "yml", "json", "html", "sh", "bat", //
+                    "java", "gradle", "cpp", "c", "h", "groovy", "js", "ts", "css", "sc", "scala");
 
     @Configurable
-    private List<String> blacklist = List.of("meta", "log", "browser", "task", "operation", "case", "instance", "script");
+    private boolean enableCommonBlacklist = true;
+    private final List<String> commonBlacklist;
+
+    @Configurable
+    private List<String> customBlacklist = List.of("meta", "log", "browser", "task", "operation", "case", "instance", "script");
 
     public UnwantedWordsFilter(DataRepository dataRepository) {
         super(UnwantedWordsFilter.class.getSimpleName(), dataRepository);
+        this.commonBlacklist = loadCommonBlacklist();
     }
 
     @Override
@@ -60,7 +71,10 @@ public class UnwantedWordsFilter extends Filter {
         var referenceWords = nounMapping.getReferenceWords();
         for (var referenceWord : referenceWords) {
             var lemma = referenceWord.getLemma().toLowerCase();
-            if (blacklist.contains(lemma)) {
+            if (customBlacklist.contains(lemma)) {
+                return true;
+            }
+            if (enableCommonBlacklist && commonBlacklist.contains(lemma)) {
                 return true;
             }
         }
@@ -100,4 +114,16 @@ public class UnwantedWordsFilter extends Filter {
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
         // nothing
     }
+
+    private List<String> loadCommonBlacklist() {
+        try {
+            return Collections.unmodifiableList(new ObjectMapper().readValue(this.getClass().getResourceAsStream("/unwanted_words_filter_common.json"),
+                    new TypeReference<List<String>>() {
+                    }));
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            return List.of();
+        }
+    }
+
 }

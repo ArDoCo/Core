@@ -1,1 +1,1 @@
-UnwantedWordsFilter::blacklist=conversion,core,cpu,file,front,integration,nodejs,party,process,side,svg
+UnwantedWordsFilter::customBlacklist=conversion,core,cpu,file,front,integration,nodejs,party,process,side,svg
