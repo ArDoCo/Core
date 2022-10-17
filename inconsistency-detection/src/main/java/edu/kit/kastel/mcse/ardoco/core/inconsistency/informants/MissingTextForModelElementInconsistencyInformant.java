@@ -20,9 +20,9 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingTextForModelEl
 public class MissingTextForModelElementInconsistencyInformant extends Informant {
 
     @Configurable
-    private List<String> whitelist = Lists.mutable.of("DummyRecommender", "Cache");
+    private List<String> whitelist = Lists.mutable.of();
     @Configurable
-    private List<String> types = Lists.mutable.of("BasicComponent", "CompositeComponent");
+    private List<String> types = Lists.mutable.of("Component", "BasicComponent", "CompositeComponent");
 
     public MissingTextForModelElementInconsistencyInformant(DataRepository dataRepository) {
         super(MissingTextForModelElementInconsistencyInformant.class.getSimpleName(), dataRepository);
