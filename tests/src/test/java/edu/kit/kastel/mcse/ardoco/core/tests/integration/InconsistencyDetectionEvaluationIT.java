@@ -60,7 +60,7 @@ class InconsistencyDetectionEvaluationIT {
 
     private static final OverallResultsCalculator OVERALL_MME_RESULTS_CALCULATOR = new OverallResultsCalculator();
     private static final OverallResultsCalculator OVERALL_MME_RESULT_CALCULATOR_BASELINE = new OverallResultsCalculator();
-    private static final OverallResultsCalculator OVERALL_MTFMEI_RESULTS_CALCULATOR = new OverallResultsCalculator();
+    private static final OverallResultsCalculator OVERALL_UME_RESULTS_CALCULATOR = new OverallResultsCalculator();
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static boolean ranBaseline = false;
@@ -72,8 +72,8 @@ class InconsistencyDetectionEvaluationIT {
         var weightedResults = OVERALL_MME_RESULTS_CALCULATOR.calculateWeightedAverageResults();
         var macroResults = OVERALL_MME_RESULTS_CALCULATOR.calculateMacroAverageResults();
 
-        var weightedMTFMEIResults = OVERALL_MTFMEI_RESULTS_CALCULATOR.calculateWeightedAverageResults();
-        var macroMTFMEIResults = OVERALL_MTFMEI_RESULTS_CALCULATOR.calculateMacroAverageResults();
+        var weightedMTFMEIResults = OVERALL_UME_RESULTS_CALCULATOR.calculateWeightedAverageResults();
+        var macroMTFMEIResults = OVERALL_UME_RESULTS_CALCULATOR.calculateMacroAverageResults();
 
         if (logger.isInfoEnabled()) {
             var name = "MME Overall Weighted";
@@ -92,9 +92,9 @@ class InconsistencyDetectionEvaluationIT {
                 TestUtil.logResults(logger, name, results);
             }
 
-            name = "MTFME Overall Weighted";
+            name = "Undoc. Model Element Overall Weighted";
             TestUtil.logResults(logger, name, weightedMTFMEIResults);
-            name = "MTFME Overall Macro";
+            name = "Undoc. Model Element Overall Macro";
             TestUtil.logResults(logger, name, macroMTFMEIResults);
         }
 
@@ -107,12 +107,12 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     /**
-     * Tests the inconsistency detection on all {@link Project projects}.
+     * Tests the inconsistency detection for missing model elements on all {@link Project projects}.
      *
      * @param project Project that gets inserted automatically with the enum {@link Project}.
      */
-    @DisplayName("Evaluate MME-Inconsistency Detection")
-    @ParameterizedTest(name = "Evaluating {0}")
+    @DisplayName("Evaluating MME-Inconsistency Detection")
+    @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
     @EnumSource(value = Project.class)
     @Order(1)
     void missingModelElementInconsistencyIT(Project project) {
@@ -131,13 +131,13 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     /**
-     * Tests the baseline approach that reports an inconsistency for each sentence that is not traced to a model
+     * Tests the baseline approach that reports a missing model element inconsistency for each sentence that is not traced to a model
      * element. This test is enabled by providing the environment variable "testBaseline" with any value.
      *
      * @param project Project that gets inserted automatically with the enum {@link Project}.
      */
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
-    @DisplayName("Evaluate MME-Inconsistency Detection Baseline")
+    @DisplayName("Evaluating MME-Inconsistency Detection Baseline")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
     @EnumSource(value = Project.class)
     @Order(2)
@@ -158,8 +158,13 @@ class InconsistencyDetectionEvaluationIT {
         logResultsMissingModelInconsistency(project, resultCalculator, expectedInconsistencyResults);
     }
 
+    /**
+     * Tests the inconsistency detection for undocumented model elements on all {@link Project projects}.
+     *
+     * @param project Project that gets inserted automatically with the enum {@link Project}.
+     */
     @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies")
-    @ParameterizedTest(name = "Evaluating MTFME-inconsistency for {0}")
+    @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
     @EnumSource(value = Project.class)
     @Order(3)
     void missingTextInconsistencyIT(Project project) {
@@ -176,7 +181,7 @@ class InconsistencyDetectionEvaluationIT {
 
         ResultCalculator resultCalculator = new ResultCalculator();
         resultCalculator.addEvaluationResults(results, expectedInconsistentModelElements.size());
-        OVERALL_MTFMEI_RESULTS_CALCULATOR.addResult(project, resultCalculator);
+        OVERALL_UME_RESULTS_CALCULATOR.addResult(project, resultCalculator);
 
         String name = project.name() + " missing text inconsistency";
         TestUtil.logExplicitResults(logger, name, results);

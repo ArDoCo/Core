@@ -103,10 +103,10 @@ public class TestUtil {
 
     /**
      * Log the provided {@link ExplicitEvaluationResults} using the provided logger and name. The log contains Precision and Recall printed with explicit
-     * numbers instead.
-     * An example output follows:
-     * Precision: 4/4
-     * Recall: 4/6
+     * numbers for the calculation.
+     * See the following example output:
+     * Precision: 4/4 = 1.000
+     * Recall: 4/6 = 0.667
      *
      * @param logger  Logger to use
      * @param name    Name to show in the output
@@ -118,7 +118,8 @@ public class TestUtil {
         var fn = results.getFalseNegatives().size();
         var precisionDenominator = tp + fp;
         var recallDenominator = tp + fn;
-        var logString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7d/%d%n\tRecall:%10d/%d", name, tp, precisionDenominator, tp, recallDenominator);
+        var logString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7d/%d = %.3f%n\tRecall:%10d/%d = %.3f", name, tp, precisionDenominator, results
+                .getPrecision(), tp, recallDenominator, results.getRecall());
         logger.info(logString);
     }
 

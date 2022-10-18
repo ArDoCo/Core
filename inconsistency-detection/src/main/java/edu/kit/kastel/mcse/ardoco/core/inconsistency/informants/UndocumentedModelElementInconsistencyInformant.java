@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
@@ -17,15 +18,21 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingTextForModelElementInconsistency;
 
-public class MissingTextForModelElementInconsistencyInformant extends Informant {
+/**
+ * This informant for the {@link edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.UndocumentedModelElementInconsistencyAgent} implements the logic to find
+ * model elements that are undocumented. To do so, it checks for each model element whether it is mentioned a minimum number of times (default: 1).
+ */
+public class UndocumentedModelElementInconsistencyInformant extends Informant {
 
+    @Configurable
+    private int minimumNeededTraceLinks = 1;
     @Configurable
     private List<String> whitelist = Lists.mutable.of();
     @Configurable
     private List<String> types = Lists.mutable.of("Component", "BasicComponent", "CompositeComponent");
 
-    public MissingTextForModelElementInconsistencyInformant(DataRepository dataRepository) {
-        super(MissingTextForModelElementInconsistencyInformant.class.getSimpleName(), dataRepository);
+    public UndocumentedModelElementInconsistencyInformant(DataRepository dataRepository) {
+        super(UndocumentedModelElementInconsistencyInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override
@@ -46,7 +53,7 @@ public class MissingTextForModelElementInconsistencyInformant extends Informant 
             // find model instances of given types that are not linked and, thus, are candidates
             var candidateModelInstances = Lists.mutable.<ModelInstance>empty();
             for (var modelInstance : modelState.getInstances()) {
-                if (modelInstanceHasTargetedType(modelInstance, types) && !linkedModelInstances.contains(modelInstance)) {
+                if (modelInstanceHasTargetedType(modelInstance, types) && !modelInstanceHasMinimumNumberOfAppearances(linkedModelInstances, modelInstance)) {
                     candidateModelInstances.add(modelInstance);
                 }
             }
@@ -57,6 +64,10 @@ public class MissingTextForModelElementInconsistencyInformant extends Informant 
             // create Inconsistencies
             createInconsistencies(candidateModelInstances, inconsistencyState);
         }
+    }
+
+    private boolean modelInstanceHasMinimumNumberOfAppearances(ImmutableList<ModelInstance> linkedModelInstances, ModelInstance modelInstance) {
+        return linkedModelInstances.count(modelInstance::equals) >= minimumNeededTraceLinks;
     }
 
     public static boolean modelInstanceHasTargetedType(ModelInstance modelInstance, List<String> types) {
