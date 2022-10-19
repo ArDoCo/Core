@@ -46,6 +46,8 @@ public class ResultCalculator {
         double accuracy = 0.0;
         double specificity = 0.0;
         double phi = 0.0;
+        double phiMax = 0.0;
+        double phiOverPhiMax = 0.0;
         int truePositives = 0;
         int trueNegatives = 0;
         int falsePositives = 0;
@@ -75,6 +77,8 @@ public class ResultCalculator {
                 specificity += extendedExplicitResults.getSpecificity() * localWeight;
             } else if (result instanceof ExtendedEvaluationResults extendedResult) {
                 phi += extendedResult.getPhiCoefficient() * localWeight;
+                phiMax += extendedResult.getPhiCoefficientMax() * localWeight;
+                phiOverPhiMax += extendedResult.getPhiOverPhiMax() * localWeight;
                 accuracy += extendedResult.getAccuracy() * localWeight;
                 specificity += extendedResult.getSpecificity() * localWeight;
             }
@@ -86,15 +90,19 @@ public class ResultCalculator {
 
         if (truePositives > 0) {
             phi = EvaluationMetrics.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
+            phiMax = EvaluationMetrics.calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
+            phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(truePositives, falsePositives, falseNegatives, trueNegatives);
             accuracy = accuracy / weight;
             specificity = specificity / weight;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, phiMax, phiOverPhiMax, specificity);
         }
         if (phi != 0.0 && accuracy > 0.0) {
             phi = phi / weight;
+            phiMax = phiMax / weight;
+            phiOverPhiMax = phiOverPhiMax / weight;
             accuracy = accuracy / weight;
             specificity = specificity / weight;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, phiMax, phiOverPhiMax, specificity);
         }
         return new EvaluationResultsImpl(precision, recall, f1);
     }
@@ -112,6 +120,8 @@ public class ResultCalculator {
         double accuracy = 0.0;
         double specificity = 0.0;
         double phi = 0.0;
+        double phiMax = 0.0;
+        double phiOverPhiMax = 0.0;
 
         var counter = 0;
         for (var resultWithWeight : resultsWithWeight) {
@@ -134,6 +144,8 @@ public class ResultCalculator {
 
             if (result instanceof ExtendedEvaluationResults extendedResult) {
                 phi += extendedResult.getPhiCoefficient();
+                phiMax += extendedResult.getPhiCoefficientMax();
+                phiOverPhiMax += extendedResult.getPhiOverPhiMax();
                 accuracy += extendedResult.getAccuracy();
                 specificity += extendedResult.getSpecificity();
             }
@@ -145,9 +157,11 @@ public class ResultCalculator {
 
         if (phi != 0.0 && accuracy > 0.0) {
             phi /= counter;
+            phiMax /= counter;
+            phiOverPhiMax /= counter;
             accuracy /= counter;
             specificity /= counter;
-            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, specificity);
+            return new ExtendedEvaluationResultsImpl(precision, recall, f1, accuracy, phi, phiMax, phiOverPhiMax, specificity);
         }
         return new EvaluationResultsImpl(precision, recall, f1);
 

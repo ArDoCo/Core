@@ -4,7 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EvaluationMetrics {
+    private static Logger logger = LoggerFactory.getLogger(EvaluationMetrics.class);
 
     private EvaluationMetrics() throws IllegalAccessException {
         throw new IllegalAccessException();
@@ -148,6 +152,27 @@ public class EvaluationMetrics {
         var denominator = productOfSumsInDenominator.sqrt(MathContext.DECIMAL128);
 
         return num.divide(denominator, MathContext.DECIMAL128).doubleValue();
+    }
+
+    public static double calculatePhiCoefficientMax(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
+        var tp = BigDecimal.valueOf(truePositives);
+        var fp = BigDecimal.valueOf(falsePositives);
+        var fn = BigDecimal.valueOf(falseNegatives);
+        var tn = BigDecimal.valueOf(trueNegatives);
+
+        var test = fn.add(tp).compareTo(fp.add(tp)) >= 0;
+        var nominator = (fp.add(tn)).multiply(tp.add(fp)).sqrt(MathContext.DECIMAL128);
+        var denominator = (fn.add(tn)).multiply(tp.add(fn)).sqrt(MathContext.DECIMAL128);
+        if (!test) {
+            logger.warn("Test for Phi Max not passed. (TN+FP) > (TP+FP) not given.");
+        }
+        return nominator.divide(denominator, MathContext.DECIMAL128).doubleValue();
+    }
+
+    public static double calculatePhiOverPhiMax(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
+        var phi = calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
+        var phiMax = calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
+        return phi / phiMax;
     }
 
     /**

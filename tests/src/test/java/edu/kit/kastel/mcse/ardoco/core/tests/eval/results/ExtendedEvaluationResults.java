@@ -21,6 +21,10 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
      */
     double getPhiCoefficient();
 
+    double getPhiCoefficientMax();
+
+    double getPhiOverPhiMax();
+
     /**
      * Returns the accuracy based on the true positives, false positives, false negatives, and true negatives in this result.
      *
@@ -41,6 +45,7 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
     default String getResultString() {
         String output = String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
         output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f%n\tPhi Coef.:%7.3f", getAccuracy(), getPhiCoefficient());
+        output += String.format(Locale.ENGLISH, "%n\tPhi Max:%9.3f%n\tPhi/PhiMax:%6.3f", getPhiCoefficientMax(), getPhiOverPhiMax());
         return output;
     }
 
@@ -49,9 +54,10 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
         String output = String.format(Locale.ENGLISH,
                 "\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", getPrecision(),
                 expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
-        output += String.format(Locale.ENGLISH,
-                "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tPhi Coef.:%7.3f (min. expected: %.3f)%n\tSpecificity:%5.3f (min. expected: %.3f)", getAccuracy(),
-                expectedResults.accuracy(), getPhiCoefficient(), expectedResults.phiCoefficient(), getSpecificity(), expectedResults.specificity());
+        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tSpecificity:%5.3f (min. expected: %.3f)", getAccuracy(),
+                expectedResults.accuracy(), getSpecificity(), expectedResults.specificity());
+        output += String.format(Locale.ENGLISH, "%n\tPhi Coef.:%7.3f (min. expected: %.3f)%n\tPhi Max:%9.3f%n\tPhi/PhiMax:%6.3f", getPhiCoefficient(),
+                expectedResults.phiCoefficient(), getPhiCoefficientMax(), getPhiOverPhiMax());
         return output;
     }
 
