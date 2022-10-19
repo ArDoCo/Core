@@ -146,7 +146,8 @@ public class TestUtil {
 
             ResultCalculator resultCalculator = new ResultCalculator();
             resultCalculator.addEvaluationResults(new ExtendedEvaluationResultsImpl(result.getPrecision(), result.getRecall(), result.getF1(), result
-                    .getAccuracy(), result.getPhiCoefficient(), result.getSpecificity()), result.getWeight());
+                    .getAccuracy(), result.getPhiCoefficient(), result.getPhiCoefficientMax(), result.getPhiOverPhiMax(), result.getSpecificity()), result
+                            .getWeight());
             overallResultsCalculator.addResult(project, resultCalculator);
         }
         return overallResultsCalculator;
