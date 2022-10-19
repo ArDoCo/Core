@@ -68,7 +68,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private File inputText;
     private File inputModel;
     private File inputCodeModel = null;
-    private File additionalConfigs = null;
     private final File outputDir = new File(OUTPUT);
 
     @BeforeAll
@@ -114,9 +113,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
             var config = new File(ADDITIONAL_CONFIG);
             config.delete();
         }
-        if (additionalConfigs != null) {
-            additionalConfigs = null;
-        }
     }
 
     // NOTE: if you only want to test a specific project, you can simply set up the
@@ -146,7 +142,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         var arDoCoResult = DATA_MAP.get(project);
         if (arDoCoResult == null) {
-            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigs, outputDir);
+            File additionalConfigurations = project.getAdditionalConfigurationsFile();
+            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigurations, outputDir);
             DATA_MAP.put(project, arDoCoResult);
         }
         return arDoCoResult;
@@ -169,7 +166,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var preprocessingData = ardocoRunForPCM.getPreprocessingData();
         DataRepositoryHelper.putPreprocessingData(arDoCo.getDataRepository(), preprocessingData);
         File umlModelFile = project.getModelFile(ArchitectureModelType.UML);
-        var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigs, outputDir);
+        File additionalConfigurations = project.getAdditionalConfigurationsFile();
+        var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigurations, outputDir);
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);

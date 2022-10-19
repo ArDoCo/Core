@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -23,6 +26,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/pcm/ms.repository", //
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
+            "src/test/resources/configurations/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard_UME.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
             new ExpectedResults(.000, .000, .256, .534, .178, .498) //
@@ -31,6 +35,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
+            "src/test/resources/configurations/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard_UME.csv", //
             new ExpectedResults(.913, .880, .896, .988, .890, .994), //
             new ExpectedResults(.000, .000, .222, .606, .227, .584) //
@@ -39,6 +44,7 @@ public enum Project {
             "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
+            "src/test/resources/configurations/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard_UME.csv", //
             new ExpectedResults(.999, .713, .832, .982, .837, .999), //
             new ExpectedResults(.000, .000, .250, .502, .103, .471) //
@@ -47,6 +53,7 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
+            "src/test/resources/configurations/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard_UME.csv", //
             new ExpectedResults(.877, .826, .850, .984, .844, .993), //
             new ExpectedResults(.000, .000, .272, .738, .190, 0.0) //
@@ -55,6 +62,7 @@ public enum Project {
             "src/test/resources/benchmark/jabref/pcm/jabref.repository", //
             "src/test/resources/benchmark/jabref/jabref.txt", //
             "src/test/resources/benchmark/jabref/goldstandard.csv", //
+            "src/test/resources/configurations/jabref.txt", //
             "src/test/resources/benchmark/jabref/goldstandard_UME.csv", //
             new ExpectedResults(.849, .999, .918, .961, .898, .950), //
             new ExpectedResults(.000, .000, .355, .565, .050, .594) //
@@ -64,19 +72,36 @@ public enum Project {
 
     private final String model;
     private final String textFile;
+    private final String configurationsFile;
     private final String goldStandardTraceabilityLinkRecovery;
     private final String goldStandardMissingTextForModelElement;
     private final ExpectedResults expectedTraceLinkResults;
     private final ExpectedResults expectedInconsistencyResults;
 
-    Project(String model, String textFile, String goldStandardTraceabilityLinkRecovery, String goldStandardMissingTextForModelElement,
-            ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
+    Project(String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
+            String goldStandardMissingTextForModelElement, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
         this.model = model;
         this.textFile = textFile;
+        this.configurationsFile = configurationsFile;
         this.goldStandardTraceabilityLinkRecovery = goldStandardTraceabilityLinkRecovery;
         this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
+    }
+
+    /**
+     * Returns an {@link Optional} containing the project that has a name that equals the given name, ignoring case.
+     * 
+     * @param name the name of the project
+     * @return the Optional containing the project with the given name or is empty if no such is found.
+     */
+    public static Optional<Project> getFromName(String name) {
+        for (Project project : Project.values()) {
+            if (project.name().equalsIgnoreCase(name)) {
+                return Optional.of(project);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -108,6 +133,24 @@ public enum Project {
      */
     public File getTextFile() {
         return new File(textFile);
+    }
+
+    /**
+     * Return the map of additional configuration options
+     * 
+     * @return the map of additional configuration options
+     */
+    public Map<String, String> getAdditionalConfigurations() {
+        return ArDoCo.loadAdditionalConfigs(getAdditionalConfigurationsFile());
+    }
+
+    /**
+     * Returns a {@link File} that points to the text file containing additional configurations
+     * 
+     * @return the file for additional configurations
+     */
+    public File getAdditionalConfigurationsFile() {
+        return new File(this.configurationsFile);
     }
 
     /**
