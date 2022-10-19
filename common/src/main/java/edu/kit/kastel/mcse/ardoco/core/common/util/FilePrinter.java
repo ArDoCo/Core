@@ -33,6 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
@@ -465,7 +466,10 @@ public final class FilePrinter {
     }
 
     public static void writeInconsistencyOutput(File file, ArDoCoResult arDoCoResult) {
-        Supplier<List<String>> outputExtractor = () -> arDoCoResult.getInconsistentSentences().collect(InconsistentSentence::getInfoString).toList();
+        MutableList<String> allInconsistencies = Lists.mutable.empty();
+        allInconsistencies.addAll(arDoCoResult.getInconsistentSentences().collect(InconsistentSentence::getInfoString).toList());
+        allInconsistencies.addAll(arDoCoResult.getAllModelInconsistencies().collect(ModelInconsistency::getReason).toList());
+        Supplier<List<String>> outputExtractor = () -> allInconsistencies;
         writeOutput(file, "Inconsistencies", outputExtractor);
     }
 

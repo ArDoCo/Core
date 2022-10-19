@@ -2,8 +2,16 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
@@ -19,6 +27,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/goldstandard.csv", //
             "src/test/resources/configurations/mediastore.txt", //
+            "src/test/resources/benchmark/mediastore/goldstandard_UME.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
             new ExpectedResults(.000, .000, .256, .534, .178, .498) //
     ), //
@@ -27,6 +36,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/teammates.txt", //
             "src/test/resources/benchmark/teammates/goldstandard.csv", //
             "src/test/resources/configurations/teammates.txt", //
+            "src/test/resources/benchmark/teammates/goldstandard_UME.csv", //
             new ExpectedResults(.913, .880, .896, .988, .890, .994), //
             new ExpectedResults(.000, .000, .222, .606, .227, .584) //
     ), //
@@ -35,6 +45,7 @@ public enum Project {
             "src/test/resources/benchmark/teastore/teastore.txt", //
             "src/test/resources/benchmark/teastore/goldstandard.csv", //
             "src/test/resources/configurations/teastore.txt", //
+            "src/test/resources/benchmark/teastore/goldstandard_UME.csv", //
             new ExpectedResults(.999, .713, .832, .982, .837, .999), //
             new ExpectedResults(.000, .000, .250, .502, .103, .471) //
     ), //
@@ -43,6 +54,7 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
             "src/test/resources/configurations/bigbluebutton.txt", //
+            "src/test/resources/benchmark/bigbluebutton/goldstandard_UME.csv", //
             new ExpectedResults(.877, .826, .850, .984, .844, .993), //
             new ExpectedResults(.000, .000, .272, .738, .190, 0.0) //
     ), //
@@ -51,23 +63,28 @@ public enum Project {
             "src/test/resources/benchmark/jabref/jabref.txt", //
             "src/test/resources/benchmark/jabref/goldstandard.csv", //
             "src/test/resources/configurations/jabref.txt", //
+            "src/test/resources/benchmark/jabref/goldstandard_UME.csv", //
             new ExpectedResults(.849, .999, .918, .961, .898, .950), //
             new ExpectedResults(.000, .000, .355, .565, .050, .594) //
     );
 
+    private static final Logger logger = LoggerFactory.getLogger(Project.class);
+
     private final String model;
     private final String textFile;
     private final String configurationsFile;
-    private final String goldStandard;
+    private final String goldStandardTraceabilityLinkRecovery;
+    private final String goldStandardMissingTextForModelElement;
     private final ExpectedResults expectedTraceLinkResults;
     private final ExpectedResults expectedInconsistencyResults;
 
-    Project(String model, String textFile, String goldStandard, String configurationsFile, ExpectedResults expectedTraceLinkResults,
-            ExpectedResults expectedInconsistencyResults) {
+    Project(String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
+            String goldStandardMissingTextForModelElement, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
         this.model = model;
         this.textFile = textFile;
         this.configurationsFile = configurationsFile;
-        this.goldStandard = goldStandard;
+        this.goldStandardTraceabilityLinkRecovery = goldStandardTraceabilityLinkRecovery;
+        this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
     }
@@ -141,8 +158,25 @@ public enum Project {
      * 
      * @return the File that represents the gold standard for this project
      */
-    public File getGoldStandardFile() {
-        return new File(goldStandard);
+    public File getTlrGoldStandardFile() {
+        return new File(goldStandardTraceabilityLinkRecovery);
+    }
+
+    /**
+     * Returns a string-list of entries as goldstandard for TLR for this project.
+     * 
+     * @return a list with the entries of the goldstandard for TLR
+     */
+    public List<String> getTlrGoldStandard() {
+        var path = Paths.get(this.getTlrGoldStandardFile().toURI());
+        List<String> goldLinks = Lists.mutable.empty();
+        try {
+            goldLinks = Files.readAllLines(path);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        goldLinks.remove(0);
+        return goldLinks;
     }
 
     /**
@@ -151,8 +185,23 @@ public enum Project {
      * @param pcmModel the model connector (pcm)
      * @return the {@link GoldStandard} for this project
      */
-    public GoldStandard getGoldStandard(ModelConnector pcmModel) {
-        return new GoldStandard(getGoldStandardFile(), pcmModel);
+    public GoldStandard getTlrGoldStandard(ModelConnector pcmModel) {
+        return new GoldStandard(getTlrGoldStandardFile(), pcmModel);
+    }
+
+    public List<String> getMissingTextForModelElementGoldStandard() {
+        var path = Paths.get(this.getMissingTextForModelElementGoldStandardFile().toURI());
+        List<String> goldLinks = Lists.mutable.empty();
+        try {
+            goldLinks = Files.readAllLines(path);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return goldLinks;
+    }
+
+    private File getMissingTextForModelElementGoldStandardFile() {
+        return new File(goldStandardMissingTextForModelElement);
     }
 
     /**

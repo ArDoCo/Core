@@ -78,7 +78,8 @@ public class TestUtil {
     }
 
     /**
-     * Log the provided {@link EvaluationResultsImpl} using the provided logger and name.
+     * Log the provided {@link EvaluationResults} using the provided logger and name. The log put out the result string provided by the
+     * {@link EvaluationResults}.
      * 
      * @param logger  Logger to use
      * @param name    Name to show in the output
@@ -98,6 +99,28 @@ public class TestUtil {
      */
     public static String createResultLogString(String name, EvaluationResults results) {
         return String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultString());
+    }
+
+    /**
+     * Log the provided {@link ExplicitEvaluationResults} using the provided logger and name. The log contains Precision and Recall printed with explicit
+     * numbers for the calculation.
+     * See the following example output:
+     * Precision: 4/4 = 1.000
+     * Recall: 4/6 = 0.667
+     *
+     * @param logger  Logger to use
+     * @param name    Name to show in the output
+     * @param results the results
+     */
+    public static void logExplicitResults(Logger logger, String name, ExplicitEvaluationResults results) {
+        var tp = results.getTruePositives().size();
+        var fp = results.getFalsePositives().size();
+        var fn = results.getFalseNegatives().size();
+        var precisionDenominator = tp + fp;
+        var recallDenominator = tp + fn;
+        var logString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7d/%d = %.3f%n\tRecall:%10d/%d = %.3f", name, tp, precisionDenominator, results
+                .getPrecision(), tp, recallDenominator, results.getRecall());
+        logger.info(logString);
     }
 
     /**

@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingModelElementInconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingTextForModelElementInconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.UndocumentedModelElementInconsistencyAgent;
 
 public class InconsistencyChecker extends AbstractExecutionStage {
 
@@ -28,7 +28,7 @@ public class InconsistencyChecker extends AbstractExecutionStage {
         super("InconsistencyChecker", dataRepository);
 
         agents = Lists.mutable.of(new InitialInconsistencyAgent(dataRepository), new MissingModelElementInconsistencyAgent(dataRepository),
-                new MissingTextForModelElementInconsistencyAgent(dataRepository));
+                new UndocumentedModelElementInconsistencyAgent(dataRepository));
         enabledAgents = agents.collect(Agent::getId);
     }
 

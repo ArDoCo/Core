@@ -17,7 +17,7 @@ public class TLGoldStandardFile {
     }
 
     public static List<TestLink> loadLinks(Project project) throws IOException {
-        Path path = project.getGoldStandardFile().toPath();
+        Path path = project.getTlrGoldStandardFile().toPath();
         List<String> lines = Files.readAllLines(path);
 
         return lines.stream()

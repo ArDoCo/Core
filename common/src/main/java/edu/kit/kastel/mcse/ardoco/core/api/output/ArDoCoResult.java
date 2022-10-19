@@ -20,6 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
@@ -150,6 +151,16 @@ public record ArDoCoResult(DataRepository dataRepository) {
     public ImmutableList<TextInconsistency> getAllTextInconsistencies() {
         var inconsistencies = getAllInconsistencies();
         return inconsistencies.select(i -> TextInconsistency.class.isAssignableFrom(i.getClass())).collect(TextInconsistency.class::cast);
+    }
+
+    /**
+     * Returns all {@link ModelInconsistency ModelInconsistencies} that were found.
+     *
+     * @return all found ModelInconsistencies
+     */
+    public ImmutableList<ModelInconsistency> getAllModelInconsistencies() {
+        var inconsistencies = getAllInconsistencies();
+        return inconsistencies.select(i -> ModelInconsistency.class.isAssignableFrom(i.getClass())).collect(ModelInconsistency.class::cast);
     }
 
     /**
