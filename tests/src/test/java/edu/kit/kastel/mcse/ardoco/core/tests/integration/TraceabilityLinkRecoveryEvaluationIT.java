@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -244,23 +243,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
 
-        var goldStandard = getGoldStandard(project);
+        var goldStandard = project.getTlrGoldStandard();
 
         var results = TestUtil.compare(traceLinks.toSet(), goldStandard);
         var trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, results);
         return new ExtendedExplicitEvaluationResults<>(results, trueNegatives);
-    }
-
-    private List<String> getGoldStandard(Project project) {
-        var path = Paths.get(project.getGoldStandardFile().toURI());
-        List<String> goldLinks = Lists.mutable.empty();
-        try {
-            goldLinks = Files.readAllLines(path);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-        goldLinks.remove(0);
-        return goldLinks;
     }
 
     private void printDetailedDebug(ExplicitEvaluationResults<?> results, DataRepository data) {
