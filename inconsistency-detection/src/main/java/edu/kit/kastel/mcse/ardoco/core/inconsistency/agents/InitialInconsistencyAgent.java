@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.OccasionFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.RecommendedInstanceProbabilityFilter;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.UnwantedWordsFilter;
 
 public class InitialInconsistencyAgent extends PipelineAgent {
     private final MutableList<Informant> filters;
@@ -25,7 +26,8 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     public InitialInconsistencyAgent(DataRepository dataRepository) {
         super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
 
-        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository));
+        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(
+                dataRepository));
         enabledFilters = filters.collect(Informant::getId);
     }
 
