@@ -23,49 +23,49 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
  */
 public enum Project {
     MEDIASTORE(//
-            "src/test/resources/benchmark/mediastore/pcm/ms.repository", //
-            "src/test/resources/benchmark/mediastore/mediastore.txt", //
-            "src/test/resources/benchmark/mediastore/goldstandard.csv", //
-            "src/test/resources/configurations/mediastore.txt", //
-            "src/test/resources/benchmark/mediastore/goldstandard_UME.csv", //
+            "src/test/resources/benchmark/mediastore/model_2016/pcm/ms.repository", //
+            "src/test/resources/benchmark/mediastore/text_2016/mediastore.txt", //
+            "src/test/resources/benchmark/mediastore/text_2016/goldstandard.csv", //
+            "src/test/resources/configurations/ms/filterlists_all.txt", //
+            "src/test/resources/benchmark/mediastore/text_2016/goldstandard_UME.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
-            new ExpectedResults(.000, .000, .256, .534, .178, .498) //
-    ), //
-    TEAMMATES( //
-            "src/test/resources/benchmark/teammates/pcm/teammates.repository", //
-            "src/test/resources/benchmark/teammates/teammates.txt", //
-            "src/test/resources/benchmark/teammates/goldstandard.csv", //
-            "src/test/resources/configurations/teammates.txt", //
-            "src/test/resources/benchmark/teammates/goldstandard_UME.csv", //
-            new ExpectedResults(.913, .880, .896, .988, .890, .994), //
-            new ExpectedResults(.000, .000, .222, .606, .227, .584) //
+            new ExpectedResults(.212, .792, .328, .702, .227, .690) //
     ), //
     TEASTORE( //
-            "src/test/resources/benchmark/teastore/pcm/teastore.repository", //
-            "src/test/resources/benchmark/teastore/teastore.txt", //
-            "src/test/resources/benchmark/teastore/goldstandard.csv", //
-            "src/test/resources/configurations/teastore.txt", //
-            "src/test/resources/benchmark/teastore/goldstandard_UME.csv", //
-            new ExpectedResults(.999, .713, .832, .982, .837, .999), //
-            new ExpectedResults(.000, .000, .250, .502, .103, .471) //
+            "src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
+            "src/test/resources/benchmark/teastore/text_2020/teastore.txt", //
+            "src/test/resources/benchmark/teastore/text_2020/goldstandard.csv", //
+            "src/test/resources/configurations/ts/filterlists_all.txt", //
+            "src/test/resources/benchmark/teastore/text_2020/goldstandard_UME.csv", //
+            new ExpectedResults(.999, .740, .850, .984, .853, .999), //
+            new ExpectedResults(.962, .703, .784, .957, .808, .994) //
+    ), //
+    TEAMMATES( //
+            "src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
+            "src/test/resources/benchmark/teammates/text_2021/teammates.txt", //
+            "src/test/resources/benchmark/teammates/text_2021/goldstandard.csv", //
+            "src/test/resources/configurations/tm/filterlists_all.txt", //
+            "src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
+            new ExpectedResults(.555, .899, .686, .973, .696, .977), //
+            new ExpectedResults(.178, .759, .284, .851, .291, .851) //
     ), //
     BIGBLUEBUTTON( //
-            "src/test/resources/benchmark/bigbluebutton/pcm/bbb.repository", //
-            "src/test/resources/benchmark/bigbluebutton/bigbluebutton.txt", //
-            "src/test/resources/benchmark/bigbluebutton/goldstandard.csv", //
-            "src/test/resources/configurations/bigbluebutton.txt", //
-            "src/test/resources/benchmark/bigbluebutton/goldstandard_UME.csv", //
-            new ExpectedResults(.877, .826, .850, .984, .844, .993), //
-            new ExpectedResults(.000, .000, .272, .738, .190, 0.0) //
+            "src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "src/test/resources/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
+            "src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard.csv", //
+            "src/test/resources/configurations/bbb/filterlists_all.txt", //
+            "src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
+            new ExpectedResults(.877, .826, .850, .984, .843, .993), //
+            new ExpectedResults(.887, .461, .429, .956, .534, .984) //
     ), //
     JABREF( //
-            "src/test/resources/benchmark/jabref/pcm/jabref.repository", //
-            "src/test/resources/benchmark/jabref/jabref.txt", //
-            "src/test/resources/benchmark/jabref/goldstandard.csv", //
-            "src/test/resources/configurations/jabref.txt", //
-            "src/test/resources/benchmark/jabref/goldstandard_UME.csv", //
-            new ExpectedResults(.849, .999, .918, .961, .898, .950), //
-            new ExpectedResults(.000, .000, .355, .565, .050, .594) //
+            "src/test/resources/benchmark/jabref/model_2021/pcm/jabref.repository", //
+            "src/test/resources/benchmark/jabref/text_2021/jabref.txt", //
+            "src/test/resources/benchmark/jabref/text_2021/goldstandard.csv", //
+            "src/test/resources/configurations/jabref/filterlists_all.txt", //
+            "src/test/resources/benchmark/jabref/text_2021/goldstandard_UME.csv", //
+            new ExpectedResults(.899, .999, .946, .973, .932, .966), //
+            new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
