@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,45 +66,6 @@ class InconsistencyDetectionEvaluationIT {
     private static boolean ranBaseline = false;
     private static Map<Project, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new EnumMap<>(Project.class);
     private static Map<Project, ArDoCoResult> arDoCoResults = new EnumMap<>(Project.class);
-
-    @AfterAll
-    public static void afterAll() {
-        var weightedResults = OVERALL_MME_RESULTS_CALCULATOR.calculateWeightedAverageResults();
-        var macroResults = OVERALL_MME_RESULTS_CALCULATOR.calculateMacroAverageResults();
-
-        var weightedMTFMEIResults = OVERALL_UME_RESULTS_CALCULATOR.calculateWeightedAverageResults();
-        var macroMTFMEIResults = OVERALL_UME_RESULTS_CALCULATOR.calculateMacroAverageResults();
-
-        if (logger.isInfoEnabled()) {
-            var name = "MME Overall Weighted";
-            TestUtil.logResults(logger, name, weightedResults);
-
-            name = "MME Overall Macro";
-            TestUtil.logResults(logger, name, macroResults);
-
-            if (ranBaseline) {
-                name = "MME BASELINE Overall Weighted";
-                var results = OVERALL_MME_RESULT_CALCULATOR_BASELINE.calculateWeightedAverageResults();
-                TestUtil.logResults(logger, name, results);
-
-                name = "MME BASELINE Overall Macro";
-                results = OVERALL_MME_RESULT_CALCULATOR_BASELINE.calculateMacroAverageResults();
-                TestUtil.logResults(logger, name, results);
-            }
-
-            name = "Undoc. Model Element Overall Weighted";
-            TestUtil.logResults(logger, name, weightedMTFMEIResults);
-            name = "Undoc. Model Element Overall Macro";
-            TestUtil.logResults(logger, name, macroMTFMEIResults);
-        }
-
-        try {
-            writeOutput(weightedResults, macroResults);
-            writeOverallOutputMissingTextInconsistency(weightedMTFMEIResults, macroMTFMEIResults);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e.getCause());
-        }
-    }
 
     /**
      * Tests the inconsistency detection for missing model elements on all {@link Project projects}.
@@ -245,6 +206,53 @@ class InconsistencyDetectionEvaluationIT {
         saveOutput(project, baseArDoCoResult);
         arDoCoResults.put(project, baseArDoCoResult);
         return runs;
+    }
+
+    @EnabledIfEnvironmentVariable(named = "overallResults", matches = ".*")
+    @Test
+    @Order(999)
+    void overAllResultsIT() {
+        var weightedResults = OVERALL_MME_RESULTS_CALCULATOR.calculateWeightedAverageResults();
+        var macroResults = OVERALL_MME_RESULTS_CALCULATOR.calculateMacroAverageResults();
+
+        Assertions.assertNotNull(weightedResults);
+        Assertions.assertNotNull(macroResults);
+
+        var weightedUMEResults = OVERALL_UME_RESULTS_CALCULATOR.calculateWeightedAverageResults();
+        var macroUMEResults = OVERALL_UME_RESULTS_CALCULATOR.calculateMacroAverageResults();
+
+        Assertions.assertNotNull(weightedUMEResults);
+        Assertions.assertNotNull(macroUMEResults);
+
+        if (logger.isInfoEnabled()) {
+            var name = "MME Overall Weighted";
+            TestUtil.logResults(logger, name, weightedResults);
+
+            name = "MME Overall Macro";
+            TestUtil.logResults(logger, name, macroResults);
+
+            if (ranBaseline) {
+                name = "MME BASELINE Overall Weighted";
+                var results = OVERALL_MME_RESULT_CALCULATOR_BASELINE.calculateWeightedAverageResults();
+                TestUtil.logResults(logger, name, results);
+
+                name = "MME BASELINE Overall Macro";
+                results = OVERALL_MME_RESULT_CALCULATOR_BASELINE.calculateMacroAverageResults();
+                TestUtil.logResults(logger, name, results);
+            }
+
+            name = "Undoc. Model Element Overall Weighted";
+            TestUtil.logResults(logger, name, weightedUMEResults);
+            name = "Undoc. Model Element Overall Macro";
+            TestUtil.logResults(logger, name, macroUMEResults);
+        }
+
+        try {
+            writeOutput(weightedResults, macroResults);
+            writeOverallOutputMissingTextInconsistency(weightedUMEResults, macroUMEResults);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e.getCause());
+        }
     }
 
     private Pair<ResultCalculator, List<ExtendedExplicitEvaluationResults<String>>> calculateEvaluationResults(Project project,
