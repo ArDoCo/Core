@@ -186,7 +186,12 @@ class InconsistencyDetectionEvaluationIT {
         OVERALL_MME_RESULT_CALCULATOR_BASELINE.addResult(project, resultCalculator);
 
         var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
-        logResultsMissingModelInconsistency(project, resultCalculator, expectedInconsistencyResults);
+
+        if (logger.isInfoEnabled()) {
+            var weightedResults = resultCalculator.getWeightedAverageResults();
+            String name = project.name() + " missing model inconsistency";
+            TestUtil.logResults(logger, name, weightedResults);
+        }
     }
 
     /**
