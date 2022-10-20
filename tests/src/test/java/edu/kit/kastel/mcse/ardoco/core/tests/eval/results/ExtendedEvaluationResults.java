@@ -52,7 +52,7 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
                 expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
         output += String.format(Locale.ENGLISH,
                 "%n\tAccuracy:%9.3f (min. expected: %.3f)%n\tSpecificity:%6.3f (min. expected: %.3f)%n\tPhi Coef.:%8.3f (min. expected: %.3f)%n", getAccuracy(),
-                expectedResults.accuracy(), getPhiCoefficient(), expectedResults.phiCoefficient(), getSpecificity(), expectedResults.specificity());
+                expectedResults.accuracy(), getSpecificity(), expectedResults.specificity(), getPhiCoefficient(), expectedResults.phiCoefficient());
         return output;
     }
 
