@@ -1,4 +1,0 @@
-# JabRef Statistics (cloc)
-```
-TODO
-```
