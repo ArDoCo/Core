@@ -46,7 +46,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/text_2021/goldstandard.csv", //
             "src/test/resources/configurations/tm/filterlists_all.txt", //
             "src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
-            new ExpectedResults(.555, .899, .686, .973, .696, .977), //
+            new ExpectedResults(.555, .899, .686, .973, .695, .976), //
             new ExpectedResults(.178, .759, .284, .851, .291, .851) //
     ), //
     BIGBLUEBUTTON( //
