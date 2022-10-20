@@ -26,7 +26,7 @@ public enum Project {
             "src/test/resources/benchmark/mediastore/model_2016/pcm/ms.repository", //
             "src/test/resources/benchmark/mediastore/text_2016/mediastore.txt", //
             "src/test/resources/benchmark/mediastore/text_2016/goldstandard.csv", //
-            "src/test/resources/configurations/ms/filterlists_all.txt", //
+            "src/test/resources/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/mediastore/text_2016/goldstandard_UME.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
             new ExpectedResults(.212, .792, .328, .702, .227, .690) //
@@ -35,7 +35,7 @@ public enum Project {
             "src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/text_2020/teastore.txt", //
             "src/test/resources/benchmark/teastore/text_2020/goldstandard.csv", //
-            "src/test/resources/configurations/ts/filterlists_all.txt", //
+            "src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/teastore/text_2020/goldstandard_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994) //
@@ -44,7 +44,7 @@ public enum Project {
             "src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
             "src/test/resources/benchmark/teastore/text_2018/goldstandard_AB.csv", //
-            "src/test/resources/configurations/ts/filterlists_all.txt", //
+            "src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.163, .982, .278, .376, .146, .289) //
@@ -53,7 +53,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/text_2021/teammates.txt", //
             "src/test/resources/benchmark/teammates/text_2021/goldstandard.csv", //
-            "src/test/resources/configurations/tm/filterlists_all.txt", //
+            "src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
             new ExpectedResults(.555, .899, .686, .973, .695, .976), //
             new ExpectedResults(.178, .759, .284, .851, .291, .851) //
@@ -62,7 +62,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/text_2015/teammates_2015.txt", //
             "src/test/resources/benchmark/teammates/text_2015/goldstandard.csv", //
-            "src/test/resources/configurations/tm/filterlists_all.txt", //
+            "src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/teammates/text_2015/goldstandard_UME.csv", //
             new ExpectedResults(.524, .695, .597, .970, .589, .979), //
             new ExpectedResults(.168, .629, .263, .863, .260, .870) //
@@ -71,7 +71,7 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
             "src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard.csv", //
-            "src/test/resources/configurations/bbb/filterlists_all.txt", //
+            "src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
             new ExpectedResults(.877, .826, .850, .984, .843, .993), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984) //
@@ -80,7 +80,7 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
             "src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard.csv", //
-            "src/test/resources/configurations/bbb/filterlists_all.txt", //
+            "src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
             new ExpectedResults(.807, .617, .699, .978, .695, .993), //
             new ExpectedResults(.085, .175, .111, .813, .018, .869) //
@@ -89,7 +89,7 @@ public enum Project {
             "src/test/resources/benchmark/jabref/model_2021/pcm/jabref.repository", //
             "src/test/resources/benchmark/jabref/text_2021/jabref.txt", //
             "src/test/resources/benchmark/jabref/text_2021/goldstandard.csv", //
-            "src/test/resources/configurations/jabref/filterlists_all.txt", //
+            "src/test/resources/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/jabref/text_2021/goldstandard_UME.csv", //
             new ExpectedResults(.899, .999, .946, .973, .932, .966), //
             new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
@@ -98,7 +98,7 @@ public enum Project {
             "src/test/resources/benchmark/jabref/model_2021/pcm/jabref.repository", //
             "src/test/resources/benchmark/jabref/text_2016/jabref_2016.txt", //
             "src/test/resources/benchmark/jabref/text_2016/goldstandard.csv", //
-            "src/test/resources/configurations/jabref/filterlists_all.txt", //
+            "src/test/resources/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "src/test/resources/benchmark/jabref/text_2016/goldstandard_UME.csv", //
             new ExpectedResults(.817, .999, .899, .966, .886, .960), //
             new ExpectedResults(.110, .110, .110, .366, -.249, .475) //
