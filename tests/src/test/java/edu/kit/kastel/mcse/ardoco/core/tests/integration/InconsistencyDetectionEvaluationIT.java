@@ -164,7 +164,6 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
-    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
     @DisplayName("Evaluating MME-Inconsistency Detection Baseline (Historic)")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
     @EnumSource(value = Project.class)

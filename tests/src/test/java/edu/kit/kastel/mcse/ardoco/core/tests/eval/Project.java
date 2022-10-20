@@ -47,7 +47,7 @@ public enum Project {
             "src/test/resources/configurations/ts/filterlists_all.txt", //
             "src/test/resources/benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.962, .703, .784, .957, .808, .994) //
+            new ExpectedResults(.163, .982, .278, .376, .146, .289) //
     ), //
     TEAMMATES( //
             "src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
@@ -64,7 +64,7 @@ public enum Project {
             "src/test/resources/benchmark/teammates/text_2015/goldstandard.csv", //
             "src/test/resources/configurations/tm/filterlists_all.txt", //
             "src/test/resources/benchmark/teammates/text_2015/goldstandard_UME.csv", //
-            new ExpectedResults(.555, .899, .686, .973, .695, .976), //
+            new ExpectedResults(.524, .695, .597, .970, .589, .979), //
             new ExpectedResults(.178, .759, .284, .851, .291, .851) //
     ), //
     BIGBLUEBUTTON( //
@@ -82,8 +82,8 @@ public enum Project {
             "src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard.csv", //
             "src/test/resources/configurations/bbb/filterlists_all.txt", //
             "src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
-            new ExpectedResults(.877, .826, .850, .984, .843, .993), //
-            new ExpectedResults(.887, .461, .429, .956, .534, .984) //
+            new ExpectedResults(.807, .617, .699, .978, .695, .993), //
+            new ExpectedResults(.085, .175, .111, .813, .018, .869) //
     ), //
     JABREF( //
             "src/test/resources/benchmark/jabref/model_2021/pcm/jabref.repository", //
@@ -100,8 +100,8 @@ public enum Project {
             "src/test/resources/benchmark/jabref/text_2016/goldstandard.csv", //
             "src/test/resources/configurations/jabref/filterlists_all.txt", //
             "src/test/resources/benchmark/jabref/text_2016/goldstandard_UME.csv", //
-            new ExpectedResults(.899, .999, .946, .973, .932, .966), //
-            new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
+            new ExpectedResults(.817, .999, .899, .966, .886, .960), //
+            new ExpectedResults(.110, .110, .110, .366, -.249, .475) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
@@ -233,6 +233,7 @@ public enum Project {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
+        goldLinks.remove("missingModelElementID");
         return goldLinks;
     }
 
