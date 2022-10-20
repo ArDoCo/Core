@@ -65,7 +65,7 @@ public enum Project {
             "src/test/resources/configurations/tm/filterlists_all.txt", //
             "src/test/resources/benchmark/teammates/text_2015/goldstandard_UME.csv", //
             new ExpectedResults(.524, .695, .597, .970, .589, .979), //
-            new ExpectedResults(.168, .759, .284, .851, .291, .851) //
+            new ExpectedResults(.168, .629, .263, .863, .260, .870) //
     ), //
     BIGBLUEBUTTON( //
             "src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
