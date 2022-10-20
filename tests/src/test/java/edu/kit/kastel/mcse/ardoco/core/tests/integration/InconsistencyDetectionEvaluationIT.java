@@ -157,7 +157,7 @@ class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluating MME-Inconsistency Detection Baseline")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class)
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
     @Order(5)
     void missingModelElementInconsistencyBaselineIT(Project project) {
         runMissingModelElementInconsistencyBaselineEval(project);
@@ -166,7 +166,7 @@ class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluating MME-Inconsistency Detection Baseline (Historic)")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class)
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
     @Order(6)
     void missingModelElementInconsistencyBaselineHistoricIT(Project project) {
         runMissingModelElementInconsistencyBaselineEval(project);
