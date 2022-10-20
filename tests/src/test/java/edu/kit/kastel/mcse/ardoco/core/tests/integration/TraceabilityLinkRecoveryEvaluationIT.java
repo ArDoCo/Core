@@ -115,16 +115,23 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
     }
 
-    // NOTE: if you only want to test a specific project, you can simply set up the
-    // EnumSource. For more details, see
-    // https://www.baeldung.com/parameterized-tests-junit-5#3-enum
-    // Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
-    // However, make sure to revert this before you commit and push!
     @DisplayName("Evaluate TLR")
     @ParameterizedTest(name = "Evaluating {0}")
-    @EnumSource(value = Project.class)
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
     @Order(1)
     void evaluateTraceLinkRecoveryIT(Project project) {
+        runTraceLinkEvaluation(project);
+    }
+
+    @DisplayName("Evaluate TLR (Historic)")
+    @ParameterizedTest(name = "Evaluating {0}")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
+    @Order(2)
+    void evaluateHistoricalDataTraceLinkRecoveryIT(Project project) {
+        runTraceLinkEvaluation(project);
+    }
+
+    private void runTraceLinkEvaluation(Project project) {
         ArDoCoResult arDoCoResult = getArDoCoResult(project);
         Assertions.assertNotNull(arDoCoResult);
 
@@ -135,18 +142,22 @@ class TraceabilityLinkRecoveryEvaluationIT {
     }
 
     private ArDoCoResult getArDoCoResult(Project project) {
+        name = project.name().toLowerCase();
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
-        name = project.name().toLowerCase();
-        ArDoCo arDoCo = ArDoCo.getInstance(name);
 
         var arDoCoResult = DATA_MAP.get(project);
         if (arDoCoResult == null) {
             File additionalConfigurations = project.getAdditionalConfigurationsFile();
-            arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigurations, outputDir);
+            arDoCoResult = getArDoCoResult(name, inputText, inputModel, additionalConfigurations);
             DATA_MAP.put(project, arDoCoResult);
         }
         return arDoCoResult;
+    }
+
+    private ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel, File additionalConfigurations) {
+        ArDoCo arDoCo = ArDoCo.getInstance(name);
+        return arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigurations, outputDir);
     }
 
     /**
@@ -157,7 +168,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @DisplayName("Compare TLR for UML/PCM")
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(value = Project.class)
-    @Order(2)
+    @Order(10)
     void compareTraceLinkRecoveryForPcmAndUmlIT(Project project) {
         var ardocoRunForPCM = getArDoCoResult(project);
         Assertions.assertNotNull(ardocoRunForPCM);

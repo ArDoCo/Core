@@ -118,9 +118,22 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluating MME-Inconsistency Detection")
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
-    @EnumSource(value = Project.class)
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
     @Order(1)
     void missingModelElementInconsistencyIT(Project project) {
+        runMissingModelElementInconsistencyEval(project);
+    }
+
+    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
+    @DisplayName("Evaluating MME-Inconsistency Detection (Historic)")
+    @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
+    @Order(2)
+    void missingModelElementInconsistencyHistoricIT(Project project) {
+        runMissingModelElementInconsistencyEval(project);
+    }
+
+    private void runMissingModelElementInconsistencyEval(Project project) {
         logger.info("Start evaluation of MME-inconsistency for {}", project.name());
         Map<ModelInstance, ArDoCoResult> runs = produceRuns(project);
 
@@ -145,8 +158,22 @@ class InconsistencyDetectionEvaluationIT {
     @DisplayName("Evaluating MME-Inconsistency Detection Baseline")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
     @EnumSource(value = Project.class)
-    @Order(2)
+    @Order(5)
     void missingModelElementInconsistencyBaselineIT(Project project) {
+        runMissingModelElementInconsistencyBaselineEval(project);
+    }
+
+    @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
+    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
+    @DisplayName("Evaluating MME-Inconsistency Detection Baseline (Historic)")
+    @ParameterizedTest(name = "Evaluating Baseline for {0}")
+    @EnumSource(value = Project.class)
+    @Order(6)
+    void missingModelElementInconsistencyBaselineHistoricIT(Project project) {
+        runMissingModelElementInconsistencyBaselineEval(project);
+    }
+
+    private void runMissingModelElementInconsistencyBaselineEval(Project project) {
         logger.info("Start evaluation of MME-inconsistency baseline for {}", project.name());
         ranBaseline = true;
 
@@ -170,9 +197,22 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies")
     @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
-    @EnumSource(value = Project.class)
-    @Order(3)
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
+    @Order(10)
     void missingTextInconsistencyIT(Project project) {
+        runMissingTextInconsistencyEval(project);
+    }
+
+    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
+    @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies (Historic)")
+    @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
+    @Order(11)
+    void missingTextInconsistencyHistoricIT(Project project) {
+        runMissingTextInconsistencyEval(project);
+    }
+
+    private void runMissingTextInconsistencyEval(Project project) {
         var projectResults = arDoCoResults.get(project);
         if (projectResults == null) {
             produceRuns(project);
