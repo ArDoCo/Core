@@ -163,10 +163,11 @@ public class EvaluationMetrics {
         var test = fn.add(tp).compareTo(fp.add(tp)) >= 0;
         var nominator = (fp.add(tn)).multiply(tp.add(fp)).sqrt(MathContext.DECIMAL128);
         var denominator = (fn.add(tn)).multiply(tp.add(fn)).sqrt(MathContext.DECIMAL128);
-        if (!test) {
-            logger.warn("Test for Phi Max not passed. (TN+FP) > (TP+FP) not given.");
+        if (test) {
+            return nominator.divide(denominator, MathContext.DECIMAL128).doubleValue();
+        } else {
+            return denominator.divide(nominator, MathContext.DECIMAL128).doubleValue();
         }
-        return nominator.divide(denominator, MathContext.DECIMAL128).doubleValue();
     }
 
     public static double calculatePhiOverPhiMax(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
