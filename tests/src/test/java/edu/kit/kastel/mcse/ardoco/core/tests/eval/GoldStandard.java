@@ -33,7 +33,7 @@ public class GoldStandard {
         try (Scanner scan = new Scanner(goldStandard, StandardCharsets.UTF_8.name())) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
-                if (line == null || line.isBlank() || line.contains("modelElementID")) {
+                if (line == null || line.isBlank() || line.startsWith("modelElement") || line.contains("modelElementID")) {
                     // continue if line is empty, null, or is the header (that starts with "modelElementID")
                     continue;
                 }

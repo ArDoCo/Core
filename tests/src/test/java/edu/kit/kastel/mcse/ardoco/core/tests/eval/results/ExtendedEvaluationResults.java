@@ -44,15 +44,15 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
     @Override
     default String getResultString() {
         String output = String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
-        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f%n\tPhi Coef.:%7.3f", getAccuracy(), getPhiCoefficient());
-        output += String.format(Locale.ENGLISH, "%n\tPhi Max:%9.3f%n\tPhi/PhiMax:%6.3f", getPhiCoefficientMax(), getPhiOverPhiMax());
+        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f%n\tSpecificity:%6.3f%n", getAccuracy(), );
+        output += String.format(Locale.ENGLISH, "%n\tPhi Coef.:%7.3f\tPhi Max:%9.3f%n\tPhi/PhiMax:%6.3f", getPhiCoefficient(), getPhiCoefficientMax(), getPhiOverPhiMax());
         return output;
     }
 
     @Override
     default String getResultStringWithExpected(ExpectedResults expectedResults) {
         String output = String.format(Locale.ENGLISH,
-                "\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", getPrecision(),
+                "\tPrecision:%8.3f (min. expected: %.3f)%n\tRecall:%11.3f (min. expected: %.3f)%n\tF1:%15.3f (min. expected: %.3f)", getPrecision(),
                 expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
         output += String.format(Locale.ENGLISH, "%n\tAccuracy:%8.3f (min. expected: %.3f)%n\tSpecificity:%5.3f (min. expected: %.3f)", getAccuracy(),
                 expectedResults.accuracy(), getSpecificity(), expectedResults.specificity());

@@ -2,6 +2,6 @@
   "cpu", "gpu", "file", "directory", "event", "bus",
   "browser", "chrome", "firefox", "safari", "edge",
   "instance", "object", "module",
-  "java", "javascript", "nodejs", "npm", "kotlin",
+  "code", "java", "javascript", "nodejs", "npm", "kotlin",
   "request", "response", "servlet", "unit", "test"
 ]
