@@ -44,11 +44,15 @@ public class TLLogFile {
 
         for (TLProjectEvalResult result : sortedResults) {
             String alias = switch (result.getProject()) {
-            case BIGBLUEBUTTON -> "BBB";
             case MEDIASTORE -> "MS";
+            case BIGBLUEBUTTON -> "BBB";
+            case BIGBLUEBUTTON_HISTORIC -> "BBB-H";
             case TEAMMATES -> "TM";
+            case TEAMMATES_HISTORIC -> "TM-H";
             case TEASTORE -> "TS";
+            case TEASTORE_HISTORIC -> "TS-H";
             case JABREF -> "JR";
+            case JABREF_HISTORIC -> "JR-H";
             };
 
             String precision = NUMBER_FORMAT.format(result.getPrecision());
