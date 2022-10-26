@@ -156,8 +156,9 @@ public class EvaluationMetrics {
 
     /**
      * Calculates the maximum possible value of the phi coefficient given the four values of the confusion matrix (TP, FP, FN, TN).
-     * 
-     * @see <a href="https://journals.sagepub.com/doi/abs/10.1177/001316449105100403"> Paper about Phi/PhiMax</a> </a>
+     *
+     * @see <a href="https://link.springer.com/article/10.1007/BF02288588">Paper about PhiMax by Ferguson (1941)</a>
+     * @see <a href="https://journals.sagepub.com/doi/abs/10.1177/001316449105100403">Paper about Phi/PhiMax by Davenport et al. (1991)<</a>
      * @param truePositives  number of true positives
      * @param falsePositives number of false positives
      * @param falseNegatives number of false negatives
