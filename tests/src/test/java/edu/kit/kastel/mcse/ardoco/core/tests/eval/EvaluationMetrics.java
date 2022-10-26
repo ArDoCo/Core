@@ -154,6 +154,16 @@ public class EvaluationMetrics {
         return num.divide(denominator, MathContext.DECIMAL128).doubleValue();
     }
 
+    /**
+     * Calculates the maximum possible value of the phi coefficient given the four values of the confusion matrix (TP, FP, FN, TN).
+     * 
+     * @see <a href="https://journals.sagepub.com/doi/abs/10.1177/001316449105100403"> Paper about Phi/PhiMax</a> </a>
+     * @param truePositives  number of true positives
+     * @param falsePositives number of false positives
+     * @param falseNegatives number of false negatives
+     * @param trueNegatives  number of true negatives
+     * @return The maximum possible value of phi.
+     */
     public static double calculatePhiCoefficientMax(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
         var tp = BigDecimal.valueOf(truePositives);
         var fp = BigDecimal.valueOf(falsePositives);
@@ -164,12 +174,24 @@ public class EvaluationMetrics {
         var nominator = (fp.add(tn)).multiply(tp.add(fp)).sqrt(MathContext.DECIMAL128);
         var denominator = (fn.add(tn)).multiply(tp.add(fn)).sqrt(MathContext.DECIMAL128);
         if (test) {
+            // standard case
             return nominator.divide(denominator, MathContext.DECIMAL128).doubleValue();
         } else {
+            // if test is not true, you have to swap nominator and denominator as then you have to mirror the confusion matrix (,i.e., swap TP and TN)
             return denominator.divide(nominator, MathContext.DECIMAL128).doubleValue();
         }
     }
 
+    /**
+     * Calculates the normalized phi correlation coefficient value that is phi divided by its maximum possible value.
+     * 
+     * @see <a href="https://journals.sagepub.com/doi/abs/10.1177/001316449105100403"> Paper about Phi/PhiMax</a> </a>
+     * @param truePositives  number of true positives
+     * @param falsePositives number of false positives
+     * @param falseNegatives number of false negatives
+     * @param trueNegatives  number of true negatives
+     * @return The value of Phi/PhiMax
+     */
     public static double calculatePhiOverPhiMax(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
         var phi = calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
         var phiMax = calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
