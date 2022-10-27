@@ -37,7 +37,7 @@ public interface EvaluationResults {
      * @return a string that formats the results in a human-readable manner
      */
     default String getResultString() {
-        return String.format(Locale.ENGLISH, "\tPrecision:%7.3f%n\tRecall:%10.3f%n\tF1:%14.3f", getPrecision(), getRecall(), getF1());
+        return String.format(Locale.ENGLISH, "\tPrecision:%8.2f%n\tRecall:%11.2f%n\tF1:%15.2f", getPrecision(), getRecall(), getF1());
     }
 
     /**
@@ -48,7 +48,7 @@ public interface EvaluationResults {
      */
     default String getResultStringWithExpected(ExpectedResults expectedResults) {
         return String.format(Locale.ENGLISH,
-                "\tPrecision:%7.3f (min. expected: %.3f)%n\tRecall:%10.3f (min. expected: %.3f)%n\tF1:%14.3f (min. expected: %.3f)", getPrecision(),
+                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", getPrecision(),
                 expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
     }
 }

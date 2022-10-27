@@ -57,4 +57,22 @@ public class ExtendedExplicitEvaluationResults<T> extends ExplicitEvaluationResu
         return EvaluationMetrics.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
     }
 
+    @Override
+    public double getPhiCoefficientMax() {
+        int truePositives = this.getTruePositives().size();
+        int falsePositives = this.getFalsePositives().size();
+        int falseNegatives = this.getFalseNegatives().size();
+
+        return EvaluationMetrics.calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
+    }
+
+    @Override
+    public double getPhiOverPhiMax() {
+        int truePositives = this.getTruePositives().size();
+        int falsePositives = this.getFalsePositives().size();
+        int falseNegatives = this.getFalseNegatives().size();
+
+        return EvaluationMetrics.calculatePhiOverPhiMax(truePositives, falsePositives, falseNegatives, trueNegatives);
+    }
+
 }

@@ -187,7 +187,7 @@ class InconsistencyDetectionEvaluationIT {
 
         List<String> expectedInconsistentModelElements = project.getMissingTextForModelElementGoldStandard();
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
-        var results = TestUtil.compare(expectedInconsistentModelElements, inconsistentModelElements);
+        var results = TestUtil.compare(inconsistentModelElements, expectedInconsistentModelElements);
 
         ResultCalculator resultCalculator = new ResultCalculator();
         resultCalculator.addEvaluationResults(results, expectedInconsistentModelElements.size());
