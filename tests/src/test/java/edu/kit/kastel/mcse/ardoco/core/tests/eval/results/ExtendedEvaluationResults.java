@@ -21,6 +21,10 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
      */
     double getPhiCoefficient();
 
+    double getPhiCoefficientMax();
+
+    double getPhiOverPhiMax();
+
     /**
      * Returns the accuracy based on the true positives, false positives, false negatives, and true negatives in this result.
      *
@@ -39,20 +43,22 @@ public interface ExtendedEvaluationResults extends EvaluationResults {
 
     @Override
     default String getResultString() {
-        String output = String.format(Locale.ENGLISH, "\tPrecision:%8.3f%n\tRecall:%11.3f%n\tF1:%15.3f", getPrecision(), getRecall(), getF1());
-        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%9.3f%n\tSpecificity:%6.3f%n\tPhi Coef.:%8.3f", getAccuracy(), getSpecificity(),
-                getPhiCoefficient());
+        String output = String.format(Locale.ENGLISH, "\tPrecision:%8.2f%n\tRecall:%11.2f%n\tF1:%15.2f", getPrecision(), getRecall(), getF1());
+        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%9.2f%n\tSpecificity:%6.2f", getAccuracy(), getSpecificity());
+        output += String.format(Locale.ENGLISH, "%n\tPhi Coef.:%8.2f%n\tPhi/PhiMax:%7.2f (Phi Max: %.2f)", getPhiCoefficient(), getPhiOverPhiMax(),
+                getPhiCoefficientMax());
         return output;
     }
 
     @Override
     default String getResultStringWithExpected(ExpectedResults expectedResults) {
         String output = String.format(Locale.ENGLISH,
-                "\tPrecision:%8.3f (min. expected: %.3f)%n\tRecall:%11.3f (min. expected: %.3f)%n\tF1:%15.3f (min. expected: %.3f)", getPrecision(),
+                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", getPrecision(),
                 expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
-        output += String.format(Locale.ENGLISH,
-                "%n\tAccuracy:%9.3f (min. expected: %.3f)%n\tSpecificity:%6.3f (min. expected: %.3f)%n\tPhi Coef.:%8.3f (min. expected: %.3f)%n", getAccuracy(),
-                expectedResults.accuracy(), getSpecificity(), expectedResults.specificity(), getPhiCoefficient(), expectedResults.phiCoefficient());
+        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%9.2f (min. expected: %.2f)%n\tSpecificity:%6.2f (min. expected: %.2f)", getAccuracy(),
+                expectedResults.accuracy(), getSpecificity(), expectedResults.specificity());
+        output += String.format(Locale.ENGLISH, "%n\tPhi Coef.:%8.2f (min. expected: %.2f)%n\tPhi/PhiMax:%7.2f (Phi Max: %.2f)", getPhiCoefficient(),
+                expectedResults.phiCoefficient(), getPhiOverPhiMax(), getPhiCoefficientMax());
         return output;
     }
 

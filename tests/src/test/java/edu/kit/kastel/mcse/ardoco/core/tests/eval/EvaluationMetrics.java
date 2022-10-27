@@ -4,7 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EvaluationMetrics {
+    private static Logger logger = LoggerFactory.getLogger(EvaluationMetrics.class);
 
     private EvaluationMetrics() throws IllegalAccessException {
         throw new IllegalAccessException();
@@ -148,6 +152,51 @@ public class EvaluationMetrics {
         var denominator = productOfSumsInDenominator.sqrt(MathContext.DECIMAL128);
 
         return num.divide(denominator, MathContext.DECIMAL128).doubleValue();
+    }
+
+    /**
+     * Calculates the maximum possible value of the phi coefficient given the four values of the confusion matrix (TP, FP, FN, TN).
+     *
+     * @see <a href="https://link.springer.com/article/10.1007/BF02288588">Paper about PhiMax by Ferguson (1941)</a>
+     * @see <a href="https://journals.sagepub.com/doi/abs/10.1177/001316449105100403">Paper about Phi/PhiMax by Davenport et al. (1991)<</a>
+     * @param truePositives  number of true positives
+     * @param falsePositives number of false positives
+     * @param falseNegatives number of false negatives
+     * @param trueNegatives  number of true negatives
+     * @return The maximum possible value of phi.
+     */
+    public static double calculatePhiCoefficientMax(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
+        var tp = BigDecimal.valueOf(truePositives);
+        var fp = BigDecimal.valueOf(falsePositives);
+        var fn = BigDecimal.valueOf(falseNegatives);
+        var tn = BigDecimal.valueOf(trueNegatives);
+
+        var test = fn.add(tp).compareTo(fp.add(tp)) >= 0;
+        var nominator = (fp.add(tn)).multiply(tp.add(fp)).sqrt(MathContext.DECIMAL128);
+        var denominator = (fn.add(tn)).multiply(tp.add(fn)).sqrt(MathContext.DECIMAL128);
+        if (test) {
+            // standard case
+            return nominator.divide(denominator, MathContext.DECIMAL128).doubleValue();
+        } else {
+            // if test is not true, you have to swap nominator and denominator as then you have to mirror the confusion matrix (,i.e., swap TP and TN)
+            return denominator.divide(nominator, MathContext.DECIMAL128).doubleValue();
+        }
+    }
+
+    /**
+     * Calculates the normalized phi correlation coefficient value that is phi divided by its maximum possible value.
+     * 
+     * @see <a href="https://journals.sagepub.com/doi/abs/10.1177/001316449105100403"> Paper about Phi/PhiMax</a> </a>
+     * @param truePositives  number of true positives
+     * @param falsePositives number of false positives
+     * @param falseNegatives number of false negatives
+     * @param trueNegatives  number of true negatives
+     * @return The value of Phi/PhiMax
+     */
+    public static double calculatePhiOverPhiMax(int truePositives, int falsePositives, int falseNegatives, int trueNegatives) {
+        var phi = calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
+        var phiMax = calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
+        return phi / phiMax;
     }
 
     /**
