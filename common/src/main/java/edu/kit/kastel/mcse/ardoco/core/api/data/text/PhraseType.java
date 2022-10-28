@@ -116,9 +116,14 @@ public enum PhraseType {
      */
     X,
     /**
-     * Root. Overarching the whole sentence.
+     * Root. Overarching the whole sentence. (CoreNLP)
      */
-    ROOT;
+    ROOT,
+
+    /**
+     * Root. Overarching the whole sentence. (OpenNLP)
+     */
+    TOP;
 
     public static PhraseType get(String type) {
         for (var phraseType : PhraseType.values()) {

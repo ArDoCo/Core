@@ -3,19 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.opennlp;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import opennlp.tools.chunker.ChunkerME;
-import opennlp.tools.chunker.ChunkerModel;
-import opennlp.tools.cmdline.postag.POSModelLoader;
-import opennlp.tools.postag.POSModel;
-import opennlp.tools.postag.POSTaggerME;
-import opennlp.tools.tokenize.WhitespaceTokenizer;
+import opennlp.tools.cmdline.parser.ParserTool;
+import opennlp.tools.parser.Parse;
+import opennlp.tools.parser.Parser;
+import opennlp.tools.parser.ParserFactory;
+import opennlp.tools.parser.ParserModel;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +35,10 @@ class OpenNLPSentenceImpl implements Sentence {
         return this.sentenceNumber;
     }
 
+    public OpenNLPTextImpl getParentText() {
+        return this.parent;
+    }
+
     @Override
     public ImmutableList<Word> getWords() {
         if (this.words.isEmpty()) {
@@ -53,7 +53,32 @@ class OpenNLPSentenceImpl implements Sentence {
     }
 
 
-    @Override
+    public ImmutableList<Phrase> getPhrases() {
+        if (this.phrases.isEmpty()) {
+            MutableList<Phrase> newPhrases = Lists.mutable.empty();
+            Parse[] parses = this.parse();
+            for (Parse p: parses) {
+                newPhrases.add(new OpenNLPPhraseImpl(this, parses, p));
+            }
+            this.phrases = newPhrases.toImmutable();
+        }
+        return this.phrases;
+    }
+
+    private Parse[] parse() {
+        Parse[] parsedText = null;
+        try {
+            InputStream inputStream = new FileInputStream("../en-parser-chunking.bin");
+            ParserModel model = new ParserModel(inputStream);
+            Parser parser = ParserFactory.create(model);
+            parsedText = ParserTool.parseLine(this.getText(), parser, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsedText;
+    }
+
+    /*@Override
     public ImmutableList<Phrase> getPhrases() {
         if (this.phrases.isEmpty()) {
             MutableList<Phrase> newPhrases = Lists.mutable.empty();
@@ -92,6 +117,6 @@ class OpenNLPSentenceImpl implements Sentence {
             e.printStackTrace();
         }
         return chunkedSentence;
-    }
+    }*/
 
 }
