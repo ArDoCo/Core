@@ -1,22 +1,23 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 
@@ -32,42 +33,83 @@ public class MetamodelInformant extends Informant {
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
+        var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
 
-        MutableSet<ModelInstance> modelTypes = Sets.mutable.empty();
+        /*MutableSet<ModelInstance> modelTypes = Sets.mutable.empty();
         for (var model : modelStates.modelIds()) {
             modelTypes.addAllIterable(modelStates.getModelState(model).getInstances());
-        }
+        }*/
 
-        rateTypesInTextState(modelTypes.toImmutable(), textState);
+        ImmutableSet<String> typeIdentifier = getTypeIdentifier(modelStates);
+
+        findAndRateNewNounMappingsViaTypeIdentifiers(typeIdentifier, text, textState);
+        //rateTypesViaIdentifiers(typeIdentifier, textState);
     }
 
-    private void rateTypesInTextState(ImmutableSet<ModelInstance> instanceSet, TextState textState) {
+    private void findAndRateNewNounMappingsViaTypeIdentifiers(ImmutableSet<String> typeIdentifier, Text text, TextState textState) {
+        MutableList<Word> typeWords = Lists.mutable.empty();
 
-        var types = Lists.immutable.withAll(instanceSet.groupBy(ModelInstance::getFullType).toMap().values().stream().map(RichIterable::getAny).toList());
-
-        List<NounMapping> typeMappings = new ArrayList<>();
-        List<NounMapping> noTypeMappings = new ArrayList<>();
-
-        for (NounMapping nounMapping : textState.getNounMappings().select(nm -> nm.getProbabilityForKind(MappingKind.TYPE) > 0)) {
-            if (types.anySatisfy(instance -> SimilarityUtils.isNounMappingSimilarToTypeOfModelInstance(nounMapping, instance))) {
-                nounMapping.addKindWithProbability(MappingKind.TYPE, this, 1.0);
-                typeMappings.add(nounMapping);
-
-            } else {
-                nounMapping.addKindWithProbability(MappingKind.TYPE, this, 0.001);
-                noTypeMappings.add(nounMapping);
+        for (var word : text.words()) {
+            Word typeWord = findNewNounMappingsViaTypeIdentifiers(typeIdentifier, word, textState);
+            if (typeWord != null) {
+                typeWords.add(typeWord);
             }
-
-            /*if () {
-                nounMapping.addKindWithProbability(MappingKind.TYPE, this, 1.0);
-            } else {
-             
-            if (types.noneSatisfy(instance -> SimilarityUtils.isNounMappingSimilarToTypeOfModelInstance(nounMapping, instance))) {
-                nounMapping.addKindWithProbability(MappingKind.TYPE, this, 0.001);
-            }*/
         }
+        int i = 0;
+        typeWords.forEach(w -> textState.addNounMapping(w, MappingKind.TYPE, this, 1.0));
+    }
+
+    private Word findNewNounMappingsViaTypeIdentifiers(ImmutableSet<String> typeIdentifier, Word word, TextState textState) {
+
+        var sameTypes = Lists.immutable.fromStream(typeIdentifier.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+
+        if (!sameTypes.isEmpty()) {
+            return word;
+        }
+
+        return null;
+    }
+
+    private ImmutableSet<String> getTypeIdentifier(ModelStates modelStates) {
+        MutableSet<String> modelTypes = Sets.mutable.empty();
+        for (var model : modelStates.modelIds()) {
+            modelTypes.addAllIterable(CommonUtilities.getTypeIdentifiers(modelStates.getModelState(model)));
+        }
+        return modelTypes.toImmutable();
+    }
+
+    private void rateTypesViaIdentifiers(ImmutableSet<String> typeIdentifier, TextState textState) {
+
+        MutableSet<NounMapping> typeMappings = Sets.mutable.empty();
+        MutableSet<NounMapping> smallAmountOfTypes = Sets.mutable.empty();
+        MutableSet<NounMapping> noTypeMappings = Sets.mutable.empty();
+        double threshold = 0.5;
+
+        var nounMappings = textState.getNounMappings();
+        for (NounMapping nounMapping : nounMappings) {
+            double typeCounter = 0;
+            var words = nounMapping.getWords();
+            for (Word word : words) {
+                var sameTypes = Lists.immutable.fromStream(typeIdentifier.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+
+                if (!sameTypes.isEmpty()) {
+                    typeCounter++;
+                }
+            }
+            if (typeCounter >= threshold * words.size()) {
+                typeMappings.add(nounMapping);
+            } else if (typeCounter == 0) {
+                noTypeMappings.add(nounMapping);
+            } else {
+                smallAmountOfTypes.add(nounMapping);
+            }
+        }
+
+        typeMappings.forEach(typeMapping -> typeMapping.addKindWithProbability(MappingKind.TYPE, this, 1.0));
+        noTypeMappings = noTypeMappings.select(mapping -> mapping.getProbabilityForKind(MappingKind.TYPE) > 0);
+        noTypeMappings.forEach(noTypeMapping -> noTypeMapping.addKindWithProbability(MappingKind.TYPE, this, 0.01));
 
     }
 

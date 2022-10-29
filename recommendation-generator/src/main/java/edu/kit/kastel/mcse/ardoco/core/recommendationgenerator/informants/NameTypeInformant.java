@@ -67,14 +67,10 @@ public class NameTypeInformant extends Informant {
      */
     private void addRecommendedInstanceIfNameBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState,
             RecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
 
         var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getPreWord(), MappingKind.NAME);
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
@@ -92,13 +88,9 @@ public class NameTypeInformant extends Informant {
      */
     private void addRecommendedInstanceIfNameAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState,
             RecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getNextWord(), MappingKind.NAME);
@@ -116,14 +108,10 @@ public class NameTypeInformant extends Informant {
      */
     private void addRecommendedInstanceIfNameOrTypeBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState,
             RecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getPreWord(), MappingKind.NAME, MappingKind.TYPE);
@@ -141,13 +129,9 @@ public class NameTypeInformant extends Informant {
      */
     private void addRecommendedInstanceIfNameOrTypeAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState,
             RecommendationState recommendationState) {
-        if (textExtractionState == null || word == null) {
-            return;
-        }
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getNextWord(), MappingKind.NAME, MappingKind.TYPE);

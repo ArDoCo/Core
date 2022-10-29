@@ -8,6 +8,7 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants.MetamodelInformant;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants.NameTypeInformant;
 
 /**
@@ -22,7 +23,11 @@ public class InitialRecommendationAgent extends PipelineAgent {
 
     public InitialRecommendationAgent(DataRepository dataRepository) {
         super(InitialRecommendationAgent.class.getSimpleName(), dataRepository);
-        informants = List.of(new NameTypeInformant(dataRepository));
+        informants = List.of(//
+                new MetamodelInformant(dataRepository),//
+                //new CompoundAgentInformant(dataRepository),//
+                new NameTypeInformant(dataRepository)//
+        );
         enabledInformants = informants.stream().map(e -> e.getClass().getSimpleName()).toList();
     }
 
