@@ -27,6 +27,8 @@ public class NameTypeInformant extends Informant {
 
     @Configurable
     private double probability = 1.0;
+    @Configurable
+    private double nortProbability = 1.0;
 
     /**
      * Creates a new NameTypeAnalyzer
@@ -53,10 +55,11 @@ public class NameTypeInformant extends Informant {
             var modelState = modelStates.getModelState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
+            addRecommendedInstanceIfNortAfterType(textState, word, modelState, recommendationState);
+            addRecommendedInstanceIfNortBeforeType(textState, word, modelState, recommendationState);
             addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);
             addRecommendedInstanceIfNameBeforeType(textState, word, modelState, recommendationState);
-            addRecommendedInstanceIfNameOrTypeBeforeType(textState, word, modelState, recommendationState);
-            addRecommendedInstanceIfNameOrTypeAfterType(textState, word, modelState, recommendationState);
+
         }
     }
 
@@ -74,15 +77,17 @@ public class NameTypeInformant extends Informant {
 
         if (!sameLemmaTypes.isEmpty()) {
 
-            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getPreWord(), MappingKind.NAME);
             var typeMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word))
                     .select(nm -> nm.getKind().equals(MappingKind.TYPE))
                     .toImmutable();
-            if (typeMappings.isEmpty()) {
+            var nameMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word.getPreWord()))
+                    .select(nm -> nm.getKind().equals(MappingKind.NAME))
+                    .toImmutable();
+
+            if (typeMappings.isEmpty() || nameMappings.isEmpty()) {
                 return;
             }
 
-            //var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
         }
     }
@@ -103,49 +108,52 @@ public class NameTypeInformant extends Informant {
             var typeMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word))
                     .select(nm -> nm.getKind().equals(MappingKind.TYPE))
                     .toImmutable();
-            if (typeMappings.isEmpty()) {
+            var nameMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word.getNextWord()))
+                    .select(nm -> nm.getKind().equals(MappingKind.NAME))
+                    .toImmutable();
+
+            if (typeMappings.isEmpty() || nameMappings.isEmpty()) {
                 return;
             }
-            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getNextWord(), MappingKind.NAME);
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
         }
     }
 
     /**
-     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
-     * state contain the previous node. If that's the case a recommendation for the combination of both is created.
+     * Checks if the current node is a type in the text extraction state. If the names of the text extraction state
+     * contain the previous node. If that's the case a recommendation for the combination of both is created.
      *
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameOrTypeBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState,
+    private void addRecommendedInstanceIfNortBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState,
             RecommendationState recommendationState) {
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
 
+            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getPreWord(), MappingKind.NAME);
             var typeMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word))
                     .select(nm -> nm.getKind().equals(MappingKind.TYPE))
                     .toImmutable();
             if (typeMappings.isEmpty()) {
                 return;
             }
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getPreWord(), MappingKind.NAME, MappingKind.TYPE);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, nortProbability);
         }
     }
 
     /**
-     * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
-     * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
+     * Checks if the current node is a type in the text extraction state. If the names of the text extraction state
+     * contain the following node. If that's the case a recommendation for the combination of both is created.
      *
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameOrTypeAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState,
+    private void addRecommendedInstanceIfNortAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState,
             RecommendationState recommendationState) {
 
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
@@ -157,9 +165,9 @@ public class NameTypeInformant extends Informant {
             if (typeMappings.isEmpty()) {
                 return;
             }
-            var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getNextWord(), MappingKind.NAME, MappingKind.TYPE);
+            var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getNextWord(), MappingKind.NAME);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, nortProbability);
         }
     }
 
