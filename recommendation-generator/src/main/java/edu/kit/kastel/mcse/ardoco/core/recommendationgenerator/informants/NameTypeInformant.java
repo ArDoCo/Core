@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
 import java.util.Map;
 
+import org.eclipse.collections.api.factory.Lists;
+
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
@@ -68,14 +70,20 @@ public class NameTypeInformant extends Informant {
     private void addRecommendedInstanceIfNameBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState,
             RecommendationState recommendationState) {
 
-        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
-        if (!similarTypes.isEmpty()) {
+        if (!sameLemmaTypes.isEmpty()) {
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getPreWord(), MappingKind.NAME);
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var typeMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word))
+                    .select(nm -> nm.getKind().equals(MappingKind.TYPE))
+                    .toImmutable();
+            if (typeMappings.isEmpty()) {
+                return;
+            }
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, this, probability);
+            //var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
         }
     }
 
@@ -92,7 +100,12 @@ public class NameTypeInformant extends Informant {
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var typeMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word))
+                    .select(nm -> nm.getKind().equals(MappingKind.TYPE))
+                    .toImmutable();
+            if (typeMappings.isEmpty()) {
+                return;
+            }
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getNextWord(), MappingKind.NAME);
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
@@ -113,7 +126,12 @@ public class NameTypeInformant extends Informant {
 
         if (!sameLemmaTypes.isEmpty()) {
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var typeMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word))
+                    .select(nm -> nm.getKind().equals(MappingKind.TYPE))
+                    .toImmutable();
+            if (typeMappings.isEmpty()) {
+                return;
+            }
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getPreWord(), MappingKind.NAME, MappingKind.TYPE);
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
@@ -133,7 +151,12 @@ public class NameTypeInformant extends Informant {
         var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
 
-            var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
+            var typeMappings = Lists.mutable.withAll(textExtractionState.getNounMappingsByWord(word))
+                    .select(nm -> nm.getKind().equals(MappingKind.TYPE))
+                    .toImmutable();
+            if (typeMappings.isEmpty()) {
+                return;
+            }
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getNextWord(), MappingKind.NAME, MappingKind.TYPE);
 
             CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
