@@ -68,7 +68,7 @@ public final class SimilarityUtils {
      * @param instance    the {@link ModelInstance}
      * @return true, iff the {@link NounMapping} and {@link ModelInstance} are similar.
      */
-    public static boolean isNounMappingSimilarToModelInstance(NounMapping nounMapping, ModelInstance instance) {
+    public static boolean isNounMappingSimilarToNameOfModelInstance(NounMapping nounMapping, ModelInstance instance) {
         if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(instance.getFullName(),
                 nounMapping.getReference())) {
             return true;
@@ -76,6 +76,20 @@ public final class SimilarityUtils {
 
         for (String name : instance.getNameParts()) {
             if (areWordsSimilar(name, nounMapping.getReference())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isNounMappingSimilarToTypeOfModelInstance(NounMapping nounMapping, ModelInstance instance) {
+        if (areWordsOfListsSimilar(instance.getTypeParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(instance.getFullType(),
+                nounMapping.getReference())) {
+            return true;
+        }
+
+        for (String type : instance.getTypeParts()) {
+            if (areWordsSimilar(type, nounMapping.getReference())) {
                 return true;
             }
         }

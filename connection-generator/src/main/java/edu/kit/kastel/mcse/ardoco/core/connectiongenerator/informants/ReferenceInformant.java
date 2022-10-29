@@ -57,7 +57,7 @@ public class ReferenceInformant extends Informant {
 
     private ImmutableList<NounMapping> getSimilarNounMappings(ModelInstance instance, TextState textState) {
         return textState.getNounMappingsOfKind(MappingKind.NAME)
-                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
+                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToNameOfModelInstance(nounMapping, instance));
     }
 
     @Override
