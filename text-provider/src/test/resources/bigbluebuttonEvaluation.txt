@@ -1,0 +1,509 @@
+Big Blue Button 
+
+Word 2 in sentence 1
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 7 in sentence 2
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 12 in sentence 2
+  Word OpenNLP: BigBlueButton's	 OpenNLP: JJ
+  Word CoreNLP: BigBlueButton	 CoreNLP: NNP
+
+Word 1 in sentence 3
+  Word OpenNLP: We'll	 OpenNLP: NNP
+  Word CoreNLP: We	 CoreNLP: PRP
+
+Word 1 in sentence 4
+  Word OpenNLP: HTML5	 OpenNLP: IN
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 2 in sentence 5
+  Word OpenNLP: HTML5	 OpenNLP: NNP
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 20 in sentence 5
+  Word OpenNLP: React.js	 OpenNLP: JJ
+  Word CoreNLP: React.js	 CoreNLP: NNS
+
+Word 31 in sentence 5
+  Word OpenNLP: WebRTC	 OpenNLP: NNP
+  Word CoreNLP: WebRTC	 CoreNLP: NN
+
+Word 34 in sentence 5
+  Word OpenNLP: /receiving	 OpenNLP: JJ
+  Word CoreNLP: /	 CoreNLP: HYPH
+
+Word 2 in sentence 6
+  Word OpenNLP: HTML5	 OpenNLP: NNP
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 14 in sentence 6
+  Word OpenNLP: SSL	 OpenNLP: NNP
+  Word CoreNLP: SSL	 CoreNLP: NN
+
+Word 22 in sentence 6
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 2 in sentence 8
+  Word OpenNLP: HTML5	 OpenNLP: NNP
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 2 in sentence 9
+  Word OpenNLP: HTML5	 OpenNLP: NNP
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 7 in sentence 9
+  Word OpenNLP: Meteor.js	 OpenNLP: NNP
+  Word CoreNLP: Meteor.js	 CoreNLP: NNS
+
+Word 9 in sentence 9
+  Word OpenNLP: ECMA2015	 OpenNLP: NNP
+  Word CoreNLP: ECMA2015	 CoreNLP: NN
+
+Word 6 in sentence 10
+  Word OpenNLP: about	 OpenNLP: IN
+  Word CoreNLP: about	 CoreNLP: RB
+
+Word 20 in sentence 10
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 4 in sentence 12
+  Word OpenNLP: subscribes	 OpenNLP: NNS
+  Word CoreNLP: subscribes	 CoreNLP: VBZ
+
+Word 5 in sentence 12
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 1 in sentence 13
+  Word OpenNLP: Updates	 OpenNLP: NNP
+  Word CoreNLP: Updates	 CoreNLP: NNS
+
+Word 2 in sentence 13
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 11 in sentence 13
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 12 in sentence 14
+  Word OpenNLP: HTML5	 OpenNLP: NNP
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 1 in sentence 15
+  Word OpenNLP: Scalability	 OpenNLP: NNP
+  Word CoreNLP: Scalability	 CoreNLP: NN
+
+Word 3 in sentence 15
+  Word OpenNLP: HTML5	 OpenNLP: CD
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 6 in sentence 16
+  Word OpenNLP: nodejs	 OpenNLP: JJ
+  Word CoreNLP: nodejs	 CoreNLP: NN
+
+Word 11 in sentence 16
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 5 in sentence 17
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 6 in sentence 17
+  Word OpenNLP: bottleneck	 OpenNLP: VB
+  Word CoreNLP: bottleneck	 CoreNLP: NN
+
+Word 16 in sentence 17
+  Word OpenNLP: CPU	 OpenNLP: NNP
+  Word CoreNLP: CPU	 CoreNLP: NN
+
+Word 8 in sentence 18
+  Word OpenNLP: CPU	 OpenNLP: NNP
+  Word CoreNLP: CPU	 CoreNLP: NN
+
+Word 16 in sentence 18
+  Word OpenNLP: CPU	 OpenNLP: NNP
+  Word CoreNLP: CPU	 CoreNLP: NN
+
+Word 25 in sentence 18
+  Word OpenNLP: much	 OpenNLP: RB
+  Word CoreNLP: much	 CoreNLP: JJ
+
+Word 8 in sentence 19
+  Word OpenNLP: nodejs	 OpenNLP: JJ
+  Word CoreNLP: nodejs	 CoreNLP: NN
+
+Word 11 in sentence 19
+  Word OpenNLP: bbb-html5	 OpenNLP: CD
+  Word CoreNLP: bbb	 CoreNLP: NN
+
+Word 3 in sentence 20
+  Word OpenNLP: that	 OpenNLP: DT
+  Word CoreNLP: that	 CoreNLP: IN
+
+Word 4 in sentence 21
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 2 in sentence 22
+  Word OpenNLP: restart	 OpenNLP: NN
+  Word CoreNLP: restart	 CoreNLP: VB
+
+Word 11 in sentence 22
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 7 in sentence 23
+  Word OpenNLP: -end	 OpenNLP: NN
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 1 in sentence 24
+  Word OpenNLP: Frontends	 OpenNLP: NNS
+  Word CoreNLP: Frontends	 CoreNLP: NNP
+
+Word 1 in sentence 25
+  Word OpenNLP: Frontends	 OpenNLP: NNS
+  Word CoreNLP: Frontends	 CoreNLP: NNP
+
+Word 3 in sentence 25
+  Word OpenNLP: DDP	 OpenNLP: NNP
+  Word CoreNLP: DDP	 CoreNLP: NN
+
+Word 7 in sentence 25
+  Word OpenNLP: calls	 OpenNLP: VBZ
+  Word CoreNLP: calls	 CoreNLP: NNS
+
+Word 11 in sentence 25
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 12 in sentence 25
+  Word OpenNLP: akka	 OpenNLP: DT
+  Word CoreNLP: akka	 CoreNLP: NN
+
+Word 13 in sentence 25
+  Word OpenNLP: -apps	 OpenNLP: NNS
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 4 in sentence 26
+  Word OpenNLP: MeetingStarted	 OpenNLP: JJ
+  Word CoreNLP: MeetingStarted	 CoreNLP: NNP
+
+Word 6 in sentence 26
+  Word OpenNLP: MeetingEnded	 OpenNLP: JJ
+  Word CoreNLP: MeetingEnded	 CoreNLP: NNP
+
+Word 10 in sentence 26
+  Word OpenNLP: /	 OpenNLP: NN
+  Word CoreNLP: /	 CoreNLP: ,
+
+Word 12 in sentence 26
+  Word OpenNLP: per-meeting	 OpenNLP: JJ
+  Word CoreNLP: per	 CoreNLP: IN
+
+Word 3 in sentence 27
+  Word OpenNLP: all	 OpenNLP: DT
+  Word CoreNLP: all	 CoreNLP: PDT
+
+Word 1 in sentence 29
+  Word OpenNLP: So	 OpenNLP: IN
+  Word CoreNLP: So	 CoreNLP: RB
+
+Word 5 in sentence 29
+  Word OpenNLP: process	 OpenNLP: VBP
+  Word CoreNLP: process	 CoreNLP: NN
+
+Word 6 in sentence 29
+  Word OpenNLP: redis	 OpenNLP: VB
+  Word CoreNLP: redis	 CoreNLP: VBZ
+
+Word 13 in sentence 29
+  Word OpenNLP: associated	 OpenNLP: JJ
+  Word CoreNLP: associated	 CoreNLP: VBN
+
+Word 5 in sentence 30
+  Word OpenNLP: backends	 OpenNLP: NNS
+  Word CoreNLP: backends	 CoreNLP: VB
+
+Word 23 in sentence 30
+  Word OpenNLP: frontends	 OpenNLP: NNS
+  Word CoreNLP: frontends	 CoreNLP: NN
+
+Word 24 in sentence 30
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 27 in sentence 30
+  Word OpenNLP: dev	 OpenNLP: NNS
+  Word CoreNLP: dev	 CoreNLP: NN
+
+Word 4 in sentence 31
+  Word OpenNLP: sudo	 OpenNLP: RB
+  Word CoreNLP: sudo	 CoreNLP: JJ
+
+Word 5 in sentence 31
+  Word OpenNLP: bbb-conf	 OpenNLP: JJ
+  Word CoreNLP: bbb	 CoreNLP: NN
+
+Word 22 in sentence 32
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 3 in sentence 33
+  Word OpenNLP: Automatically	 OpenNLP: NNPS
+  Word CoreNLP: Automatically	 CoreNLP: RB
+
+Word 4 in sentence 33
+  Word OpenNLP: apply	 OpenNLP: VBP
+  Word CoreNLP: apply	 CoreNLP: VB
+
+Word 8 in sentence 33
+  Word OpenNLP: restart	 OpenNLP: NN
+  Word CoreNLP: restart	 CoreNLP: VB
+
+Word 7 in sentence 35
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 5 in sentence 36
+  Word OpenNLP: API	 OpenNLP: NNP
+  Word CoreNLP: API	 CoreNLP: NN
+
+Word 3 in sentence 37
+  Word OpenNLP: API	 OpenNLP: NNP
+  Word CoreNLP: API	 CoreNLP: NN
+
+Word 7 in sentence 37
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 3 in sentence 38
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 9 in sentence 38
+  Word OpenNLP: -end	 OpenNLP: NN
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 16 in sentence 39
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 7 in sentence 40
+  Word OpenNLP: -end	 OpenNLP: NN
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 8 in sentence 41
+  Word OpenNLP: LMS	 OpenNLP: NNP
+  Word CoreNLP: LMS	 CoreNLP: NN
+
+Word 17 in sentence 41
+  Word OpenNLP: BigBlueButton	 OpenNLP: NNP
+  Word CoreNLP: BigBlueButton	 CoreNLP: NN
+
+Word 7 in sentence 42
+  Word OpenNLP: API	 OpenNLP: NNP
+  Word CoreNLP: API	 CoreNLP: NN
+
+Word 8 in sentence 42
+  Word OpenNLP: demos	 OpenNLP: NN
+  Word CoreNLP: demos	 CoreNLP: NNS
+
+Word 5 in sentence 43
+  Word OpenNLP: -end	 OpenNLP: NN
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 13 in sentence 47
+  Word OpenNLP: DB.	 OpenNLP: .
+  Word CoreNLP: DB	 CoreNLP: NNP
+
+Word 22 in sentence 48
+  Word OpenNLP: PDF	 OpenNLP: NNP
+  Word CoreNLP: PDF	 CoreNLP: NN
+
+Word 1 in sentence 49
+  Word OpenNLP: Apps	 OpenNLP: NNP
+  Word CoreNLP: Apps	 CoreNLP: NNS
+
+Word 2 in sentence 49
+  Word OpenNLP: akka	 OpenNLP: FW
+  Word CoreNLP: akka	 CoreNLP: NNS
+
+Word 2 in sentence 50
+  Word OpenNLP: Apps	 OpenNLP: NNP
+  Word CoreNLP: Apps	 CoreNLP: NNS
+
+Word 7 in sentence 50
+  Word OpenNLP: that	 OpenNLP: IN
+  Word CoreNLP: that	 CoreNLP: WDT
+
+Word 16 in sentence 50
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 8 in sentence 51
+  Word OpenNLP: chat	 OpenNLP: JJ
+  Word CoreNLP: chat	 CoreNLP: NN
+
+Word 10 in sentence 51
+  Word OpenNLP: whiteboard	 OpenNLP: JJ
+  Word CoreNLP: whiteboard	 CoreNLP: NN
+
+Word 10 in sentence 52
+  Word OpenNLP: Apps	 OpenNLP: NNP
+  Word CoreNLP: Apps	 CoreNLP: NNS
+
+Word 1 in sentence 55
+  Word OpenNLP: FSESL	 OpenNLP: NNP
+  Word CoreNLP: FSESL	 CoreNLP: NN
+
+Word 2 in sentence 55
+  Word OpenNLP: akka	 OpenNLP: FW
+  Word CoreNLP: akka	 CoreNLP: NN
+
+Word 4 in sentence 56
+  Word OpenNLP: out	 OpenNLP: RP
+  Word CoreNLP: out	 CoreNLP: IN
+
+Word 7 in sentence 56
+  Word OpenNLP: that	 OpenNLP: IN
+  Word CoreNLP: that	 CoreNLP: WDT
+
+Word 8 in sentence 56
+  Word OpenNLP: integrates	 OpenNLP: NNS
+  Word CoreNLP: integrates	 CoreNLP: VBZ
+
+Word 12 in sentence 56
+  Word OpenNLP: it’s	 OpenNLP: PRP$
+  Word CoreNLP: it	 CoreNLP: PRP
+
+Word 12 in sentence 57
+  Word OpenNLP: FreeSWITCH	 OpenNLP: NNP
+  Word CoreNLP: FreeSWITCH	 CoreNLP: NN
+
+Word 1 in sentence 58
+  Word OpenNLP: Communication	 OpenNLP: NNP
+  Word CoreNLP: Communication	 CoreNLP: NN
+
+Word 5 in sentence 61
+  Word OpenNLP: conferencing	 OpenNLP: VBG
+  Word CoreNLP: conferencing	 CoreNLP: NN
+
+Word 7 in sentence 64
+  Word OpenNLP: VOIP	 OpenNLP: NNP
+  Word CoreNLP: VOIP	 CoreNLP: NN
+
+Word 9 in sentence 64
+  Word OpenNLP: so	 OpenNLP: RB
+  Word CoreNLP: so	 CoreNLP: IN
+
+Word 26 in sentence 64
+  Word OpenNLP: in	 OpenNLP: IN
+  Word CoreNLP: in	 CoreNLP: RP
+
+Word 3 in sentence 66
+  Word OpenNLP: Server	 OpenNLP: NNP
+  Word CoreNLP: Server	 CoreNLP: NN
+
+Word 4 in sentence 66
+  Word OpenNLP: KMS	 OpenNLP: NNP
+  Word CoreNLP: KMS	 CoreNLP: NN
+
+Word 7 in sentence 66
+  Word OpenNLP: media	 OpenNLP: NNS
+  Word CoreNLP: media	 CoreNLP: NN
+
+Word 11 in sentence 66
+  Word OpenNLP: both	 OpenNLP: DT
+  Word CoreNLP: both	 CoreNLP: CC
+
+Word 1 in sentence 67
+  Word OpenNLP: KMS	 OpenNLP: NNP
+  Word CoreNLP: KMS	 CoreNLP: NNS
+
+Word 5 in sentence 67
+  Word OpenNLP: streaming	 OpenNLP: VBG
+  Word CoreNLP: streaming	 CoreNLP: NN
+
+Word 10 in sentence 67
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 12 in sentence 67
+  Word OpenNLP: audio	 OpenNLP: JJ
+  Word CoreNLP: audio	 CoreNLP: NN
+
+Word 15 in sentence 67
+  Word OpenNLP: screensharing	 OpenNLP: VBG
+  Word CoreNLP: screensharing	 CoreNLP: NN
+
+Word 2 in sentence 68
+  Word OpenNLP: WebRTC-SFU	 OpenNLP: JJ
+  Word CoreNLP: WebRTC	 CoreNLP: NNP
+
+Word 16 in sentence 70
+  Word OpenNLP: HTML5	 OpenNLP: IN
+  Word CoreNLP: HTML5	 CoreNLP: NN
+
+Word 13 in sentence 71
+  Word OpenNLP: Microphone	 OpenNLP: NNP
+  Word CoreNLP: Microphone	 CoreNLP: NN
+
+Word 27 in sentence 71
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 7 in sentence 72
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 3 in sentence 75
+  Word OpenNLP: uploaded	 OpenNLP: JJ
+  Word CoreNLP: uploaded	 CoreNLP: VBN
+
+Word 18 in sentence 75
+  Word OpenNLP: LibreOffice	 OpenNLP: NNP
+  Word CoreNLP: LibreOffice	 CoreNLP: NN
+
+Word 2 in sentence 76
+  Word OpenNLP: PDF	 OpenNLP: NNP
+  Word CoreNLP: PDF	 CoreNLP: NN
+
+Word 7 in sentence 77
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 3 in sentence 80
+  Word OpenNLP: in	 OpenNLP: IN
+  Word CoreNLP: in	 CoreNLP: RP
+
+Word 4 in sentence 81
+  Word OpenNLP: SVG	 OpenNLP: NN
+  Word CoreNLP: SVG	 CoreNLP: NNP
+
+Word 12 in sentence 83
+  Word OpenNLP: load	 OpenNLP: NN
+  Word CoreNLP: load	 CoreNLP: VB
+
+Word 24 in sentence 83
+  Word OpenNLP: rasterized	 OpenNLP: JJ
+  Word CoreNLP: rasterized	 CoreNLP: VBN
+
+Word 1 in sentence 84
+  Word OpenNLP: Internal	 OpenNLP: NNP
+  Word CoreNLP: Internal	 CoreNLP: JJ
+
+Word 11 in sentence 85
+  Word OpenNLP: connect	 OpenNLP: VBP
+  Word CoreNLP: connect	 CoreNLP: VB
+
+Word 12 in sentence 85
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN

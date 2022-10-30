@@ -1,0 +1,245 @@
+Teastore 
+
+Word 2 in sentence 2
+  Word OpenNLP: WebUI	 OpenNLP: NNP
+  Word CoreNLP: WebUI	 CoreNLP: NN
+
+Word 8 in sentence 2
+  Word OpenNLP: Image	 OpenNLP: NNP
+  Word CoreNLP: Image	 CoreNLP: NN
+
+Word 9 in sentence 2
+  Word OpenNLP: Provider	 OpenNLP: NNP
+  Word CoreNLP: Provider	 CoreNLP: NN
+
+Word 1 in sentence 4
+  Word OpenNLP: Data	 OpenNLP: NNP
+  Word CoreNLP: Data	 CoreNLP: NNS
+
+Word 12 in sentence 4
+  Word OpenNLP: Recommender	 OpenNLP: NNP
+  Word CoreNLP: Recommender	 CoreNLP: NN
+
+Word 2 in sentence 5
+  Word OpenNLP: WebUI	 OpenNLP: NNP
+  Word CoreNLP: WebUI	 CoreNLP: NN
+
+Word 5 in sentence 5
+  Word OpenNLP: TeaStore	 OpenNLP: NN
+  Word CoreNLP: TeaStore	 CoreNLP: NNP
+
+Word 7 in sentence 5
+  Word OpenNLP: -end	 OpenNLP: NN
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 9 in sentence 7
+  Word OpenNLP: provides	 OpenNLP: VBZ
+  Word CoreNLP: provides	 CoreNLP: VB
+
+Word 19 in sentence 7
+  Word OpenNLP: Image	 OpenNLP: NNP
+  Word CoreNLP: Image	 CoreNLP: NN
+
+Word 20 in sentence 7
+  Word OpenNLP: Provider	 OpenNLP: NNP
+  Word CoreNLP: Provider	 CoreNLP: NN
+
+Word 15 in sentence 8
+  Word OpenNLP: TeaStore	 OpenNLP: NN
+  Word CoreNLP: TeaStore	 CoreNLP: NNP
+
+Word 2 in sentence 10
+  Word OpenNLP: Image	 OpenNLP: NNP
+  Word CoreNLP: Image	 CoreNLP: NN
+
+Word 3 in sentence 10
+  Word OpenNLP: Provider	 OpenNLP: NNP
+  Word CoreNLP: Provider	 CoreNLP: NN
+
+Word 6 in sentence 10
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 10 in sentence 10
+  Word OpenNLP: base64	 OpenNLP: CD
+  Word CoreNLP: base64	 CoreNLP: NN
+
+Word 11 in sentence 10
+  Word OpenNLP: encoded	 OpenNLP: VBD
+  Word CoreNLP: encoded	 CoreNLP: VBN
+
+Word 19 in sentence 10
+  Word OpenNLP: HTML	 OpenNLP: NNP
+  Word CoreNLP: HTML	 CoreNLP: NN
+
+Word 8 in sentence 11
+  Word OpenNLP: UI	 OpenNLP: JJ
+  Word CoreNLP: UI	 CoreNLP: NN
+
+Word 29 in sentence 11
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 4 in sentence 12
+  Word OpenNLP: ID	 OpenNLP: NNP
+  Word CoreNLP: ID	 CoreNLP: NN
+
+Word 6 in sentence 12
+  Word OpenNLP: UI	 OpenNLP: NNP
+  Word CoreNLP: UI	 CoreNLP: NN
+
+Word 11 in sentence 12
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 13 in sentence 12
+  Word OpenNLP: Image	 OpenNLP: NNP
+  Word CoreNLP: Image	 CoreNLP: NN
+
+Word 14 in sentence 12
+  Word OpenNLP: Provider	 OpenNLP: NNP
+  Word CoreNLP: Provider	 CoreNLP: NN
+
+Word 4 in sentence 13
+  Word OpenNLP: ID	 OpenNLP: NNP
+  Word CoreNLP: ID	 CoreNLP: NN
+
+Word 6 in sentence 13
+  Word OpenNLP: UI	 OpenNLP: NNP
+  Word CoreNLP: UI	 CoreNLP: NN
+
+Word 7 in sentence 14
+  Word OpenNLP: later	 OpenNLP: RB
+  Word CoreNLP: later	 CoreNLP: JJ
+
+Word 4 in sentence 15
+  Word OpenNLP: ID	 OpenNLP: NNP
+  Word CoreNLP: ID	 CoreNLP: NN
+
+Word 6 in sentence 15
+  Word OpenNLP: UI	 OpenNLP: NNP
+  Word CoreNLP: UI	 CoreNLP: NN
+
+Word 8 in sentence 16
+  Word OpenNLP: in-memory	 OpenNLP: JJ
+  Word CoreNLP: in	 CoreNLP: IN
+
+Word 21 in sentence 17
+  Word OpenNLP: present	 OpenNLP: RB
+  Word CoreNLP: present	 CoreNLP: JJ
+
+Word 23 in sentence 17
+  Word OpenNLP: delivered	 OpenNLP: VBD
+  Word CoreNLP: delivered	 CoreNLP: VBN
+
+Word 4 in sentence 18
+  Word OpenNLP: handles	 OpenNLP: NNS
+  Word CoreNLP: handles	 CoreNLP: VBZ
+
+Word 5 in sentence 19
+  Word OpenNLP: BCrypt	 OpenNLP: NNP
+  Word CoreNLP: BCrypt	 CoreNLP: NN
+
+Word 2 in sentence 20
+  Word OpenNLP: validate	 OpenNLP: JJ
+  Word CoreNLP: validate	 CoreNLP: VB
+
+Word 12 in sentence 20
+  Word OpenNLP: SHA512	 OpenNLP: NNP
+  Word CoreNLP: SHA512	 CoreNLP: NN
+
+Word 3 in sentence 21
+  Word OpenNLP: SessionBlob	 OpenNLP: NN
+  Word CoreNLP: SessionBlob	 CoreNLP: NNP
+
+Word 2 in sentence 22
+  Word OpenNLP: Persistence	 OpenNLP: NNP
+  Word CoreNLP: Persistence	 CoreNLP: NN
+
+Word 6 in sentence 22
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 15 in sentence 22
+  Word OpenNLP: -end	 OpenNLP: JJ
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 2 in sentence 23
+  Word OpenNLP: maps	 OpenNLP: NNS
+  Word CoreNLP: maps	 CoreNLP: VBZ
+
+Word 6 in sentence 23
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 10 in sentence 23
+  Word OpenNLP: objects	 OpenNLP: VBZ
+  Word CoreNLP: objects	 CoreNLP: NNS
+
+Word 6 in sentence 24
+  Word OpenNLP: CRUD-Operations	 OpenNLP: NNS
+  Word CoreNLP: CRUD	 CoreNLP: NNP
+
+Word 2 in sentence 27
+  Word OpenNLP: Recommender	 OpenNLP: NNP
+  Word CoreNLP: Recommender	 CoreNLP: NN
+
+Word 1 in sentence 29
+  Word OpenNLP: Recommendations	 OpenNLP: NNP
+  Word CoreNLP: Recommendations	 CoreNLP: NNS
+
+Word 13 in sentence 29
+  Word OpenNLP: user's	 OpenNLP: NNS
+  Word CoreNLP: user	 CoreNLP: NN
+
+Word 26 in sentence 31
+  Word OpenNLP: fallback	 OpenNLP: NN
+  Word CoreNLP: fallback	 CoreNLP: JJ
+
+Word 11 in sentence 32
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 2 in sentence 34
+  Word OpenNLP: CPU-intensive	 OpenNLP: JJ
+  Word CoreNLP: CPU	 CoreNLP: NN
+
+Word 5 in sentence 35
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 7 in sentence 35
+  Word OpenNLP: nearest-neighbor	 OpenNLP: JJ
+  Word CoreNLP: nearest	 CoreNLP: JJS
+
+Word 1 in sentence 38
+  Word OpenNLP: Service	 OpenNLP: NNP
+  Word CoreNLP: Service	 CoreNLP: NN
+
+Word 1 in sentence 39
+  Word OpenNLP: Services	 OpenNLP: NNP
+  Word CoreNLP: Services	 CoreNLP: NNS
+
+Word 1 in sentence 40
+  Word OpenNLP: Services	 OpenNLP: NNP
+  Word CoreNLP: Services	 CoreNLP: NNS
+
+Word 9 in sentence 40
+  Word OpenNLP: s	 OpenNLP: PRP
+  Word CoreNLP: s	 CoreNLP: NN
+
+Word 14 in sentence 40
+  Word OpenNLP: offline	 OpenNLP: NN
+  Word CoreNLP: offline	 CoreNLP: RB
+
+Word 6 in sentence 41
+  Word OpenNLP: TeaStore	 OpenNLP: NN
+  Word CoreNLP: TeaStore	 CoreNLP: NNP
+
+Word 2 in sentence 42
+  Word OpenNLP: TeaStore	 OpenNLP: NN
+  Word CoreNLP: TeaStore	 CoreNLP: NNP
+
+Word 4 in sentence 43
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN

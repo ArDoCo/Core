@@ -1,0 +1,213 @@
+Mediastore 
+
+Word 12 in sentence 1
+  Word OpenNLP: -side	 OpenNLP: NN
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 11 in sentence 2
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 12 in sentence 2
+  Word OpenNLP: in	 OpenNLP: IN
+  Word CoreNLP: in	 CoreNLP: NN
+
+Word 1 in sentence 3
+  Word OpenNLP: To	 OpenNLP: TO
+  Word CoreNLP: To	 CoreNLP: IN
+
+Word 10 in sentence 3
+  Word OpenNLP: corresponding	 OpenNLP: JJ
+  Word CoreNLP: corresponding	 CoreNLP: VBG
+
+Word 14 in sentence 3
+  Word OpenNLP: -	 OpenNLP: :
+  Word CoreNLP: -	 CoreNLP: HYPH
+
+Word 17 in sentence 3
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 16 in sentence 4
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 19 in sentence 4
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 20 in sentence 4
+  Word OpenNLP: list	 OpenNLP: VB
+  Word CoreNLP: list	 CoreNLP: NN
+
+Word 8 in sentence 6
+  Word OpenNLP: download	 OpenNLP: NN
+  Word CoreNLP: download	 CoreNLP: VB
+
+Word 11 in sentence 6
+  Word OpenNLP: upload	 OpenNLP: JJ
+  Word CoreNLP: upload	 CoreNLP: NN
+
+Word 1 in sentence 7
+  Word OpenNLP: Application	 OpenNLP: NNP
+  Word CoreNLP: Application	 CoreNLP: NN
+
+Word 15 in sentence 9
+  Word OpenNLP: dedicated	 OpenNLP: VBN
+  Word CoreNLP: dedicated	 CoreNLP: JJ
+
+Word 3 in sentence 10
+  Word OpenNLP: above	 OpenNLP: IN
+  Word CoreNLP: above	 CoreNLP: RB
+
+Word 2 in sentence 11
+  Word OpenNLP: UserManagement	 OpenNLP: NNP
+  Word CoreNLP: UserManagement	 CoreNLP: NN
+
+Word 4 in sentence 11
+  Word OpenNLP: answers	 OpenNLP: NNS
+  Word CoreNLP: answers	 CoreNLP: VBZ
+
+Word 2 in sentence 12
+  Word OpenNLP: UserDBAdapter	 OpenNLP: NNP
+  Word CoreNLP: UserDBAdapter	 CoreNLP: NN
+
+Word 4 in sentence 13
+  Word OpenNLP: logs	 OpenNLP: VBZ
+  Word CoreNLP: logs	 CoreNLP: NNS
+
+Word 23 in sentence 13
+  Word OpenNLP: UserManagement	 OpenNLP: NNP
+  Word CoreNLP: UserManagement	 CoreNLP: NN
+
+Word 26 in sentence 13
+  Word OpenNLP: further	 OpenNLP: JJ
+  Word CoreNLP: further	 CoreNLP: RB
+
+Word 27 in sentence 13
+  Word OpenNLP: functions	 OpenNLP: NNS
+  Word CoreNLP: functions	 CoreNLP: VBZ
+
+Word 28 in sentence 13
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 10 in sentence 14
+  Word OpenNLP: downloaded	 OpenNLP: JJ
+  Word CoreNLP: downloaded	 CoreNLP: VBN
+
+Word 1 in sentence 15
+  Word OpenNLP: To	 OpenNLP: TO
+  Word CoreNLP: To	 CoreNLP: IN
+
+Word 6 in sentence 17
+  Word OpenNLP: forwards	 OpenNLP: IN
+  Word CoreNLP: forwards	 CoreNLP: NNS
+
+Word 14 in sentence 17
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 4 in sentence 18
+  Word OpenNLP: downloaded	 OpenNLP: JJ
+  Word CoreNLP: downloaded	 CoreNLP: VBN
+
+Word 5 in sentence 18
+  Word OpenNLP: audio	 OpenNLP: NN
+  Word CoreNLP: audio	 CoreNLP: JJ
+
+Word 10 in sentence 18
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 23 in sentence 18
+  Word OpenNLP: audio	 OpenNLP: NN
+  Word CoreNLP: audio	 CoreNLP: JJ
+
+Word 31 in sentence 18
+  Word OpenNLP: Internet	 OpenNLP: NNP
+  Word CoreNLP: Internet	 CoreNLP: NN
+
+Word 5 in sentence 19
+  Word OpenNLP: download	 OpenNLP: JJ
+  Word CoreNLP: download	 CoreNLP: VB
+
+Word 15 in sentence 19
+  Word OpenNLP: Packaging	 OpenNLP: VBG
+  Word CoreNLP: Packaging	 CoreNLP: NN
+
+Word 19 in sentence 19
+  Word OpenNLP: archives	 OpenNLP: VBZ
+  Word CoreNLP: archives	 CoreNLP: NNS
+
+Word 17 in sentence 22
+  Word OpenNLP: meta-data	 OpenNLP: NNS
+  Word CoreNLP: meta	 CoreNLP: NN
+
+Word 2 in sentence 23
+  Word OpenNLP: Database	 OpenNLP: NNP
+  Word CoreNLP: Database	 CoreNLP: NN
+
+Word 11 in sentence 23
+  Word OpenNLP: MySQL	 OpenNLP: NNP
+  Word CoreNLP: MySQL	 CoreNLP: NN
+
+Word 2 in sentence 24
+  Word OpenNLP: stores	 OpenNLP: NNS
+  Word CoreNLP: stores	 CoreNLP: VBZ
+
+Word 7 in sentence 25
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 8 in sentence 25
+  Word OpenNLP: list	 OpenNLP: VB
+  Word CoreNLP: list	 CoreNLP: NN
+
+Word 21 in sentence 25
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 23 in sentence 25
+  Word OpenNLP: Database	 OpenNLP: NNP
+  Word CoreNLP: Database	 CoreNLP: NN
+
+Word 4 in sentence 26
+  Word OpenNLP: uploads	 OpenNLP: IN
+  Word CoreNLP: uploads	 CoreNLP: VBZ
+
+Word 8 in sentence 27
+  Word OpenNLP: meta-data	 OpenNLP: NNS
+  Word CoreNLP: meta	 CoreNLP: NN
+
+Word 2 in sentence 31
+  Word OpenNLP: Database	 OpenNLP: NNP
+  Word CoreNLP: Database	 CoreNLP: NN
+
+Word 2 in sentence 32
+  Word OpenNLP: salted	 OpenNLP: JJ
+  Word CoreNLP: salted	 CoreNLP: VBN
+
+Word 11 in sentence 32
+  Word OpenNLP: Database	 OpenNLP: NNP
+  Word CoreNLP: Database	 CoreNLP: NN
+
+Word 17 in sentence 33
+  Word OpenNLP: dedicated	 OpenNLP: VBN
+  Word CoreNLP: dedicated	 CoreNLP: JJ
+
+Word 25 in sentence 33
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 7 in sentence 34
+  Word OpenNLP: download	 OpenNLP: NN
+  Word CoreNLP: download	 CoreNLP: VB
+
+Word 10 in sentence 35
+  Word OpenNLP: corresponding	 OpenNLP: JJ
+  Word CoreNLP: corresponding	 CoreNLP: VBG
+
+Word 4 in sentence 36
+  Word OpenNLP: uploads	 OpenNLP: NNS
+  Word CoreNLP: uploads	 CoreNLP: VBZ

@@ -1,0 +1,58 @@
+Jabref 
+
+Word 8 in sentence 1
+  Word OpenNLP: spaghetti	 OpenNLP: NNS
+  Word CoreNLP: spaghetti	 CoreNLP: NN
+
+Word 9 in sentence 1
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 10 in sentence 2
+  Word OpenNLP: cli	 OpenNLP: NNS
+  Word CoreNLP: cli	 CoreNLP: NN
+
+Word 10 in sentence 5
+  Word OpenNLP: BibDatases	 OpenNLP: NNS
+  Word CoreNLP: BibDatases	 CoreNLP: NNP
+
+Word 12 in sentence 5
+  Word OpenNLP: BibEntries	 OpenNLP: NNS
+  Word CoreNLP: BibEntries	 CoreNLP: NNP
+
+Word 17 in sentence 5
+  Word OpenNLP: related	 OpenNLP: JJ
+  Word CoreNLP: related	 CoreNLP: VBN
+
+Word 6 in sentence 6
+  Word OpenNLP: reading/writing/importing/exporting	 OpenNLP: VBG
+  Word CoreNLP: reading	 CoreNLP: NN
+
+Word 9 in sentence 8
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 13 in sentence 8
+  Word OpenNLP: i.e.	 OpenNLP: NN
+  Word CoreNLP: i.e.	 CoreNLP: FW
+
+Word 7 in sentence 9
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+
+Word 2 in sentence 10
+  Word OpenNLP: cli	 OpenNLP: NNS
+  Word CoreNLP: cli	 CoreNLP: NN
+
+Word 10 in sentence 10
+  Word OpenNLP: JabRef’s	 OpenNLP: JJ
+  Word CoreNLP: JabRef	 CoreNLP: NNP
+
+Word 6 in sentence 11
+  Word OpenNLP: customizable	 OpenNLP: NN
+  Word CoreNLP: customizable	 CoreNLP: JJ
+
+Word 12 in sentence 12
+  Word OpenNLP: to	 OpenNLP: TO
+  Word CoreNLP: to	 CoreNLP: IN
+

@@ -38,7 +38,7 @@ class OpenNLPTextImpl implements Text {
             // sentences
             sentenceList.add(new OpenNLPSentenceImpl(sentenceArray[i], this, i));
             // words
-            String[] wordArray = detectWords(sentenceArray[i], true);
+            String[] wordArray = detectWords(sentenceArray[i], false);
             String[] posTags = getPosTags(wordArray);
             for (int k = 0; k < wordArray.length; k++){
                 POSTag posTag = POSTag.get(posTags[k]);

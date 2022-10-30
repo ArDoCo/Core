@@ -38,11 +38,11 @@ public class OpenNLPProvider extends TextProvider {
     @Override
     public synchronized Text getAnnotatedText() {
         if (annotatedText == null) {
-//            if (DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
-//                annotatedText = DataRepositoryHelper.getAnnotatedText(getDataRepository());
-//            } else {
-//                annotatedText = processText(text);
-//            }
+            if (DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
+                annotatedText = DataRepositoryHelper.getAnnotatedText(getDataRepository());
+            } else {
+                annotatedText = processText(text);
+            }
             annotatedText = processText(text);
         }
         return annotatedText;
