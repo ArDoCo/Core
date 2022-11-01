@@ -27,7 +27,7 @@ public class MetamodelInformant extends Informant {
     private double confidence = 1.0;
 
     public MetamodelInformant(DataRepository dataRepository) {
-        super(CompoundRecommendationInformant.class.getSimpleName(), dataRepository);
+        super(MetamodelInformant.class.getSimpleName(), dataRepository);
     }
 
     @Override
