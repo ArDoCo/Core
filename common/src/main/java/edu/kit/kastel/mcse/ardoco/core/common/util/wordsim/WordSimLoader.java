@@ -1,7 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.eclipse.collections.api.factory.Lists;
