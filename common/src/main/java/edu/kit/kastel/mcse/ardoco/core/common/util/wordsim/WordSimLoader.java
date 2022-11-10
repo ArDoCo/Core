@@ -1,7 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -11,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fasttext.DL4JFastTextDataSource;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.fasttext.FastTextMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler.JaroWinklerMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein.LevenshteinMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram.NgramMeasure;
@@ -51,19 +48,6 @@ public class WordSimLoader {
 
             if (CommonTextToolsConfig.SEWORDSIM_ENABLED) {
                 list.add(new SEWordSimMeasure());
-            }
-
-            if (CommonTextToolsConfig.FASTTEXT_ENABLED) {
-                Path modelPath = Path.of(CommonTextToolsConfig.FASTTEXT_MODEL_FILE_PATH);
-
-                LOGGER.info("Loading DL4J fastText data source...");
-
-                try (var dataSource = new DL4JFastTextDataSource(modelPath)) {
-                    LOGGER.info("Successfully loaded DL4J fastText data source!");
-
-                    var measure = new FastTextMeasure(dataSource, CommonTextToolsConfig.FASTTEXT_SIMILARITY_THRESHOLD);
-                    list.add(measure);
-                }
             }
 
             return Lists.immutable.withAll(list);
