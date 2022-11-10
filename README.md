@@ -16,35 +16,13 @@ the _[Modelling for Continuous Software Engineering (MCSE) group](https://mcse.k
 of _[KASTEL - Institute of Information Security and Dependability](https://kastel.kit.edu)_ at
 the [KIT](https://www.kit.edu).
 
-## CLI
-
-The Core Project contains a CLI that currently supports to find trace links between PCM Models and Textual SW
-Architecture Documentation.
-The CLI is part of the pipeline module of this project.
-The PCM models have to be converted to ontologies using [Ecore2OWL](https://github.com/kit-sdq/Ecore2OWL).
-The model can also contain a (java) code model that you can insert using
-the [CodeModelExtractors](https://github.com/ArDoCo/CodeModelExtractors).
-
-### Usage
-
-```
-usage: java -jar ardoco-core-pipeline.jar
--c,--conf <arg>                  path to the additional config file
--h,--help                        show this message
--ma,--model-architecture <arg>   path to the architecture model
--mc,--model-code <arg>           path to the java code model
--n,--name <arg>                  name of the run
--o,--out <arg>                   path to the output directory
--t,--text <arg>                  path to the text file
-```
-
-### Documentation
+## Documentation
 
 For more information about the setup or the architecture have a look on the [docs](https://ardoco.github.io/Core).
 The docs are at some points deprecated, the general overview and setup should still hold.
 You can find the generated JavaDocs at [ArDoCo.github.io/Core-Docs](https://ArDoCo.github.io/Core-Docs/).
 
-### Case Studies / Benchmarks
+## Case Studies / Benchmarks
 
 To test the Core, you could use case studies and benchmarks provided in ..
 
@@ -53,14 +31,14 @@ To test the Core, you could use case studies and benchmarks provided in ..
 
 
 
-### Maven
+## Maven
 
 ```xml
 <dependencies>
 	<dependency>
 		<groupId>io.github.ardoco.core</groupId>
 		<artifactId>pipeline</artifactId> <!-- or any other subproject -->
-		<version>0.6.0-SNAPSHOT</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</dependency>
 </dependencies>
 ```
@@ -81,10 +59,9 @@ For snapshot releases, make sure to add the following repository
 </repositories>
 ```
 
-### Attribution
+## Attribution
 
-The base for this project is based on the master
-thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
+The initial version of this project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
 
 ## Acknowledgments
 
