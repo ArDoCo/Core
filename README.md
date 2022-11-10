@@ -16,6 +16,13 @@ the _[Modelling for Continuous Software Engineering (MCSE) group](https://mcse.k
 of _[KASTEL - Institute of Information Security and Dependability](https://kastel.kit.edu)_ at
 the [KIT](https://www.kit.edu).
 
+## User Interfaces
+To be able to execute the core algorithms from this repository, you can write own user interfaces that (should) use the [ArDoCoRunner](https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoRunner.java).
+
+We provide an example Command Line Interface (CLI) at [ArDoCo/CLI](https://github.com/ArDoCo/CLI).
+
+Future user interfaces like a Graphical User Interface (GUI) or a web interface are planned for the future.
+
 ## Documentation
 
 For more information about the setup or the architecture have a look on the [docs](https://ardoco.github.io/Core).
@@ -28,8 +35,6 @@ To test the Core, you could use case studies and benchmarks provided in ..
 
 * [ArDoCo Benchmark](https://github.com/ArDoCo/Benchmark)
 * [SWATTR](https://github.com/ArDoCo/SWATTR)
-
-
 
 ## Maven
 
