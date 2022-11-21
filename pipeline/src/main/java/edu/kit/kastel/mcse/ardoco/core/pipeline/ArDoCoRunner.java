@@ -12,7 +12,6 @@ import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
-// TODO set StanfordCoreNLPServer?
 record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, File inputModelCode, File additionalConfigs,
                     File outputDir, String name) {
 
