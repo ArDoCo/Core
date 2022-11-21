@@ -104,7 +104,7 @@ class WordImpl implements Word {
     }
 
     protected int getPositionInSentence() {
-        return this.token.index();
+        return this.token.index() - 1;
     }
 
     protected int getBeginCharPosition() {

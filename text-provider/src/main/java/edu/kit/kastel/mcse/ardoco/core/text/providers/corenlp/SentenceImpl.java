@@ -85,8 +85,8 @@ class SentenceImpl implements Sentence {
     private static int findIndexOfFirstWordInPhrase(CoreLabel firstWordLabel, SentenceImpl sentence) {
         for (var word : sentence.getWords()) {
             if (word instanceof WordImpl sentenceWord) {
-                var wordBegin = sentenceWord.getBeginCharPosition();
-                int firstWordLabelBegin = firstWordLabel.beginPosition();
+                var wordBegin = sentenceWord.getPositionInSentence();
+                int firstWordLabelBegin = firstWordLabel.index();
                 if (wordBegin == firstWordLabelBegin) {
                     return sentenceWord.getPosition();
                 }

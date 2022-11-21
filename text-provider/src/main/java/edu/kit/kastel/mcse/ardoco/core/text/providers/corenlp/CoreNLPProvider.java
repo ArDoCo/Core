@@ -13,11 +13,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.pipeline.StanfordCoreNLPClient;
 
 public class CoreNLPProvider extends TextProvider {
-    private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
+    protected static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
+    private static StanfordCoreNLPClient coreNlp = null;
     private final InputStream text;
     private Text annotatedText;
 
@@ -34,7 +35,19 @@ public class CoreNLPProvider extends TextProvider {
         this.text = text;
     }
 
-    private static Properties getStanfordProperties(Properties properties) {
+    public static StanfordCoreNLPClient initCoreNlp() {
+        if (coreNlp == null) {
+            CoreNLPServerUtility.startServer();
+            Properties props = getStanfordProperties(new Properties());
+            props.put("outputFormat", "serialized");
+            props.put("outputSerializer", "edu.stanford.nlp.pipeline.GenericAnnotationSerializer");
+            props.put("serializer", "edu.stanford.nlp.pipeline.GenericAnnotationSerializer");
+            coreNlp = new StanfordCoreNLPClient(props, CoreNLPServerUtility.host, CoreNLPServerUtility.serverPort, 1);
+        }
+        return coreNlp;
+    }
+
+    protected static Properties getStanfordProperties(Properties properties) {
         if (properties == null) {
             throw new IllegalArgumentException("Properties are null");
         }
@@ -68,11 +81,13 @@ public class CoreNLPProvider extends TextProvider {
 
     private Text processText(InputStream text) {
         var inputText = readInputText(text);
-        Properties props = getStanfordProperties(new Properties());
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        CoreDocument document = new CoreDocument(inputText);
-        pipeline.annotate(document);
-        return new TextImpl(document);
+        StanfordCoreNLPClient pipeline = initCoreNlp();
+        //        StanfordCoreNLP pp = new StanfordCoreNLP(getStanfordProperties(new Properties()));
+
+        var coreDocument = new CoreDocument(inputText);
+        pipeline.annotate(coreDocument.annotation());
+        coreDocument.wrapAnnotations();
+        return new TextImpl(coreDocument);
     }
 
     private String readInputText(InputStream text) {
