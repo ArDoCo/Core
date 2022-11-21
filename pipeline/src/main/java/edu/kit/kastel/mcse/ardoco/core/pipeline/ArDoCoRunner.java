@@ -139,7 +139,7 @@ record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureMod
             temporaryAdditionalConfigsFile.deleteOnExit();
 
             for (var entry : additionalConfigs.entrySet()) {
-                String configOption = entry.getKey() + "=" + entry.getValue();
+                String configOption = entry.getKey() + "=" + entry.getValue() + "\n";
                 Files.writeString(temporaryAdditionalConfigsFile.toPath(), configOption, StandardOpenOption.APPEND);
             }
 

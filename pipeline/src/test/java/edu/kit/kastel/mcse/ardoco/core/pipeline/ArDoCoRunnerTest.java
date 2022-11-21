@@ -80,7 +80,8 @@ public class ArDoCoRunnerTest {
     @Test
     @DisplayName("Test Builder w/ additional configs provided in a map")
     void testBuilderAdditionalConfigsViaMap() {
-        Map<String, String> config = Map.of("UnwantedWordsFilter::customBlacklist", "instance,item,name,product,rankings,rating,size");
+        Map<String, String> config = Map.of("UnwantedWordsFilter::customBlacklist", "instance,item,name,product,rankings,rating,size",
+                "UnwantedWordsFilter::enableCommonBlacklist", "true");
 
         ArDoCoRunner.Builder builder = null;
         try {
