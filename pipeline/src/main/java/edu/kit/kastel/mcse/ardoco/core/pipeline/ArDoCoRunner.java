@@ -15,11 +15,15 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
 record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, File inputModelCode, File additionalConfigs,
                     File outputDir, String name) {
+
+    private static final Logger logger = LoggerFactory.getLogger(ArDoCoRunner.class);
 
     public ArDoCoResult runArDoCo() {
         ArDoCo arDoCo = ArDoCo.getInstance(name);
@@ -163,9 +167,12 @@ record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureMod
                 temporaryAdditionalConfigsFile = Files.createTempFile(prefix, suffix, attr).toFile();
             } else {
                 temporaryAdditionalConfigsFile = Files.createTempFile(prefix, suffix).toFile();
-                temporaryAdditionalConfigsFile.setReadable(true, true);
-                temporaryAdditionalConfigsFile.setWritable(true, true);
-                temporaryAdditionalConfigsFile.setExecutable(true, true);
+                boolean readableOk = temporaryAdditionalConfigsFile.setReadable(true, true);
+                boolean writeableOk = temporaryAdditionalConfigsFile.setWritable(true, true);
+                boolean executableOk = temporaryAdditionalConfigsFile.setExecutable(true, true);
+                if (!readableOk || !writeableOk || !executableOk) {
+                    logger.warn("Problems occurred when creating temporary file permissions.");
+                }
             }
             return temporaryAdditionalConfigsFile;
         }
