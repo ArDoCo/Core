@@ -149,7 +149,7 @@ public class ConfigurationHelper {
                     .findFirst()
                     .orElseThrow();
             constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance((Object[]) null);
+            return (AbstractConfigurable) constructor.newInstance(new Object[1]);
         }
         throw new IllegalStateException("Not reachable code");
     }
