@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
@@ -102,7 +103,7 @@ public class HoldBackRunResultsProducer {
         ArDoCo arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
 
-        var additionalConfigs = ArDoCo.loadAdditionalConfigs(null);
+        var additionalConfigs = ConfigurationHelper.loadAdditionalConfigs(null);
         var optionalProject = Project.getFromName(projectName);
         if (optionalProject.isPresent()) {
             additionalConfigs = optionalProject.get().getAdditionalConfigurations();
