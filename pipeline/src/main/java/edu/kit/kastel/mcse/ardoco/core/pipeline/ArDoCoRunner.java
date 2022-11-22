@@ -6,9 +6,15 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
+import org.apache.commons.lang3.SystemUtils;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
@@ -63,7 +69,7 @@ record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureMod
                         throw new IllegalStateException("Cannot invoke build() because " + fieldName + " is null.");
                     }
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    throw new IllegalStateException("Cannot access field.");
                 }
             }
             return new ArDoCoRunner(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, outputDir, name);
@@ -135,7 +141,7 @@ record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureMod
         }
 
         public Builder withAdditionalConfigs(Map<String, String> additionalConfigs) throws IOException {
-            File temporaryAdditionalConfigsFile = File.createTempFile(".additionalConfigs", "tmp");
+            File temporaryAdditionalConfigsFile = getTemporaryAdditionalConfigsFile();
             temporaryAdditionalConfigsFile.deleteOnExit();
 
             for (var entry : additionalConfigs.entrySet()) {
@@ -145,6 +151,23 @@ record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureMod
 
             this.additionalConfigs = temporaryAdditionalConfigsFile;
             return this;
+        }
+
+        private static File getTemporaryAdditionalConfigsFile() throws IOException {
+            String prefix = ".additionalConfigs";
+            String suffix = "tmp";
+
+            File temporaryAdditionalConfigsFile;
+            if (SystemUtils.IS_OS_UNIX) {
+                FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+                temporaryAdditionalConfigsFile = Files.createTempFile(prefix, suffix, attr).toFile();
+            } else {
+                temporaryAdditionalConfigsFile = Files.createTempFile(prefix, suffix).toFile();
+                temporaryAdditionalConfigsFile.setReadable(true, true);
+                temporaryAdditionalConfigsFile.setWritable(true, true);
+                temporaryAdditionalConfigsFile.setExecutable(true, true);
+            }
+            return temporaryAdditionalConfigsFile;
         }
     }
 

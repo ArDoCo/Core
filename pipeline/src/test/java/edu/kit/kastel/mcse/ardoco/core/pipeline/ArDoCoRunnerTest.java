@@ -9,9 +9,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class ArDoCoRunnerTest {
+class ArDoCoRunnerTest {
     private final String inputText = "src/test/resources/teastore.txt";
     private final String inputModelArchitecture = "src/test/resources/teastore.repository";
+    private final String inputModelArchitectureUml = "src/test/resources/teastore.uml";
     private final String outputDir = "src/test/resources/";
     private final String inputModelCode = "src/test/resources/teastore-code.json";
     private final String additionalConfigs = "src/test/resources/additionalConfig.txt";
@@ -35,6 +36,20 @@ public class ArDoCoRunnerTest {
         var builder = new ArDoCoRunner.Builder("Test").withInputText(new File(inputText))
                 .withInputModelArchitecture(new File(inputModelArchitecture))
                 .withPcmModelType()
+                .withOutputDir(new File(outputDir))
+                .withInputModelCode(new File(inputModelCode))
+                .withAdditionalConfigs(new File(additionalConfigs));
+
+        var runner = builder.build();
+        testRunnerDefiningArdoco(runner);
+    }
+
+    @Test
+    @DisplayName("Test Builder")
+    void testBuilderUml() {
+        var builder = new ArDoCoRunner.Builder("Test").withInputText(new File(inputText))
+                .withInputModelArchitecture(new File(inputModelArchitectureUml))
+                .withUmlModelType()
                 .withOutputDir(new File(outputDir))
                 .withInputModelCode(new File(inputModelCode))
                 .withAdditionalConfigs(new File(additionalConfigs));

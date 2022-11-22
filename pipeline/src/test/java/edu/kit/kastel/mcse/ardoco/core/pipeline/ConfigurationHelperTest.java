@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
 import edu.kit.kastel.informalin.framework.configuration.Configurable;
 
-public class ConfigurationHelperTest {
+class ConfigurationHelperTest {
 
     @Test
     void getDefaultConfigurationOptionsTest() {

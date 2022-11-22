@@ -106,7 +106,7 @@ public class ConfigurationHelper {
         if (rawValue instanceof Boolean b) {
             return String.valueOf(b);
         }
-        if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String)) {
+        if (rawValue instanceof List<?> s && s.stream().allMatch(String.class::isInstance)) {
             return s.stream().map(Object::toString).collect(Collectors.joining(AbstractConfigurable.LIST_SEPARATOR));
         }
         if (rawValue instanceof Enum<?> e) {
@@ -134,12 +134,12 @@ public class ConfigurationHelper {
             IllegalAccessException {
         var constructors = Arrays.asList(clazz.getDeclaredConstructors());
         if (constructors.stream().anyMatch(c -> c.getParameterCount() == 0)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().get();
+            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().orElseThrow();
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance();
         }
         if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().get();
+            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().orElseThrow();
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(Map.of());
         }
@@ -147,9 +147,9 @@ public class ConfigurationHelper {
             var constructor = constructors.stream()
                     .filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)
                     .findFirst()
-                    .get();
+                    .orElseThrow();
             constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(new Object[] { null });
+            return (AbstractConfigurable) constructor.newInstance((Object[]) null);
         }
         throw new IllegalStateException("Not reachable code");
     }
