@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
-record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, File inputModelCode, File additionalConfigs,
-                    File outputDir, String name) {
+public record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, File inputModelCode,
+                           File additionalConfigs, File outputDir, String name) {
 
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoRunner.class);
 
