@@ -60,3 +60,4 @@ jobs:
           repository-name: ArDoCo/Core-Docs
           token: ${{ secrets.SDQ_TOKEN }}
           clean: true
+          single-commit: true
