@@ -79,7 +79,7 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluating MME-Inconsistency Detection")
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(1)
     void missingModelElementInconsistencyIT(Project project) {
         runMissingModelElementInconsistencyEval(project);
@@ -88,7 +88,7 @@ class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
     @DisplayName("Evaluating MME-Inconsistency Detection (Historic)")
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(2)
     void missingModelElementInconsistencyHistoricIT(Project project) {
         runMissingModelElementInconsistencyEval(project);
@@ -118,16 +118,16 @@ class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluating MME-Inconsistency Detection Baseline")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(5)
     void missingModelElementInconsistencyBaselineIT(Project project) {
         runMissingModelElementInconsistencyBaselineEval(project);
     }
 
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
-    @DisplayName("Evaluating MME-Inconsistency Detection Baseline (Historic)")
+    @DisplayName("Evaluating MME-Inconsistency Detection Baseline (Historical)")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(6)
     void missingModelElementInconsistencyBaselineHistoricIT(Project project) {
         runMissingModelElementInconsistencyBaselineEval(project);
@@ -162,16 +162,16 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies")
     @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(10)
     void missingTextInconsistencyIT(Project project) {
         runMissingTextInconsistencyEval(project);
     }
 
     @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
-    @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies (Historic)")
+    @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies (Historical)")
     @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(11)
     void missingTextInconsistencyHistoricIT(Project project) {
         runMissingTextInconsistencyEval(project);
