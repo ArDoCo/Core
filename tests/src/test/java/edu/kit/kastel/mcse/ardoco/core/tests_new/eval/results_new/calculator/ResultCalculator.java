@@ -71,7 +71,7 @@ public class ResultCalculator <T> {
             truePositives += result.truePositives().size();
             falseNegatives += result.falseNegatives().size();
             falsePositives += result.falsePositives().size();
-            trueNegatives += result.trueNegatives().size();
+            trueNegatives += result.trueNegatives();
 
         }
 
@@ -86,7 +86,7 @@ public class ResultCalculator <T> {
             accuracy = accuracy / weight;
             specificity = specificity / weight;
             return new EvaluationResults<T>(precision, recall, f1,
-                    Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(),
+                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
                     accuracy, phi, specificity, phiMax, phiOverPhiMax);
         }
         if (phi != 0.0 && accuracy > 0.0) {
@@ -96,11 +96,11 @@ public class ResultCalculator <T> {
             accuracy = accuracy / weight;
             specificity = specificity / weight;
             return new EvaluationResults<T>(precision, recall, f1,
-                    Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(),
+                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
                     accuracy, phi, specificity, phiMax, phiOverPhiMax);
         }
         return new EvaluationResults<T>(precision, recall, f1,
-                Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(),
+                Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
                 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
