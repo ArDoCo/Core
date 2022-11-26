@@ -71,11 +71,11 @@ public class OverallResultsCalculator <T>{
             accuracy = accuracy / weight;
             specificity = specificity / weight;
             return new EvaluationResults<>(precision, recall, f1,
-                    Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(),
+                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
                     accuracy, phi, specificity, 0.0, 0.0);
         }
         return new EvaluationResults<>(precision, recall, f1,
-                Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(),
+                Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
                 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 

@@ -1,12 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new.ExpectedResults;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Locale;
 
 public record EvaluationResults<T> (double precision, double recall, double f1,
-                                    ImmutableList<T> truePositives, ImmutableList<T> trueNegatives,
+                                    ImmutableList<T> truePositives, int trueNegatives,
                                     ImmutableList<T> falseNegatives, ImmutableList<T> falsePositives,
                                     double accuracy, double phiCoefficient, double specificity,
                                     double phiCoefficientMax, double phiOverPhiMax) {
@@ -20,9 +21,20 @@ public record EvaluationResults<T> (double precision, double recall, double f1,
         return output;
     }
 
+    public String getResultStringWithExpected(ExpectedResults expectedResults) {
+        return String.format(Locale.ENGLISH,
+                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", precision,
+                expectedResults.precision(), recall, expectedResults.recall(), f1, expectedResults.f1());
+    }
+
+    public int getWeight() {
+        return this.truePositives().size() + this.falseNegatives().size();
+    }
+
+
     public static <T> EvaluationResults<T> createEvaluationResults(ResultMatrix<T> matrix) {
         int nrTruePos = matrix.truePositives().size();
-        int nrTrueNeg = matrix.trueNegatives().size();
+        int nrTrueNeg = matrix.trueNegatives();
         int nrFalsePos = matrix.falsePositives().size();
         int nrFalseNeg = matrix.falseNegatives().size();
 

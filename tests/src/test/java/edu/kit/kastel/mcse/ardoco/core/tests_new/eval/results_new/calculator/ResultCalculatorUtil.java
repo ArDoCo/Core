@@ -48,11 +48,11 @@ public abstract class ResultCalculatorUtil {
             accuracy /= norm;
             specificity /= norm;
             return new EvaluationResults<>(precision, recall, f1,
-                    Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(),
+                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
                     accuracy, phi, specificity, phiMax, phiOverPhiMax);
         }
         return new EvaluationResults<>(precision, recall, f1,
-                Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(), Lists.immutable.empty(),
+                Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
                 0.0, 0.0, 0.0, 0.0, 0.0);
 
     }
