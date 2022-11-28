@@ -53,13 +53,13 @@ public class TLLogFile {
             String alias = switch (projectResult.getOne()) {
             case MEDIASTORE -> "MS";
             case BIGBLUEBUTTON -> "BBB";
-            case BIGBLUEBUTTON_HISTORIC -> "BBB-H";
+            case BIGBLUEBUTTON_HISTORICAL -> "BBB-H";
             case TEAMMATES -> "TM";
-            case TEAMMATES_HISTORIC -> "TM-H";
+            case TEAMMATES_HISTORICAL -> "TM-H";
             case TEASTORE -> "TS";
-            case TEASTORE_HISTORIC -> "TS-H";
+            case TEASTORE_HISTORICAL -> "TS-H";
             case JABREF -> "JR";
-            case JABREF_HISTORIC -> "JR-H";
+            case JABREF_HISTORICAL -> "JR-H";
             };
             EvaluationResults<TestLink> result = projectResult.getTwo();
             String precision = NUMBER_FORMAT.format(result.precision());

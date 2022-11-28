@@ -112,15 +112,15 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     @DisplayName("Evaluate TLR")
     @ParameterizedTest(name = "Evaluating {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(1)
     void evaluateTraceLinkRecoveryIT(Project project) {
         runTraceLinkEvaluation(project);
     }
 
-    @DisplayName("Evaluate TLR (Historic)")
+    @DisplayName("Evaluate TLR (Historical)")
     @ParameterizedTest(name = "Evaluating {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
+    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(2)
     void evaluateHistoricalDataTraceLinkRecoveryIT(Project project) {
         runTraceLinkEvaluation(project);
