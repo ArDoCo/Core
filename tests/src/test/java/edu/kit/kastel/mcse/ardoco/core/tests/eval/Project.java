@@ -40,7 +40,7 @@ public enum Project {
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994) //
     ), //
-    TEASTORE_HISTORIC( //
+    TEASTORE_HISTORICAL( //
             "src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
             "src/test/resources/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
             "src/test/resources/benchmark/teastore/text_2018/goldstandard_AB.csv", //
@@ -58,7 +58,7 @@ public enum Project {
             new ExpectedResults(.555, .899, .686, .973, .695, .976), //
             new ExpectedResults(.178, .759, .284, .851, .291, .851) //
     ), //
-    TEAMMATES_HISTORIC( // 
+    TEAMMATES_HISTORICAL( //
             "src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
             "src/test/resources/benchmark/teammates/text_2015/teammates_2015.txt", //
             "src/test/resources/benchmark/teammates/text_2015/goldstandard.csv", //
@@ -76,7 +76,7 @@ public enum Project {
             new ExpectedResults(.877, .826, .850, .984, .843, .993), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984) //
     ), //
-    BIGBLUEBUTTON_HISTORIC( //
+    BIGBLUEBUTTON_HISTORICAL( //
             "src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
             "src/test/resources/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
             "src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard.csv", //
@@ -94,7 +94,7 @@ public enum Project {
             new ExpectedResults(.899, .999, .946, .973, .932, .966), //
             new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
     ), //
-    JABREF_HISTORIC( //
+    JABREF_HISTORICAL( //
             "src/test/resources/benchmark/jabref/model_2021/pcm/jabref.repository", //
             "src/test/resources/benchmark/jabref/text_2016/jabref_2016.txt", //
             "src/test/resources/benchmark/jabref/text_2016/goldstandard.csv", //
@@ -127,7 +127,7 @@ public enum Project {
 
     /**
      * Returns an {@link Optional} containing the project that has a name that equals the given name, ignoring case.
-     * 
+     *
      * @param name the name of the project
      * @return the Optional containing the project with the given name or is empty if no such is found.
      */
@@ -142,7 +142,7 @@ public enum Project {
 
     /**
      * Returns the File that represents the model for this project.
-     * 
+     *
      * @return the File that represents the model for this project
      */
     public File getModelFile() {
@@ -151,7 +151,7 @@ public enum Project {
 
     /**
      * Returns the File that represents the model for this project with the given model type.
-     * 
+     *
      * @param modelType the model type
      * @return the File that represents the model for this project
      */
@@ -164,7 +164,7 @@ public enum Project {
 
     /**
      * Returns the File that represents the text for this project.
-     * 
+     *
      * @return the File that represents the text for this project
      */
     public File getTextFile() {
@@ -173,7 +173,7 @@ public enum Project {
 
     /**
      * Return the map of additional configuration options
-     * 
+     *
      * @return the map of additional configuration options
      */
     public Map<String, String> getAdditionalConfigurations() {
@@ -182,7 +182,7 @@ public enum Project {
 
     /**
      * Returns a {@link File} that points to the text file containing additional configurations
-     * 
+     *
      * @return the file for additional configurations
      */
     public File getAdditionalConfigurationsFile() {
@@ -191,7 +191,7 @@ public enum Project {
 
     /**
      * Returns the {@link GoldStandard} for this project.
-     * 
+     *
      * @return the File that represents the gold standard for this project
      */
     public File getTlrGoldStandardFile() {
@@ -200,7 +200,7 @@ public enum Project {
 
     /**
      * Returns a string-list of entries as goldstandard for TLR for this project.
-     * 
+     *
      * @return a list with the entries of the goldstandard for TLR
      */
     public List<String> getTlrGoldStandard() {
@@ -217,7 +217,7 @@ public enum Project {
 
     /**
      * Returns the {@link GoldStandard} for this project for the given model connector.
-     * 
+     *
      * @param pcmModel the model connector (pcm)
      * @return the {@link GoldStandard} for this project
      */
@@ -243,7 +243,7 @@ public enum Project {
 
     /**
      * Returns the expected results for Traceability Link Recovery.
-     * 
+     *
      * @return the expectedTraceLinkResults
      */
     public ExpectedResults getExpectedTraceLinkResults() {
@@ -252,7 +252,7 @@ public enum Project {
 
     /**
      * Returns the expected results for Inconsistency Detection.
-     * 
+     *
      * @return the expectedInconsistencyResults
      */
     public ExpectedResults getExpectedInconsistencyResults() {
