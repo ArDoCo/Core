@@ -16,40 +16,40 @@ public class ArchitectureTest {
             .resideInAPackage("..pipeline..")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..pipeline..", "..tests..");
+            .resideInAnyPackage("..pipeline..", "..tests..", "..tests_new..");
 
     @ArchTest
     public static final ArchRule modelInstancesOnlyAfterModelExtraction = classes().that()
             .haveSimpleName("ModelInstance")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..output..", "..tests..");
+            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..output..", "..tests..", "..tests_new..");
 
     @ArchTest
     public static final ArchRule linksOnlyAfterConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..api..", "..tests..");
+            .resideInAnyPackage("..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..api..", "..tests..", "..tests_new..");
 
     @ArchTest
     public static final ArchRule usingLinkAsNamingOnlyInConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()
-            .resideInAnyPackage("..connectiongenerator..", "..output..", "..tests..");
+            .resideInAnyPackage("..connectiongenerator..", "..output..", "..tests..", "..tests_new..");
 
     @ArchTest
     public static final ArchRule inconsistencyOnlyAfterInconsistencyDetection = classes().that()
             .haveSimpleNameContaining("Inconsistency")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..api..", "..common..", "..tests..");
+            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..api..", "..common..", "..tests..", "..tests_new..");
 
     @ArchTest
     public static final ArchRule layerRule = layeredArchitecture().consideringAllDependencies()
             // Layer definition
             .layer("Common")
-            .definedBy("..common..", "..api..", "..tests..")
+            .definedBy("..common..", "..api..", "..tests..", "..tests_new..")
             .layer("TextExtractor")
             .definedBy("..textextraction..")
             .layer("ModelExtractor")
