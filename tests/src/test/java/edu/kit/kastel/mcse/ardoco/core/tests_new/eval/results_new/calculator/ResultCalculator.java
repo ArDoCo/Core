@@ -37,71 +37,7 @@ public class ResultCalculator <T> {
      * @return the weighted EvaluationResults (Precision, Recall, F1 as {@link EvaluationResults}
      */
     public EvaluationResults<T> getWeightedAverageResults() {
-        int weight = 0;
-        double precision = 0.0;
-        double recall = 0.0;
-        double f1 = 0.0;
-        double accuracy = 0.0;
-        double phi = 0.0;
-        double specificity = 0.0;
-
-        double phiMax = 0.0;
-        double phiOverPhiMax = 0.0;
-
-        int truePositives = 0;
-        int trueNegatives = 0;
-        int falsePositives = 0;
-        int falseNegatives = 0;
-
-        for (var resultWithWeight : resultsWithWeight) {
-            var result = resultWithWeight.getOne();
-            int localWeight = resultWithWeight.getTwo();
-            weight += localWeight;
-
-            precision += result.precision() * localWeight;
-            recall += result.recall() * localWeight;
-            f1 +=  result.f1() * localWeight;
-            accuracy += result.accuracy() * localWeight;
-            specificity += result.specificity() * localWeight;
-            phi += result.phiCoefficient() * localWeight;
-
-            phiMax += result.phiCoefficientMax() * localWeight;
-            phiOverPhiMax += result.phiOverPhiMax() * localWeight;
-
-            truePositives += result.truePositives().size();
-            falseNegatives += result.falseNegatives().size();
-            falsePositives += result.falsePositives().size();
-            trueNegatives += result.trueNegatives();
-
-        }
-
-        precision /= weight;
-        recall /= weight;
-        f1 /= weight;
-
-        if (truePositives > 0) {
-            phi = EvaluationMetrics.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
-            phiMax = EvaluationMetrics.calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
-            phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(truePositives, falsePositives, falseNegatives, trueNegatives);
-            accuracy = accuracy / weight;
-            specificity = specificity / weight;
-            return new EvaluationResults<T>(precision, recall, f1,
-                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                    accuracy, phi, specificity, phiMax, phiOverPhiMax);
-        }
-        if (phi != 0.0 && accuracy > 0.0) {
-            phi = phi / weight;
-            phiMax = phiMax / weight;
-            phiOverPhiMax = phiOverPhiMax / weight;
-            accuracy = accuracy / weight;
-            specificity = specificity / weight;
-            return new EvaluationResults<T>(precision, recall, f1,
-                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                    accuracy, phi, specificity, phiMax, phiOverPhiMax);
-        }
-        return new EvaluationResults<T>(precision, recall, f1,
-                Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                0.0, 0.0, 0.0, 0.0, 0.0);
+        return ResultCalculatorUtil.calculateWeightedAverageResults(resultsWithWeight);
     }
 
     /**

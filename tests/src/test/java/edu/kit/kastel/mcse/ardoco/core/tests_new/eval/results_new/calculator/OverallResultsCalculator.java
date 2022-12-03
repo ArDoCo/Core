@@ -38,45 +38,11 @@ public class OverallResultsCalculator <T>{
      * @return the weighted average results
      */
     public EvaluationResults<T> calculateWeightedAverageResults() {
-        int weight = 0;
-        double precision = .0;
-        double recall = .0;
-        double f1 = .0;
-        double accuracy = .0;
-        double phi = .0;
-        double specificity = .0;
-
-        for (var entry : projectResults) {
-            var resultCalculator = entry.getTwo();
-
-            var results = resultCalculator.getWeightedAverageResults();
-            int localWeight = resultCalculator.getWeight();
-            weight += localWeight;
-
-            precision += localWeight * results.precision();
-            recall += localWeight * results.recall();
-            f1 += localWeight * results.f1();
-
-            accuracy += (localWeight * results.accuracy());
-            specificity += (localWeight * results.specificity());
-            phi += (localWeight * results.phiCoefficient());
-        }
-
-        precision /= weight;
-        recall /= weight;
-        f1 /= weight;
-
-        if (phi != 0.0 && accuracy > 0.0) {
-            phi = phi / weight;
-            accuracy = accuracy / weight;
-            specificity = specificity / weight;
-            return new EvaluationResults<>(precision, recall, f1,
-                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                    accuracy, phi, specificity, 0.0, 0.0);
-        }
-        return new EvaluationResults<>(precision, recall, f1,
-                Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                0.0, 0.0, 0.0, 0.0, 0.0);
+        MutableList<Pair<EvaluationResults<T>, Integer>> resultsWithWeight = Lists.mutable.empty();
+        resultsWithWeight.addAll(projectResults.stream()
+                .map(x -> Tuples.pair(x.getTwo().getWeightedAverageResults(), x.getTwo().getWeight()))
+                .toList());
+        return ResultCalculatorUtil.calculateWeightedAverageResults(resultsWithWeight);
     }
 
     /**
