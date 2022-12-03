@@ -106,6 +106,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
             config.delete();
         }
     }
+    @Disabled("Disabled until refactoring is finished")
 
     @DisplayName("Evaluate TLR")
     @ParameterizedTest(name = "Evaluating {0}")
@@ -115,6 +116,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         runTraceLinkEvaluation(project);
     }
 
+    @Disabled("Disabled until refactoring is finished")
     @DisplayName("Evaluate TLR (Historic)")
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORIC$")
@@ -233,7 +235,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         FilePrinter.printResultsInFiles(path, name, arDoCoResult);
     }
 
-    private EvaluationResults calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
+    private EvaluationResults<String> calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
         String modelId = modelState.getModelId();
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
@@ -242,7 +244,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         var results = TestUtil.compare(traceLinks.toSet(), goldStandard);
         var trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, results);
-        return new EvaluationResults(results.precision(), results.recall(), results.f1(), 
+        return new EvaluationResults<String>(results.precision(), results.recall(), results.f1(),
                 Lists.immutable.empty(), trueNegatives, Lists.immutable.empty(), Lists.immutable.empty(), 
                 results.accuracy(), results.phiCoefficient(), results.specificity(), results.phiCoefficientMax(), results.phiOverPhiMax());
     }

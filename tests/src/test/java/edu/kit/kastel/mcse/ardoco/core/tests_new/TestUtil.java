@@ -46,8 +46,6 @@ public class TestUtil {
         Set<String> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         MutableList<String> falseNegativesList = Lists.mutable.ofAll(falseNegatives);
 
-        // TODO calculate true Negatives
-
         return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList.toImmutable(), 0,
                 falsePositivesList.toImmutable(), falseNegativesList.toImmutable()));
     }
