@@ -13,11 +13,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.*;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.OverallResultsCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.files.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -49,7 +50,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
-    private static final Map<Project, ExtendedExplicitEvaluationResults<?>> EXTENDED_EVALUATION_RESULTS = new EnumMap<>(Project.class);
+    private static final Map<Project, EvaluationResults<?>> EXTENDED_EVALUATION_RESULTS = new EnumMap<>(Project.class);
     private static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
@@ -69,6 +70,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     public static void afterAll() {
         if (logger.isInfoEnabled()) {
             OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(EXTENDED_EVALUATION_RESULTS);
+
             var name = "Overall Weighted";
             var results = overallResultsCalculator.calculateWeightedAverageResults();
             TestUtil.logResults(logger, name, results);
@@ -194,15 +196,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
             TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
 
             if (detailedDebug) {
-                if (results instanceof ExplicitEvaluationResults<?> explicitResults) {
-                    printDetailedDebug(explicitResults, data);
-                }
+                printDetailedDebug(results, data);
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
                     DATA_MAP.put(project, arDoCoResult);
-                    if (results instanceof ExtendedExplicitEvaluationResults extendedEvaluationResults) {
-                        EXTENDED_EVALUATION_RESULTS.put(project, extendedEvaluationResults);
-                    }
+                    EXTENDED_EVALUATION_RESULTS.put(project, results);
                 } catch (IOException e) {
                     // failing to save project results is irrelevant for test success
                     logger.warn("Failed to load file for gold standard", e);
@@ -211,19 +209,17 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
 
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.getPrecision() >= expectedResults.precision(), "Precision " + results
-                        .getPrecision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.getRecall() >= expectedResults.recall(), "Recall " + results
-                        .getRecall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.getF1() >= expectedResults.f1(), "F1 " + results
-                        .getF1() + " is below the expected minimum value " + expectedResults.f1()));
-        if (results instanceof ExtendedEvaluationResults extendedResults) {
-            Assertions.assertAll(//
-                    () -> Assertions.assertTrue(extendedResults.getAccuracy() >= expectedResults.accuracy(), "Accuracy " + extendedResults
-                            .getAccuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                    () -> Assertions.assertTrue(extendedResults.getPhiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + extendedResults
-                            .getPhiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
-        }
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
+                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
+                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
+                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
+        Assertions.assertAll(//
+            () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
+                    .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+            () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
+                    .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {
@@ -246,12 +242,14 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         var results = TestUtil.compare(traceLinks.toSet(), goldStandard);
         var trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, results);
-        return new ExtendedExplicitEvaluationResults<>(results, trueNegatives);
+        return new EvaluationResults(results.precision(), results.recall(), results.f1(), 
+                Lists.immutable.empty(), trueNegatives, Lists.immutable.empty(), Lists.immutable.empty(), 
+                results.accuracy(), results.phiCoefficient(), results.specificity(), results.phiCoefficientMax(), results.phiOverPhiMax());
     }
 
-    private void printDetailedDebug(ExplicitEvaluationResults<?> results, DataRepository data) {
-        var falseNegatives = results.getFalseNegatives().stream().map(Object::toString);
-        var falsePositives = results.getFalsePositives().stream().map(Object::toString);
+    private void printDetailedDebug(EvaluationResults<String> results, DataRepository data) {
+        var falseNegatives = results.falseNegatives().stream().map(Object::toString);
+        var falsePositives = results.falsePositives().stream().map(Object::toString);
 
         var sentences = data.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText().getSentences();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
