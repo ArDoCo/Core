@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new;
+package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results;
 
 import org.eclipse.collections.api.list.ImmutableList;
 

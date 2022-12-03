@@ -1,11 +1,11 @@
 /* Licensed under MIT 2021-2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests_new.integration;
+package edu.kit.kastel.mcse.ardoco.core.tests_new;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new.*;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new.calculator.*;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.*;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.*;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;

@@ -1,7 +1,6 @@
-package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new;
+package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new.ExpectedResults;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.EvaluationMetrics;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Locale;

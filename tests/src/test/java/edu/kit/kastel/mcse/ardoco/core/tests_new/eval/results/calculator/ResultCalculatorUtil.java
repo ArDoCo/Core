@@ -1,8 +1,7 @@
-package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new.calculator;
+package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator;
 
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new.EvaluationResultVector;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results_new.EvaluationResults;
-import org.eclipse.collections.api.factory.Lists;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResultVector;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResults;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 
