@@ -22,6 +22,7 @@ public class TestUtil {
         throw new IllegalAccessError("This constructor should not be called!");
     }
 
+
     /**
      * Compares a collection of results with the collection of the gold standard and returns an
      * {@link EvaluationResults}.
@@ -30,7 +31,8 @@ public class TestUtil {
      * @param goldStandard Collection of Strings representing the gold standard
      * @return the result of the comparison
      */
-    public static EvaluationResults<String> compare(Collection<String> results, Collection<String> goldStandard) {
+    public static EvaluationResults<String> compare(ArDoCoResult arDoCoResult, Collection<String> results, Collection<String> goldStandard) {
+
         Set<String> distinctTraceLinks = new HashSet<>(results);
         Set<String> distinctGoldStandard = new HashSet<>(goldStandard);
 
@@ -46,8 +48,12 @@ public class TestUtil {
         Set<String> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         MutableList<String> falseNegativesList = Lists.mutable.ofAll(falseNegatives);
 
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList.toImmutable(), 0,
-                falsePositivesList.toImmutable(), falseNegativesList.toImmutable()));
+        int trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
+
+        return EvaluationResults.createEvaluationResults(
+                new ResultMatrix<>(truePositivesList.toImmutable(), trueNegatives,
+                falsePositivesList.toImmutable(), falseNegativesList.toImmutable())
+        );
     }
 
     /**
@@ -56,14 +62,12 @@ public class TestUtil {
      * Uses the total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
      * 
      * @param arDoCoResult      the output of ArDoCo
-     * @param evaluationResults the evaluation results
+     * @param truePositives     nr of true positives
+     * @param falsePositives    nr of false positives
+     * @param falseNegatives    nr of false negatives
      * @return the number of true negatives
      */
-    public static int calculateTrueNegativesForTLR(ArDoCoResult arDoCoResult, EvaluationResults<?> evaluationResults) {
-        var truePositives = evaluationResults.truePositives().size();
-        var falsePositives = evaluationResults.falsePositives().size();
-        var falseNegatives = evaluationResults.falseNegatives().size();
-
+    public static int calculateTrueNegativesForTLR(ArDoCoResult arDoCoResult, int truePositives, int falsePositives, int falseNegatives) {
         int sentences = arDoCoResult.getText().getSentences().size();
         int modelElements = 0;
         for (var model : arDoCoResult.getModelIds()) {

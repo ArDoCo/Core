@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.OverallResultsCalculator;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.files.*;
@@ -164,12 +165,14 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @EnumSource(value = Project.class)
     @Order(10)
     void compareTraceLinkRecoveryForPcmAndUmlIT(Project project) {
+
         var ardocoRunForPCM = getArDoCoResult(project);
         Assertions.assertNotNull(ardocoRunForPCM);
 
         var arDoCo = ArDoCo.getInstance(name);
         var preprocessingData = ardocoRunForPCM.getPreprocessingData();
         DataRepositoryHelper.putPreprocessingData(arDoCo.getDataRepository(), preprocessingData);
+
         File umlModelFile = project.getModelFile(ArchitectureModelType.UML);
         File additionalConfigurations = project.getAdditionalConfigurationsFile();
         var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigurations, outputDir);
@@ -185,19 +188,29 @@ class TraceabilityLinkRecoveryEvaluationIT {
     }
 
     private void checkResults(Project project, ArDoCoResult arDoCoResult) {
-        String name = project.name().toLowerCase();
+
+        // TODO warum nur erste modelID?
         var modelIds = arDoCoResult.getModelIds();
         var modelId = modelIds.stream().findFirst().orElseThrow();
-        var model = arDoCoResult.getModelState(modelId);
 
-        var results = calculateResults(project, arDoCoResult, model);
+        var goldStandard = project.getTlrGoldStandard();
+        var results = calculateResults(goldStandard, arDoCoResult, modelId);
+
         var expectedResults = project.getExpectedTraceLinkResults();
-        var data = arDoCoResult.dataRepository();
 
+        logAndSaveProjectResult(project, arDoCoResult, results, expectedResults);
+
+        compareResultWithExpected(results, expectedResults);
+
+    }
+
+    private void logAndSaveProjectResult(Project project, ArDoCoResult arDoCoResult, EvaluationResults results, ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
-            TestUtil.logResultsWithExpected(logger, name, results, expectedResults);
+            String projectName = project.name().toLowerCase();
+            TestUtil.logResultsWithExpected(logger, projectName, results, expectedResults);
 
             if (detailedDebug) {
+                var data = arDoCoResult.dataRepository();
                 printDetailedDebug(results, data);
                 try {
                     RESULTS.add(new TLProjectEvalResult(project, data));
@@ -209,7 +222,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 }
             }
         }
+    }
 
+    private void compareResultWithExpected( EvaluationResults results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
                 () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
                         .precision() + " is below the expected minimum value " + expectedResults.precision()), //
@@ -218,10 +233,10 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
                         .f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-            () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                    .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-            () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                    .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
+                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
+                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {
@@ -235,18 +250,12 @@ class TraceabilityLinkRecoveryEvaluationIT {
         FilePrinter.printResultsInFiles(path, name, arDoCoResult);
     }
 
-    private EvaluationResults<String> calculateResults(Project project, ArDoCoResult arDoCoResult, ModelExtractionState modelState) {
-        String modelId = modelState.getModelId();
+    private EvaluationResults<String> calculateResults(List<String> goldStandard, ArDoCoResult arDoCoResult, String modelId) {
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
 
-        var goldStandard = project.getTlrGoldStandard();
-
-        var results = TestUtil.compare(traceLinks.toSet(), goldStandard);
-        var trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, results);
-        return new EvaluationResults<String>(results.precision(), results.recall(), results.f1(),
-                Lists.immutable.empty(), trueNegatives, Lists.immutable.empty(), Lists.immutable.empty(), 
-                results.accuracy(), results.phiCoefficient(), results.specificity(), results.phiCoefficientMax(), results.phiOverPhiMax());
+        var result = traceLinks.toSet();
+        return TestUtil.compare(arDoCoResult, result, goldStandard);
     }
 
     private void printDetailedDebug(EvaluationResults<String> results, DataRepository data) {
