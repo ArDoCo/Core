@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests_new.integration;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
@@ -17,12 +16,13 @@ import edu.kit.kastel.mcse.ardoco.core.tests_new.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.OverallResultsCalculator;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.files.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.Pair;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -51,7 +51,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
     private static final String ADDITIONAL_CONFIG = null;
     private static final List<TLProjectEvalResult> RESULTS = new ArrayList<>();
-    private static final Map<Project, EvaluationResults<?>> EXTENDED_EVALUATION_RESULTS = new EnumMap<>(Project.class);
+    private static final Map<Project, EvaluationResults<String>> EXTENDED_EVALUATION_RESULTS = new EnumMap<>(Project.class);
     private static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
     private static final boolean detailedDebug = true;
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
@@ -70,14 +70,14 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @AfterAll
     public static void afterAll() {
         if (logger.isInfoEnabled()) {
-            OverallResultsCalculator overallResultsCalculator = TestUtil.getOverallResultsCalculator(EXTENDED_EVALUATION_RESULTS);
+            MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = TestUtil.getOverallResultsCalculator(EXTENDED_EVALUATION_RESULTS);
 
             var name = "Overall Weighted";
-            var results = overallResultsCalculator.calculateWeightedAverageResults();
+            var results = ResultCalculatorUtil.calculateWeightedAverageResults(resultsWithWeight);
             TestUtil.logResults(logger, name, results);
 
             name = "Overall Macro";
-            results = overallResultsCalculator.calculateMacroAverageResults();
+            results = ResultCalculatorUtil.calculateAverageResults(resultsWithWeight);
             TestUtil.logResults(logger, name, results);
         }
 
