@@ -8,6 +8,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.*;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -138,43 +140,33 @@ public class TestUtil {
         logger.info(infoString);
     }
 
-    public static OverallResultsCalculator getOverallResultsCalculator(Map<Project, EvaluationResults<?>> results) {
+    public static MutableList<Pair<EvaluationResults<String>, Integer>> getOverallResultsCalculator(Map<Project, EvaluationResults<String>> results) {
 
-        var overallResultsCalculator = new OverallResultsCalculator();
+        MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = Lists.mutable.empty();
+
         for (var entry : results.entrySet()) {
-            var result = entry.getValue();
-            var project = entry.getKey();
-
-            ResultCalculator resultCalculator = new ResultCalculator();
-            resultCalculator.addEvaluationResults(new EvaluationResults(result.precision(), result.recall(), result.f1(),
-                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                    result.accuracy(), result.phiCoefficient(), result.phiCoefficientMax(), result.phiOverPhiMax(), result.specificity()),
-                    result.getWeight());
-            overallResultsCalculator.addResult(project, resultCalculator);
+            EvaluationResults<String> result = entry.getValue();
+            resultsWithWeight.add(Tuples.pair(result, result.getWeight()));
         }
-        return overallResultsCalculator;
+        return resultsWithWeight;
     }
 
-    /**
-     * Constructs an {@link OverallResultsCalculator} using the provided list of {@link TLProjectEvalResult}s.
-     * 
-     * @param results the results to construct the {@link OverallResultsCalculator} from
-     * @return an {@link OverallResultsCalculator} with the provided results
-     */
-    public static OverallResultsCalculator getOverallResultsCalculator(List<TLProjectEvalResult> results) {
-        var overallResultsCalculator = new OverallResultsCalculator();
+
+    public static MutableList<Pair<EvaluationResults<String>, Integer>> getOverallResultsCalculator(List<TLProjectEvalResult> results) {
+        MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = Lists.mutable.empty();
+
+
         for (var result : results) {
             var truePositives = result.getTruePositives().stream().toList();
             var falsePositives = result.getFalsePositives().stream().toList();
             var falseNegatives = result.getFalseNegatives().stream().toList();
             var weight = truePositives.size() + falseNegatives.size();
 
-            ResultCalculator resultCalculator = new ResultCalculator();
-            resultCalculator.addEvaluationResults(new EvaluationResults(0.0,0.0,0.0, Lists.immutable.ofAll(truePositives), 0,
-                    Lists.immutable.ofAll(falsePositives),Lists.immutable.ofAll(falseNegatives),
-                    0.0, 0.0, 0.0, 0.0, 0.0), weight);
-            overallResultsCalculator.addResult(result.getProject(), resultCalculator);
+            // TODO richtiges Result erzeugen
+            EvaluationResults newResult = EvaluationResults.createEvaluationResults(new ResultMatrix<>(Lists.immutable.ofAll(truePositives), 0,
+                    Lists.immutable.ofAll(falsePositives),Lists.immutable.ofAll(falseNegatives)));
+            resultsWithWeight.add(Tuples.pair(newResult, weight));
         }
-        return overallResultsCalculator;
+        return resultsWithWeight;
     }
 }

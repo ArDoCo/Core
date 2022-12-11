@@ -7,7 +7,8 @@ import org.eclipse.collections.api.tuple.Pair;
 
 public abstract class ResultCalculatorUtil {
 
-    public static <T> EvaluationResults calculateAverageResults(int norm, MutableList<Pair<EvaluationResults<T>, Integer>> resultsWithWeight) {
+    public static <T> EvaluationResults calculateAverageResults(MutableList<Pair<EvaluationResults<T>, Integer>> resultsWithWeight) {
+        int norm = resultsWithWeight.size();
         EvaluationResultVector vector = new EvaluationResultVector();
 
         for (var resultWithWeight : resultsWithWeight) {

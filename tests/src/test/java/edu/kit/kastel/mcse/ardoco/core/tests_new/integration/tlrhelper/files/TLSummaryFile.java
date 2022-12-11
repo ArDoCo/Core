@@ -7,6 +7,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TestLink;
 
@@ -89,9 +90,9 @@ public class TLSummaryFile {
     }
 
     private static void appendOverallResults(List<TLProjectEvalResult> results, StringBuilder builder) {
-        var overallResultsCalculator = TestUtil.getOverallResultsCalculator(results);
-        var weightedResults = overallResultsCalculator.calculateWeightedAverageResults();
-        var macroResults = overallResultsCalculator.calculateMacroAverageResults();
+        var resultsWithWeight = TestUtil.getOverallResultsCalculator(results);
+        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(resultsWithWeight);
+        var macroResults = ResultCalculatorUtil.calculateAverageResults(resultsWithWeight);
         var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
         builder.append(resultString).append(LINE_SEPARATOR);
         resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
