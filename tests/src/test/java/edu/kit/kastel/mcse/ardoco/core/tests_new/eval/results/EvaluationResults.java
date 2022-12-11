@@ -37,19 +37,33 @@ public record EvaluationResults<T> (double precision, double recall, double f1,
         int nrFalsePos = matrix.falsePositives().size();
         int nrFalseNeg = matrix.falseNegatives().size();
 
-        double precision = EvaluationMetrics.calculatePrecision(nrTruePos, nrFalseNeg);
+        double precision = EvaluationMetrics.calculatePrecision(nrTruePos, nrFalsePos);
         double recall = EvaluationMetrics.calculateRecall(nrTruePos, nrFalseNeg);
         double f1 = EvaluationMetrics.calculateF1(precision, recall);
 
-        double accuracy = EvaluationMetrics.calculateAccuracy(nrTruePos, nrFalsePos,
+        double accuracy = 0;
+        double phiCoefficient =0 ;
+        double specificity = 0;
+        double phiCoefficientMax = 0;
+        double phiOverPhiMax = 0;
+
+        if (nrTruePos + nrFalsePos + nrFalseNeg + nrTrueNeg != 0) {
+            accuracy = EvaluationMetrics.calculateAccuracy(nrTruePos, nrFalsePos,
+                    nrFalseNeg, nrTrueNeg);
+        }
+        phiCoefficient = EvaluationMetrics.calculatePhiCoefficient(nrTruePos, nrFalsePos,
                 nrFalseNeg, nrTrueNeg);
-        double phiCoefficient = EvaluationMetrics.calculatePhiCoefficient(nrTruePos, nrFalsePos,
-                nrFalseNeg, nrTrueNeg);
-        double specificity = EvaluationMetrics.calculateSpecificity(nrTrueNeg, nrFalsePos);
-        double phiCoefficientMax = EvaluationMetrics.calculatePhiCoefficientMax(nrTruePos, nrFalsePos,
-                nrFalseNeg, nrTrueNeg);
-        double phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(nrTruePos, nrFalsePos,
-                nrFalseNeg, nrTrueNeg);
+        if (nrTrueNeg + nrFalsePos != 0) {
+            specificity = EvaluationMetrics.calculateSpecificity(nrTrueNeg, nrFalsePos);
+        }
+        if ((nrFalseNeg + nrTrueNeg) * (nrTruePos + nrFalseNeg) != 0) {
+            phiCoefficientMax = EvaluationMetrics.calculatePhiCoefficientMax(nrTruePos, nrFalsePos,
+                    nrFalseNeg, nrTrueNeg);
+        }
+        if (phiCoefficientMax != 0) {
+            phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(nrTruePos, nrFalsePos,
+                    nrFalseNeg, nrTrueNeg);
+        }
 
         return new EvaluationResults<T>(precision, recall, f1,
                 matrix.truePositives(), matrix.trueNegatives(),
