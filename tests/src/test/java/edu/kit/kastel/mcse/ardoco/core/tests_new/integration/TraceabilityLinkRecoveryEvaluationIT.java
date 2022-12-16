@@ -22,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.files.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.tuple.Pair;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -70,14 +69,15 @@ class TraceabilityLinkRecoveryEvaluationIT {
     @AfterAll
     public static void afterAll() {
         if (logger.isInfoEnabled()) {
-            MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = TestUtil.getOverallResultsCalculator(EXTENDED_EVALUATION_RESULTS);
+            MutableList<EvaluationResults<String>> projectResults = Lists.mutable.ofAll(EXTENDED_EVALUATION_RESULTS.values());
+//                    TestUtil.getResultsWithWeight(EXTENDED_EVALUATION_RESULTS);
 
             var name = "Overall Weighted";
-            var results = ResultCalculatorUtil.calculateWeightedAverageResults(resultsWithWeight);
+            var results = ResultCalculatorUtil.calculateWeightedAverageResults(projectResults);
             TestUtil.logResults(logger, name, results);
 
             name = "Overall Macro";
-            results = ResultCalculatorUtil.calculateAverageResults(resultsWithWeight);
+            results = ResultCalculatorUtil.calculateAverageResults(projectResults);
             TestUtil.logResults(logger, name, results);
         }
 

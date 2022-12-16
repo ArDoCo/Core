@@ -54,13 +54,13 @@ class InconsistencyDetectionEvaluationIT {
     /**
      * missing models in model
      */
-    private static final MutableList<Pair<EvaluationResults<String>, Integer>> OVERALL_MME_RESULTS = Lists.mutable.empty(); //
-    private static final MutableList<Pair<EvaluationResults<String>, Integer>> OVERALL_MME_RESULTS_BASELINE = Lists.mutable.empty();
+    private static final MutableList<EvaluationResults<String>> OVERALL_MME_RESULTS = Lists.mutable.empty(); //
+    private static final MutableList<EvaluationResults<String>> OVERALL_MME_RESULTS_BASELINE = Lists.mutable.empty();
 
     /**
      * undocumented models
      */
-    private static final MutableList<Pair<EvaluationResults<String>, Integer>> OVERALL_UME_RESULTS_CALCULATOR = Lists.mutable.empty();
+    private static final MutableList<EvaluationResults<String>> OVERALL_UME_RESULTS_CALCULATOR = Lists.mutable.empty();
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static boolean ranBaseline = false;
@@ -104,17 +104,16 @@ class InconsistencyDetectionEvaluationIT {
         // für jede "zurückgehaltene" modelInstance ein neues ArDoCo result
         Map<ModelInstance, ArDoCoResult> runs = produceRuns(project);
 
-        var resultsWithWeight = calculateEvaluationResults(project, runs);
+        var results = calculateEvaluationResults(project, runs);
 
-        OVERALL_MME_RESULTS.addAll(resultsWithWeight); // zu EvalRes und Weight
+        OVERALL_MME_RESULTS.addAll(results); // zu EvalRes und Weight
 
-        EvaluationResults weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS);
+        EvaluationResults weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
 
         var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResultsMissingModelInconsistency(project, weightedResults, expectedInconsistencyResults);
         checkResults(weightedResults, expectedInconsistencyResults);
 
-        List<EvaluationResults<String>> results = resultsWithWeight.stream().map(Pair::getOne).toList();
         writeOutResults(project, results, runs);
     }
 
@@ -195,7 +194,8 @@ class InconsistencyDetectionEvaluationIT {
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
         var results = TestUtil.compare(projectResults, inconsistentModelElements, expectedInconsistentModelElements);
 
-        OVERALL_UME_RESULTS_CALCULATOR.add(Tuples.pair(results, expectedInconsistentModelElements.size()));
+        // TODO: ist results.getWeight = expectedInconsistendModekElements.size() ?
+        OVERALL_UME_RESULTS_CALCULATOR.add(results);
 
         String name = project.name() + " missing text inconsistency";
         TestUtil.logExplicitResults(logger, name, results);
@@ -262,23 +262,23 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private MutableList<Pair<EvaluationResults<String>, Integer>> calculateEvaluationResults(Project project, Map<ModelInstance, ArDoCoResult> runs) {
+    private MutableList<EvaluationResults<String>> calculateEvaluationResults(Project project, Map<ModelInstance, ArDoCoResult> runs) {
 
-        MutableList<Pair<EvaluationResults<String>, Integer>> weightedResults = Lists.mutable.empty();
+        MutableList<EvaluationResults<String>> results = Lists.mutable.empty();
 
         for (var run : runs.entrySet()) {
             ModelInstance modelInstance = run.getKey();
             ArDoCoResult arDoCoResult = run.getValue();
             var runEvalResults = evaluateRun(project, modelInstance, arDoCoResult);
             if (runEvalResults != null) {
-                weightedResults.add(Tuples.pair(runEvalResults, runEvalResults.getWeight()));
+                results.add(runEvalResults);
             } else {
                 // for the base case, instead of calculating results, save the found inconsistencies.
                 inconsistentSentencesPerProject.put(project, arDoCoResult.getInconsistentSentences());
             }
         }
 
-        return weightedResults;
+        return results;
     }
 
     private EvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, ArDoCoResult arDoCoResult) {
@@ -459,10 +459,10 @@ class InconsistencyDetectionEvaluationIT {
         outputBuilder.append(LINE_SEPARATOR);
     }
 
-    private static String getOverallResultsString(MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight) {
+    private static String getOverallResultsString(MutableList<EvaluationResults<String>> results) {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("###").append(LINE_SEPARATOR);
-        var weightedAverageResults = ResultCalculatorUtil.calculateWeightedAverageResults(resultsWithWeight);
+        var weightedAverageResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
         var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted Average", weightedAverageResults);
         outputBuilder.append(resultString);
         outputBuilder.append(LINE_SEPARATOR);
@@ -476,10 +476,10 @@ class InconsistencyDetectionEvaluationIT {
         return outputBuilder;
     }
 
-    private static Pair<MutableList<Pair<EvaluationResults<String>, Integer>>, StringBuilder> inspectResults(List<EvaluationResults<String>> results,
+    private static Pair<MutableList<EvaluationResults<String>>, StringBuilder> inspectResults(List<EvaluationResults<String>> results,
             Map<ModelInstance, ArDoCoResult> runs, StringBuilder outputBuilder) {
         var detailedOutputBuilder = new StringBuilder();
-        MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = Lists.mutable.empty();
+        MutableList<EvaluationResults<String>> resultsWithWeight = Lists.mutable.empty();
         int counter = 0;
         for (var run : runs.entrySet()) {
             ArDoCoResult arDoCoResult = run.getValue();
@@ -507,7 +507,7 @@ class InconsistencyDetectionEvaluationIT {
         return Tuples.pair(resultsWithWeight, detailedOutputBuilder);
     }
 
-    private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder, MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight,
+    private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder, MutableList<EvaluationResults<String>> allResults,
             ArDoCoResult arDoCoResult, EvaluationResults<String> result) {
         var truePositives = result.truePositives().toList();
         appendResults(truePositives, detailedOutputBuilder, "True Positives", arDoCoResult, outputBuilder);
@@ -519,8 +519,7 @@ class InconsistencyDetectionEvaluationIT {
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
 
         var results = EvaluationResults.createEvaluationResults(new ResultMatrix(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives.toImmutable()));
-        var weight = truePositives.size() + falseNegatives.size();
-        resultsWithWeight.add(Tuples.pair(results, weight));
+        allResults.add(results);
     }
 
     private static void appendResults(List<String> resultList, StringBuilder detailedOutputBuilder, String type, ArDoCoResult arDoCoResult,
