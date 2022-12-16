@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ardoco.github.io/textprovider-json/schemas/phrasetype.json",
+  "title": "PhraseType",
+  "description": "A definition of phrase types",
+  "type": "object",
+  "required": [ "value" ],
+  "properties": {
+    "value": {
+      "type": "string",
+      "oneOf": [
+        {
+          "tag": "ADJP",
+          "tag": "ADVP",
+          "tag": "CONJP",
+          "tag": "FRAG",
+          "tag": "INTJ",
+          "tag": "LST",
+          "tag": "NAC",
+          "tag": "NP",
+          "tag": "NX",
+          "tag": "PP",
+          "tag": "PRN",
+          "tag": "PRT",
+          "tag": "QP",
+          "tag": "RRC",
+          "tag": "S",
+          "tag": "SBAR",
+          "tag": "SBARQ",
+          "tag": "SINV",
+          "tag": "SQ",
+          "tag": "T",
+          "tag": "UCP",
+          "tag": "VP",
+          "tag": "WHADJP",
+          "tag": "WHAVP",
+          "tag": "WHADVP",
+          "tag": "WHNP",
+          "tag": "WHPP",
+          "tag": "X",
+          "tag": "ROOT"
+        }
+      ]
+    }
+  }
+}
