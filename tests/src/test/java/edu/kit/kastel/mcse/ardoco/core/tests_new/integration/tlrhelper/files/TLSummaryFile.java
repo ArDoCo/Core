@@ -89,10 +89,10 @@ public class TLSummaryFile {
         }
     }
 
-    private static void appendOverallResults(List<TLProjectEvalResult> results, StringBuilder builder) {
-        var resultsWithWeight = TestUtil.getOverallResultsCalculator(results);
-        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(resultsWithWeight);
-        var macroResults = ResultCalculatorUtil.calculateAverageResults(resultsWithWeight);
+    private static void appendOverallResults(List<TLProjectEvalResult> projectResults, StringBuilder builder) {
+        var results = TestUtil.convertToEvaluationResults(projectResults);
+        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
+        var macroResults = ResultCalculatorUtil.calculateAverageResults(results);
         var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
         builder.append(resultString).append(LINE_SEPARATOR);
         resultString = TestUtil.createResultLogString("Overall Macro", macroResults);

@@ -7,18 +7,22 @@ import org.eclipse.collections.api.tuple.Pair;
 
 public abstract class ResultCalculatorUtil {
 
-    public static <T> EvaluationResults calculateAverageResults(MutableList<Pair<EvaluationResults<T>, Integer>> resultsWithWeight) {
-        int norm = resultsWithWeight.size();
+    /**
+     * TODO ist weight immer gleich result.getWeight()?
+     * @param results
+     * @return
+     * @param <T>
+     */
+    public static <T> EvaluationResults calculateAverageResults(MutableList<EvaluationResults<T>> results) {
+        int norm = results.size();
         EvaluationResultVector vector = new EvaluationResultVector();
 
-        for (var resultWithWeight : resultsWithWeight) {
-            var result = resultWithWeight.getOne();
-            var weight = resultWithWeight.getTwo();
+        for (var result: results) {
+            var weight = result.getWeight();
             if (weight <= 0) {
                 norm--;
                 continue;
             }
-
             vector.add(result);
         }
 
@@ -26,17 +30,14 @@ public abstract class ResultCalculatorUtil {
         return vector.toEvaluationResults();
     }
 
-    public static <T> EvaluationResults calculateWeightedAverageResults(MutableList<Pair<EvaluationResults<T>, Integer>> resultsWithWeight) {
+    public static <T> EvaluationResults calculateWeightedAverageResults(MutableList<EvaluationResults<T>> results) {
         int weight = 0;
         EvaluationResultVector vector = new EvaluationResultVector();
 
-        for (var resultWithWeight : resultsWithWeight) {
-            var result = resultWithWeight.getOne();
-            int localWeight = resultWithWeight.getTwo();
+        for (var result : results) {
+            int localWeight = result.getWeight();
             weight += localWeight;
-
-            vector.add(result);
-            vector.scale(localWeight);
+            vector.addWeighted(result, localWeight);
         }
 
         vector.scale(weight);

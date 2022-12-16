@@ -36,6 +36,18 @@ public class EvaluationResultVector {
         phiOverPhiMax *= scale;
     }
 
+    public void addWeighted(EvaluationResults results, int weight) {
+        precision += results.precision() * weight;
+        recall += results.recall() * weight;
+        f1 += results.f1() * weight;
+        accuracy += results.accuracy() * weight;
+        phiCoefficient += results.phiCoefficient() * weight;
+        specificity += results.specificity() * weight;
+        phiCoefficient += results.phiCoefficient() * weight;
+        phiCoefficientMax += results.phiCoefficientMax() * weight;
+        phiOverPhiMax += results.phiOverPhiMax() * weight;
+    }
+
     public EvaluationResults toEvaluationResults() {
         return new EvaluationResults(precision, recall, f1,
                 Lists.immutable.empty(), 0 , Lists.immutable.empty(), Lists.immutable.empty(),

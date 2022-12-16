@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests_new;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.*;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.*;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -140,33 +139,50 @@ public class TestUtil {
         logger.info(infoString);
     }
 
-    public static MutableList<Pair<EvaluationResults<String>, Integer>> getOverallResultsCalculator(Map<Project, EvaluationResults<String>> results) {
+//    /**
+//     * converts list of Project results into list of weighted results
+//     * @param results
+//     * @return
+//     */
+//    public static MutableList<Pair<EvaluationResults<String>, Integer>> getResultsWithWeight(Map<Project, EvaluationResults<String>> results) {
+//        var resultsWithWeight = results.values().stream()
+//                .map(stringEvaluationResults -> Tuples.pair(stringEvaluationResults, stringEvaluationResults.getWeight()))
+//                .toList();
+//        return Lists.mutable.ofAll(resultsWithWeight);
+//    }
 
-        MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = Lists.mutable.empty();
 
-        for (var entry : results.entrySet()) {
-            EvaluationResults<String> result = entry.getValue();
-            resultsWithWeight.add(Tuples.pair(result, result.getWeight()));
-        }
-        return resultsWithWeight;
-    }
+//    public static MutableList<Pair<EvaluationResults<String>, Integer>> getResultsWithWeight(List<TLProjectEvalResult> results) {
+//        MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = Lists.mutable.empty();
+//
+//
+//        for (var result : results) {
+//            var truePositives = result.getTruePositives().stream().toList();
+//            var falsePositives = result.getFalsePositives().stream().toList();
+//            var falseNegatives = result.getFalseNegatives().stream().toList();
+//            var weight = truePositives.size() + falseNegatives.size();
+//
+//            EvaluationResults newResult = EvaluationResults.createEvaluationResults(new ResultMatrix<>(Lists.immutable.ofAll(truePositives), 0,
+//                    Lists.immutable.ofAll(falsePositives),Lists.immutable.ofAll(falseNegatives)));
+//            resultsWithWeight.add(Tuples.pair(newResult, weight));
+//        }
+//        return resultsWithWeight;
+//    }
 
-
-    public static MutableList<Pair<EvaluationResults<String>, Integer>> getOverallResultsCalculator(List<TLProjectEvalResult> results) {
-        MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = Lists.mutable.empty();
+    public static MutableList<EvaluationResults<String>> convertToEvaluationResults(List<TLProjectEvalResult> results) {
+        MutableList<EvaluationResults<String>> convertedResults = Lists.mutable.empty();
 
 
         for (var result : results) {
             var truePositives = result.getTruePositives().stream().toList();
             var falsePositives = result.getFalsePositives().stream().toList();
             var falseNegatives = result.getFalseNegatives().stream().toList();
-            var weight = truePositives.size() + falseNegatives.size();
 
-            // TODO richtiges Result erzeugen
+            // TODO richtiges Result mit trueNegatives erzeugen
             EvaluationResults newResult = EvaluationResults.createEvaluationResults(new ResultMatrix<>(Lists.immutable.ofAll(truePositives), 0,
                     Lists.immutable.ofAll(falsePositives),Lists.immutable.ofAll(falseNegatives)));
-            resultsWithWeight.add(Tuples.pair(newResult, weight));
+            convertedResults.add(newResult);
         }
-        return resultsWithWeight;
+        return convertedResults;
     }
 }
