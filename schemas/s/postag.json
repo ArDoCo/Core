@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ardoco.github.io/textprovider-json/schemas/postag.json",
+  "title": "POSTag",
+  "description": "A definition of Part-of-Speech tags",
+  "type": "object",
+  "required": [
+    "value"
+  ],
+  "properties": {
+    "value": {
+      "type": "string",
+      "enum": [
+        "JJ",
+        "JJR",
+        "JJS",
+        "RB",
+        "RBR",
+        "RBS",
+        "WRB",
+        "CC",
+        "IN",
+        "CD",
+        "DT",
+        "WDT",
+        "EX",
+        "FW",
+        "LS",
+        "NN",
+        "NNS",
+        "NNP",
+        "NNPS",
+        "PDT",
+        "POS",
+        "PRP",
+        "PRP$",
+        "WP$",
+        "WP",
+        "RP",
+        "SYM",
+        "TO",
+        "UH",
+        "VB",
+        "VBD",
+        "VBG",
+        "VBN",
+        "VBP",
+        "VBZ",
+        "MD",
+        ".",
+        ",",
+        ":",
+        "-LRB-",
+        "-RRB-",
+        "-NONE-",
+        "``",
+        "''",
+        "$",
+        "#"
+      ]
+    }
+  }
+}
