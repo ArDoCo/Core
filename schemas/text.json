@@ -12,7 +12,260 @@
       "description": "the words that are contained in this sentence",
       "type": "array",
       "items": {
-        "$ref": "https://ardoco.github.io/textprovider-json/schemas/sentence.json"
+        "description": "Sentence in a text",
+        "type": "object",
+        "required": [
+          "sentenceNo",
+          "text",
+          "constituencyTree",
+          "words"
+        ],
+        "properties": {
+          "sentenceNo": {
+            "description": "index of the sentence",
+            "type": "integer",
+            "minimum": 0
+          },
+          "text": {
+            "description": "the text of the sentence",
+            "type": "string"
+          },
+          "constituencyTree": {
+            "description": "the constituency tree of the sentence in bracket notation",
+            "type": "string"
+          },
+          "words": {
+            "description": "the words that are contained in this sentence",
+            "type": "array",
+            "items": {
+              "description": "Definition of a word",
+              "type": "object",
+              "required": [
+                "sentenceNo",
+                "text",
+                "lemma",
+                "posTag",
+                "outgoingDependencies",
+                "incomingDependencies"
+              ],
+              "properties": {
+                "sentenceNo": {
+                  "description": "index of the sentence the word is contained in",
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "text": {
+                  "description": "the text of the word",
+                  "type": "string"
+                },
+                "lemma": {
+                  "description": "the lemma of the word",
+                  "type": "string"
+                },
+                "posTag": {
+                  "description": "the lemma of the word",
+                  "type": "string",
+                  "enum": [
+                    "JJ",
+                    "JJR",
+                    "JJS",
+                    "RB",
+                    "RBR",
+                    "RBS",
+                    "WRB",
+                    "CC",
+                    "IN",
+                    "CD",
+                    "DT",
+                    "WDT",
+                    "EX",
+                    "FW",
+                    "LS",
+                    "NN",
+                    "NNS",
+                    "NNP",
+                    "NNPS",
+                    "PDT",
+                    "POS",
+                    "PRP",
+                    "PRP$",
+                    "WP$",
+                    "WP",
+                    "RP",
+                    "SYM",
+                    "TO",
+                    "UH",
+                    "VB",
+                    "VBD",
+                    "VBG",
+                    "VBN",
+                    "VBP",
+                    "VBZ",
+                    "MD",
+                    ".",
+                    ",",
+                    ":",
+                    "-LRB-",
+                    "-RRB-",
+                    "-NONE-",
+                    "``",
+                    "''",
+                    "$",
+                    "#"
+                  ]
+                },
+                "outgoingDependencies": {
+                  "description": "the outgoing dependencies",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "targetWordId",
+                      "dependencyType"
+                    ],
+                    "properties": {
+                      "targetWordId": {
+                        "description": "The id of the word the dependency points to.",
+                        "type": "integer"
+                      },
+                      "dependencyType": {
+                        "description": "The valid dependency tags",
+                        "type": "string",
+                        "enum": [
+                          "APPOS",
+                          "NSUBJ",
+                          "POSS",
+                          "OBJ",
+                          "IOBJ",
+                          "NMOD",
+                          "NSUBJPASS",
+                          "POBJ",
+                          "AGENT",
+                          "NUM",
+                          "PREDET",
+                          "RCMOD",
+                          "CSUBJ",
+                          "CCOMP",
+                          "XCOMP",
+                          "OBL",
+                          "VOCATIVE",
+                          "EXPL",
+                          "DISLOCATED",
+                          "ADVCL",
+                          "ADVMOD",
+                          "DISCOURSE",
+                          "AUXILIARY",
+                          "COP",
+                          "MARK",
+                          "ACL",
+                          "AMOD",
+                          "DET",
+                          "CLF",
+                          "CASE",
+                          "CONJ",
+                          "CC",
+                          "FIXED",
+                          "FLAT",
+                          "COMPOUND",
+                          "LIST",
+                          "PARATAXIS",
+                          "ORPHAN",
+                          "GOES_WITH",
+                          "REPARANDUM",
+                          "PUNCT",
+                          "CSUBJ_PASS",
+                          "ACL_RELCL",
+                          "COMPOUND_PRT",
+                          "NMOD_POSS",
+                          "REF",
+                          "NSUBJ_XSUBJ",
+                          "NSUBJ_PASS_XSUBJ",
+                          "NSUBJ_RELSUBJ",
+                          "NSUBJ_PASS_RELSUBJ",
+                          "OBJ_RELOBJ"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "incomingDependencies": {
+                  "description": "the incoming dependencies",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "sourceWordId",
+                      "dependencyType"
+                    ],
+                    "properties": {
+                      "sourceWordId": {
+                        "description": "The id of the word the dependency originates from.",
+                        "type": "integer"
+                      },
+                      "dependencyType": {
+                        "description": "The valid dependency tags",
+                        "type": "string",
+                        "enum": [
+                          "APPOS",
+                          "NSUBJ",
+                          "POSS",
+                          "OBJ",
+                          "IOBJ",
+                          "NMOD",
+                          "NSUBJPASS",
+                          "POBJ",
+                          "AGENT",
+                          "NUM",
+                          "PREDET",
+                          "RCMOD",
+                          "CSUBJ",
+                          "CCOMP",
+                          "XCOMP",
+                          "OBL",
+                          "VOCATIVE",
+                          "EXPL",
+                          "DISLOCATED",
+                          "ADVCL",
+                          "ADVMOD",
+                          "DISCOURSE",
+                          "AUXILIARY",
+                          "COP",
+                          "MARK",
+                          "ACL",
+                          "AMOD",
+                          "DET",
+                          "CLF",
+                          "CASE",
+                          "CONJ",
+                          "CC",
+                          "FIXED",
+                          "FLAT",
+                          "COMPOUND",
+                          "LIST",
+                          "PARATAXIS",
+                          "ORPHAN",
+                          "GOES_WITH",
+                          "REPARANDUM",
+                          "PUNCT",
+                          "CSUBJ_PASS",
+                          "ACL_RELCL",
+                          "COMPOUND_PRT",
+                          "NMOD_POSS",
+                          "REF",
+                          "NSUBJ_XSUBJ",
+                          "NSUBJ_PASS_XSUBJ",
+                          "NSUBJ_RELSUBJ",
+                          "NSUBJ_PASS_RELSUBJ",
+                          "OBJ_RELOBJ"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
