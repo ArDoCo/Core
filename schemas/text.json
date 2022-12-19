@@ -11,6 +11,7 @@
     "sentences": {
       "description": "the words that are contained in this sentence",
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "description": "Sentence in a text",
         "type": "object",
@@ -37,11 +38,13 @@
           "words": {
             "description": "the words that are contained in this sentence",
             "type": "array",
+            "uniqueItems": true,
             "items": {
               "description": "Definition of a word",
               "type": "object",
               "required": [
                 "sentenceNo",
+                "id",
                 "text",
                 "lemma",
                 "posTag",
@@ -53,6 +56,11 @@
                   "description": "index of the sentence the word is contained in",
                   "type": "integer",
                   "minimum": 0
+                },
+                "id": {
+                  "description": "The id of the word. Should be ascending from 1 for the first word in the text.",
+                  "type": "integer",
+                  "minimum": 1
                 },
                 "text": {
                   "description": "the text of the word",
@@ -68,6 +76,7 @@
                 "outgoingDependencies": {
                   "description": "the outgoing dependencies",
                   "type": "array",
+                  "uniqueItems": true,
                   "items": {
                     "type": "object",
                     "required": [
@@ -88,6 +97,7 @@
                 "incomingDependencies": {
                   "description": "the incoming dependencies",
                   "type": "array",
+                  "uniqueItems": true,
                   "items": {
                     "type": "object",
                     "required": [
