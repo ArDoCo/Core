@@ -16,7 +16,7 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-      - uses: joshlong/java-version-export-github-action@v17
+      - uses: joshlong/java-version-export-github-action@v20
         id: jve
       - name: Set up JDK
         uses: actions/setup-java@v3
