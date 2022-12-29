@@ -1,7 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results;
 
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.EvaluationMetrics;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import java.util.Locale;
 
@@ -28,6 +31,13 @@ public record EvaluationResults<T> (double precision, double recall, double f1,
 
     public int getWeight() {
         return this.truePositives().size() + this.falseNegatives().size();
+    }
+
+    public ImmutableList<T> getFound() {
+        MutableList<T> found = Lists.mutable.empty();
+        found.addAll(truePositives.castToCollection());
+        found.addAll(falsePositives.castToCollection());
+        return found.toImmutable();
     }
 
 

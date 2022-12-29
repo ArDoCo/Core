@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests_new;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.*;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TLProjectEvalResult;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
@@ -32,24 +31,29 @@ public class TestUtil {
      * @param goldStandard Collection of Strings representing the gold standard
      * @return the result of the comparison
      */
-    public static EvaluationResults<String> compare(ArDoCoResult arDoCoResult, Collection<String> results, Collection<String> goldStandard) {
+    public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, Collection<T> results, Collection<T> goldStandard, boolean tlr) {
 
-        Set<String> distinctTraceLinks = new HashSet<>(results);
-        Set<String> distinctGoldStandard = new HashSet<>(goldStandard);
+        Set<T> distinctTraceLinks = new HashSet<>(results);
+        Set<T> distinctGoldStandard = new HashSet<>(goldStandard);
 
         // True Positives are the trace links that are contained on both lists
-        Set<String> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
-        MutableList<String> truePositivesList = Lists.mutable.ofAll(truePositives);
+        Set<T> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
+        MutableList<T> truePositivesList = Lists.mutable.ofAll(truePositives);
 
         // False Positives are the trace links that are only contained in the result set
-        Set<String> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
-        MutableList<String> falsePositivesList = Lists.mutable.ofAll(falsePositives);
+        Set<T> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
+        MutableList<T> falsePositivesList = Lists.mutable.ofAll(falsePositives);
 
         // False Negatives are the trace links that are only contained in the gold standard
-        Set<String> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
-        MutableList<String> falseNegativesList = Lists.mutable.ofAll(falseNegatives);
+        Set<T> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
+        MutableList<T> falseNegativesList = Lists.mutable.ofAll(falseNegatives);
 
-        int trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
+        int trueNegatives;
+        if(tlr) {
+            trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
+        } else {
+            trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
+        }
 
         return EvaluationResults.createEvaluationResults(
                 new ResultMatrix<>(truePositivesList.toImmutable(), trueNegatives,
@@ -77,6 +81,12 @@ public class TestUtil {
 
         int confusionMatrixSum = sentences * modelElements;
         return confusionMatrixSum - (truePositives + falsePositives + falseNegatives);
+    }
+
+    public static int calculateTrueNegativesForInconsistencies(ArDoCoResult arDoCoResult, int truePositives, int falsePositives, int falseNegatives) {
+        int numberOfSentences = arDoCoResult.getText().getSentences().size();
+        return numberOfSentences - (truePositives + falsePositives + falseNegatives);
+
     }
 
     /**
@@ -137,52 +147,5 @@ public class TestUtil {
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultStringWithExpected(expectedResults));
         logger.info(infoString);
-    }
-
-//    /**
-//     * converts list of Project results into list of weighted results
-//     * @param results
-//     * @return
-//     */
-//    public static MutableList<Pair<EvaluationResults<String>, Integer>> getResultsWithWeight(Map<Project, EvaluationResults<String>> results) {
-//        var resultsWithWeight = results.values().stream()
-//                .map(stringEvaluationResults -> Tuples.pair(stringEvaluationResults, stringEvaluationResults.getWeight()))
-//                .toList();
-//        return Lists.mutable.ofAll(resultsWithWeight);
-//    }
-
-
-//    public static MutableList<Pair<EvaluationResults<String>, Integer>> getResultsWithWeight(List<TLProjectEvalResult> results) {
-//        MutableList<Pair<EvaluationResults<String>, Integer>> resultsWithWeight = Lists.mutable.empty();
-//
-//
-//        for (var result : results) {
-//            var truePositives = result.getTruePositives().stream().toList();
-//            var falsePositives = result.getFalsePositives().stream().toList();
-//            var falseNegatives = result.getFalseNegatives().stream().toList();
-//            var weight = truePositives.size() + falseNegatives.size();
-//
-//            EvaluationResults newResult = EvaluationResults.createEvaluationResults(new ResultMatrix<>(Lists.immutable.ofAll(truePositives), 0,
-//                    Lists.immutable.ofAll(falsePositives),Lists.immutable.ofAll(falseNegatives)));
-//            resultsWithWeight.add(Tuples.pair(newResult, weight));
-//        }
-//        return resultsWithWeight;
-//    }
-
-    public static MutableList<EvaluationResults<String>> convertToEvaluationResults(List<TLProjectEvalResult> results) {
-        MutableList<EvaluationResults<String>> convertedResults = Lists.mutable.empty();
-
-
-        for (var result : results) {
-            var truePositives = result.getTruePositives().stream().toList();
-            var falsePositives = result.getFalsePositives().stream().toList();
-            var falseNegatives = result.getFalseNegatives().stream().toList();
-
-            // TODO richtiges Result mit trueNegatives erzeugen
-            EvaluationResults newResult = EvaluationResults.createEvaluationResults(new ResultMatrix<>(Lists.immutable.ofAll(truePositives), 0,
-                    Lists.immutable.ofAll(falsePositives),Lists.immutable.ofAll(falseNegatives)));
-            convertedResults.add(newResult);
-        }
-        return convertedResults;
     }
 }
