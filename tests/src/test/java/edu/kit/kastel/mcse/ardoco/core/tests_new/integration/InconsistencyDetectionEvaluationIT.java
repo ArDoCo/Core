@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * run this multiple times so each element was held back once.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class InconsistencyDetectionEvaluationIT {
+class InconsistencyDetectionEvaluationIT{
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
@@ -60,7 +60,7 @@ class InconsistencyDetectionEvaluationIT {
     /**
      * undocumented models
      */
-    private static final MutableList<EvaluationResults<String>> OVERALL_UME_RESULTS_CALCULATOR = Lists.mutable.empty();
+    private static final MutableList<EvaluationResults<String>> OVERALL_UME_RESULTS = Lists.mutable.empty();
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static boolean ranBaseline = false;
@@ -83,11 +83,6 @@ class InconsistencyDetectionEvaluationIT {
     @Order(1)
     void missingModelElementInconsistencyIT(Project project) {
         runMissingModelElementInconsistencyEval(project);
-    }
-
-    @Test
-    void test() {
-        runMissingModelElementInconsistencyEval(Project.TEASTORE);
     }
 
     @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
@@ -160,6 +155,10 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
+
+
+
+
     /**
      * Tests the inconsistency detection for undocumented model elements on all {@link Project projects}.
      *
@@ -182,6 +181,9 @@ class InconsistencyDetectionEvaluationIT {
         runMissingTextInconsistencyEval(project);
     }
 
+
+
+
     private void runMissingTextInconsistencyEval(Project project) {
         var projectResults = arDoCoResults.get(project);
         if (projectResults == null) {
@@ -192,10 +194,9 @@ class InconsistencyDetectionEvaluationIT {
 
         List<String> expectedInconsistentModelElements = project.getMissingTextForModelElementGoldStandard();
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
-        var results = TestUtil.compare(projectResults, inconsistentModelElements, expectedInconsistentModelElements);
+        var results = TestUtil.compare(projectResults, inconsistentModelElements, expectedInconsistentModelElements, false);
 
-        // TODO: ist results.getWeight = expectedInconsistendModekElements.size() ?
-        OVERALL_UME_RESULTS_CALCULATOR.add(results);
+        OVERALL_UME_RESULTS.add(results);
 
         String name = project.name() + " missing text inconsistency";
         TestUtil.logExplicitResults(logger, name, results);
@@ -225,8 +226,8 @@ class InconsistencyDetectionEvaluationIT {
         Assertions.assertNotNull(weightedResults);
         Assertions.assertNotNull(macroResults);
 
-        var weightedUMEResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_UME_RESULTS_CALCULATOR);
-        var macroUMEResults = ResultCalculatorUtil.calculateAverageResults(OVERALL_UME_RESULTS_CALCULATOR);
+        var weightedUMEResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_UME_RESULTS);
+        var macroUMEResults = ResultCalculatorUtil.calculateAverageResults(OVERALL_UME_RESULTS);
 
         Assertions.assertNotNull(weightedUMEResults);
         Assertions.assertNotNull(macroUMEResults);
@@ -293,6 +294,7 @@ class InconsistencyDetectionEvaluationIT {
         }
 
         var goldStandard = project.getTlrGoldStandard(getPcmModel(project));
+        // expected: alle Tracelinks im text mit dem entfernten model
         var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(i -> i.toString()).castToCollection();
         var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(i -> i.toString()).castToCollection();
 
@@ -301,20 +303,7 @@ class InconsistencyDetectionEvaluationIT {
 
     private static EvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, Collection<String> expectedLines,
             Collection<String> actualSentences) {
-        var results = TestUtil.compare(arDoCoResult, actualSentences, expectedLines);
-        int numberOfSentences = arDoCoResult.getText().getSentences().size();
-        int truePositiveSentences = results.truePositives().distinct().size();
-        int falsePositiveSentences = results.falsePositives().distinct().size();
-        int falseNegativeSentences = results.falseNegatives().distinct().size();
-        int trueNegatives = numberOfSentences - (truePositiveSentences + falsePositiveSentences + falseNegativeSentences);
-        return new EvaluationResults<>(results.precision(), results.recall(), results.f1(),
-                results.truePositives(), trueNegatives, results.falseNegatives(), results.falsePositives(),
-                results.accuracy(), results.phiCoefficient(), results.specificity(), results.phiCoefficientMax(), results.phiOverPhiMax());
-
-
-       //return TestUtil.compare(arDoCoResult, actualSentences, expectedLines);
-        //int numberOfSentences = arDoCoResult.getText().getSentences().size();
-        // TODO: entspricht numberOfSentences der confusionMatrixSum in calculateTrueNegativesForTLR in TestUtil?
+        return TestUtil.compare(arDoCoResult, actualSentences, expectedLines, false);
     }
 
     private static PcmXMLModelConnector getPcmModel(Project project) {

@@ -30,7 +30,7 @@ public abstract class ResultCalculatorUtil {
         return vector.toEvaluationResults();
     }
 
-    public static <T> EvaluationResults calculateWeightedAverageResults(MutableList<EvaluationResults<T>> results) {
+    public static <T> EvaluationResults<T> calculateWeightedAverageResults(MutableList<EvaluationResults<T>> results) {
         int weight = 0;
         EvaluationResultVector vector = new EvaluationResultVector();
 
