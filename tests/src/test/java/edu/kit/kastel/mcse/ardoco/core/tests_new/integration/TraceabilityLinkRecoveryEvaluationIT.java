@@ -128,11 +128,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
 
     private void runTraceLinkEvaluation(Project project) {
-        // generate result
         ArDoCoResult arDoCoResult = getArDoCoResult(project);
         Assertions.assertNotNull(arDoCoResult);
 
-        // calculate results and compare to expected results
         checkResults(project, arDoCoResult);
 
         writeDetailedOutput(project, arDoCoResult);
@@ -196,7 +194,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
      */
     private void checkResults(Project project, ArDoCoResult arDoCoResult) {
 
-        // TODO warum nur erste modelID?
         var modelIds = arDoCoResult.getModelIds();
         var modelId = modelIds.stream().findFirst().orElseThrow();
 
@@ -211,7 +208,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     }
 
-    private void logAndSaveProjectResult(Project project, ArDoCoResult arDoCoResult, EvaluationResults results, ExpectedResults expectedResults) {
+    private void logAndSaveProjectResult(Project project, ArDoCoResult arDoCoResult, EvaluationResults<String> results, ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
             String projectName = project.name().toLowerCase();
             TestUtil.logResultsWithExpected(logger, projectName, results, expectedResults);
@@ -231,7 +228,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
     }
 
-    private void compareResultWithExpected( EvaluationResults results, ExpectedResults expectedResults) {
+    private void compareResultWithExpected(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
                 () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
                         .precision() + " is below the expected minimum value " + expectedResults.precision()), //
