@@ -64,8 +64,8 @@ class InconsistencyDetectionEvaluationIT{
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static boolean ranBaseline = false;
-    private static Map<Project, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new EnumMap<>(Project.class);
-    private static Map<Project, ArDoCoResult> arDoCoResults = new EnumMap<>(Project.class);
+    private static final Map<Project, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new EnumMap<>(Project.class);
+    private static final Map<Project, ArDoCoResult> arDoCoResults = new EnumMap<>(Project.class);
 
     /**
      * Tests the inconsistency detection for missing model elements on all {@link Project projects}.
@@ -96,14 +96,13 @@ class InconsistencyDetectionEvaluationIT{
 
     private void runMissingModelElementInconsistencyEval(Project project) {
         logger.info("Start evaluation of MME-inconsistency for {}", project.name());
-        // für jede "zurückgehaltene" modelInstance ein neues ArDoCo result
         Map<ModelInstance, ArDoCoResult> runs = produceRuns(project);
 
         var results = calculateEvaluationResults(project, runs);
 
-        OVERALL_MME_RESULTS.addAll(results); // zu EvalRes und Weight
+        OVERALL_MME_RESULTS.addAll(results);
 
-        EvaluationResults weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
+        EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
 
         var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResultsMissingModelInconsistency(project, weightedResults, expectedInconsistencyResults);
@@ -206,11 +205,10 @@ class InconsistencyDetectionEvaluationIT{
     private static Map<ModelInstance, ArDoCoResult> produceRuns(Project project) {
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
 
-        // für jede "zurückgehaltene" modelInstance ein neues ArDoCo result
         Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
 
 
-        ArDoCoResult baseArDoCoResult = runs.get(null); // = result, wenn keine modelInstance zurückgehalten wird
+        ArDoCoResult baseArDoCoResult = runs.get(null);
         saveOutput(project, baseArDoCoResult);
         arDoCoResults.put(project, baseArDoCoResult);
         return runs;
@@ -287,16 +285,15 @@ class InconsistencyDetectionEvaluationIT{
 
         ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(
                 modelId,
-                MissingModelInstanceInconsistency.class); // in text but not in model
+                MissingModelInstanceInconsistency.class);
         if (removedElement == null) {
             // base case
             return null;
         }
 
         var goldStandard = project.getTlrGoldStandard(getPcmModel(project));
-        // expected: alle Tracelinks im text mit dem entfernten model
-        var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(i -> i.toString()).castToCollection();
-        var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(i -> i.toString()).castToCollection();
+        var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(Object::toString).castToCollection();
+        var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(Object::toString).castToCollection();
 
         return calculateEvaluationResults(arDoCoResult, expectedLines, actualSentences);
     }
@@ -314,14 +311,14 @@ class InconsistencyDetectionEvaluationIT{
         }
     }
 
-    private void logResultsMissingModelInconsistency(Project project, EvaluationResults weightedAverageResult, ExpectedResults expectedResults) {
+    private void logResultsMissingModelInconsistency(Project project, EvaluationResults<String> weightedAverageResult, ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
             String name = project.name() + " missing model inconsistency";
             TestUtil.logResultsWithExpected(logger, name, weightedAverageResult, expectedResults);
         }
     }
 
-    private void checkResults(EvaluationResults results, ExpectedResults expectedResults) {
+    private void checkResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
                 () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
                         .precision() + " is below the expected minimum value " + expectedResults.precision()), //
@@ -359,7 +356,7 @@ class InconsistencyDetectionEvaluationIT{
         FilePrinter.writeToFile(detailedFilename, detailedOutputBuilder.toString());
     }
 
-    private void writeOutResults(Project project, EvaluationResults results) {
+    private void writeOutResults(Project project, EvaluationResults<String> results) {
         Path outputPath = Path.of(OUTPUT);
         Path idEvalPath = outputPath.resolve(DIRECTORY_NAME);
         try {
@@ -407,7 +404,7 @@ class InconsistencyDetectionEvaluationIT{
         return Tuples.pair(outputBuilder, detailedOutputBuilder);
     }
 
-    private static void writeOutput(EvaluationResults weightedResults, EvaluationResults macroResults) throws IOException {
+    private static void writeOutput(EvaluationResults<String> weightedResults, EvaluationResults<String> macroResults) throws IOException {
         var evalDir = Path.of(OUTPUT).resolve(DIRECTORY_NAME);
         Files.createDirectories(evalDir);
         var outputFile = evalDir.resolve("base_results.md");
@@ -434,7 +431,7 @@ class InconsistencyDetectionEvaluationIT{
         Files.writeString(outputFile, outputBuilder.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static void writeOverallOutputMissingTextInconsistency(EvaluationResults weightedResults, EvaluationResults macroResults) throws IOException {
+    private static void writeOverallOutputMissingTextInconsistency(EvaluationResults<String> weightedResults, EvaluationResults<String> macroResults) throws IOException {
         var evalDir = Path.of(OUTPUT).resolve(DIRECTORY_NAME);
         Files.createDirectories(evalDir);
         var outputFile = evalDir.resolve("_MissingTextInconsistency_Overall_Results.md");
@@ -507,7 +504,7 @@ class InconsistencyDetectionEvaluationIT{
         var falseNegatives = result.falseNegatives().toList();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
 
-        var results = EvaluationResults.createEvaluationResults(new ResultMatrix(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives.toImmutable()));
+        var results = EvaluationResults.createEvaluationResults(new ResultMatrix<String>(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives.toImmutable()));
         allResults.add(results);
     }
 
@@ -524,7 +521,7 @@ class InconsistencyDetectionEvaluationIT{
         outputBuilder.append("Initial Inconsistencies: ").append(initialInconsistencies.size());
         var initialInconsistenciesSentences = initialInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
                 .toSortedSet()
-                .collect(i -> i.toString());
+                .collect(Object::toString);
         outputBuilder.append(LINE_SEPARATOR).append(listToString(initialInconsistenciesSentences));
     }
 
@@ -548,7 +545,7 @@ class InconsistencyDetectionEvaluationIT{
     }
 
     private static List<String> sortIntegerStrings(List<String> list) {
-        return list.stream().map(Integer::parseInt).sorted().map(i -> i.toString()).toList();
+        return list.stream().map(Integer::parseInt).sorted().map(Object::toString).toList();
     }
 
     private static String listToString(List<?> truePositives) {

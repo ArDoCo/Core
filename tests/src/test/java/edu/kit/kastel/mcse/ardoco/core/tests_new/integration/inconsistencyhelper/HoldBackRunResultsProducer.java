@@ -38,7 +38,6 @@ public class HoldBackRunResultsProducer {
      *         when running ArDoCo without the ModelElement
      */
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
-        // für jede "zurückgehaltene" modelInstance ein neues ArDoCo result
         Map<ModelInstance, ArDoCoResult> runs = new HashMap<ModelInstance, ArDoCoResult>();
 
         inputModel = project.getModelFile();

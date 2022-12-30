@@ -24,12 +24,13 @@ public class TestUtil {
 
 
     /**
-     * Compares a collection of results with the collection of the gold standard and returns an
-     * {@link EvaluationResults}.
-     * 
-     * @param results      Collection of Strings representing the results
-     * @param goldStandard Collection of Strings representing the gold standard
-     * @return the result of the comparison
+     *
+     * @param arDoCoResult  the ArDoCoResult
+     * @param results       Collection representing the results
+     * @param goldStandard  Collection representing the gold standard
+     * @param tlr           defines how to calculate the true negatives
+     * @return              the result of the comparison
+     * @param <T>           Type of the Objects in the Collections and the returned result of the comparison
      */
     public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, Collection<T> results, Collection<T> goldStandard, boolean tlr) {
 

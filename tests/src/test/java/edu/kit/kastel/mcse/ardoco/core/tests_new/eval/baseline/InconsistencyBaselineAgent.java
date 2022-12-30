@@ -4,8 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.baseline;
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.baseline.InconsistencyBaseline;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.baseline.InconsistencyBaselineInformant;
 
 import java.util.List;
 

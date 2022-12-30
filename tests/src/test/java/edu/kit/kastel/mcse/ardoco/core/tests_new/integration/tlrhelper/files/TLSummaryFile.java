@@ -12,7 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator.ResultC
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TestLink;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.tuple.Pair;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;

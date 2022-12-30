@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results;
 
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.EvaluationMetrics;
-import org.apache.commons.lang3.mutable.Mutable;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;

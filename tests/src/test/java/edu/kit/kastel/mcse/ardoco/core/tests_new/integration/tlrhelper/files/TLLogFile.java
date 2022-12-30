@@ -6,14 +6,15 @@ import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests_new.integration.tlrhelper.TestLink;
 import org.eclipse.collections.api.tuple.Pair;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * This helper-class offer functionality to write out a log of the results for TLR.
