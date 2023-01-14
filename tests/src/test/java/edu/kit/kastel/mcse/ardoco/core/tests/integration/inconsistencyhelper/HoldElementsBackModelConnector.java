@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.tests_new.integration.inconsistencyhelper;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;

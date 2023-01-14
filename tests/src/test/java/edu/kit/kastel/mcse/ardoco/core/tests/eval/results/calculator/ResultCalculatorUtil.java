@@ -1,7 +1,7 @@
-package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.calculator;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator;
 
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResultVector;
-import edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultVector;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import org.eclipse.collections.api.list.MutableList;
 
 public abstract class ResultCalculatorUtil {

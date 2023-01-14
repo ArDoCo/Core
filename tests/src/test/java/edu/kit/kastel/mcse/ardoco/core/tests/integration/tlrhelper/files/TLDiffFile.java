@@ -1,20 +1,19 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
+import org.eclipse.collections.api.tuple.Pair;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
+import java.util.*;
 
 /**
  * This is a helper class to write out a diff-file for the evaluation results of TLR.
@@ -32,30 +31,34 @@ public class TLDiffFile {
      * Writes out the differences of new and old results.
      * 
      * @param targetFile file to write into
-     * @param newResults new results
-     * @param oldResults old results
+     * @param newProjectResults new results
+     * @param oldProjectResults old results
      * @param dataMap    the mapping of Project to ArDoCoResult of the new run
      * @throws IOException if writing fails
      */
-    public static void save(Path targetFile, Collection<TLProjectEvalResult> newResults, Collection<TLProjectEvalResult> oldResults,
-            Map<Project, ArDoCoResult> dataMap) throws IOException {
+    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> newProjectResults, Collection<Pair<Project, EvaluationResults<TestLink>>> oldProjectResults,
+                            Map<Project, ArDoCoResult> dataMap) throws IOException {
         // Assumption: Both collections contain the same projects
 
-        newResults = newResults.stream().sorted().toList();
-        oldResults = oldResults.stream().sorted().toList();
+        newProjectResults = newProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().name())).toList();
+        oldProjectResults = oldProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().name())).toList();
 
         var builder = new StringBuilder();
 
         builder.append("Time of evaluation: `").append(CommonUtilities.getCurrentTimeAsString()).append("`");
         builder.append(LINE_SEPARATOR);
 
+        var newResults = newProjectResults.stream().map(Pair::getTwo).toList();
+        var oldResults = newProjectResults.stream().map(Pair::getTwo).toList();
+
+
         // Append average differences in precision, recall, f1
-        var oldAvgPrecision = oldResults.stream().mapToDouble(TLProjectEvalResult::getPrecision).average().orElse(Double.NaN);
-        var oldAvgRecall = oldResults.stream().mapToDouble(TLProjectEvalResult::getRecall).average().orElse(Double.NaN);
-        var oldAvgF1 = oldResults.stream().mapToDouble(TLProjectEvalResult::getF1).average().orElse(Double.NaN);
-        var newAvgPrecision = newResults.stream().mapToDouble(TLProjectEvalResult::getPrecision).average().orElse(Double.NaN);
-        var newAvgRecall = newResults.stream().mapToDouble(TLProjectEvalResult::getRecall).average().orElse(Double.NaN);
-        var newAvgF1 = newResults.stream().mapToDouble(TLProjectEvalResult::getF1).average().orElse(Double.NaN);
+        var oldAvgPrecision = oldResults.stream().mapToDouble(EvaluationResults::precision).average().orElse(Double.NaN);
+        var oldAvgRecall = oldResults.stream().mapToDouble(EvaluationResults::recall).average().orElse(Double.NaN);
+        var oldAvgF1 = oldResults.stream().mapToDouble(EvaluationResults::f1).average().orElse(Double.NaN);
+        var newAvgPrecision = newResults.stream().mapToDouble(EvaluationResults::precision).average().orElse(Double.NaN);
+        var newAvgRecall = newResults.stream().mapToDouble(EvaluationResults::recall).average().orElse(Double.NaN);
+        var newAvgF1 = newResults.stream().mapToDouble(EvaluationResults::f1).average().orElse(Double.NaN);
 
         builder.append("Ø ");
         builder.append(NUMBER_FORMAT.format(newAvgPrecision - oldAvgPrecision)).append(" Precision,  ");
@@ -64,33 +67,34 @@ public class TLDiffFile {
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         // Append project specific details
-        for (TLProjectEvalResult oldResult : oldResults) {
-            var project = oldResult.getProject();
-            var newResultOptional = newResults.stream().filter(r -> r.getProject().equals(project)).findAny();
+        for (Pair<Project, EvaluationResults<TestLink>> oldProjectResult : oldProjectResults) {
+            var project = oldProjectResult.getOne();
+            var newResultOptional = newProjectResults.stream().filter(r -> r.getOne().equals(project)).findAny();
             if (newResultOptional.isEmpty()) {
                 continue;
             }
-            var newResult = newResultOptional.get();
+            var newResult = newResultOptional.get().getTwo();
             var data = dataMap.get(project);
 
             builder.append("# ").append(project.name());
             builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-            builder.append(NUMBER_FORMAT.format(newResult.getPrecision() - oldResult.getPrecision())).append(" Precision,  ");
-            builder.append(NUMBER_FORMAT.format(newResult.getRecall() - oldResult.getRecall())).append(" Recall,  ");
-            builder.append(NUMBER_FORMAT.format(newResult.getF1() - oldResult.getF1())).append(" F1");
+            var oldResult = oldProjectResult.getTwo();
+            builder.append(NUMBER_FORMAT.format(newResult.precision() - oldResult.precision())).append(" Precision,  ");
+            builder.append(NUMBER_FORMAT.format(newResult.recall() - oldResult.recall())).append(" Recall,  ");
+            builder.append(NUMBER_FORMAT.format(newResult.f1() - oldResult.f1())).append(" F1");
             builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-            var newTruePositives = findNewLinks(oldResult.getTruePositives(), newResult.getTruePositives());
+            var newTruePositives = findNewLinks(oldResult.truePositives().castToList(), newResult.truePositives().castToList());
             appendList(builder, "New true positives", newTruePositives, data);
 
-            var newFalsePositives = findNewLinks(oldResult.getFalsePositives(), newResult.getFalsePositives());
+            var newFalsePositives = findNewLinks(oldResult.falsePositives().castToList(), newResult.falsePositives().castToList());
             appendList(builder, "New false positives", newFalsePositives, data);
 
-            var newFalseNegatives = findNewLinks(oldResult.getFalseNegatives(), newResult.getFalseNegatives());
+            var newFalseNegatives = findNewLinks(oldResult.falseNegatives().castToList(), newResult.falseNegatives().castToList());
             appendList(builder, "New false negatives", newFalseNegatives, data);
 
-            var lostFalsePositives = findMissingLinks(oldResult.getFalsePositives(), newResult.getFalsePositives());
+            var lostFalsePositives = findMissingLinks(oldResult.falsePositives().castToList(), newResult.falsePositives().castToList());
             appendList(builder, "False positives that are now true negatives", lostFalsePositives, data);
 
             builder.append(LINE_SEPARATOR);

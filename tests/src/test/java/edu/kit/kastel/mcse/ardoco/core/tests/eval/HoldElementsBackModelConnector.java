@@ -1,11 +1,10 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * This class represents a special {@link ModelConnector} that can be manipulated to hold back a single element when

@@ -1,7 +1,11 @@
-package edu.kit.kastel.mcse.ardoco.core.tests_new.eval.results;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 import org.eclipse.collections.api.factory.Lists;
 
+/**
+ * used to form the average of several {@link EvaluationResults}
+ * @param <T>   type of the {@link EvaluationResults}
+ */
 public class EvaluationResultVector <T> {
     private double precision = 0.0;
     private double recall = 0.0;
@@ -17,7 +21,6 @@ public class EvaluationResultVector <T> {
         recall += results.recall();
         f1 += results.f1();
         accuracy += results.accuracy();
-        phiCoefficient += results.phiCoefficient();
         specificity += results.specificity();
         phiCoefficient += results.phiCoefficient();
         phiCoefficientMax += results.phiCoefficientMax();
@@ -29,7 +32,6 @@ public class EvaluationResultVector <T> {
         recall *= scale;
         f1 *= scale;
         accuracy *= scale;
-        phiCoefficient *= scale;
         specificity *= scale;
         phiCoefficient *= scale;
         phiCoefficientMax *= scale;
@@ -41,7 +43,6 @@ public class EvaluationResultVector <T> {
         recall += results.recall() * weight;
         f1 += results.f1() * weight;
         accuracy += results.accuracy() * weight;
-        phiCoefficient += results.phiCoefficient() * weight;
         specificity += results.specificity() * weight;
         phiCoefficient += results.phiCoefficient() * weight;
         phiCoefficientMax += results.phiCoefficientMax() * weight;

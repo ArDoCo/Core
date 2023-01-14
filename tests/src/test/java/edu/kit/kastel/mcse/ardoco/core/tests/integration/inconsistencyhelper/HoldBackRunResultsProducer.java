@@ -1,14 +1,6 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Assertions;
-
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
@@ -16,9 +8,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
+import org.junit.jupiter.api.Assertions;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HoldBackRunResultsProducer {
     private File inputText;
@@ -35,7 +33,7 @@ public class HoldBackRunResultsProducer {
      * we can simulate missing elements.
      * 
      * @param project             the project that should be run
-     * @param useBaselineApproach set to true of the baseline approach should be used instead of ArDoCo
+     * @param useBaselineApproach set to true if the baseline approach should be used instead of ArDoCo
      * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced
      *         when running ArDoCo without the ModelElement
      */
