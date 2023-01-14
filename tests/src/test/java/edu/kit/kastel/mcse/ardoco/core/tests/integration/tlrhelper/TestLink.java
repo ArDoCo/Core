@@ -1,9 +1,9 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper;
 
-import java.util.Comparator;
-
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
+
+import java.util.Comparator;
 
 /**
  * Represents a simple trace link by the id of the model and number of the sentence involved.
