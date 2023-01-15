@@ -28,14 +28,14 @@ public class EvaluationResultVector <T> {
     }
 
     public void scale(double scale) {
-        precision *= scale;
-        recall *= scale;
-        f1 *= scale;
-        accuracy *= scale;
-        specificity *= scale;
-        phiCoefficient *= scale;
-        phiCoefficientMax *= scale;
-        phiOverPhiMax *= scale;
+        precision /= scale;
+        recall /= scale;
+        f1 /= scale;
+        accuracy /= scale;
+        specificity /= scale;
+        phiCoefficient /= scale;
+        phiCoefficientMax /= scale;
+        phiOverPhiMax /= scale;
     }
 
     public void addWeighted(EvaluationResults<T> results, int weight) {
