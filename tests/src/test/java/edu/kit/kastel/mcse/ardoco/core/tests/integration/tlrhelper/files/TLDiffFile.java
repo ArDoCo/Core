@@ -1,12 +1,5 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
-
-import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
-import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +7,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.*;
+
+import org.eclipse.collections.api.tuple.Pair;
+
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 /**
  * This is a helper class to write out a diff-file for the evaluation results of TLR.
@@ -30,14 +31,14 @@ public class TLDiffFile {
     /**
      * Writes out the differences of new and old results.
      * 
-     * @param targetFile file to write into
+     * @param targetFile        file to write into
      * @param newProjectResults new results
      * @param oldProjectResults old results
-     * @param dataMap    the mapping of Project to ArDoCoResult of the new run
+     * @param dataMap           the mapping of Project to ArDoCoResult of the new run
      * @throws IOException if writing fails
      */
-    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> newProjectResults, Collection<Pair<Project, EvaluationResults<TestLink>>> oldProjectResults,
-                            Map<Project, ArDoCoResult> dataMap) throws IOException {
+    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> newProjectResults,
+            Collection<Pair<Project, EvaluationResults<TestLink>>> oldProjectResults, Map<Project, ArDoCoResult> dataMap) throws IOException {
         // Assumption: Both collections contain the same projects
 
         newProjectResults = newProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().name())).toList();
@@ -50,7 +51,6 @@ public class TLDiffFile {
 
         var newResults = newProjectResults.stream().map(Pair::getTwo).toList();
         var oldResults = newProjectResults.stream().map(Pair::getTwo).toList();
-
 
         // Append average differences in precision, recall, f1
         var oldAvgPrecision = oldResults.stream().mapToDouble(EvaluationResults::precision).average().orElse(Double.NaN);

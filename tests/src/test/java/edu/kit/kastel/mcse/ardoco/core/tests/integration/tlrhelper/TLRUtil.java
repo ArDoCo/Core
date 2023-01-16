@@ -1,4 +1,9 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper;
+
+import java.util.List;
+
+import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
@@ -6,21 +11,20 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import org.eclipse.collections.api.factory.Lists;
-
-import java.util.List;
 
 /**
  * This utility class provides methods for TLR.
  */
 public final class TLRUtil {
 
-    private TLRUtil() {}
+    private TLRUtil() {
+    }
 
     /**
      * extracts the trace links from a {@link DataRepository}
-     * @param data  the {@link EvaluationResults}
-     * @return      the trace links
+     * 
+     * @param data the {@link EvaluationResults}
+     * @return the trace links
      */
     public static List<TestLink> getTraceLinks(DataRepository data) {
         var traceLinks = Lists.mutable.<TestLink>empty();

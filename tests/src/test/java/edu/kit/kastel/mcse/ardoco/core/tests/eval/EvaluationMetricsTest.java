@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import org.junit.jupiter.api.Assertions;
@@ -65,8 +65,10 @@ class EvaluationMetricsTest {
         Assertions.assertAll( //
                 () -> Assertions.assertEquals(.0, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(10, 10, 10, 10), 1e-3), //
                 () -> Assertions.assertEquals(.478, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(6, 1, 2, 3), 1e-3), //
-                () -> Assertions.assertEquals(-.579, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(10, 55, 55, 20), 1e-3), //
-                () -> Assertions.assertEquals(.869, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(210, 22, 31, 1337), 1e-3), //
+                () -> Assertions.assertEquals(-.579, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(10, 55, 55, 20),
+                        1e-3), //
+                () -> Assertions.assertEquals(.869, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(210, 22, 31, 1337),
+                        1e-3), //
                 () -> Assertions.assertEquals(.0, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(0, 0, 11, 11), 1e-3), //
                 () -> Assertions.assertEquals(.0, edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics.calculatePhiCoefficient(11, 0, 11, 0), 1e-3) //
         );

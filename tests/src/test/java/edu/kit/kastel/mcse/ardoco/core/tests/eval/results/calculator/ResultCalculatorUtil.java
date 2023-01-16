@@ -1,10 +1,12 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultVector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
 
 public abstract class ResultCalculatorUtil {
 
@@ -12,7 +14,7 @@ public abstract class ResultCalculatorUtil {
         int norm = results.size();
         EvaluationResultVector<T> vector = new EvaluationResultVector<>();
 
-        for (var result: results) {
+        for (var result : results) {
             var weight = result.getWeight();
             if (weight <= 0) {
                 norm--;
@@ -40,7 +42,7 @@ public abstract class ResultCalculatorUtil {
         int falsePositives = 0;
         int falseNegatives = 0;
 
-        for (var result: results) {
+        for (var result : results) {
             double localWeight = result.getWeight();
 
             precision += (localWeight * result.precision());
@@ -59,7 +61,6 @@ public abstract class ResultCalculatorUtil {
             falsePositives += result.falsePositives().size();
             trueNegatives += result.trueNegatives();
 
-
         }
 
         precision = precision / weight;
@@ -73,17 +74,15 @@ public abstract class ResultCalculatorUtil {
             phiMax = EvaluationMetrics.calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
             phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(truePositives, falsePositives, falseNegatives, trueNegatives);
 
-            return new EvaluationResults<>(precision, recall, f1,
-                    Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                    accuracy, phi, specificity, phiMax, phiOverPhiMax);
+            return new EvaluationResults<>(precision, recall, f1, Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(), accuracy, phi,
+                    specificity, phiMax, phiOverPhiMax);
         }
 
         phi = phi / weight;
         phiMax /= weight;
         phiOverPhiMax /= weight;
-        return new EvaluationResults<>(precision, recall, f1,
-                Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                accuracy, phi, specificity, phiMax, phiOverPhiMax);
+        return new EvaluationResults<>(precision, recall, f1, Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(), accuracy, phi,
+                specificity, phiMax, phiOverPhiMax);
 
     }
 }

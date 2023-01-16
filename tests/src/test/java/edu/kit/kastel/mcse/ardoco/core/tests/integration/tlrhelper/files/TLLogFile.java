@@ -1,11 +1,5 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
-
-import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
-import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,6 +9,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import org.eclipse.collections.api.tuple.Pair;
+
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 /**
  * This helper-class offer functionality to write out a log of the results for TLR.
@@ -30,8 +31,8 @@ public class TLLogFile {
     /**
      * Appends the given results to the given file.
      *
-     * @param targetFile file to append to
-     * @param projectResults    the results to write out
+     * @param targetFile     file to append to
+     * @param projectResults the results to write out
      * @throws IOException if writing to file system fails
      */
     public static void append(Path targetFile, List<Pair<Project, EvaluationResults<TestLink>>> projectResults) throws IOException {

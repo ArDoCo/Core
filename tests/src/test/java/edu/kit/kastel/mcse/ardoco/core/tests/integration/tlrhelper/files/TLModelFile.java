@@ -1,15 +1,15 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
-
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 /**
  * This helper-class offers functionality to write out information about the models as seen by ArDoCo after evaluation
