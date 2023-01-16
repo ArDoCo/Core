@@ -176,7 +176,7 @@ public enum Project {
      * @return the map of additional configuration options
      */
     public Map<String, String> getAdditionalConfigurations() {
-        return ArDoCo.loadAdditionalConfigs(getAdditionalConfigurationsFile());
+        return ConfigurationHelper.loadAdditionalConfigs(getAdditionalConfigurationsFile());
     }
 
     /**
