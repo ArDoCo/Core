@@ -7,11 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.common.tuple.Pair;
@@ -24,6 +21,10 @@ public class SketchRecognitionInformant extends Informant {
     private static final List<String> SUPPORTED_FILES = List.of(".jpg", ".png", ".jpeg");
     private final SketchRecognitionService sketchRecognitionService = new SketchRecognitionService();
     private final File diagramDirectory;
+
+    private SketchRecognitionInformant(DataRepository dataRepository) {
+        this(dataRepository, null);
+    }
 
     public SketchRecognitionInformant(DataRepository dataRepository, File diagramDirectory) {
         super("SketchRecognitionInformant", dataRepository);

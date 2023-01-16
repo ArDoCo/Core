@@ -67,6 +67,7 @@ public class ConfigurationHelper {
                 .toList();
         for (var clazz : classesThatMayBeConfigured) {
             try {
+                logger.debug("Loading class {}", clazz.getSimpleName());
                 processConfigurationOfClass(configs, clazz);
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 throw new IllegalStateException(e);
@@ -88,7 +89,7 @@ public class ConfigurationHelper {
             f.setAccessible(true);
             var key = f.getDeclaringClass().getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + f.getName();
             var rawValue = f.get(object);
-            var value = getValue(rawValue);
+            var value = getValue(object, f, rawValue);
             if (configs.containsKey(key)) {
                 throw new IllegalArgumentException("Found duplicate entry in map: " + key);
             }
@@ -96,7 +97,7 @@ public class ConfigurationHelper {
         }
     }
 
-    private static String getValue(Object rawValue) {
+    private static String getValue(AbstractConfigurable parent, Field field, Object rawValue) {
         if (rawValue instanceof Integer i) {
             return Integer.toString(i);
         }
@@ -113,7 +114,10 @@ public class ConfigurationHelper {
             return e.name();
         }
 
-        throw new IllegalArgumentException("RawValue has no type that may be transformed to an Configuration" + rawValue + "[" + rawValue.getClass() + "]");
+        Class<?> cls = rawValue == null ? null : rawValue.getClass();
+        throw new IllegalArgumentException(
+                "RawValue has no type that may be transformed to an Configuration " + rawValue + "[" + cls + "] .. Affected field: " + field
+                        .getName() + "@" + parent.getClass().getSimpleName());
 
     }
 
@@ -151,7 +155,7 @@ public class ConfigurationHelper {
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(new Object[1]);
         }
-        throw new IllegalStateException("Not reachable code");
+        throw new IllegalStateException("Not reachable code reached for " + clazz.getSimpleName());
     }
 
 }

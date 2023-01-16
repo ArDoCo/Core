@@ -17,6 +17,10 @@ public class SketchRecognitionAgent extends PipelineAgent {
     @Configurable
     private List<String> enabledInformants;
 
+    private SketchRecognitionAgent(DataRepository dataRepository) {
+        this(dataRepository, null);
+    }
+
     public SketchRecognitionAgent(DataRepository dataRepository, File diagramDirectory) {
         super(SketchRecognitionAgent.class.getSimpleName(), dataRepository);
         informants = List.of(new SketchRecognitionInformant(dataRepository, diagramDirectory));

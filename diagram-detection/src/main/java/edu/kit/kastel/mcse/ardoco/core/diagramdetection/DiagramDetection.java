@@ -18,14 +18,17 @@ import edu.kit.kastel.mcse.ardoco.core.diagramdetection.agents.SketchRecognition
 
 public class DiagramDetection extends AbstractExecutionStage {
 
-    private final MutableList<PipelineAgent> agents;
+    private MutableList<PipelineAgent> agents;
 
     @Configurable
     private List<String> enabledAgents;
 
+    private DiagramDetection(DataRepository dataRepository) {
+        this(dataRepository, null);
+    }
+
     public DiagramDetection(DataRepository dataRepository, File diagramDirectory) {
         super(DiagramDetection.class.getSimpleName(), dataRepository);
-
         agents = Lists.mutable.of(new SketchRecognitionAgent(dataRepository, diagramDirectory));
         enabledAgents = agents.collect(Agent::getId);
     }
