@@ -77,14 +77,6 @@ public class DiagramRecommendationInformant extends Informant {
 
         if (deleteRIsWithLowConfidence)
             deleteRIsWithLowConfidence(recommendationState);
-        /*
-         * for (var word : interestingWords) { var recommendations =
-         * recommendationState.getRecommendedInstancesBySimilarName(word);
-         *
-         * if (!recommendations.isEmpty()) {
-         * logger.debug("Modifying RecommendedInstances according to Sketches & Diagrams: {}", recommendations); for
-         * (var recommendation : recommendations) recommendation.addProbability(this, probability); } }
-         */
     }
 
     private void processUsingMergedWordLists(List<Box> diagram, RecommendationState recommendationState) {

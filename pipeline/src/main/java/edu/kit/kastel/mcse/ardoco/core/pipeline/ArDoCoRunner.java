@@ -58,7 +58,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
         private File additionalConfigs = null;
         private File outputDir = null;
 
-        private List<String> optionalFields = List.of("inputModelCode", "additionalConfigs");
+        private List<String> optionalFields = List.of("inputModelCode", "inputDiagramDir", "additionalConfigs");
 
         public Builder(String name) {
             this.name = name;
