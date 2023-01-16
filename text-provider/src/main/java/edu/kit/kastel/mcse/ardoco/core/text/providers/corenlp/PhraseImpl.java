@@ -1,45 +1,37 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
-import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.stanford.nlp.trees.Tree;
 
-class PhraseImpl implements Phrase {
+public class PhraseImpl implements Phrase {
     private final Tree tree;
-    private final List<Word> words;
-    private SentenceImpl sentence;
+    private final ImmutableList<Word> words;
+
+    private final SentenceImpl parent;
 
     private String text = null;
 
-    public PhraseImpl(Tree tree, List<Word> words) {
+    public PhraseImpl(Tree tree, ImmutableList<Word> words, SentenceImpl parent) {
         this.tree = tree;
         this.words = words;
-        this.sentence = retrieveSentence(words.get(0));
-    }
-
-    private SentenceImpl retrieveSentence(Word firstWord) {
-        Sentence iSentence = firstWord.getSentence();
-        if (iSentence instanceof SentenceImpl cSentence) {
-            return cSentence;
-        }
-        throw new IllegalStateException("Words do not fit to sentence type");
+        this.parent = parent;
     }
 
     @Override
     public int getSentenceNo() {
         return words.get(0).getSentenceNo();
-    }
-
-    @Override
-    public Sentence getSentence() {
-        return sentence;
     }
 
     @Override
@@ -57,21 +49,21 @@ class PhraseImpl implements Phrase {
     }
 
     @Override
-    public List<Word> getContainedWords() {
+    public ImmutableList<Word> getContainedWords() {
         return words;
     }
 
     @Override
-    public List<Phrase> getSubPhrases() {
-        List<Phrase> subPhrases = Lists.mutable.empty();
+    public ImmutableList<Phrase> getSubPhrases() {
+        MutableList<Phrase> subPhrases = Lists.mutable.empty();
         for (var subTree : tree) {
             if (subTree.isPhrasal() && tree.dominates(subTree)) {
-                var wordsForPhrase = SentenceImpl.getWordsForPhrase(subTree, this.sentence);
-                PhraseImpl currPhrase = new PhraseImpl(subTree, wordsForPhrase);
+                ImmutableList<Word> wordsForPhrase = Lists.immutable.withAll(parent.getWordsForPhrase(subTree));
+                PhraseImpl currPhrase = new PhraseImpl(subTree, wordsForPhrase, parent);
                 subPhrases.add(currPhrase);
             }
         }
-        return subPhrases;
+        return subPhrases.toImmutable();
     }
 
     @Override
@@ -94,5 +86,38 @@ class PhraseImpl implements Phrase {
             var otherText = other.getText();
             return otherText.contains(currText) && currText.length() != otherText.length();
         }
+    }
+
+    @Override
+    public ImmutableMap<Word, Integer> getPhraseVector() {
+        MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
+
+        var grouped = getContainedWords().groupBy(Word::getText).toMap();
+        grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
+
+        return phraseVector.toImmutable();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getSentenceNo(), this.getText(), this.getPhraseType(), this.getContainedWords().get(0).getPosition());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || this.getClass() != obj.getClass())
+            return false;
+        Phrase other = (Phrase) obj;
+        return Objects.equals(this.getSentenceNo(), other.getSentenceNo()) && Objects.equals(this.getText(), other.getText()) && Objects.equals(this
+                .getPhraseType(), other.getPhraseType()) && Objects.equals(this.getContainedWords().get(0).getPosition(), other.getContainedWords()
+                        .get(0)
+                        .getPosition());
+    }
+
+    @Override
+    public String toString() {
+        return "Phrase{" + "text='" + getText() + '\'' + '}';
     }
 }

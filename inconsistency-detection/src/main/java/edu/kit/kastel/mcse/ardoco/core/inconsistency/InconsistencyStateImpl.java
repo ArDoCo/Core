@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
 import java.util.List;
@@ -49,13 +49,6 @@ public class InconsistencyStateImpl extends AbstractState implements Inconsisten
     @Override
     public ImmutableList<Inconsistency> getInconsistencies() {
         return inconsistencies.toImmutable();
-    }
-
-    @Override
-    public InconsistencyState createCopy() {
-        var newInconsistencyState = new InconsistencyStateImpl();
-        newInconsistencyState.inconsistencies = inconsistencies.collect(Inconsistency::createCopy);
-        return newInconsistencyState;
     }
 
     @Override

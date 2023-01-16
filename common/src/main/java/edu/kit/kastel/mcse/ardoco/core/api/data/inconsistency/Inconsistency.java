@@ -1,11 +1,9 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
-
-public interface Inconsistency extends ICopyable<Inconsistency> {
+public interface Inconsistency {
 
     /**
      * Returns the reason why there is an inconsistency

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -6,7 +6,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
@@ -15,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 /**
  * The Interface IConnectionState.
  */
-public interface ConnectionState extends ICopyable<ConnectionState>, IConfigurable {
+public interface ConnectionState extends IConfigurable {
 
     /**
      * Returns all instance links.
@@ -68,10 +67,6 @@ public interface ConnectionState extends ICopyable<ConnectionState>, IConfigurab
             var textualInstance = instanceLink.getTextualInstance();
             for (var nm : textualInstance.getNameMappings()) {
                 for (var word : nm.getWords()) {
-                    var tracelink = new TraceLink(instanceLink, instanceLink.getModelInstance(), word);
-                    tracelinks.add(tracelink);
-                }
-                for (var word : nm.getCoreferences()) {
                     var tracelink = new TraceLink(instanceLink, instanceLink.getModelInstance(), word);
                     tracelinks.add(tracelink);
                 }

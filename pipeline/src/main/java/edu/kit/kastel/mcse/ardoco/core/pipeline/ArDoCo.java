@@ -1,16 +1,13 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +102,7 @@ public final class ArDoCo extends Pipeline {
     public ArDoCoResult runAndSave(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCodeModel,
             File inputDiagramDir, File additionalConfigsFile, File outputDir) {
         classLogger.info("Loading additional configs ..");
-        var additionalConfigs = loadAdditionalConfigs(additionalConfigsFile);
+        var additionalConfigs = ConfigurationHelper.loadAdditionalConfigs(additionalConfigsFile);
 
         classLogger.info("Starting {}", name);
         var startTime = System.currentTimeMillis();
@@ -265,36 +262,5 @@ public final class ArDoCo extends Pipeline {
         var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
         textProvider.applyConfiguration(additionalConfigs);
         return textProvider;
-    }
-
-    /**
-     * Loads the file that contains additional configurations and returns the Map that consists of the configuration options.
-     *
-     * @param additionalConfigsFile the file containing the additional configurations
-     * @return a Map with the additional configurations
-     */
-    public static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
-        Map<String, String> additionalConfigs = new HashMap<>();
-        if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
-            try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8)) {
-                while (scanner.hasNextLine()) {
-                    var line = scanner.nextLine();
-                    if (line == null || line.isBlank()) {
-                        continue;
-                    }
-                    var values = line.split(KEY_VALUE_CONNECTOR, 2);
-                    if (values.length != 2) {
-                        classLogger.error(
-                                "Found config line \"{}\". Layout has to be: 'KEY" + KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName" + CLASS_ATTRIBUTE_CONNECTOR + "AttributeName" + KEY_VALUE_CONNECTOR + "42",
-                                line);
-                    } else {
-                        additionalConfigs.put(values[0], values[1]);
-                    }
-                }
-            } catch (IOException e) {
-                classLogger.error(e.getMessage(), e);
-            }
-        }
-        return additionalConfigs;
     }
 }

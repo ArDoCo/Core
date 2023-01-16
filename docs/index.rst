@@ -28,7 +28,7 @@ Trace Link Recovery for Software Architecture Documentation
 Keim, J.; Schulz, S.; Fuchß, D.; Kocher, C.; Speit, J.; Koziolek, A.
 2021. Software Architecture: 15th European Conference, ECSA 2021, Virtual Event, Sweden, September 13-17, 2021, Proceedings. Ed.: S. Biffl, 101–116, Springer Verlag. `doi:10.1007/978-3-030-86044-8_7 <https://doi.org/10.1109/CDKE46621.2019.00013>`_
 
-ArDoCo is based on the master thesis `Linking Software Architecture Documentation and Models <https://publikationen.bibliothek.kit.edu/1000126194>`_.
+The initial version of ArDoCo is based on the master thesis `Linking Software Architecture Documentation and Models <https://publikationen.bibliothek.kit.edu/1000126194>`_.
 
 
 

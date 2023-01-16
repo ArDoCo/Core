@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.ProjectPipelineData;
@@ -23,10 +23,5 @@ public class ProjectPipelineDataImpl implements ProjectPipelineData {
     @Override
     public String getProjectName() {
         return projectName;
-    }
-
-    @Override
-    public ProjectPipelineData createCopy() {
-        return new ProjectPipelineDataImpl(projectName);
     }
 }

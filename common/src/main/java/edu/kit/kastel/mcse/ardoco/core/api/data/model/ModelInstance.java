@@ -1,14 +1,12 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.model;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
-
 /**
  * The Interface IModelInstance defines instances from models.
  */
-public interface ModelInstance extends ICopyable<ModelInstance> {
+public interface ModelInstance {
 
     /**
      * Returns the full name of the instance.

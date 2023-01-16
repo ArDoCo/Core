@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
 import java.util.List;
@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreSentence;
+import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.Tree;
 
 class SentenceImpl implements Sentence {
@@ -23,12 +24,14 @@ class SentenceImpl implements Sentence {
     private ImmutableList<Word> words = Lists.immutable.empty();
     private ImmutableList<Phrase> phrases = Lists.immutable.empty();
 
+    private final TextImpl parent;
     private final CoreSentence coreSentence;
     private final int sentenceNumber;
 
-    public SentenceImpl(CoreSentence coreSentence, int sentenceNumber) {
+    public SentenceImpl(CoreSentence coreSentence, int sentenceNumber, TextImpl parent) {
         this.coreSentence = coreSentence;
         this.sentenceNumber = sentenceNumber;
+        this.parent = parent;
     }
 
     @Override
@@ -39,19 +42,7 @@ class SentenceImpl implements Sentence {
     @Override
     public ImmutableList<Word> getWords() {
         if (words.isEmpty()) {
-            final MutableList<Word> wordsList = Lists.mutable.empty();
-            var coreDocument = coreSentence.document();
-            var wordIndex = 0;
-            for (var token : coreDocument.tokens()) {
-                var currSentenceNo = token.sentIndex();
-                if (currSentenceNo == sentenceNumber) {
-                    wordsList.add(new WordImpl(token, wordIndex, coreDocument));
-                } else if (currSentenceNo > sentenceNumber) {
-                    break;
-                }
-                wordIndex++;
-            }
-            this.words = wordsList.toImmutable();
+            this.words = parent.words().select(w -> w.getSentenceNo() == sentenceNumber).toImmutable();
         }
         return words;
     }
@@ -68,8 +59,8 @@ class SentenceImpl implements Sentence {
             var constituencyParse = this.coreSentence.constituencyParse();
             for (var phrase : constituencyParse) {
                 if (phrase.isPhrasal()) {
-                    var wordsForPhrase = getWordsForPhrase(phrase, this);
-                    PhraseImpl currPhrase = new PhraseImpl(phrase, wordsForPhrase);
+                    ImmutableList<Word> wordsForPhrase = Lists.immutable.withAll(getWordsForPhrase(phrase));
+                    Phrase currPhrase = new PhraseImpl(phrase, wordsForPhrase, this);
                     newPhrases.add(currPhrase);
                 }
             }
@@ -79,13 +70,13 @@ class SentenceImpl implements Sentence {
         return phrases;
     }
 
-    protected static List<Word> getWordsForPhrase(Tree phrase, SentenceImpl sentence) {
+    protected List<Word> getWordsForPhrase(Tree phrase) {
         List<Word> phraseWords = Lists.mutable.empty();
         var coreLabels = phrase.taggedLabeledYield();
-        var index = findIndexOfFirstWordInPhrase(coreLabels.get(0), sentence);
+        var index = findIndexOfFirstWordInPhrase(coreLabels.get(0), this);
         logger.debug("phrase starting position: {}", index);
-        for (var word : coreLabels) {
-            var phraseWord = new WordImpl(word, index++, sentence.coreSentence.document());
+        for (int wordIndexInSentence = 0; wordIndexInSentence < coreLabels.size(); wordIndexInSentence++) {
+            var phraseWord = parent.words().get(index++);
             phraseWords.add(phraseWord);
         }
         return phraseWords;
@@ -116,6 +107,10 @@ class SentenceImpl implements Sentence {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sentenceNumber, getText());
+        return Objects.hash(getSentenceNumber(), getText());
+    }
+
+    public SemanticGraph dependencyParse() {
+        return this.coreSentence.dependencyParse();
     }
 }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.List;
@@ -13,7 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.ComputerScienceWordsAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
 
@@ -32,28 +31,25 @@ public class TextExtraction extends AbstractExecutionStage {
      */
     public TextExtraction(DataRepository dataRepository) {
         super("TextExtraction", dataRepository);
-
-        this.agents = Lists.mutable.of(new InitialTextAgent(dataRepository), new PhraseAgent(dataRepository), new ComputerScienceWordsAgent(dataRepository));
+        this.agents = Lists.mutable.of(//
+                new InitialTextAgent(dataRepository),//
+                new PhraseAgent(dataRepository));
         this.enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
-    public void run() {
-        initializeTextState();
-
-        for (var agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
-        }
-        super.run();
-    }
-
-    private void initializeTextState() {
+    protected void initializeState() {
         var dataRepository = getDataRepository();
         var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
             var textState = new TextStateImpl();
             dataRepository.addData(TextState.ID, textState);
         }
+    }
+
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
     }
 
     @Override

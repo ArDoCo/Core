@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import java.util.Map;
@@ -39,7 +39,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     private MutableSortedBag<Double> probabilities = SortedBags.mutable.empty();
 
     public RecommendedInstanceProbabilityFilter(DataRepository dataRepository) {
-        super("RecommendedInstanceProbabilityFilter", dataRepository);
+        super(RecommendedInstanceProbabilityFilter.class.getSimpleName(), dataRepository);
     }
 
     /**

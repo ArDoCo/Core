@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import java.util.Locale;
@@ -8,7 +8,6 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
@@ -39,11 +38,6 @@ public class NameInconsistency implements TextInconsistency {
     @Override
     public int getSentenceNumber() {
         return sentenceNo;
-    }
-
-    @Override
-    public Inconsistency createCopy() {
-        return new NameInconsistency(modelInstance.createCopy(), word);
     }
 
     @Override

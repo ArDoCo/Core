@@ -1,51 +1,105 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.text;
 
 public enum PhraseType {
-    /** Adjective Phrase */
+    /**
+     * Adjective Phrase
+     */
     ADJP,
-    /** Adverb Phrase */
+    /**
+     * Adverb Phrase
+     */
     ADVP,
-    /** Conjunction Phrase */
+    /**
+     * Conjunction Phrase
+     */
     CONJP,
-    /** Fragment */
+    /**
+     * Fragment
+     */
     FRAG,
-    /** Interjection. Corresponds approximately to the part-of-speech tag UH */
+    /**
+     * Interjection. Corresponds approximately to the part-of-speech tag UH
+     */
     INTJ,
-    /** List marker. Includes surrounding punctuation */
+    /**
+     * List marker. Includes surrounding punctuation
+     */
     LST,
-    /** Not a Constituent; used to show the scope of certain prenominal modifiers within an NP */
+    /**
+     * Not a Constituent; used to show the scope of certain prenominal modifiers within an NP
+     */
     NAC,
-    /** Noun Phrase */
+    /**
+     * Noun Phrase
+     */
     NP,
     /**
      * Used within certain complex NPs to mark the head of the NP. Corresponds very roughly to N-bar level but used
      * quite differently
      */
     NX,
-    /** Prepositional Phrase */
+    /**
+     * Prepositional Phrase
+     */
     PP,
-    /** Parenthetical */
+    /**
+     * Parenthetical
+     */
     PRN,
-    /** Particle. Category for words that should be tagged RP */
+    /**
+     * Particle. Category for words that should be tagged RP
+     */
     PRT,
-    /** Quantifier Phrase (i.e. complex measure/amount phrase); used within NP */
+    /**
+     * Quantifier Phrase (i.e. complex measure/amount phrase); used within NP
+     */
     QP,
-    /** Reduced Relative Clause */
+    /**
+     * Reduced Relative Clause
+     */
     RRC,
-    /** Sentence */
+    /**
+     * Sentence
+     */
     S,
-    /** Unlike Coordinated Phrase */
+    /**
+     * Subordinate Clause
+     */
+    SBAR,
+    /**
+     * Direct Questions introduced by wh-element
+     */
+    SBARQ,
+    /**
+     * Declatative sentence with subject-aux inversion
+     */
+    SINV,
+    /**
+     * Yes/no questions and subconstituent of SBARQ excluding wh-element
+     */
+    SQ,
+    /**
+     * Trace of wh-Constituent
+     */
+    T,
+    /**
+     * Unlike Coordinated Phrase
+     */
     UCP,
-    /** Verb Phrase */
+    /**
+     * Verb Phrase
+     */
     VP,
-    /** Wh-adjective Phrase. Adjectival phrase containing a wh-adverb, as in how hot. */
+    /**
+     * Wh-adjective Phrase. Adjectival phrase containing a wh-adverb, as in how hot.
+     */
     WHADJP,
     /**
      * Wh-adverb Phrase. Introduces a clause with an NP gap. May be null (containing the 0 complementizer) or lexical,
      * containing a wh-adverb such as how or why.
      */
-    WHAVP,
+    WHAVP, WHADVP,
     /**
      * Wh-noun Phrase. Introduces a clause with an NP gap. May be null (containing the 0 complementizer) or lexical,
      * containing some wh-word, e.g. who, which book, whose daughter, none of which, or how many leopards.
@@ -61,7 +115,9 @@ public enum PhraseType {
      * the...the-constructions.
      */
     X,
-    /** Root. Overarching the whole sentence. */
+    /**
+     * Root. Overarching the whole sentence.
+     */
     ROOT;
 
     public static PhraseType get(String type) {

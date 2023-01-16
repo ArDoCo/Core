@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.informalin.framework</groupId>
     <artifactId>parent</artifactId>
-    <version>0.8.1</version>
+    <version>0.9.2</version>
   </parent>
 
   <groupId>io.github.ardoco.core</groupId>
@@ -13,15 +13,12 @@
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
-        or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
-        or a relation. To do so, we first create trace links and then make use of them and other information to identify
-        inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
-        Engineering
-        (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT. This work was supported
-        by
-        funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security
-        Research
-        Labs (46.23.01).</description>
+    or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
+    or a relation. To do so, we first create trace links and then make use of them and other information to identify
+    inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software Engineering
+    (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT. This work was supported by
+    funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research
+    Labs (46.23.01).</description>
   <licenses>
     <license>
       <name>MIT License</name>
@@ -83,6 +80,7 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
+    <stanford.corenlp.version>4.5.1</stanford.corenlp.version>
   </properties>
 
   <dependencyManagement>
@@ -141,7 +139,12 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.9</version>
+        <version>1.10.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>0.10.2</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -269,7 +272,6 @@
         <module>inconsistency-detection</module>
         <module>model-provider</module>
         <module>tests</module>
-        <module>cli</module>
         <module>diagram-detection</module>
       </modules>
     </profile>

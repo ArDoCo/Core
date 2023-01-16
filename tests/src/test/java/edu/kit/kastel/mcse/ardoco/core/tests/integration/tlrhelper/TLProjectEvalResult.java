@@ -17,15 +17,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultsImpl;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
 
 /**
  * Represents the trace link evaluation result for a single project.
  */
-public class TLProjectEvalResult extends EvaluationResults implements Comparable<TLProjectEvalResult> {
+public class TLProjectEvalResult extends EvaluationResultsImpl implements Comparable<TLProjectEvalResult> {
 
     private final Project project;
     private final double precision, recall, f1Score;
@@ -68,19 +68,19 @@ public class TLProjectEvalResult extends EvaluationResults implements Comparable
 
         // True Positives are the trace links that are contained on both lists
         Set<TestLink> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
-        double tp = truePositives.size();
+        int tp = truePositives.size();
 
         // False Positives are the trace links that are only contained in the result set
         Set<TestLink> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
-        double fp = falsePositives.size();
+        int fp = falsePositives.size();
 
         // False Negatives are the trace links that are only contained in the gold standard
         Set<TestLink> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
-        double fn = falseNegatives.size();
+        int fn = falseNegatives.size();
 
-        this.precision = TestUtil.calculatePrecision(tp, fp);
-        this.recall = TestUtil.calculateRecall(tp, fn);
-        this.f1Score = TestUtil.calculateF1(precision, recall);
+        this.precision = EvaluationMetrics.calculatePrecision(tp, fp);
+        this.recall = EvaluationMetrics.calculateRecall(tp, fn);
+        this.f1Score = EvaluationMetrics.calculateF1(precision, recall);
 
         this.truePositives.addAll(truePositives);
         this.falsePositives.addAll(falsePositives);

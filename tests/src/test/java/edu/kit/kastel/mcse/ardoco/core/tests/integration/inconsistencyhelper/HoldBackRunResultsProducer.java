@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
@@ -42,7 +43,6 @@ public class HoldBackRunResultsProducer {
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
         Map<ModelInstance, ArDoCoResult> runs = new HashMap<ModelInstance, ArDoCoResult>();
 
-        var projectName = project.name().toLowerCase();
         inputModel = project.getModelFile();
         inputText = project.getTextFile();
 
@@ -50,7 +50,7 @@ public class HoldBackRunResultsProducer {
 
         ArDoCo arDoCoBaseRun;
         try {
-            arDoCoBaseRun = definePipelineBase(projectName, inputText, holdElementsBackModelConnector, useBaselineApproach);
+            arDoCoBaseRun = definePipelineBase(project, inputText, holdElementsBackModelConnector, useBaselineApproach);
         } catch (IOException e) {
             Assertions.fail(e);
             return runs;
@@ -78,11 +78,11 @@ public class HoldBackRunResultsProducer {
         return new HoldElementsBackModelConnector(pcmModel);
     }
 
-    private static ArDoCo definePipelineBase(String projectName, File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector,
+    private static ArDoCo definePipelineBase(Project project, File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector,
             boolean useInconsistencyBaseline) throws FileNotFoundException {
-        ArDoCo arDoCo = new ArDoCo(projectName);
+        ArDoCo arDoCo = new ArDoCo(project.name().toLowerCase());
         var dataRepository = arDoCo.getDataRepository();
-        var additionalConfigs = ArDoCo.loadAdditionalConfigs(null);
+        var additionalConfigs = project.getAdditionalConfigurations();
 
         arDoCo.addPipelineStep(ArDoCo.getTextProvider(inputText, additionalConfigs, dataRepository));
 
@@ -102,7 +102,12 @@ public class HoldBackRunResultsProducer {
         var projectName = precomputedResults.getProjectName();
         ArDoCo arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
-        var additionalConfigs = ArDoCo.loadAdditionalConfigs(null);
+
+        var additionalConfigs = ConfigurationHelper.loadAdditionalConfigs(null);
+        var optionalProject = Project.getFromName(projectName);
+        if (optionalProject.isPresent()) {
+            additionalConfigs = optionalProject.get().getAdditionalConfigurations();
+        }
 
         var preprocessingData = new PreprocessingData(precomputedResults.getText());
         dataRepository.addData(PreprocessingData.ID, preprocessingData);

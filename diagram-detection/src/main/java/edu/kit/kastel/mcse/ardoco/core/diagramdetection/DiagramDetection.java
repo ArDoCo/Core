@@ -1,8 +1,9 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramdetection;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -30,12 +31,20 @@ public class DiagramDetection extends AbstractExecutionStage {
     }
 
     @Override
-    public void run() {
+    protected void initializeState() {
         getDataRepository().addData(DiagramDetectionState.ID, new DiagramDetectionStateImpl());
+    }
 
-        for (var agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
+        for (var agent : agents) {
+            agent.applyConfiguration(additionalConfiguration);
         }
-        super.run();
     }
 }

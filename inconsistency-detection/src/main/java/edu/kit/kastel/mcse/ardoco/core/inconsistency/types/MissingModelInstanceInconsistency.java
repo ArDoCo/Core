@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import java.util.Locale;
@@ -8,7 +8,6 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 
 public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements TextInconsistency {
@@ -24,11 +23,6 @@ public record MissingModelInstanceInconsistency(String name, int sentence, doubl
     @Override
     public int getSentenceNumber() {
         return sentence;
-    }
-
-    @Override
-    public Inconsistency createCopy() {
-        return new MissingModelInstanceInconsistency(name, sentence, confidence);
     }
 
     @Override

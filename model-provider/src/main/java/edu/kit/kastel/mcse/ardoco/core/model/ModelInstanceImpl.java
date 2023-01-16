@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
 import java.util.Objects;
@@ -23,20 +23,6 @@ public class ModelInstanceImpl implements ModelInstance {
     private final MutableList<String> names;
     private final MutableList<String> types;
     private final String uid;
-
-    @Override
-    public ModelInstance createCopy() {
-        return new ModelInstanceImpl(fullName, fullType, Lists.immutable.withAll(names), Lists.immutable.withAll(types), uid);
-
-    }
-
-    private ModelInstanceImpl(String fullName, String fullType, ImmutableList<String> names, ImmutableList<String> types, String uid) {
-        this.fullName = fullName;
-        this.fullType = fullType;
-        this.names = names.toList();
-        this.types = types.toList();
-        this.uid = uid;
-    }
 
     /**
      * Creates a new instance.

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.List;
@@ -33,20 +33,23 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     public RecommendationGenerator(DataRepository dataRepository) {
         super("RecommendationGenerator", dataRepository);
 
-        this.agents = Lists.mutable.of(new InitialRecommendationAgent(dataRepository), new PhraseRecommendationAgent(dataRepository),
+        this.agents = Lists.mutable.of(//
+                //new TermBuilder(dataRepository),//
+                new InitialRecommendationAgent(dataRepository),//
+                new PhraseRecommendationAgent(dataRepository),//
                 new DiagramRecommendationAgent(dataRepository));
         this.enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
-    public void run() {
+    protected void initializeState() {
         var recommendationStates = RecommendationStatesImpl.build();
         getDataRepository().addData(RecommendationStates.ID, recommendationStates);
+    }
 
-        for (var agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
-        }
-        super.run();
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
     }
 
     @Override

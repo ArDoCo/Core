@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.output;
 
 import java.util.HashMap;
@@ -20,6 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
@@ -27,6 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 
 /**
@@ -152,6 +154,16 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
+     * Returns all {@link ModelInconsistency ModelInconsistencies} that were found.
+     *
+     * @return all found ModelInconsistencies
+     */
+    public ImmutableList<ModelInconsistency> getAllModelInconsistencies() {
+        var inconsistencies = getAllInconsistencies();
+        return inconsistencies.select(i -> ModelInconsistency.class.isAssignableFrom(i.getClass())).collect(ModelInconsistency.class::cast);
+    }
+
+    /**
      * Returns a list of {@link InconsistentSentence InconsistentSentences}.
      * 
      * @return all InconsistentSentences
@@ -238,6 +250,15 @@ public record ArDoCoResult(DataRepository dataRepository) {
     public ModelExtractionState getModelState(String modelId) {
         ModelStates modelStates = getModelStates();
         return modelStates.getModelState(modelId);
+    }
+
+    /**
+     * Returns the internal {@link TextState}.
+     *
+     * @return the TextState
+     */
+    public TextState getTextState() {
+        return DataRepositoryHelper.getTextState(dataRepository);
     }
 
     /**

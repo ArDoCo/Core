@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import java.util.Locale;
@@ -7,21 +7,16 @@ import java.util.Objects;
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 
-public class MissingTextForModelElementInconsistency implements Inconsistency {
+public class MissingTextForModelElementInconsistency implements ModelInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingTextForModelElement";
 
     private final ModelInstance instance;
 
     public MissingTextForModelElementInconsistency(ModelInstance instance) {
         this.instance = instance;
-    }
-
-    @Override
-    public Inconsistency createCopy() {
-        return new MissingTextForModelElementInconsistency(instance.createCopy());
     }
 
     @Override
@@ -64,4 +59,18 @@ public class MissingTextForModelElementInconsistency implements Inconsistency {
         return list.toImmutable();
     }
 
+    @Override
+    public String getModelInstanceName() {
+        return instance.getFullName();
+    }
+
+    @Override
+    public String getModelInstanceType() {
+        return instance.getFullType();
+    }
+
+    @Override
+    public String getModelInstanceUid() {
+        return instance.getUid();
+    }
 }

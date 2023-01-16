@@ -1,28 +1,20 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.textextraction;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 /**
  * The Interface INounMapping defines the mapping .
  */
-public interface NounMapping extends ICopyable<NounMapping> {
-
-    /**
-     * Splits all occurrences with a whitespace in it at their spaces and returns all parts that are similar to the
-     * reference. If it contains a separator or similar to the reference it is added to the comparables as a whole.
-     *
-     * @return all parts of occurrences (splitted at their spaces) that are similar to the reference.
-     */
-    ImmutableList<String> getRepresentativeComparables();
+public interface NounMapping {
 
     /**
      * Returns the surface forms (previously called occurrences) of this mapping.
@@ -32,25 +24,11 @@ public interface NounMapping extends ICopyable<NounMapping> {
     ImmutableList<String> getSurfaceForms();
 
     /**
-     * Returns all words that are contained by the mapping. This should include coreferences.
+     * Returns all words that are contained by the mapping.
      *
      * @return all words that are referenced with this mapping
      */
-    ImmutableList<Word> getWords();
-
-    /**
-     * Adds nodes to the mapping, if they are not already contained.
-     *
-     * @param nodes graph nodes to add to the mapping
-     */
-    void addWords(ImmutableList<Word> nodes);
-
-    /**
-     * Adds a node to the mapping, it its not already contained.
-     *
-     * @param word word to add.
-     */
-    void addWord(Word word);
+    ImmutableSortedSet<Word> getWords();
 
     /**
      * Returns the probability of being a mapping of its kind.
@@ -87,12 +65,7 @@ public interface NounMapping extends ICopyable<NounMapping> {
      */
     ImmutableList<Integer> getMappingSentenceNo();
 
-    /**
-     * Adds occurrences to the mapping.
-     *
-     * @param occurrences occurrences to add
-     */
-    void addOccurrence(ImmutableList<String> occurrences);
+    ImmutableSet<Phrase> getPhrases();
 
     /**
      * Gets the probability for name.
@@ -106,31 +79,9 @@ public interface NounMapping extends ICopyable<NounMapping> {
      *
      * @return the distribution
      */
-    Map<MappingKind, Confidence> getDistribution();
+    ImmutableMap<MappingKind, Confidence> getDistribution();
 
-    /**
-     * @param coreference the coreference to add
-     */
-    void addCoreference(Word coreference);
-
-    /**
-     * @param coreferences the coreferences to add
-     */
-    void addCoreferences(Collection<Word> coreferences);
-
-    /**
-     * @return the coreferences
-     */
-    ImmutableList<Word> getCoreferences();
-
-    /**
-     * Creates a new INounMapping that resutls when merging the data from the INounMapping with a given other
-     * INounMapping
-     *
-     * @param other the other INounMapping
-     * @return new INounMapping that is a merge of the given INounMappings
-     */
-    NounMapping merge(NounMapping other);
+    ImmutableSet<Claimant> getClaimants();
 
     /**
      * Adds the kind with probability.
@@ -141,11 +92,21 @@ public interface NounMapping extends ICopyable<NounMapping> {
      */
     void addKindWithProbability(MappingKind kind, Claimant claimant, double probability);
 
+    boolean isCompound();
+
     /**
-     * @return if this is a phrase or contains a phrase
+     * Register a listener that will be notified on certain events.
+     * 
+     * @param listener the listener
+     * @see #onDelete(NounMapping)
      */
-    boolean isPhrase();
+    void registerChangeListener(NounMappingChangeListener listener);
 
-    void setAsPhrase(boolean hasPhrase);
-
+    /**
+     * Will be invoked during the deletion from a state.
+     * Note: This can be invoked multiple times if the replacement is not available during deletion of the noun mapping
+     *
+     * @param replacement the replacing new noun mapping (or null if none exist)
+     */
+    void onDelete(NounMapping replacement);
 }

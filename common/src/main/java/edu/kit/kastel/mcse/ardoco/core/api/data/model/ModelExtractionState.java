@@ -1,17 +1,17 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.model;
 
 import java.util.Set;
 
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
 
 /**
  * The Interface IModelState defines the information directly extracted from the models.
  */
-public interface ModelExtractionState extends ICopyable<ModelExtractionState>, IConfigurable {
+public interface ModelExtractionState extends IConfigurable {
     /**
      * Returns the unique id of the model
      *
@@ -39,7 +39,7 @@ public interface ModelExtractionState extends ICopyable<ModelExtractionState>, I
      *
      * @return all instance types of this state
      */
-    Set<String> getInstanceTypes();
+    ImmutableSet<String> getInstanceTypes();
 
     /**
      * Returns all names that are contained by this state.

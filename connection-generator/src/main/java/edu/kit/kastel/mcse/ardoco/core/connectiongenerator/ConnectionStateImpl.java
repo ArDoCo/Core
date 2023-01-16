@@ -1,9 +1,8 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -23,13 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 
     private transient Set<InstanceLink> instanceLinks;
-
-    @Override
-    public ConnectionState createCopy() {
-        var newState = new ConnectionStateImpl();
-        newState.instanceLinks = instanceLinks.stream().map(InstanceLink::createCopy).collect(Collectors.toSet());
-        return newState;
-    }
 
     /**
      * Creates a new connection state.

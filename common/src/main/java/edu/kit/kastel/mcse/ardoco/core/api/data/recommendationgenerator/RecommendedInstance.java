@@ -1,9 +1,10 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
@@ -11,7 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 /**
  * The Interface IRecommendedInstance defines the aggregation of noun mappings to one recommendation.
  */
-public interface RecommendedInstance extends ICopyable<RecommendedInstance> {
+public interface RecommendedInstance {
 
     /**
      * Returns the involved name mappings.
@@ -99,6 +100,10 @@ public interface RecommendedInstance extends ICopyable<RecommendedInstance> {
      * @param name the new name
      */
     void setName(String name);
+
+    ImmutableSortedSet<Integer> getSentenceNumbers();
+
+    ImmutableSet<Claimant> getClaimants();
 
     Confidence getConfidencesForClaimant(Claimant claimant);
 }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import java.util.Comparator;
@@ -24,7 +24,7 @@ public class OccasionFilter extends Filter {
     private int expectedAppearances = 2;
 
     public OccasionFilter(DataRepository dataRepository) {
-        super("OccasionFilter", dataRepository);
+        super(OccasionFilter.class.getSimpleName(), dataRepository);
     }
 
     @Override

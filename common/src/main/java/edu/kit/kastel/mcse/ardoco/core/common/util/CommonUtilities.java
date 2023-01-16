@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.time.LocalDateTime;
@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
@@ -20,9 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.Recommen
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 
 /**
  * General helper class for outsourced, common methods.
@@ -234,7 +231,7 @@ public final class CommonUtilities {
                 .map(type -> type.split(" "))
                 .flatMap(Arrays::stream)
                 .collect(Collectors.toSet());
-        identifiers.addAll(modelState.getInstanceTypes());
+        identifiers.addAll(modelState.getInstanceTypes().toSet());
         return identifiers;
     }
 
@@ -311,13 +308,13 @@ public final class CommonUtilities {
     }
 
     /**
-     * Creates a reference given a list of words (phrase)
+     * Creates a reference given a list of words (compoundWords)
      *
-     * @param phrase the given phrase
-     * @return a reference that consists of the words in the given phrase
+     * @param compoundWords the given compoundWords
+     * @return a reference that consists of the words in the given compoundWords
      */
-    public static String createReferenceForPhrase(ImmutableList<Word> phrase) {
-        var sortedPhrase = phrase.toSortedListBy(Word::getPosition);
+    public static String createReferenceForCompound(ImmutableList<Word> compoundWords) {
+        var sortedPhrase = compoundWords.toSortedListBy(Word::getPosition);
         var referenceJoiner = new StringJoiner(" ");
         for (var w : sortedPhrase) {
             referenceJoiner.add(w.getText());
@@ -325,7 +322,7 @@ public final class CommonUtilities {
         return referenceJoiner.toString();
     }
 
-    public static ImmutableList<Word> getCompoundPhrase(Word word) {
+    public static ImmutableList<Word> getCompoundWords(Word word) {
         var deps = Lists.mutable.of(word);
         deps.addAll(word.getOutgoingDependencyWordsWithType(DependencyTag.COMPOUND).toList());
         var sortedWords = deps.toSortedListBy(Word::getPosition);
@@ -333,16 +330,6 @@ public final class CommonUtilities {
             return Lists.immutable.empty();
         }
         return Lists.immutable.ofAll(sortedWords);
-    }
-
-    public static ImmutableList<Word> filterWordsOfTypeMappings(ImmutableList<Word> words, TextState textState) {
-        MutableList<Word> filteredWords = Lists.mutable.empty();
-        for (var word : words) {
-            if (!textState.isWordContainedByMappingKind(word, MappingKind.TYPE)) {
-                filteredWords.add(word);
-            }
-        }
-        return filteredWords.toImmutable();
     }
 
     /**

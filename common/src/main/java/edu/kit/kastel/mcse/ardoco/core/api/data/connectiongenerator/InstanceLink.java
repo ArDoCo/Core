@@ -1,14 +1,13 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator;
 
-import edu.kit.kastel.informalin.framework.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 
 /**
  * The Interface IInstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
  */
-public interface InstanceLink extends ICopyable<InstanceLink> {
+public interface InstanceLink {
 
     /**
      * Returns the probability of the correctness of this link.

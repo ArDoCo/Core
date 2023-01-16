@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState
 import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingModelElementInconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingTextForModelElementInconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.UndocumentedModelElementInconsistencyAgent;
 
 public class InconsistencyChecker extends AbstractExecutionStage {
 
@@ -28,20 +28,19 @@ public class InconsistencyChecker extends AbstractExecutionStage {
         super("InconsistencyChecker", dataRepository);
 
         agents = Lists.mutable.of(new InitialInconsistencyAgent(dataRepository), new MissingModelElementInconsistencyAgent(dataRepository),
-                new MissingTextForModelElementInconsistencyAgent(dataRepository));
+                new UndocumentedModelElementInconsistencyAgent(dataRepository));
         enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
-    public void run() {
+    protected void initializeState() {
         var inconsistencyStates = InconsistencyStatesImpl.build();
         getDataRepository().addData(InconsistencyStates.ID, inconsistencyStates);
+    }
 
-        for (PipelineAgent agent : findByClassName(enabledAgents, agents)) {
-            this.addPipelineStep(agent);
-        }
-
-        super.run();
+    @Override
+    protected List<PipelineAgent> getEnabledAgents() {
+        return findByClassName(enabledAgents, agents);
     }
 
     @Override

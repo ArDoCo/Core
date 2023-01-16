@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.HashSet;
@@ -22,13 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 public class RecommendationStateImpl extends AbstractState implements RecommendationState {
 
     private transient MutableList<RecommendedInstance> recommendedInstances;
-
-    @Override
-    public RecommendationState createCopy() {
-        var recommendationState = new RecommendationStateImpl();
-        recommendationState.recommendedInstances = recommendedInstances.collect(RecommendedInstance::createCopy);
-        return recommendationState;
-    }
 
     /**
      * Creates a new recommendation state.

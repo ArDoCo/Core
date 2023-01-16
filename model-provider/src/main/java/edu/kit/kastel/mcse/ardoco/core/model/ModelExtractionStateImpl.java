@@ -1,12 +1,14 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.model;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
@@ -22,15 +24,9 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
 
     private final String modelId;
     private final Metamodel metamodelType;
-    private final Set<String> instanceTypes;
-    private final Set<String> names;
+    private final MutableSet<String> instanceTypes;
+    private final MutableSet<String> names;
     private transient ImmutableList<ModelInstance> instances;
-
-    @Override
-    public ModelExtractionState createCopy() {
-        return new ModelExtractionStateImpl(modelId, metamodelType, instanceTypes, names, //
-                instances.collect(ModelInstance::createCopy));
-    }
 
     // For generation of configuration
     private ModelExtractionStateImpl() {
@@ -38,15 +34,6 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
         this.metamodelType = null;
         this.instanceTypes = null;
         this.names = null;
-    }
-
-    private ModelExtractionStateImpl(String modelId, Metamodel metamodelType, Set<String> instanceTypes, Set<String> names,
-            ImmutableList<ModelInstance> instances) {
-        this.modelId = modelId;
-        this.metamodelType = metamodelType;
-        this.instanceTypes = instanceTypes;
-        this.instances = instances;
-        this.names = names;
     }
 
     /**
@@ -58,8 +45,8 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
         this.modelId = Objects.requireNonNull(modelId);
         this.metamodelType = metamodelType;
         this.instances = instances;
-        instanceTypes = new HashSet<>();
-        names = new HashSet<>();
+        instanceTypes = Sets.mutable.empty();
+        names = Sets.mutable.empty();
         collectTypesAndNames();
     }
 
@@ -101,8 +88,8 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
      * @return all instance types of this state
      */
     @Override
-    public Set<String> getInstanceTypes() {
-        return instanceTypes;
+    public ImmutableSet<String> getInstanceTypes() {
+        return instanceTypes.toImmutable();
     }
 
     /**
@@ -127,7 +114,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
 
     @Override
     public void addAllOf(ModelExtractionState other) {
-        instanceTypes.addAll(other.getInstanceTypes());
+        instanceTypes.addAll(other.getInstanceTypes().toSet());
         names.addAll(other.getNames());
 
         var mergedInstances = Lists.mutable.ofAll(instances);
