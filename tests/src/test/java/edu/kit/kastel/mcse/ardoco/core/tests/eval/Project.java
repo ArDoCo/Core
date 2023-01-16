@@ -1,14 +1,6 @@
 /* Licensed under MIT 2021-2022. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import org.eclipse.collections.api.factory.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,6 +8,15 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ConfigurationHelper;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.

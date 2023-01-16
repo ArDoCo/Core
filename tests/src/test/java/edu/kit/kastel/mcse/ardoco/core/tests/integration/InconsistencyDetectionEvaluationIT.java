@@ -1,5 +1,25 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
@@ -15,25 +35,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.tuple.Tuples;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Integration test that evaluates the inconsistency detection capabilities of ArDoCo. Runs on the projects that are
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
  * run this multiple times so each element was held back once.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class InconsistencyDetectionEvaluationIT{
+class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
@@ -154,10 +155,6 @@ class InconsistencyDetectionEvaluationIT{
         }
     }
 
-
-
-
-
     /**
      * Tests the inconsistency detection for undocumented model elements on all {@link Project projects}.
      *
@@ -179,9 +176,6 @@ class InconsistencyDetectionEvaluationIT{
     void missingTextInconsistencyHistoricIT(Project project) {
         runMissingTextInconsistencyEval(project);
     }
-
-
-
 
     private void runMissingTextInconsistencyEval(Project project) {
         var projectResults = arDoCoResults.get(project);
@@ -206,7 +200,6 @@ class InconsistencyDetectionEvaluationIT{
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
 
         Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
-
 
         ArDoCoResult baseArDoCoResult = runs.get(null);
         saveOutput(project, baseArDoCoResult);
@@ -283,8 +276,7 @@ class InconsistencyDetectionEvaluationIT{
     private EvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, ArDoCoResult arDoCoResult) {
         var modelId = arDoCoResult.getModelIds().get(0);
 
-        ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(
-                modelId,
+        ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(modelId,
                 MissingModelInstanceInconsistency.class);
         if (removedElement == null) {
             // base case
@@ -431,7 +423,8 @@ class InconsistencyDetectionEvaluationIT{
         Files.writeString(outputFile, outputBuilder.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static void writeOverallOutputMissingTextInconsistency(EvaluationResults<String> weightedResults, EvaluationResults<String> macroResults) throws IOException {
+    private static void writeOverallOutputMissingTextInconsistency(EvaluationResults<String> weightedResults, EvaluationResults<String> macroResults)
+            throws IOException {
         var evalDir = Path.of(OUTPUT).resolve(DIRECTORY_NAME);
         Files.createDirectories(evalDir);
         var outputFile = evalDir.resolve("_MissingTextInconsistency_Overall_Results.md");
@@ -480,8 +473,8 @@ class InconsistencyDetectionEvaluationIT{
                 outputBuilder.append(LINE_SEPARATOR);
                 detailedOutputBuilder.append(LINE_SEPARATOR);
                 var result = results.get(counter++);
-                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f, Accuracy: %.3f, Phi Coef.: %.3f", result
-                        .precision(), result.recall(), result.f1(), result.accuracy(), result.phiCoefficient());
+                var resultString = String.format(Locale.ENGLISH, "Precision: %.3f, Recall: %.3f, F1: %.3f, Accuracy: %.3f, Phi Coef.: %.3f", result.precision(),
+                        result.recall(), result.f1(), result.accuracy(), result.phiCoefficient());
                 outputBuilder.append(resultString);
                 detailedOutputBuilder.append(resultString);
                 inspectRun(outputBuilder, detailedOutputBuilder, resultsWithWeight, arDoCoResult, result);
@@ -504,7 +497,8 @@ class InconsistencyDetectionEvaluationIT{
         var falseNegatives = result.falseNegatives().toList();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
 
-        var results = EvaluationResults.createEvaluationResults(new ResultMatrix<String>(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives.toImmutable()));
+        var results = EvaluationResults.createEvaluationResults(new ResultMatrix<String>(truePositives.toImmutable(), 0, falsePositives.toImmutable(),
+                falseNegatives.toImmutable()));
         allResults.add(results);
     }
 

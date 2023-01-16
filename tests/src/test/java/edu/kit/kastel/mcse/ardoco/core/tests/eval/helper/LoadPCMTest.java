@@ -1,15 +1,16 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.helper;
 
-import edu.kit.kastel.informalin.framework.models.pcm.PCMModel;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import java.io.IOException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.io.IOException;
+import edu.kit.kastel.informalin.framework.models.pcm.PCMModel;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 class LoadPCMTest {
     @DisplayName("Load Components of Project")

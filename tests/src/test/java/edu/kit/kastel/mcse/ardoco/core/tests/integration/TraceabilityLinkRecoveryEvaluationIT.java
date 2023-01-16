@@ -1,5 +1,26 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
@@ -20,27 +41,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalcu
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLRUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.impl.tuple.Tuples;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.eclipse.collections.api.tuple.Pair;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
@@ -109,7 +109,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
         }
     }
 
-
     @DisplayName("Evaluate TLR")
     @ParameterizedTest(name = "Evaluating {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
@@ -125,7 +124,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
     void evaluateHistoricalDataTraceLinkRecoveryIT(Project project) {
         runTraceLinkEvaluation(project);
     }
-
 
     private void runTraceLinkEvaluation(Project project) {
         ArDoCoResult arDoCoResult = getArDoCoResult(project);
@@ -189,8 +187,9 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     /**
      * calculate {@link EvaluationResults} and compare to {@link ExpectedResults}
-     * @param project       the result's project
-     * @param arDoCoResult  the result
+     * 
+     * @param project      the result's project
+     * @param arDoCoResult the result
      */
     private void checkResults(Project project, ArDoCoResult arDoCoResult) {
 
@@ -217,7 +216,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 var data = arDoCoResult.dataRepository();
                 printDetailedDebug(results, data);
                 try {
-                    RESULTS.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project), true)));
+                    RESULTS.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project),
+                            true)));
                     DATA_MAP.put(project, arDoCoResult);
                     PROJECT_RESULTS.add(results);
                 } catch (IOException e) {

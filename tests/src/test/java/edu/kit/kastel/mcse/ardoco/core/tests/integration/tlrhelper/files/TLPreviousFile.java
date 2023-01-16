@@ -1,19 +1,20 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
-
-import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
-import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.tuple.Tuples;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 /**
  * This is a helper class to load and write out the results of the previous evaluation run for TLR results.
@@ -32,7 +33,7 @@ public class TLPreviousFile {
      * @return the previous results
      * @throws IOException if file access fails
      */
-    public static Collection<Pair<Project, EvaluationResults<TestLink>>> load(Path sourceFile,  final Map<Project, ArDoCoResult> DATA_MAP) throws IOException {
+    public static Collection<Pair<Project, EvaluationResults<TestLink>>> load(Path sourceFile, final Map<Project, ArDoCoResult> DATA_MAP) throws IOException {
         List<String> lines = Files.readAllLines(sourceFile);
         Map<Project, List<TestLink>> foundLinkMap = new HashMap<>();
         List<Pair<Project, EvaluationResults<TestLink>>> results = new ArrayList<>();
@@ -65,8 +66,8 @@ public class TLPreviousFile {
     /**
      * Saves the given results to the given file.
      * 
-     * @param targetFile file to save to
-     * @param projectResults    results to save
+     * @param targetFile     file to save to
+     * @param projectResults results to save
      * @throws IOException if writing to file system fails
      */
     public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> projectResults) throws IOException {

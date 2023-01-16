@@ -1,14 +1,15 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.*;
 
 /**
  * This utility class provides methods for running the tests, especially regarding the evaluations.
@@ -19,14 +20,14 @@ public class TestUtil {
         throw new IllegalAccessError("This constructor should not be called!");
     }
 
-
     /**
      * compares the results with the expected results and creates a new {@link EvaluationResults}.
-     * @param arDoCoResult  the ArDoCoResult
-     * @param results       Collection representing the results
-     * @param goldStandard  Collection representing the gold standard
-     * @param tlr           defines how to calculate the true negatives (whether for tlr or not)
-     * @return              the result of the comparison
+     * 
+     * @param arDoCoResult the ArDoCoResult
+     * @param results      Collection representing the results
+     * @param goldStandard Collection representing the gold standard
+     * @param tlr          defines how to calculate the true negatives (whether for tlr or not)
+     * @return the result of the comparison
      */
     public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, Collection<T> results, Collection<T> goldStandard, boolean tlr) {
 
@@ -46,16 +47,14 @@ public class TestUtil {
         MutableList<T> falseNegativesList = Lists.mutable.ofAll(falseNegatives);
 
         int trueNegatives;
-        if(tlr) {
+        if (tlr) {
             trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
         } else {
             trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
         }
 
-        return EvaluationResults.createEvaluationResults(
-                new ResultMatrix<>(truePositivesList.toImmutable(), trueNegatives,
-                falsePositivesList.toImmutable(), falseNegativesList.toImmutable())
-        );
+        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList.toImmutable(), trueNegatives, falsePositivesList.toImmutable(),
+                falseNegativesList.toImmutable()));
     }
 
     /**
@@ -63,10 +62,10 @@ public class TestUtil {
      * results}.
      * Uses the total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
      * 
-     * @param arDoCoResult      the output of ArDoCo
-     * @param truePositives     nr of true positives
-     * @param falsePositives    nr of false positives
-     * @param falseNegatives    nr of false negatives
+     * @param arDoCoResult   the output of ArDoCo
+     * @param truePositives  nr of true positives
+     * @param falsePositives nr of false positives
+     * @param falseNegatives nr of false negatives
      * @return the number of true negatives
      */
     public static int calculateTrueNegativesForTLR(ArDoCoResult arDoCoResult, int truePositives, int falsePositives, int falseNegatives) {
@@ -85,10 +84,10 @@ public class TestUtil {
      * results}.
      * Uses the total sum of all sentences in the {@link ArDoCoResult} and then substracts the true positives, false positives, and false negatives.
      *
-     * @param arDoCoResult      the output of ArDoCo
-     * @param truePositives     nr of true positives
-     * @param falsePositives    nr of false positives
-     * @param falseNegatives    nr of false negatives
+     * @param arDoCoResult   the output of ArDoCo
+     * @param truePositives  nr of true positives
+     * @param falsePositives nr of false positives
+     * @param falseNegatives nr of false negatives
      * @return the number of true negatives
      */
     public static int calculateTrueNegativesForInconsistencies(ArDoCoResult arDoCoResult, int truePositives, int falsePositives, int falseNegatives) {

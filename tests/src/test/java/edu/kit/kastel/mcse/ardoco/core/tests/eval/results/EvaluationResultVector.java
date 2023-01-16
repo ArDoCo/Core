@@ -1,12 +1,14 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 import org.eclipse.collections.api.factory.Lists;
 
 /**
  * used to form the average of several {@link EvaluationResults}
- * @param <T>   type of the {@link EvaluationResults}
+ * 
+ * @param <T> type of the {@link EvaluationResults}
  */
-public class EvaluationResultVector <T> {
+public class EvaluationResultVector<T> {
     private double precision = 0.0;
     private double recall = 0.0;
     private double f1 = 0.0;
@@ -50,8 +52,7 @@ public class EvaluationResultVector <T> {
     }
 
     public EvaluationResults<T> toEvaluationResults() {
-        return new EvaluationResults<>(precision, recall, f1,
-                Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(),
-                accuracy, phiCoefficient, specificity, phiCoefficientMax, phiOverPhiMax);
+        return new EvaluationResults<>(precision, recall, f1, Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(), accuracy,
+                phiCoefficient, specificity, phiCoefficientMax, phiOverPhiMax);
     }
 }
