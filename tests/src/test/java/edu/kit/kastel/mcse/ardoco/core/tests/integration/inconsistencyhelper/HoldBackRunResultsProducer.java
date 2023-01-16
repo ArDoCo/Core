@@ -100,7 +100,7 @@ public class HoldBackRunResultsProducer {
         ArDoCo arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
 
-        var additionalConfigs = ArDoCo.loadAdditionalConfigs(null);
+        var additionalConfigs = ConfigurationHelper.loadAdditionalConfigs(null);
         var optionalProject = Project.getFromName(projectName);
         if (optionalProject.isPresent()) {
             additionalConfigs = optionalProject.get().getAdditionalConfigurations();
