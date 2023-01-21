@@ -8,6 +8,9 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultVector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 
+/**
+ * This utility class provides methods to form the average of several {@link EvaluationResults}
+ */
 public final class ResultCalculatorUtil {
 
     private ResultCalculatorUtil() {
