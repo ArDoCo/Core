@@ -10,7 +10,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 
 public final class ResultCalculatorUtil {
 
-    private ResultCalculatorUtil(){}
+    private ResultCalculatorUtil() {
+    }
 
     public static <T> EvaluationResults<T> calculateAverageResults(MutableList<EvaluationResults<T>> results) {
         int norm = results.size();
