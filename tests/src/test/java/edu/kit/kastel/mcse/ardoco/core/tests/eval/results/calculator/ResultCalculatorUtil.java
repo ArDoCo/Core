@@ -37,9 +37,9 @@ public final class ResultCalculatorUtil {
     public static <T> EvaluationResults<T> calculateWeightedAverageResults(MutableList<EvaluationResults<T>> results) {
         double weight = 0.0;
         double precision = .0;
-        double recall = .0;
-        double f1 = .0;
-        double accuracy = .0;
+        double recall = 0.0;
+        double f1 = 0.0;
+        double accuracy = 0.0;
         double specificity = 0.0;
         double phi = 0.0;
         double phiMax = 0.0;
