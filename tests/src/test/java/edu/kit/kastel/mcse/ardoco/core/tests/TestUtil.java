@@ -4,8 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.tests;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
@@ -29,22 +30,22 @@ public class TestUtil {
      * @param tlr          defines how to calculate the true negatives (whether for tlr or not)
      * @return the result of the comparison
      */
-    public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, Collection<T> results, Collection<T> goldStandard, boolean tlr) {
+    public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard, boolean tlr) {
 
-        Set<T> distinctTraceLinks = new HashSet<>(results);
-        Set<T> distinctGoldStandard = new HashSet<>(goldStandard);
+        Set<T> distinctTraceLinks = new HashSet<>(results.castToCollection());
+        Set<T> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
 
         // True Positives are the trace links that are contained on both lists
         Set<T> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
-        MutableList<T> truePositivesList = Lists.mutable.ofAll(truePositives);
+        ImmutableList<T> truePositivesList = Lists.immutable.ofAll(truePositives);
 
         // False Positives are the trace links that are only contained in the result set
         Set<T> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
-        MutableList<T> falsePositivesList = Lists.mutable.ofAll(falsePositives);
+        ImmutableList<T> falsePositivesList = Lists.immutable.ofAll(falsePositives);
 
         // False Negatives are the trace links that are only contained in the gold standard
         Set<T> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
-        MutableList<T> falseNegativesList = Lists.mutable.ofAll(falseNegatives);
+        ImmutableList<T> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
 
         int trueNegatives;
         if (tlr) {
@@ -53,8 +54,8 @@ public class TestUtil {
             trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
         }
 
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList.toImmutable(), trueNegatives, falsePositivesList.toImmutable(),
-                falseNegativesList.toImmutable()));
+        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList,
+                falseNegativesList));
     }
 
     /**

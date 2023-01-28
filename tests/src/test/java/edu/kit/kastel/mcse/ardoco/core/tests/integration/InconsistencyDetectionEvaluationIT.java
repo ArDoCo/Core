@@ -103,7 +103,7 @@ class InconsistencyDetectionEvaluationIT {
 
         OVERALL_MME_RESULTS.addAll(results);
 
-        EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
+        EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
 
         var expectedInconsistencyResults = project.getExpectedInconsistencyResults();
         logResultsMissingModelInconsistency(project, weightedResults, expectedInconsistencyResults);
@@ -149,7 +149,7 @@ class InconsistencyDetectionEvaluationIT {
         OVERALL_MME_RESULTS_BASELINE.addAll(results);
 
         if (logger.isInfoEnabled()) {
-            var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
+            var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
             String name = project.name() + " missing model inconsistency";
             TestUtil.logResults(logger, name, weightedResults);
         }
@@ -185,9 +185,9 @@ class InconsistencyDetectionEvaluationIT {
         }
         Assertions.assertNotNull(projectResults, "No results found.");
 
-        List<String> expectedInconsistentModelElements = project.getMissingTextForModelElementGoldStandard();
+        MutableList<String> expectedInconsistentModelElements = project.getMissingTextForModelElementGoldStandard();
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
-        var results = TestUtil.compare(projectResults, inconsistentModelElements, expectedInconsistentModelElements, false);
+        var results = TestUtil.compare(projectResults, inconsistentModelElements.toImmutable(), expectedInconsistentModelElements.toImmutable(), false);
 
         OVERALL_UME_RESULTS.add(results);
 
@@ -211,14 +211,14 @@ class InconsistencyDetectionEvaluationIT {
     @Test
     @Order(999)
     void overAllResultsIT() {
-        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS);
-        var macroResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS);
+        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS.toImmutable());
+        var macroResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS.toImmutable());
 
         Assertions.assertNotNull(weightedResults);
         Assertions.assertNotNull(macroResults);
 
-        var weightedUMEResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_UME_RESULTS);
-        var macroUMEResults = ResultCalculatorUtil.calculateAverageResults(OVERALL_UME_RESULTS);
+        var weightedUMEResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_UME_RESULTS.toImmutable());
+        var macroUMEResults = ResultCalculatorUtil.calculateAverageResults(OVERALL_UME_RESULTS.toImmutable());
 
         Assertions.assertNotNull(weightedUMEResults);
         Assertions.assertNotNull(macroUMEResults);
@@ -232,11 +232,11 @@ class InconsistencyDetectionEvaluationIT {
 
             if (ranBaseline) {
                 name = "MME BASELINE Overall Weighted";
-                var results = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS_BASELINE);
+                var results = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS_BASELINE.toImmutable());
                 TestUtil.logResults(logger, name, results);
 
                 name = "MME BASELINE Overall Macro";
-                results = ResultCalculatorUtil.calculateAverageResults(OVERALL_MME_RESULTS_BASELINE);
+                results = ResultCalculatorUtil.calculateAverageResults(OVERALL_MME_RESULTS_BASELINE.toImmutable());
                 TestUtil.logResults(logger, name, results);
             }
 
@@ -284,14 +284,14 @@ class InconsistencyDetectionEvaluationIT {
         }
 
         var goldStandard = project.getTlrGoldStandard(getPcmModel(project));
-        var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(Object::toString).castToCollection();
-        var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(Object::toString).castToCollection();
+        var expectedLines = goldStandard.getSentencesWithElement(removedElement).distinct().collect(Object::toString);
+        var actualSentences = inconsistencies.collect(MissingModelInstanceInconsistency::sentence).distinct().collect(Object::toString);
 
         return calculateEvaluationResults(arDoCoResult, expectedLines, actualSentences);
     }
 
-    private static EvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, Collection<String> expectedLines,
-            Collection<String> actualSentences) {
+    private static EvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, ImmutableList<String> expectedLines,
+            ImmutableList<String> actualSentences) {
         return TestUtil.compare(arDoCoResult, actualSentences, expectedLines, false);
     }
 
@@ -441,7 +441,7 @@ class InconsistencyDetectionEvaluationIT {
     private static String getOverallResultsString(MutableList<EvaluationResults<String>> results) {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("###").append(LINE_SEPARATOR);
-        var weightedAverageResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
+        var weightedAverageResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
         var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted Average", weightedAverageResults);
         outputBuilder.append(resultString);
         outputBuilder.append(LINE_SEPARATOR);

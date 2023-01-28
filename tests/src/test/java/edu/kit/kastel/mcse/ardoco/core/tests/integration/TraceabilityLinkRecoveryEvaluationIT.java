@@ -74,11 +74,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
     public static void afterAll() {
         if (logger.isInfoEnabled()) {
             var name = "Overall Weighted";
-            var results = ResultCalculatorUtil.calculateWeightedAverageResults(PROJECT_RESULTS);
+            var results = ResultCalculatorUtil.calculateWeightedAverageResults(PROJECT_RESULTS.toImmutable());
             TestUtil.logResults(logger, name, results);
 
             name = "Overall Macro";
-            results = ResultCalculatorUtil.calculateAverageResults(PROJECT_RESULTS);
+            results = ResultCalculatorUtil.calculateAverageResults(PROJECT_RESULTS.toImmutable());
             TestUtil.logResults(logger, name, results);
         }
 
@@ -197,7 +197,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var modelId = modelIds.stream().findFirst().orElseThrow();
 
         var goldStandard = project.getTlrGoldStandard();
-        EvaluationResults<String> results = calculateResults(goldStandard, arDoCoResult, modelId);
+        EvaluationResults<String> results = calculateResults(goldStandard.toImmutable(), arDoCoResult, modelId);
 
         ExpectedResults expectedResults = project.getExpectedTraceLinkResults();
 
@@ -216,7 +216,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 var data = arDoCoResult.dataRepository();
                 printDetailedDebug(results, data);
                 try {
-                    RESULTS.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project),
+                    RESULTS.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project).toImmutable(),
                             true)));
                     DATA_MAP.put(project, arDoCoResult);
                     PROJECT_RESULTS.add(results);
@@ -254,11 +254,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
         FilePrinter.printResultsInFiles(path, name, arDoCoResult);
     }
 
-    private EvaluationResults<String> calculateResults(List<String> goldStandard, ArDoCoResult arDoCoResult, String modelId) {
+    private EvaluationResults<String> calculateResults(ImmutableList<String> goldStandard, ArDoCoResult arDoCoResult, String modelId) {
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
 
-        return TestUtil.compare(arDoCoResult, traceLinks.toSet(), goldStandard, true);
+        return TestUtil.compare(arDoCoResult, traceLinks, goldStandard, true);
     }
 
     private void printDetailedDebug(EvaluationResults<String> results, DataRepository data) {
