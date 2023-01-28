@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 public final class TLRUtil {
 
     private TLRUtil() {
+        throw new IllegalAccessError();
     }
 
     /**
