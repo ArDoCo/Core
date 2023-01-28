@@ -6,10 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 public class TLGoldStandardFile {
 
@@ -22,8 +23,7 @@ public class TLGoldStandardFile {
         Path path = project.getTlrGoldStandardFile().toPath();
         List<String> lines = Files.readAllLines(path);
 
-        return Lists.mutable.ofAll(
-                lines.stream()
+        return Lists.mutable.ofAll(lines.stream()
                 .skip(1) // skip csv header
                 .map(line -> line.split(",")) // modelElementId,sentenceNr
                 .map(array -> new TestLink(array[0], Integer.parseInt(array[1])))

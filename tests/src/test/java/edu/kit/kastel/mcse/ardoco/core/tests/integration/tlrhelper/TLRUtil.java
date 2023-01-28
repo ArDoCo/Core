@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper;
 import java.util.List;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
@@ -11,7 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * This utility class provides methods for TLR.
