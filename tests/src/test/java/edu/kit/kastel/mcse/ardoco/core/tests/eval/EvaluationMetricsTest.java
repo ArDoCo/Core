@@ -65,10 +65,8 @@ class EvaluationMetricsTest {
         Assertions.assertAll( //
                 () -> Assertions.assertEquals(.0, EvaluationMetrics.calculatePhiCoefficient(10, 10, 10, 10), 1e-3), //
                 () -> Assertions.assertEquals(.478, EvaluationMetrics.calculatePhiCoefficient(6, 1, 2, 3), 1e-3), //
-                () -> Assertions.assertEquals(-.579, EvaluationMetrics.calculatePhiCoefficient(10, 55, 55, 20),
-                        1e-3), //
-                () -> Assertions.assertEquals(.869, EvaluationMetrics.calculatePhiCoefficient(210, 22, 31, 1337),
-                        1e-3), //
+                () -> Assertions.assertEquals(-.579, EvaluationMetrics.calculatePhiCoefficient(10, 55, 55, 20), 1e-3), //
+                () -> Assertions.assertEquals(.869, EvaluationMetrics.calculatePhiCoefficient(210, 22, 31, 1337), 1e-3), //
                 () -> Assertions.assertEquals(.0, EvaluationMetrics.calculatePhiCoefficient(0, 0, 11, 11), 1e-3), //
                 () -> Assertions.assertEquals(.0, EvaluationMetrics.calculatePhiCoefficient(11, 0, 11, 0), 1e-3) //
         );
@@ -78,7 +76,7 @@ class EvaluationMetricsTest {
     void calculateSpecificityTest() {
         Assertions.assertAll( //
                 () -> Assertions.assertEquals(.5, EvaluationMetrics.calculateSpecificity(1, 1), 1e-3), //
-                () -> Assertions.assertEquals(.76,EvaluationMetrics.calculateSpecificity(1337, 420), 1e-3), //
+                () -> Assertions.assertEquals(.76, EvaluationMetrics.calculateSpecificity(1337, 420), 1e-3), //
                 () -> Assertions.assertEquals(.0, EvaluationMetrics.calculateSpecificity(0, 20), 1e-3), //
                 () -> Assertions.assertEquals(1., EvaluationMetrics.calculateSpecificity(20, 0), 1e-3), //
                 () -> Assertions.assertEquals(1., EvaluationMetrics.calculateSpecificity(0, 0), 1e-3), //
