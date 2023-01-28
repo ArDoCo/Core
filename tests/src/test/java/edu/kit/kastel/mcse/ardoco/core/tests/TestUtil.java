@@ -30,7 +30,8 @@ public class TestUtil {
      * @param tlr          defines how to calculate the true negatives (whether for tlr or not)
      * @return the result of the comparison
      */
-    public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard, boolean tlr) {
+    public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard,
+            boolean tlr) {
 
         Set<T> distinctTraceLinks = new HashSet<>(results.castToCollection());
         Set<T> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
@@ -54,8 +55,7 @@ public class TestUtil {
             trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
         }
 
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList,
-                falseNegativesList));
+        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
     }
 
     /**

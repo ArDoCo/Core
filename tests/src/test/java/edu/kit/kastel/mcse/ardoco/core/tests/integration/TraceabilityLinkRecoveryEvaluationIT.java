@@ -216,8 +216,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 var data = arDoCoResult.dataRepository();
                 printDetailedDebug(results, data);
                 try {
-                    RESULTS.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project).toImmutable(),
-                            true)));
+                    RESULTS.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project)
+                            .toImmutable(), true)));
                     DATA_MAP.put(project, arDoCoResult);
                     PROJECT_RESULTS.add(results);
                 } catch (IOException e) {
