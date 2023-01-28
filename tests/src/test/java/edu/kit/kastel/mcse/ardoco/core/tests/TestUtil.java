@@ -117,7 +117,7 @@ public class TestUtil {
      * @return a String containing the name and the results (precision, recall, F1) line by line
      */
     public static String createResultLogString(String name, EvaluationResults results) {
-        return String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.toString());
+        return String.format(Locale.ENGLISH, "%n%s:%n%s", name, results);
     }
 
     /**
