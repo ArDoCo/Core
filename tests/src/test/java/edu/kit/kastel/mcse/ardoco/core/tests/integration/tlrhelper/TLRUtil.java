@@ -11,6 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionSt
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * This utility class provides methods for TLR.
@@ -27,7 +28,7 @@ public final class TLRUtil {
      * @param data the {@link EvaluationResults}
      * @return the trace links
      */
-    public static List<TestLink> getTraceLinks(DataRepository data) {
+    public static ImmutableList<TestLink> getTraceLinks(DataRepository data) {
         var traceLinks = Lists.mutable.<TestLink>empty();
         var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
@@ -41,6 +42,6 @@ public final class TLRUtil {
         for (var connectionState : connectionStatesList) {
             traceLinks.addAll(connectionState.getTraceLinks().stream().map(TestLink::new).toList());
         }
-        return traceLinks.toList();
+        return traceLinks.toImmutable();
     }
 }

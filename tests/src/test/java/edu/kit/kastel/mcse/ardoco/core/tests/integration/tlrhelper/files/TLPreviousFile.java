@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
@@ -57,7 +58,7 @@ public class TLPreviousFile {
             var correctLinks = TLGoldStandardFile.loadLinks(project);
             var foundLinks = foundLinkMap.get(project);
 
-            results.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), foundLinks, correctLinks, true)));
+            results.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), Lists.immutable.ofAll(foundLinks), correctLinks.toImmutable(), true)));
         }
 
         return results;

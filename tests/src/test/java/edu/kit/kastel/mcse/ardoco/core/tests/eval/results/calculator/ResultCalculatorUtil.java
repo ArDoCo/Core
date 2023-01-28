@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultVector;
@@ -17,7 +17,7 @@ public final class ResultCalculatorUtil {
         throw new IllegalAccessError();
     }
 
-    public static <T> EvaluationResults<T> calculateAverageResults(MutableList<EvaluationResults<T>> results) {
+    public static <T> EvaluationResults<T> calculateAverageResults(ImmutableList<EvaluationResults<T>> results) {
         int norm = results.size();
         EvaluationResultVector<T> vector = new EvaluationResultVector<>();
 
@@ -34,7 +34,7 @@ public final class ResultCalculatorUtil {
         return vector.toEvaluationResults();
     }
 
-    public static <T> EvaluationResults<T> calculateWeightedAverageResults(MutableList<EvaluationResults<T>> results) {
+    public static <T> EvaluationResults<T> calculateWeightedAverageResults(ImmutableList<EvaluationResults<T>> results) {
         double weight = 0.0;
         double precision = .0;
         double recall = 0.0;

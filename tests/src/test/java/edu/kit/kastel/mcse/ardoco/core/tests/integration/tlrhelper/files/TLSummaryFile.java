@@ -98,8 +98,8 @@ public class TLSummaryFile {
 
     private static <T> void appendOverallResults(List<Pair<Project, EvaluationResults<T>>> projectResults, StringBuilder builder) {
         var results = Lists.mutable.ofAll(projectResults.stream().map(Pair::getTwo).toList());
-        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results);
-        var macroResults = ResultCalculatorUtil.calculateAverageResults(results);
+        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
+        var macroResults = ResultCalculatorUtil.calculateAverageResults(results.toImmutable());
         var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
         builder.append(resultString).append(LINE_SEPARATOR);
         resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
