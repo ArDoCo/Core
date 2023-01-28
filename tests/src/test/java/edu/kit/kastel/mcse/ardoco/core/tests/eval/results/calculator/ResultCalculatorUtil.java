@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 public final class ResultCalculatorUtil {
 
     private ResultCalculatorUtil() {
+        throw new IllegalAccessError();
     }
 
     public static <T> EvaluationResults<T> calculateAverageResults(MutableList<EvaluationResults<T>> results) {
