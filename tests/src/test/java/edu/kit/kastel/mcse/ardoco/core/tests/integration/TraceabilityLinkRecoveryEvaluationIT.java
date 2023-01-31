@@ -92,7 +92,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 TLModelFile.save(evalDir.resolve("models.txt"), DATA_MAP);
                 TLSentenceFile.save(evalDir.resolve("sentences.txt"), DATA_MAP);
                 TLLogFile.append(evalDir.resolve("log.txt"), RESULTS);
-                TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS); // save before loading
+                TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS, logger); // save before loading
                 TLDiffFile.save(evalDir.resolve("diff.txt"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv"), DATA_MAP), DATA_MAP);
             } catch (IOException e) {
                 logger.error("Failed to write output.", e);
@@ -216,8 +216,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 var data = arDoCoResult.dataRepository();
                 printDetailedDebug(results, data);
                 try {
-                    RESULTS.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project)
-                            .toImmutable(), true)));
+                    RESULTS.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project).toImmutable())));
                     DATA_MAP.put(project, arDoCoResult);
                     PROJECT_RESULTS.add(results);
                 } catch (IOException e) {
@@ -258,7 +257,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
 
-        return TestUtil.compare(arDoCoResult, traceLinks, goldStandard, true);
+        return TestUtil.compareTLR(arDoCoResult, traceLinks, goldStandard);
     }
 
     private void printDetailedDebug(EvaluationResults<String> results, DataRepository data) {
