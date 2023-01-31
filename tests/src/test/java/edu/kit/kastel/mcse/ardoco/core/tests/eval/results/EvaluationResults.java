@@ -1,54 +1,86 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 import java.util.Locale;
 
-/**
- * This interface represents evaluation results. Implementing classes should be able to return precision, recall, and
- * F1-score of an evaluation.
- *
- * @see <a href="https://en.wikipedia.org/wiki/Precision_and_recall">Wikipedia: Precision and recall</a>
- */
-public interface EvaluationResults {
-    /**
-     * Return the precision.
-     * 
-     * @return the precision
-     */
-    double getPrecision();
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
-    /**
-     * Return the recall
-     * 
-     * @return the recall
-     */
-    double getRecall();
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 
-    /**
-     * Return the F1-score
-     * 
-     * @return the F1-score
-     */
-    double getF1();
+public record EvaluationResults<T> (double precision, double recall, double f1, ImmutableList<T> truePositives, int trueNegatives,
+                                    ImmutableList<T> falseNegatives, ImmutableList<T> falsePositives, double accuracy, double phiCoefficient,
+                                    double specificity, double phiCoefficientMax, double phiOverPhiMax) {
 
-    /**
-     * Returns a string that formats the results in a human-readable manner.
-     * 
-     * @return a string that formats the results in a human-readable manner
-     */
-    default String getResultString() {
-        return String.format(Locale.ENGLISH, "\tPrecision:%8.2f%n\tRecall:%11.2f%n\tF1:%15.2f", getPrecision(), getRecall(), getF1());
+    @Override
+    public String toString() {
+        String output = String.format(Locale.ENGLISH, "\tPrecision:%8.2f%n\tRecall:%11.2f%n\tF1:%15.2f", precision, recall, f1);
+        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%9.2f%n\tSpecificity:%6.2f", accuracy, specificity);
+        output += String.format(Locale.ENGLISH, "%n\tPhi Coef.:%8.2f%n\tPhi/PhiMax:%7.2f (Phi Max: %.2f)", phiCoefficient, phiOverPhiMax, phiCoefficientMax);
+        return output;
     }
 
-    /**
-     * Returns a string that formats the results in a human-readable manner including the given expected results
-     * 
-     * @param expectedResults the expected results
-     * @return a string that formats the results in a human-readable manner
-     */
-    default String getResultStringWithExpected(ExpectedResults expectedResults) {
+    public String getResultStringWithExpected(ExpectedResults expectedResults) {
         return String.format(Locale.ENGLISH,
-                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", getPrecision(),
-                expectedResults.precision(), getRecall(), expectedResults.recall(), getF1(), expectedResults.f1());
+                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", precision, expectedResults
+                        .precision(), recall, expectedResults.recall(), f1, expectedResults.f1());
     }
+
+    /**
+     * returns the weight (truePos + falseNeg)
+     * 
+     * @return the weight
+     */
+    public int getWeight() {
+        return this.truePositives().size() + this.falseNegatives().size();
+    }
+
+    public ImmutableList<T> getFound() {
+        MutableList<T> found = Lists.mutable.empty();
+        found.addAll(truePositives.castToCollection());
+        found.addAll(falsePositives.castToCollection());
+        return found.toImmutable();
+    }
+
+    /**
+     * creates new {@link EvaluationResults} from a {@link ResultMatrix}
+     * 
+     * @param matrix the {@link ResultMatrix}
+     * @return new {@link EvaluationResults}
+     */
+    public static <T> EvaluationResults<T> createEvaluationResults(ResultMatrix<T> matrix) {
+        int nrTruePos = matrix.truePositives().size();
+        int nrTrueNeg = matrix.trueNegatives();
+        int nrFalsePos = matrix.falsePositives().size();
+        int nrFalseNeg = matrix.falseNegatives().size();
+
+        double precision = EvaluationMetrics.calculatePrecision(nrTruePos, nrFalsePos);
+        double recall = EvaluationMetrics.calculateRecall(nrTruePos, nrFalseNeg);
+        double f1 = EvaluationMetrics.calculateF1(precision, recall);
+
+        double accuracy = 0;
+        double phiCoefficient = 0;
+        double specificity = 0;
+        double phiCoefficientMax = 0;
+        double phiOverPhiMax = 0;
+
+        if (nrTruePos + nrFalsePos + nrFalseNeg + nrTrueNeg != 0) {
+            accuracy = EvaluationMetrics.calculateAccuracy(nrTruePos, nrFalsePos, nrFalseNeg, nrTrueNeg);
+        }
+        phiCoefficient = EvaluationMetrics.calculatePhiCoefficient(nrTruePos, nrFalsePos, nrFalseNeg, nrTrueNeg);
+        if (nrTrueNeg + nrFalsePos != 0) {
+            specificity = EvaluationMetrics.calculateSpecificity(nrTrueNeg, nrFalsePos);
+        }
+        if ((nrFalseNeg + nrTrueNeg) * (nrTruePos + nrFalseNeg) != 0) {
+            phiCoefficientMax = EvaluationMetrics.calculatePhiCoefficientMax(nrTruePos, nrFalsePos, nrFalseNeg, nrTrueNeg);
+        }
+        if (phiCoefficientMax != 0) {
+            phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(nrTruePos, nrFalsePos, nrFalseNeg, nrTrueNeg);
+        }
+
+        return new EvaluationResults<T>(precision, recall, f1, matrix.truePositives(), matrix.trueNegatives(), matrix.falseNegatives(), matrix.falsePositives(),
+                accuracy, phiCoefficient, specificity, phiCoefficientMax, phiOverPhiMax);
+    }
+
 }

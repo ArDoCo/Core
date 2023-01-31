@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,7 +204,7 @@ public enum Project {
      *
      * @return a list with the entries of the goldstandard for TLR
      */
-    public List<String> getTlrGoldStandard() {
+    public MutableList<String> getTlrGoldStandard() {
         var path = Paths.get(this.getTlrGoldStandardFile().toURI());
         List<String> goldLinks = Lists.mutable.empty();
         try {
@@ -212,7 +213,7 @@ public enum Project {
             logger.error(e.getMessage(), e);
         }
         goldLinks.remove(0);
-        return goldLinks;
+        return Lists.mutable.ofAll(goldLinks);
     }
 
     /**
@@ -225,7 +226,7 @@ public enum Project {
         return new GoldStandard(getTlrGoldStandardFile(), pcmModel);
     }
 
-    public List<String> getMissingTextForModelElementGoldStandard() {
+    public MutableList<String> getMissingTextForModelElementGoldStandard() {
         var path = Paths.get(this.getMissingTextForModelElementGoldStandardFile().toURI());
         List<String> goldLinks = Lists.mutable.empty();
         try {
@@ -234,7 +235,7 @@ public enum Project {
             logger.error(e.getMessage(), e);
         }
         goldLinks.remove("missingModelElementID");
-        return goldLinks;
+        return Lists.mutable.ofAll(goldLinks);
     }
 
     private File getMissingTextForModelElementGoldStandardFile() {
