@@ -47,8 +47,7 @@ public class TestUtil {
         ImmutableList<T> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
 
         int trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList,
-                falseNegativesList));
+        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
     }
 
     /**
@@ -59,7 +58,8 @@ public class TestUtil {
      * @param goldStandard Collection representing the gold standard
      * @return the result of the comparison
      */
-    public static <T> EvaluationResults<T> compareInconsistencies(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard) {
+    public static <T> EvaluationResults<T> compareInconsistencies(ArDoCoResult arDoCoResult, ImmutableCollection<T> results,
+            ImmutableCollection<T> goldStandard) {
 
         Set<T> distinctTraceLinks = new HashSet<>(results.castToCollection());
         Set<T> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
@@ -77,8 +77,7 @@ public class TestUtil {
         ImmutableList<T> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
 
         int trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList,
-                falseNegativesList));
+        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
     }
 
     /**
