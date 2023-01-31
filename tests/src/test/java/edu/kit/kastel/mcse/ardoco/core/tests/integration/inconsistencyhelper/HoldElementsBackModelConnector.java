@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.tests.eval;
+package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
 import org.eclipse.collections.api.list.ImmutableList;
 

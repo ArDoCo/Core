@@ -1,18 +1,21 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+import org.slf4j.Logger;
+
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLProjectEvalResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 /**
@@ -32,10 +35,10 @@ public class TLPreviousFile {
      * @return the previous results
      * @throws IOException if file access fails
      */
-    public static Collection<TLProjectEvalResult> load(Path sourceFile) throws IOException {
+    public static Collection<Pair<Project, EvaluationResults<TestLink>>> load(Path sourceFile, final Map<Project, ArDoCoResult> DATA_MAP) throws IOException {
         List<String> lines = Files.readAllLines(sourceFile);
         Map<Project, List<TestLink>> foundLinkMap = new HashMap<>();
-        List<TLProjectEvalResult> results = new ArrayList<>();
+        List<Pair<Project, EvaluationResults<TestLink>>> results = new ArrayList<>();
 
         for (String line : lines) {
             var parts = line.split(",", -1);
@@ -56,7 +59,7 @@ public class TLPreviousFile {
             var correctLinks = TLGoldStandardFile.loadLinks(project);
             var foundLinks = foundLinkMap.get(project);
 
-            results.add(new TLProjectEvalResult(project, foundLinks, correctLinks));
+            results.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), Lists.immutable.ofAll(foundLinks), correctLinks.toImmutable())));
         }
 
         return results;
@@ -65,22 +68,25 @@ public class TLPreviousFile {
     /**
      * Saves the given results to the given file.
      * 
-     * @param targetFile file to save to
-     * @param results    results to save
+     * @param targetFile     file to save to
+     * @param projectResults results to save
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Collection<TLProjectEvalResult> results) throws IOException {
+    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> projectResults, Logger logger) throws IOException {
         if (Files.exists(targetFile)) {
+            logger.warn("File with the results of the previous evaluation run already exists.");
             return; // do not overwrite
         }
 
-        var sortedResults = results.stream().sorted().toList();
+        var sortedResults = new ArrayList<>(projectResults);
+        sortedResults.sort(Comparator.comparing(x -> x.getOne().name()));
 
         var builder = new StringBuilder();
 
-        for (TLProjectEvalResult result : sortedResults) {
-            for (TestLink foundLink : result.getFoundLinks()) {
-                builder.append(result.getProject().name());
+        for (Pair<Project, EvaluationResults<TestLink>> projectResult : sortedResults) {
+            EvaluationResults<TestLink> result = projectResult.getTwo();
+            for (TestLink foundLink : result.getFound()) {
+                builder.append(projectResult.getOne().name());
                 builder.append(',');
                 builder.append(foundLink.modelId());
                 builder.append(',');
