@@ -51,17 +51,17 @@ public final class ResultCalculatorUtil {
 
         for (var result : results) {
             double localWeight = result.getWeight();
-
-            precision += (localWeight * result.precision());
-            recall += (localWeight * result.recall());
-            f1 += (localWeight * result.f1());
             weight += localWeight;
 
-            accuracy += (localWeight * result.accuracy());
-            specificity += (localWeight * result.specificity());
-            phi += result.phiCoefficient() * localWeight;
-            phiMax += result.phiCoefficientMax() * localWeight;
-            phiOverPhiMax += result.phiOverPhiMax() * localWeight;
+            precision += localWeight * result.precision();
+            recall += localWeight * result.recall();
+            f1 += localWeight * result.f1();
+
+            accuracy += localWeight * result.accuracy();
+            specificity += localWeight * result.specificity();
+            phi += localWeight * result.phiCoefficient();
+            phiMax += localWeight * result.phiCoefficientMax();
+            phiOverPhiMax += localWeight * result.phiOverPhiMax();
 
             truePositives += result.truePositives().size();
             falseNegatives += result.falseNegatives().size();
