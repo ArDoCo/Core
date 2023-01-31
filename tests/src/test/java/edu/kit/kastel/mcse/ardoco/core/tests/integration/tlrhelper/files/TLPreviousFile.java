@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import org.slf4j.Logger;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.tuple.Pair;
@@ -58,7 +59,7 @@ public class TLPreviousFile {
             var correctLinks = TLGoldStandardFile.loadLinks(project);
             var foundLinks = foundLinkMap.get(project);
 
-            results.add(Tuples.pair(project, TestUtil.compare(DATA_MAP.get(project), Lists.immutable.ofAll(foundLinks), correctLinks.toImmutable(), true)));
+            results.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), Lists.immutable.ofAll(foundLinks), correctLinks.toImmutable())));
         }
 
         return results;
@@ -71,8 +72,9 @@ public class TLPreviousFile {
      * @param projectResults results to save
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> projectResults) throws IOException {
+    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> projectResults, Logger logger) throws IOException {
         if (Files.exists(targetFile)) {
+            logger.warn("File with the results of the previous evaluation run already exists.");
             return; // do not overwrite
         }
 

@@ -187,7 +187,7 @@ class InconsistencyDetectionEvaluationIT {
 
         MutableList<String> expectedInconsistentModelElements = project.getMissingTextForModelElementGoldStandard();
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
-        var results = TestUtil.compare(projectResults, inconsistentModelElements.toImmutable(), expectedInconsistentModelElements.toImmutable(), false);
+        var results = TestUtil.compareInconsistencies(projectResults, inconsistentModelElements.toImmutable(), expectedInconsistentModelElements.toImmutable());
 
         OVERALL_UME_RESULTS.add(results);
 
@@ -292,7 +292,7 @@ class InconsistencyDetectionEvaluationIT {
 
     private static EvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, ImmutableList<String> expectedLines,
             ImmutableList<String> actualSentences) {
-        return TestUtil.compare(arDoCoResult, actualSentences, expectedLines, false);
+        return TestUtil.compareInconsistencies(arDoCoResult, actualSentences, expectedLines);
     }
 
     private static PcmXMLModelConnector getPcmModel(Project project) {

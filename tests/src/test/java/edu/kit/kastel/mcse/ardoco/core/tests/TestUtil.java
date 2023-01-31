@@ -22,16 +22,14 @@ public class TestUtil {
     }
 
     /**
-     * compares the results with the expected results and creates a new {@link EvaluationResults}.
+     * compares the tlr results with the expected results and creates a new {@link EvaluationResults}.
      * 
      * @param arDoCoResult the ArDoCoResult
      * @param results      Collection representing the results
      * @param goldStandard Collection representing the gold standard
-     * @param tlr          defines how to calculate the true negatives (whether for tlr or not)
      * @return the result of the comparison
      */
-    public static <T> EvaluationResults<T> compare(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard,
-            boolean tlr) {
+    public static <T> EvaluationResults<T> compareTLR(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard) {
 
         Set<T> distinctTraceLinks = new HashSet<>(results.castToCollection());
         Set<T> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
@@ -48,14 +46,39 @@ public class TestUtil {
         Set<T> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
         ImmutableList<T> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
 
-        int trueNegatives;
-        if (tlr) {
-            trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
-        } else {
-            trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
-        }
+        int trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
+        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList,
+                falseNegativesList));
+    }
 
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
+    /**
+     * compares the inconsistencies results with the expected results and creates a new {@link EvaluationResults}.
+     *
+     * @param arDoCoResult the ArDoCoResult
+     * @param results      Collection representing the results
+     * @param goldStandard Collection representing the gold standard
+     * @return the result of the comparison
+     */
+    public static <T> EvaluationResults<T> compareInconsistencies(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard) {
+
+        Set<T> distinctTraceLinks = new HashSet<>(results.castToCollection());
+        Set<T> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
+
+        // True Positives are the trace links that are contained on both lists
+        Set<T> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
+        ImmutableList<T> truePositivesList = Lists.immutable.ofAll(truePositives);
+
+        // False Positives are the trace links that are only contained in the result set
+        Set<T> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
+        ImmutableList<T> falsePositivesList = Lists.immutable.ofAll(falsePositives);
+
+        // False Negatives are the trace links that are only contained in the gold standard
+        Set<T> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
+        ImmutableList<T> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
+
+        int trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
+        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList,
+                falseNegativesList));
     }
 
     /**
