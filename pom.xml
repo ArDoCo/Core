@@ -5,12 +5,12 @@
   <parent>
     <groupId>io.github.informalin.framework</groupId>
     <artifactId>parent</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
 
   <groupId>io.github.ardoco.core</groupId>
   <artifactId>parent</artifactId>
-  <version>${revision}</version>
+  <version>0.7.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
