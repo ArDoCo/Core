@@ -2,8 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
@@ -16,8 +14,10 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.NlpInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
@@ -26,7 +26,8 @@ import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.UMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 /**
@@ -125,8 +126,13 @@ public final class ArDoCo extends Pipeline {
     public void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCodeModel,
             Map<String, String> additionalConfigs) throws IOException {
         var dataRepository = this.getDataRepository();
+        var text = CommonUtilities.readInputText(inputText);
+        if (text.isBlank()) {
+            throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
+        }
+        DataRepositoryHelper.putInputText(dataRepository, text);
 
-        this.addPipelineStep(getTextProvider(inputText, additionalConfigs, this.getDataRepository()));
+        this.addPipelineStep(getTextPreprocessing(additionalConfigs, dataRepository));
         this.addPipelineStep(getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
         if (inputCodeModel != null) {
             this.addPipelineStep(getJavaModelProvider(inputCodeModel, dataRepository));
@@ -238,17 +244,14 @@ public final class ArDoCo extends Pipeline {
     }
 
     /**
-     * Creates a {@link CoreNLPProvider} as {@link edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider} and reads the provided text.
-     * 
-     * @param inputText         the text that should be read
+     * Creates a {@link CoreNLPProvider} as {@link NlpInformant} and reads the provided text.
+     *
      * @param additionalConfigs the additional configuration that should be applied
      * @param dataRepository    the data repository
      * @return a CoreNLPProvider with the provided text read in
-     * @throws FileNotFoundException if the text file cannot be found
      */
-    public static TextProvider getTextProvider(File inputText, Map<String, String> additionalConfigs, DataRepository dataRepository)
-            throws FileNotFoundException {
-        var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
+    public static TextPreprocessingAgent getTextPreprocessing(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var textProvider = new TextPreprocessingAgent(dataRepository);
         textProvider.applyConfiguration(additionalConfigs);
         return textProvider;
     }
