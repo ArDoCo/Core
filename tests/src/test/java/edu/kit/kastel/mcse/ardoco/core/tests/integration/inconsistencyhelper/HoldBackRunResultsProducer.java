@@ -13,6 +13,8 @@ import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
@@ -81,9 +83,11 @@ public class HoldBackRunResultsProducer {
             boolean useInconsistencyBaseline) throws FileNotFoundException {
         ArDoCo arDoCo = new ArDoCo(project.name().toLowerCase());
         var dataRepository = arDoCo.getDataRepository();
+        String text = CommonUtilities.readInputText(inputText);
+        DataRepositoryHelper.putInputText(dataRepository, text);
         var additionalConfigs = project.getAdditionalConfigurations();
 
-        arDoCo.addPipelineStep(ArDoCo.getTextProvider(inputText, additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(ArDoCo.getTextPreprocessing(additionalConfigs, dataRepository));
 
         addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
