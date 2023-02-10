@@ -58,6 +58,12 @@ public final class ArDoCo extends Pipeline {
         initDataRepository();
     }
 
+    /**
+     * Returns a new instance of this class based with the given project name
+     * 
+     * @param projectName the project name
+     * @return a new instance of ArDoCo
+     */
     public static ArDoCo getInstance(String projectName) {
         return new ArDoCo(projectName);
     }
@@ -79,6 +85,7 @@ public final class ArDoCo extends Pipeline {
      * @param inputText              File of the input text.
      * @param inputArchitectureModel File of the input model (PCM or UML)
      * @param architectureModel      the architecture model to use
+     * @param additionalConfigs      the additional configs
      * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
     public static ArDoCoResult run(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModel, File additionalConfigs) {
@@ -123,6 +130,16 @@ public final class ArDoCo extends Pipeline {
         return arDoCoResult;
     }
 
+    /**
+     * This method sets up the pipeline for ArDoCo.
+     * 
+     * @param inputText              The input text file
+     * @param inputArchitectureModel the input architecture file
+     * @param architectureModelType  the type of the architecture (e.g., PCM, UML)
+     * @param inputCodeModel         the input code model file
+     * @param additionalConfigs      the additional configs
+     * @throws IOException When one of the input files cannot be accessed/loaded
+     */
     public void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCodeModel,
             Map<String, String> additionalConfigs) throws IOException {
         var dataRepository = this.getDataRepository();
