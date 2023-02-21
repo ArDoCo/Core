@@ -1,6 +1,6 @@
 package io.github.ardoco.textproviderjson;
 
-import io.github.ardoco.textproviderjson.converter.Converter;
+import io.github.ardoco.textproviderjson.converter.JsonConverter;
 import io.github.ardoco.textproviderjson.dto.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -49,6 +49,6 @@ class ToJsonTest {
         JsonText text = new JsonText();
         text.setSentences(sentences);
 
-        Assertions.assertEquals(text, Converter.fromJsonString(Converter.toJsonString(text)));
+        Assertions.assertEquals(text, JsonConverter.fromJsonString(JsonConverter.toJsonString(text)));
     }
 }

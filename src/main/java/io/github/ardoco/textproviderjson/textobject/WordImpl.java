@@ -1,40 +1,37 @@
 /* Licensed under MIT 2022. */
 package io.github.ardoco.textproviderjson.textobject;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.trees.GrammaticalRelation;
-import edu.stanford.nlp.trees.TypedDependency;
+import io.github.ardoco.textproviderjson.DependencyType;
+import io.github.ardoco.textproviderjson.PosTag;
+import io.github.ardoco.textproviderjson.textobject.text.Phrase;
+import io.github.ardoco.textproviderjson.textobject.text.Sentence;
+import io.github.ardoco.textproviderjson.textobject.text.Text;
+import io.github.ardoco.textproviderjson.textobject.text.Word;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.impl.factory.Lists;
 
 import java.util.List;
-import java.util.Objects;
 
 class WordImpl implements Word {
 
-    private final CoreLabel token;
-    private final TextImpl parent;
+    private final Text parent;
     private final int index;
-    private Word preWord = null;
-    private Word nextWord = null;
+    private Word preWord;
+    private Word nextWord;
 
     private final int sentenceNo;
     private Phrase phrase;
     private final String text;
-    private final POSTag posTag;
+    private final PosTag posTag;
 
-    WordImpl(CoreLabel token, int index, TextImpl parent) {
-        this.token = token;
-        this.index = index;
+    public WordImpl(Text parent, int index, int sentenceNo, String text, PosTag posTag) {
         this.parent = parent;
-
-        this.sentenceNo = token.sentIndex();
-        this.text = token.get(CoreAnnotations.TextAnnotation.class);
-        this.posTag = POSTag.get(token.get(CoreAnnotations.PartOfSpeechAnnotation.class));
+        this.index = index;
+        this.preWord = null;
+        this.nextWord = null;
+        this.sentenceNo = sentenceNo;
+        this.phrase = null;
+        this.text = text;
+        this.posTag = posTag;
     }
 
     @Override
@@ -48,30 +45,12 @@ class WordImpl implements Word {
     }
 
     @Override
-    public Phrase getPhrase() {
-        if (this.phrase == null) {
-            this.phrase = loadPhrase();
-        }
-        return this.phrase;
-    }
-
-    private Phrase loadPhrase() {
-        var currentPhrase = getSentence().getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
-        var subPhrases = List.of(currentPhrase);
-        while (!subPhrases.isEmpty()) {
-            currentPhrase = subPhrases.get(0);
-            subPhrases = currentPhrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
-        }
-        return currentPhrase;
-    }
-
-    @Override
     public String getText() {
         return text;
     }
 
     @Override
-    public POSTag getPosTag() {
+    public PosTag getPosTag() {
         return this.posTag;
     }
 
@@ -98,80 +77,37 @@ class WordImpl implements Word {
         return index;
     }
 
-    protected int getPositionInSentence() {
-        return this.token.index();
-    }
-
-    protected int getBeginCharPosition() {
-        return this.token.beginPosition();
-    }
-
     @Override
     public String getLemma() {
-        return token.get(CoreAnnotations.LemmaAnnotation.class);
+        return null;
     }
 
     @Override
-    public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
-        MutableList<Word> dependencyWords = Lists.mutable.empty();
-        List<TypedDependency> dependencies = getDependenciesOfType(dependencyTag);
-        for (var typedDependency : dependencies) {
-            var target = typedDependency.dep().backingLabel();
-            var source = typedDependency.gov().backingLabel();
-            if (source.beginPosition() == token.beginPosition()) {
-                var targetWord = getCorrespondingWordForFirstTokenBasedOnSecondToken(target, source);
-                dependencyWords.add(targetWord);
-            }
+    public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyType dependencyTag) {
+        return null;
+    }
+
+    @Override
+    public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyType dependencyTag) {
+        return null;
+    }
+
+    @Override
+    public Phrase getPhrase() {
+        if (this.phrase == null) {
+            this.phrase = loadPhrase();
         }
-        return dependencyWords.toImmutable();
+        return this.phrase;
     }
 
-    @Override
-    public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
-        MutableList<Word> dependencyWords = Lists.mutable.empty();
-        List<TypedDependency> dependencies = getDependenciesOfType(dependencyTag);
-        for (var typedDependency : dependencies) {
-            var target = typedDependency.dep().backingLabel();
-            var source = typedDependency.gov().backingLabel();
-            if (target.beginPosition() == token.beginPosition()) {
-                var word = getCorrespondingWordForFirstTokenBasedOnSecondToken(source, target);
-                dependencyWords.add(word);
-            }
+    private Phrase loadPhrase() {
+        var currentPhrase = getSentence().getPhrases().stream().filter(p -> p.getContainedWords().contains(this)).findFirst().orElseThrow();
+        var subPhrases = List.of(currentPhrase);
+        while (!subPhrases.isEmpty()) {
+            currentPhrase = subPhrases.get(0);
+            subPhrases = currentPhrase.getSubPhrases().stream().filter(p -> p.getContainedWords().contains(this)).toList();
         }
-        return dependencyWords.toImmutable();
+        return currentPhrase;
     }
 
-    private Word getCorrespondingWordForFirstTokenBasedOnSecondToken(CoreLabel firstToken, CoreLabel secondToken) {
-        var firstTokenIndex = (firstToken.index() - secondToken.index()) + index;
-        return parent.words().get(firstTokenIndex);
-    }
-
-    private List<TypedDependency> getDependenciesOfType(DependencyTag dependencyTag) {
-        List<TypedDependency> typedDependencies = Lists.mutable.empty();
-        var sentence = (SentenceImpl) parent.getSentences().get(getSentenceNo());
-        SemanticGraph dependencies = sentence.dependencyParse();
-        for (var typedDependency : dependencies.typedDependencies()) {
-            GrammaticalRelation rel = typedDependency.reln();
-            if (dependencyTag.name().equalsIgnoreCase(rel.getShortName())) {
-                typedDependencies.add(typedDependency);
-            }
-        }
-        return typedDependencies;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof WordImpl word))
-            return false;
-
-        return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag() && getSentenceNo() == word
-                .getSentenceNo();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getPosition(), getPosTag(), getText(), getSentenceNo());
-    }
 }

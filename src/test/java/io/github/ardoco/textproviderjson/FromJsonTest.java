@@ -1,6 +1,6 @@
 package io.github.ardoco.textproviderjson;
 
-import io.github.ardoco.textproviderjson.converter.Converter;
+import io.github.ardoco.textproviderjson.converter.JsonConverter;
 import io.github.ardoco.textproviderjson.dto.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ class FromJsonTest {
 
     @Test
     void testFromJson() throws IOException {
-        JsonText generatedText = Converter.fromJsonString(Files.readString(Path.of("./src/test/resources/valid-example-text.json")));
+        JsonText generatedText = JsonConverter.fromJsonString(Files.readString(Path.of("./src/test/resources/valid-example-text.json")));
 
         Word expectedWord = new Word();
         expectedWord.setId(1);

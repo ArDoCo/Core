@@ -1,60 +1,42 @@
 /* Licensed under MIT 2022. */
 package io.github.ardoco.textproviderjson.textobject;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.stanford.nlp.pipeline.CoreDocument;
+import io.github.ardoco.textproviderjson.textobject.text.Sentence;
+import io.github.ardoco.textproviderjson.textobject.text.Text;
+import io.github.ardoco.textproviderjson.textobject.text.Word;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
-class TextImpl implements Text {
+public class TextImpl implements Text {
+    private ImmutableList<Sentence> sentences;
 
-    final CoreDocument coreDocument;
-    private ImmutableList<Sentence> sentences = Lists.immutable.empty();
-    private ImmutableList<Word> words = Lists.immutable.empty();
+    private ImmutableList<Word> words;
 
-    TextImpl(CoreDocument coreDocument) {
-        this.coreDocument = coreDocument;
+    public TextImpl(ImmutableList<Sentence> sentences) {
+        this.sentences = sentences;
+    }
+
+    @Override
+    public int getLength() {
+        // todo
+        return 0;
     }
 
     @Override
     public ImmutableList<Word> words() {
         if (words.isEmpty()) {
-            iterateDocumentForWordsAndSentences();
+            words = collectWords();
         }
         return words;
     }
 
     @Override
     public ImmutableList<Sentence> getSentences() {
-        if (sentences.isEmpty()) {
-            iterateDocumentForWordsAndSentences();
-        }
         return sentences;
     }
 
-    private void iterateDocumentForWordsAndSentences() {
-        MutableList<Sentence> sentenceList = Lists.mutable.empty();
-        MutableList<Word> wordList = Lists.mutable.empty();
-
-        var coreSentences = coreDocument.sentences();
-        int wordIndex = 0;
-        for (int i = 0; i < coreSentences.size(); i++) {
-            var coreSentence = coreSentences.get(i);
-            var sentence = new SentenceImpl(coreSentence, i, this);
-            sentenceList.add(sentence);
-
-            for (var token : coreSentence.tokens()) {
-                var word = new WordImpl(token, wordIndex, this);
-                wordList.add(word);
-                wordIndex++;
-            }
-        }
-
-        sentences = sentenceList.toImmutable();
-        words = wordList.toImmutable();
+    private ImmutableList<Word> collectWords() {
+        // TODO
+        return Lists.immutable.empty();
     }
-
 }
