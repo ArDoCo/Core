@@ -69,6 +69,11 @@
             <artifactId>vertx-json-schema</artifactId>
             <version>4.3.7</version>
         </dependency>
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>1.0.77</version>
+        </dependency>
     </dependencies>
 
     <repositories>
