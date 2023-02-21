@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import io.github.ardoco.textproviderjson.DependencyType;
 
 import java.util.Objects;
-public class IncomingDependency {
+public class IncomingDependencyDTO {
     private DependencyType dependencyType;
     private long sourceWordId;
 
@@ -25,7 +25,7 @@ public class IncomingDependency {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IncomingDependency that = (IncomingDependency) o;
+        IncomingDependencyDTO that = (IncomingDependencyDTO) o;
         return sourceWordId == that.sourceWordId && dependencyType == that.dependencyType;
     }
 

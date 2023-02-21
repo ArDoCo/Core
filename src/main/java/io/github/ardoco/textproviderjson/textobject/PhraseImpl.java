@@ -5,25 +5,32 @@ import io.github.ardoco.textproviderjson.PhraseType;
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhraseImpl implements Phrase {
     private final ImmutableList<Word> words;
 
     private final Sentence parent;
 
-    private String text;
+    private final String text;
 
-    private PhraseType type;
+    private final PhraseType type;
 
-    public PhraseImpl(ImmutableList<Word> words, Sentence parent, String text, PhraseType type) {
+    private final List<Phrase> subPhrases;
+
+    public PhraseImpl(ImmutableList<Word> words, Sentence parent, String text, PhraseType type, List<Phrase> subPhrases) {
         this.words = words;
         this.parent = parent;
         this.text = text;
         this.type = type;
+        this.subPhrases = subPhrases;
     }
 
     @Override
@@ -48,22 +55,42 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public ImmutableList<Phrase> getSubPhrases() {
-        // todo
-        return null;
+        return Lists.immutable.ofAll(this.subPhrases);
     }
 
     @Override
     public boolean isSuperPhraseOf(Phrase other) {
-        // todo
+        List<Phrase> subphrases = this.subPhrases;
+        while (!subphrases.isEmpty()) {
+            if (subphrases.contains(other)) {
+                return true;
+            }
+            List<Phrase> newSubphrases = new ArrayList<>();
+            for (Phrase subphrase: subphrases) {
+                newSubphrases.addAll(subphrase.getSubPhrases().castToList());
+            }
+            subphrases = newSubphrases;
+        }
         return false;
     }
 
     @Override
     public boolean isSubPhraseOf(Phrase other) {
-        // todo
+        List<Phrase> subphrases = other.getSubPhrases().castToList();
+        while (!subphrases.isEmpty()) {
+            if (subphrases.contains(this)) {
+                return true;
+            }
+            List<Phrase> newSubphrases = new ArrayList<>();
+            for (Phrase subphrase: subphrases) {
+                newSubphrases.addAll(subphrase.getSubPhrases().castToList());
+            }
+            subphrases = newSubphrases;
+        }
         return false;
     }
 
+    @Override
     public ImmutableMap<Word, Integer> getPhraseVector() {
         MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
 

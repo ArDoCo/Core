@@ -16,7 +16,7 @@ public class SentenceImpl implements Sentence {
     private final Text parent;
     private final int sentenceNumber;
 
-    private String text;
+    private final String text;
 
     public SentenceImpl(ImmutableList<Phrase> phrases, Text parent, int sentenceNumber, String text) {
         this.phrases = phrases;
@@ -45,8 +45,7 @@ public class SentenceImpl implements Sentence {
 
     @Override
     public ImmutableList<Phrase> getPhrases() {
-        // todo
-        return Lists.immutable.empty();
+        return this.phrases;
     }
 
 }

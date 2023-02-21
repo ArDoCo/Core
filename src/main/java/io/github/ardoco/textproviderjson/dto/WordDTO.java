@@ -11,9 +11,9 @@ import java.util.Objects;
  */
 public class WordDTO {
     private long id;
-    private List<IncomingDependency> incomingDependencies;
+    private List<IncomingDependencyDTO> incomingDependencies;
     private String lemma;
-    private List<OutgoingDependency> outgoingDependencies;
+    private List<OutgoingDependencyDTO> outgoingDependencies;
     private long sentenceNo;
     private String text;
     private PosTag posTag;
@@ -30,9 +30,9 @@ public class WordDTO {
      * the incoming dependencies
      */
     @JsonProperty("incomingDependencies")
-    public List<IncomingDependency> getIncomingDependencies() { return incomingDependencies; }
+    public List<IncomingDependencyDTO> getIncomingDependencies() { return incomingDependencies; }
     @JsonProperty("incomingDependencies")
-    public void setIncomingDependencies(List<IncomingDependency> value) { this.incomingDependencies = value; }
+    public void setIncomingDependencies(List<IncomingDependencyDTO> value) { this.incomingDependencies = value; }
 
     /**
      * the lemma of the word
@@ -46,9 +46,9 @@ public class WordDTO {
      * the outgoing dependencies
      */
     @JsonProperty("outgoingDependencies")
-    public List<OutgoingDependency> getOutgoingDependencies() { return outgoingDependencies; }
+    public List<OutgoingDependencyDTO> getOutgoingDependencies() { return outgoingDependencies; }
     @JsonProperty("outgoingDependencies")
-    public void setOutgoingDependencies(List<OutgoingDependency> value) { this.outgoingDependencies = value; }
+    public void setOutgoingDependencies(List<OutgoingDependencyDTO> value) { this.outgoingDependencies = value; }
 
     @JsonProperty("posTag")
     public PosTag getPosTag() { return posTag; }

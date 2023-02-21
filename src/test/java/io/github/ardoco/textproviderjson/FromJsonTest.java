@@ -24,17 +24,17 @@ class FromJsonTest {
         expectedWord.setText("Hello");
         expectedWord.setPosTag(PosTag.forValue("UH"));
 
-        OutgoingDependency expectedOutDep = new OutgoingDependency();
+        OutgoingDependencyDTO expectedOutDep = new OutgoingDependencyDTO();
         expectedOutDep.setTargetWordId(1);
         expectedOutDep.setDependencyType(DependencyType.APPOS);
-        List<OutgoingDependency> expectedOutList = new ArrayList<>();
+        List<OutgoingDependencyDTO> expectedOutList = new ArrayList<>();
         expectedOutList.add(expectedOutDep);
         expectedWord.setOutgoingDependencies(expectedOutList);
 
-        IncomingDependency expectedInDep = new IncomingDependency();
+        IncomingDependencyDTO expectedInDep = new IncomingDependencyDTO();
         expectedInDep.setSourceWordId(1);
         expectedInDep.setDependencyType(DependencyType.APPOS);
-        List<IncomingDependency> expectedInList = new ArrayList<>();
+        List<IncomingDependencyDTO> expectedInList = new ArrayList<>();
         expectedInList.add(expectedInDep);
         expectedWord.setIncomingDependencies(expectedInList);
 

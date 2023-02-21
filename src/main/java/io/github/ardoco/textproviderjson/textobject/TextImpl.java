@@ -6,6 +6,7 @@ import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 public class TextImpl implements Text {
     private ImmutableList<Sentence> sentences;
@@ -26,8 +27,11 @@ public class TextImpl implements Text {
 
     @Override
     public int getLength() {
-        // todo
-        return 0;
+        int length = 0;
+        for (Sentence sentence: sentences) {
+            length += sentence.getText().length();
+        }
+        return length;
     }
 
     @Override
@@ -44,7 +48,10 @@ public class TextImpl implements Text {
     }
 
     private ImmutableList<Word> collectWords() {
-        // TODO
-        return Lists.immutable.empty();
+        MutableList<Word> collectedWords = Lists.mutable.empty();
+        for (Sentence sentence: sentences) {
+            collectedWords.addAll(sentence.getWords().castToCollection());
+        }
+        return collectedWords.toImmutable();
     }
 }
