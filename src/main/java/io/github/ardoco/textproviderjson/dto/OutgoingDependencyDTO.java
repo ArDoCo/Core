@@ -5,7 +5,7 @@ import io.github.ardoco.textproviderjson.DependencyType;
 
 import java.util.Objects;
 
-public class OutgoingDependency {
+public class OutgoingDependencyDTO {
     private DependencyType dependencyType;
     private long targetWordId;
 
@@ -26,7 +26,7 @@ public class OutgoingDependency {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OutgoingDependency that = (OutgoingDependency) o;
+        OutgoingDependencyDTO that = (OutgoingDependencyDTO) o;
         return targetWordId == that.targetWordId && Objects.equals(dependencyType, that.dependencyType);
     }
 

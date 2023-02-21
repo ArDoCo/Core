@@ -7,6 +7,7 @@ import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 class WordImpl implements Word {
 
     private final Text parent;
-    private final int index;
+    private final int indexInText;
     private Word preWord;
     private Word nextWord;
 
@@ -22,16 +23,23 @@ class WordImpl implements Word {
     private Phrase phrase;
     private final String text;
     private final PosTag posTag;
+    private final String lemma;
 
-    public WordImpl(Text parent, int index, int sentenceNo, String text, PosTag posTag) {
+    private final List<DependencyImpl> ingoingDependencies;
+    private final List<DependencyImpl> outgoingDependencies;
+
+    public WordImpl(Text parent, int index, int sentenceNo, String text, PosTag posTag, String lemma, List<DependencyImpl> inDep, List<DependencyImpl> outDep) {
         this.parent = parent;
-        this.index = index;
+        this.indexInText = index;
         this.preWord = null;
         this.nextWord = null;
         this.sentenceNo = sentenceNo;
         this.phrase = null;
         this.text = text;
         this.posTag = posTag;
+        this.lemma = lemma;
+        this.outgoingDependencies = outDep;
+        this.ingoingDependencies = inDep;
     }
 
     @Override
@@ -56,7 +64,7 @@ class WordImpl implements Word {
 
     @Override
     public Word getPreWord() {
-        int preWordIndex = index - 1;
+        int preWordIndex = indexInText - 1;
         if (preWord == null && preWordIndex > 0) {
             preWord = parent.words().get(preWordIndex);
         }
@@ -65,7 +73,7 @@ class WordImpl implements Word {
 
     @Override
     public Word getNextWord() {
-        int nextWordIndex = index + 1;
+        int nextWordIndex = indexInText + 1;
         if (nextWord == null && nextWordIndex < parent.getLength()) {
             nextWord = parent.words().get(nextWordIndex);
         }
@@ -74,22 +82,26 @@ class WordImpl implements Word {
 
     @Override
     public int getPosition() {
-        return index;
+        return this.indexInText;
     }
 
     @Override
     public String getLemma() {
-        return null;
+        return this.lemma;
     }
 
     @Override
     public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyType dependencyTag) {
-        return null;
+        List<DependencyImpl> dependenciesOfType = this.outgoingDependencies.stream().filter(x -> x.getDependencyType() == dependencyTag).toList();
+        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int)x.getWordId())).toList();
+        return Lists.immutable.ofAll(words);
     }
 
     @Override
     public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyType dependencyTag) {
-        return null;
+        List<DependencyImpl> dependenciesOfType = this.ingoingDependencies.stream().filter(x -> x.getDependencyType() == dependencyTag).toList();
+        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int)x.getWordId())).toList();
+        return Lists.immutable.ofAll(words);
     }
 
     @Override

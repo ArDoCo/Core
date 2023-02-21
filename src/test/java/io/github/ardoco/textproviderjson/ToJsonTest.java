@@ -20,17 +20,17 @@ class ToJsonTest {
         word1.setText("Hello");
         word1.setPosTag(PosTag.forValue("UH"));
 
-        OutgoingDependency outDep1 = new OutgoingDependency();
+        OutgoingDependencyDTO outDep1 = new OutgoingDependencyDTO();
         outDep1.setTargetWordId(1);
         outDep1.setDependencyType(DependencyType.APPOS);
-        List<OutgoingDependency> outList1 = new ArrayList<>();
+        List<OutgoingDependencyDTO> outList1 = new ArrayList<>();
         outList1.add(outDep1);
         word1.setOutgoingDependencies(outList1);
 
-        IncomingDependency inDep1 = new IncomingDependency();
+        IncomingDependencyDTO inDep1 = new IncomingDependencyDTO();
         inDep1.setSourceWordId(1);
         inDep1.setDependencyType(DependencyType.APPOS);
-        List<IncomingDependency> inList1 = new ArrayList<>();
+        List<IncomingDependencyDTO> inList1 = new ArrayList<>();
         inList1.add(inDep1);
         word1.setIncomingDependencies(inList1);
 
