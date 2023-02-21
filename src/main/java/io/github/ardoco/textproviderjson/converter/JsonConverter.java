@@ -5,7 +5,7 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
-import io.github.ardoco.textproviderjson.dto.JsonText;
+import io.github.ardoco.textproviderjson.dto.TextDTO;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,15 +52,15 @@ public class JsonConverter {
         return message.isEmpty();
     }
 
-    public static JsonText fromJsonString(String json) throws IOException {
+    public static TextDTO fromJsonString(String json) throws IOException {
         if (validateJson(json)) {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, JsonText.class);
+            return objectMapper.readValue(json, TextDTO.class);
         }
         return null;
     }
 
-    public static String toJsonString(JsonText obj) throws IOException {
+    public static String toJsonString(TextDTO obj) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(obj);
         if (!validateJson(jsonString)) {

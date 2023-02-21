@@ -7,23 +7,23 @@ import java.util.Objects;
 /**
  * A definition of a text
  */
-public class JsonText {
-    private List<Sentence> sentences;
+public class TextDTO {
+    private List<SentenceDTO> sentences;
 
     /**
      * the words that are contained in this sentence
      */
     @JsonProperty("sentences")
-    public List<Sentence> getSentences() { return sentences; }
+    public List<SentenceDTO> getSentences() { return sentences; }
     @JsonProperty("sentences")
-    public void setSentences(List<Sentence> value) { this.sentences = value; }
+    public void setSentences(List<SentenceDTO> value) { this.sentences = value; }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JsonText jsonText = (JsonText) o;
-        return Objects.equals(sentences, jsonText.sentences);
+        TextDTO textDTO = (TextDTO) o;
+        return Objects.equals(sentences, textDTO.sentences);
     }
 
     @Override

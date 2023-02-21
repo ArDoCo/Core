@@ -7,11 +7,11 @@ import java.util.Objects;
 /**
  * Sentence in a text
  */
-public class Sentence {
+public class SentenceDTO {
     private String constituencyTree;
     private long sentenceNo;
     private String text;
-    private List<Word> words;
+    private List<WordDTO> words;
 
     /**
      * the constituency tree of the sentence in bracket notation
@@ -41,15 +41,15 @@ public class Sentence {
      * the words that are contained in this sentence
      */
     @JsonProperty("words")
-    public List<Word> getWords() { return words; }
+    public List<WordDTO> getWords() { return words; }
     @JsonProperty("words")
-    public void setWords(List<Word> value) { this.words = value; }
+    public void setWords(List<WordDTO> value) { this.words = value; }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Sentence sentence = (Sentence) o;
+        SentenceDTO sentence = (SentenceDTO) o;
         return sentenceNo == sentence.sentenceNo && Objects.equals(constituencyTree, sentence.constituencyTree) && Objects.equals(text, sentence.text) && Objects.equals(words, sentence.words);
     }
 
