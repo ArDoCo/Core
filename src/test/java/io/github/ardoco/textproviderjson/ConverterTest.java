@@ -1,5 +1,7 @@
 package io.github.ardoco.textproviderjson;
 
+import io.github.ardoco.textproviderjson.converter.Converter;
+import io.github.ardoco.textproviderjson.dto.JsonText;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;

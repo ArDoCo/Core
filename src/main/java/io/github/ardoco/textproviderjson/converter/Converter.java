@@ -1,13 +1,11 @@
-package io.github.ardoco.textproviderjson;
+package io.github.ardoco.textproviderjson.converter;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
+import io.github.ardoco.textproviderjson.dto.JsonText;
 
 import java.io.FileInputStream;
 import java.io.IOException;

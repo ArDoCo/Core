@@ -1,11 +1,11 @@
 package io.github.ardoco.textproviderjson;
 
+import io.github.ardoco.textproviderjson.converter.Converter;
+import io.github.ardoco.textproviderjson.dto.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
