@@ -15,9 +15,9 @@ class FromJsonTest {
 
     @Test
     void testFromJson() throws IOException {
-        JsonText generatedText = JsonConverter.fromJsonString(Files.readString(Path.of("./src/test/resources/valid-example-text.json")));
+        TextDTO generatedText = JsonConverter.fromJsonString(Files.readString(Path.of("./src/test/resources/valid-example-text.json")));
 
-        Word expectedWord = new Word();
+        WordDTO expectedWord = new WordDTO();
         expectedWord.setId(1);
         expectedWord.setSentenceNo(1);
         expectedWord.setLemma("hello");
@@ -38,19 +38,19 @@ class FromJsonTest {
         expectedInList.add(expectedInDep);
         expectedWord.setIncomingDependencies(expectedInList);
 
-        List<Word> expectedWords = new ArrayList<>();
+        List<WordDTO> expectedWords = new ArrayList<>();
         expectedWords.add(expectedWord);
 
-        Sentence expectedSentence = new Sentence();
+        SentenceDTO expectedSentence = new SentenceDTO();
         expectedSentence.setSentenceNo(1);
         expectedSentence.setText("Hello World!");
         expectedSentence.setConstituencyTree("(ROOT (FRAG (INTJ (UH Hello)) (NP (NNP World)) (. !)))");
         expectedSentence.setWords(expectedWords);
 
-        List<Sentence> expectedSentences = new ArrayList<>();
+        List<SentenceDTO> expectedSentences = new ArrayList<>();
         expectedSentences.add(expectedSentence);
 
-        JsonText expectedText = new JsonText();
+        TextDTO expectedText = new TextDTO();
         expectedText.setSentences(expectedSentences);
         Assertions.assertEquals(expectedText, generatedText);
     }

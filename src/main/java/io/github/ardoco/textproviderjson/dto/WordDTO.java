@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Definition of a word
  */
-public class Word {
+public class WordDTO {
     private long id;
     private List<IncomingDependency> incomingDependencies;
     private String lemma;
@@ -75,7 +75,7 @@ public class Word {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Word word = (Word) o;
+        WordDTO word = (WordDTO) o;
         return id == word.id && sentenceNo == word.sentenceNo && Objects.equals(incomingDependencies, word.incomingDependencies) && Objects.equals(lemma, word.lemma) && Objects.equals(outgoingDependencies, word.outgoingDependencies) && posTag == word.posTag && Objects.equals(text, word.text);
     }
 

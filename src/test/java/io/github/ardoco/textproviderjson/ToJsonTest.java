@@ -13,7 +13,7 @@ class ToJsonTest {
 
     @Test
     void testToJson() throws IOException {
-        Word word1 = new Word();
+        WordDTO word1 = new WordDTO();
         word1.setId(1);
         word1.setSentenceNo(1);
         word1.setLemma("hello");
@@ -34,19 +34,19 @@ class ToJsonTest {
         inList1.add(inDep1);
         word1.setIncomingDependencies(inList1);
 
-        List<Word> words = new ArrayList<>();
+        List<WordDTO> words = new ArrayList<>();
         words.add(word1);
 
-        Sentence sentence1 = new Sentence();
+        SentenceDTO sentence1 = new SentenceDTO();
         sentence1.setSentenceNo(1);
         sentence1.setText("Hello World!");
         sentence1.setConstituencyTree("(ROOT (FRAG (INTJ (UH Hello)) (NP (NNP World)) (. !)))");
         sentence1.setWords(words);
 
-        List<Sentence> sentences = new ArrayList<>();
+        List<SentenceDTO> sentences = new ArrayList<>();
         sentences.add(sentence1);
 
-        JsonText text = new JsonText();
+        TextDTO text = new TextDTO();
         text.setSentences(sentences);
 
         Assertions.assertEquals(text, JsonConverter.fromJsonString(JsonConverter.toJsonString(text)));
