@@ -1,4 +1,4 @@
-package io.github.ardoco.textproviderjson;
+package io.github.ardoco.textproviderjson.dto;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.List;

@@ -1,6 +1,8 @@
-package io.github.ardoco.textproviderjson;
+package io.github.ardoco.textproviderjson.dto;
 
 import com.fasterxml.jackson.annotation.*;
+import io.github.ardoco.textproviderjson.PosTag;
+
 import java.util.List;
 import java.util.Objects;
 

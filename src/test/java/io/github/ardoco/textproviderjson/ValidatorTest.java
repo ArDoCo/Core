@@ -1,5 +1,6 @@
 package io.github.ardoco.textproviderjson;
 
+import io.github.ardoco.textproviderjson.converter.Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

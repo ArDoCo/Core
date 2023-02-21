@@ -1,10 +1,9 @@
-package io.github.ardoco.textproviderjson;
+package io.github.ardoco.textproviderjson.dto;
 
 import com.fasterxml.jackson.annotation.*;
+import io.github.ardoco.textproviderjson.DependencyType;
 
 import java.util.Objects;
-
-// TODO: Redo this. Converter did something odd
 public class IncomingDependency {
     private DependencyType dependencyType;
     private long sourceWordId;
