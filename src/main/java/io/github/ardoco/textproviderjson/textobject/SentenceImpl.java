@@ -3,21 +3,22 @@ package io.github.ardoco.textproviderjson.textobject;
 
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
+import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-class SentenceImpl implements Sentence {
+public class SentenceImpl implements Sentence {
 
     private ImmutableList<Word> words = Lists.immutable.empty();
     private ImmutableList<Phrase> phrases = Lists.immutable.empty();
 
-    private final TextImpl parent;
+    private final Text parent;
     private final int sentenceNumber;
 
     private String text;
 
-    public SentenceImpl(ImmutableList<Phrase> phrases, TextImpl parent, int sentenceNumber, String text) {
+    public SentenceImpl(ImmutableList<Phrase> phrases, Text parent, int sentenceNumber, String text) {
         this.phrases = phrases;
         this.sentenceNumber = sentenceNumber;
         this.parent = parent;

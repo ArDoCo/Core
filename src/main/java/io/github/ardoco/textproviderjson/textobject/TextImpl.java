@@ -12,7 +12,15 @@ public class TextImpl implements Text {
 
     private ImmutableList<Word> words;
 
+    public TextImpl() {
+
+    }
+
     public TextImpl(ImmutableList<Sentence> sentences) {
+        this.sentences = sentences;
+    }
+
+    public void setSentences(ImmutableList<Sentence> sentences) {
         this.sentences = sentences;
     }
 
