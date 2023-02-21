@@ -2,6 +2,7 @@ package io.github.ardoco.textproviderjson;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Definition of a word
@@ -67,4 +68,17 @@ public class Word {
     public String getText() { return text; }
     @JsonProperty("text")
     public void setText(String value) { this.text = value; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Word word = (Word) o;
+        return id == word.id && sentenceNo == word.sentenceNo && Objects.equals(incomingDependencies, word.incomingDependencies) && Objects.equals(lemma, word.lemma) && Objects.equals(outgoingDependencies, word.outgoingDependencies) && posTag == word.posTag && Objects.equals(text, word.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, incomingDependencies, lemma, outgoingDependencies, posTag, sentenceNo, text);
+    }
 }
