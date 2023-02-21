@@ -14,9 +14,9 @@ public class Word {
     private List<IncomingDependency> incomingDependencies;
     private String lemma;
     private List<OutgoingDependency> outgoingDependencies;
-    private PosTag posTag;
     private long sentenceNo;
     private String text;
+    private PosTag posTag;
 
     /**
      * The id of the word. Should be ascending from 1 for the first word in the text.

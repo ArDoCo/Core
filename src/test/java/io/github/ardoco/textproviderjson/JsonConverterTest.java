@@ -1,6 +1,6 @@
 package io.github.ardoco.textproviderjson;
 
-import io.github.ardoco.textproviderjson.converter.Converter;
+import io.github.ardoco.textproviderjson.converter.JsonConverter;
 import io.github.ardoco.textproviderjson.dto.JsonText;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,8 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ConverterTest {
-    private static Logger logger = LoggerFactory.getLogger(ConverterTest.class);
+class JsonConverterTest {
+    private static Logger logger = LoggerFactory.getLogger(JsonConverterTest.class);
     private static Path exampleFilePath;
 
     @BeforeAll
@@ -30,7 +30,7 @@ class ConverterTest {
         JsonText text = null;
         try {
             String jsonString = Files.readString(filePath);
-            text = Converter.fromJsonString(jsonString);
+            text = JsonConverter.fromJsonString(jsonString);
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
         }

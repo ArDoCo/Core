@@ -1,31 +1,29 @@
 /* Licensed under MIT 2022. */
 package io.github.ardoco.textproviderjson.textobject;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.stanford.nlp.trees.Tree;
-import org.eclipse.collections.api.factory.Lists;
+import io.github.ardoco.textproviderjson.PhraseType;
+import io.github.ardoco.textproviderjson.textobject.text.Phrase;
+import io.github.ardoco.textproviderjson.textobject.text.Sentence;
+import io.github.ardoco.textproviderjson.textobject.text.Word;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 
-import java.util.Objects;
-
 public class PhraseImpl implements Phrase {
-    private final Tree tree;
     private final ImmutableList<Word> words;
 
-    private final SentenceImpl parent;
+    private final Sentence parent;
 
-    private String text = null;
+    private String text;
 
-    public PhraseImpl(Tree tree, ImmutableList<Word> words, SentenceImpl parent) {
-        this.tree = tree;
+    private PhraseType type;
+
+    public PhraseImpl(ImmutableList<Word> words, Sentence parent, String text, PhraseType type) {
         this.words = words;
         this.parent = parent;
+        this.text = text;
+        this.type = type;
     }
 
     @Override
@@ -35,16 +33,12 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public String getText() {
-        if (text == null) {
-            text = tree.spanString();
-        }
         return text;
     }
 
     @Override
     public PhraseType getPhraseType() {
-        String type = tree.label().toString();
-        return PhraseType.get(type);
+        return this.type;
     }
 
     @Override
@@ -54,40 +48,22 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public ImmutableList<Phrase> getSubPhrases() {
-        MutableList<Phrase> subPhrases = Lists.mutable.empty();
-        for (var subTree : tree) {
-            if (subTree.isPhrasal() && tree.dominates(subTree)) {
-                ImmutableList<Word> wordsForPhrase = Lists.immutable.withAll(parent.getWordsForPhrase(subTree));
-                PhraseImpl currPhrase = new PhraseImpl(subTree, wordsForPhrase, parent);
-                subPhrases.add(currPhrase);
-            }
-        }
-        return subPhrases.toImmutable();
+        // todo
+        return null;
     }
 
     @Override
     public boolean isSuperPhraseOf(Phrase other) {
-        if (other instanceof PhraseImpl otherPhrase) {
-            return tree.dominates(otherPhrase.tree);
-        } else {
-            var currText = getText();
-            var otherText = other.getText();
-            return currText.contains(otherText) && currText.length() != otherText.length();
-        }
+        // todo
+        return false;
     }
 
     @Override
     public boolean isSubPhraseOf(Phrase other) {
-        if (other instanceof PhraseImpl otherPhrase) {
-            return otherPhrase.tree.dominates(this.tree);
-        } else {
-            var currText = getText();
-            var otherText = other.getText();
-            return otherText.contains(currText) && currText.length() != otherText.length();
-        }
+        // todo
+        return false;
     }
 
-    @Override
     public ImmutableMap<Word, Integer> getPhraseVector() {
         MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
 
@@ -95,24 +71,6 @@ public class PhraseImpl implements Phrase {
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
 
         return phraseVector.toImmutable();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.getSentenceNo(), this.getText(), this.getPhraseType(), this.getContainedWords().get(0).getPosition());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || this.getClass() != obj.getClass())
-            return false;
-        Phrase other = (Phrase) obj;
-        return Objects.equals(this.getSentenceNo(), other.getSentenceNo()) && Objects.equals(this.getText(), other.getText()) && Objects.equals(this
-                .getPhraseType(), other.getPhraseType()) && Objects.equals(this.getContainedWords().get(0).getPosition(), other.getContainedWords()
-                        .get(0)
-                        .getPosition());
     }
 
     @Override

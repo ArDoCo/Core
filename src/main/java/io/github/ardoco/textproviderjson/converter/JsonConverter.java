@@ -20,9 +20,9 @@ import java.util.Set;
 /**
  * You can deserialize a JSON string with {@code JsonText text = Converter.fromJsonString(jsonString);}
  **/
-public class Converter {
+public class JsonConverter {
 
-    private Converter() {
+    private JsonConverter() {
 
     }
 
@@ -37,7 +37,7 @@ public class Converter {
             .withZone(ZoneOffset.UTC);
 
     public static OffsetDateTime parseDateTimeString(String str) {
-        return ZonedDateTime.from(Converter.DATE_TIME_FORMATTER.parse(str)).toOffsetDateTime();
+        return ZonedDateTime.from(JsonConverter.DATE_TIME_FORMATTER.parse(str)).toOffsetDateTime();
     }
 
     public static boolean validateJson(String json) throws IOException {
