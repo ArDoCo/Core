@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities.readInputText;
