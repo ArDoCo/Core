@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.text;
 
 import edu.kit.kastel.informalin.data.DataRepository;

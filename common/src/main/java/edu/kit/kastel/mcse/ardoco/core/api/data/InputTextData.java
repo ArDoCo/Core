@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
 import edu.kit.kastel.informalin.data.PipelineStepData;

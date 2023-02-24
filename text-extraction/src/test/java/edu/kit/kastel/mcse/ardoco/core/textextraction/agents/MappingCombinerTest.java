@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import org.eclipse.collections.api.factory.Lists;
