@@ -10,7 +10,7 @@ public class OutgoingDependencyDTO {
     private long targetWordId;
 
     @JsonProperty("dependencyType")
-    public Object getDependencyType() { return dependencyType; }
+    public DependencyType getDependencyType() { return dependencyType; }
     @JsonProperty("dependencyType")
     public void setDependencyType(DependencyType value) { this.dependencyType = value; }
 

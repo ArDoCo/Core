@@ -18,11 +18,12 @@ public class SentenceImpl implements Sentence {
 
     private final String text;
 
-    public SentenceImpl(ImmutableList<Phrase> phrases, Text parent, int sentenceNumber, String text) {
+    public SentenceImpl(ImmutableList<Phrase> phrases, Text parent, int sentenceNumber, String text, ImmutableList<Word> words) {
         this.phrases = phrases;
         this.sentenceNumber = sentenceNumber;
         this.parent = parent;
         this.text = text;
+        this.words = words;
     }
 
     @Override
@@ -32,9 +33,9 @@ public class SentenceImpl implements Sentence {
 
     @Override
     public ImmutableList<Word> getWords() {
-        if (words.isEmpty()) {
-            this.words = parent.words().select(w -> w.getSentenceNo() == sentenceNumber).toImmutable();
-        }
+//        if (words.isEmpty()) {
+//            this.words = parent.words().select(w -> w.getSentenceNo() == sentenceNumber).toImmutable();
+//        }
         return words;
     }
 
