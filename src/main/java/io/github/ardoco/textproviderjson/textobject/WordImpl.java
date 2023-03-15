@@ -12,7 +12,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.List;
 
-class WordImpl implements Word {
+public class WordImpl implements Word {
 
     private final Text parent;
     private final int indexInText;

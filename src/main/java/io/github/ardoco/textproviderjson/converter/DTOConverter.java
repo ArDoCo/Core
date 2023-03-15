@@ -4,6 +4,7 @@ import io.github.ardoco.textproviderjson.dto.*;
 import io.github.ardoco.textproviderjson.textobject.DependencyImpl;
 import io.github.ardoco.textproviderjson.textobject.SentenceImpl;
 import io.github.ardoco.textproviderjson.textobject.TextImpl;
+import io.github.ardoco.textproviderjson.textobject.WordImpl;
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Text;
@@ -32,7 +33,7 @@ public class DTOConverter {
     }
 
     private Sentence convertToSentence(SentenceDTO sentenceDTO, Text parentText) {
-        List<Word> words = sentenceDTO.getWords().stream().map(x -> convertToWord(x)).toList();
+        List<Word> words = sentenceDTO.getWords().stream().map(x -> convertToWord(x, parentText)).toList();
         String constituencyTree = sentenceDTO.getConstituencyTree();
         List<Phrase> phrases = parseConstituencyTree(constituencyTree, words);
         return new SentenceImpl(Lists.immutable.ofAll(phrases), parentText, (int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
@@ -42,8 +43,10 @@ public class DTOConverter {
         return null;
     }
 
-    private Word convertToWord(WordDTO wordDTO) {
-        return null;
+    private Word convertToWord(WordDTO wordDTO, Text parent) {
+        List<DependencyImpl> incomingDep = wordDTO.getIncomingDependencies().stream().map(this::convertIncomingDependency).toList();
+        List<DependencyImpl> outgoingDep = wordDTO.getOutgoingDependencies().stream().map(this::convertOutgoingDependency).toList();
+        return new WordImpl(parent, (int) wordDTO.getId(), (int) wordDTO.getSentenceNo(), wordDTO.getText(), wordDTO.getPosTag(), wordDTO.getLemma(), incomingDep, outgoingDep);
     }
 
     private DependencyImpl convertIncomingDependency(IncomingDependencyDTO dependencyDTO) {
