@@ -1,10 +1,8 @@
 package io.github.ardoco.textproviderjson.converter;
 
+import io.github.ardoco.textproviderjson.PhraseType;
 import io.github.ardoco.textproviderjson.dto.*;
-import io.github.ardoco.textproviderjson.textobject.DependencyImpl;
-import io.github.ardoco.textproviderjson.textobject.SentenceImpl;
-import io.github.ardoco.textproviderjson.textobject.TextImpl;
-import io.github.ardoco.textproviderjson.textobject.WordImpl;
+import io.github.ardoco.textproviderjson.textobject.*;
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Text;
@@ -12,7 +10,9 @@ import io.github.ardoco.textproviderjson.textobject.text.Word;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /***
  * this class converts a dto text into ardoco text
@@ -35,12 +35,75 @@ public class DTOConverter {
     private Sentence convertToSentence(SentenceDTO sentenceDTO, Text parentText) {
         List<Word> words = sentenceDTO.getWords().stream().map(x -> convertToWord(x, parentText)).toList();
         String constituencyTree = sentenceDTO.getConstituencyTree();
-        List<Phrase> phrases = parseConstituencyTree(constituencyTree, words);
-        return new SentenceImpl(Lists.immutable.ofAll(phrases), parentText, (int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
+//        List<Phrase> phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
+//        return new SentenceImpl(Lists.immutable.ofAll(phrases), parentText, (int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
+        return null;
     }
 
-    private List<Phrase> parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence) {
-        return null;
+    public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
+        // (ROOT (S (NP (DT This)) (VP (VBZ is) (NP (PRP me))) (. .)))
+        // cut of root
+        String treeWithoutRoot = constituencyTree.substring(6, constituencyTree.length() - 1);
+        return findSubphrases(treeWithoutRoot, wordsOfSentence, parent);
+    }
+
+
+//    private List<Phrase> findPhrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
+//        Stack<Phrase> parentPhrases = new Stack<>();
+//        List<Phrase> phrases = new ArrayList<>();
+//        int index = 0;
+//        while(index < constituencyTree.length()) {
+//            if(constituencyTree.charAt(index) == '(') {
+//                index++;
+//                continue;
+//            }
+//            if (constituencyTree.charAt(index) == ')') {
+//                parentPhrases.pop();
+//            }
+//
+//        }
+//        return phrases;
+//    }
+
+    private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
+        // cut off outer brackets
+        String tree = constituencyTree.substring(1, constituencyTree.length() - 1);
+        // extract phrase type
+        PhraseType phraseType = PhraseType.get(tree.split(" ", 2)[0]);
+        // cut off phrase type
+        String treeWithoutType = tree.split(" ", 2)[1];
+
+        List<String> subTrees = new ArrayList<>();
+        // iterate through tree to find all subtrees
+        while(treeWithoutType.length() > 0) {
+            // find next subtree
+            int index = 1;
+            while (treeWithoutType.substring(0, index).chars().filter(ch -> ch == '(').count()
+                    != treeWithoutType.substring(0, index).chars().filter(ch -> ch == ')').count()) {
+                index++;
+            }
+            // number of '(' and ')' is equal -> new subphrase tree found
+            subTrees.add(treeWithoutType.substring(0, index));
+            if (index == treeWithoutType.length()) {
+                treeWithoutType = "";
+            } else {
+                treeWithoutType = treeWithoutType.substring(index+1);
+            }
+        }
+        List<Phrase> subPhrases = new ArrayList<>();
+        List<Word> words = new ArrayList<>();
+        for(String subtree: subTrees) {
+            if (isWord(subtree)) {
+                words.add(wordsOfSentence.remove(0));
+            } else {
+                subPhrases.add(findSubphrases(subtree, wordsOfSentence, parent));
+            }
+        }
+        return new PhraseImpl(Lists.immutable.ofAll(words), parent, "", phraseType, subPhrases); // todo text extraction
+    }
+
+    private boolean isWord(String tree) {
+        return tree.chars().filter(ch -> ch == '(').count() == 1;
     }
 
     private Word convertToWord(WordDTO wordDTO, Text parent) {
