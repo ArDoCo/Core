@@ -1,6 +1,6 @@
 package io.github.ardoco.textproviderjson;
 
-import io.github.ardoco.textproviderjson.converter.DTOConverter;
+import io.github.ardoco.textproviderjson.converter.DTOtoObjConverter;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.WordImpl;
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
@@ -26,8 +26,7 @@ class TreeParserTest {
 
     @Test
     void parseConstituencyTreeTest() {
-        DTOConverter converter = new DTOConverter();
-
+        DTOtoObjConverter converter = new DTOtoObjConverter();
         Assertions.assertEquals(expectedPhrase, converter.parseConstituencyTree(tree, words, null));
     }
 }
