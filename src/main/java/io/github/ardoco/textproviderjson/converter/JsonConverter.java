@@ -1,6 +1,6 @@
 package io.github.ardoco.textproviderjson.converter;
 
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
@@ -10,11 +10,6 @@ import io.github.ardoco.textproviderjson.dto.TextDTO;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Set;
 
 /**
@@ -24,20 +19,6 @@ public class JsonConverter {
 
     private JsonConverter() {
 
-    }
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .appendOptional(DateTimeFormatter.ISO_DATE_TIME)
-            .appendOptional(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-            .appendOptional(DateTimeFormatter.ISO_INSTANT)
-            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SX"))
-            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX"))
-            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-            .toFormatter()
-            .withZone(ZoneOffset.UTC);
-
-    public static OffsetDateTime parseDateTimeString(String str) {
-        return ZonedDateTime.from(JsonConverter.DATE_TIME_FORMATTER.parse(str)).toOffsetDateTime();
     }
 
     public static boolean validateJson(String json) throws IOException {
