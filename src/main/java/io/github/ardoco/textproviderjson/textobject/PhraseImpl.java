@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class PhraseImpl implements Phrase {
-    private final ImmutableList<Word> words;
+    private ImmutableList<Word> words;
 
     private final Sentence parent;
 
@@ -51,6 +51,13 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public ImmutableList<Word> getContainedWords() {
+        if (words.isEmpty()) {
+            List<Word> collectedWords = new ArrayList<>();
+            for (Phrase subphrase: subPhrases) {
+                collectedWords.addAll(subphrase.getContainedWords().castToList());
+            }
+            this.words = Lists.immutable.ofAll(collectedWords);
+        }
         return words;
     }
 
