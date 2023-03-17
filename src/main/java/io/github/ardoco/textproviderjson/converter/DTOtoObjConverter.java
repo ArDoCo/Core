@@ -12,14 +12,13 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /***
- * this class converts a dto text into ardoco text
+ * this class converts a dto text into ArDoCo text object
  */
-public class DTOConverter {
+public class DTOtoObjConverter {
 
-    public Text convertJsonText(TextDTO textDTO) {
+    public Text convertText(TextDTO textDTO) {
         TextImpl text = new TextImpl();
         ImmutableList<Sentence> sentences = generateSentences(textDTO, text);
         text.setSentences(sentences);
