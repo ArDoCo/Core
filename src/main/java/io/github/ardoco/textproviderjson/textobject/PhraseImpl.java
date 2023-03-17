@@ -13,6 +13,7 @@ import org.eclipse.collections.api.map.MutableMap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PhraseImpl implements Phrase {
     private final ImmutableList<Word> words;
@@ -103,5 +104,18 @@ public class PhraseImpl implements Phrase {
     @Override
     public String toString() {
         return "Phrase{" + "text='" + getText() + '\'' + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhraseImpl phrase = (PhraseImpl) o;
+        return Objects.equals(words, phrase.words) && Objects.equals(parent, phrase.parent) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(subPhrases, phrase.subPhrases);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(words, parent, text, type, subPhrases);
     }
 }
