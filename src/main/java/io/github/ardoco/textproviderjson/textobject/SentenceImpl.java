@@ -18,12 +18,16 @@ public class SentenceImpl implements Sentence {
 
     private final String text;
 
-    public SentenceImpl(ImmutableList<Phrase> phrases, Text parent, int sentenceNumber, String text, ImmutableList<Word> words) {
-        this.phrases = phrases;
+    public SentenceImpl(Text parent, int sentenceNumber, String text, ImmutableList<Word> words) {
         this.sentenceNumber = sentenceNumber;
         this.parent = parent;
         this.text = text;
         this.words = words;
+    }
+
+    @Override
+    public void setPhrases(ImmutableList<Phrase> phrases) {
+        this.phrases = phrases;
     }
 
     @Override

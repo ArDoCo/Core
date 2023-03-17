@@ -35,35 +35,17 @@ public class DTOConverter {
     private Sentence convertToSentence(SentenceDTO sentenceDTO, Text parentText) {
         List<Word> words = sentenceDTO.getWords().stream().map(x -> convertToWord(x, parentText)).toList();
         String constituencyTree = sentenceDTO.getConstituencyTree();
-//        List<Phrase> phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
-//        return new SentenceImpl(Lists.immutable.ofAll(phrases), parentText, (int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
-        return null;
+        Sentence sentence = new SentenceImpl(parentText, (int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
+        Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words), sentence);
+        sentence.setPhrases(Lists.immutable.of(phrases));
+        return sentence;
     }
 
     public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
-        // (ROOT (S (NP (DT This)) (VP (VBZ is) (NP (PRP me))) (. .)))
         // cut of root
         String treeWithoutRoot = constituencyTree.substring(6, constituencyTree.length() - 1);
         return findSubphrases(treeWithoutRoot, wordsOfSentence, parent);
     }
-
-
-//    private List<Phrase> findPhrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
-//        Stack<Phrase> parentPhrases = new Stack<>();
-//        List<Phrase> phrases = new ArrayList<>();
-//        int index = 0;
-//        while(index < constituencyTree.length()) {
-//            if(constituencyTree.charAt(index) == '(') {
-//                index++;
-//                continue;
-//            }
-//            if (constituencyTree.charAt(index) == ')') {
-//                parentPhrases.pop();
-//            }
-//
-//        }
-//        return phrases;
-//    }
 
     private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
         // cut off outer brackets
