@@ -3,6 +3,7 @@ package io.github.ardoco.textproviderjson.dto;
 import com.fasterxml.jackson.annotation.*;
 import io.github.ardoco.textproviderjson.PosTag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,9 +12,9 @@ import java.util.Objects;
  */
 public class WordDTO {
     private long id;
-    private List<IncomingDependencyDTO> incomingDependencies;
+    private List<IncomingDependencyDTO> incomingDependencies = new ArrayList<>();
     private String lemma;
-    private List<OutgoingDependencyDTO> outgoingDependencies;
+    private List<OutgoingDependencyDTO> outgoingDependencies = new ArrayList<>();
     private long sentenceNo;
     private String text;
     private PosTag posTag;
