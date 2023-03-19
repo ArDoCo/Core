@@ -56,8 +56,7 @@ public final class TestUtil {
         word4.setText(".");
         word4.setPosTag(PosTag.forValue("."));
 
-        List<WordDTO> words = new ArrayList<>();
-        words.add(word1);
+        List<WordDTO> words = new ArrayList<>(List.of(word1, word2, word3, word4));
 
         SentenceDTO sentence1 = new SentenceDTO();
         sentence1.setSentenceNo(1);

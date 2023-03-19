@@ -30,4 +30,11 @@ public interface Text {
      * @return the sentences of the text, ordered by appearance.
      */
     ImmutableList<Sentence> getSentences();
+
+    /**
+     * sets the sentences if the text
+     *
+     * @param sentences the sentences ´
+     */
+    void setSentences(ImmutableList<Sentence> sentences);
 }
