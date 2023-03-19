@@ -60,11 +60,11 @@ public class SentenceImpl implements Sentence {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SentenceImpl sentence = (SentenceImpl) o;
-        return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases, sentence.phrases) && Objects.equals(parent, sentence.parent) && Objects.equals(text, sentence.text);
+        return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases, sentence.phrases) && Objects.equals(text, sentence.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(words, phrases, parent, sentenceNumber, text);
+        return Objects.hash(words, phrases, sentenceNumber, text);
     }
 }

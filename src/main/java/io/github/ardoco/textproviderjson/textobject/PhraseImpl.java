@@ -118,11 +118,11 @@ public class PhraseImpl implements Phrase {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PhraseImpl phrase = (PhraseImpl) o;
-        return Objects.equals(words, phrase.words) && Objects.equals(parent, phrase.parent) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(subPhrases, phrase.subPhrases);
+        return Objects.equals(words, phrase.words) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(subPhrases, phrase.subPhrases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(words, parent, text, type, subPhrases);
+        return Objects.hash(words, text, type, subPhrases);
     }
 }
