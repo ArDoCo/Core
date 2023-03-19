@@ -11,6 +11,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.List;
+import java.util.Objects;
 
 public class WordImpl implements Word {
 
@@ -122,4 +123,16 @@ public class WordImpl implements Word {
         return currentPhrase;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WordImpl word = (WordImpl) o;
+        return indexInText == word.indexInText && sentenceNo == word.sentenceNo && Objects.equals(parent, word.parent) && Objects.equals(preWord, word.preWord) && Objects.equals(nextWord, word.nextWord) && Objects.equals(phrase, word.phrase) && Objects.equals(text, word.text) && posTag == word.posTag && Objects.equals(lemma, word.lemma) && Objects.equals(ingoingDependencies, word.ingoingDependencies) && Objects.equals(outgoingDependencies, word.outgoingDependencies);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(parent, indexInText, preWord, nextWord, sentenceNo, phrase, text, posTag, lemma, ingoingDependencies, outgoingDependencies);
+    }
 }
