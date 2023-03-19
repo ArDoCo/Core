@@ -8,6 +8,8 @@ import io.github.ardoco.textproviderjson.textobject.text.Word;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import java.util.Objects;
+
 public class SentenceImpl implements Sentence {
 
     private ImmutableList<Word> words = Lists.immutable.empty();
@@ -53,4 +55,16 @@ public class SentenceImpl implements Sentence {
         return this.phrases;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SentenceImpl sentence = (SentenceImpl) o;
+        return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases, sentence.phrases) && Objects.equals(parent, sentence.parent) && Objects.equals(text, sentence.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(words, phrases, parent, sentenceNumber, text);
+    }
 }
