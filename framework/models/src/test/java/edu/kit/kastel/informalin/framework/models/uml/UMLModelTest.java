@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class UMLModelTest {
-    private static final String PATH_TO_MODEL = "src/test/resources/benchmark/mediastore/uml/ms.uml";
+    private static final String PATH_TO_MODEL = "src/test/resources/benchmark/mediastore/model_2016/uml/ms.uml";
 
     @Test
     void simpleLoad() throws IOException {
