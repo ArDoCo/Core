@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.ardoco.core</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.8.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>io.github.informalin.framework</groupId>
+  <artifactId>framework</artifactId>
+  <packaging>pom</packaging>
+
+  <name>InFormALin Framework</name>
+  <description>The goal of this project is to connect informal artifacts like architecture documentation and formal
+        artifacts like models. The InFormALin Framework is actively developed by researchers of the Modelling for
+        Continuous Software Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at
+        the KIT. This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz
+        Association (HGF) and by KASTEL Security Research Labs (46.23.01).</description>
+  <url>https://github.com/InFormALin/Framework</url>
+
+  <properties>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>deployment</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>configuration</module>
+        <module>common</module>
+        <module>models</module>
+        <module>pipeline</module>
+        <module>docker</module>
+      </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <phase>verify</phase>
+                <configuration>
+                  <keyname>15B81B60293634F6616070302CF31D214A49E3B2</keyname>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>module-defaults</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>configuration</module>
+        <module>common</module>
+        <module>models</module>
+        <module>java-model-extractor</module>
+        <module>pipeline</module>
+        <module>docker</module>
+      </modules>
+    </profile>
+  </profiles>
+</project>

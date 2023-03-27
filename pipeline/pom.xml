@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
-    <version>0.7.7-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>pipeline</artifactId>
@@ -37,6 +37,11 @@
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>model-provider</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.informalin.framework</groupId>
+      <artifactId>pipeline</artifactId>
     </dependency>
 
     <dependency>
