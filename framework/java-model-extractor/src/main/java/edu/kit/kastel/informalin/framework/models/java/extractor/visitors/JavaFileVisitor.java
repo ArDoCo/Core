@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.informalin.framework.models.java.extractor.visitors;
 
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.github.javaparser.StaticJavaParser;
+
 import edu.kit.kastel.informalin.framework.models.java.JavaProject;
 
 public class JavaFileVisitor implements FileVisitor<Path> {
