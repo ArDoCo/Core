@@ -6,6 +6,8 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities.readIn
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +25,28 @@ class CoreNLPProviderTest extends NlpInformantTest {
     public synchronized static CoreNLPProvider getCoreNLPProvider() {
         if (coreNLPProvider == null) {
             try {
-                DataRepository dataRepository = new DataRepository();
-                DataRepositoryHelper.putInputText(dataRepository, readInputText(new FileInputStream(inputText)));
-                coreNLPProvider = new CoreNLPProvider(dataRepository);
+                createCoreNlpProvider();
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
         return coreNLPProvider;
+    }
+
+    private static void createCoreNlpProvider() throws FileNotFoundException {
+        DataRepository dataRepository = new DataRepository();
+        DataRepositoryHelper.putInputText(dataRepository, readInputText(new FileInputStream(inputText)));
+        coreNLPProvider = new CoreNLPProvider(dataRepository);
+    }
+
+    @Test
+    void constructorTest() {
+        try {
+            createCoreNlpProvider();
+        } catch (FileNotFoundException e) {
+            Assertions.fail("Could not instantiate CoreNLPProvider with provided text due to FileNotFoundException.", e.getCause());
+        }
+        Assertions.assertNotNull(coreNLPProvider);
     }
 
     @Override
