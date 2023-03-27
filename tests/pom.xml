@@ -18,12 +18,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>text-extraction</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>text-provider</artifactId>
-      <version>${project.version}</version>
+      <artifactId>text-preprocessing</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
