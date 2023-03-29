@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class PCMModelTest {
-    private static final String PATH_TO_MODEL = "src/test/resources/benchmark/mediastore/model_2016/pcm/ms.repository";
+    private static final String PATH_TO_MODEL = "../../tests/src/test/resources/benchmark/mediastore/model_2016/pcm/ms.repository";
 
     @Test
     void simpleLoad() throws IOException {
