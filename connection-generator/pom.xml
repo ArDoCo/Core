@@ -14,10 +14,6 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>io.github.informalin.framework</groupId>
-      <artifactId>common</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
     </dependency>

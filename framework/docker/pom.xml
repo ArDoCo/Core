@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>io.github.informalin.framework</groupId>
-      <artifactId>common</artifactId>
+      <artifactId>util</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

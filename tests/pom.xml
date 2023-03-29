@@ -15,6 +15,21 @@
   </properties>
 
   <dependencies>
+    <!-- InFormALin -->
+    <dependency>
+      <groupId>io.github.informalin.framework</groupId>
+      <artifactId>util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.informalin.framework</groupId>
+      <artifactId>docker</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.informalin.framework</groupId>
+      <artifactId>models</artifactId>
+    </dependency>
+
+    <!-- ArDoCo -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>text-extraction</artifactId>
@@ -32,12 +47,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>recommendation-generator</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>common</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -57,12 +70,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>model-provider</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>inconsistency-detection</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

@@ -143,7 +143,7 @@
       <!-- Informalin -->
       <dependency>
         <groupId>io.github.informalin.framework</groupId>
-        <artifactId>common</artifactId>
+        <artifactId>util</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

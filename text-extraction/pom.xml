@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>io.github.informalin.framework</groupId>
-      <artifactId>common</artifactId>
+      <artifactId>util</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
