@@ -4,6 +4,7 @@ package edu.kit.kastel.informalin.framework.docker;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -108,7 +109,9 @@ public class DockerManager {
         }
 
         int apiPort = getNextFreePort();
-        DockerPortBind dpb = new DockerPortBind(apiPort, port, false);
+        // Windows need wildcard binding somehow ..
+        boolean wildcard = Optional.ofNullable(System.getenv("OS")).orElse("").toLowerCase().contains("win");
+        DockerPortBind dpb = new DockerPortBind(apiPort, port, wildcard);
         String id = dockerAPI.createContainer(namespacePrefix + UUID.randomUUID(), image, dpb);
         logger.info("Created container {}", id);
 
