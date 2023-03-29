@@ -30,7 +30,6 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <modules>
-        <module>configuration</module>
         <module>common</module>
         <module>models</module>
         <module>pipeline</module>
@@ -63,7 +62,6 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
-        <module>configuration</module>
         <module>common</module>
         <module>models</module>
         <module>java-model-extractor</module>
