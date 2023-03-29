@@ -9,9 +9,9 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.data.impl.TextData;
-import edu.kit.kastel.informalin.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.informalin.framework.pipeline.AbstractPipelineStep;
 
 /**
  * Example implementation of {@link AbstractPipelineStep}

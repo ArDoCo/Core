@@ -1,7 +1,7 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
-import edu.kit.kastel.informalin.data.PipelineStepData;
+import edu.kit.kastel.informalin.framework.data.PipelineStepData;
 
 /**
  * {@link ProjectPipelineData} represents data that we know overall about the project such as the name of the project.

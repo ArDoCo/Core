@@ -1,10 +1,10 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.agent;
 
 import java.util.List;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.pipeline.Pipeline;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.informalin.framework.pipeline.Pipeline;
 
 /**
  * This class represents a pipeline agent that calculates some results for an {@link edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage execution

@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.informalin.pipeline;
+package edu.kit.kastel.informalin.framework.pipeline;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
 
 /**
  * Class that represents a pipeline that can consist of multiple {@link AbstractPipelineStep AbstractPipelineSteps}.

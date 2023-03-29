@@ -3,7 +3,7 @@ package edu.kit.kastel.informalin.data.impl;
 
 import java.util.List;
 
-import edu.kit.kastel.informalin.data.PipelineStepData;
+import edu.kit.kastel.informalin.framework.data.PipelineStepData;
 
 /**
  * Example {@link PipelineStepData}

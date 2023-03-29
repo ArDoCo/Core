@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.informalin.data.impl;
 
-import edu.kit.kastel.informalin.data.PipelineStepData;
+import edu.kit.kastel.informalin.framework.data.PipelineStepData;
 
 /**
  * Example {@link PipelineStepData}

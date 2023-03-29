@@ -1,8 +1,8 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.informalin.pipeline;
+package edu.kit.kastel.informalin.framework.pipeline;
 
-import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
 
 /**
  * This class represents an abstract pipeline step and defines the core functionality. Together with {@link Pipeline}

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.output;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;

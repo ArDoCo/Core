@@ -1,7 +1,8 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.informalin.framework.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
@@ -13,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 
 /**
  * This class helps to access {@link DataRepository DataRepositories}. It provides methods to access the different
- * {@link edu.kit.kastel.informalin.data.PipelineStepData} that is stored within the repository that are used within ArDoCo.
+ * {@link PipelineStepData} that is stored within the repository that are used within ArDoCo.
  */
 public final class DataRepositoryHelper {
 

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.io.File;
@@ -12,8 +12,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.pipeline.Pipeline;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.informalin.framework.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;

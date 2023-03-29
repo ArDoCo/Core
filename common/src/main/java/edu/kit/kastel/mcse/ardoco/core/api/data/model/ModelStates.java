@@ -1,11 +1,11 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.model;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import edu.kit.kastel.informalin.data.PipelineStepData;
+import edu.kit.kastel.informalin.framework.data.PipelineStepData;
 
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";

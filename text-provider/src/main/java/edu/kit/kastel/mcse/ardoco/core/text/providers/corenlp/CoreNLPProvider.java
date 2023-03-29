@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
 import java.io.InputStream;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
-import edu.kit.kastel.informalin.data.DataRepository;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;

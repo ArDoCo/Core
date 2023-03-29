@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.informalin.data;
+package edu.kit.kastel.informalin.framework.data;
 
 import java.io.Serializable;
 import java.util.Optional;

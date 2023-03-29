@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.informalin.data.DataRepository;
 import edu.kit.kastel.informalin.data.impl.ResultData;
 import edu.kit.kastel.informalin.data.impl.TextData;
+import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.informalin.framework.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.informalin.framework.pipeline.Pipeline;
 import edu.kit.kastel.informalin.pipeline.impl.ConcretePipelineStepOne;
 import edu.kit.kastel.informalin.pipeline.impl.ConcretePipelineStepTwoOne;
 import edu.kit.kastel.informalin.pipeline.impl.ConcretePipelineStepTwoTwo;
