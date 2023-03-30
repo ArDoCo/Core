@@ -10,8 +10,8 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.informalin.framework.models.uml.UMLModel;
-import edu.kit.kastel.informalin.framework.models.uml.UMLModelRoot;
+import edu.kit.kastel.mcse.ardoco.core.models.uml.UMLModel;
+import edu.kit.kastel.mcse.ardoco.core.models.uml.UMLModelRoot;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;

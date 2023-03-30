@@ -49,7 +49,7 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
               <addClasspath>true</addClasspath>
-              <mainClass>edu.kit.kastel.informalin.framework.models.java.extractor.JavaCodeModelExtractor</mainClass>
+              <mainClass>edu.kit.kastel.mcse.ardoco.core.models.java.extractor.JavaCodeModelExtractor</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

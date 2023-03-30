@@ -13,8 +13,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.informalin.framework.models.java.JavaClassOrInterface;
-import edu.kit.kastel.informalin.framework.models.java.JavaProject;
+import edu.kit.kastel.mcse.ardoco.core.models.java.JavaClassOrInterface;
+import edu.kit.kastel.mcse.ardoco.core.models.java.JavaProject;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;

@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.stage;
 
 import java.util.List;
 
-import edu.kit.kastel.informalin.framework.data.DataRepository;
-import edu.kit.kastel.informalin.framework.pipeline.Pipeline;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 
 /**

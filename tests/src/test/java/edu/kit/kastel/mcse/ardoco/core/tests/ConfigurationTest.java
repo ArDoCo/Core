@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
-import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
-import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
  * This test class deals with the configurations.

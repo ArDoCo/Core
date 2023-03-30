@@ -12,8 +12,8 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.tuple.Triple;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-import edu.kit.kastel.informalin.framework.common.AggregationFunctions;
-import edu.kit.kastel.informalin.framework.common.ICopyable;
+import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
+import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {

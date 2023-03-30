@@ -1,8 +1,8 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data.text;
 
-import edu.kit.kastel.informalin.framework.data.DataRepository;
-import edu.kit.kastel.informalin.framework.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 /**
  * The Interface ITextConnector defines a provider for annotated texts.

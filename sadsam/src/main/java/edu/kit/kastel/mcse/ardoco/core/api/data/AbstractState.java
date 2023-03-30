@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.data;
 
 import java.util.Map;
 
-import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
-import edu.kit.kastel.informalin.framework.data.PipelineStepData;
+import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 public abstract class AbstractState extends AbstractConfigurable implements PipelineStepData {
 

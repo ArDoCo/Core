@@ -6,9 +6,9 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 
-import edu.kit.kastel.informalin.framework.common.tuple.Pair;
-import edu.kit.kastel.informalin.framework.configuration.IConfigurable;
-import edu.kit.kastel.informalin.framework.data.PipelineStepData;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
+import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;

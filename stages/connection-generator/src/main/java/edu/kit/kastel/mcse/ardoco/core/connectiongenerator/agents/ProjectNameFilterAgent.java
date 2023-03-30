@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.ProjectNameInformant;

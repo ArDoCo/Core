@@ -13,8 +13,8 @@ import org.eclipse.collections.api.factory.Lists;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.informalin.framework.configuration.Configurable;
-import edu.kit.kastel.informalin.framework.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import edu.kit.kastel.informalin.framework.data.PipelineStepData;
+import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";
