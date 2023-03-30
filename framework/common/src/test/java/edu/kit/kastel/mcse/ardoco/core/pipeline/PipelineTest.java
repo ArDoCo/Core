@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.impl.ResultData;
 import edu.kit.kastel.mcse.ardoco.core.data.impl.TextData;
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.impl.ConcretePipelineStepOne;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.impl.ConcretePipelineStepTwoOne;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.impl.ConcretePipelineStepTwoTwo;

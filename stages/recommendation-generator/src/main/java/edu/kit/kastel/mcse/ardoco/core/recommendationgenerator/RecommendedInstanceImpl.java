@@ -4,21 +4,22 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 import java.util.*;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
@@ -273,7 +274,7 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
 
     @Override
     public ImmutableSet<Claimant> getClaimants() {
-        return this.internalConfidence.getClaimants();
+        return Sets.immutable.withAll(this.internalConfidence.getClaimants());
     }
 
 }

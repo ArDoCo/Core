@@ -1,7 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data;
-
-import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
+package edu.kit.kastel.mcse.ardoco.core.data;
 
 /**
  * {@link ProjectPipelineData} represents data that we know overall about the project such as the name of the project.

@@ -1,7 +1,7 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.ProjectPipelineData;
+import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 
 /**
  * Implementation of {@link ProjectPipelineData} that simply takes the project's name in the constructor to store it.

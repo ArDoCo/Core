@@ -4,9 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
 

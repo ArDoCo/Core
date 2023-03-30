@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
  * Baseline approach for inconsistency detection

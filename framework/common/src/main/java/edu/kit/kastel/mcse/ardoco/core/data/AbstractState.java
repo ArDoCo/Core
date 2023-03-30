@@ -1,10 +1,9 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data;
+package edu.kit.kastel.mcse.ardoco.core.data;
 
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 public abstract class AbstractState extends AbstractConfigurable implements PipelineStepData {
 

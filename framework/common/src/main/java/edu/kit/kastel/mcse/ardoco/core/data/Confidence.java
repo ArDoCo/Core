@@ -1,31 +1,27 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data;
+package edu.kit.kastel.mcse.ardoco.core.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.tuple.Triple;
-import org.eclipse.collections.impl.tuple.Tuples;
 
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
     private final AggregationFunctions confidenceAggregator;
 
     // Claimant, Confidence, MethodName
-    private MutableList<Triple<Claimant, Double, String>> agentConfidences;
+    private List<Triple<Claimant, Double, String>> agentConfidences;
 
     public Confidence(AggregationFunctions confidenceAggregator) {
         this.confidenceAggregator = confidenceAggregator;
-        this.agentConfidences = Lists.mutable.empty();
+        this.agentConfidences = new ArrayList<>();
     }
 
     public Confidence(Claimant claimant, double probability, AggregationFunctions confidenceAggregator) {
@@ -33,23 +29,23 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         this.addAgentConfidence(claimant, probability);
     }
 
-    private Confidence(AggregationFunctions confidenceAggregator, ImmutableList<Triple<Claimant, Double, String>> agentConfidence) {
+    private Confidence(AggregationFunctions confidenceAggregator, List<Triple<Claimant, Double, String>> agentConfidence) {
         this(confidenceAggregator);
-        this.agentConfidences = Lists.mutable.withAll(agentConfidence);
+        this.agentConfidences = new ArrayList<>(agentConfidence);
     }
 
-    public ImmutableSet<Claimant> getClaimants() {
-        return this.agentConfidences.collect(Triple::getOne).toImmutableSet();
+    public Set<Claimant> getClaimants() {
+        return this.agentConfidences.stream().map(Triple::first).collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Confidence createCopy() {
-        return new Confidence(this.confidenceAggregator, this.agentConfidences.toImmutable());
+        return new Confidence(this.confidenceAggregator, this.agentConfidences);
     }
 
     public void addAgentConfidence(Claimant claimant, double confidence) {
         String method = getMethodInClaimant(claimant);
-        agentConfidences.add(Tuples.triple(claimant, confidence, method));
+        agentConfidences.add(new Triple<>(claimant, confidence, method));
     }
 
     private String getMethodInClaimant(Claimant claimant) {
@@ -78,11 +74,11 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         }
         if (confidenceAggregator == AggregationFunctions.ROLLING_AVERAGE) {
             // No aggregate
-            return confidenceAggregator.applyAsDouble(agentConfidences.stream().map(Triple::getTwo).toList());
+            return confidenceAggregator.applyAsDouble(agentConfidences.stream().map(Triple::second).toList());
         }
         var groupAggregator = AggregationFunctions.MAX;
-        var claimantGroupings = agentConfidences.stream().collect(Collectors.groupingBy(Triple::getOne)).values();
-        var claimantConfidences = claimantGroupings.stream().map(l -> l.stream().map(Triple::getTwo).toList()).map(groupAggregator::applyAsDouble).toList();
+        var claimantGroupings = agentConfidences.stream().collect(Collectors.groupingBy(Triple::first)).values();
+        var claimantConfidences = claimantGroupings.stream().map(l -> l.stream().map(Triple::second).toList()).map(groupAggregator::applyAsDouble).toList();
         return confidenceAggregator.applyAsDouble(claimantConfidences);
     }
 
@@ -99,18 +95,18 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         var result = new Confidence(globalAggregator);
 
         for (var aConf : a.agentConfidences) {
-            var bConf = b.agentConfidences.stream().filter(p -> p.getOne().equals(aConf.getOne())).findFirst().orElse(null);
+            var bConf = b.agentConfidences.stream().filter(p -> p.first().equals(aConf.first())).findFirst().orElse(null);
             if (bConf == null) {
-                result.addAgentConfidence(aConf.getOne(), aConf.getTwo());
+                result.addAgentConfidence(aConf.first(), aConf.second());
             } else {
-                result.addAgentConfidence(aConf.getOne(), localAggregator.applyAsDouble(List.of(aConf.getTwo(), bConf.getTwo())));
+                result.addAgentConfidence(aConf.first(), localAggregator.applyAsDouble(List.of(aConf.second(), bConf.second())));
             }
         }
 
         for (var bConf : b.agentConfidences) {
-            var aConf = a.agentConfidences.stream().anyMatch(p -> p.getOne().equals(bConf.getOne()));
+            var aConf = a.agentConfidences.stream().anyMatch(p -> p.first().equals(bConf.first()));
             if (!aConf) {
-                result.addAgentConfidence(bConf.getOne(), bConf.getTwo());
+                result.addAgentConfidence(bConf.first(), bConf.second());
             }
         }
 

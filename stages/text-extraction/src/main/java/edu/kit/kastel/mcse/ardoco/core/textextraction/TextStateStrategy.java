@@ -5,11 +5,11 @@ import java.util.function.Function;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 // TODO Document code
 public interface TextStateStrategy {

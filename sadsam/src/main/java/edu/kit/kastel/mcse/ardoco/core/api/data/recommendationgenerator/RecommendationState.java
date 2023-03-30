@@ -3,9 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.api.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * The Interface IRecommendationState defines the state for recommendations.

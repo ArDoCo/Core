@@ -1,8 +1,8 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.data;
 
-import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 /**
  * This class serves as container for different data after preprocessing to store as {@link PipelineStepData}. Right

@@ -10,11 +10,11 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMModel;
-import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMModel;
+import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMRepository;
 
 public class PcmXMLModelConnector implements ModelConnector {
 
