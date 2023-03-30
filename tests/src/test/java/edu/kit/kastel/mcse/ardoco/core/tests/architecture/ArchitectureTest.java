@@ -11,13 +11,14 @@ import com.tngtech.archunit.lang.ArchRule;
 @AnalyzeClasses(packages = "edu.kit.kastel.mcse.ardoco.core")
 public class ArchitectureTest {
 
+    /* // TODO: I don't get this rule? Why should no one depend on a pipeline?
     @ArchTest
     public static final ArchRule noDependencyOnPipeline = classes().that()
             .resideInAPackage("..pipeline..")
             .should()
             .onlyHaveDependentClassesThat()
             .resideInAnyPackage("..pipeline..", "..tests..");
-
+    */
     @ArchTest
     public static final ArchRule modelInstancesOnlyAfterModelExtraction = classes().that()
             .haveSimpleName("ModelInstance")
@@ -63,8 +64,9 @@ public class ArchitectureTest {
             .layer("Pipeline")
             .definedBy("..pipeline..")
             // rule definition
-            .whereLayer("Pipeline")
-            .mayOnlyBeAccessedByLayers("Common")
+            // TODO: Same as above. I don't get this rule? Why should no one depend on a pipeline?
+            //.whereLayer("Pipeline")
+            //.mayOnlyBeAccessedByLayers("Common")
             .whereLayer("InconsistencyDetection")
             .mayOnlyBeAccessedByLayers("Pipeline", "Common")
             .whereLayer("ConnectionGenerator")

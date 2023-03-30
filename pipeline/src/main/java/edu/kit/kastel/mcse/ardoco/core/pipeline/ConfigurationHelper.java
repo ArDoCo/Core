@@ -151,7 +151,16 @@ public class ConfigurationHelper {
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(new Object[1]);
         }
-        throw new IllegalStateException("Not reachable code");
+        if (constructors.stream()
+                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)) {
+            var constructor = constructors.stream()
+                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)
+                    .findFirst()
+                    .orElseThrow();
+            constructor.setAccessible(true);
+            return (AbstractConfigurable) constructor.newInstance(new Object[2]);
+        }
+        throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
     }
 
 }

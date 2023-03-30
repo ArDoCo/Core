@@ -200,6 +200,15 @@ class ConfigurationTest {
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(new Object[] { null });
         }
+        if (constructors.stream()
+                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)) {
+            var constructor = constructors.stream()
+                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)
+                    .findFirst()
+                    .get();
+            constructor.setAccessible(true);
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null, null });
+        }
 
         Assertions.fail("No suitable constructor has been found for " + clazz);
         throw new Error("Not reachable code");

@@ -4,10 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.pipeline.agent;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
 /**
- * This class represents a pipeline agent that calculates some results for an {@link edu.kit.kastel.mcse.ardoco.core.api.stage.AbstractExecutionStage execution
+ * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution
  * stage}.
  *
  * Implementing classes need to override {@link #getEnabledPipelineSteps()}.
