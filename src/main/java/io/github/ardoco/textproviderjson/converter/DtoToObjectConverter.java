@@ -14,10 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /***
- * this class converts a dto text into ArDoCo text object
+ * this class converts a DTO text into an ArDoCo text object
  */
-public class DTOtoObjConverter {
+public class DtoToObjectConverter {
 
+    private static final String CONSTITUENCY_TREE_ROOT = "ROOT";
+    private static final String CONSTITUENCY_TREE_SEPARATOR = " ";
+    private static final char CONSTITUENCY_TREE_OPEN_BRACKET = '(';
+    private static final char CONSTITUENCY_TREE_CLOSE_BRACKET = ')';
+
+    /**
+     * converts the given text DTO into an ArDoCo text object
+     * @param textDTO   the text DTO
+     * @return          the ArDoCo text
+     */
     public Text convertText(TextDTO textDTO) {
         TextImpl text = new TextImpl();
         ImmutableList<Sentence> sentences = generateSentences(textDTO, text);
@@ -42,25 +52,25 @@ public class DTOtoObjConverter {
 
     public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
         // cut of root
-        String treeWithoutRoot = constituencyTree.substring(6, constituencyTree.length() - 1);
+        String treeWithoutRoot = constituencyTree.substring(2 + constituencyTree.length(), constituencyTree.length() - 1);
         return findSubphrases(treeWithoutRoot, wordsOfSentence, parent);
     }
 
     private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
         // cut off outer brackets
-        String tree = constituencyTree.substring(1, constituencyTree.length() - 1);
+        String tree = constituencyTree.substring(1, CONSTITUENCY_TREE_ROOT.length() - 1);
         // extract phrase type
-        PhraseType phraseType = PhraseType.get(tree.split(" ", 2)[0]);
+        PhraseType phraseType = PhraseType.get(tree.split(CONSTITUENCY_TREE_SEPARATOR, 2)[0]);
         // cut off phrase type
-        String treeWithoutType = tree.split(" ", 2)[1];
+        String treeWithoutType = tree.split(CONSTITUENCY_TREE_SEPARATOR, 2)[1];
 
         List<String> subTrees = new ArrayList<>();
         // iterate through tree to find all subtrees
         while(treeWithoutType.length() > 0) {
             // find next subtree
             int index = 1;
-            while (treeWithoutType.substring(0, index).chars().filter(ch -> ch == '(').count()
-                    != treeWithoutType.substring(0, index).chars().filter(ch -> ch == ')').count()) {
+            while (treeWithoutType.substring(0, index).chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count()
+                    != treeWithoutType.substring(0, index).chars().filter(ch -> ch == CONSTITUENCY_TREE_CLOSE_BRACKET).count()) {
                 index++;
             }
             // number of '(' and ')' is equal -> new subphrase tree found
@@ -80,11 +90,11 @@ public class DTOtoObjConverter {
                 subPhrases.add(findSubphrases(subtree, wordsOfSentence, parent));
             }
         }
-        return new PhraseImpl(Lists.immutable.ofAll(words), parent, "", phraseType, subPhrases); // todo text extraction
+        return new PhraseImpl(Lists.immutable.ofAll(words), parent, phraseType, subPhrases);
     }
 
     private boolean isWord(String tree) {
-        return tree.chars().filter(ch -> ch == '(').count() == 1;
+        return tree.chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count() == 1;
     }
 
     private Word convertToWord(WordDTO wordDTO, Text parent) {
