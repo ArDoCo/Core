@@ -13,26 +13,37 @@ import java.io.InputStream;
 import java.util.Set;
 
 /**
- * You can deserialize a JSON string with {@code JsonText text = Converter.fromJsonString(jsonString);}
+ * utility class to convert a text DTO into json and back
  **/
-public class JsonConverter {
+public final class JsonConverter {
+
+    private static final String SCHEMA_PATH = "schemas/text.json";
 
     private JsonConverter() {
 
     }
 
+    /***
+     * checks whether the json string matches the text schema
+     * @param json  the json string
+     * @return      whether the json string matches the text schema
+     */
     public static boolean validateJson(String json) throws IOException {
-        // old $schema: "https://json-schema.org/draft/2020-12/schema",
         ObjectMapper mapper = new ObjectMapper();
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
 
-        InputStream inputSchema = new FileInputStream("schemas/text.json");
+        InputStream inputSchema = new FileInputStream(SCHEMA_PATH);
         JsonSchema schema = schemaFactory.getSchema(inputSchema);
 
         Set<ValidationMessage> message = schema.validate(mapper.readTree(json));
         return message.isEmpty();
     }
 
+    /**
+     * generates the corresponding text DTO of the json string
+     * @param json  the json string
+     * @return      the corresponding text DTO
+     */
     public static TextDTO fromJsonString(String json) throws IOException {
         if (validateJson(json)) {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -41,6 +52,11 @@ public class JsonConverter {
         return null;
     }
 
+    /**
+     * converts the text DTO into json string
+     * @param obj   the text DTO
+     * @return      the json string
+     */
     public static String toJsonString(TextDTO obj) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(obj);
