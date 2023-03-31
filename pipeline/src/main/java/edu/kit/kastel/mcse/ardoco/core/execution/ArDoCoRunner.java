@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.pipeline;
+package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 import java.io.IOException;

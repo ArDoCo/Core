@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>sadsam</artifactId>
+      <artifactId>common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

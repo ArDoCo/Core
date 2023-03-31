@@ -10,15 +10,13 @@ import com.tngtech.archunit.lang.ArchRule;
 
 @AnalyzeClasses(packages = "edu.kit.kastel.mcse.ardoco.core")
 public class ArchitectureTest {
-
-    /* // TODO: I don't get this rule? Why should no one depend on a pipeline?
+// TODO Fix tests
     @ArchTest
-    public static final ArchRule noDependencyOnPipeline = classes().that()
-            .resideInAPackage("..pipeline..")
+    public static final ArchRule noDependencyOnExecution = classes().that()
+            .resideInAPackage("..execution..")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..pipeline..", "..tests..");
-    */
+            .resideInAnyPackage("..execution..", "..tests..");
     @ArchTest
     public static final ArchRule modelInstancesOnlyAfterModelExtraction = classes().that()
             .haveSimpleName("ModelInstance")
@@ -44,7 +42,7 @@ public class ArchitectureTest {
             .haveSimpleNameContaining("Inconsistency")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..inconsistency..", "..pipeline..", "..api..", "..common..", "..tests..");
+            .resideInAnyPackage("..inconsistency..", "..execution..", "..api..", "..common..", "..tests..");
 
     @ArchTest
     public static final ArchRule layerRule = layeredArchitecture().consideringAllDependencies()
@@ -63,18 +61,19 @@ public class ArchitectureTest {
             .definedBy("..inconsistency..")
             .layer("Pipeline")
             .definedBy("..pipeline..")
+            .layer("Execution")
+            .definedBy("..execution..")
             // rule definition
-            // TODO: Same as above. I don't get this rule? Why should no one depend on a pipeline?
-            //.whereLayer("Pipeline")
-            //.mayOnlyBeAccessedByLayers("Common")
+            .whereLayer("Execution")
+            .mayNotAccessAnyLayer()
             .whereLayer("InconsistencyDetection")
-            .mayOnlyBeAccessedByLayers("Pipeline", "Common")
+            .mayOnlyBeAccessedByLayers("Pipeline", "Common", "Execution")
             .whereLayer("ConnectionGenerator")
-            .mayOnlyBeAccessedByLayers("InconsistencyDetection", "Pipeline", "Common")
+            .mayOnlyBeAccessedByLayers("InconsistencyDetection", "Pipeline", "Common", "Execution")
             .whereLayer("RecommendationGenerator")
-            .mayOnlyBeAccessedByLayers("ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common")
+            .mayOnlyBeAccessedByLayers("ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common", "Execution")
             .whereLayer("TextExtractor")
-            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common")
+            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common", "Execution")
             .whereLayer("ModelExtractor")
-            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common");
+            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common", "Execution");
 }

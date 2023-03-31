@@ -1,10 +1,11 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.pipeline;
+package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

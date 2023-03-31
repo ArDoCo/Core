@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2023. */
-package edu.kit.kastel.mcse.ardoco.core.pipeline;
+package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

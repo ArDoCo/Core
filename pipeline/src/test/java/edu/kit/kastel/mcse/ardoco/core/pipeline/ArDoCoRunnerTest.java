@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoRunner;
+import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
