@@ -10,7 +10,7 @@ import com.tngtech.archunit.lang.ArchRule;
 
 @AnalyzeClasses(packages = "edu.kit.kastel.mcse.ardoco.core")
 public class ArchitectureTest {
-// TODO Fix tests
+    // TODO Fix tests
     @ArchTest
     public static final ArchRule noDependencyOnExecution = classes().that()
             .resideInAPackage("..execution..")

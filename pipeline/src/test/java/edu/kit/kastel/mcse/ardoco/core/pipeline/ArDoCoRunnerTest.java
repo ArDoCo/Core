@@ -1,16 +1,17 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoRunner;
+import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 
 class ArDoCoRunnerTest {
     private final String inputText = "src/test/resources/teastore.txt";

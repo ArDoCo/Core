@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 
 /**
  *
