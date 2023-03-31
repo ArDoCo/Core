@@ -12,6 +12,7 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,16 +21,15 @@ public class PhraseImpl implements Phrase {
 
     private final Sentence parent;
 
-    private final String text;
+    private String text;
 
     private final PhraseType type;
 
     private final List<Phrase> subPhrases;
 
-    public PhraseImpl(ImmutableList<Word> words, Sentence parent, String text, PhraseType type, List<Phrase> subPhrases) {
+    public PhraseImpl(ImmutableList<Word> words, Sentence parent, PhraseType type, List<Phrase> subPhrases) {
         this.words = words;
         this.parent = parent;
-        this.text = text;
         this.type = type;
         this.subPhrases = subPhrases;
     }
@@ -41,7 +41,15 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public String getText() {
-        return text;
+        if (this.text == null) {
+            List<Word> wordList = getContainedWords().castToList();
+            wordList.sort((word1, word2) -> {
+                return word1.getPosition() - word2.getPosition();
+            });
+            List<String> wordText = wordList.stream().map(Word::getText).toList();
+            this.text = String.join(" ", wordText);
+        }
+        return this.text;
     }
 
     @Override
