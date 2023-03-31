@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class DependencyImpl {
 
-    private DependencyType dependencyType;
-    private long wordId;
+    private final DependencyType dependencyType;
+    private final long wordId;
 
     public DependencyImpl(DependencyType type, long wordId) {
         this.dependencyType = type;

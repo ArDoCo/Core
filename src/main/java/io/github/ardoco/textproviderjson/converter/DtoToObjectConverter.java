@@ -52,13 +52,13 @@ public class DtoToObjectConverter {
 
     public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
         // cut of root
-        String treeWithoutRoot = constituencyTree.substring(2 + constituencyTree.length(), constituencyTree.length() - 1);
+        String treeWithoutRoot = constituencyTree.substring(2 + CONSTITUENCY_TREE_ROOT.length(), constituencyTree.length() - 1);
         return findSubphrases(treeWithoutRoot, wordsOfSentence, parent);
     }
 
     private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
         // cut off outer brackets
-        String tree = constituencyTree.substring(1, CONSTITUENCY_TREE_ROOT.length() - 1);
+        String tree = constituencyTree.substring(1, constituencyTree.length() - 1);
         // extract phrase type
         PhraseType phraseType = PhraseType.get(tree.split(CONSTITUENCY_TREE_SEPARATOR, 2)[0]);
         // cut off phrase type

@@ -14,9 +14,6 @@ public class OutgoingDependencyDTO {
     @JsonProperty("dependencyType")
     public void setDependencyType(DependencyType value) { this.dependencyType = value; }
 
-    /**
-     * The id of the word the dependency points to.
-     */
     @JsonProperty("targetWordId")
     public long getTargetWordId() { return targetWordId; }
     @JsonProperty("targetWordId")

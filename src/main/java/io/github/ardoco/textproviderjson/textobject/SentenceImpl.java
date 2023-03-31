@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class SentenceImpl implements Sentence {
 
-    private ImmutableList<Word> words = Lists.immutable.empty();
+    private final ImmutableList<Word> words;
     private ImmutableList<Phrase> phrases = Lists.immutable.empty();
 
     private final Text parent;
@@ -39,9 +39,6 @@ public class SentenceImpl implements Sentence {
 
     @Override
     public ImmutableList<Word> getWords() {
-//        if (words.isEmpty()) {
-//            this.words = parent.words().select(w -> w.getSentenceNo() == sentenceNumber).toImmutable();
-//        }
         return words;
     }
 
