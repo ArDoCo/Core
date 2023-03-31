@@ -1,6 +1,6 @@
 package io.github.ardoco.textproviderjson;
 
-import io.github.ardoco.textproviderjson.converter.DTOtoObjConverter;
+import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.WordImpl;
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
@@ -19,14 +19,14 @@ class TreeParserTest {
             new WordImpl(null, 2, 0, "is", PosTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, null, null, null),
             new WordImpl(null, 3, 0, "me", PosTag.PRONOUN_PERSONAL, null, null, null),
             new WordImpl(null, 4, 0, ".", PosTag.CLOSER, null, null, null)));
-    Phrase subsubphrase = new PhraseImpl(Lists.immutable.of(words.get(2)), null, "", PhraseType.NP, new ArrayList<>());
-    List<Phrase> subphrases = List.of(new PhraseImpl(Lists.immutable.of(words.get(0)), null, "", PhraseType.NP, new ArrayList<>()),
-            new PhraseImpl(Lists.immutable.of(words.get(1)), null, "", PhraseType.VP, List.of(subsubphrase)));
-    Phrase expectedPhrase = new PhraseImpl(Lists.immutable.of(words.get(3)), null, "", PhraseType.S, subphrases);
+    Phrase subsubphrase = new PhraseImpl(Lists.immutable.of(words.get(2)), null, PhraseType.NP, new ArrayList<>());
+    List<Phrase> subphrases = List.of(new PhraseImpl(Lists.immutable.of(words.get(0)), null, PhraseType.NP, new ArrayList<>()),
+            new PhraseImpl(Lists.immutable.of(words.get(1)), null, PhraseType.VP, List.of(subsubphrase)));
+    Phrase expectedPhrase = new PhraseImpl(Lists.immutable.of(words.get(3)), null, PhraseType.S, subphrases);
 
     @Test
     void parseConstituencyTreeTest() {
-        DTOtoObjConverter converter = new DTOtoObjConverter();
+        DtoToObjectConverter converter = new DtoToObjectConverter();
         Assertions.assertEquals(expectedPhrase, converter.parseConstituencyTree(tree, words, null));
     }
 }
