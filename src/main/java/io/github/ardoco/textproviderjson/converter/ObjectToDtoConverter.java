@@ -13,8 +13,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ObjToDTOConverter {
+public class ObjectToDtoConverter {
 
+    private static final String TREE_ROOT = "ROOT";
+    private static final String TREE_SEPARATOR = " ";
+    private static final char TREE_OPEN_BRACKET = '(';
+    private static final char TREE_CLOSE_BRACKET = ')';
+
+    /**
+     * converts an ArDoCo text into a text DTO
+     * @param text  the ArDoCo text
+     * @return      the text DTO
+     */
     public TextDTO convertTextToDTO(Text text) {
         TextDTO textDTO = new TextDTO();
         List<SentenceDTO> sentences = generateSentenceDTOs(text.getSentences());
@@ -65,16 +75,16 @@ public class ObjToDTOConverter {
 
     private String convertToConstituencyTree(ImmutableList<Phrase> phrases) {
         List<String> trees = phrases.stream().map(this::convertToSubtree).toList();
-        StringBuilder constituencyTree = new StringBuilder("(ROOT");
+        StringBuilder constituencyTree = new StringBuilder(TREE_OPEN_BRACKET + TREE_ROOT);
         for(String tree: trees) {
-            constituencyTree.append(" ").append(tree);
+            constituencyTree.append(TREE_SEPARATOR).append(tree);
         }
-        constituencyTree.append(")");
+        constituencyTree.append(TREE_CLOSE_BRACKET);
         return constituencyTree.toString();
     }
 
     private String convertToSubtree(Phrase phrase) {
-        StringBuilder constituencyTree = new StringBuilder("(");
+        StringBuilder constituencyTree = new StringBuilder().append(TREE_OPEN_BRACKET);
         constituencyTree.append(phrase.getPhraseType().toString());
         List<Phrase> subphrases = phrase.getSubPhrases().castToList();
         List<Word> words = phrase.getContainedWords().castToList();
@@ -83,12 +93,12 @@ public class ObjToDTOConverter {
             if (subphrases.isEmpty()) {
                 // word next
                 Word word = words.remove(0);
-                constituencyTree.append(" ").append(convertWordToTree(word));
+                constituencyTree.append(TREE_SEPARATOR).append(convertWordToTree(word));
                 continue;
             } else if (words.isEmpty()) {
                 // phrase next
                 Phrase subphrase = subphrases.remove(0);
-                constituencyTree.append(" ").append(convertToSubtree(subphrase));
+                constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
                 continue;
             }
             int wordIndex = words.get(0).getPosition();
@@ -96,19 +106,19 @@ public class ObjToDTOConverter {
             if (wordIndex < Collections.max(phraseWordIndices)) {
                 // word next
                 Word word = words.remove(0);
-                constituencyTree.append(" ").append(convertWordToTree(word));
+                constituencyTree.append(TREE_SEPARATOR).append(convertWordToTree(word));
             } else {
                 // phrase next
                 Phrase subphrase = subphrases.remove(0);
-                constituencyTree.append(" ").append(convertToSubtree(subphrase));
+                constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
             }
         }
-        constituencyTree.append(")");
+        constituencyTree.append(TREE_CLOSE_BRACKET);
         return constituencyTree.toString();
     }
 
     private String convertWordToTree(Word word) {
-        return "(" + word.getPosTag().toString() + " " + word.getText() + ")";
+        return TREE_OPEN_BRACKET + word.getPosTag().toString() + TREE_SEPARATOR + word.getText() + TREE_CLOSE_BRACKET;
     }
 
     private List<IncomingDependencyDTO> generateDepInDTOs(List<DependencyImpl> dependencies) {
