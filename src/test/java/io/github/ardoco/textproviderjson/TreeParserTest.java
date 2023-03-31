@@ -27,6 +27,9 @@ class TreeParserTest {
     @Test
     void parseConstituencyTreeTest() {
         DtoToObjectConverter converter = new DtoToObjectConverter();
-        Assertions.assertEquals(expectedPhrase, converter.parseConstituencyTree(tree, words, null));
+        Phrase parsedPhrase = converter.parseConstituencyTree(tree, words, null);
+        parsedPhrase.getContainedWords();
+        parsedPhrase.getSubPhrases();
+        Assertions.assertEquals(expectedPhrase, parsedPhrase);
     }
 }

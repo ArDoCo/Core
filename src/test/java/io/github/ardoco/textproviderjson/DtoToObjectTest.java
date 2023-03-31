@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-class DTOToObjectTest {
+class DtoToObjectTest {
 
     @Test
     void convertTextTest() throws IOException {

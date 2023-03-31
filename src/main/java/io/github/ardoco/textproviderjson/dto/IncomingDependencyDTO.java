@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import io.github.ardoco.textproviderjson.DependencyType;
 
 import java.util.Objects;
+
 public class IncomingDependencyDTO {
     private DependencyType dependencyType;
     private long sourceWordId;
@@ -13,9 +14,6 @@ public class IncomingDependencyDTO {
     @JsonProperty("dependencyType")
     public void setDependencyType(DependencyType value) { this.dependencyType = value; }
 
-    /**
-     * The id of the word the dependency originates from.
-     */
     @JsonProperty("sourceWordId")
     public long getSourceWordId() { return sourceWordId; }
     @JsonProperty("sourceWordId")

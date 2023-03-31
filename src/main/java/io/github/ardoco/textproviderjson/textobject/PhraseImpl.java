@@ -12,7 +12,6 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +20,7 @@ public class PhraseImpl implements Phrase {
 
     private final Sentence parent;
 
-    private String text;
+    private String text = "";
 
     private final PhraseType type;
 
@@ -59,7 +58,7 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public ImmutableList<Word> getContainedWords() {
-        if (words.isEmpty()) {
+        if (words == null) {
             List<Word> collectedWords = new ArrayList<>();
             for (Phrase subphrase: subPhrases) {
                 collectedWords.addAll(subphrase.getContainedWords().castToList());
