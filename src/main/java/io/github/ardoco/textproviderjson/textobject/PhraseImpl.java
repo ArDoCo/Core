@@ -42,9 +42,9 @@ public class PhraseImpl implements Phrase {
     public String getText() {
         if (this.text == null) {
             List<Word> wordList = getContainedWords().castToList();
-            wordList.sort((word1, word2) -> {
-                return word1.getPosition() - word2.getPosition();
-            });
+            wordList.sort((word1, word2) ->
+                word1.getPosition() - word2.getPosition()
+            );
             List<String> wordText = wordList.stream().map(Word::getText).toList();
             this.text = String.join(" ", wordText);
         }
