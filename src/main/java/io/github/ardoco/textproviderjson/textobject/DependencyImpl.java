@@ -1,8 +1,9 @@
+/* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson.textobject;
 
-import io.github.ardoco.textproviderjson.DependencyType;
-
 import java.util.Objects;
+
+import io.github.ardoco.textproviderjson.DependencyType;
 
 public class DependencyImpl {
 
@@ -24,8 +25,10 @@ public class DependencyImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         DependencyImpl that = (DependencyImpl) o;
         return wordId == that.wordId && dependencyType == that.dependencyType;
     }

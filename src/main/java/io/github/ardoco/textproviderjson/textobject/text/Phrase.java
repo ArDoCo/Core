@@ -1,9 +1,10 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package io.github.ardoco.textproviderjson.textobject.text;
 
-import io.github.ardoco.textproviderjson.PhraseType;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
+
+import io.github.ardoco.textproviderjson.PhraseType;
 
 public interface Phrase {
     int getSentenceNo();

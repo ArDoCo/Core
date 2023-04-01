@@ -1,16 +1,18 @@
+/* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson.converter;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
-import io.github.ardoco.textproviderjson.dto.TextDTO;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Set;
+import io.github.ardoco.textproviderjson.dto.TextDTO;
 
 /**
  * utility class to convert a text DTO into json and back
@@ -25,8 +27,9 @@ public final class JsonConverter {
 
     /***
      * checks whether the json string matches the text schema
-     * @param json  the json string
-     * @return      whether the json string matches the text schema
+     * 
+     * @param json the json string
+     * @return whether the json string matches the text schema
      */
     public static boolean validateJson(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -41,8 +44,9 @@ public final class JsonConverter {
 
     /**
      * generates the corresponding text DTO of the json string
-     * @param json  the json string
-     * @return      the corresponding text DTO
+     * 
+     * @param json the json string
+     * @return the corresponding text DTO
      */
     public static TextDTO fromJsonString(String json) throws IOException {
         if (validateJson(json)) {
@@ -54,8 +58,9 @@ public final class JsonConverter {
 
     /**
      * converts the text DTO into json string
-     * @param obj   the text DTO
-     * @return      the json string
+     * 
+     * @param obj the text DTO
+     * @return the json string
      */
     public static String toJsonString(TextDTO obj) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package io.github.ardoco.textproviderjson;
 
 public enum PhraseType {

@@ -1,9 +1,10 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package io.github.ardoco.textproviderjson.textobject.text;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import io.github.ardoco.textproviderjson.DependencyType;
 import io.github.ardoco.textproviderjson.PosTag;
-import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IWord defines a word in a text.

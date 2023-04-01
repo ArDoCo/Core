@@ -1,14 +1,15 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package io.github.ardoco.textproviderjson.textobject;
+
+import java.util.Objects;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.util.Objects;
 
 public class SentenceImpl implements Sentence {
 
@@ -54,10 +55,13 @@ public class SentenceImpl implements Sentence {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         SentenceImpl sentence = (SentenceImpl) o;
-        return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases, sentence.phrases) && Objects.equals(text, sentence.text);
+        return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases, sentence.phrases) && Objects
+                .equals(text, sentence.text);
     }
 
     @Override
