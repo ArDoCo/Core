@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2022. */
+/* Licensed under MIT 2021-2023. */
 package io.github.ardoco.textproviderjson.textobject.text;
 
 import org.eclipse.collections.api.list.ImmutableList;

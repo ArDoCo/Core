@@ -1,5 +1,11 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package io.github.ardoco.textproviderjson.textobject;
+
+import java.util.List;
+import java.util.Objects;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import io.github.ardoco.textproviderjson.DependencyType;
 import io.github.ardoco.textproviderjson.PosTag;
@@ -7,11 +13,6 @@ import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.util.List;
-import java.util.Objects;
 
 public class WordImpl implements Word {
 
@@ -94,14 +95,14 @@ public class WordImpl implements Word {
     @Override
     public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyType dependencyTag) {
         List<DependencyImpl> dependenciesOfType = this.outgoingDependencies.stream().filter(x -> x.getDependencyType() == dependencyTag).toList();
-        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int)x.getWordId())).toList();
+        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int) x.getWordId())).toList();
         return Lists.immutable.ofAll(words);
     }
 
     @Override
     public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyType dependencyTag) {
         List<DependencyImpl> dependenciesOfType = this.ingoingDependencies.stream().filter(x -> x.getDependencyType() == dependencyTag).toList();
-        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int)x.getWordId())).toList();
+        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int) x.getWordId())).toList();
         return Lists.immutable.ofAll(words);
     }
 
@@ -125,10 +126,14 @@ public class WordImpl implements Word {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         WordImpl word = (WordImpl) o;
-        return indexInText == word.indexInText && sentenceNo == word.sentenceNo && Objects.equals(preWord, word.preWord) && Objects.equals(nextWord, word.nextWord) && Objects.equals(text, word.text) && posTag == word.posTag && Objects.equals(lemma, word.lemma) && Objects.equals(ingoingDependencies, word.ingoingDependencies) && Objects.equals(outgoingDependencies, word.outgoingDependencies);
+        return indexInText == word.indexInText && sentenceNo == word.sentenceNo && Objects.equals(preWord, word.preWord) && Objects.equals(nextWord,
+                word.nextWord) && Objects.equals(text, word.text) && posTag == word.posTag && Objects.equals(lemma, word.lemma) && Objects.equals(
+                        ingoingDependencies, word.ingoingDependencies) && Objects.equals(outgoingDependencies, word.outgoingDependencies);
     }
 
     @Override

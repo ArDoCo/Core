@@ -1,9 +1,10 @@
+/* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson;
+
+import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.io.IOException;
 
 public enum DependencyType {
     /**

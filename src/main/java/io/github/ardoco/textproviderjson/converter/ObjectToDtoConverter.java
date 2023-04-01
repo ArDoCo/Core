@@ -1,4 +1,11 @@
+/* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson.converter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.eclipse.collections.api.list.ImmutableList;
 
 import io.github.ardoco.textproviderjson.DependencyType;
 import io.github.ardoco.textproviderjson.dto.*;
@@ -7,11 +14,6 @@ import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ObjectToDtoConverter {
 
@@ -22,8 +24,9 @@ public class ObjectToDtoConverter {
 
     /**
      * converts an ArDoCo text into a text DTO
-     * @param text  the ArDoCo text
-     * @return      the text DTO
+     * 
+     * @param text the ArDoCo text
+     * @return the text DTO
      */
     public TextDTO convertTextToDTO(Text text) {
         TextDTO textDTO = new TextDTO();
@@ -60,7 +63,7 @@ public class ObjectToDtoConverter {
         wordDTO.setSentenceNo(word.getSentenceNo());
         List<DependencyImpl> inDep = new ArrayList<>();
         List<DependencyImpl> outDep = new ArrayList<>();
-        for (DependencyType depType: DependencyType.values()) {
+        for (DependencyType depType : DependencyType.values()) {
             ImmutableList<Word> inDepWords = word.getIncomingDependencyWordsWithType(depType);
             inDep.addAll(inDepWords.stream().map(x -> new DependencyImpl(depType, x.getPosition())).toList());
             ImmutableList<Word> outDepWords = word.getOutgoingDependencyWordsWithType(depType);
@@ -76,7 +79,7 @@ public class ObjectToDtoConverter {
     private String convertToConstituencyTree(ImmutableList<Phrase> phrases) {
         List<String> trees = phrases.stream().map(this::convertToSubtree).toList();
         StringBuilder constituencyTree = new StringBuilder(TREE_OPEN_BRACKET + TREE_ROOT);
-        for(String tree: trees) {
+        for (String tree : trees) {
             constituencyTree.append(TREE_SEPARATOR).append(tree);
         }
         constituencyTree.append(TREE_CLOSE_BRACKET);
@@ -89,7 +92,7 @@ public class ObjectToDtoConverter {
         List<Phrase> subphrases = phrase.getSubPhrases().castToList();
         List<Word> words = phrase.getContainedWords().castToList();
         // since we don't know the order of words and subphrases we have to reconstruct the order by comparing the word index
-        while(!subphrases.isEmpty() || !words.isEmpty()) {
+        while (!subphrases.isEmpty() || !words.isEmpty()) {
             if (subphrases.isEmpty()) {
                 // word next
                 Word word = words.remove(0);
@@ -143,4 +146,3 @@ public class ObjectToDtoConverter {
         return dependencyDTO;
     }
 }
-

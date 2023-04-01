@@ -1,4 +1,11 @@
+/* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson.converter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import io.github.ardoco.textproviderjson.PhraseType;
 import io.github.ardoco.textproviderjson.dto.*;
@@ -7,11 +14,6 @@ import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /***
  * this class converts a DTO text into an ArDoCo text object
@@ -25,8 +27,9 @@ public class DtoToObjectConverter {
 
     /**
      * converts the given text DTO into an ArDoCo text object
-     * @param textDTO   the text DTO
-     * @return          the ArDoCo text
+     * 
+     * @param textDTO the text DTO
+     * @return the ArDoCo text
      */
     public Text convertText(TextDTO textDTO) {
         TextImpl text = new TextImpl();
@@ -66,11 +69,13 @@ public class DtoToObjectConverter {
 
         List<String> subTrees = new ArrayList<>();
         // iterate through tree to find all subtrees
-        while(treeWithoutType.length() > 0) {
+        while (treeWithoutType.length() > 0) {
             // find next subtree
             int index = 1;
-            while (treeWithoutType.substring(0, index).chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count()
-                    != treeWithoutType.substring(0, index).chars().filter(ch -> ch == CONSTITUENCY_TREE_CLOSE_BRACKET).count()) {
+            while (treeWithoutType.substring(0, index).chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count() != treeWithoutType.substring(0, index)
+                    .chars()
+                    .filter(ch -> ch == CONSTITUENCY_TREE_CLOSE_BRACKET)
+                    .count()) {
                 index++;
             }
             // number of '(' and ')' is equal -> new subphrase tree found
@@ -78,12 +83,12 @@ public class DtoToObjectConverter {
             if (index == treeWithoutType.length()) {
                 treeWithoutType = "";
             } else {
-                treeWithoutType = treeWithoutType.substring(index+1);
+                treeWithoutType = treeWithoutType.substring(index + 1);
             }
         }
         List<Phrase> subPhrases = new ArrayList<>();
         List<Word> words = new ArrayList<>();
-        for(String subtree: subTrees) {
+        for (String subtree : subTrees) {
             if (isWord(subtree)) {
                 words.add(wordsOfSentence.remove(0));
             } else {
@@ -100,7 +105,8 @@ public class DtoToObjectConverter {
     private Word convertToWord(WordDTO wordDTO, Text parent) {
         List<DependencyImpl> incomingDep = wordDTO.getIncomingDependencies().stream().map(this::convertIncomingDependency).toList();
         List<DependencyImpl> outgoingDep = wordDTO.getOutgoingDependencies().stream().map(this::convertOutgoingDependency).toList();
-        return new WordImpl(parent, (int) wordDTO.getId(), (int) wordDTO.getSentenceNo(), wordDTO.getText(), wordDTO.getPosTag(), wordDTO.getLemma(), incomingDep, outgoingDep);
+        return new WordImpl(parent, (int) wordDTO.getId(), (int) wordDTO.getSentenceNo(), wordDTO.getText(), wordDTO.getPosTag(), wordDTO.getLemma(),
+                incomingDep, outgoingDep);
     }
 
     private DependencyImpl convertIncomingDependency(IncomingDependencyDTO dependencyDTO) {

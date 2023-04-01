@@ -1,6 +1,8 @@
+/* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson;
 
 import java.io.IOException;
+
 import com.fasterxml.jackson.annotation.*;
 
 public enum PosTag {
@@ -38,6 +40,7 @@ public enum PosTag {
     public String getTag() {
         return tag;
     }
+
     @JsonValue
     public String toValue() {
         return getTag();

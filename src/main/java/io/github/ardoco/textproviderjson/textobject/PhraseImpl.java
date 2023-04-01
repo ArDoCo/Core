@@ -1,19 +1,20 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package io.github.ardoco.textproviderjson.textobject;
 
-import io.github.ardoco.textproviderjson.PhraseType;
-import io.github.ardoco.textproviderjson.textobject.text.Phrase;
-import io.github.ardoco.textproviderjson.textobject.text.Sentence;
-import io.github.ardoco.textproviderjson.textobject.text.Word;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import io.github.ardoco.textproviderjson.PhraseType;
+import io.github.ardoco.textproviderjson.textobject.text.Phrase;
+import io.github.ardoco.textproviderjson.textobject.text.Sentence;
+import io.github.ardoco.textproviderjson.textobject.text.Word;
 
 public class PhraseImpl implements Phrase {
     private ImmutableList<Word> words;
@@ -42,9 +43,7 @@ public class PhraseImpl implements Phrase {
     public String getText() {
         if (this.text == null) {
             List<Word> wordList = getContainedWords().castToList();
-            wordList.sort((word1, word2) ->
-                word1.getPosition() - word2.getPosition()
-            );
+            wordList.sort((word1, word2) -> word1.getPosition() - word2.getPosition());
             List<String> wordText = wordList.stream().map(Word::getText).toList();
             this.text = String.join(" ", wordText);
         }
@@ -60,7 +59,7 @@ public class PhraseImpl implements Phrase {
     public ImmutableList<Word> getContainedWords() {
         if (words == null) {
             List<Word> collectedWords = new ArrayList<>();
-            for (Phrase subphrase: subPhrases) {
+            for (Phrase subphrase : subPhrases) {
                 collectedWords.addAll(subphrase.getContainedWords().castToList());
             }
             this.words = Lists.immutable.ofAll(collectedWords);
@@ -81,7 +80,7 @@ public class PhraseImpl implements Phrase {
                 return true;
             }
             List<Phrase> newSubphrases = new ArrayList<>();
-            for (Phrase subphrase: subphrases) {
+            for (Phrase subphrase : subphrases) {
                 newSubphrases.addAll(subphrase.getSubPhrases().castToList());
             }
             subphrases = newSubphrases;
@@ -97,7 +96,7 @@ public class PhraseImpl implements Phrase {
                 return true;
             }
             List<Phrase> newSubphrases = new ArrayList<>();
-            for (Phrase subphrase: subphrases) {
+            for (Phrase subphrase : subphrases) {
                 newSubphrases.addAll(subphrase.getSubPhrases().castToList());
             }
             subphrases = newSubphrases;
@@ -122,8 +121,10 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         PhraseImpl phrase = (PhraseImpl) o;
         return Objects.equals(words, phrase.words) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(subPhrases, phrase.subPhrases);
     }

@@ -1,11 +1,13 @@
+/* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson;
 
-import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
+import java.io.IOException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
+import io.github.ardoco.textproviderjson.textobject.text.Text;
 
 class DtoToObjectTest {
 
