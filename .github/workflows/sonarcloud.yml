@@ -10,7 +10,7 @@ on:
 
 jobs:
   sonarcloud:
-    if: ${{ github.actor != 'dependabot[bot]' }} 
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: informalin/actions/.github/workflows/sonarcloud.yml@main
     with:
       with-submodules: true
