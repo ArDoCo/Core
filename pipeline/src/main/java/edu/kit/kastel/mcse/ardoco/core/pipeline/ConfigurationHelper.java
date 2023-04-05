@@ -151,7 +151,7 @@ public class ConfigurationHelper {
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(new Object[1]);
         }
-        throw new IllegalStateException("Not reachable code");
+        throw new IllegalStateException("Not reachable code for class " + clazz.getSimpleName());
     }
 
 }
