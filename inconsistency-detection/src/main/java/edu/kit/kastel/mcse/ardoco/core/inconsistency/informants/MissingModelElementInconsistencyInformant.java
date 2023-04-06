@@ -19,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -32,13 +33,23 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions.Design
 public class MissingModelElementInconsistencyInformant extends Informant {
 
     private static final ArchitecturalDesignDecision REQUIRED_ARCHITECTURAL_DESIGN_DECISION_KIND = ArchitecturalDesignDecision.DESIGN_DECISION;
-    private static boolean EXECUTE_DESIGN_DECISION_FILTER = false;
+    private DesignDecisionKindClassifier designDecisionClassifier;
+    private boolean enableClassifierCheck = true;
 
     @Configurable
     private double minSupport = 1;
 
     public MissingModelElementInconsistencyInformant(DataRepository dataRepository) {
         super(MissingModelElementInconsistencyInformant.class.getSimpleName(), dataRepository);
+
+        // workaround until we have data for historical projects
+        //TODO
+        String projectName = DataRepositoryHelper.getProjectPipelineData(getDataRepository()).getProjectName();
+        if (projectName.contains("historical")) {
+            enableClassifierCheck = false;
+        }
+
+        minSupport = enableClassifierCheck ? 2 : 1;
     }
 
     @Override
@@ -74,10 +85,33 @@ public class MissingModelElementInconsistencyInformant extends Informant {
         }
 
         // methods for other kinds of support
-        // NONE
+        // Kind of Design Decision
+        this.designDecisionClassifier = createDesignDecisionKindClassifier();
+        for (var candidate : candidates) {
+            addSupportIfCandidateAppearsInDesignDecision(candidate);
+        }
 
         // finally create inconsistencies
         createInconsistencies(candidates, inconsistencyState);
+    }
+
+    private void addSupportIfCandidateAppearsInDesignDecision(MissingElementInconsistencyCandidate candidate) {
+        //TODO
+        var candidateRI = candidate.getRecommendedInstance();
+        int positiveHints = 0;
+        int negativeHints = 0;
+        for (var word : candidateRI.getNameMappings().flatCollect(NounMapping::getWords).distinct()) {
+            Sentence sentence = word.getSentence();
+            if (designDecisionClassifier.sentenceHasKind(sentence, REQUIRED_ARCHITECTURAL_DESIGN_DECISION_KIND)) {
+                positiveHints++;
+            } else {
+                negativeHints++;
+            }
+        }
+
+        if (positiveHints >= negativeHints) {
+            candidate.addSupport(MissingElementSupport.APPEARS_IN_DESIGN_DECISION);
+        }
     }
 
     /**
@@ -123,31 +157,21 @@ public class MissingModelElementInconsistencyInformant extends Informant {
     }
 
     private void createInconsistencies(MutableSet<MissingElementInconsistencyCandidate> candidates, InconsistencyState inconsistencyState) {
-        DesignDecisionKindClassifier designDecisionKindClassifier = EXECUTE_DESIGN_DECISION_FILTER ? createDesignDecisionKindClassifier() : null;
-
         for (var candidate : candidates) {
             var support = candidate.getAmountOfSupport();
             if (support >= minSupport) {
                 RecommendedInstance recommendedInstance = candidate.getRecommendedInstance();
-                createInconsistencies(inconsistencyState, designDecisionKindClassifier, recommendedInstance);
+                createInconsistencies(inconsistencyState, recommendedInstance);
             }
         }
     }
 
-    private static void createInconsistencies(InconsistencyState inconsistencyState, DesignDecisionKindClassifier designDecisionKindClassifier,
-            RecommendedInstance recommendedInstance) {
+    private static void createInconsistencies(InconsistencyState inconsistencyState, RecommendedInstance recommendedInstance) {
         double confidence = recommendedInstance.getProbability();
         for (var word : recommendedInstance.getNameMappings().flatCollect(NounMapping::getWords).distinct()) {
             var sentenceNo = word.getSentenceNo() + 1;
             var wordText = word.getText();
-            if (EXECUTE_DESIGN_DECISION_FILTER) {
-                // filter those sentences that are not classified as required architectural design decision
-                if (designDecisionKindClassifier.sentenceHasKind(word.getSentence(), REQUIRED_ARCHITECTURAL_DESIGN_DECISION_KIND)) {
-                    inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
-                }
-            } else {
-                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
-            }
+            inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
         }
     }
 
