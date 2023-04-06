@@ -31,8 +31,8 @@ import edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions.Design
 
 public class MissingModelElementInconsistencyInformant extends Informant {
 
-    private static final ArchitecturalDesignDecision REQUIRED_ARCHITECTURAL_DESIGN_DECISION_KIND = ArchitecturalDesignDecision.DESIGN_DECISION; //STRUCTURAL_DECISION
-    private static boolean EXECUTE_DESIGN_DECISION_FILTER = true;
+    private static final ArchitecturalDesignDecision REQUIRED_ARCHITECTURAL_DESIGN_DECISION_KIND = ArchitecturalDesignDecision.DESIGN_DECISION;
+    private static boolean EXECUTE_DESIGN_DECISION_FILTER = false;
 
     @Configurable
     private double minSupport = 1;
