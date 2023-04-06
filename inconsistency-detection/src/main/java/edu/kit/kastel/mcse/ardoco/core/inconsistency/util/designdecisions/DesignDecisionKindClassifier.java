@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
