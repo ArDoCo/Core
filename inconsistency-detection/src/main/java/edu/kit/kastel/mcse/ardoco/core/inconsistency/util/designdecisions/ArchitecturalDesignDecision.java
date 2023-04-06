@@ -59,9 +59,9 @@ public enum ArchitecturalDesignDecision {
     /**
      * Checks if the calling class is contained in another {@link ArchitecturalDesignDecision} based on the hierarchy.
      * Here, we assume that a class also contains itself. This means, for example, that every class except
-     * {@value #NO_DESIGN_DECISION} is contained in {@value #DESIGN_DECISION} and nothing is contained in
-     * {@value #NO_DESIGN_DECISION} (except itself). Basically, this method checks if the shortest path from the caller
-     * to {@value #DESIGN_DECISION} contains the given class (= is an ancestor).
+     * NO_DESIGN_DECISION is contained in DESIGN_DECISION and nothing is contained in
+     * NO_DESIGN_DECISION (except itself). Basically, this method checks if the shortest path from the caller
+     * to DESIGN_DECISION contains the given class (= is an ancestor).
      *
      * @param other the other {@link ArchitecturalDesignDecision} that may contain this
      * @return if the other {@link ArchitecturalDesignDecision} is an ancestor.
