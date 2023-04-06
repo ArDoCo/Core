@@ -1,0 +1,16 @@
+sentence_number;design_decision;classification;alternative_classification
+1;1;reference architecture;architectural pattern
+2;1;component;user interface
+3;1;relation;reference architecture
+4;1;framework;
+5;0;;
+6;1;component;
+7;1;component;api
+8;1;relation;component
+9;1;organizational/process-related;
+10;1;component;
+11;1;component;user interface
+12;1;class;
+13;0;;
+14;1;messaging;
+15;0;;

@@ -1,0 +1,343 @@
+sentence_number;design_decision;classification;alternative_classification
+1;0;;
+2;0;;
+3;0;;
+4;0;;
+5;0;;
+6;0;;
+7;0;;
+8;0;;
+9;0;;
+10;0;;
+11;0;;
+12;0;;
+13;0;;
+14;0;;
+15;0;;
+16;1;platform;
+17;0;;
+18;1;programming language;
+19;1;framework;user interface
+20;1;messaging;
+21;1;api;
+22;1;programming language;
+23;1;framework;data base
+24;1;organizational/process-related;
+25;1;messaging;
+26;1;framework;
+27;1;component;
+28;1;function;
+29;1;framework;
+30;1;component;
+31;1;function;
+32;1;component;
+33;0;;
+34;0;;
+35;0;;
+36;0;;
+37;0;;
+38;0;;
+39;1;architectural pattern;
+40;1;component;
+41;0;;
+42;0;;
+43;0;;
+44;0;;
+45;0;;
+46;0;;
+47;0;;
+48;0;;
+49;1;component;
+50;1;framework;programming language
+51;1;framework;programming language
+52;0;;
+53;1;component;
+54;0;;
+55;0;;
+56;1;function;
+57;1;function;data file
+58;1;function;class
+59;0;;
+60;1;inheritance;
+61;0;;
+62;0;;
+63;0;;
+64;1;function;
+65;0;;
+66;0;;
+67;0;;
+68;0;;
+69;0;;
+70;0;;
+71;1;class;
+72;1;function;class
+73;1;function;messaging
+74;0;;
+75;0;;
+76;0;;
+77;1;class;
+78;1;architectural pattern;class
+79;1;class;
+80;1;function;class
+81;1;function;component
+82;1;function;class
+83;1;class;
+84;1;function;class
+85;0;;
+86;1;data file;
+87;0;;
+88;1;api;
+89;1;function;
+90;1;function;
+91;0;;
+92;1;design rule;
+93;1;design rule;
+94;0;;
+95;0;;
+96;0;;
+97;1;function;
+98;0;;
+99;0;;
+100;1;function;
+101;1;function;
+102;1;function;
+103;1;function;
+104;1;class;function
+105;0;;
+106;1;function;component
+107;1;function;
+108;1;data file;
+109;1;function;
+110;1;function;
+111;1;inheritance;data file
+112;0;;
+113;0;;
+114;0;;
+115;1;architectural pattern;
+116;0;;
+117;0;;
+118;0;;
+119;0;;
+120;1;api;interface
+121;1;api;interface
+122;1;api;interface
+123;1;api;interface
+124;1;messaging;api
+125;1;api;design rule
+126;1;api;design rule
+127;1;api;design rule
+128;1;design rule;
+129;1;association;
+130;1;association;
+131;1;function;
+132;1;messaging;
+133;1;messaging;association
+134;1;messaging;association
+135;1;component;
+136;1;design rule;
+137;1;association;
+138;1;component;function
+139;1;component;function
+140;1;design rule;
+141;1;class;
+142;1;design rule;api
+143;1;association;
+144;1;function;component
+145;1;data file;
+146;1;function;
+147;0;;
+148;0;;
+149;0;;
+150;1;component;
+151;1;data file;
+152;1;component;data file
+153;0;;
+154;0;;
+155;0;;
+156;1;component;
+157;0;;
+158;1;function;
+159;1;function;
+160;1;function;
+161;1;function;api
+162;0;;
+163;0;;
+164;0;;
+165;0;;
+166;1;component;
+167;1;component;
+168;0;;
+169;0;;
+170;0;;
+171;0;;
+172;1;architectural pattern;
+173;1;class;
+174;1;class;
+175;1;class;
+176;1;class;
+177;1;class;
+178;1;class;
+179;0;;
+180;1;architectural pattern;architectural style
+181;0;;
+182;0;;
+183;0;;
+184;0;;
+185;1;component;function
+186;1;user interface;class
+187;0;;
+188;0;;
+189;1;function;
+190;1;function;
+191;1;function;
+192;0;;
+193;0;;
+194;1;function;
+195;1;function;
+196;1;function;
+197;0;;
+198;0;;
+199;1;function;
+200;1;function;
+201;1;function;
+202;1;function;
+203;0;;
+204;0;;
+205;1;function;
+206;0;function;
+207;1;function;
+208;0;;
+209;0;;
+210;0;;
+211;0;;
+212;1;component;funtion
+213;1;component;
+214;0;;
+215;1;function;
+216;1;component;function
+217;1;component;function
+218;1;class;
+219;1;component;class
+220;0;;
+221;1;component;
+222;1;component;
+223;0;;
+224;0;;
+225;0;;
+226;0;;
+227;1;component;
+228;1;component;
+229;1;component;
+230;0;;
+231;0;;
+232;0;;
+233;0;;
+234;0;;
+235;0;;
+236;0;;
+237;0;;
+238;1;class;
+239;1;class;data base
+240;0;;
+241;0;;
+242;0;;
+243;1;design rule;data base
+244;0;;
+245;0;;
+246;1;design rule;data base
+247;1;design rule;data base
+248;0;;
+249;0;;
+250;1;guideline;
+251;0;;
+252;0;;
+253;1;function;
+254;1;function;
+255;0;;
+256;0;;
+257;1;function;
+258;0;;
+259;0;;
+260;1;function;
+261;1;function;
+262;0;;
+263;0;;
+264;1;function;
+265;0;;
+266;0;;
+267;0;;
+268;1;component;
+269;0;;
+270;0;;
+271;0;;
+272;0;;
+273;1;component;
+274;1;component;
+275;1;component;
+276;0;;
+277;1;component;class
+278;1;guideline;
+279;0;;
+280;0;;
+281;0;;
+282;0;;
+283;1;class;
+284;1;function;
+285;1;function;
+286;0;;
+287;1;class;
+288;0;;
+289;0;;
+290;0;;
+291;1;component;
+292;0;;
+293;0;;
+294;0;;
+295;1;component;
+296;1;data file;
+297;0;;
+298;1;component;
+299;1;component;
+300;1;component;
+301;1;component;
+302;0;;
+303;0;;
+304;1;function;
+305;1;framework;
+306;1;data file;
+307;0;;
+308;0;;
+309;0;;
+310;0;;
+311;0;;
+312;0;;
+313;0;;
+314;0;;
+315;0;;
+316;0;;
+317;0;;
+318;0;;
+319;1;component;api
+320;1;function;
+321;0;;
+322;0;;
+323;0;;
+324;0;;
+325;0;;
+326;1;component;
+327;1;component;
+328;1;component;
+329;1;component;
+330;1;component;
+331;0;;
+332;0;;
+333;0;;
+334;1;component;
+335;0;;
+336;0;;
+337;0;;
+338;0;;
+339;0;;
+340;1;component;
+341;1;component;
+342;1;component;

@@ -25,8 +25,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistencyCandidate;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementSupport;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions.ArchitecturalDesignDecision;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions.DesignDecisionKindClassifier;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions.DesignDecisionKindClassifierOracle;
 
 public class MissingModelElementInconsistencyInformant extends Informant {
+
+    private static final ArchitecturalDesignDecision REQUIRED_ARCHITECTURAL_DESIGN_DECISION_KIND = ArchitecturalDesignDecision.DESIGN_DECISION; //STRUCTURAL_DECISION
+    private static boolean EXECUTE_DESIGN_DECISION_FILTER = true;
 
     @Configurable
     private double minSupport = 1;
@@ -105,7 +111,7 @@ public class MissingModelElementInconsistencyInformant extends Informant {
             var candidateWords = candidateRecommendedInstance.getNameMappings().flatCollect(NounMapping::getWords);
             if (CommonUtilities.wordListContainsAnyWordFromRecommendedInstance(candidateWords, recommendedInstance)) {
                 candidate.addSupport(MissingElementSupport.MULTIPLE_OVERLAPPING_RECOMMENDED_INSTANCES);
-                // TODO what to do here?
+                // Note: Figure out what to do here...
                 // A) return here, but for sure miss some correct sentences
                 // B) do not return and do nothing else, this causes a lot of candidates
                 // C) merge candidates? or merge the underlying recommendedInstances?
@@ -117,18 +123,37 @@ public class MissingModelElementInconsistencyInformant extends Informant {
     }
 
     private void createInconsistencies(MutableSet<MissingElementInconsistencyCandidate> candidates, InconsistencyState inconsistencyState) {
+        DesignDecisionKindClassifier designDecisionKindClassifier = createDesignDecisionKindClassifier();
+
         for (var candidate : candidates) {
             var support = candidate.getAmountOfSupport();
             if (support >= minSupport) {
                 RecommendedInstance recommendedInstance = candidate.getRecommendedInstance();
-                double confidence = recommendedInstance.getProbability();
-                for (var word : recommendedInstance.getNameMappings().flatCollect(NounMapping::getWords).distinct()) {
-                    var sentenceNo = word.getSentenceNo() + 1;
-                    var wordText = word.getText();
-                    inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
-                }
+                createInconsistencies(inconsistencyState, designDecisionKindClassifier, recommendedInstance);
             }
         }
+    }
+
+    private static void createInconsistencies(InconsistencyState inconsistencyState, DesignDecisionKindClassifier designDecisionKindClassifier,
+            RecommendedInstance recommendedInstance) {
+        double confidence = recommendedInstance.getProbability();
+        for (var word : recommendedInstance.getNameMappings().flatCollect(NounMapping::getWords).distinct()) {
+            var sentenceNo = word.getSentenceNo() + 1;
+            var wordText = word.getText();
+            if (EXECUTE_DESIGN_DECISION_FILTER) {
+                // filter those sentences that are not classified as required architectural design decision
+                if (designDecisionKindClassifier.sentenceHasKind(word.getSentence(), REQUIRED_ARCHITECTURAL_DESIGN_DECISION_KIND)) {
+                    inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
+                }
+            } else {
+                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
+            }
+        }
+    }
+
+    private DesignDecisionKindClassifier createDesignDecisionKindClassifier() {
+        String projectName = DataRepositoryHelper.getProjectPipelineData(getDataRepository()).getProjectName();
+        return new DesignDecisionKindClassifierOracle(projectName);
     }
 
     @Override

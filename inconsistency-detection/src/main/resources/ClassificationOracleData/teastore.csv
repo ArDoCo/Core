@@ -1,0 +1,44 @@
+sentence_number;design_decision;classification;alternative_classification
+1;1;reference architecture;
+2;1;relation;component
+3;1;function;
+4;1;class;
+5;1;class;data file
+6;1;class;
+7;1;relation;function
+8;1;function;
+9;1;function;
+10;1;relation;
+11;1;association;
+12;1;function;
+13;1;function;
+14;1;function;
+15;1;function;
+13;1;algorithm;
+17;1;function;
+18;1;component;
+19;1;algorithm;
+20;1;algorithm;
+21;1;function;algorithm
+22;1;component;function
+23;1;association;api
+24;1;function;
+25;1;architectural pattern;api
+26;1;architectural pattern;
+27;1;component;
+28;0;;
+29;1;function;
+30;0;;
+31;1;algorithm;function
+32;1;algorithm;
+33;1;algorithm;
+34;1;algorithm;
+35;1;algorithm;
+36;0;;
+37;1;component;function
+38;1;relation;
+39;1;function;
+40;0;;
+41;1;relation;association
+42;0;;
+43;1;design rule;

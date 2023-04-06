@@ -1,0 +1,38 @@
+sentence_number;design_decision;classification;alternative_classification
+1;1;component;architecutral pattern
+2;0;;
+3;1;component;function
+4;1;function;
+5;1;component;
+6;1;function;component
+7;1;component;
+8;1;component;messaging
+9;1;function;
+10;1;design rule;
+11;1;component;function
+12;1;component;function
+13;1;design rule;function
+14;1;function;
+15;1;data file;
+16;1;component;function
+17;1;relation;component
+18;1;association;
+19;1;component;function
+20;1;component;function
+21;1;data file;
+22;1;architectural pattern;
+23;1;component;data base
+24;1;function;
+25;1;function;relation
+26;1;function;
+27;1;component;data base
+28;1;function;
+29;1;component;function
+30;1;component;function
+31;1;component;function
+32;1;component;function
+33;1;data base;
+34;1;component;function
+35;1;data base;
+36;1;function;
+37;1;function;
