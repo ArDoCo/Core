@@ -15,8 +15,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
@@ -127,7 +127,7 @@ public class HoldBackRunResultsProducer {
 
     private static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
             Map<String, String> additionalConfigs) {
-        arDoCo.addPipelineStep(new ModelProvider(dataRepository, holdElementsBackModelConnector));
+        arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
         arDoCo.addPipelineStep(ArDoCo.getTextExtraction(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ArDoCo.getRecommendationGenerator(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ArDoCo.getConnectionGenerator(additionalConfigs, dataRepository));

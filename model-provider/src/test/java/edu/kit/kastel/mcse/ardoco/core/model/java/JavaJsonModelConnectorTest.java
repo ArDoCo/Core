@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.model.java;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.JavaJsonModelConnector;
 
 class JavaJsonModelConnectorTest {
     @Test
