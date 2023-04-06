@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022. */
+/* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.io.File;
@@ -151,7 +151,7 @@ public class ConfigurationHelper {
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(new Object[1]);
         }
-        throw new IllegalStateException("Not reachable code");
+        throw new IllegalStateException("Not reachable code for class " + clazz.getSimpleName());
     }
 
 }

@@ -1,5 +1,5 @@
-/* Licensed under MIT 2022. */
-package edu.kit.kastel.mcse.ardoco.core.model;
+/* Licensed under MIT 2022-2023. */
+package edu.kit.kastel.mcse.ardoco.core.model.connectors;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +15,7 @@ import edu.kit.kastel.informalin.framework.models.uml.UMLModelRoot;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
 
 public class UMLModelConnector implements ModelConnector {
     private final UMLModelRoot model;
