@@ -107,13 +107,11 @@ public class PhraseImpl implements Phrase {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null || this.getClass() != obj.getClass())
+        if (obj == null || !(obj instanceof PhraseImpl))
             return false;
         Phrase other = (Phrase) obj;
-        return Objects.equals(this.getSentenceNo(), other.getSentenceNo()) && Objects.equals(this.getText(), other.getText()) && Objects.equals(this
-                .getPhraseType(), other.getPhraseType()) && Objects.equals(this.getContainedWords().get(0).getPosition(), other.getContainedWords()
-                        .get(0)
-                        .getPosition());
+        return this.getSentenceNo() == other.getSentenceNo() && Objects.equals(this.getText(), other.getText()) && Objects.equals(this.getPhraseType(), other
+                .getPhraseType()) && this.getContainedWords().get(0).getPosition() == other.getContainedWords().get(0).getPosition();
     }
 
     @Override

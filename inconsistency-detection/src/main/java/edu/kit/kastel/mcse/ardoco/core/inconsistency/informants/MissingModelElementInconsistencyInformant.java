@@ -123,7 +123,7 @@ public class MissingModelElementInconsistencyInformant extends Informant {
     }
 
     private void createInconsistencies(MutableSet<MissingElementInconsistencyCandidate> candidates, InconsistencyState inconsistencyState) {
-        DesignDecisionKindClassifier designDecisionKindClassifier = createDesignDecisionKindClassifier();
+        DesignDecisionKindClassifier designDecisionKindClassifier = EXECUTE_DESIGN_DECISION_FILTER ? createDesignDecisionKindClassifier() : null;
 
         for (var candidate : candidates) {
             var support = candidate.getAmountOfSupport();

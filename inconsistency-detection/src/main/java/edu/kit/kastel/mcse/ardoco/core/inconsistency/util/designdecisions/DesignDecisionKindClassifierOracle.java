@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions;
 import static edu.kit.kastel.mcse.ardoco.core.inconsistency.util.designdecisions.ArchitecturalDesignDecision.*;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -18,12 +19,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 public class DesignDecisionKindClassifierOracle implements DesignDecisionKindClassifier {
     private static final Logger logger = LoggerFactory.getLogger(DesignDecisionKindClassifierOracle.class);
 
+    //TODO check this. Is this always the correct path? classLoader failed with maven, other paths failed w/o classLoader etc.
     private Map<String, String> nameToResource = Map.of(//
-            "bigbluebutton", "ClassificationOracleData/bigbluebutton.csv", //
-            "jabref", "ClassificationOracleData/jabref.csv", //
-            "mediastore", "ClassificationOracleData/mediastore.csv", //
-            "teammates", "ClassificationOracleData/teammates.csv", //
-            "teastore", "ClassificationOracleData/teastore.csv");
+            "bigbluebutton", "../inconsistency-detection/src/main/resources/ClassificationOracleData/bigbluebutton.csv", //
+            "jabref", "../inconsistency-detection/src/main/resources/ClassificationOracleData/jabref.csv", //
+            "mediastore", "../inconsistency-detection/src/main/resources/ClassificationOracleData/mediastore.csv", //
+            "teammates", "../inconsistency-detection/src/main/resources/ClassificationOracleData/teammates.csv", //
+            "teastore", "../inconsistency-detection/src/main/resources/ClassificationOracleData/teastore.csv");
 
     private Map<Integer, ArchitecturalDesignDecision> cache = new HashMap<>();
 
@@ -32,16 +34,20 @@ public class DesignDecisionKindClassifierOracle implements DesignDecisionKindCla
     }
 
     private void loadClassifications(String classificationOracleResource) {
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(classloader.getResourceAsStream(classificationOracleResource)));) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(classificationOracleResource)));) {
             for (var line : reader.lines().toList()) {
                 StringTokenizer tokens = new StringTokenizer(line, ";");
+                String token = tokens.nextToken();
+                if (token.equals("sentence_number")) {
+                    continue;
+                }
                 int sentence = -1;
                 try {
-                    sentence = Integer.parseInt(tokens.nextToken());
+                    sentence = Integer.parseInt(token);
                 } catch (NumberFormatException e) {
                     logger.warn("Could not parse sentence number", e);
                 }
+
                 boolean hasNoDesignDecision = tokens.nextToken().equals("0");
                 if (hasNoDesignDecision) {
                     cache.put(sentence, ArchitecturalDesignDecision.NO_DESIGN_DECISION);
