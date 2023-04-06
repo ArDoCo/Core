@@ -51,6 +51,6 @@ public class ModelProviderAgent extends PipelineAgent {
 
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return informants;
+        return new ArrayList<>(informants);
     }
 }
