@@ -103,7 +103,7 @@ public class ObjectToDtoConverter {
                 constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
             } else {
                 int wordIndex = words.get(0).getPosition();
-                List<Integer> phraseWordIndices = words.stream().map(Word::getPosition).toList();
+                List<Integer> phraseWordIndices = subphrases.get(0).getContainedWords().stream().map(Word::getPosition).toList();
                 if (wordIndex < Collections.max(phraseWordIndices)) {
                     // word next
                     Word word = words.remove(0);
@@ -124,11 +124,11 @@ public class ObjectToDtoConverter {
     }
 
     private List<IncomingDependencyDTO> generateDepInDTOs(List<DependencyImpl> dependencies) {
-        return dependencies.stream().map(this::convertToDepInDTO).toList();
+        return new ArrayList<>(dependencies.stream().map(this::convertToDepInDTO).toList());
     }
 
     private List<OutgoingDependencyDTO> generateDepOutDTOs(List<DependencyImpl> dependencies) {
-        return dependencies.stream().map(this::convertToDepOutDTO).toList();
+        return new ArrayList<>(dependencies.stream().map(this::convertToDepOutDTO).toList());
     }
 
     private IncomingDependencyDTO convertToDepInDTO(DependencyImpl dependency) {
