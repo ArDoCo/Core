@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.ardoco.textproviderjson.dto.PosTag;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.SentenceImpl;
 import io.github.ardoco.textproviderjson.textobject.TextImpl;
@@ -41,28 +42,28 @@ public final class TestUtil {
         word1.setSentenceNo(1);
         word1.setLemma("this");
         word1.setText("This");
-        word1.setPosTag(POSTag.get("DT"));
+        word1.setPosTag(PosTag.forValue("DT"));
 
         WordDTO word2 = new WordDTO();
         word2.setId(2);
         word2.setSentenceNo(1);
         word2.setLemma("be");
         word2.setText("is");
-        word2.setPosTag(POSTag.get("VBZ"));
+        word2.setPosTag(PosTag.forValue("VBZ"));
 
         WordDTO word3 = new WordDTO();
         word3.setId(3);
         word3.setSentenceNo(1);
         word3.setLemma("I");
         word3.setText("me");
-        word3.setPosTag(POSTag.get("PRP"));
+        word3.setPosTag(PosTag.forValue("PRP"));
 
         WordDTO word4 = new WordDTO();
         word4.setId(4);
         word4.setSentenceNo(1);
         word4.setLemma(".");
         word4.setText(".");
-        word4.setPosTag(POSTag.get("."));
+        word4.setPosTag(PosTag.forValue("."));
 
         List<WordDTO> words = new ArrayList<>(List.of(word1, word2, word3, word4));
 

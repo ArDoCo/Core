@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.*;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 
 
 /**
@@ -19,7 +18,7 @@ public class WordDTO {
     private List<OutgoingDependencyDTO> outgoingDependencies = new ArrayList<>();
     private long sentenceNo;
     private String text;
-    private POSTag posTag;
+    private PosTag posTag;
 
     /**
      * The id of the word. Should be ascending from 1 for the first word in the text.
@@ -74,12 +73,12 @@ public class WordDTO {
     }
 
     @JsonProperty("posTag")
-    public POSTag getPosTag() {
+    public PosTag getPosTag() {
         return posTag;
     }
 
     @JsonProperty("posTag")
-    public void setPosTag(POSTag value) {
+    public void setPosTag(PosTag value) {
         this.posTag = value;
     }
 

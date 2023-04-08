@@ -26,7 +26,7 @@ class FromJsonTest {
         expectedWord.setSentenceNo(1);
         expectedWord.setLemma("hello");
         expectedWord.setText("Hello");
-        expectedWord.setPosTag(POSTag.get("UH"));
+        expectedWord.setPosTag(PosTag.forValue("UH"));
 
         OutgoingDependencyDTO expectedOutDep = new OutgoingDependencyDTO();
         expectedOutDep.setTargetWordId(1);

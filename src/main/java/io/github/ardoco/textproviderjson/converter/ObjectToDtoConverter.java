@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson.converter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +56,11 @@ public class ObjectToDtoConverter {
         wordDTO.setId(word.getPosition());
         wordDTO.setText(word.getText());
         wordDTO.setLemma(word.getLemma());
-        wordDTO.setPosTag(word.getPosTag());
+        try {
+            wordDTO.setPosTag(PosTag.forValue(word.getPosTag().toString()));
+        } catch (IOException e) {
+            return null;
+        }
         wordDTO.setSentenceNo(word.getSentenceNo());
         List<DependencyImpl> inDep = new ArrayList<>();
         List<DependencyImpl> outDep = new ArrayList<>();

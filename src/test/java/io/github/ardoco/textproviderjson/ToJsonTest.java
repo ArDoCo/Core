@@ -22,7 +22,7 @@ class ToJsonTest {
         word1.setSentenceNo(1);
         word1.setLemma("hello");
         word1.setText("Hello");
-        word1.setPosTag(POSTag.get("UH"));
+        word1.setPosTag(PosTag.forValue("UH"));
 
         OutgoingDependencyDTO outDep1 = new OutgoingDependencyDTO();
         outDep1.setTargetWordId(1);
