@@ -81,13 +81,13 @@ public final class TestUtil {
      * @return the default text object
      */
     public static Text generateDefaultText() {
-        Text text = new TextImpl();
-        List<Word> words = new ArrayList<>(List.of(new WordImpl(text, 1, 1, "This", PosTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
+        TextImpl text = new TextImpl();
+        List<WordImpl> words = new ArrayList<>(List.of(new WordImpl(text, 1, 1, "This", PosTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
                 new WordImpl(text, 2, 1, "is", PosTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 3, 1,
                         "me", PosTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 4, 1, ".", PosTag.CLOSER, ".",
                                 new ArrayList<>(), new ArrayList<>())));
 
-        Sentence sentence1 = new SentenceImpl(1, "This is me.", Lists.immutable.ofAll(words));
+        SentenceImpl sentence1 = new SentenceImpl(1, "This is me.", Lists.immutable.ofAll(words));
 
         Phrase subsubphrase1 = new PhraseImpl(Lists.immutable.of(words.get(2)), PhraseType.NP, new ArrayList<>());
         List<Phrase> subsubphrases = new ArrayList<>(List.of(subsubphrase1));

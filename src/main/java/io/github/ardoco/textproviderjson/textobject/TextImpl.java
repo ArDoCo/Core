@@ -24,7 +24,6 @@ public class TextImpl implements Text {
         this.sentences = sentences;
     }
 
-    @Override
     public void setSentences(ImmutableList<Sentence> sentences) {
         this.sentences = sentences;
     }

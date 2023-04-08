@@ -16,13 +16,6 @@ public interface Sentence {
     int getSentenceNumber();
 
     /**
-     * sets the phrases
-     * 
-     * @param phrases the phrases
-     */
-    void setPhrases(ImmutableList<Phrase> phrases);
-
-    /**
      * Return the sentence number used for human readably output.
      * Therefore, this method calculates the sentence number starting with {@code 1}.
      *

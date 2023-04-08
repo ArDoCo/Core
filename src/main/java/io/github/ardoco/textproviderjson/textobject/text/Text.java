@@ -31,10 +31,4 @@ public interface Text {
      */
     ImmutableList<Sentence> getSentences();
 
-    /**
-     * sets the sentences if the text
-     *
-     * @param sentences the sentences ´
-     */
-    void setSentences(ImmutableList<Sentence> sentences);
 }
