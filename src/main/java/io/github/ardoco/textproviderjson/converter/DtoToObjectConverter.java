@@ -48,18 +48,18 @@ public class DtoToObjectConverter {
         List<Word> words = sentenceDTO.getWords().stream().map(x -> convertToWord(x, parentText)).toList();
         String constituencyTree = sentenceDTO.getConstituencyTree();
         Sentence sentence = new SentenceImpl(parentText, (int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
-        Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words), sentence);
+        Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
         sentence.setPhrases(Lists.immutable.of(phrases));
         return sentence;
     }
 
-    public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
+    public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence) {
         // cut of root
         String treeWithoutRoot = constituencyTree.substring(2 + CONSTITUENCY_TREE_ROOT.length(), constituencyTree.length() - 1);
-        return findSubphrases(treeWithoutRoot, wordsOfSentence, parent);
+        return findSubphrases(treeWithoutRoot, wordsOfSentence);
     }
 
-    private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
+    private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence) {
         // remove outer brackets
         String tree = constituencyTree.substring(1, constituencyTree.length() - 1);
         PhraseType phraseType = PhraseType.get(tree.split(CONSTITUENCY_TREE_SEPARATOR, 2)[0]);
@@ -74,10 +74,10 @@ public class DtoToObjectConverter {
             if (isWord(subtree)) {
                 words.add(wordsOfSentence.remove(0));
             } else {
-                subPhrases.add(findSubphrases(subtree, wordsOfSentence, parent));
+                subPhrases.add(findSubphrases(subtree, wordsOfSentence));
             }
         }
-        return new PhraseImpl(Lists.immutable.ofAll(words), parent, phraseType, subPhrases);
+        return new PhraseImpl(Lists.immutable.ofAll(words), phraseType, subPhrases);
     }
 
     private List<String> getSubtrees(String treeWithoutType) {
