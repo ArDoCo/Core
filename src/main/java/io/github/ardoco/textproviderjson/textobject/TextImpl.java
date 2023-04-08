@@ -7,9 +7,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import io.github.ardoco.textproviderjson.textobject.text.Sentence;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
-import io.github.ardoco.textproviderjson.textobject.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 public class TextImpl implements Text {
     private ImmutableList<Sentence> sentences;

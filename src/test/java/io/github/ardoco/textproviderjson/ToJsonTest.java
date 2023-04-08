@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,18 +22,18 @@ class ToJsonTest {
         word1.setSentenceNo(1);
         word1.setLemma("hello");
         word1.setText("Hello");
-        word1.setPosTag(PosTag.forValue("UH"));
+        word1.setPosTag(POSTag.get("UH"));
 
         OutgoingDependencyDTO outDep1 = new OutgoingDependencyDTO();
         outDep1.setTargetWordId(1);
-        outDep1.setDependencyType(DependencyType.APPOS);
+        outDep1.setDependencyTag(DependencyTag.APPOS);
         List<OutgoingDependencyDTO> outList1 = new ArrayList<>();
         outList1.add(outDep1);
         word1.setOutgoingDependencies(outList1);
 
         IncomingDependencyDTO inDep1 = new IncomingDependencyDTO();
         inDep1.setSourceWordId(1);
-        inDep1.setDependencyType(DependencyType.APPOS);
+        inDep1.setDependencyTag(DependencyTag.APPOS);
         List<IncomingDependencyDTO> inList1 = new ArrayList<>();
         inList1.add(inDep1);
         word1.setIncomingDependencies(inList1);
@@ -51,6 +53,7 @@ class ToJsonTest {
         TextDTO text = new TextDTO();
         text.setSentences(sentences);
 
-        Assertions.assertEquals(text, JsonConverter.fromJsonString(JsonConverter.toJsonString(text)));
+        String generatedJson = JsonConverter.toJsonString(text);
+        Assertions.assertEquals(text, JsonConverter.fromJsonString(generatedJson));
     }
 }

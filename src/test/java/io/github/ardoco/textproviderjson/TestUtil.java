@@ -5,16 +5,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
+import io.github.ardoco.textproviderjson.textobject.SentenceImpl;
+import io.github.ardoco.textproviderjson.textobject.TextImpl;
+import io.github.ardoco.textproviderjson.textobject.WordImpl;
 import org.eclipse.collections.api.factory.Lists;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 
 import io.github.ardoco.textproviderjson.dto.SentenceDTO;
 import io.github.ardoco.textproviderjson.dto.TextDTO;
 import io.github.ardoco.textproviderjson.dto.WordDTO;
-import io.github.ardoco.textproviderjson.textobject.*;
-import io.github.ardoco.textproviderjson.textobject.text.Phrase;
-import io.github.ardoco.textproviderjson.textobject.text.Sentence;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
-import io.github.ardoco.textproviderjson.textobject.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+
 
 /**
  * This utility class provides methods to generate test data
@@ -35,28 +41,28 @@ public final class TestUtil {
         word1.setSentenceNo(1);
         word1.setLemma("this");
         word1.setText("This");
-        word1.setPosTag(PosTag.forValue("DT"));
+        word1.setPosTag(POSTag.get("DT"));
 
         WordDTO word2 = new WordDTO();
         word2.setId(2);
         word2.setSentenceNo(1);
         word2.setLemma("be");
         word2.setText("is");
-        word2.setPosTag(PosTag.forValue("VBZ"));
+        word2.setPosTag(POSTag.get("VBZ"));
 
         WordDTO word3 = new WordDTO();
         word3.setId(3);
         word3.setSentenceNo(1);
         word3.setLemma("I");
         word3.setText("me");
-        word3.setPosTag(PosTag.forValue("PRP"));
+        word3.setPosTag(POSTag.get("PRP"));
 
         WordDTO word4 = new WordDTO();
         word4.setId(4);
         word4.setSentenceNo(1);
         word4.setLemma(".");
         word4.setText(".");
-        word4.setPosTag(PosTag.forValue("."));
+        word4.setPosTag(POSTag.get("."));
 
         List<WordDTO> words = new ArrayList<>(List.of(word1, word2, word3, word4));
 
@@ -82,9 +88,9 @@ public final class TestUtil {
      */
     public static Text generateDefaultText() {
         TextImpl text = new TextImpl();
-        List<WordImpl> words = new ArrayList<>(List.of(new WordImpl(text, 1, 1, "This", PosTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 2, 1, "is", PosTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 3, 1,
-                        "me", PosTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 4, 1, ".", PosTag.CLOSER, ".",
+        List<WordImpl> words = new ArrayList<>(List.of(new WordImpl(text, 1, 1, "This", POSTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
+                new WordImpl(text, 2, 1, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 3, 1,
+                        "me", POSTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 4, 1, ".", POSTag.CLOSER, ".",
                                 new ArrayList<>(), new ArrayList<>())));
 
         SentenceImpl sentence1 = new SentenceImpl(1, "This is me.", Lists.immutable.ofAll(words));

@@ -4,16 +4,16 @@ package io.github.ardoco.textproviderjson.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import io.github.ardoco.textproviderjson.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import io.github.ardoco.textproviderjson.dto.*;
 import io.github.ardoco.textproviderjson.textobject.*;
-import io.github.ardoco.textproviderjson.textobject.text.Phrase;
-import io.github.ardoco.textproviderjson.textobject.text.Sentence;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
-import io.github.ardoco.textproviderjson.textobject.text.Word;
 
 /***
  * this class converts a DTO text into an ArDoCo text object
@@ -115,10 +115,10 @@ public class DtoToObjectConverter {
     }
 
     private DependencyImpl convertIncomingDependency(IncomingDependencyDTO dependencyDTO) {
-        return new DependencyImpl(dependencyDTO.getDependencyType(), dependencyDTO.getSourceWordId());
+        return new DependencyImpl(dependencyDTO.getDependencyTag(), dependencyDTO.getSourceWordId());
     }
 
     private DependencyImpl convertOutgoingDependency(OutgoingDependencyDTO dependencyDTO) {
-        return new DependencyImpl(dependencyDTO.getDependencyType(), dependencyDTO.getTargetWordId());
+        return new DependencyImpl(dependencyDTO.getDependencyTag(), dependencyDTO.getTargetWordId());
     }
 }
