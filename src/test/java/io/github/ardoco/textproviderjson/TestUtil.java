@@ -5,23 +5,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.collections.api.factory.Lists;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import io.github.ardoco.textproviderjson.dto.PosTag;
+import io.github.ardoco.textproviderjson.dto.SentenceDTO;
+import io.github.ardoco.textproviderjson.dto.TextDTO;
+import io.github.ardoco.textproviderjson.dto.WordDTO;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.SentenceImpl;
 import io.github.ardoco.textproviderjson.textobject.TextImpl;
 import io.github.ardoco.textproviderjson.textobject.WordImpl;
-import org.eclipse.collections.api.factory.Lists;
-
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-
-import io.github.ardoco.textproviderjson.dto.SentenceDTO;
-import io.github.ardoco.textproviderjson.dto.TextDTO;
-import io.github.ardoco.textproviderjson.dto.WordDTO;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-
 
 /**
  * This utility class provides methods to generate test data

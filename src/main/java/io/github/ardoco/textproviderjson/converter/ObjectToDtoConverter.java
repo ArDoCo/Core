@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import io.github.ardoco.textproviderjson.dto.*;
 import io.github.ardoco.textproviderjson.textobject.DependencyImpl;
 
