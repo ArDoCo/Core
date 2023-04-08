@@ -47,7 +47,7 @@ public class DtoToObjectConverter {
     private Sentence convertToSentence(SentenceDTO sentenceDTO, Text parentText) {
         List<Word> words = sentenceDTO.getWords().stream().map(x -> convertToWord(x, parentText)).toList();
         String constituencyTree = sentenceDTO.getConstituencyTree();
-        Sentence sentence = new SentenceImpl((int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
+        SentenceImpl sentence = new SentenceImpl((int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
         Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
         sentence.setPhrases(Lists.immutable.of(phrases));
         return sentence;

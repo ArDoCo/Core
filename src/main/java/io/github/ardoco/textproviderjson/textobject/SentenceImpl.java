@@ -25,7 +25,6 @@ public class SentenceImpl implements Sentence {
         this.words = words;
     }
 
-    @Override
     public void setPhrases(ImmutableList<Phrase> phrases) {
         this.phrases = phrases;
     }
