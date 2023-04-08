@@ -87,7 +87,7 @@ public final class TestUtil {
                         "me", PosTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 4, 1, ".", PosTag.CLOSER, ".",
                                 new ArrayList<>(), new ArrayList<>())));
 
-        Sentence sentence1 = new SentenceImpl(text, 1, "This is me.", Lists.immutable.ofAll(words));
+        Sentence sentence1 = new SentenceImpl(1, "This is me.", Lists.immutable.ofAll(words));
 
         Phrase subsubphrase1 = new PhraseImpl(Lists.immutable.of(words.get(2)), PhraseType.NP, new ArrayList<>());
         List<Phrase> subsubphrases = new ArrayList<>(List.of(subsubphrase1));
