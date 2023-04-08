@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.*;
 
-
 /**
  * Definition of a word
  */

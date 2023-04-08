@@ -6,8 +6,8 @@ import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
 
 class DtoToObjectTest {
 

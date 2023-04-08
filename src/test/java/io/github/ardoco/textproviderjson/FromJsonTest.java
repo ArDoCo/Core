@@ -7,11 +7,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 import io.github.ardoco.textproviderjson.converter.JsonConverter;
 import io.github.ardoco.textproviderjson.dto.*;
 

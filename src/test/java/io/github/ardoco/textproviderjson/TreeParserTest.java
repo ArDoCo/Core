@@ -4,17 +4,17 @@ package io.github.ardoco.textproviderjson;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.WordImpl;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 class TreeParserTest {
 

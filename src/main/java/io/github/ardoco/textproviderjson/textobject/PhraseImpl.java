@@ -11,8 +11,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 public class PhraseImpl implements Phrase {

@@ -4,10 +4,10 @@ package io.github.ardoco.textproviderjson.textobject;
 import java.util.List;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 
 public class WordImpl implements Word {
 
