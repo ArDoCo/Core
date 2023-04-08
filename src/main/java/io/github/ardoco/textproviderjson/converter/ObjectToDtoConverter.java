@@ -97,23 +97,22 @@ public class ObjectToDtoConverter {
                 // word next
                 Word word = words.remove(0);
                 constituencyTree.append(TREE_SEPARATOR).append(convertWordToTree(word));
-                continue;
             } else if (words.isEmpty()) {
                 // phrase next
                 Phrase subphrase = subphrases.remove(0);
                 constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
-                continue;
-            }
-            int wordIndex = words.get(0).getPosition();
-            List<Integer> phraseWordIndices = words.stream().map(Word::getPosition).toList();
-            if (wordIndex < Collections.max(phraseWordIndices)) {
-                // word next
-                Word word = words.remove(0);
-                constituencyTree.append(TREE_SEPARATOR).append(convertWordToTree(word));
             } else {
-                // phrase next
-                Phrase subphrase = subphrases.remove(0);
-                constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
+                int wordIndex = words.get(0).getPosition();
+                List<Integer> phraseWordIndices = words.stream().map(Word::getPosition).toList();
+                if (wordIndex < Collections.max(phraseWordIndices)) {
+                    // word next
+                    Word word = words.remove(0);
+                    constituencyTree.append(TREE_SEPARATOR).append(convertWordToTree(word));
+                } else {
+                    // phrase next
+                    Phrase subphrase = subphrases.remove(0);
+                    constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
+                }
             }
         }
         constituencyTree.append(TREE_CLOSE_BRACKET);
