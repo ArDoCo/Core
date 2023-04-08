@@ -13,13 +13,10 @@ import org.eclipse.collections.api.map.MutableMap;
 
 import io.github.ardoco.textproviderjson.PhraseType;
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
-import io.github.ardoco.textproviderjson.textobject.text.Sentence;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
 
 public class PhraseImpl implements Phrase {
     private ImmutableList<Word> words;
-
-    private final Sentence parent;
 
     private String text = "";
 
@@ -27,9 +24,8 @@ public class PhraseImpl implements Phrase {
 
     private final List<Phrase> subPhrases;
 
-    public PhraseImpl(ImmutableList<Word> words, Sentence parent, PhraseType type, List<Phrase> subPhrases) {
+    public PhraseImpl(ImmutableList<Word> words, PhraseType type, List<Phrase> subPhrases) {
         this.words = words;
-        this.parent = parent;
         this.type = type;
         this.subPhrases = subPhrases;
     }

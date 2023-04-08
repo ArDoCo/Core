@@ -89,12 +89,12 @@ public final class TestUtil {
 
         Sentence sentence1 = new SentenceImpl(text, 1, "This is me.", Lists.immutable.ofAll(words));
 
-        Phrase subsubphrase1 = new PhraseImpl(Lists.immutable.of(words.get(2)), sentence1, PhraseType.NP, new ArrayList<>());
+        Phrase subsubphrase1 = new PhraseImpl(Lists.immutable.of(words.get(2)), PhraseType.NP, new ArrayList<>());
         List<Phrase> subsubphrases = new ArrayList<>(List.of(subsubphrase1));
-        Phrase subphrase1 = new PhraseImpl(Lists.immutable.of(words.get(0)), sentence1, PhraseType.NP, new ArrayList<>());
-        Phrase subphrase2 = new PhraseImpl(Lists.immutable.of(words.get(1)), sentence1, PhraseType.VP, new ArrayList<>(subsubphrases));
+        Phrase subphrase1 = new PhraseImpl(Lists.immutable.of(words.get(0)), PhraseType.NP, new ArrayList<>());
+        Phrase subphrase2 = new PhraseImpl(Lists.immutable.of(words.get(1)), PhraseType.VP, new ArrayList<>(subsubphrases));
         List<Phrase> subphrases = new ArrayList<>(List.of(subphrase1, subphrase2));
-        Phrase phrase1 = new PhraseImpl(Lists.immutable.of(words.get(3)), sentence1, PhraseType.S, subphrases);
+        Phrase phrase1 = new PhraseImpl(Lists.immutable.of(words.get(3)), PhraseType.S, subphrases);
         List<Phrase> phrases = new ArrayList<>(List.of(phrase1));
 
         sentence1.setPhrases(Lists.immutable.ofAll(phrases));
