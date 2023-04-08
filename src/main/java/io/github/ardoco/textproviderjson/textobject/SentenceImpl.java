@@ -8,7 +8,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import io.github.ardoco.textproviderjson.textobject.text.Phrase;
 import io.github.ardoco.textproviderjson.textobject.text.Sentence;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
 import io.github.ardoco.textproviderjson.textobject.text.Word;
 
 public class SentenceImpl implements Sentence {
@@ -16,14 +15,12 @@ public class SentenceImpl implements Sentence {
     private final ImmutableList<Word> words;
     private ImmutableList<Phrase> phrases = Lists.immutable.empty();
 
-    private final Text parent;
     private final int sentenceNumber;
 
     private final String text;
 
-    public SentenceImpl(Text parent, int sentenceNumber, String text, ImmutableList<Word> words) {
+    public SentenceImpl(int sentenceNumber, String text, ImmutableList<Word> words) {
         this.sentenceNumber = sentenceNumber;
-        this.parent = parent;
         this.text = text;
         this.words = words;
     }
