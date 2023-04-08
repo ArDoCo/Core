@@ -5,19 +5,19 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.*;
 
-import io.github.ardoco.textproviderjson.DependencyType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 
 public class OutgoingDependencyDTO {
-    private DependencyType dependencyType;
+    private DependencyTag dependencyType;
     private long targetWordId;
 
     @JsonProperty("dependencyType")
-    public DependencyType getDependencyType() {
+    public DependencyTag getDependencyTag() {
         return dependencyType;
     }
 
     @JsonProperty("dependencyType")
-    public void setDependencyType(DependencyType value) {
+    public void setDependencyTag(DependencyTag value) {
         this.dependencyType = value;
     }
 

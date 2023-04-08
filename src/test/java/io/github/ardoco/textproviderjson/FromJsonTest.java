@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,18 +26,18 @@ class FromJsonTest {
         expectedWord.setSentenceNo(1);
         expectedWord.setLemma("hello");
         expectedWord.setText("Hello");
-        expectedWord.setPosTag(PosTag.forValue("UH"));
+        expectedWord.setPosTag(POSTag.get("UH"));
 
         OutgoingDependencyDTO expectedOutDep = new OutgoingDependencyDTO();
         expectedOutDep.setTargetWordId(1);
-        expectedOutDep.setDependencyType(DependencyType.APPOS);
+        expectedOutDep.setDependencyTag(DependencyTag.APPOS);
         List<OutgoingDependencyDTO> expectedOutList = new ArrayList<>();
         expectedOutList.add(expectedOutDep);
         expectedWord.setOutgoingDependencies(expectedOutList);
 
         IncomingDependencyDTO expectedInDep = new IncomingDependencyDTO();
         expectedInDep.setSourceWordId(1);
-        expectedInDep.setDependencyType(DependencyType.APPOS);
+        expectedInDep.setDependencyTag(DependencyTag.APPOS);
         List<IncomingDependencyDTO> expectedInList = new ArrayList<>();
         expectedInList.add(expectedInDep);
         expectedWord.setIncomingDependencies(expectedInList);

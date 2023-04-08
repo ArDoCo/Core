@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 
 class DtoToObjectTest {
 

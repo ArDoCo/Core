@@ -4,22 +4,24 @@ package io.github.ardoco.textproviderjson;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
 import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
 import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.WordImpl;
-import io.github.ardoco.textproviderjson.textobject.text.Phrase;
-import io.github.ardoco.textproviderjson.textobject.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
 
 class TreeParserTest {
 
     String tree = "(ROOT (S (NP (DT This)) (VP (VBZ is) (NP (PRP me))) (. .)))";
-    List<Word> words = new ArrayList<>(List.of(new WordImpl(null, 1, 0, "This", PosTag.DETERMINER, null, null, null), new WordImpl(null, 2, 0, "is",
-            PosTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, null, null, null), new WordImpl(null, 3, 0, "me", PosTag.PRONOUN_PERSONAL, null, null, null),
-            new WordImpl(null, 4, 0, ".", PosTag.CLOSER, null, null, null)));
+    List<Word> words = new ArrayList<>(List.of(new WordImpl(null, 1, 0, "This", POSTag.DETERMINER, null, null, null), new WordImpl(null, 2, 0, "is",
+            POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, null, null, null), new WordImpl(null, 3, 0, "me", POSTag.PRONOUN_PERSONAL, null, null, null),
+            new WordImpl(null, 4, 0, ".", POSTag.CLOSER, null, null, null)));
     Phrase subsubphrase = new PhraseImpl(Lists.immutable.of(words.get(2)), PhraseType.NP, new ArrayList<>());
     List<Phrase> subphrases = List.of(new PhraseImpl(Lists.immutable.of(words.get(0)), PhraseType.NP, new ArrayList<>()), new PhraseImpl(Lists.immutable.of(
             words.get(1)), PhraseType.VP, List.of(subsubphrase)));

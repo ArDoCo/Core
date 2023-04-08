@@ -3,14 +3,14 @@ package io.github.ardoco.textproviderjson.textobject;
 
 import java.util.Objects;
 
-import io.github.ardoco.textproviderjson.DependencyType;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
 
 public class DependencyImpl {
 
-    private final DependencyType dependencyType;
+    private final DependencyTag dependencyType;
     private final long wordId;
 
-    public DependencyImpl(DependencyType type, long wordId) {
+    public DependencyImpl(DependencyTag type, long wordId) {
         this.dependencyType = type;
         this.wordId = wordId;
     }
@@ -19,7 +19,7 @@ public class DependencyImpl {
         return wordId;
     }
 
-    public DependencyType getDependencyType() {
+    public DependencyTag getDependencyTag() {
         return dependencyType;
     }
 

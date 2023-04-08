@@ -5,15 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import io.github.ardoco.textproviderjson.DependencyType;
 import io.github.ardoco.textproviderjson.dto.*;
 import io.github.ardoco.textproviderjson.textobject.DependencyImpl;
-import io.github.ardoco.textproviderjson.textobject.text.Phrase;
-import io.github.ardoco.textproviderjson.textobject.text.Sentence;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
-import io.github.ardoco.textproviderjson.textobject.text.Word;
 
 public class ObjectToDtoConverter {
 
@@ -63,7 +59,7 @@ public class ObjectToDtoConverter {
         wordDTO.setSentenceNo(word.getSentenceNo());
         List<DependencyImpl> inDep = new ArrayList<>();
         List<DependencyImpl> outDep = new ArrayList<>();
-        for (DependencyType depType : DependencyType.values()) {
+        for (DependencyTag depType : DependencyTag.values()) {
             ImmutableList<Word> inDepWords = word.getIncomingDependencyWordsWithType(depType);
             inDep.addAll(inDepWords.stream().map(x -> new DependencyImpl(depType, x.getPosition())).toList());
             ImmutableList<Word> outDepWords = word.getOutgoingDependencyWordsWithType(depType);
@@ -133,14 +129,14 @@ public class ObjectToDtoConverter {
 
     private IncomingDependencyDTO convertToDepInDTO(DependencyImpl dependency) {
         IncomingDependencyDTO dependencyDTO = new IncomingDependencyDTO();
-        dependencyDTO.setDependencyType(dependency.getDependencyType());
+        dependencyDTO.setDependencyTag(dependency.getDependencyTag());
         dependencyDTO.setSourceWordId(dependency.getWordId());
         return dependencyDTO;
     }
 
     private OutgoingDependencyDTO convertToDepOutDTO(DependencyImpl dependency) {
         OutgoingDependencyDTO dependencyDTO = new OutgoingDependencyDTO();
-        dependencyDTO.setDependencyType(dependency.getDependencyType());
+        dependencyDTO.setDependencyTag(dependency.getDependencyTag());
         dependencyDTO.setTargetWordId(dependency.getWordId());
         return dependencyDTO;
     }

@@ -4,15 +4,10 @@ package io.github.ardoco.textproviderjson.textobject;
 import java.util.List;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import io.github.ardoco.textproviderjson.DependencyType;
-import io.github.ardoco.textproviderjson.PosTag;
-import io.github.ardoco.textproviderjson.textobject.text.Phrase;
-import io.github.ardoco.textproviderjson.textobject.text.Sentence;
-import io.github.ardoco.textproviderjson.textobject.text.Text;
-import io.github.ardoco.textproviderjson.textobject.text.Word;
 
 public class WordImpl implements Word {
 
@@ -24,13 +19,13 @@ public class WordImpl implements Word {
     private final int sentenceNo;
     private Phrase phrase;
     private final String text;
-    private final PosTag posTag;
+    private final POSTag posTag;
     private final String lemma;
 
     private final List<DependencyImpl> ingoingDependencies;
     private final List<DependencyImpl> outgoingDependencies;
 
-    public WordImpl(Text parent, int index, int sentenceNo, String text, PosTag posTag, String lemma, List<DependencyImpl> inDep, List<DependencyImpl> outDep) {
+    public WordImpl(Text parent, int index, int sentenceNo, String text, POSTag posTag, String lemma, List<DependencyImpl> inDep, List<DependencyImpl> outDep) {
         this.parent = parent;
         this.indexInText = index;
         this.preWord = null;
@@ -60,7 +55,7 @@ public class WordImpl implements Word {
     }
 
     @Override
-    public PosTag getPosTag() {
+    public POSTag getPosTag() {
         return this.posTag;
     }
 
@@ -93,15 +88,15 @@ public class WordImpl implements Word {
     }
 
     @Override
-    public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyType dependencyTag) {
-        List<DependencyImpl> dependenciesOfType = this.outgoingDependencies.stream().filter(x -> x.getDependencyType() == dependencyTag).toList();
+    public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
+        List<DependencyImpl> dependenciesOfType = this.outgoingDependencies.stream().filter(x -> x.getDependencyTag() == dependencyTag).toList();
         List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int) x.getWordId())).toList();
         return Lists.immutable.ofAll(words);
     }
 
     @Override
-    public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyType dependencyTag) {
-        List<DependencyImpl> dependenciesOfType = this.ingoingDependencies.stream().filter(x -> x.getDependencyType() == dependencyTag).toList();
+    public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
+        List<DependencyImpl> dependenciesOfType = this.ingoingDependencies.stream().filter(x -> x.getDependencyTag() == dependencyTag).toList();
         List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int) x.getWordId())).toList();
         return Lists.immutable.ofAll(words);
     }
