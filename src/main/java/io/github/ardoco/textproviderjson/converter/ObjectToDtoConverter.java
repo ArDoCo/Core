@@ -36,7 +36,7 @@ public class ObjectToDtoConverter {
     }
 
     private List<SentenceDTO> generateSentenceDTOs(ImmutableList<Sentence> sentences) {
-        return sentences.stream().map(this::convertToSentenceDTO).toList();
+        return new ArrayList<>(sentences.stream().map(this::convertToSentenceDTO).toList());
     }
 
     private SentenceDTO convertToSentenceDTO(Sentence sentence) {
@@ -51,7 +51,7 @@ public class ObjectToDtoConverter {
     }
 
     private List<WordDTO> generateWordDTOs(ImmutableList<Word> words) {
-        return words.stream().map(this::convertToWordDTO).toList();
+        return new ArrayList<>(words.stream().map(this::convertToWordDTO).toList());
     }
 
     private WordDTO convertToWordDTO(Word word) {
@@ -89,8 +89,8 @@ public class ObjectToDtoConverter {
     private String convertToSubtree(Phrase phrase) {
         StringBuilder constituencyTree = new StringBuilder().append(TREE_OPEN_BRACKET);
         constituencyTree.append(phrase.getPhraseType().toString());
-        List<Phrase> subphrases = phrase.getSubPhrases().castToList();
-        List<Word> words = phrase.getContainedWords().castToList();
+        List<Phrase> subphrases = new ArrayList<>(phrase.getSubPhrases().castToList());
+        List<Word> words = new ArrayList<>(phrase.getContainedWords().castToList());
         // since we don't know the order of words and subphrases we have to reconstruct the order by comparing the word index
         while (!subphrases.isEmpty() || !words.isEmpty()) {
             if (subphrases.isEmpty()) {
