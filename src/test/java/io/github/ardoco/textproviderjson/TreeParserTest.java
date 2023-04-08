@@ -21,8 +21,8 @@ class TreeParserTest {
             PosTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, null, null, null), new WordImpl(null, 3, 0, "me", PosTag.PRONOUN_PERSONAL, null, null, null),
             new WordImpl(null, 4, 0, ".", PosTag.CLOSER, null, null, null)));
     Phrase subsubphrase = new PhraseImpl(Lists.immutable.of(words.get(2)), PhraseType.NP, new ArrayList<>());
-    List<Phrase> subphrases = List.of(new PhraseImpl(Lists.immutable.of(words.get(0)), PhraseType.NP, new ArrayList<>()), new PhraseImpl(Lists.immutable
-            .of(words.get(1)), PhraseType.VP, List.of(subsubphrase)));
+    List<Phrase> subphrases = List.of(new PhraseImpl(Lists.immutable.of(words.get(0)), PhraseType.NP, new ArrayList<>()), new PhraseImpl(Lists.immutable.of(
+            words.get(1)), PhraseType.VP, List.of(subsubphrase)));
     Phrase expectedPhrase = new PhraseImpl(Lists.immutable.of(words.get(3)), PhraseType.S, subphrases);
 
     @Test
