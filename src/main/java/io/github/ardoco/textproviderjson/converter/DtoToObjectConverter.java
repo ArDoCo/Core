@@ -60,13 +60,27 @@ public class DtoToObjectConverter {
     }
 
     private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence, Sentence parent) {
-        // cut off outer brackets
+        // remove outer brackets
         String tree = constituencyTree.substring(1, constituencyTree.length() - 1);
-        // extract phrase type
         PhraseType phraseType = PhraseType.get(tree.split(CONSTITUENCY_TREE_SEPARATOR, 2)[0]);
-        // cut off phrase type
+        // remove phrase type
         String treeWithoutType = tree.split(CONSTITUENCY_TREE_SEPARATOR, 2)[1];
 
+        List<String> subTrees = getSubtrees(treeWithoutType);
+
+        List<Phrase> subPhrases = new ArrayList<>();
+        List<Word> words = new ArrayList<>();
+        for (String subtree : subTrees) {
+            if (isWord(subtree)) {
+                words.add(wordsOfSentence.remove(0));
+            } else {
+                subPhrases.add(findSubphrases(subtree, wordsOfSentence, parent));
+            }
+        }
+        return new PhraseImpl(Lists.immutable.ofAll(words), parent, phraseType, subPhrases);
+    }
+
+    private List<String> getSubtrees(String treeWithoutType) {
         List<String> subTrees = new ArrayList<>();
         // iterate through tree to find all subtrees
         while (treeWithoutType.length() > 0) {
@@ -86,16 +100,7 @@ public class DtoToObjectConverter {
                 treeWithoutType = treeWithoutType.substring(index + 1);
             }
         }
-        List<Phrase> subPhrases = new ArrayList<>();
-        List<Word> words = new ArrayList<>();
-        for (String subtree : subTrees) {
-            if (isWord(subtree)) {
-                words.add(wordsOfSentence.remove(0));
-            } else {
-                subPhrases.add(findSubphrases(subtree, wordsOfSentence, parent));
-            }
-        }
-        return new PhraseImpl(Lists.immutable.ofAll(words), parent, phraseType, subPhrases);
+        return subTrees;
     }
 
     private boolean isWord(String tree) {
