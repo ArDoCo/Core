@@ -33,17 +33,6 @@ public class ModelProviderAgent extends PipelineAgent {
         }
     }
 
-    /**
-     * Private constructor such that the ConfigurationHelper can operate (i.e., the ConfigurationHelperTest does not fail).
-     * This should never be called deliberately!
-     * 
-     * @param data the DataRepository
-     */
-    private ModelProviderAgent(DataRepository data) {
-        super(ModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-    }
-
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         informants.forEach(e -> e.applyConfiguration(additionalConfiguration));

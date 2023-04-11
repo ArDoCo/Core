@@ -40,16 +40,6 @@ public final class ModelProviderInformant extends Informant {
         this.modelConnector = modelConnector;
     }
 
-    /**
-     * Private constructor such that the ConfigurationHelper can operate (i.e., the ConfigurationHelperTest does not fail).
-     * This should never be called deliberately!
-     *
-     * @param dataRepository the DataRepository
-     */
-    private ModelProviderInformant(DataRepository dataRepository) {
-        super("EmptyModelProvider", dataRepository);
-    }
-
     @Override
     public void run() {
         if (modelConnector == null) {

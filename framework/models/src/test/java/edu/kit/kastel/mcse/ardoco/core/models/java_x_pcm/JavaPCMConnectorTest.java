@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMInterface;
 import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMModel;
 import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMRepository;
 
+@SuppressWarnings("java:S5778")
 class JavaPCMConnectorTest {
 
     private JavaPCMConnectorImpl javaPCMConnector;

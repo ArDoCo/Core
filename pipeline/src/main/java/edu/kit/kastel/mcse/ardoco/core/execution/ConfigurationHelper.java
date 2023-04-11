@@ -83,6 +83,7 @@ public class ConfigurationHelper {
         fillConfigs(object, fields, configs);
     }
 
+    @SuppressWarnings("java:S3011")
     private static void fillConfigs(AbstractConfigurable object, List<Field> fields, Map<String, String> configs) throws IllegalAccessException {
         for (Field f : fields) {
             f.setAccessible(true);
@@ -130,6 +131,7 @@ public class ConfigurationHelper {
         findImportantFields(clazz.getSuperclass(), fields);
     }
 
+    @SuppressWarnings("java:S3011")
     private static AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
             IllegalAccessException {
         var constructors = Arrays.asList(clazz.getDeclaredConstructors());
@@ -149,7 +151,7 @@ public class ConfigurationHelper {
                     .findFirst()
                     .orElseThrow();
             constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(new Object[1]);
+            return (AbstractConfigurable) constructor.newInstance((DataRepository) null);
         }
 
         if (constructors.stream()
@@ -159,8 +161,19 @@ public class ConfigurationHelper {
                     .findFirst()
                     .orElseThrow();
             constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(new Object[2]);
+            return (AbstractConfigurable) constructor.newInstance(null, null);
         }
+
+        if (constructors.stream()
+                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)) {
+            var constructor = constructors.stream()
+                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)
+                    .findFirst()
+                    .orElseThrow();
+            constructor.setAccessible(true);
+            return (AbstractConfigurable) constructor.newInstance(null, List.of());
+        }
+
         throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
 
     }

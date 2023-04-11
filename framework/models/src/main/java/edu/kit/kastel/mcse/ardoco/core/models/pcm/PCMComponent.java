@@ -46,10 +46,10 @@ public final class PCMComponent {
 
     void init(List<PCMInterface> interfaces) {
         this.provided = providedInterfaceIds.stream()
-                .map(id -> interfaces.stream().filter(it -> it.getId().equals(id.id())).findFirst().orElseThrow())
+                .map(interfaceId -> interfaces.stream().filter(it -> it.getId().equals(interfaceId.id())).findFirst().orElseThrow())
                 .toList();
         this.required = requiredInterfaceIds.stream()
-                .map(id -> interfaces.stream().filter(it -> it.getId().equals(id.id())).findFirst().orElseThrow())
+                .map(interfaceId -> interfaces.stream().filter(it -> it.getId().equals(interfaceId.id())).findFirst().orElseThrow())
                 .toList();
     }
 
