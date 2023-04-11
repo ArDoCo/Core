@@ -10,7 +10,6 @@ import com.tngtech.archunit.lang.ArchRule;
 
 @AnalyzeClasses(packages = "edu.kit.kastel.mcse.ardoco.core")
 public class ArchitectureTest {
-    // TODO Fix tests
     @ArchTest
     public static final ArchRule noDependencyOnExecution = classes().that()
             .resideInAPackage("..execution..")
@@ -65,7 +64,7 @@ public class ArchitectureTest {
             .definedBy("..execution..")
             // rule definition
             .whereLayer("Execution")
-            .mayNotAccessAnyLayer()
+            .mayOnlyBeAccessedByLayers("Common") // Needed for tests
             .whereLayer("InconsistencyDetection")
             .mayOnlyBeAccessedByLayers("Pipeline", "Common", "Execution")
             .whereLayer("ConnectionGenerator")

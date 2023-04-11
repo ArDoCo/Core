@@ -12,11 +12,13 @@ import org.junit.jupiter.api.Assertions;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
-import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
 
@@ -81,9 +83,11 @@ public class HoldBackRunResultsProducer {
             boolean useInconsistencyBaseline) throws FileNotFoundException {
         ArDoCo arDoCo = new ArDoCo(project.name().toLowerCase());
         var dataRepository = arDoCo.getDataRepository();
+        String text = CommonUtilities.readInputText(inputText);
+        DataRepositoryHelper.putInputText(dataRepository, text);
         var additionalConfigs = project.getAdditionalConfigurations();
 
-        arDoCo.addPipelineStep(ArDoCo.getTextProvider(inputText, additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(ArDoCo.getTextPreprocessing(additionalConfigs, dataRepository));
 
         addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
@@ -123,7 +127,7 @@ public class HoldBackRunResultsProducer {
 
     private static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
             Map<String, String> additionalConfigs) {
-        arDoCo.addPipelineStep(new ModelProvider(dataRepository, holdElementsBackModelConnector));
+        arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
         arDoCo.addPipelineStep(ArDoCo.getTextExtraction(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ArDoCo.getRecommendationGenerator(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ArDoCo.getConnectionGenerator(additionalConfigs, dataRepository));

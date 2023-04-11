@@ -16,7 +16,7 @@
     <module>model-provider</module>
     <module>recommendation-generator</module>
     <module>text-extraction</module>
-    <module>text-provider</module>
+    <module>text-preprocessing</module>
   </modules>
 
   <properties>

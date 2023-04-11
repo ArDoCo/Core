@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
@@ -32,7 +33,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
@@ -40,7 +40,13 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLRUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLModelFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLPreviousFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSentenceFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
 
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are

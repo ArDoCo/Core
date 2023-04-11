@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>text-provider</artifactId>
+      <artifactId>text-preprocessing</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

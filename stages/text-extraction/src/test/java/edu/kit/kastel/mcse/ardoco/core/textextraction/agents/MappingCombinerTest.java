@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrate
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.PhraseImpl;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.PhraseImpl;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.PhraseConcerningTextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 

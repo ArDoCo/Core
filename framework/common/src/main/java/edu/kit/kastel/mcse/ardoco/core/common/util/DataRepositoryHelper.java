@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.InputTextData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
@@ -42,6 +43,27 @@ public final class DataRepositoryHelper {
      */
     public static ProjectPipelineData getProjectPipelineData(DataRepository dataRepository) {
         return dataRepository.getData(ProjectPipelineData.ID, ProjectPipelineData.class).orElseThrow();
+    }
+
+    /**
+     * Returns the input text as String stored within the provided {@link DataRepository}.
+     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the data is not present.
+     *
+     * @param dataRepository the DataRepository to access
+     * @return the text
+     */
+    public static String getInputText(DataRepository dataRepository) {
+        return dataRepository.getData(InputTextData.ID, InputTextData.class).orElseThrow().getText();
+    }
+
+    /**
+     * Put the given input text into the given {@link DataRepository}. This will override existing data!
+     *
+     * @param dataRepository the dataRepository
+     * @param inputText      the input inputText
+     */
+    public static void putInputText(DataRepository dataRepository, String inputText) {
+        dataRepository.addData(InputTextData.ID, new InputTextData(inputText));
     }
 
     /**

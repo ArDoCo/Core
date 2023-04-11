@@ -2,31 +2,35 @@
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider;
+import edu.kit.kastel.mcse.ardoco.core.api.data.text.NlpInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.model.JavaJsonModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.ModelProvider;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.UMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.JavaJsonModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.UMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp.CoreNLPProvider;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 /**
@@ -48,7 +52,7 @@ public final class ArDoCo extends Pipeline {
     /**
      * Creates a new instance of ArDoCo. The provided name should be the project's name and will be used to identify spots within the text where the project is
      * mentioned.
-     * 
+     *
      * @param projectName the project's name
      */
     public ArDoCo(String projectName) {
@@ -57,6 +61,12 @@ public final class ArDoCo extends Pipeline {
         initDataRepository();
     }
 
+    /**
+     * Returns a new instance of this class based with the given project name
+     *
+     * @param projectName the project name
+     * @return a new instance of ArDoCo
+     */
     public static ArDoCo getInstance(String projectName) {
         return new ArDoCo(projectName);
     }
@@ -78,6 +88,7 @@ public final class ArDoCo extends Pipeline {
      * @param inputText              File of the input text.
      * @param inputArchitectureModel File of the input model (PCM or UML)
      * @param architectureModel      the architecture model to use
+     * @param additionalConfigs      the additional configs
      * @return the {@link ArDoCoResult} that contains the blackboard with all results (of all steps)
      */
     public static ArDoCoResult run(String name, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModel, File additionalConfigs) {
@@ -122,11 +133,26 @@ public final class ArDoCo extends Pipeline {
         return arDoCoResult;
     }
 
+    /**
+     * This method sets up the pipeline for ArDoCo.
+     *
+     * @param inputText              The input text file
+     * @param inputArchitectureModel the input architecture file
+     * @param architectureModelType  the type of the architecture (e.g., PCM, UML)
+     * @param inputCodeModel         the input code model file
+     * @param additionalConfigs      the additional configs
+     * @throws IOException When one of the input files cannot be accessed/loaded
+     */
     public void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCodeModel,
             Map<String, String> additionalConfigs) throws IOException {
         var dataRepository = this.getDataRepository();
+        var text = CommonUtilities.readInputText(inputText);
+        if (text.isBlank()) {
+            throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
+        }
+        DataRepositoryHelper.putInputText(dataRepository, text);
 
-        this.addPipelineStep(getTextProvider(inputText, additionalConfigs, this.getDataRepository()));
+        this.addPipelineStep(getTextPreprocessing(additionalConfigs, dataRepository));
         this.addPipelineStep(getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
         if (inputCodeModel != null) {
             this.addPipelineStep(getJavaModelProvider(inputCodeModel, dataRepository));
@@ -207,20 +233,20 @@ public final class ArDoCo extends Pipeline {
     }
 
     /**
-     * Creates a {@link ModelProvider} for Java.
-     * 
+     * Creates a {@link ModelProviderInformant} for Java.
+     *
      * @param inputCodeModel the path to the input Java Code Model
      * @param dataRepository the data repository
      * @return A ModelProvider for the Java Code Model
      * @throws IOException if the Code Model cannot be accessed
      */
-    public static ModelProvider getJavaModelProvider(File inputCodeModel, DataRepository dataRepository) throws IOException {
+    public static ModelProviderInformant getJavaModelProvider(File inputCodeModel, DataRepository dataRepository) throws IOException {
         ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
-        return new ModelProvider(dataRepository, javaModel);
+        return new ModelProviderInformant(dataRepository, javaModel);
     }
 
     /**
-     * Creates a {@link ModelProvider} for PCM.
+     * Creates a {@link ModelProviderInformant} for PCM.
      *
      * @param inputArchitectureModel the path to the input PCM
      * @param architectureModelType  the architecture model to use
@@ -228,27 +254,24 @@ public final class ArDoCo extends Pipeline {
      * @return A ModelProvider for the PCM
      * @throws IOException if the Code Model cannot be accessed
      */
-    public static ModelProvider getArchitectureModelProvider(File inputArchitectureModel, ArchitectureModelType architectureModelType,
+    public static ModelProviderAgent getArchitectureModelProvider(File inputArchitectureModel, ArchitectureModelType architectureModelType,
             DataRepository dataRepository) throws IOException {
         ModelConnector connector = switch (architectureModelType) {
         case PCM -> new PcmXMLModelConnector(inputArchitectureModel);
         case UML -> new UMLModelConnector(inputArchitectureModel);
         };
-        return new ModelProvider(dataRepository, connector);
+        return new ModelProviderAgent(dataRepository, List.of(connector));
     }
 
     /**
-     * Creates a {@link CoreNLPProvider} as {@link edu.kit.kastel.mcse.ardoco.core.api.data.text.TextProvider} and reads the provided text.
-     * 
-     * @param inputText         the text that should be read
+     * Creates a {@link CoreNLPProvider} as {@link NlpInformant} and reads the provided text.
+     *
      * @param additionalConfigs the additional configuration that should be applied
      * @param dataRepository    the data repository
      * @return a CoreNLPProvider with the provided text read in
-     * @throws FileNotFoundException if the text file cannot be found
      */
-    public static TextProvider getTextProvider(File inputText, Map<String, String> additionalConfigs, DataRepository dataRepository)
-            throws FileNotFoundException {
-        var textProvider = new CoreNLPProvider(dataRepository, new FileInputStream(inputText));
+    public static TextPreprocessingAgent getTextPreprocessing(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var textProvider = new TextPreprocessingAgent(dataRepository);
         textProvider.applyConfiguration(additionalConfigs);
         return textProvider;
     }

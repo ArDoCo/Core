@@ -1,17 +1,25 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
@@ -26,6 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  *
  */
 public final class CommonUtilities {
+    private static final Logger logger = LoggerFactory.getLogger(CommonUtilities.class);
 
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -366,5 +375,22 @@ public final class CommonUtilities {
 
     public static String getCurrentTimeAsString() {
         return DATE_FORMATTER.format(LocalDateTime.now(ZoneId.systemDefault()));
+    }
+
+    public static String readInputText(InputStream text) {
+        var scanner = new Scanner(text, StandardCharsets.UTF_8);
+        scanner.useDelimiter("\\A");
+        String inputText = scanner.next();
+        scanner.close();
+        return inputText;
+    }
+
+    public static String readInputText(File textFile) {
+        try {
+            return readInputText(new FileInputStream(textFile));
+        } catch (FileNotFoundException e) {
+            logger.error(e.getMessage(), e.getCause());
+            return "";
+        }
     }
 }

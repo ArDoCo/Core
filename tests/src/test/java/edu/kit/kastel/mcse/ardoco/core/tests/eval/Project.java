@@ -14,8 +14,8 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 

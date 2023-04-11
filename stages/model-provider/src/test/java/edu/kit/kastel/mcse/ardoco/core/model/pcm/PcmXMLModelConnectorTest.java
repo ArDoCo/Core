@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
 
 class PcmXMLModelConnectorTest {
     private static final Logger logger = LoggerFactory.getLogger(PcmXMLModelConnectorTest.class);
