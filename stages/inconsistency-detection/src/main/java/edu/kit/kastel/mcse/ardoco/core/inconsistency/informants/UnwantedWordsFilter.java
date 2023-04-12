@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
-// TODO this is a prototype. It should be improved, e.g, using following ideas:
+// This is only a prototype. It should be improved, e.g, using following ideas:
 // - use ComputerScienceWords
 // - improve handling: instead of filtering them completely, reduce probability? Idea: we don't want to remove super high probability RIs
 // - maybe consider phrases

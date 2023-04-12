@@ -61,7 +61,7 @@ public class WordSimUtils {
         Objects.requireNonNull(ctx);
         Objects.requireNonNull(strategy);
 
-        // TODO currently, we need the split test as it improves results by a lot. In future, we should try to avoid its requirement
+        // Currently, we need the split test as it improves results by a lot. In the future, we should try to avoid its requirement
         if (!splitLengthTest(ctx)) {
             return false;
         }

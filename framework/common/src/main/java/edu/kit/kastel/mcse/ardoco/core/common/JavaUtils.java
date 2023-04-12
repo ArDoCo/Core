@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 public final class JavaUtils {
 
     private JavaUtils() {
@@ -29,4 +33,19 @@ public final class JavaUtils {
         return result;
     }
 
+    public static int similarEntriesOfList(ImmutableList<String> list1, ImmutableList<String> list2) {
+        MutableList<String> removed = Lists.mutable.empty();
+
+        for (var element : list1) {
+            if (list2.contains(element)) {
+                removed.add(element);
+            } else {
+                if (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
+                    removed.add(element);
+                }
+            }
+        }
+
+        return removed.size();
+    }
 }

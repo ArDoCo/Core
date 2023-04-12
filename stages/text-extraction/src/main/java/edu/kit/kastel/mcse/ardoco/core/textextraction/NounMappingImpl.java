@@ -3,7 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -42,8 +45,16 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     private final Set<NounMappingChangeListener> changeListeners;
 
     /**
+     * Constructor
      *
+     * @param earliestCreationTime the earliest creation time
+     * @param words                the words
+     * @param distribution         the distribution map (kind to confidence)
+     * @param referenceWords       the reference words
+     * @param surfaceForms         the surface forms
+     * @param reference            the String reference
      */
+
     public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         this.earliestCreationTime = earliestCreationTime;
@@ -59,19 +70,6 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     /**
      * Instantiates a new noun mapping.
      */
-    private NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, Map<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms) {
-
-        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.ofMap(distribution), referenceWords, surfaceForms, calculateReference(
-                referenceWords));
-
-        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
-        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-    }
-
-    /**
-     * Instantiates a new noun mapping.
-     */
     public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
         this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords));
@@ -80,17 +78,6 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
         this.addKindWithProbability(kind, claimant, probability);
-    }
-
-    public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
-            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
-        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, reference);
-
-        Objects.requireNonNull(claimant);
-        this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
-        this.distribution.putIfAbsent(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-        this.addKindWithProbability(kind, claimant, probability);
-
     }
 
     @Override

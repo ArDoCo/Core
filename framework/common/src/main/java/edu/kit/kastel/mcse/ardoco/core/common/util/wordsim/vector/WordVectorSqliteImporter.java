@@ -139,37 +139,31 @@ public class WordVectorSqliteImporter {
                 var line = bufferedReader.readLine();
                 linesRead++;
 
-                if (linesRead < startLine) {
-                    continue;
-                }
+                if (linesRead >= startLine) {
+                    var parts = line.split(" ", -1);
+                    if (parts.length - 1 != this.dimension) {
+                        throw new IllegalStateException("importer has read line with invalid vector dimension: \"" + line + "\"");
+                    }
 
-                var parts = line.split(" ", -1);
-                if (parts.length - 1 != this.dimension) {
-                    throw new IllegalStateException("importer has read line with invalid vector dimension: \"" + line + "\"");
-                }
+                    // Process the word
+                    String word = parts[0];
+                    // Filter out weird words from dataset
+                    if (word.length() > this.maxWordLength || !filterWord(word)) {
+                        skippedWords.add(word);
+                        continue;
+                    }
+                    word = processWord(word);
 
-                // Process the word
-                String word = parts[0];
-                // Filter out weird words from dataset
-                if (word.length() > this.maxWordLength) {
-                    skippedWords.add(word);
-                    continue;
-                }
-                if (!filterWord(word)) {
-                    skippedWords.add(word);
-                    continue;
-                }
-                word = processWord(word);
+                    // Process the vector
+                    buffer.clear();
+                    for (int i = 0; i < parts.length - 1; i++) {
+                        float value = Float.parseFloat(parts[i + 1]);
+                        buffer.putFloat(value);
+                    }
 
-                // Process the vector
-                buffer.clear();
-                for (int i = 0; i < parts.length - 1; i++) {
-                    float value = Float.parseFloat(parts[i + 1]);
-                    buffer.putFloat(value);
+                    insertIntoDatabase(statement, buffer, word);
+                    inserted++;
                 }
-
-                insertIntoDatabase(statement, buffer, word);
-                inserted++;
             }
         }
 
@@ -214,7 +208,7 @@ public class WordVectorSqliteImporter {
     /**
      * This method is called for each word that is read from the vector file. It allows filtering which words are
      * inserted into database and which words are skipped.
-     * 
+     *
      * @param word the word
      * @return returns {@code true} if the should should be inserted into the database, {@code false} if not.
      */

@@ -41,53 +41,64 @@ public class MappingCombinerInformant extends Informant {
         for (PhraseMapping phraseMapping : phraseMappings) {
             ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState, phraseMapping,
                     p, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
-            ImmutableList<NounMapping> nounMappingsOfPhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping);
+            processPhraseMappingForSimilarPhraseMappings(textState, similarPhraseMappings, phraseMapping);
+        }
 
-            for (PhraseMapping similarPhraseMapping : similarPhraseMappings) {
+    }
 
-                ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping = textState.getNounMappingsByPhraseMapping(similarPhraseMapping);
+    private void processPhraseMappingForSimilarPhraseMappings(TextState textState, ImmutableList<PhraseMapping> similarPhraseMappings,
+            PhraseMapping phraseMapping) {
+        ImmutableList<NounMapping> nounMappingsOfPhraseMapping = textState.getNounMappingsByPhraseMapping(phraseMapping);
 
-                if (similarPhraseMapping.getPhrases().collect(Phrase::getText).equals(phraseMapping.getPhrases().collect(Phrase::getText))) {
-                    for (NounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
-                        for (NounMapping nounMapping : textState.getNounMappingsByPhraseMapping(phraseMapping)) {
-                            if (nounMapping == nounMappingOfSimilarPhraseMapping || !textState.getNounMappings()
-                                    .contains(nounMappingOfSimilarPhraseMapping) || !textState.getNounMappings().contains(nounMapping)) {
-                                continue;
-                            }
-                            if (SimilarityUtils.areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
-                                textState.mergeNounMappings(nounMapping, nounMappingOfSimilarPhraseMapping, this);
-                            }
-                        }
-                    }
-                    continue;
-                }
+        for (PhraseMapping similarPhraseMapping : similarPhraseMappings) {
 
-                if (nounMappingsOfPhraseMapping.size() != nounMappingsOfSimilarPhraseMapping.size()) {
-                    continue;
-                }
+            ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping = textState.getNounMappingsByPhraseMapping(similarPhraseMapping);
 
-                MutableList<Pair<NounMapping, NounMapping>> similarNounMappings = Lists.mutable.empty();
+            if (similarPhraseMapping.getPhrases().collect(Phrase::getText).equals(phraseMapping.getPhrases().collect(Phrase::getText))) {
+                processSimilarPhraseMappingWhenEqualPhraseText(textState, phraseMapping, nounMappingsOfSimilarPhraseMapping);
+                continue;
+            }
 
-                for (NounMapping nounMapping : nounMappingsOfPhraseMapping) {
-                    NounMapping similarNounMapping = getMostSimilarNounMappingOverThreshold(nounMapping, nounMappingsOfSimilarPhraseMapping);
-                    if (similarNounMapping != null) {
-                        similarNounMappings.add(new Pair<>(nounMapping, similarNounMapping));
-                    }
-                }
+            if (nounMappingsOfPhraseMapping.size() == nounMappingsOfSimilarPhraseMapping.size()) {
+                processSimilarPhraseMappingWhenEquallySized(textState, similarPhraseMappings, phraseMapping, nounMappingsOfPhraseMapping, similarPhraseMapping,
+                        nounMappingsOfSimilarPhraseMapping);
+            }
+        }
+    }
 
-                if (similarNounMappings.size() != nounMappingsOfPhraseMapping.size()) {
-                    continue;
-                }
+    private void processSimilarPhraseMappingWhenEquallySized(TextState textState, ImmutableList<PhraseMapping> similarPhraseMappings,
+            PhraseMapping phraseMapping, ImmutableList<NounMapping> nounMappingsOfPhraseMapping, PhraseMapping similarPhraseMapping,
+            ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping) {
+        MutableList<Pair<NounMapping, NounMapping>> similarNounMappings = Lists.mutable.empty();
 
-                if (similarPhraseMappings.size() != similarNounMappings.collect(Pair::second).distinct().size() * 2) {
-                    continue;
-                }
-
-                textState.mergePhraseMappingsAndNounMappings(phraseMapping, similarPhraseMapping, similarNounMappings, this);
-
+        for (NounMapping nounMapping : nounMappingsOfPhraseMapping) {
+            NounMapping similarNounMapping = getMostSimilarNounMappingOverThreshold(nounMapping, nounMappingsOfSimilarPhraseMapping);
+            if (similarNounMapping != null) {
+                similarNounMappings.add(new Pair<>(nounMapping, similarNounMapping));
             }
         }
 
+        if (!((similarNounMappings.size() != nounMappingsOfPhraseMapping.size()) || (similarPhraseMappings.size() != similarNounMappings.collect(Pair::second)
+                .distinct()
+                .size() * 2))) {
+            textState.mergePhraseMappingsAndNounMappings(phraseMapping, similarPhraseMapping, similarNounMappings, this);
+        }
+    }
+
+    private void processSimilarPhraseMappingWhenEqualPhraseText(TextState textState, PhraseMapping phraseMapping,
+            ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping) {
+        for (NounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
+            for (NounMapping nounMapping : textState.getNounMappingsByPhraseMapping(phraseMapping)) {
+                if (nounMapping == nounMappingOfSimilarPhraseMapping || !textState.getNounMappings().contains(nounMappingOfSimilarPhraseMapping) || !textState
+                        .getNounMappings()
+                        .contains(nounMapping)) {
+                    continue;
+                }
+                if (SimilarityUtils.areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
+                    textState.mergeNounMappings(nounMapping, nounMappingOfSimilarPhraseMapping, this);
+                }
+            }
+        }
     }
 
     private NounMapping getMostSimilarNounMappingOverThreshold(NounMapping nounMapping, ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping) {

@@ -1,7 +1,11 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Objects;
+import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
@@ -46,8 +50,6 @@ public final class PhraseMappingImpl implements PhraseMapping {
 
     @Override
     public void removePhrase(Phrase phrase) {
-        // TODO @Phi: That's not done by remove. Remove deletes exactly one .. pls check comment below.
-        // select all noun mappings that contain the phrase
         phrases.remove(phrase);
         assert !phrases.isEmpty(); // PhraseMappings cannot be empty!
     }
@@ -71,7 +73,6 @@ public final class PhraseMappingImpl implements PhraseMapping {
         MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
         var grouped = words.groupBy(Word::getText).toMap();
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
-        // TODO: Think about norm
 
         return phraseVector.toImmutable();
     }

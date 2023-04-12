@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
+
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -22,6 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -31,9 +35,10 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * The Class TextState defines the basic implementation of a {@link TextState}.
- *
  */
 public class TextStateImpl extends AbstractState implements TextState {
+
+    private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
 
     private static final Comparator<ElementWrapper<NounMapping>> ORDER_NOUNMAPPING = (n1, n2) -> {
         if (n1.equals(n2))
@@ -53,7 +58,7 @@ public class TextStateImpl extends AbstractState implements TextState {
      *
      * @see #getMappingsThatCouldBeOfKind(Word, MappingKind)
      */
-    private static final double MAPPINGKIND_MAX_DIFF = 0.1;
+    private static final double MAPPING_KIND_MAX_DIFF = 0.1;
     private MutableList<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
     private final transient TextStateStrategy strategy;
@@ -84,7 +89,12 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms, String reference) {
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words, kind, claimant, probability, referenceWords, surfaceForms, reference);
+        MutableMap<MappingKind, Confidence> distribution = Maps.mutable.empty();
+        distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
+        distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
+        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
+                reference);
+        nounMapping.addKindWithProbability(kind, claimant, probability);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
@@ -135,7 +145,6 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsByPhraseMapping(PhraseMapping phraseMapping) {
-        // TODO Check whether equals for sets is good here
         return getNounMappings().select(nm -> phraseMapping.getPhrases().toImmutableSet().equals(nm.getPhrases()));
     }
 
@@ -194,7 +203,7 @@ public class TextStateImpl extends AbstractState implements TextState {
                 continue;
             }
 
-            boolean similar = probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPINGKIND_MAX_DIFF));
+            boolean similar = probabilities.allSatisfy(p1 -> probabilities.allSatisfy(p2 -> Math.abs(p1 - p2) < MAPPING_KIND_MAX_DIFF));
             if (similar) {
                 result.add(mapping);
             }

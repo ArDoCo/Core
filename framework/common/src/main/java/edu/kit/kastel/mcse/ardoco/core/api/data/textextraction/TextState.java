@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Interface ITextState.
  */
-// TODO @Phi: Add docs for the new methods
 public interface TextState extends IConfigurable, PipelineStepData {
     String ID = "TextState";
 

@@ -83,7 +83,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
             mergedSurfaceForms.add(surface);
         }
 
-        // TODO: Overwork similarity metrics & references
+        // Maybe rework similarity metrics & references in the future
         ImmutableList<Word> mergedReferenceWords = referenceWords;
 
         if (mergedReferenceWords == null) {

@@ -11,7 +11,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-// TODO Document code
+/**
+ * The Interface for strategies for the text state.
+ */
 public interface TextStateStrategy {
 
     NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms);

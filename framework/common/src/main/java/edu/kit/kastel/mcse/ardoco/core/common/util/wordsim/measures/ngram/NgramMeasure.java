@@ -87,44 +87,46 @@ public class NgramMeasure implements WordSimMeasure {
     public double calculateDistance(String x, String y) {
         Objects.requireNonNull(x);
         Objects.requireNonNull(y);
+        StringBuilder xBuilder = new StringBuilder(x);
+        StringBuilder yBuilder = new StringBuilder(y);
 
-        if (x.isEmpty() || y.isEmpty()) {
-            return Math.max(x.length(), y.length());
+        if (xBuilder.isEmpty() || yBuilder.isEmpty()) {
+            return Math.max(xBuilder.length(), yBuilder.length());
         }
 
-        int k = x.length();
-        int l = y.length();
-        double[][] D = new double[k + 1][l + 1];
+        int k = xBuilder.length();
+        int l = yBuilder.length();
+        double[][] d = new double[k + 1][l + 1];
 
         for (int u = 1; u <= n - 1; u++) {
             if (variant == Variant.LUCENE) {
-                x = LUCENE_PREFIX_CHARACTER + x;
-                y = LUCENE_PREFIX_CHARACTER + y;
+                xBuilder = new StringBuilder().append(LUCENE_PREFIX_CHARACTER).append(xBuilder);
+                yBuilder = new StringBuilder().append(LUCENE_PREFIX_CHARACTER).append(yBuilder);
             } else if (variant == Variant.POSITIONAL) {
-                x = x.charAt(0) + x;
-                y = y.charAt(0) + y;
+                xBuilder = new StringBuilder().append(xBuilder.charAt(0)).append(xBuilder);
+                yBuilder = new StringBuilder().append(yBuilder.charAt(0)).append(yBuilder);
             } else {
                 throw new UnsupportedOperationException("unknown variant: " + variant);
             }
         }
 
         for (int i = 0; i <= k; i++) {
-            D[i][0] = i;
+            d[i][0] = i;
         }
 
         for (int j = 1; j <= l; j++) {
-            D[0][j] = j;
+            d[0][j] = j;
         }
 
         for (int i = 1; i <= k; i++) {
             for (int j = 1; j <= l; j++) {
-                double dN = dN(n, i - 1, j - 1, x, y);
+                double dN = dN(n, i - 1, j - 1, xBuilder.toString(), yBuilder.toString());
 
-                D[i][j] = min(D[i - 1][j] + 1.0, D[i][j - 1] + 1.0, D[i - 1][j - 1] + dN);
+                d[i][j] = min(d[i - 1][j] + 1.0, d[i][j - 1] + 1.0, d[i - 1][j - 1] + dN);
             }
         }
 
-        return D[k][l];
+        return d[k][l];
     }
 
     private double dN(int n, int i, int j, String x, String y) {

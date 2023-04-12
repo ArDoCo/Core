@@ -64,7 +64,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
 
         MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
-        //TODO: This makes only sense under specific conditions, since it is sequentially dependent. It should be fixed in future versions, so that the method is 
+        //This makes only sense under specific conditions, since it is sequentially dependent. It might be fixed in future versions
 
         var existingNounMappingDistribution = firstNounMapping.getDistribution().toMap();
         var disposableNounMappingDistribution = secondNounMapping.getDistribution().toMap();
