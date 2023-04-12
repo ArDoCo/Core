@@ -1,0 +1,16 @@
+name: Maven Dependency Updates
+
+on:
+  schedule:
+    - cron: "55 11 * * 2"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  update:
+    uses: ardoco/actions/.github/workflows/maven-update.yml@main
+    with:
+      with-submodules: true
+    secrets:
+      PAT: ${{ secrets.SDQ_TOKEN }}
