@@ -26,7 +26,6 @@
       <modules>
         <module>common</module>
         <module>models</module>
-        <module>docker</module>
       </modules>
     </profile>
     <profile>
@@ -37,9 +36,6 @@
       <modules>
         <module>common</module>
         <module>models</module>
-        <module>java-model-extractor</module>
-        <!-- Disabled docker module as we currently have no real dependency on it and this would need the user to have docker running when compiling -->
-        <!-- <module>docker</module> -->
       </modules>
     </profile>
   </profiles>

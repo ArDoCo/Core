@@ -22,20 +22,9 @@
       <artifactId>common</artifactId>
       <scope>compile</scope>
     </dependency>
-    <!-- <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>docker</artifactId>
-      <scope>compile</scope>
-    </dependency> -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>models</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>java-model-extractor</artifactId>
-      <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
 

@@ -148,11 +148,6 @@
         <artifactId>models</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>io.github.ardoco.core</groupId>
-        <artifactId>docker</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <!-- Other Dependencies -->
       <dependency>
