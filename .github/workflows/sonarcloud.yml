@@ -13,7 +13,7 @@ on:
 jobs:
   sonarcloud:
     if: ${{ github.actor != 'dependabot[bot]' }} 
-    uses: informalin/actions/.github/workflows/sonarcloud.yml@main
+    uses: ardoco/actions/.github/workflows/sonarcloud.yml@main
     with:
       with-submodules: true
     secrets:
