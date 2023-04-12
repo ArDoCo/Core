@@ -49,9 +49,6 @@
       <timezone>GMT+1</timezone>
     </developer>
   </developers>
-  <modules>
-    <module>report</module>
-  </modules>
 
   <scm>
     <connection>scm:git:git://github.com/ArDoCo/Core.git</connection>
