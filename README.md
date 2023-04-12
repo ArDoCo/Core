@@ -37,3 +37,31 @@ enum: ["JJ", "JJR", "JJS", "RB", "RBR", "RBS", "WRB", "CC", "IN", "CD", "DT", "W
 ```json
 enum: ["APPOS", "NSUBJ", "POSS", "OBJ", "IOBJ", "NMOD", "NSUBJPASS", "POBJ", "AGENT", "NUM", "PREDET", "RCMOD", "CSUBJ", "CCOMP", "XCOMP", "OBL", "VOCATIVE", "EXPL", "DISLOCATED", "ADVCL", "ADVMOD", "DISCOURSE", "AUXILIARY", "COP", "MARK", "ACL", "AMOD", "DET", "CLF", "CASE", "CONJ", "CC", "FIXED", "FLAT", "COMPOUND", "LIST", "PARATAXIS", "ORPHAN", "GOES_WITH", "REPARANDUM", "PUNCT", "CSUBJ_PASS", "ACL_RELCL", "COMPOUND_PRT", "NMOD_POSS", "REF", "NSUBJ_XSUBJ", "NSUBJ_PASS_XSUBJ", "NSUBJ_RELSUBJ", "NSUBJ_PASS_RELSUBJ", "OBJ_RELOBJ"]
 ```
+
+## Maven
+
+```xml
+<dependencies>
+	<dependency>
+		<groupId>io.github.ardoco</groupId>
+		<artifactId>text-provider-json</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+</dependencies>
+```
+
+For snapshot releases, make sure to add the following repository
+```xml
+<repositories>
+	<repository>
+		<releases>
+			<enabled>false</enabled>
+		</releases>
+		<snapshots>
+			<enabled>true</enabled>
+		</snapshots>
+		<id>mavenSnapshot</id>
+		<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+	</repository>
+</repositories>
+```
