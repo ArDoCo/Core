@@ -6,7 +6,7 @@ on:
 
 jobs:
   update:
-    uses: informalin/actions/.github/workflows/maven-release.yml@main
+    uses: ardoco/actions/.github/workflows/maven-release.yml@main
     with:
       with-submodules: true
     secrets:

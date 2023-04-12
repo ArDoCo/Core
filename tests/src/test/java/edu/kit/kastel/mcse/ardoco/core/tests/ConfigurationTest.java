@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
-import edu.kit.kastel.informalin.data.DataRepository;
-import edu.kit.kastel.informalin.framework.configuration.AbstractConfigurable;
-import edu.kit.kastel.informalin.framework.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
  * This test class deals with the configurations.
@@ -199,6 +199,25 @@ class ConfigurationTest {
                     .get();
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(new Object[] { null });
+        }
+        if (constructors.stream()
+                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)) {
+            var constructor = constructors.stream()
+                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)
+                    .findFirst()
+                    .get();
+            constructor.setAccessible(true);
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null, null });
+        }
+
+        if (constructors.stream()
+                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)) {
+            var constructor = constructors.stream()
+                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)
+                    .findFirst()
+                    .get();
+            constructor.setAccessible(true);
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null, List.of() });
         }
 
         Assertions.fail("No suitable constructor has been found for " + clazz);
