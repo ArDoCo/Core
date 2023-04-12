@@ -14,7 +14,7 @@ on:
 
 jobs:
   verify:
-    uses: informalin/actions/.github/workflows/maven.yml@main
+    uses: ardoco/actions/.github/workflows/maven.yml@main
     with:
       deploy: false
       with-submodules: true
