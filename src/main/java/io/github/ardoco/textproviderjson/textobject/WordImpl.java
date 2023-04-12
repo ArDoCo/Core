@@ -123,7 +123,7 @@ public class WordImpl implements Word {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || !(o instanceof WordImpl))
             return false;
         WordImpl word = (WordImpl) o;
         return indexInText == word.indexInText && sentenceNo == word.sentenceNo && Objects.equals(preWord, word.preWord) && Objects.equals(nextWord,

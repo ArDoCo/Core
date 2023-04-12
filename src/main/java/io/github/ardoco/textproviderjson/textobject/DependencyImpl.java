@@ -27,7 +27,7 @@ public class DependencyImpl {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || !(o instanceof DependencyImpl))
             return false;
         DependencyImpl that = (DependencyImpl) o;
         return wordId == that.wordId && dependencyType == that.dependencyType;

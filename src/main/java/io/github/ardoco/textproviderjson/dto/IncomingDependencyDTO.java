@@ -35,7 +35,7 @@ public class IncomingDependencyDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || !(o instanceof IncomingDependencyDTO))
             return false;
         IncomingDependencyDTO that = (IncomingDependencyDTO) o;
         return sourceWordId == that.sourceWordId && dependencyType == that.dependencyType;
