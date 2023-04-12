@@ -7,12 +7,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.collections.api.list.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
 import io.github.ardoco.textproviderjson.dto.*;
 import io.github.ardoco.textproviderjson.textobject.DependencyImpl;
 
 public class ObjectToDtoConverter {
+
+    private static Logger logger = LoggerFactory.getLogger(ObjectToDtoConverter.class);
 
     private static final String TREE_ROOT = "ROOT";
     private static final String TREE_SEPARATOR = " ";
@@ -59,6 +63,7 @@ public class ObjectToDtoConverter {
         try {
             wordDTO.setPosTag(PosTag.forValue(word.getPosTag().toString()));
         } catch (IOException e) {
+            logger.warn("IOException when converting to WordDto.", e);
             return null;
         }
         wordDTO.setSentenceNo(word.getSentenceNo());
@@ -66,9 +71,9 @@ public class ObjectToDtoConverter {
         List<DependencyImpl> outDep = new ArrayList<>();
         for (DependencyTag depType : DependencyTag.values()) {
             ImmutableList<Word> inDepWords = word.getIncomingDependencyWordsWithType(depType);
-            inDep.addAll(inDepWords.stream().map(x -> new DependencyImpl(depType, x.getPosition())).toList());
+            inDep.addAll(inDepWords.stream().map(currentWord -> new DependencyImpl(depType, currentWord.getPosition())).toList());
             ImmutableList<Word> outDepWords = word.getOutgoingDependencyWordsWithType(depType);
-            outDep.addAll(outDepWords.stream().map(x -> new DependencyImpl(depType, x.getPosition())).toList());
+            outDep.addAll(outDepWords.stream().map(currentWord -> new DependencyImpl(depType, currentWord.getPosition())).toList());
         }
         List<IncomingDependencyDTO> inDepDTO = generateDepInDTOs(inDep);
         List<OutgoingDependencyDTO> outDepDTO = generateDepOutDTOs(outDep);
@@ -92,7 +97,7 @@ public class ObjectToDtoConverter {
         constituencyTree.append(phrase.getPhraseType().toString());
         List<Phrase> subphrases = new ArrayList<>(phrase.getSubPhrases().castToList());
         List<Word> words = new ArrayList<>(phrase.getContainedWords().castToList());
-        // since we don't know the order of words and subphrases we have to reconstruct the order by comparing the word index
+        // since we don't know the order of words and subphrases, we have to reconstruct the order by comparing the word index
         while (!subphrases.isEmpty() || !words.isEmpty()) {
             if (subphrases.isEmpty()) {
                 // word next

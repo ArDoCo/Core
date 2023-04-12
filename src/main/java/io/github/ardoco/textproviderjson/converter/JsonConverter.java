@@ -57,10 +57,10 @@ public final class JsonConverter {
     }
 
     /**
-     * converts the text DTO into json string
+     * converts the text DTO into json string. Returns null if the JSON could not be validated.
      * 
      * @param obj the text DTO
-     * @return the json string
+     * @return the JSON string or null
      */
     public static String toJsonString(TextDTO obj) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

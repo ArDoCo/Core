@@ -35,7 +35,7 @@ public class OutgoingDependencyDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || !(o instanceof OutgoingDependencyDTO))
+        if (!(o instanceof OutgoingDependencyDTO))
             return false;
         OutgoingDependencyDTO that = (OutgoingDependencyDTO) o;
         return targetWordId == that.targetWordId && Objects.equals(dependencyType, that.dependencyType);

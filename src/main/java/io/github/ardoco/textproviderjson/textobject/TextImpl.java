@@ -17,11 +17,8 @@ public class TextImpl implements Text {
     private ImmutableList<Word> words;
 
     public TextImpl() {
-
-    }
-
-    public TextImpl(ImmutableList<Sentence> sentences) {
-        this.sentences = sentences;
+        sentences = Lists.immutable.empty();
+        words = Lists.immutable.empty();
     }
 
     public void setSentences(ImmutableList<Sentence> sentences) {
@@ -62,9 +59,8 @@ public class TextImpl implements Text {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (!(o instanceof TextImpl text))
             return false;
-        TextImpl text = (TextImpl) o;
         return Objects.equals(sentences, text.sentences) && Objects.equals(words, text.words);
     }
 

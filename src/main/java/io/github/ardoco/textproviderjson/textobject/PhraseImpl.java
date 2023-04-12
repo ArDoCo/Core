@@ -119,9 +119,8 @@ public class PhraseImpl implements Phrase {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || !(o instanceof PhraseImpl))
+        if (!(o instanceof PhraseImpl phrase))
             return false;
-        PhraseImpl phrase = (PhraseImpl) o;
         return Objects.equals(words, phrase.words) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(subPhrases, phrase.subPhrases);
     }
 

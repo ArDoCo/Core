@@ -53,9 +53,8 @@ public class SentenceImpl implements Sentence {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || !(o instanceof SentenceImpl))
+        if (!(o instanceof SentenceImpl sentence))
             return false;
-        SentenceImpl sentence = (SentenceImpl) o;
         return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases, sentence.phrases) && Objects
                 .equals(text, sentence.text);
     }

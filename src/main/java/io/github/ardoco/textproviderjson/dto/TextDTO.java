@@ -29,7 +29,7 @@ public class TextDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || !(o instanceof TextDTO))
+        if (!(o instanceof TextDTO))
             return false;
         TextDTO textDTO = (TextDTO) o;
         return Objects.equals(sentences, textDTO.sentences);
