@@ -111,7 +111,7 @@ public class WordDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || !(o instanceof WordDTO))
+        if (!(o instanceof WordDTO))
             return false;
         WordDTO word = (WordDTO) o;
         return id == word.id && sentenceNo == word.sentenceNo && Objects.equals(incomingDependencies, word.incomingDependencies) && Objects.equals(lemma,

@@ -36,12 +36,11 @@ public class DtoToObjectConverter {
 
     private ImmutableList<Sentence> generateSentences(TextDTO textDTO, Text parentText) {
         List<SentenceDTO> sentenceDTOs = textDTO.getSentences();
-        List<Sentence> sentences = sentenceDTOs.stream().map(x -> convertToSentence(x, parentText)).toList();
-        return Lists.immutable.ofAll(sentences);
+        return Lists.immutable.fromStream(sentenceDTOs.stream().map(sentenceDto -> convertToSentence(sentenceDto, parentText)));
     }
 
     private Sentence convertToSentence(SentenceDTO sentenceDTO, Text parentText) {
-        List<Word> words = sentenceDTO.getWords().stream().map(x -> convertToWord(x, parentText)).toList();
+        List<Word> words = sentenceDTO.getWords().stream().map(wordDto -> convertToWord(wordDto, parentText)).toList();
         String constituencyTree = sentenceDTO.getConstituencyTree();
         SentenceImpl sentence = new SentenceImpl((int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
         Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
@@ -51,7 +50,8 @@ public class DtoToObjectConverter {
 
     public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence) {
         // cut of root
-        String treeWithoutRoot = constituencyTree.substring(2 + CONSTITUENCY_TREE_ROOT.length(), constituencyTree.length() - 1);
+        int lengthOfBracketAndSpace = 2;
+        String treeWithoutRoot = constituencyTree.substring(lengthOfBracketAndSpace + CONSTITUENCY_TREE_ROOT.length(), constituencyTree.length() - 1);
         return findSubphrases(treeWithoutRoot, wordsOfSentence);
     }
 
@@ -100,7 +100,7 @@ public class DtoToObjectConverter {
     }
 
     private boolean isWord(String tree) {
-        return tree.chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count() == 1;
+        return tree.chars().filter(character -> character == CONSTITUENCY_TREE_OPEN_BRACKET).count() == 1;
     }
 
     private Word convertToWord(WordDTO wordDTO, Text parent) {
