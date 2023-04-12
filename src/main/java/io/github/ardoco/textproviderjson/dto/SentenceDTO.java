@@ -71,7 +71,7 @@ public class SentenceDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || !(o instanceof SentenceDTO))
             return false;
         SentenceDTO sentence = (SentenceDTO) o;
         return sentenceNo == sentence.sentenceNo && Objects.equals(constituencyTree, sentence.constituencyTree) && Objects.equals(text,
