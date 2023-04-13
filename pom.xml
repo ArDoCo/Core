@@ -8,12 +8,13 @@
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
-    or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
-    or a relation. To do so, we first create trace links and then make use of them and other information to identify
-    inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
-    Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
-    This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research Labs
-    (46.23.01).</description>
+        or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
+        or a relation. To do so, we first create trace links and then make use of them and other information to identify
+        inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
+        Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
+        This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF)
+        and by KASTEL Security Research Labs
+        (46.23.01).</description>
   <licenses>
     <license>
       <name>MIT License</name>
@@ -89,7 +90,7 @@
     <sonar.organization>ardoco</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir},
-      ${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
     <stanford.corenlp.version>4.5.3</stanford.corenlp.version>
@@ -563,6 +564,31 @@
         <module>tests</module>
         <module>report</module>
       </modules>
+    </profile>
+    <profile>
+      <!-- Linking Sketches and Software Architecture (LiSSA) -->
+      <id>lissa</id>
+      <activation>
+        <property>
+          <name>lissa</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>framework</module>
+        <module>stages</module>
+      </modules>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.github.gantsign.maven</groupId>
+              <artifactId>ktlint-maven-plugin</artifactId>
+              <version>1.16.0</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 </project>

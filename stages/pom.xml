@@ -10,16 +10,46 @@
   <groupId>io.github.ardoco.core</groupId>
   <artifactId>stages</artifactId>
   <packaging>pom</packaging>
-  <modules>
-    <module>connection-generator</module>
-    <module>inconsistency-detection</module>
-    <module>model-provider</module>
-    <module>recommendation-generator</module>
-    <module>text-extraction</module>
-    <module>text-preprocessing</module>
-  </modules>
 
   <properties>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>module-defaults</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>connection-generator</module>
+        <module>inconsistency-detection</module>
+        <module>model-provider</module>
+        <module>recommendation-generator</module>
+        <module>text-extraction</module>
+        <module>text-preprocessing</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>deployment</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>connection-generator</module>
+        <module>inconsistency-detection</module>
+        <module>model-provider</module>
+        <module>recommendation-generator</module>
+        <module>text-extraction</module>
+        <module>text-preprocessing</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>lissa</id>
+      <modules>
+        <module>diagram-recognition</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>
