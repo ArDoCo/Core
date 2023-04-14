@@ -1,65 +1,37 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.execution;
+package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
-public class ConfigurationHelper {
-    private static final Logger logger = LoggerFactory.getLogger(ConfigurationHelper.class);
+/**
+ * This test class deals with the configurations.
+ *
+ * @see AbstractConfigurable
+ */
+@SuppressWarnings({ "java:S106", "java:S3011" })
+public abstract class ConfigurationTestBase {
 
-    private ConfigurationHelper() throws IllegalAccessException {
-        throw new IllegalAccessException();
-    }
+    protected abstract void assertFalse(boolean result, String message);
+
+    protected abstract void fail(String message);
 
     /**
-     * Loads the file that contains additional configurations and returns the Map that consists of the configuration options.
+     * This test verifies that all configurable values are able to be configured. It also prints all configurable values
+     * as they should be contained in a configuration file.
      *
-     * @param additionalConfigsFile the file containing the additional configurations
-     * @return a Map with the additional configurations
+     * @throws Exception if anything goes wrong
      */
-    public static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
-        Map<String, String> additionalConfigs = new HashMap<>();
-        if (additionalConfigsFile != null && (!additionalConfigsFile.exists() || !additionalConfigsFile.isFile())) {
-            throw new IllegalArgumentException("File " + additionalConfigsFile + " is not a valid configuration file!");
-        }
-        if (additionalConfigsFile != null) {
-            try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8)) {
-                while (scanner.hasNextLine()) {
-                    var line = scanner.nextLine();
-                    if (line == null || line.isBlank()) {
-                        continue;
-                    }
-                    var values = line.split(AbstractConfigurable.KEY_VALUE_CONNECTOR, 2);
-                    if (values.length != 2) {
-                        logger.error(
-                                "Found config line \"{}\". Layout has to be: 'KEY" + AbstractConfigurable.KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName" + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "AttributeName" + AbstractConfigurable.KEY_VALUE_CONNECTOR + "42",
-                                line);
-                    } else {
-                        additionalConfigs.put(values[0], values[1]);
-                    }
-                }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return additionalConfigs;
-    }
-
-    public static Map<String, String> getDefaultConfigurationOptions() {
+    protected void showCurrentConfiguration() throws Exception {
         Map<String, String> configs = new TreeMap<>();
         var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
@@ -69,38 +41,62 @@ public class ConfigurationHelper {
                 .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();
         for (var clazz : classesThatMayBeConfigured) {
-            try {
-                processConfigurationOfClass(configs, clazz);
-            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
+            processConfigurationOfClass(configs, clazz);
         }
-        return configs;
+        assertFalse(configs.isEmpty(), "Configuration shall not be empty");
+
+        System.out.println("-".repeat(50));
+        System.out.println("Current Default Configuration");
+        System.out.println(configs.entrySet()
+                .stream()
+                .map(e -> e.getKey() + AbstractConfigurable.KEY_VALUE_CONNECTOR + e.getValue())
+                .collect(Collectors.joining("\n")));
+        System.out.println("-".repeat(50));
     }
 
-    protected static void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    protected void testValidityOfConfigurableFields() throws Exception {
+        var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
+        var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
+                .stream()
+                .filter(c -> c.getPackageName().startsWith("edu.kit.kastel.mcse.ardoco"))
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .filter(c -> !c.getPackageName().contains("tests"))
+                .toList();
+
+        for (var clazz : classesThatMayBeConfigured) {
+            List<Field> configurableFields = new ArrayList<>();
+            findImportantFields(clazz, configurableFields);
+
+            for (var field : configurableFields) {
+                int modifiers = field.getModifiers();
+                assertFalse(Modifier.isFinal(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass().getSimpleName() + " is final!");
+                assertFalse(Modifier.isStatic(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass().getSimpleName() + " is static!");
+            }
+        }
+    }
+
+    protected void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException,
+            InstantiationException, IllegalAccessException {
         var object = createObject(clazz);
         List<Field> fields = new ArrayList<>();
         findImportantFields(object.getClass(), fields);
         fillConfigs(object, fields, configs);
     }
 
-    @SuppressWarnings("java:S3011")
-    private static void fillConfigs(AbstractConfigurable object, List<Field> fields, Map<String, String> configs) throws IllegalAccessException {
+    private void fillConfigs(AbstractConfigurable object, List<Field> fields, Map<String, String> configs) throws IllegalAccessException {
         for (Field f : fields) {
             f.setAccessible(true);
             var key = f.getDeclaringClass().getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + f.getName();
             var rawValue = f.get(object);
             var value = getValue(rawValue);
             if (configs.containsKey(key)) {
-                throw new IllegalArgumentException("Found duplicate entry in map: " + key);
+                fail("Found duplicate entry in map: " + key);
             }
             configs.put(key, value);
         }
     }
 
-    private static String getValue(Object rawValue) {
+    private String getValue(Object rawValue) {
         if (rawValue instanceof Integer i) {
             return Integer.toString(i);
         }
@@ -110,7 +106,7 @@ public class ConfigurationHelper {
         if (rawValue instanceof Boolean b) {
             return String.valueOf(b);
         }
-        if (rawValue instanceof List<?> s && s.stream().allMatch(String.class::isInstance)) {
+        if (rawValue instanceof List<?> s && s.stream().allMatch(it -> it instanceof String)) {
             return s.stream().map(Object::toString).collect(Collectors.joining(AbstractConfigurable.LIST_SEPARATOR));
         }
         if (rawValue instanceof Enum<?> e) {
@@ -121,7 +117,7 @@ public class ConfigurationHelper {
 
     }
 
-    private static void findImportantFields(Class<?> clazz, List<Field> fields) {
+    private void findImportantFields(Class<?> clazz, List<Field> fields) {
         if (clazz == Object.class || clazz == AbstractConfigurable.class) {
             return;
         }
@@ -134,17 +130,16 @@ public class ConfigurationHelper {
         findImportantFields(clazz.getSuperclass(), fields);
     }
 
-    @SuppressWarnings("java:S3011")
-    private static AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
+    private AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
             IllegalAccessException {
         var constructors = Arrays.asList(clazz.getDeclaredConstructors());
         if (constructors.stream().anyMatch(c -> c.getParameterCount() == 0)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().orElseThrow();
+            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().get();
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance();
         }
         if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().orElseThrow();
+            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().get();
             constructor.setAccessible(true);
             return (AbstractConfigurable) constructor.newInstance(Map.of());
         }
@@ -152,19 +147,18 @@ public class ConfigurationHelper {
             var constructor = constructors.stream()
                     .filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)
                     .findFirst()
-                    .orElseThrow();
+                    .get();
             constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance((DataRepository) null);
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null });
         }
-
         if (constructors.stream()
                 .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)) {
             var constructor = constructors.stream()
                     .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)
                     .findFirst()
-                    .orElseThrow();
+                    .get();
             constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(null, null);
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null, null });
         }
 
         if (constructors.stream()
@@ -172,13 +166,12 @@ public class ConfigurationHelper {
             var constructor = constructors.stream()
                     .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)
                     .findFirst()
-                    .orElseThrow();
+                    .get();
             constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(null, List.of());
+            return (AbstractConfigurable) constructor.newInstance(new Object[] { null, List.of() });
         }
 
-        throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
-
+        fail("No suitable constructor has been found for " + clazz);
+        throw new Error("Not reachable code");
     }
-
 }

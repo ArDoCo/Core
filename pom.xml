@@ -553,7 +553,7 @@
       </build>
     </profile>
     <profile>
-      <id>module-defaults</id>
+      <id>complete</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
@@ -566,18 +566,42 @@
       </modules>
     </profile>
     <profile>
-      <!-- Linking Sketches and Software Architecture (LiSSA) -->
-      <id>lissa</id>
+      <!-- Traceability Link Recovery -->
+      <id>tlr</id>
       <activation>
-        <property>
-          <name>lissa</name>
-          <value>true</value>
-        </property>
+        <activeByDefault>false</activeByDefault>
       </activation>
       <modules>
         <module>framework</module>
-        <module>stages</module>
         <module>pipeline</module>
+        <module>stages</module>
+        <module>tests</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Inconsistency Detection -->
+      <id>inconsistency</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>framework</module>
+        <module>pipeline</module>
+        <module>stages</module>
+        <module>tests</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Linking Sketeches and Software Architecture -->
+      <id>lissa</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>framework</module>
+        <module>pipeline</module>
+        <module>stages</module>
+        <module>tests</module>
       </modules>
       <build>
         <pluginManagement>
