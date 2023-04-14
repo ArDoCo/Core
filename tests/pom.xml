@@ -57,7 +57,7 @@
       </activation>
       <modules>
         <module>tests-base</module>
-        <module>tests-complete</module>
+        <module>tests-misc</module>
         <module>tests-tlr</module>
         <module>tests-inconsistency</module>
       </modules>
