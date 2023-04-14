@@ -1,10 +1,10 @@
 package edu.kit.kastel.ardoco.lissa.swa.documentation.recognition
 
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.Box
 import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.SketchRecognitionResult
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.TextBox
 import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.services.OCRService
 import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.services.ObjectDetectionService
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.docker.DockerManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -64,7 +64,7 @@ class SketchRecognitionService {
     }
 
     private fun calculateDominatingColorForBox(image: BufferedImage, box: Box) {
-        val pixels = getPixels(image, box.box)
+        val pixels = getPixels(image, box.box.toTypedArray())
 
         val count = pixels.size
         if (count == 0) return
@@ -77,9 +77,9 @@ class SketchRecognitionService {
         setColorsOfTexts(image, box)
     }
 
-    private fun <N : Number> getPixels(image: BufferedImage, box: List<N>): List<Int> {
+    private fun getPixels(image: BufferedImage, box: Array<Int>): List<Int> {
         val result = mutableListOf<Int>()
-        for (x in range(box[0].toInt(), box[2].toInt())) for (y in range(box[1].toInt(), box[3].toInt())) result.add(
+        for (x in range(box[0], box[2].toInt())) for (y in range(box[1].toInt(), box[3].toInt())) result.add(
             image.getRGB(x, y),
         )
         return result
@@ -87,7 +87,7 @@ class SketchRecognitionService {
 
     private fun setColorsOfTexts(image: BufferedImage, box: Box) {
         for (text in box.texts) {
-            val pixels = getPixels(image, text.absoluteBox())
+            val pixels = getPixels(image, text.absoluteBox().toTypedArray())
             val count = pixels.size
             if (count == 0) continue
             val pixelCount = pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }

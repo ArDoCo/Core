@@ -577,6 +577,7 @@
       <modules>
         <module>framework</module>
         <module>stages</module>
+        <module>pipeline</module>
       </modules>
       <build>
         <pluginManagement>

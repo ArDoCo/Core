@@ -3,8 +3,8 @@ package edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.services
 import com.fasterxml.jackson.module.kotlin.readValue
 import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.SketchRecognitionService
 import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.executeRequest
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.Box
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.TextBox
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.docker.DockerManager
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
@@ -35,7 +35,7 @@ class OCRService(docker: DockerManager) : DockerSubService(docker, DOCKER_OCR, D
     }
 
     private fun sendOCRRequest(image: InputStream, port: Int, labels: List<Box>): String {
-        val boxCoordinates = enhanceLabels(labels).flatMap { it.box }.joinToString(",")
+        val boxCoordinates = enhanceLabels(labels).flatMap { it.box.toList() }.joinToString(",")
 
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
@@ -68,6 +68,6 @@ class OCRService(docker: DockerManager) : DockerSubService(docker, DOCKER_OCR, D
             box.box[3] + SketchRecognitionService.EXPANSION_IN_PX,
         )
         // Copy References here. No Copies!
-        return Box(box.uuid, newPositions, box.confidence, box.classification, box.texts)
+        return Box(box.uuid, newPositions.toIntArray(), box.confidence, box.classification, box.texts, null)
     }
 }

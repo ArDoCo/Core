@@ -2,7 +2,7 @@ package edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.services
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.executeRequest
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.Box
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.docker.DockerManager
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder

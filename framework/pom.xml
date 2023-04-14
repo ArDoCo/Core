@@ -42,6 +42,7 @@
       <id>lissa</id>
       <modules>
         <module>kotlin-base</module>
+        <module>common</module>
       </modules>
     </profile>
   </profiles>

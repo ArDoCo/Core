@@ -1,7 +1,7 @@
 package edu.kit.kastel.ardoco.lissa.swa.documentation.recognition
 
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.Box
 import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.SketchRecognitionResult
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse
 import org.apache.hc.client5.http.impl.classic.HttpClients
@@ -37,8 +37,7 @@ fun visualize(imageStream: InputStream, recognitionResult: SketchRecognitionResu
     var currentColor = 0
 
     val textBoxes = recognitionResult.textBoxes.map {
-        val tb = Box(UUID.randomUUID().toString(), it.absoluteBox().map { value -> value.toInt() }, 1.0, "TEXT")
-        tb.texts.add(it)
+        val tb = Box(UUID.randomUUID().toString(), it.absoluteBox().map { value -> value }.toIntArray(), 1.0, "TEXT", mutableListOf(it), null)
         tb
     }
 
@@ -110,7 +109,7 @@ data class IntersectionUnionData(val areaIntersect: Double, val areaUnion: Doubl
  * @param relative defines whether x2 and y2 are relative to x1 and y1.
  * @return the bounding box of the coordinates
  */
-fun <E : Number> List<E>.boundingBox(relative: Boolean = false): BoundingBox {
+fun IntArray.boundingBox(relative: Boolean = false): BoundingBox {
     if (this.size != 4) error("List has to contain 4 elements: x1,y1,x2,y2")
     if (relative) {
         return BoundingBox(
