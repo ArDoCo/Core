@@ -1,15 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ConfigurationTestBase;
 
 /**

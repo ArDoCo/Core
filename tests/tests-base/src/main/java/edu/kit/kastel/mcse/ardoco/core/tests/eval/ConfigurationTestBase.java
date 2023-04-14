@@ -18,12 +18,12 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
  *
  * @see AbstractConfigurable
  */
-@SuppressWarnings({"java:S106", "java:S3011"})
+@SuppressWarnings({ "java:S106", "java:S3011" })
 public abstract class ConfigurationTestBase {
 
-    protected abstract void assertFalse(boolean result, String message) ;
-    protected abstract void fail(String message);
+    protected abstract void assertFalse(boolean result, String message);
 
+    protected abstract void fail(String message);
 
     /**
      * This test verifies that all configurable values are able to be configured. It also prints all configurable values
@@ -54,7 +54,6 @@ public abstract class ConfigurationTestBase {
         System.out.println("-".repeat(50));
     }
 
-
     protected void testValidityOfConfigurableFields() throws Exception {
         var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
@@ -70,14 +69,11 @@ public abstract class ConfigurationTestBase {
 
             for (var field : configurableFields) {
                 int modifiers = field.getModifiers();
-                assertFalse(Modifier.isFinal(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass()
-                        .getSimpleName() + " is final!");
-                assertFalse(Modifier.isStatic(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass()
-                        .getSimpleName() + " is static!");
+                assertFalse(Modifier.isFinal(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass().getSimpleName() + " is final!");
+                assertFalse(Modifier.isStatic(modifiers), "Field " + field.getName() + "@" + field.getDeclaringClass().getSimpleName() + " is static!");
             }
         }
     }
-
 
     protected void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException,
             InstantiationException, IllegalAccessException {
@@ -99,8 +95,6 @@ public abstract class ConfigurationTestBase {
             configs.put(key, value);
         }
     }
-
-
 
     private String getValue(Object rawValue) {
         if (rawValue instanceof Integer i) {

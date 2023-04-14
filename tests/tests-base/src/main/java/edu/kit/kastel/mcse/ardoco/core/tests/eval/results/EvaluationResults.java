@@ -9,9 +9,9 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
 
-public record EvaluationResults<T> (double precision, double recall, double f1, ImmutableList<T> truePositives, int trueNegatives,
-                                    ImmutableList<T> falseNegatives, ImmutableList<T> falsePositives, double accuracy, double phiCoefficient,
-                                    double specificity, double phiCoefficientMax, double phiOverPhiMax) {
+public record EvaluationResults<T>(double precision, double recall, double f1, ImmutableList<T> truePositives, int trueNegatives,
+                                   ImmutableList<T> falseNegatives, ImmutableList<T> falsePositives, double accuracy, double phiCoefficient, double specificity,
+                                   double phiCoefficientMax, double phiOverPhiMax) {
 
     @Override
     public String toString() {
