@@ -1,7 +1,5 @@
 .flattened-pom.xml
 
-tests/src/test/resources/testout/*
-
 tests/src/test/resources/config.properties
 
 tmp*
