@@ -7,7 +7,7 @@
     <version>0.8.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>tests-default</artifactId>
+  <artifactId>tests-complete</artifactId>
 
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
