@@ -77,7 +77,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>tests-default</artifactId>
+      <artifactId>tests-complete</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
