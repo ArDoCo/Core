@@ -33,7 +33,10 @@ public class ConfigurationHelper {
      */
     public static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
         Map<String, String> additionalConfigs = new HashMap<>();
-        if (additionalConfigsFile != null && additionalConfigsFile.exists()) {
+        if (additionalConfigsFile != null && (!additionalConfigsFile.exists() || !additionalConfigsFile.isFile())) {
+            throw new IllegalArgumentException("File " + additionalConfigsFile + " is not a valid configuration file!");
+        }
+        if (additionalConfigsFile != null) {
             try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8)) {
                 while (scanner.hasNextLine()) {
                     var line = scanner.nextLine();
