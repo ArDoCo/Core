@@ -29,7 +29,7 @@
       </modules>
     </profile>
     <profile>
-      <id>module-defaults</id>
+      <id>complete</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
