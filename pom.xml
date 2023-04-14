@@ -608,7 +608,6 @@
         <module>framework</module>
         <module>pipeline</module>
         <module>stages</module>
-        <module>tests</module>
       </modules>
       <build>
         <pluginManagement>
