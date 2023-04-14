@@ -11,5 +11,5 @@ import org.eclipse.collections.api.list.ImmutableList;
  * @param falsePositives the false positives
  * @param falseNegatives the false negatives
  */
-public record ResultMatrix<T> (ImmutableList<T> truePositives, int trueNegatives, ImmutableList<T> falsePositives, ImmutableList<T> falseNegatives) {
+public record ResultMatrix<T>(ImmutableList<T> truePositives, int trueNegatives, ImmutableList<T> falsePositives, ImmutableList<T> falseNegatives) {
 }

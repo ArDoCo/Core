@@ -1,5 +1,6 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
