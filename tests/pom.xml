@@ -57,7 +57,7 @@
       </activation>
       <modules>
         <module>tests-base</module>
-        <module>tests-default</module>
+        <module>tests-complete</module>
         <module>tests-tlr</module>
         <module>tests-inconsistency</module>
       </modules>
@@ -71,7 +71,6 @@
       </activation>
       <modules>
         <module>tests-base</module>
-        <module>tests-default</module>
         <module>tests-tlr</module>
       </modules>
     </profile>
@@ -83,7 +82,6 @@
       </activation>
       <modules>
         <module>tests-base</module>
-        <module>tests-default</module>
         <module>tests-inconsistency</module>
       </modules>
     </profile>
