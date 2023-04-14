@@ -147,6 +147,13 @@
         <version>${project.version}</version>
       </dependency>
 
+      <!-- LiSSA -->
+      <dependency>
+        <groupId>io.github.ardoco.core</groupId>
+        <artifactId>diagram-recognition</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- Other Dependencies -->
       <dependency>
         <groupId>org.reflections</groupId>

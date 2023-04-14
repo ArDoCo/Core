@@ -27,6 +27,7 @@
         <module>recommendation-generator</module>
         <module>text-extraction</module>
         <module>text-preprocessing</module>
+        <module>diagram-recognition</module>
       </modules>
     </profile>
     <profile>
@@ -41,7 +42,6 @@
         <module>recommendation-generator</module>
         <module>text-extraction</module>
         <module>text-preprocessing</module>
-        <module>diagram-recognition</module>
       </modules>
     </profile>
 
@@ -80,8 +80,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <modules>
-        <module>kotlin-base</module>
-        <module>common</module>
+        <module>diagram-recognition</module>
       </modules>
     </profile>
   </profiles>
