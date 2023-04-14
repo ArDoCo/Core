@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.ardoco.core</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>tests</artifactId>
     <version>0.8.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
-
-  <artifactId>report</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>tests-inconsistency</artifactId>
 
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
@@ -16,23 +15,9 @@
   </properties>
 
   <dependencies>
-    <!-- InFormALin -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>common</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>models</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
-    <!-- ArDoCo -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>text-extraction</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -47,12 +32,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>recommendation-generator</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>pipeline</artifactId>
-      <scope>compile</scope>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -63,33 +46,19 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>connection-generator</artifactId>
-      <scope>compile</scope>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>model-provider</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>inconsistency-detection</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>tests-misc</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>tests-tlr</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>tests-inconsistency</artifactId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>tests-base</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
@@ -98,22 +67,10 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>report</id>
-            <goals>
-              <goal>report-aggregate</goal>
-            </goals>
-            <phase>verify</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
+
 </project>
