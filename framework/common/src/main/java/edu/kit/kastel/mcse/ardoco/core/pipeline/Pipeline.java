@@ -41,6 +41,15 @@ public class Pipeline extends AbstractPipelineStep {
     }
 
     /**
+     * Returns whether there were any pipeline steps added to the
+     *
+     * @return
+     */
+    public boolean hasPipelineSteps() {
+        return !pipelineSteps.isEmpty();
+    }
+
+    /**
      * Adds a {@link AbstractPipelineStep} to the execution list of this pipeline
      *
      * @param pipelineStep step that should be added

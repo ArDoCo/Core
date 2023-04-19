@@ -49,14 +49,24 @@ public class ChangedStatesTest {
             File inputModel = project.getModelFile();
             File inputText = project.getTextFile();
             String name = project.name().toLowerCase();
-            ArDoCo arDoCo = ArDoCo.getInstance(name);
 
             var arDoCoResult = DATA_MAP.get(project);
             if (arDoCoResult == null) {
-                arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, null, null, new File(OUTPUT));
+                arDoCoResult = getArDoCoResult(name, inputText, inputModel);
                 DATA_MAP.put(project, arDoCoResult);
             }
         }
+    }
+
+    private static ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel) {
+        ArDoCo arDoCo = ArDoCo.getInstance(name);
+        try {
+            arDoCo.definePipeline(inputText, inputModel, ArchitectureModelType.PCM, null, new HashMap<>());
+        } catch (IOException e) {
+            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
+            return null;
+        }
+        return arDoCo.runAndSave(new File(OUTPUT));
     }
 
     private static boolean writeTextStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {

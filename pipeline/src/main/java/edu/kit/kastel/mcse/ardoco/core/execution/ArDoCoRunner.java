@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 /**
  * Record that sets up ArDoCo and can run it. This serves as a simple intermediate object to easy constructing, running, and testing ArDoCo. The {@link Builder}
  * within this record helps with construction.
- * 
+ *
  * @param inputText                  the input text
  * @param inputModelArchitecture     the input model architecture
  * @param inputArchitectureModelType the architecture type (e.g., PCM, UML)
@@ -40,12 +40,19 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
     /**
      * Run ArDoCo
-     * 
+     *
      * @return the result after running ArDoCo
      */
     public ArDoCoResult runArDoCo() {
         ArDoCo arDoCo = ArDoCo.getInstance(name);
-        return arDoCo.runAndSave(name, inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, outputDir);
+        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(additionalConfigs);
+        try {
+            arDoCo.definePipeline(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigsMap);
+        } catch (IOException e) {
+            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
+            return null;
+        }
+        return arDoCo.runAndSave(null);
     }
 
     @Override
@@ -55,9 +62,9 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
         if (!(obj instanceof ArDoCoRunner other))
             return false;
         return Objects.equals(this.inputText, other.inputText) && Objects.equals(this.inputModelArchitecture, other.inputModelArchitecture) && Objects.equals(
-                this.inputArchitectureModelType, other.inputArchitectureModelType) && Objects.equals(this.inputModelCode, other.inputModelCode) && Objects
-                        .equals(this.additionalConfigs, other.additionalConfigs) && Objects.equals(this.outputDir, other.outputDir) && Objects.equals(this.name,
-                                other.name);
+                this.inputArchitectureModelType, other.inputArchitectureModelType) && Objects.equals(this.inputModelCode,
+                other.inputModelCode) && Objects.equals(this.additionalConfigs, other.additionalConfigs) && Objects.equals(this.outputDir,
+                other.outputDir) && Objects.equals(this.name, other.name);
     }
 
     @Override
@@ -81,7 +88,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Create the builder
-         * 
+         *
          * @param name the name of the project
          */
         public Builder(String name) {
@@ -90,7 +97,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Build ArDoCo with all the previously set configuration options/inputs. Checks if all necessary options are set.
-         * 
+         *
          * @return An {@link ArDoCoRunner} with the set options/inputs
          * @throws IllegalStateException If necessary options are not set
          */
@@ -113,7 +120,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Add input text file
-         * 
+         *
          * @param inputText the input text file
          * @return the builder
          */
@@ -124,7 +131,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Add the string that represents a path to the input text file
-         * 
+         *
          * @param inputTextPath the file path as string
          * @return the builder
          */
@@ -135,7 +142,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Add the input architecture model file
-         * 
+         *
          * @param inputModelArchitecture the input architecture model file
          * @return the builder
          */
@@ -146,7 +153,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Add the string that represents a path to the input architecture model file
-         * 
+         *
          * @param inputModelArchitecturePath the path string to the input architecture model file
          * @return the builder
          */
@@ -157,7 +164,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Add the architecture model type
-         * 
+         *
          * @param inputArchitectureModelType the architecture model type
          * @return the builder
          */
@@ -168,7 +175,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Sets PCM as architecture model type
-         * 
+         *
          * @return the builder
          */
         public Builder withPcmModelType() {
@@ -178,7 +185,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Set UML as architecture model type
-         * 
+         *
          * @return the builder
          */
         public Builder withUmlModelType() {
@@ -188,7 +195,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Set the output directory to the provided file
-         * 
+         *
          * @param outputDir the file that represents the output directory
          * @return the builder
          */
@@ -199,7 +206,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Set the output directory to the string that represents the desired path
-         * 
+         *
          * @param outputDir the string that represents the path of the desired output directory
          * @return the builder
          */
@@ -210,7 +217,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Sets the input model code
-         * 
+         *
          * @param inputModelCode the input model code file
          * @return the builder
          */
@@ -221,7 +228,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Sets the input model code to the provided path (as String)
-         * 
+         *
          * @param inputModelCodePath the input model code file as string-based path
          * @return the builder
          */
@@ -232,7 +239,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Sets the additional configs to the provided config file
-         * 
+         *
          * @param additionalConfigs the file with additional configs
          * @return the builder
          */
@@ -243,7 +250,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Sets the additional configs to the config file that is provided as string path.
-         * 
+         *
          * @param additionalConfigsPath the path as string to the file with additional configs
          * @return the builder
          */
@@ -254,7 +261,7 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
 
         /**
          * Sets the additional configs to the configs provided with the Key-Value map.
-         * 
+         *
          * @param additionalConfigs the additional config Key-value map
          * @return the builder
          * @throws IOException If the file system cannot be used for temporary file saving
