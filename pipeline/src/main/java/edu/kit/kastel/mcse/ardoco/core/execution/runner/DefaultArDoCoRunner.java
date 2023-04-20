@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.execution;
+package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,57 +19,133 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
+import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
 
 /**
  * Record that sets up ArDoCo and can run it. This serves as a simple intermediate object to easy constructing, running, and testing ArDoCo. The {@link Builder}
  * within this record helps with construction.
- *
- * @param inputText                  the input text
- * @param inputModelArchitecture     the input model architecture
- * @param inputArchitectureModelType the architecture type (e.g., PCM, UML)
- * @param inputModelCode             the input model code (can be null)
- * @param additionalConfigs          the additional configs
- * @param outputDir                  the output directory
- * @param name                       the name of the project to run ArDoCo on
  */
-public record ArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, File inputModelCode,
-                           File additionalConfigs, File outputDir, String name) {
+public final class DefaultArDoCoRunner extends ArDoCoRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(ArDoCoRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultArDoCoRunner.class);
+    private final File inputText;
+    private final File inputModelArchitecture;
+    private final ArchitectureModelType inputArchitectureModelType;
+    private final File inputModelCode;
+    private final File additionalConfigs;
+    private final String name;
 
     /**
-     * Run ArDoCo
-     *
-     * @return the result after running ArDoCo
+     * @param inputText                  the input text
+     * @param inputModelArchitecture     the input model architecture
+     * @param inputArchitectureModelType the architecture type (e.g., PCM, UML)
+     * @param inputModelCode             the input model code (can be null)
+     * @param additionalConfigs          the additional configs
+     * @param outputDir                  the output directory
+     * @param name                       the name of the project to run ArDoCo on
      */
-    public ArDoCoResult runArDoCo() {
-        ArDoCo arDoCo = ArDoCo.getInstance(name);
+    public DefaultArDoCoRunner(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, File inputModelCode,
+            File additionalConfigs, File outputDir, String name) {
+        super(name);
+        this.inputText = inputText;
+        this.inputModelArchitecture = inputModelArchitecture;
+        this.inputArchitectureModelType = inputArchitectureModelType;
+        this.inputModelCode = inputModelCode;
+        this.additionalConfigs = additionalConfigs;
+        this.setOutputDirectory(outputDir);
+        this.name = name;
+    }
+
+    public void setUp() {
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(additionalConfigs);
         try {
-            arDoCo.definePipeline(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigsMap);
+            definePipeline(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigsMap);
         } catch (IOException e) {
             logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
-            return null;
+            isSetUp = false;
+            return;
         }
-        return arDoCo.runAndSave(null);
+        isSetUp = true;
+    }
+
+    /**
+     * This method sets up the pipeline for ArDoCo.
+     *
+     * @param inputText              The input text file
+     * @param inputArchitectureModel the input architecture file
+     * @param architectureModelType  the type of the architecture (e.g., PCM, UML)
+     * @param inputCodeModel         the input code model file
+     * @param additionalConfigs      the additional configs
+     * @throws IOException When one of the input files cannot be accessed/loaded
+     */
+    private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCodeModel,
+            Map<String, String> additionalConfigs) throws IOException {
+        ArDoCo arDoCo = getArDoCo();
+        var dataRepository = arDoCo.getDataRepository();
+        var text = CommonUtilities.readInputText(inputText);
+        if (text.isBlank()) {
+            throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
+        }
+        DataRepositoryHelper.putInputText(dataRepository, text);
+
+        arDoCo.addPipelineStep(PipelineUtils.getTextPreprocessing(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
+        if (inputCodeModel != null) {
+            arDoCo.addPipelineStep(PipelineUtils.getJavaModelProvider(inputCodeModel, dataRepository));
+        }
+        arDoCo.addPipelineStep(PipelineUtils.getTextExtraction(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getInconsistencyChecker(additionalConfigs, dataRepository));
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        if (!(obj instanceof ArDoCoRunner other))
+        if (!(obj instanceof DefaultArDoCoRunner other))
             return false;
         return Objects.equals(this.inputText, other.inputText) && Objects.equals(this.inputModelArchitecture, other.inputModelArchitecture) && Objects.equals(
                 this.inputArchitectureModelType, other.inputArchitectureModelType) && Objects.equals(this.inputModelCode,
-                other.inputModelCode) && Objects.equals(this.additionalConfigs, other.additionalConfigs) && Objects.equals(this.outputDir,
-                other.outputDir) && Objects.equals(this.name, other.name);
+                other.inputModelCode) && Objects.equals(this.additionalConfigs, other.additionalConfigs) && Objects.equals(this.name, other.name);
     }
 
     @Override
     public String toString() {
-        return "ArDoCoRunArguments[" + "inputText=" + inputText + ", " + "inputModelArchitecture=" + inputModelArchitecture + ", " + "inputModelCode=" + inputModelCode + ", " + "additionalConfigs=" + additionalConfigs + ", " + "outputDir=" + outputDir + ", " + "name=" + name + ']';
+        return "ArDoCoRunArguments[" + "inputText=" + inputText + ", " + "inputModelArchitecture=" + inputModelArchitecture + ", " + "inputModelCode=" + inputModelCode + ", " + "additionalConfigs=" + additionalConfigs + ", " + "name=" + name + ']';
+    }
+
+    public File inputText() {
+        return inputText;
+    }
+
+    public File inputModelArchitecture() {
+        return inputModelArchitecture;
+    }
+
+    public ArchitectureModelType inputArchitectureModelType() {
+        return inputArchitectureModelType;
+    }
+
+    public File inputModelCode() {
+        return inputModelCode;
+    }
+
+    public File additionalConfigs() {
+        return additionalConfigs;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, name);
     }
 
     /**
@@ -98,10 +174,10 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
         /**
          * Build ArDoCo with all the previously set configuration options/inputs. Checks if all necessary options are set.
          *
-         * @return An {@link ArDoCoRunner} with the set options/inputs
+         * @return An {@link DefaultArDoCoRunner} with the set options/inputs
          * @throws IllegalStateException If necessary options are not set
          */
-        public ArDoCoRunner build() throws IllegalStateException {
+        public DefaultArDoCoRunner build() throws IllegalStateException {
             for (Field field : this.getClass().getDeclaredFields()) {
                 if (optionalFields.contains(field.getName())) {
                     continue;
@@ -115,7 +191,10 @@ public record ArDoCoRunner(File inputText, File inputModelArchitecture, Architec
                     throw new IllegalStateException("Cannot access field.");
                 }
             }
-            return new ArDoCoRunner(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode, additionalConfigs, outputDir, name);
+            DefaultArDoCoRunner arDoCoRunner = new DefaultArDoCoRunner(inputText, inputModelArchitecture, inputArchitectureModelType, inputModelCode,
+                    additionalConfigs, outputDir, name);
+            arDoCoRunner.setUp();
+            return arDoCoRunner;
         }
 
         /**

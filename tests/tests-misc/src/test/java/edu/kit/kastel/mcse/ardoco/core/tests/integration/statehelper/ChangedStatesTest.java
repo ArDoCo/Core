@@ -20,9 +20,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.DefaultArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.ConnectionStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.RecommendationStateFile;
@@ -59,14 +58,12 @@ public class ChangedStatesTest {
     }
 
     private static ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel) {
-        ArDoCo arDoCo = ArDoCo.getInstance(name);
-        try {
-            arDoCo.definePipeline(inputText, inputModel, ArchitectureModelType.PCM, null, new HashMap<>());
-        } catch (IOException e) {
-            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
-            return null;
-        }
-        return arDoCo.runAndSave(new File(OUTPUT));
+        DefaultArDoCoRunner runner = new DefaultArDoCoRunner.Builder(name).withInputText(inputText)
+                                                                          .withInputModelArchitecture(inputModel)
+                                                                          .withPcmModelType()
+                                                                          .withOutputDir(OUTPUT)
+                                                                          .build();
+        return runner.run();
     }
 
     private static boolean writeTextStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {

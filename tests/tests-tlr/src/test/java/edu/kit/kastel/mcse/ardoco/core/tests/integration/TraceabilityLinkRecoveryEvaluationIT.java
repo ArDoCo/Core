@@ -34,6 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoForSadSamTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
@@ -157,15 +158,11 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     private ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel, ArchitectureModelType architectureModelType,
             File additionalConfigurations) {
-        ArDoCo arDoCo = ArDoCo.getInstance(name);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(additionalConfigurations);
-        try {
-            arDoCo.definePipeline(inputText, inputModel, architectureModelType, inputCodeModel, additionalConfigsMap);
-        } catch (IOException e) {
-            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
-            return null;
-        }
-        return arDoCo.runAndSave(outputDir);
+
+        var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(name);
+        runner.setUp(inputText, inputModel, architectureModelType, additionalConfigsMap, outputDir);
+        return runner.run();
     }
 
     /**
