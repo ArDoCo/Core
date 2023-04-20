@@ -22,7 +22,6 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
 
     public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs,
             File outputDir) {
-        logger.info("Setup");
         try {
             definePipeline(inputText, inputArchitectureModel, architectureModelType, additionalConfigs);
         } catch (IOException e) {

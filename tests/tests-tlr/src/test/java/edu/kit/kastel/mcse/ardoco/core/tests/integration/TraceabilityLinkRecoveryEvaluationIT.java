@@ -70,7 +70,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private String name;
     private File inputText;
     private File inputModel;
-    private File inputCodeModel = null;
     private final File outputDir = new File(OUTPUT);
 
     @BeforeAll

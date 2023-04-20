@@ -23,7 +23,6 @@ public class ArDoCoForInconsistencyDetection extends ArDoCoRunner {
 
     public void setUp(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, Map<String, String> additionalConfigs,
             File outputDir) {
-        logger.info("Setup");
         try {
             definePipeline(inputText, inputModelArchitecture, inputArchitectureModelType, additionalConfigs);
         } catch (IOException e) {
