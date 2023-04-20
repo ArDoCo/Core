@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
@@ -99,8 +100,8 @@ public class PipelineUtils {
     public static ModelProviderAgent getArchitectureModelProvider(File inputArchitectureModel, ArchitectureModelType architectureModelType,
             DataRepository dataRepository) throws IOException {
         ModelConnector connector = switch (architectureModelType) {
-            case PCM -> new PcmXMLModelConnector(inputArchitectureModel);
-            case UML -> new UMLModelConnector(inputArchitectureModel);
+        case PCM -> new PcmXMLModelConnector(inputArchitectureModel);
+        case UML -> new UMLModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
     }

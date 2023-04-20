@@ -1,7 +1,9 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,16 @@ class RunnerTestBase {
     protected final String outputDir = "src/test/resources/testout";
     protected final String inputModelCode = "src/test/resources/teastore-code.json";
     protected final String additionalConfigs = "src/test/resources/additionalConfig.txt";
-    protected final String teastore = "teastore";
+    protected final String projectName = "teastore";
+
+    @AfterEach
+    void cleanUp() {
+        for (File file : new File(outputDir).listFiles()) {
+            if (!file.getName().equals(".gitkeep")) {
+                file.delete();
+            }
+        }
+    }
 
     @Test
     @DisplayName("Test SetUp")

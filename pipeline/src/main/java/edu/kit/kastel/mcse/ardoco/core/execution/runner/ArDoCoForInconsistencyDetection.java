@@ -11,20 +11,21 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
 
-public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
-    private static final Logger logger = LoggerFactory.getLogger(ArDoCoForSadSamTraceabilityLinkRecovery.class);
+public class ArDoCoForInconsistencyDetection extends ArDoCoRunner {
+    private static final Logger logger = LoggerFactory.getLogger(ArDoCoForInconsistencyDetection.class);
 
-    public ArDoCoForSadSamTraceabilityLinkRecovery(String projectName) {
+    public ArDoCoForInconsistencyDetection(String projectName) {
         super(projectName);
     }
 
-    public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs,
+    public void setUp(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType, Map<String, String> additionalConfigs,
             File outputDir) {
         logger.info("Setup");
         try {
-            definePipeline(inputText, inputArchitectureModel, architectureModelType, additionalConfigs);
+            definePipeline(inputText, inputModelArchitecture, inputArchitectureModelType, additionalConfigs);
         } catch (IOException e) {
             logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             isSetUp = false;
@@ -39,20 +40,30 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
         setUp(new File(inputTextLocation), new File(inputArchitectureModelLocation), architectureModelType, additionalConfigs, new File(outputDirectory));
     }
 
+    /**
+     * This method sets up the pipeline for ArDoCo.
+     *
+     * @param inputText              The input text file
+     * @param inputArchitectureModel the input architecture file
+     * @param architectureModelType  the type of the architecture (e.g., PCM, UML)
+     * @param additionalConfigs      the additional configs
+     * @throws IOException When one of the input files cannot be accessed/loaded
+     */
     private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs)
             throws IOException {
-        var dataRepository = this.getArDoCo().getDataRepository();
+        ArDoCo arDoCo = getArDoCo();
+        var dataRepository = arDoCo.getDataRepository();
         var text = CommonUtilities.readInputText(inputText);
         if (text.isBlank()) {
             throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
         }
         DataRepositoryHelper.putInputText(dataRepository, text);
 
-        this.getArDoCo().addPipelineStep(PipelineUtils.getTextPreprocessing(additionalConfigs, dataRepository));
-        this.getArDoCo().addPipelineStep(PipelineUtils.getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
-
-        this.getArDoCo().addPipelineStep(PipelineUtils.getTextExtraction(additionalConfigs, dataRepository));
-        this.getArDoCo().addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
-        this.getArDoCo().addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getTextPreprocessing(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getTextExtraction(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getInconsistencyChecker(additionalConfigs, dataRepository));
     }
 }

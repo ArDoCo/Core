@@ -59,10 +59,10 @@ public class ChangedStatesTest {
 
     private static ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel) {
         DefaultArDoCoRunner runner = new DefaultArDoCoRunner.Builder(name).withInputText(inputText)
-                                                                          .withInputModelArchitecture(inputModel)
-                                                                          .withPcmModelType()
-                                                                          .withOutputDir(OUTPUT)
-                                                                          .build();
+                .withInputModelArchitecture(inputModel)
+                .withPcmModelType()
+                .withOutputDir(OUTPUT)
+                .build();
         return runner.run();
     }
 

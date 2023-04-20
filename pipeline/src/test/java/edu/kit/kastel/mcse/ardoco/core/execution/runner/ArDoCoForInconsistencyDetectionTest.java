@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 
-class ArDoCoForSadSamTraceabilityLinkRecoveryTest extends RunnerTestBase {
+class ArDoCoForInconsistencyDetectionTest extends RunnerTestBase {
 
     @Test
-    @DisplayName("Test ArDoCo for SAD-SAM-TLR (PCM)")
-    void testSadSamTlrPcm() {
-        var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(projectName);
+    @DisplayName("Test ArDoCo for Inconsistency Detection (PCM)")
+    void testInconsistencyDetectionPcm() {
+        var runner = new ArDoCoForInconsistencyDetection(projectName);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(additionalConfigs));
         runner.setUp(inputText, inputModelArchitecture, ArchitectureModelType.PCM, additionalConfigsMap, outputDir);
 
@@ -24,9 +24,9 @@ class ArDoCoForSadSamTraceabilityLinkRecoveryTest extends RunnerTestBase {
     }
 
     @Test
-    @DisplayName("Test ArDoCo for SAD-SAM-TLR (UML)")
-    void testSadSamTlrUml() {
-        var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(projectName);
+    @DisplayName("Test ArDoCo for Inconsistency Detection (UML)")
+    void testInconsistencyDetectionUml() {
+        var runner = new ArDoCoForInconsistencyDetection(projectName);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(additionalConfigs));
         runner.setUp(inputText, inputModelArchitectureUml, ArchitectureModelType.UML, additionalConfigsMap, outputDir);
 
