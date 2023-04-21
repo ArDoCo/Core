@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * This class represents a confidence for a certain (intermediate) result.
- * Different {@link Claimant}s can add their confidences that get aggregated via one of the {@link AggregationFunctions} to a single confidence value.
+ * Different {@link Claimant Claimants} can add their confidences that get aggregated via one of the {@link AggregationFunctions} to a single confidence value.
  */
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
@@ -26,7 +26,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     /**
      * Constructor for the confidence with a given aggregator function.
      *
-     * @param confidenceAggregator
+     * @param confidenceAggregator the aggregation function for the confidence
      */
     public Confidence(AggregationFunctions confidenceAggregator) {
         this.confidenceAggregator = confidenceAggregator;
