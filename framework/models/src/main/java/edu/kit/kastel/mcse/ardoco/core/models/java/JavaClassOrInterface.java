@@ -90,10 +90,9 @@ public class JavaClassOrInterface implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof JavaClassOrInterface other)) {
             return false;
         }
-        var other = (JavaClassOrInterface) obj;
         return Objects.equals(fullyQualifiedName, other.fullyQualifiedName);
     }
 

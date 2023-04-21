@@ -22,6 +22,8 @@ public class InitialConnectionAgent extends PipelineAgent {
 
     /**
      * Create the agent.
+     *
+     * @param dataRepository the {@link DataRepository}
      */
     public InitialConnectionAgent(DataRepository dataRepository) {
         super(InitialConnectionAgent.class.getSimpleName(), dataRepository);

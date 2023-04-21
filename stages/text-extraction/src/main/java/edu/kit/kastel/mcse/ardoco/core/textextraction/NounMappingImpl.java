@@ -69,6 +69,14 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
 
     /**
      * Instantiates a new noun mapping.
+     *
+     * @param earliestCreationTime the earliest creation time
+     * @param words                the list of words for this nounmapping
+     * @param kind                 the kind of mapping
+     * @param claimant             the claimant that created this mapping
+     * @param probability          the confidence
+     * @param referenceWords       the reference words
+     * @param surfaceForms         the surface forms
      */
     public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {

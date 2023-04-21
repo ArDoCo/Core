@@ -33,6 +33,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoForSadSamTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
@@ -68,7 +70,6 @@ class TraceabilityLinkRecoveryEvaluationIT {
     private String name;
     private File inputText;
     private File inputModel;
-    private File inputCodeModel = null;
     private final File outputDir = new File(OUTPUT);
 
     @BeforeAll
@@ -148,20 +149,24 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var arDoCoResult = DATA_MAP.get(project);
         if (arDoCoResult == null) {
             File additionalConfigurations = project.getAdditionalConfigurationsFile();
-            arDoCoResult = getArDoCoResult(name, inputText, inputModel, additionalConfigurations);
+            arDoCoResult = getArDoCoResult(name, inputText, inputModel, ArchitectureModelType.PCM, additionalConfigurations);
             DATA_MAP.put(project, arDoCoResult);
         }
         return arDoCoResult;
     }
 
-    private ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel, File additionalConfigurations) {
-        ArDoCo arDoCo = ArDoCo.getInstance(name);
-        return arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, inputCodeModel, additionalConfigurations, outputDir);
+    private ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel, ArchitectureModelType architectureModelType,
+            File additionalConfigurations) {
+        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(additionalConfigurations);
+
+        var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(name);
+        runner.setUp(inputText, inputModel, architectureModelType, additionalConfigsMap, outputDir);
+        return runner.run();
     }
 
     /**
      * Test if the results from executing ArDoCo with UML are the same as with PCM
-     * 
+     *
      * @param project the project, provided by the EnumSource
      */
     @DisplayName("Compare TLR for UML/PCM")
@@ -179,7 +184,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
         File umlModelFile = project.getModelFile(ArchitectureModelType.UML);
         File additionalConfigurations = project.getAdditionalConfigurationsFile();
-        var ardocoRunForUML = arDoCo.runAndSave(name, inputText, umlModelFile, ArchitectureModelType.UML, inputCodeModel, additionalConfigurations, outputDir);
+        var ardocoRunForUML = getArDoCoResult(name, inputText, umlModelFile, ArchitectureModelType.UML, additionalConfigurations);
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
@@ -193,7 +198,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     /**
      * calculate {@link EvaluationResults} and compare to {@link ExpectedResults}
-     * 
+     *
      * @param project      the result's project
      * @param arDoCoResult the result
      */

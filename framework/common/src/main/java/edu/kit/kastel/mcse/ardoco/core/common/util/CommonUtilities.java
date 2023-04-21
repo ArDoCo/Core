@@ -31,7 +31,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * General helper class for outsourced, common methods.
- *
  */
 public final class CommonUtilities {
     private static final Logger logger = LoggerFactory.getLogger(CommonUtilities.class);
@@ -202,6 +201,7 @@ public final class CommonUtilities {
      * @param nameMappings        the noun mappings
      * @param typeMappings        the type mappings
      * @param recommendationState the state the new RecommendedInstances should be added to
+     * @param claimant            the claimant that argued in favor of adding the RI
      * @param probability         the probability that should be annotated
      */
     public static void addRecommendedInstancesFromNounMappings(ImmutableList<String> similarTypes, ImmutableList<NounMapping> nameMappings,
@@ -373,10 +373,21 @@ public final class CommonUtilities {
         return false;
     }
 
+    /**
+     * Return the current time as String. Can be used for output to show the date of processing.
+     *
+     * @return the current time as String
+     */
     public static String getCurrentTimeAsString() {
         return DATE_FORMATTER.format(LocalDateTime.now(ZoneId.systemDefault()));
     }
 
+    /**
+     * Reads text from the {@link InputStream} into a String
+     *
+     * @param text the input stream
+     * @return the text as String
+     */
     public static String readInputText(InputStream text) {
         var scanner = new Scanner(text, StandardCharsets.UTF_8);
         scanner.useDelimiter("\\A");
@@ -385,6 +396,12 @@ public final class CommonUtilities {
         return inputText;
     }
 
+    /**
+     * Reads the contents of a File into a String
+     *
+     * @param textFile the file to be read
+     * @return the content of the File as String
+     */
     public static String readInputText(File textFile) {
         try {
             return readInputText(new FileInputStream(textFile));

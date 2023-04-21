@@ -26,6 +26,8 @@ public class InitialTextAgent extends PipelineAgent {
 
     /**
      * Instantiates a new initial text agent.
+     *
+     * @param data the {@link DataRepository}
      */
     public InitialTextAgent(DataRepository data) {
         super(InitialTextAgent.class.getSimpleName(), data);

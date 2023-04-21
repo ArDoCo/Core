@@ -5,6 +5,9 @@ import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 
+/**
+ * This abstract class represents a state that can be saved to the {@link DataRepository} as {@link PipelineStepData}.
+ */
 public abstract class AbstractState extends AbstractConfigurable implements PipelineStepData {
 
     @Override

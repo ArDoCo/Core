@@ -19,8 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
  * Filters {@link RecommendedInstance}s that have low probabilities of being an entity. This can either be because the
  * probability of being a {@link RecommendedInstance} is low or because the probability of having a mapping for a name
  * and/or type is low.
- *
- *
  */
 public class RecommendedInstanceProbabilityFilter extends Filter {
     @Configurable
@@ -111,7 +109,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
         var highestTypeProbability = getHighestTypeProbability(recommendedInstance.getTypeMappings());
         var highestNameProbability = getHighestNameProbability(recommendedInstance.getTypeMappings());
 
-        return highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
+        return (highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability) || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
 
     }
 

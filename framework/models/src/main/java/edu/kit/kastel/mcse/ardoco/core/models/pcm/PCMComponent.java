@@ -41,7 +41,7 @@ public final class PCMComponent {
 
     public String getType() {
         // e.g., xsi:type="repository:BasicComponent"
-        return type.split(":")[1];
+        return type.split(":", -1)[1];
     }
 
     void init(List<PCMInterface> interfaces) {

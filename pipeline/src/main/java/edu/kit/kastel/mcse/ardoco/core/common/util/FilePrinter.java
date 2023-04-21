@@ -68,7 +68,7 @@ public final class FilePrinter {
      * Prints details of the {@link ArDoCoResult results} of a run into files within the given directory (path).
      * Writes out detailed info about model instances, noun mappings, trace links, all states, and inconsistencies.
      * Uses the provided (project) name as part of the file names.
-     * 
+     *
      * @param path         the directory where the files should be written
      * @param name         name of the project
      * @param arDoCoResult the results that should be written
@@ -77,8 +77,12 @@ public final class FilePrinter {
         var outputDir = path.toFile();
         var data = arDoCoResult.dataRepository();
         var textState = getTextState(data);
-        var inconsistencyStates = getInconsistencyStates(data);
-        var inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
+
+        InconsistencyState inconsistencyState = null;
+        if (DataRepositoryHelper.hasInconsistencyStates(data)) {
+            var inconsistencyStates = getInconsistencyStates(data);
+            inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
+        }
 
         for (var model : getModelStatesData(data).modelIds()) {
             var modelState = getModelStatesData(data).getModelState(model);
@@ -95,8 +99,11 @@ public final class FilePrinter {
                     connectionState);
             FilePrinter.writeStatesToFile(Path.of(outputDir.getAbsolutePath(), name + "_states" + model + ".csv").toFile(), //
                     modelState, textState, recommendationState, connectionState);
-            FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies" + model + ".csv").toFile(),
-                    inconsistencyState);
+
+            if (inconsistencyState != null) {
+                FilePrinter.writeInconsistenciesToFile(Path.of(outputDir.getAbsolutePath(), name + "_inconsistencies" + model + ".csv").toFile(),
+                        inconsistencyState);
+            }
         }
     }
 
@@ -367,7 +374,7 @@ public final class FilePrinter {
     /**
      * Writes the given text to the file with the given name/path.
      * Truncates existing files, creates the file if not existent and writes in UTF-8.
-     * 
+     *
      * @param filename the name/path of the file
      * @param text     the text to write
      */
@@ -379,7 +386,7 @@ public final class FilePrinter {
     /**
      * Writes the given text to the given file (as path).
      * Truncates existing files, creates the file if not existent and writes in UTF-8.
-     * 
+     *
      * @param file the path of the file
      * @param text the text to write
      */
