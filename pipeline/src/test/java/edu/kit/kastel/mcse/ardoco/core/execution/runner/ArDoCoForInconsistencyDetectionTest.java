@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 
-class ArDoCoForInconsistencyDetectionTest extends RunnerTestBase {
+class ArDoCoForInconsistencyDetectionTest extends RunnerBaseTest {
 
     @Test
     @DisplayName("Test ArDoCo for Inconsistency Detection (PCM)")

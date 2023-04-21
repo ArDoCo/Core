@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class RunnerTestBase {
+class RunnerBaseTest {
     protected final String inputText = "src/test/resources/teastore.txt";
     protected final String inputModelArchitecture = "src/test/resources/teastore.repository";
     protected final String inputModelArchitectureUml = "src/test/resources/teastore.uml";

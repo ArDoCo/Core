@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 
-class ArDoCoForSadSamTraceabilityLinkRecoveryTest extends RunnerTestBase {
+class ArDoCoForSadSamTraceabilityLinkRecoveryTest extends RunnerBaseTest {
 
     @Test
     @DisplayName("Test ArDoCo for SAD-SAM-TLR (PCM)")

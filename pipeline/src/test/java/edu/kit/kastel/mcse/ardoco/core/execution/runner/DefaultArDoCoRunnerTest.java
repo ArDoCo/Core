@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class DefaultArDoCoRunnerTest extends RunnerTestBase {
+class DefaultArDoCoRunnerTest extends RunnerBaseTest {
 
     @Test
     @DisplayName("Test Builder")
