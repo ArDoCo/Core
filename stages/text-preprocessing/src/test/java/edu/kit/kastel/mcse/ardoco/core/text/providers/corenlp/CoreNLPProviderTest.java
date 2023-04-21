@@ -8,8 +8,6 @@ import java.io.FileNotFoundException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -17,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.base.NlpInformantTest;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLPProvider;
 
 class CoreNLPProviderTest extends NlpInformantTest {
-    private static final Logger logger = LoggerFactory.getLogger(CoreNLPProviderTest.class);
     protected static String inputText = "src/test/resources/teastore.txt";
 
     private static CoreNLPProvider coreNLPProvider = null;

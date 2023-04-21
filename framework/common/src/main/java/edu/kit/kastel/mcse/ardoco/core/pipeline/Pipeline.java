@@ -41,9 +41,9 @@ public class Pipeline extends AbstractPipelineStep {
     }
 
     /**
-     * Returns whether there were any pipeline steps added to the
+     * Returns whether there were any pipeline steps added
      *
-     * @return
+     * @return whether there were any pipeline steps added
      */
     public boolean hasPipelineSteps() {
         return !pipelineSteps.isEmpty();

@@ -65,10 +65,9 @@ public class JavaMethod implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof JavaMethod other)) {
             return false;
         }
-        var other = (JavaMethod) obj;
         return Objects.equals(fullQualified, other.fullQualified);
     }
 

@@ -70,10 +70,9 @@ public class CodeComment implements Serializable {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (!(obj instanceof CodeComment other)) {
             return false;
         }
-        var other = (CodeComment) obj;
         return lineNumber == other.lineNumber && Objects.equals(text, other.text);
     }
 }

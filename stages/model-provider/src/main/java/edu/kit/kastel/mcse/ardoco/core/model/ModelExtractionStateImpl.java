@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 /**
  * This state contains all from the model extracted information. This are the extracted instances and relations. For
  * easier handling, the occurring types and names are stored additionally.
- *
  */
 public class ModelExtractionStateImpl extends AbstractState implements ModelExtractionState {
 
@@ -39,7 +38,9 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     /**
      * Creates a new model extraction state.
      *
-     * @param instances instances of this model extraction state
+     * @param modelId       the model id
+     * @param metamodelType the metamodel type
+     * @param instances     instances of this model extraction state
      */
     public ModelExtractionStateImpl(String modelId, Metamodel metamodelType, ImmutableList<ModelInstance> instances) {
         this.modelId = Objects.requireNonNull(modelId);

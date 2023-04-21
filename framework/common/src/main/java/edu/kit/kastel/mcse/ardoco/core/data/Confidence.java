@@ -12,6 +12,10 @@ import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+/**
+ * This class represents a confidence for a certain (intermediate) result.
+ * Different {@link Claimant}s can add their confidences that get aggregated via one of the {@link AggregationFunctions} to a single confidence value.
+ */
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
     private final AggregationFunctions confidenceAggregator;
@@ -19,11 +23,23 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
     // Claimant, Confidence, MethodName
     private List<Triple<Claimant, Double, String>> agentConfidences;
 
+    /**
+     * Constructor for the confidence with a given aggregator function.
+     *
+     * @param confidenceAggregator
+     */
     public Confidence(AggregationFunctions confidenceAggregator) {
         this.confidenceAggregator = confidenceAggregator;
         this.agentConfidences = new ArrayList<>();
     }
 
+    /**
+     * Constructor for the confidence with a given aggregator function and an initial claimant with a certain probability (confidence).
+     *
+     * @param claimant             the claimant
+     * @param probability          the probability
+     * @param confidenceAggregator the aggregation function
+     */
     public Confidence(Claimant claimant, double probability, AggregationFunctions confidenceAggregator) {
         this(confidenceAggregator);
         this.addAgentConfidence(claimant, probability);
@@ -34,6 +50,11 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         this.agentConfidences = new ArrayList<>(agentConfidence);
     }
 
+    /**
+     * Returns the set of claimants that contribute to this confidence
+     *
+     * @return the claimants
+     */
     public Set<Claimant> getClaimants() {
         return this.agentConfidences.stream().map(Triple::first).collect(Collectors.toUnmodifiableSet());
     }
@@ -43,6 +64,12 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         return new Confidence(this.confidenceAggregator, this.agentConfidences);
     }
 
+    /**
+     * Add a confidence of an agent ({@link Claimant}.
+     *
+     * @param claimant   the claimant
+     * @param confidence the confidence
+     */
     public void addAgentConfidence(Claimant claimant, double confidence) {
         String method = getMethodInClaimant(claimant);
         agentConfidences.add(new Triple<>(claimant, confidence, method));
@@ -68,6 +95,11 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         return "Confidence{" + confidenceAggregator + "=>" + getConfidence() + '}';
     }
 
+    /**
+     * Returns the (aggregated) confidence value
+     *
+     * @return the (aggregated) confidence value
+     */
     public double getConfidence() {
         if (agentConfidences.isEmpty()) {
             return 0;
