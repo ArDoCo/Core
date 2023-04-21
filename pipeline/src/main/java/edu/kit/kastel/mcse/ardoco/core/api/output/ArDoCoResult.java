@@ -11,6 +11,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
@@ -29,7 +31,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyStateImpl;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationStateImpl;
 
 /**
  * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it.
@@ -37,6 +42,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
  * access results such as found trace links and detected inconsistencies.
  */
 public record ArDoCoResult(DataRepository dataRepository) {
+    private static final Logger logger = LoggerFactory.getLogger(ArDoCoResult.class);
 
     /**
      * Returns the name of the project the results are based on.
@@ -205,10 +211,10 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the internal {@link ConnectionState} for the modelId with the given ID or null.
+     * Returns the internal {@link ConnectionState} for the modelId with the given ID or a new and empty state.
      *
      * @param modelId the ID of the model
-     * @return the connection state or null, if there is no {@link ConnectionState} for the given model ID
+     * @return the connection state or a new state, if there is no {@link ConnectionState} for the given model ID
      */
     public ConnectionState getConnectionState(String modelId) {
         if (DataRepositoryHelper.hasConnectionStates(dataRepository)) {
@@ -216,14 +222,15 @@ public record ArDoCoResult(DataRepository dataRepository) {
             var modelState = getModelState(modelId);
             return connectionStates.getConnectionState(modelState.getMetamodel());
         }
-        return null;
+        logger.warn("No ConnectionState found, returning new empty one");
+        return new ConnectionStateImpl();
     }
 
     /**
-     * Returns the internal {@link InconsistencyState} for the modelId with the given ID or null.
+     * Returns the internal {@link InconsistencyState} for the modelId with the given ID or a new and empty state.
      *
      * @param modelId the ID of the model
-     * @return the inconsistency state or null, if there is no {@link InconsistencyState} for the given model ID
+     * @return the inconsistency state or a new state, if there is no {@link InconsistencyState} for the given model ID
      */
     public InconsistencyState getInconsistencyState(String modelId) {
         if (DataRepositoryHelper.hasInconsistencyStates(dataRepository)) {
@@ -231,7 +238,8 @@ public record ArDoCoResult(DataRepository dataRepository) {
             var modelState = getModelState(modelId);
             return inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
         }
-        return null;
+        logger.warn("No InconsistencyState found, returning new empty one");
+        return new InconsistencyStateImpl();
     }
 
     /**
@@ -280,8 +288,12 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @return the recommendation state
      */
     public RecommendationState getRecommendationState(Metamodel metamodel) {
-        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        return recommendationStates.getRecommendationState(metamodel);
+        if (DataRepositoryHelper.hasRecommendationStates(dataRepository)) {
+            var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
+            return recommendationStates.getRecommendationState(metamodel);
+        }
+        logger.warn("No RecommendationState found, returning new empty one");
+        return new RecommendationStateImpl();
     }
 
     public PreprocessingData getPreprocessingData() {

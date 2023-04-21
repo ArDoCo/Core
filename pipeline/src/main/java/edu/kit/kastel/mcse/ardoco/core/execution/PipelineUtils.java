@@ -23,6 +23,14 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLP
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 public class PipelineUtils {
+
+    /**
+     * Private constructor for utility class
+     */
+    private PipelineUtils() {
+        throw new IllegalAccessError();
+    }
+
     /**
      * Creates an {@link InconsistencyChecker} and applies the additional configuration to it.
      *

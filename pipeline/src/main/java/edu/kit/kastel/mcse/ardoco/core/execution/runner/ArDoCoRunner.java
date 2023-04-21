@@ -17,7 +17,7 @@ public abstract class ArDoCoRunner {
     private File outputDirectory;
     protected boolean isSetUp = false;
 
-    public ArDoCoRunner(String projectName) {
+    protected ArDoCoRunner(String projectName) {
         this.arDoCo = new ArDoCo(projectName);
         outputDirectory = null;
     }
