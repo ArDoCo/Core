@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 /**
  * This analyzer classifies all nodes, containing separators, as names and adds them as mappings to the current text
  * extraction state.
- *
  */
 
 public class SeparatedNamesInformant extends Informant {
@@ -26,6 +25,8 @@ public class SeparatedNamesInformant extends Informant {
 
     /**
      * Prototype constructor.
+     *
+     * @param dataRepository the {@link DataRepository}
      */
     public SeparatedNamesInformant(DataRepository dataRepository) {
         super(SeparatedNamesInformant.class.getSimpleName(), dataRepository);

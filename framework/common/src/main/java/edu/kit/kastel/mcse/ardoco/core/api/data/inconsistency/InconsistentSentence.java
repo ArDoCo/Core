@@ -11,14 +11,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
 /**
  * This record represents an inconsistent sentence consisting of a sentence and all the inconsistencies that were found
  * within this sentence.
- * 
  */
 public record InconsistentSentence(Sentence sentence, List<Inconsistency> inconsistencies) {
 
     /**
      * Creates a new instance with only one inconsistency. The underlying list is populated with the given
      * inconsistency.
-     * 
+     *
      * @param sentence      the sentence
      * @param inconsistency the inconsistency
      */
@@ -28,8 +27,9 @@ public record InconsistentSentence(Sentence sentence, List<Inconsistency> incons
 
     /**
      * Adds an inconsistency to the list of inconsistencies of this sentence.
-     * 
+     *
      * @param inconsistency the inconsistency
+     * @return whether the inconsistency was added successfully
      */
     public boolean addInconsistency(Inconsistency inconsistency) {
         return inconsistencies.add(inconsistency);
@@ -38,7 +38,7 @@ public record InconsistentSentence(Sentence sentence, List<Inconsistency> incons
     /**
      * Creates and returns an info string that contains the sentence number, the text of the sentence, and the reasons
      * of the inconsistencies
-     * 
+     *
      * @return an info string
      */
     public String getInfoString() {

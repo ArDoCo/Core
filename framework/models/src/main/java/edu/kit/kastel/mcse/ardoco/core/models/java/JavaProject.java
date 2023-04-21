@@ -20,7 +20,7 @@ public class JavaProject implements Serializable {
 
     /**
      * @param classOrInterface a java class or interface
-     * @return add a {@link JavaClassOrInterface} to the project
+     * @return add a {@link JavaClassOrInterface} to the project.
      */
     public boolean addClassOrInterface(JavaClassOrInterface classOrInterface) {
         return this.classesAndInterfaces.add(classOrInterface);
@@ -49,7 +49,7 @@ public class JavaProject implements Serializable {
     }
 
     /**
-     * @return the classes
+     * @return the classes.
      */
     public List<JavaClassOrInterface> getClasses() {
         return getClassesAndInterfaces().stream().filter(Predicate.not(JavaClassOrInterface::isInterface)).toList();

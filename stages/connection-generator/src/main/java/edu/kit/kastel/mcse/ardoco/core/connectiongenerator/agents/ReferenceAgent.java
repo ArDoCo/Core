@@ -13,7 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 /**
  * The reference solver finds instances mentioned in the text extraction state as names. If it founds some similar names
  * it creates recommendations.
- *
  */
 public class ReferenceAgent extends PipelineAgent {
 
@@ -24,6 +23,8 @@ public class ReferenceAgent extends PipelineAgent {
 
     /**
      * Create the agent.
+     *
+     * @param dataRepository the {@link DataRepository}
      */
     public ReferenceAgent(DataRepository dataRepository) {
         super(ReferenceAgent.class.getSimpleName(), dataRepository);

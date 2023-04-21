@@ -3,6 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 
+/**
+ * This interface represents an identified inconsistency of a certain type with a certain reason.
+ */
 public interface Inconsistency {
 
     /**

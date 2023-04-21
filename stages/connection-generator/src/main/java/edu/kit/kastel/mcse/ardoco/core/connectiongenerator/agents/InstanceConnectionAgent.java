@@ -12,7 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
  * This connector finds names of model instance in recommended instances.
- *
  */
 public class InstanceConnectionAgent extends PipelineAgent {
     private final List<Informant> informants;
@@ -22,6 +21,8 @@ public class InstanceConnectionAgent extends PipelineAgent {
 
     /**
      * Create the agent.
+     *
+     * @param dataRepository the {@link DataRepository}
      */
     public InstanceConnectionAgent(DataRepository dataRepository) {
         super(InstanceConnectionAgent.class.getSimpleName(), dataRepository);

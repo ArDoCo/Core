@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
+import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
 import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
@@ -35,7 +36,7 @@ public class HoldBackRunResultsProducer {
      * Runs ArDoCo or the ArDoCo-backed baseline approach multiple times to produce results. The first run calls ArDoCo
      * normally, in further runs one element is held back each time (so that each element was held back once). This way,
      * we can simulate missing elements.
-     * 
+     *
      * @param project             the project that should be run
      * @param useBaselineApproach set to true if the baseline approach should be used instead of ArDoCo
      * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced
@@ -87,14 +88,14 @@ public class HoldBackRunResultsProducer {
         DataRepositoryHelper.putInputText(dataRepository, text);
         var additionalConfigs = project.getAdditionalConfigurations();
 
-        arDoCo.addPipelineStep(ArDoCo.getTextPreprocessing(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getTextPreprocessing(additionalConfigs, dataRepository));
 
         addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
             arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
         } else {
-            arDoCo.addPipelineStep(ArDoCo.getInconsistencyChecker(additionalConfigs, dataRepository));
+            arDoCo.addPipelineStep(PipelineUtils.getInconsistencyChecker(additionalConfigs, dataRepository));
         }
 
         return arDoCo;
@@ -120,7 +121,7 @@ public class HoldBackRunResultsProducer {
         if (useInconsistencyBaseline) {
             arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
         } else {
-            arDoCo.addPipelineStep(ArDoCo.getInconsistencyChecker(additionalConfigs, dataRepository));
+            arDoCo.addPipelineStep(PipelineUtils.getInconsistencyChecker(additionalConfigs, dataRepository));
         }
         return arDoCo;
     }
@@ -128,8 +129,8 @@ public class HoldBackRunResultsProducer {
     private static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
             Map<String, String> additionalConfigs) {
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
-        arDoCo.addPipelineStep(ArDoCo.getTextExtraction(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(ArDoCo.getRecommendationGenerator(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(ArDoCo.getConnectionGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getTextExtraction(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
     }
 }

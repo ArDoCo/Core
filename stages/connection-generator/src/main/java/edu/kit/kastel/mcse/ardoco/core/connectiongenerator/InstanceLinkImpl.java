@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * Represents a trace link between an instance of the extracted model and a recommended instance.
- *
  */
 public class InstanceLinkImpl implements InstanceLink {
 
@@ -38,6 +37,7 @@ public class InstanceLinkImpl implements InstanceLink {
      *
      * @param textualInstance the recommended instance
      * @param modelInstance   the extracted instance
+     * @param claimant        the claimant
      * @param probability     the probability of this link
      */
     public InstanceLinkImpl(RecommendedInstance textualInstance, ModelInstance modelInstance, Claimant claimant, double probability) {
@@ -85,10 +85,9 @@ public class InstanceLinkImpl implements InstanceLink {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof InstanceLinkImpl other)) {
             return false;
         }
-        var other = (InstanceLinkImpl) obj;
         return Objects.equals(modelInstance, other.modelInstance) && Objects.equals(textualInstance, other.textualInstance);
     }
 

@@ -12,6 +12,12 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
     private final String id;
     private final DataRepository dataRepository;
 
+    /**
+     * Constructor for a pipeline step
+     *
+     * @param id             the id of the stage
+     * @param dataRepository the {@link DataRepository} that should be used
+     */
     protected AbstractPipelineStep(String id, DataRepository dataRepository) {
         this.id = id;
         this.dataRepository = dataRepository;
@@ -24,7 +30,7 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
 
     /**
      * Returns the {@link DataRepository} that is used for saving and fetching data.
-     * 
+     *
      * @return the repository for used data
      */
     protected DataRepository getDataRepository() {
@@ -33,7 +39,7 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
 
     /**
      * Returns the id
-     * 
+     *
      * @return the id
      */
     public final String getId() {
