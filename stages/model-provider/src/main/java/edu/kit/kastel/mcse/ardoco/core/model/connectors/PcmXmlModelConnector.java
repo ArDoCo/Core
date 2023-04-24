@@ -14,19 +14,20 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
-import edu.kit.kastel.mcse.ardoco.core.models.old.pcm.PCMModel;
-import edu.kit.kastel.mcse.ardoco.core.models.old.pcm.PCMRepository;
+import edu.kit.kastel.mcse.ardoco.core.models.modelgenerators.architecture.pcm.parser.PcmModel;
+import edu.kit.kastel.mcse.ardoco.core.models.modelgenerators.architecture.pcm.parser.PcmRepository;
 
-public class PcmXMLModelConnector implements ModelConnector {
+// TODO we currently more or less have two connectors/extractors: this one and the PcmExtractor
+public class PcmXmlModelConnector implements ModelConnector {
 
-    private final PCMRepository repository;
+    private final PcmRepository repository;
 
-    public PcmXMLModelConnector(File file) throws IOException {
+    public PcmXmlModelConnector(File file) throws IOException {
         this(new FileInputStream(file));
     }
 
-    public PcmXMLModelConnector(InputStream is) {
-        PCMModel pcmModel = new PCMModel(is);
+    public PcmXmlModelConnector(InputStream is) {
+        PcmModel pcmModel = new PcmModel(is);
         this.repository = Objects.requireNonNull(pcmModel.getRepository());
     }
 

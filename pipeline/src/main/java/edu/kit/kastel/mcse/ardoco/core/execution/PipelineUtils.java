@@ -13,9 +13,8 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelProviderAgent;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.JavaJsonModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.UMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.UmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
@@ -84,19 +83,6 @@ public class PipelineUtils {
     }
 
     /**
-     * Creates a {@link ModelProviderInformant} for Java.
-     *
-     * @param inputCodeModel the path to the input Java Code Model
-     * @param dataRepository the data repository
-     * @return A ModelProvider for the Java Code Model
-     * @throws IOException if the Code Model cannot be accessed
-     */
-    public static ModelProviderInformant getJavaModelProvider(File inputCodeModel, DataRepository dataRepository) throws IOException {
-        ModelConnector javaModel = new JavaJsonModelConnector(inputCodeModel);
-        return new ModelProviderInformant(dataRepository, javaModel);
-    }
-
-    /**
      * Creates a {@link ModelProviderInformant} for PCM.
      *
      * @param inputArchitectureModel the path to the input PCM
@@ -108,8 +94,8 @@ public class PipelineUtils {
     public static ModelProviderAgent getArchitectureModelProvider(File inputArchitectureModel, ArchitectureModelType architectureModelType,
             DataRepository dataRepository) throws IOException {
         ModelConnector connector = switch (architectureModelType) {
-        case PCM -> new PcmXMLModelConnector(inputArchitectureModel);
-        case UML -> new UMLModelConnector(inputArchitectureModel);
+            case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
+            case UML -> new UmlModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
     }

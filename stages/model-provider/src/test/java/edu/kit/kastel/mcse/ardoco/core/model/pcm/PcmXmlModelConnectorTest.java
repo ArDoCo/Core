@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -19,13 +18,13 @@ import org.xml.sax.SAXException;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
 
-class PcmXMLModelConnectorTest {
-    private static final Logger logger = LoggerFactory.getLogger(PcmXMLModelConnectorTest.class);
+class PcmXmlModelConnectorTest {
+    private static final Logger logger = LoggerFactory.getLogger(PcmXmlModelConnectorTest.class);
 
-    private static PcmXMLModelConnector loadModel(String modelFile) throws ReflectiveOperationException, IOException {
-        return new PcmXMLModelConnector(new File(modelFile));
+    private static PcmXmlModelConnector loadModel(String modelFile) throws ReflectiveOperationException, IOException {
+        return new PcmXmlModelConnector(new File(modelFile));
     }
 
     @Test
@@ -100,8 +99,8 @@ class PcmXMLModelConnectorTest {
     @Test
     @DisplayName("Simply test loading of MEDIASTORE")
     void testLoadMediaStore() throws Exception {
-        InputStream is = Objects.requireNonNull(PcmXMLModelConnectorTest.class.getResourceAsStream("/mediastore.repository"));
-        PcmXMLModelConnector connector = new PcmXMLModelConnector(is);
+        InputStream is = Objects.requireNonNull(PcmXmlModelConnectorTest.class.getResourceAsStream("/mediastore.repository"));
+        PcmXmlModelConnector connector = new PcmXmlModelConnector(is);
         is.close();
 
         Assertions.assertEquals("_7zbcYHDhEeSqnN80MQ2uGw", connector.getModelId());

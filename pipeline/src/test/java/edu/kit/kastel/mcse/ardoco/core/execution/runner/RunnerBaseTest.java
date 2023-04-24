@@ -13,7 +13,6 @@ class RunnerBaseTest {
     protected final String inputModelArchitecture = "src/test/resources/teastore.repository";
     protected final String inputModelArchitectureUml = "src/test/resources/teastore.uml";
     protected final String outputDir = "src/test/resources/testout";
-    protected final String inputModelCode = "src/test/resources/teastore-code.json";
     protected final String additionalConfigs = "src/test/resources/additionalConfig.txt";
     protected final String projectName = "teastore";
 
@@ -33,7 +32,6 @@ class RunnerBaseTest {
         File inputModelArchitectureFile = new File(inputModelArchitecture);
         File inputModelArchitectureUmlFile = new File(inputModelArchitectureUml);
         File outputDirFile = new File(outputDir);
-        File inputModelCodeFile = new File(inputModelCode);
         File additionalConfigsFile = new File(additionalConfigs);
 
         Assertions.assertAll(//
@@ -41,7 +39,6 @@ class RunnerBaseTest {
                 () -> Assertions.assertTrue(inputModelArchitectureFile.exists()),//
                 () -> Assertions.assertTrue(inputModelArchitectureUmlFile.exists()),//
                 () -> Assertions.assertTrue(outputDirFile.exists()),//
-                () -> Assertions.assertTrue(inputModelCodeFile.exists()),//
                 () -> Assertions.assertTrue(additionalConfigsFile.exists())//
         );
     }

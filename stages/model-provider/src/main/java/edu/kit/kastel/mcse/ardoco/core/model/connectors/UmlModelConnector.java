@@ -14,18 +14,18 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
-import edu.kit.kastel.mcse.ardoco.core.models.old.uml.UMLModel;
-import edu.kit.kastel.mcse.ardoco.core.models.old.uml.UMLModelRoot;
+import edu.kit.kastel.mcse.ardoco.core.models.modelgenerators.architecture.uml.parser.UmlModel;
+import edu.kit.kastel.mcse.ardoco.core.models.modelgenerators.architecture.uml.parser.UmlModelRoot;
 
-public class UMLModelConnector implements ModelConnector {
-    private final UMLModelRoot model;
+public class UmlModelConnector implements ModelConnector {
+    private final UmlModelRoot model;
 
-    public UMLModelConnector(File file) throws IOException {
+    public UmlModelConnector(File file) throws IOException {
         this(new FileInputStream(file));
     }
 
-    public UMLModelConnector(InputStream is) {
-        UMLModel umlModel = new UMLModel(is);
+    public UmlModelConnector(InputStream is) {
+        UmlModel umlModel = new UmlModel(is);
         this.model = Objects.requireNonNull(umlModel.getModel());
     }
 

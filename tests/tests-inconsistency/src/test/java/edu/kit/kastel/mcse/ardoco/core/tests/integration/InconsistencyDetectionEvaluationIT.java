@@ -36,7 +36,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
@@ -79,7 +79,7 @@ class InconsistencyDetectionEvaluationIT {
 
     /**
      * Tests the inconsistency detection for missing model elements on all {@link Project projects}.
-     *
+     * <p>
      * NOTE: if you only want to test a specific project, you can simply set up the EnumSource. For more details, see
      * https://www.baeldung.com/parameterized-tests-junit-5#3-enum
      * Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
@@ -304,9 +304,9 @@ class InconsistencyDetectionEvaluationIT {
         return TestUtil.compareInconsistencies(arDoCoResult, actualSentences, expectedLines);
     }
 
-    private static PcmXMLModelConnector getPcmModel(Project project) {
+    private static PcmXmlModelConnector getPcmModel(Project project) {
         try {
-            return new PcmXMLModelConnector(project.getModelFile());
+            return new PcmXmlModelConnector(project.getModelFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -321,17 +321,17 @@ class InconsistencyDetectionEvaluationIT {
 
     private void checkResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     private void writeOutResults(Project project, List<EvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
@@ -506,8 +506,8 @@ class InconsistencyDetectionEvaluationIT {
         var falseNegatives = result.falseNegatives().toList();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
 
-        var results = EvaluationResults.createEvaluationResults(new ResultMatrix<String>(truePositives.toImmutable(), 0, falsePositives.toImmutable(),
-                falseNegatives.toImmutable()));
+        var results = EvaluationResults.createEvaluationResults(
+                new ResultMatrix<String>(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives.toImmutable()));
         allResults.add(results);
     }
 
@@ -523,8 +523,8 @@ class InconsistencyDetectionEvaluationIT {
         var initialInconsistencies = getInitialInconsistencies(data);
         outputBuilder.append("Initial Inconsistencies: ").append(initialInconsistencies.size());
         var initialInconsistenciesSentences = initialInconsistencies.collect(MissingModelInstanceInconsistency::sentence)
-                .toSortedSet()
-                .collect(Object::toString);
+                                                                    .toSortedSet()
+                                                                    .collect(Object::toString);
         outputBuilder.append(LINE_SEPARATOR).append(listToString(initialInconsistenciesSentences));
     }
 
