@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * at spaces and can be seen as multiple names. Therefore, the longestName (and type) is the original name (type) of the
  * instance.
  */
-public class ModelInstanceImpl implements ModelInstance {
+public class ModelInstanceImpl extends ModelInstance {
 
     private final String fullName;
     private final String fullType;
@@ -31,6 +31,7 @@ public class ModelInstanceImpl implements ModelInstance {
      * @param uid  unique identifier of the instance needed for trace linking.
      */
     public ModelInstanceImpl(String name, String type, String uid) {
+        super(name, uid);
 
         String splitName = CommonUtilities.splitCases(name);
         names = Lists.mutable.with(splitName.split(" "));

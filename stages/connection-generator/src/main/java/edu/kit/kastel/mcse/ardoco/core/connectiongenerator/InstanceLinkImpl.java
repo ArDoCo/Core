@@ -20,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * Represents a trace link between an instance of the extracted model and a recommended instance.
  */
-public class InstanceLinkImpl implements InstanceLink {
+public class InstanceLinkImpl extends InstanceLink {
 
     private final RecommendedInstance textualInstance;
     private final ModelInstance modelInstance;

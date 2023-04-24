@@ -11,37 +11,22 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeCompilationUnit;
  * endpoint. Trace links are created to connect corresponding elements of an
  * architecture and a code model.
  */
-public class SamCodeTraceLink {
-
-    private EndpointTuple endpointTuple;
+public class SamCodeTraceLink extends TraceLink {
 
     /**
      * Creates a new trace link between an architecture endpoint and a code endpoint
      * as given in the specified endpoint tuple.
      *
-     * @param endpointTuple the architecture endpoint and the code endpoint of the
-     *                      trace link to be created
+     * @param architectureEndpoint the architecture endpoint
+     * @param codeEndpoint         the code endpoint
      */
-    public SamCodeTraceLink(EndpointTuple endpointTuple) {
-        this.endpointTuple = endpointTuple;
-    }
-
     public SamCodeTraceLink(ArchitectureItem architectureEndpoint, CodeCompilationUnit codeEndpoint) {
-        this.endpointTuple = new EndpointTuple(architectureEndpoint, codeEndpoint);
-    }
-
-    /**
-     * Returns the endpoint tuple of this trace link.
-     *
-     * @return the endpoint tuple of this trace link
-     */
-    public EndpointTuple getEndpointTuple() {
-        return endpointTuple;
+        super(new EndpointTuple(architectureEndpoint, codeEndpoint));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(endpointTuple);
+        return Objects.hash(getEndpointTuple());
     }
 
     @Override
@@ -49,15 +34,14 @@ public class SamCodeTraceLink {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof SamCodeTraceLink other)) {
             return false;
         }
-        SamCodeTraceLink other = (SamCodeTraceLink) obj;
-        return Objects.equals(endpointTuple, other.endpointTuple);
+        return Objects.equals(getEndpointTuple(), other.getEndpointTuple());
     }
 
     @Override
     public String toString() {
-        return endpointTuple.toString();
+        return getEndpointTuple().toString();
     }
 }
