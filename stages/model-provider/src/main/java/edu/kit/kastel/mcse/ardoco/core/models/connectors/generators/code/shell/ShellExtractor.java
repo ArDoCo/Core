@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.shell;
 
 import java.io.File;

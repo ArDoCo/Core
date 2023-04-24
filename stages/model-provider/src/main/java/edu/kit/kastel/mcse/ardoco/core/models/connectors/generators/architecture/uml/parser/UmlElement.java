@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser;
 
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.xmlelements.PackagedElement;

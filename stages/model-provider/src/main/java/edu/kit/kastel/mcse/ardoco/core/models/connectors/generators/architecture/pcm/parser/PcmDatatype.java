@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser;
 
 import org.fuchss.xmlobjectmapper.annotation.XMLClass;

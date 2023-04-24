@@ -16,10 +16,10 @@ class DefaultArDoCoRunnerTest extends RunnerBaseTest {
     void testBuilder() {
         var builder = new DefaultArDoCoRunner.Builder("Test");
         builder.withInputText(new File(inputText))
-               .withInputModelArchitecture(new File(inputModelArchitecture))
-               .withPcmModelType()
-               .withOutputDir(new File(outputDir))
-               .withAdditionalConfigs(new File(additionalConfigs));
+                .withInputModelArchitecture(new File(inputModelArchitecture))
+                .withPcmModelType()
+                .withOutputDir(new File(outputDir))
+                .withAdditionalConfigs(new File(additionalConfigs));
 
         var runner = builder.build();
         testRunnerAssertions(runner);
@@ -30,10 +30,10 @@ class DefaultArDoCoRunnerTest extends RunnerBaseTest {
     void testBuilderUml() {
         var builder = new DefaultArDoCoRunner.Builder("Test");
         builder.withInputText(new File(inputText))
-               .withInputModelArchitecture(new File(inputModelArchitectureUml))
-               .withUmlModelType()
-               .withOutputDir(new File(outputDir))
-               .withAdditionalConfigs(new File(additionalConfigs));
+                .withInputModelArchitecture(new File(inputModelArchitectureUml))
+                .withUmlModelType()
+                .withOutputDir(new File(outputDir))
+                .withAdditionalConfigs(new File(additionalConfigs));
 
         var runner = builder.build();
         testRunnerAssertions(runner);
@@ -44,9 +44,9 @@ class DefaultArDoCoRunnerTest extends RunnerBaseTest {
     void testBuilderWithoutOptionalArguments() {
         var builder = new DefaultArDoCoRunner.Builder("Test");
         builder.withInputText(new File(inputText))
-               .withInputModelArchitecture(new File(inputModelArchitecture))
-               .withPcmModelType()
-               .withOutputDir(new File(outputDir));
+                .withInputModelArchitecture(new File(inputModelArchitecture))
+                .withPcmModelType()
+                .withOutputDir(new File(outputDir));
 
         var runner = builder.build();
         testRunnerAssertions(runner);
@@ -65,10 +65,10 @@ class DefaultArDoCoRunnerTest extends RunnerBaseTest {
     void testBuilderStringPaths() {
         var builder = new DefaultArDoCoRunner.Builder("Test");
         builder.withInputText(inputText)
-               .withInputModelArchitecture(inputModelArchitecture)
-               .withPcmModelType()
-               .withOutputDir(outputDir)
-               .withAdditionalConfigs(additionalConfigs);
+                .withInputModelArchitecture(inputModelArchitecture)
+                .withPcmModelType()
+                .withOutputDir(outputDir)
+                .withAdditionalConfigs(additionalConfigs);
 
         var runner = builder.build();
         testRunnerAssertions(runner);
@@ -84,10 +84,10 @@ class DefaultArDoCoRunnerTest extends RunnerBaseTest {
         try {
             builder = new DefaultArDoCoRunner.Builder("Test");
             builder.withInputText(inputText)
-                   .withInputModelArchitecture(inputModelArchitecture)
-                   .withPcmModelType()
-                   .withOutputDir(outputDir)
-                   .withAdditionalConfigs(config);
+                    .withInputModelArchitecture(inputModelArchitecture)
+                    .withPcmModelType()
+                    .withOutputDir(outputDir)
+                    .withAdditionalConfigs(config);
         } catch (IOException e) {
             Assertions.fail(e.getMessage());
         }

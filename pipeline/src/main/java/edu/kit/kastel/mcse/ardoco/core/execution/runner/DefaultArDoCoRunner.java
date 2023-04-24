@@ -103,8 +103,8 @@ public final class DefaultArDoCoRunner extends ArDoCoRunner {
         if (!(obj instanceof DefaultArDoCoRunner other))
             return false;
         return Objects.equals(this.inputText, other.inputText) && Objects.equals(this.inputModelArchitecture, other.inputModelArchitecture) && Objects.equals(
-                this.inputArchitectureModelType, other.inputArchitectureModelType) && Objects.equals(this.additionalConfigs,
-                other.additionalConfigs) && Objects.equals(this.name, other.name);
+                this.inputArchitectureModelType, other.inputArchitectureModelType) && Objects.equals(this.additionalConfigs, other.additionalConfigs) && Objects
+                        .equals(this.name, other.name);
     }
 
     @Override
