@@ -5,29 +5,33 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 
 /**
- * The Interface IInstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
+ * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
  */
-public interface InstanceLink {
+public abstract class InstanceLink extends EndpointTuple {
+
+    protected InstanceLink(RecommendedInstance textualInstance, ModelInstance modelInstance) {
+        super(textualInstance, modelInstance);
+    }
 
     /**
      * Returns the probability of the correctness of this link.
      *
      * @return the probability of this link
      */
-    double getProbability();
+    public abstract double getProbability();
 
     /**
      * Returns the recommended instance.
      *
      * @return the textual instance
      */
-    RecommendedInstance getTextualInstance();
+    public abstract RecommendedInstance getTextualInstance();
 
     /**
      * Returns the model instance.
      *
      * @return the extracted instance
      */
-    ModelInstance getModelInstance();
+    public abstract ModelInstance getModelInstance();
 
 }

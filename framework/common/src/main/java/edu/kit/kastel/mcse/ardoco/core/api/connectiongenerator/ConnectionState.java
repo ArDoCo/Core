@@ -64,17 +64,17 @@ public interface ConnectionState extends IConfigurable {
      * @return list of tracelinks within this connection state
      */
     default ImmutableSet<SadSamTraceLink> getTraceLinks() {
-        MutableSet<SadSamTraceLink> tracelinks = Sets.mutable.empty();
+        MutableSet<SadSamTraceLink> traceLinks = Sets.mutable.empty();
         for (var instanceLink : getInstanceLinks()) {
             var textualInstance = instanceLink.getTextualInstance();
             for (var nm : textualInstance.getNameMappings()) {
                 for (var word : nm.getWords()) {
-                    var tracelink = new SadSamTraceLink(instanceLink, instanceLink.getModelInstance(), word);
-                    tracelinks.add(tracelink);
+                    var traceLink = new SadSamTraceLink(instanceLink, word);
+                    traceLinks.add(traceLink);
                 }
             }
         }
-        return tracelinks.toImmutable();
+        return traceLinks.toImmutable();
     }
 
     /**

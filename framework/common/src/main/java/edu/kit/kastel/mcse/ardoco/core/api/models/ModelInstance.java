@@ -6,41 +6,45 @@ import org.eclipse.collections.api.list.ImmutableList;
 /**
  * The Interface IModelInstance defines instances from models.
  */
-public interface ModelInstance {
+public abstract class ModelInstance extends Entity {
+
+    public ModelInstance(String name, String id) {
+        super(name, id);
+    }
 
     /**
      * Returns the full name of the instance.
      *
      * @return the original name of the instance
      */
-    String getFullName();
+    public abstract String getFullName();
 
     /**
      * Returns the full type of the instance.
      *
      * @return the original type of the instance
      */
-    String getFullType();
+    public abstract String getFullType();
 
     /**
      * Returns all name parts of the instance.
      *
      * @return all name parts of the instance as list
      */
-    ImmutableList<String> getNameParts();
+    public abstract ImmutableList<String> getNameParts();
 
     /**
      * Returns all type parts of the instance.
      *
      * @return all type parts of the instance as list
      */
-    ImmutableList<String> getTypeParts();
+    public abstract ImmutableList<String> getTypeParts();
 
     /**
      * Returns the unique identifier of the instance.
      *
      * @return the unique identifier of the instance
      */
-    String getUid();
+    public abstract String getUid();
 
 }
