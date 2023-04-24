@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.github.ardoco.core</groupId>
         <artifactId>kotlin-base</artifactId>
-        <version>0.8.0-SNAPSHOT</version>
+        <version>0.8.2-SNAPSHOT</version>
         <relativePath>../../framework/kotlin-base/pom.xml</relativePath>
     </parent>
 
