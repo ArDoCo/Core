@@ -23,6 +23,8 @@ public class ProjectNameFilterAgent extends PipelineAgent {
 
     /**
      * Create the agent.
+     *
+     * @param dataRepository the {@link DataRepository}
      */
     public ProjectNameFilterAgent(DataRepository dataRepository) {
         super("ProjectNameFilterAgent", dataRepository);

@@ -15,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
  * The analyzer examines the incoming dependency arcs of the current node.
- *
  */
 public class InDepArcsInformant extends Informant {
 
@@ -27,6 +26,8 @@ public class InDepArcsInformant extends Informant {
 
     /**
      * Prototype constructor.
+     *
+     * @param data the {@link DataRepository}
      */
     public InDepArcsInformant(DataRepository data) {
         super(InDepArcsInformant.class.getSimpleName(), data);

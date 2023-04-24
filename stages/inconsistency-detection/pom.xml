@@ -4,10 +4,14 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>stages</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.8.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>inconsistency-detection</artifactId>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <dependencies>
     <dependency>

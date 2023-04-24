@@ -81,6 +81,7 @@ public interface ConnectionState extends IConfigurable {
      *
      * @param recommendedModelInstance the recommended instance
      * @param instance                 the model instance
+     * @param claimant                 the claimant
      * @param probability              the probability of the link
      */
     void addToLinks(RecommendedInstance recommendedModelInstance, ModelInstance instance, Claimant claimant, double probability);

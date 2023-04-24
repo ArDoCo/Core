@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
  * The analyzer classifies nouns.
- *
  */
 public class NounInformant extends Informant {
     @Configurable
@@ -27,6 +26,8 @@ public class NounInformant extends Informant {
 
     /**
      * Prototype constructor.
+     *
+     * @param data the {@link DataRepository}
      */
     public NounInformant(DataRepository data) {
         super(NounInformant.class.getSimpleName(), data);

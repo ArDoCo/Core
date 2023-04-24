@@ -4,11 +4,15 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>framework</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.8.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>common</artifactId>
-  <name>Common Utilities &amp; Pipeline Definitions</name>
+  <name>Common Utilities and Pipeline Definitions</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

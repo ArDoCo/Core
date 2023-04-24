@@ -20,6 +20,8 @@ public class TextPreprocessingAgent extends PipelineAgent {
 
     /**
      * Instantiates a new initial text agent.
+     *
+     * @param data the {@link DataRepository}
      */
     public TextPreprocessingAgent(DataRepository data) {
         super(TextPreprocessingAgent.class.getSimpleName(), data);

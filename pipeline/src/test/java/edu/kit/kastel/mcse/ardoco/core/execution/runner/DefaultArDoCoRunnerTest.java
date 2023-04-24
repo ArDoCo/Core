@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.pipeline;
+package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,35 +9,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
-
-class ArDoCoRunnerTest {
-    private final String inputText = "src/test/resources/teastore.txt";
-    private final String inputModelArchitecture = "src/test/resources/teastore.repository";
-    private final String inputModelArchitectureUml = "src/test/resources/teastore.uml";
-    private final String outputDir = "src/test/resources/";
-    private final String inputModelCode = "src/test/resources/teastore-code.json";
-    private final String additionalConfigs = "src/test/resources/additionalConfig.txt";
-
-    private static void testRunnerDefiningArdoco(ArDoCoRunner runner) {
-        Assertions.assertNotNull(runner);
-
-        ArDoCo arDoCo = ArDoCo.getInstance(runner.name());
-        try {
-            arDoCo.definePipeline(runner.inputText(), runner.inputModelArchitecture(), runner.inputArchitectureModelType(), runner.inputModelCode(),
-                    ConfigurationHelper.loadAdditionalConfigs(runner.additionalConfigs()));
-        } catch (IOException e) {
-            Assertions.fail("Could not define ArDoCo");
-        }
-        Assertions.assertNotNull(arDoCo);
-    }
+class DefaultArDoCoRunnerTest extends RunnerBaseTest {
 
     @Test
     @DisplayName("Test Builder")
     void testBuilder() {
-        var builder = new ArDoCoRunner.Builder("Test").withInputText(new File(inputText))
+        var builder = new DefaultArDoCoRunner.Builder("Test");
+        builder.withInputText(new File(inputText))
                 .withInputModelArchitecture(new File(inputModelArchitecture))
                 .withPcmModelType()
                 .withOutputDir(new File(outputDir))
@@ -45,13 +23,14 @@ class ArDoCoRunnerTest {
                 .withAdditionalConfigs(new File(additionalConfigs));
 
         var runner = builder.build();
-        testRunnerDefiningArdoco(runner);
+        testRunnerAssertions(runner);
     }
 
     @Test
     @DisplayName("Test Builder")
     void testBuilderUml() {
-        var builder = new ArDoCoRunner.Builder("Test").withInputText(new File(inputText))
+        var builder = new DefaultArDoCoRunner.Builder("Test");
+        builder.withInputText(new File(inputText))
                 .withInputModelArchitecture(new File(inputModelArchitectureUml))
                 .withUmlModelType()
                 .withOutputDir(new File(outputDir))
@@ -59,25 +38,26 @@ class ArDoCoRunnerTest {
                 .withAdditionalConfigs(new File(additionalConfigs));
 
         var runner = builder.build();
-        testRunnerDefiningArdoco(runner);
+        testRunnerAssertions(runner);
     }
 
     @Test
     @DisplayName("Test Builder w/o optional arguments")
     void testBuilderWithoutOptionalArguments() {
-        var builder = new ArDoCoRunner.Builder("Test").withInputText(new File(inputText))
+        var builder = new DefaultArDoCoRunner.Builder("Test");
+        builder.withInputText(new File(inputText))
                 .withInputModelArchitecture(new File(inputModelArchitecture))
                 .withPcmModelType()
                 .withOutputDir(new File(outputDir));
 
         var runner = builder.build();
-        testRunnerDefiningArdoco(runner);
+        testRunnerAssertions(runner);
     }
 
     @Test
     @DisplayName("Test Builder w/ incomplete arguments")
     void testBuilderIncompleteArguments() {
-        var builder = new ArDoCoRunner.Builder("Test");
+        var builder = new DefaultArDoCoRunner.Builder("Test");
 
         Assertions.assertThrows(IllegalStateException.class, () -> builder.build());
     }
@@ -85,7 +65,8 @@ class ArDoCoRunnerTest {
     @Test
     @DisplayName("Test Builder w/ string paths")
     void testBuilderStringPaths() {
-        var builder = new ArDoCoRunner.Builder("Test").withInputText(inputText)
+        var builder = new DefaultArDoCoRunner.Builder("Test");
+        builder.withInputText(inputText)
                 .withInputModelArchitecture(inputModelArchitecture)
                 .withPcmModelType()
                 .withOutputDir(outputDir)
@@ -93,7 +74,7 @@ class ArDoCoRunnerTest {
                 .withAdditionalConfigs(additionalConfigs);
 
         var runner = builder.build();
-        testRunnerDefiningArdoco(runner);
+        testRunnerAssertions(runner);
     }
 
     @Test
@@ -102,9 +83,10 @@ class ArDoCoRunnerTest {
         Map<String, String> config = Map.of("UnwantedWordsFilter::customBlacklist", "instance,item,name,product,rankings,rating,size",
                 "UnwantedWordsFilter::enableCommonBlacklist", "true");
 
-        ArDoCoRunner.Builder builder = null;
+        DefaultArDoCoRunner.Builder builder = null;
         try {
-            builder = new ArDoCoRunner.Builder("Test").withInputText(inputText)
+            builder = new DefaultArDoCoRunner.Builder("Test");
+            builder.withInputText(inputText)
                     .withInputModelArchitecture(inputModelArchitecture)
                     .withPcmModelType()
                     .withOutputDir(outputDir)
@@ -115,6 +97,6 @@ class ArDoCoRunnerTest {
         }
 
         var runner = builder.build();
-        testRunnerDefiningArdoco(runner);
+        testRunnerAssertions(runner);
     }
 }

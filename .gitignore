@@ -8,6 +8,8 @@ tests/tests-inconsistency/src/test/resources/testout/*
 
 tests/src/test/resources/config.properties
 
+/pipeline/src/test/resources/testout/
+
 tmp*
 
 .vscode/*

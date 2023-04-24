@@ -22,6 +22,7 @@ public class ConnectionStatesImpl implements ConnectionStates {
         return recStates;
     }
 
+    @Override
     public ConnectionStateImpl getConnectionState(Metamodel mm) {
         return connectionStates.get(mm);
     }

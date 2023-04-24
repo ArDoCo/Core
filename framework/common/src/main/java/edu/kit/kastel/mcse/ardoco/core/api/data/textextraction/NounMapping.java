@@ -70,6 +70,7 @@ public interface NounMapping {
     /**
      * Gets the probability for name.
      *
+     * @param mappingKind the kind of mapping
      * @return the probability for name
      */
     double getProbabilityForKind(MappingKind mappingKind);
@@ -96,7 +97,7 @@ public interface NounMapping {
 
     /**
      * Register a listener that will be notified on certain events.
-     * 
+     *
      * @param listener the listener
      * @see #onDelete(NounMapping)
      */

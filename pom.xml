@@ -4,17 +4,17 @@
 
   <groupId>io.github.ardoco.core</groupId>
   <artifactId>parent</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.8.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
-        or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
-        or a relation. To do so, we first create trace links and then make use of them and other information to identify
-        inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
-        Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
-        This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF)
-        and by KASTEL Security Research Labs
-        (46.23.01).</description>
+    or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
+    or a relation. To do so, we first create trace links and then make use of them and other information to identify
+    inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
+    Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
+    This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research Labs
+    (46.23.01).</description>
+  <url>https://github.com/ArDoCo/Core</url>
   <licenses>
     <license>
       <name>MIT License</name>
@@ -77,11 +77,11 @@
 
     <!-- Plugin Versions -->
     <slf4j.version>2.0.7</slf4j.version>
-    <spotless.version>2.35.0</spotless.version>
+    <spotless.version>2.36.0</spotless.version>
     <junit.version>5.9.2</junit.version>
     <eclipse-collections.version>12.0.0.M1</eclipse-collections.version>
-    <jackson.version>2.15.0-rc1</jackson.version>
-    <javaparser.version>3.25.1</javaparser.version>
+    <jackson.version>2.15.0-rc3</jackson.version>
+    <javaparser.version>3.25.2</javaparser.version>
     <error-prone.version>2.18.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
 
@@ -343,7 +343,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>flatten-maven-plugin</artifactId>
-          <version>1.4.0</version>
+          <version>1.4.1</version>
           <configuration>
             <updatePomFile>true</updatePomFile>
             <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -463,7 +463,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -514,7 +514,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.8</version>
+        <version>0.8.9</version>
         <executions>
           <execution>
             <id>prepare-agent</id>

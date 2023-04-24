@@ -15,12 +15,15 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
 public class ConnectionStateFile {
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionStateFile.class);
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static final String VALUE_SEPARATOR = "|";
@@ -44,6 +47,10 @@ public class ConnectionStateFile {
         var builder = new StringBuilder();
 
         var connectionState = arDoCoResult.getConnectionState(modelId);
+        if (connectionState == null) {
+            logger.error("Could not load ConnectionState. Abort writing.");
+            return;
+        }
 
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
@@ -94,6 +101,10 @@ public class ConnectionStateFile {
         var builder = new StringBuilder();
 
         var currentConnectionState = arDoCoResult.getConnectionState(modelId);
+        if (currentConnectionState == null) {
+            logger.error("Could not load ConnectionState. Abort writing diff.");
+            return false;
+        }
         var currentLinks = currentConnectionState.getInstanceLinks().toSortedListBy(il -> il.getModelInstance().getUid());
 
         builder.append("# ").append(arDoCoResult.getProjectName());

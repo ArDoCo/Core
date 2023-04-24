@@ -20,9 +20,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.DefaultArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.ConnectionStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.RecommendationStateFile;
@@ -49,14 +48,22 @@ public class ChangedStatesTest {
             File inputModel = project.getModelFile();
             File inputText = project.getTextFile();
             String name = project.name().toLowerCase();
-            ArDoCo arDoCo = ArDoCo.getInstance(name);
 
             var arDoCoResult = DATA_MAP.get(project);
             if (arDoCoResult == null) {
-                arDoCoResult = arDoCo.runAndSave(name, inputText, inputModel, ArchitectureModelType.PCM, null, null, new File(OUTPUT));
+                arDoCoResult = getArDoCoResult(name, inputText, inputModel);
                 DATA_MAP.put(project, arDoCoResult);
             }
         }
+    }
+
+    private static ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel) {
+        DefaultArDoCoRunner runner = new DefaultArDoCoRunner.Builder(name).withInputText(inputText)
+                .withInputModelArchitecture(inputModel)
+                .withPcmModelType()
+                .withOutputDir(OUTPUT)
+                .build();
+        return runner.run();
     }
 
     private static boolean writeTextStateDiff(Project project, ArDoCoResult arDoCoResult) throws IOException {
