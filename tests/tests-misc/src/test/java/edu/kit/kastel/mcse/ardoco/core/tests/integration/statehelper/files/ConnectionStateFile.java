@@ -153,8 +153,8 @@ public class ConnectionStateFile {
                 ImmutableSet<String> claimants = currentTextInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentModelLine = String.join(VALUE_SEPARATOR, uid, modelName, modelType);
-                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type,
-                        String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
+                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type, String.join(
+                        LIST_SEPARATOR, names), String.join(LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
                 if (modelOrder == 0) {
 
                     if (!parts.get(3).equals(linkProbability) ||//

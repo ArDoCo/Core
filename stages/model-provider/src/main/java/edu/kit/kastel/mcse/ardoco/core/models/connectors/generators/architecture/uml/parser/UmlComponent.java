@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser;
 
 import java.util.List;
@@ -34,10 +35,10 @@ public class UmlComponent extends UmlElement {
 
     private static UmlInterface findById(UmlModelRoot umlModelRoot, String id) {
         return umlModelRoot.getInterfaces()
-                           .stream()
-                           .filter(it -> it.getId().equals(id))
-                           .findFirst()
-                           .orElseThrow(() -> new IllegalArgumentException("Could not find interface with UMLId " + id));
+                .stream()
+                .filter(it -> it.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Could not find interface with UMLId " + id));
     }
 
     public List<UmlInterface> getRequired() {
