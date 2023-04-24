@@ -14,8 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
-import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMModel;
-import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMRepository;
+import edu.kit.kastel.mcse.ardoco.core.models.old.pcm.PCMModel;
+import edu.kit.kastel.mcse.ardoco.core.models.old.pcm.PCMRepository;
 
 public class PcmXMLModelConnector implements ModelConnector {
 

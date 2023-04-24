@@ -14,8 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
-import edu.kit.kastel.mcse.ardoco.core.models.uml.UMLModel;
-import edu.kit.kastel.mcse.ardoco.core.models.uml.UMLModelRoot;
+import edu.kit.kastel.mcse.ardoco.core.models.old.uml.UMLModel;
+import edu.kit.kastel.mcse.ardoco.core.models.old.uml.UMLModelRoot;
 
 public class UMLModelConnector implements ModelConnector {
     private final UMLModelRoot model;
