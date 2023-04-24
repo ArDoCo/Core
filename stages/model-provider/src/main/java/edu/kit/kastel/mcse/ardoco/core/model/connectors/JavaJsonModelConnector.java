@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,8 +16,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
-import edu.kit.kastel.mcse.ardoco.core.models.java.JavaClassOrInterface;
-import edu.kit.kastel.mcse.ardoco.core.models.java.JavaProject;
+import edu.kit.kastel.mcse.ardoco.core.models.old.java.JavaClassOrInterface;
+import edu.kit.kastel.mcse.ardoco.core.models.old.java.JavaProject;
 
 public class JavaJsonModelConnector implements ModelConnector {
     private final JavaProject javaProject;
@@ -29,12 +28,11 @@ public class JavaJsonModelConnector implements ModelConnector {
 
     public JavaJsonModelConnector(InputStream is) throws IOException {
         ObjectMapper oom = new ObjectMapper();
-        oom.setVisibility(oom.getSerializationConfig()
-                .getDefaultVisibilityChecker() //
-                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)//
-                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)//
-                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
-                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
+        oom.setVisibility(oom.getSerializationConfig().getDefaultVisibilityChecker() //
+                             .withFieldVisibility(JsonAutoDetect.Visibility.ANY)//
+                             .withGetterVisibility(JsonAutoDetect.Visibility.NONE)//
+                             .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
+                             .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
         this.javaProject = Objects.requireNonNull(oom.readValue(is, JavaProject.class));
     }
 

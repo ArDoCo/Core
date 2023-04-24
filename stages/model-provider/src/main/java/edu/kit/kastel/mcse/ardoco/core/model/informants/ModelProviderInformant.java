@@ -15,11 +15,10 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 /**
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
  * extraction state.
- *
  */
 public final class ModelProviderInformant extends Informant {
     private static final String MODEL_STATES_DATA = "ModelStatesData";
-    private ModelConnector modelConnector = null;
+    private ModelConnector modelConnector;
     private ModelExtractionStateImpl modelState = null;
 
     // Needed for Configuration Generation
@@ -31,7 +30,7 @@ public final class ModelProviderInformant extends Informant {
 
     /**
      * Instantiates a new model provider that uses the provided {@link ModelConnector} to extract information into the {@link DataRepository}.
-     * 
+     *
      * @param dataRepository the data repository
      * @param modelConnector the model connector
      */
