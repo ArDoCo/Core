@@ -10,8 +10,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.UMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.UmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 class ArchitectureModelProviderTest {
@@ -23,11 +23,11 @@ class ArchitectureModelProviderTest {
         var pcmFile = project.getModelFile(ArchitectureModelType.PCM);
         var umlFile = project.getModelFile(ArchitectureModelType.UML);
 
-        PcmXMLModelConnector modelProviderPcm = null;
-        UMLModelConnector modelProviderUml = null;
+        PcmXmlModelConnector modelProviderPcm = null;
+        UmlModelConnector modelProviderUml = null;
         try {
-            modelProviderPcm = new PcmXMLModelConnector(pcmFile);
-            modelProviderUml = new UMLModelConnector(umlFile);
+            modelProviderPcm = new PcmXmlModelConnector(pcmFile);
+            modelProviderUml = new UmlModelConnector(umlFile);
         } catch (IOException e) {
             Assertions.fail("Cannot load models", e);
         }

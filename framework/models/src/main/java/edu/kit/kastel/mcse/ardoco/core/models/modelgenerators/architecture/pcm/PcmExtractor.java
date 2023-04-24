@@ -15,6 +15,8 @@ import edu.kit.kastel.mcse.ardoco.core.models.modelgenerators.architecture.pcm.p
 import edu.kit.kastel.mcse.ardoco.core.models.modelgenerators.architecture.pcm.parser.PcmModel;
 import edu.kit.kastel.mcse.ardoco.core.models.modelgenerators.architecture.pcm.parser.PcmSignature;
 
+// TODO we currently more or less have two connectors/extractors: this one and the PcmXmlModelConnector
+
 /**
  * An extractor for PCM. Extracts an AMTL instance.
  */
@@ -85,4 +87,5 @@ public final class PcmExtractor extends ArchitectureExtractor {
     private static ArchitectureInterface findInterface(String id, Set<ArchitectureInterface> interfaces) {
         return interfaces.stream().filter(modelInterface -> modelInterface.getId().equals(id)).findFirst().orElseThrow();
     }
+
 }

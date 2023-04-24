@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline
 public class HoldBackRunResultsProducer {
     private File inputText;
     private File inputModel;
-    private PcmXMLModelConnector pcmModel;
+    private PcmXmlModelConnector pcmModel;
 
     public HoldBackRunResultsProducer() {
         super();
@@ -40,7 +40,7 @@ public class HoldBackRunResultsProducer {
      * @param project             the project that should be run
      * @param useBaselineApproach set to true if the baseline approach should be used instead of ArDoCo
      * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced
-     *         when running ArDoCo without the ModelElement
+     * when running ArDoCo without the ModelElement
      */
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
         Map<ModelInstance, ArDoCoResult> runs = new HashMap<ModelInstance, ArDoCoResult>();
@@ -73,7 +73,7 @@ public class HoldBackRunResultsProducer {
 
     private HoldElementsBackModelConnector constructHoldElementsBackModelConnector() {
         try {
-            pcmModel = new PcmXMLModelConnector(inputModel);
+            pcmModel = new PcmXmlModelConnector(inputModel);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
