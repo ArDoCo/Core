@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.NlpInformant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
 public abstract class SentenceTest {
     private static Sentence sentence;

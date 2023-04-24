@@ -4,9 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 import java.util.EnumMap;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 
 public class InconsistencyStatesImpl implements InconsistencyStates {
     private Map<Metamodel, InconsistencyStateImpl> inconsistencyStates;

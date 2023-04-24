@@ -9,7 +9,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 
 /**

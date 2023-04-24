@@ -18,9 +18,9 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 
 public class ConnectionStateFile {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionStateFile.class);
@@ -153,8 +153,8 @@ public class ConnectionStateFile {
                 ImmutableSet<String> claimants = currentTextInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentModelLine = String.join(VALUE_SEPARATOR, uid, modelName, modelType);
-                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type, String.join(
-                        LIST_SEPARATOR, names), String.join(LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
+                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type,
+                        String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
                 if (modelOrder == 0) {
 
                     if (!parts.get(3).equals(linkProbability) ||//

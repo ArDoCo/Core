@@ -1,0 +1,35 @@
+package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser;
+
+import java.util.List;
+
+import org.fuchss.xmlobjectmapper.annotation.XMLClass;
+import org.fuchss.xmlobjectmapper.annotation.XMLValue;
+
+@XMLClass
+public final class PcmParameter {
+
+    @XMLValue
+    private String parameterName;
+
+    @XMLValue(name = "dataType__Parameter", mandatory = false)
+    private String typeId;
+
+    private PcmDatatype type;
+
+    PcmParameter() {
+        // NOP
+    }
+
+    public String getName() {
+        return parameterName;
+    }
+
+    public PcmDatatype getType() {
+        return type;
+    }
+
+    void init(List<PcmDatatype> datatypes) {
+        // TODO null for external types
+        type = datatypes.stream().filter(datatype -> datatype.getId().equals(typeId)).findFirst().orElse(null);
+    }
+}

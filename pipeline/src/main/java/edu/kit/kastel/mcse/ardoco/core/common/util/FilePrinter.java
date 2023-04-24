@@ -1,9 +1,6 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,24 +24,26 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
@@ -336,7 +335,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        Set<TraceLink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
+        Set<SadSamTraceLink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
         for (var tracelink : tracelinks) {
             var modelElementUid = tracelink.getModelElementUid();
             // sentence offset is 1 because real sentences are 1-indexed
@@ -403,17 +402,17 @@ public final class FilePrinter {
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
             inconsistencies.flatCollect(Inconsistency::toFileOutput)
-                    .asLazy()
-                    .collect(FilePrinter::convertToCSV)
-                    .distinct()
-                    .toSortedList(getInconsistencyStringComparator())
-                    .forEach(s -> {
-                        try {
-                            pw.append(s).append("\n");
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    });
+                           .asLazy()
+                           .collect(FilePrinter::convertToCSV)
+                           .distinct()
+                           .toSortedList(getInconsistencyStringComparator())
+                           .forEach(s -> {
+                               try {
+                                   pw.append(s).append("\n");
+                               } catch (IOException e) {
+                                   logger.error(e.getMessage(), e);
+                               }
+                           });
         } catch (IOException e) {
             logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e);
