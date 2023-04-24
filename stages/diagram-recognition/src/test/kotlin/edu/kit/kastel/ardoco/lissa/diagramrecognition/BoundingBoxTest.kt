@@ -1,6 +1,5 @@
-package edu.kit.kastel.ardoco.lissa.swa.documentation
+package edu.kit.kastel.ardoco.lissa.diagramrecognition
 
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.BoundingBox
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

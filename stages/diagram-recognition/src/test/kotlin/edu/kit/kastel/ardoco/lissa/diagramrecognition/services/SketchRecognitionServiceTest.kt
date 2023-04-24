@@ -1,8 +1,10 @@
-package edu.kit.kastel.ardoco.lissa.swa.documentation
+package edu.kit.kastel.ardoco.lissa.diagramrecognition.services
 
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.SketchRecognitionService
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.visualize
-import org.junit.jupiter.api.AfterAll
+import edu.kit.kastel.ardoco.lissa.DiagramRecognition
+import edu.kit.kastel.ardoco.lissa.diagramrecognition.visualize
+import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -12,6 +14,7 @@ import java.awt.Desktop
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import kotlin.test.assertNotNull
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SketchRecognitionServiceTest {
@@ -20,34 +23,33 @@ class SketchRecognitionServiceTest {
         const val PATH_TO_HL_ARCHITECTURE = "src/test/resources/highlevelArchitecture.png"
     }
 
-    private lateinit var service: SketchRecognitionService
+    private lateinit var dataRepository: DataRepository
 
     @BeforeAll
     fun setup() {
-        service = SketchRecognitionService()
-        service.start()
+        dataRepository = DataRepository()
+        dataRepository.addData(InputDiagramData.ID, InputDiagramData("src/test/resources/"))
+        val stage = DiagramRecognition(dataRepository)
+        stage.run()
+        assertNotNull(getState())
         File("target/testout").mkdirs()
     }
 
-    @AfterAll
-    fun tearDown() {
-        service.stop()
-    }
+    private fun getState() = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState::class.java).orElse(null)
 
     @Test
     fun testSimpleRecognitionWithColors() {
-        val file = FileInputStream(File(PATH_TO_HL_ARCHITECTURE))
-        val response = service.recognize(file)
-        Assertions.assertNotNull(response)
-        Assertions.assertEquals(8, response.boxes.size)
-        Assertions.assertEquals(35, response.textBoxes.size)
+        val file = File(PATH_TO_HL_ARCHITECTURE)
+        val diagram = getState().diagrams.find { it.location == file }!!
+        Assertions.assertEquals(8, diagram.boxes.size)
+        Assertions.assertEquals(35, diagram.textBoxes.size)
 
-        val testDriver = response.boxes.filter { it.texts.any { tb -> tb.text.lowercase().contains("driver") } }
+        val testDriver = diagram.boxes.filter { it.texts.any { tb -> tb.text.lowercase().contains("driver") } }
         Assertions.assertEquals(1, testDriver.size)
         val testColor = testDriver[0].dominatingColor
         Assertions.assertEquals(Color(217, 150, 148).rgb, testColor)
 
-        val logic = response.boxes.filter { it.texts.any { tb -> tb.text.lowercase().contains("logic") } }
+        val logic = diagram.boxes.filter { it.texts.any { tb -> tb.text.lowercase().contains("logic") } }
         Assertions.assertEquals(1, logic.size)
         val logicColor = logic[0].dominatingColor
         Assertions.assertEquals(Color(179, 162, 199).rgb, logicColor)
@@ -62,7 +64,7 @@ class SketchRecognitionServiceTest {
         val destination = File("target/testout/result_testSimpleRecognitionWithColors.png")
         visualize(
             FileInputStream(File(PATH_TO_HL_ARCHITECTURE)),
-            response,
+            diagram,
             FileOutputStream(destination),
         )
         if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(destination)
@@ -70,14 +72,13 @@ class SketchRecognitionServiceTest {
 
     @Test
     fun simpleRecognition() {
-        val file = FileInputStream(File(PATH))
-        val response = service.recognize(file)
-        Assertions.assertNotNull(response)
+        val file = File(PATH)
+        val diagram = getState().diagrams.find { it.location == file }!!
 
         val destination = File("target/testout/result_testSimpleRecognition.png")
         visualize(
             FileInputStream(File(PATH)),
-            response,
+            diagram,
             FileOutputStream(destination),
         )
         if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(destination)

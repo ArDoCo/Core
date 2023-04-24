@@ -1,7 +1,7 @@
-package edu.kit.kastel.ardoco.lissa.swa.documentation.recognition
+package edu.kit.kastel.ardoco.lissa.diagramrecognition
 
-import edu.kit.kastel.ardoco.lissa.swa.documentation.recognition.model.SketchRecognitionResult
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse
 import org.apache.hc.client5.http.impl.classic.HttpClients
@@ -28,7 +28,7 @@ fun executeRequest(postRequest: HttpPost): String {
     }
 }
 
-fun visualize(imageStream: InputStream, recognitionResult: SketchRecognitionResult, destination: OutputStream) {
+fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStream) {
     val image = ImageIO.read(imageStream)
     val g2d: Graphics2D = image.createGraphics()
     g2d.stroke = BasicStroke(2F)
@@ -36,12 +36,12 @@ fun visualize(imageStream: InputStream, recognitionResult: SketchRecognitionResu
     val colorMap = mutableMapOf<String, Color>()
     var currentColor = 0
 
-    val textBoxes = recognitionResult.textBoxes.map {
+    val textBoxes = diagram.textBoxes.map {
         val tb = Box(UUID.randomUUID().toString(), it.absoluteBox().map { value -> value }.toIntArray(), 1.0, "TEXT", mutableListOf(it), null)
         tb
     }
 
-    for (box in recognitionResult.boxes + textBoxes) {
+    for (box in diagram.boxes + textBoxes) {
         if (!colorMap.containsKey(box.classification)) {
             colorMap[box.classification] = colors[currentColor]!!
             currentColor++

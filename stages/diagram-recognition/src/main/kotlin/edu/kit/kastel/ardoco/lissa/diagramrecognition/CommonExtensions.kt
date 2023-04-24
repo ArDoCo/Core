@@ -1,4 +1,4 @@
-package edu.kit.kastel.ardoco.lissa.utils
+package edu.kit.kastel.ardoco.lissa.diagramrecognition
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.databind.DeserializationFeature
