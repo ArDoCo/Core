@@ -4,7 +4,10 @@ package edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition;
 import static java.lang.Math.abs;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -52,6 +55,10 @@ public final class Box implements Serializable {
 
     public String getClassification() {
         return classification;
+    }
+
+    public void addTextBox(TextBox textBox) {
+        this.textBoxes.add(textBox);
     }
 
     public List<TextBox> getTexts() {

@@ -79,7 +79,7 @@ class SketchRecognitionService {
 
     private fun getPixels(image: BufferedImage, box: Array<Int>): List<Int> {
         val result = mutableListOf<Int>()
-        for (x in range(box[0], box[2].toInt())) for (y in range(box[1].toInt(), box[3].toInt())) result.add(
+        for (x in range(box[0], box[2])) for (y in range(box[1], box[3])) result.add(
             image.getRGB(x, y),
         )
         return result
@@ -105,7 +105,7 @@ class SketchRecognitionService {
             val results = intersects.filter { it.second.areaIntersect / text.area() > 0.9 }
             if (results.isEmpty()) continue
             logger.info("Found {} intersects with {}", intersects.size, text.text)
-            results.forEach { it.first.texts.add(text) }
+            results.forEach { it.first.addTextBox(text) }
         }
     }
 }
