@@ -27,6 +27,7 @@ public class InstanceLinkImpl extends InstanceLink {
     private Confidence probability;
 
     private InstanceLinkImpl(RecommendedInstance textualInstance, ModelInstance modelInstance) {
+        super(textualInstance, modelInstance);
         this.textualInstance = textualInstance;
         this.modelInstance = modelInstance;
         this.probability = new Confidence(AggregationFunctions.AVERAGE);
