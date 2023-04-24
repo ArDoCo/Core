@@ -22,13 +22,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -187,8 +187,14 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var ardocoRunForUML = getArDoCoResult(name, inputText, umlModelFile, ArchitectureModelType.UML, additionalConfigurations);
         Assertions.assertNotNull(ardocoRunForUML);
 
-        var pcmTLs = ardocoRunForPCM.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
-        var umlTLs = ardocoRunForUML.getAllTraceLinks().toList().sortThisBy(TraceLink::getModelElementUid).sortThisByInt(TraceLink::getSentenceNumber);
+        var pcmTLs = ardocoRunForPCM.getAllTraceLinks()
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
+        var umlTLs = ardocoRunForUML.getAllTraceLinks()
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
 
         Assertions.assertAll( //
                 () -> Assertions.assertEquals(pcmTLs.size(), umlTLs.size()), //
@@ -227,8 +233,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
                 var data = arDoCoResult.dataRepository();
                 printDetailedDebug(results, data);
                 try {
-                    RESULTS.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(
-                            project).toImmutable())));
+                    RESULTS.add(Tuples.pair(project,
+                            TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project).toImmutable())));
                     DATA_MAP.put(project, arDoCoResult);
                     PROJECT_RESULTS.add(results);
                 } catch (IOException e) {
@@ -241,17 +247,17 @@ class TraceabilityLinkRecoveryEvaluationIT {
 
     private void compareResultWithExpected(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {

@@ -14,22 +14,22 @@ import org.eclipse.collections.api.set.MutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.TraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -54,12 +54,12 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link TraceLink}s that were found for the Model with the given ID.
+     * Returns the set of {@link SadSamTraceLink}s that were found for the Model with the given ID.
      *
      * @param modelId the ID of the model that should be traced
      * @return Trace links for the model with the given id
      */
-    public ImmutableSet<TraceLink> getTraceLinksForModel(String modelId) {
+    public ImmutableSet<SadSamTraceLink> getTraceLinksForModel(String modelId) {
         ConnectionState connectionState = getConnectionState(modelId);
         if (connectionState != null) {
             return connectionState.getTraceLinks();
@@ -68,7 +68,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link TraceLink}s that were found for the Model with the given ID as strings in the format
+     * Returns the set of {@link SadSamTraceLink}s that were found for the Model with the given ID as strings in the format
      * "ModelElementId,SentenceNo".
      *
      * @param modelId the ID of the model that should be traced
@@ -80,12 +80,12 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link TraceLink}s
+     * Returns the set of {@link SadSamTraceLink}s
      *
      * @return set of Trace links
      */
-    public ImmutableList<TraceLink> getAllTraceLinks() {
-        MutableSet<TraceLink> traceLinks = Sets.mutable.empty();
+    public ImmutableList<SadSamTraceLink> getAllTraceLinks() {
+        MutableSet<SadSamTraceLink> traceLinks = Sets.mutable.empty();
 
         for (var modelId : getModelIds()) {
             traceLinks.addAll(getTraceLinksForModel(modelId).castToCollection());
@@ -94,15 +94,15 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link TraceLink}s as strings. The strings are beautified to have a human-readable format
+     * Returns the set of {@link SadSamTraceLink}s as strings. The strings are beautified to have a human-readable format
      *
      * @return Trace links as Strings
      */
     public List<String> getAllTraceLinksAsBeautifiedStrings() {
-        return getAllTraceLinks().toSortedList(TraceLink::compareTo).collect(ArDoCoResult::formatTraceLinksHumanReadable);
+        return getAllTraceLinks().toSortedList(SadSamTraceLink::compareTo).collect(ArDoCoResult::formatTraceLinksHumanReadable);
     }
 
-    private static String formatTraceLinksHumanReadable(TraceLink traceLink) {
+    private static String formatTraceLinksHumanReadable(SadSamTraceLink traceLink) {
         InstanceLink instanceLink = traceLink.getInstanceLink();
         String modelElementName = instanceLink.getModelInstance().getFullName();
         String modelElementUid = traceLink.getModelElementUid();

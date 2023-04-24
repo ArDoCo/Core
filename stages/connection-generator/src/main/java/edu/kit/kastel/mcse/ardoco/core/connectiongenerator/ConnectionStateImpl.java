@@ -7,17 +7,16 @@ import java.util.Set;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * The connection state encapsulates all connections between the model extraction state and the recommendation state.
  * These connections are stored in instance and relation links.
- *
  */
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 
@@ -76,9 +75,8 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
      */
     @Override
     public ImmutableList<InstanceLink> getInstanceLinks(String name, String type) {
-        return Lists.immutable.fromStream(instanceLinks.stream()
-                .filter(imapping -> imapping.getModelInstance().getNameParts().contains(name))//
-                .filter(imapping -> imapping.getModelInstance().getTypeParts().contains(type)));
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(imapping -> imapping.getModelInstance().getNameParts().contains(name))//
+                                                       .filter(imapping -> imapping.getModelInstance().getTypeParts().contains(type)));
     }
 
     /**

@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.NlpInformant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
 public abstract class PhraseTest {
     public static final int SENTENCE_NO = 41;

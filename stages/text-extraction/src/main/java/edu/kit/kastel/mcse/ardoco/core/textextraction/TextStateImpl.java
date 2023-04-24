@@ -19,12 +19,12 @@ import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;

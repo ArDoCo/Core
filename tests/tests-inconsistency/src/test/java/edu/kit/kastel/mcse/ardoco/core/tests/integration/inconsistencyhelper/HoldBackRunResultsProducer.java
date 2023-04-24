@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -18,8 +18,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
 

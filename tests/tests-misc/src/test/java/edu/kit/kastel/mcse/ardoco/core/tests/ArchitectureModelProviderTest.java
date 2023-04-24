@@ -8,10 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.UmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.UmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 class ArchitectureModelProviderTest {

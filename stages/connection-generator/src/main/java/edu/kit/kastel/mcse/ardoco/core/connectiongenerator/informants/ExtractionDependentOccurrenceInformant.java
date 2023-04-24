@@ -3,11 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;

@@ -7,9 +7,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;

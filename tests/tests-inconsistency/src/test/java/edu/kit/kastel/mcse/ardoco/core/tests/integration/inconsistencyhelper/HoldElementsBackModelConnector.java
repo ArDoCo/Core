@@ -3,10 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 
 /**
  * This class represents a special {@link ModelConnector} that can be manipulated to hold back a single element when

@@ -6,7 +6,7 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 
 public class MissingElementInconsistencyCandidate {
 

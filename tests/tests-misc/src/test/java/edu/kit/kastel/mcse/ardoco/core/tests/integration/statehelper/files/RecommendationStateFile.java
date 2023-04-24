@@ -16,9 +16,9 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 
 public class RecommendationStateFile {

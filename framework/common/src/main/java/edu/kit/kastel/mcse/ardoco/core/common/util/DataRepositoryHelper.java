@@ -1,14 +1,14 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.InputTextData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.InputTextData;
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;

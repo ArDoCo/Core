@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.model.ModelInstanceImpl;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 
 class NameInconsistencyTest extends AbstractInconsistencyTypeTest {
     private static final String NAME_INCONSISTENCY_TYPE = "NameInconsistency";

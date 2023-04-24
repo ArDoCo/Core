@@ -6,7 +6,7 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils.unique
 
 import java.util.function.ToDoubleBiFunction;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 
 public enum PhraseMappingAggregatorStrategy implements ToDoubleBiFunction<PhraseMapping, PhraseMapping> {
     MAX_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
