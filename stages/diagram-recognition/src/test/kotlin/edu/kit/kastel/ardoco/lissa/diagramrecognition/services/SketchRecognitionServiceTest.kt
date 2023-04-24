@@ -41,7 +41,7 @@ class SketchRecognitionServiceTest {
     fun testSimpleRecognitionWithColors() {
         val file = File(PATH_TO_HL_ARCHITECTURE)
         val diagram = getState().diagrams.find { it.location == file }!!
-        Assertions.assertEquals(8, diagram.boxes.size)
+        Assertions.assertEquals(8, diagram.boxes.filter { it.classification != "Label" }.size)
         Assertions.assertEquals(35, diagram.textBoxes.size)
 
         val testDriver = diagram.boxes.filter { it.texts.any { tb -> tb.text.lowercase().contains("driver") } }
