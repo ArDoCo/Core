@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import edu.kit.kastel.mcse.ardoco.core.api.InputTextData;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.SamCodeTraceabilityStates;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
@@ -197,6 +198,31 @@ public final class DataRepositoryHelper {
     public static InconsistencyStates getInconsistencyStates(DataRepository dataRepository) {
         if (hasInconsistencyStates(dataRepository)) {
             return dataRepository.getData(InconsistencyStates.ID, InconsistencyStates.class).orElseThrow();
+        }
+        return null;
+    }
+
+    /**
+     * Checks whether there is {@link SamCodeTraceabilityStates} stored within the provided {@link DataRepository}
+     *
+     * @param dataRepository the DataRepository to access
+     * @return true, if there is {@link SamCodeTraceabilityStates} within the {@link DataRepository}; else, false
+     */
+    public static boolean hasSamCodeTraceabilityStates(DataRepository dataRepository) {
+        return dataRepository.getData(SamCodeTraceabilityStates.ID, SamCodeTraceabilityStates.class).isPresent();
+    }
+
+    /**
+     * Returns the {@link SamCodeTraceabilityStates} stored within the provided {@link DataRepository}.
+     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
+     * To make sure that there is data present, use {@link #hasInconsistencyStates(DataRepository)}
+     *
+     * @param dataRepository the DataRepository to access
+     * @return the state
+     */
+    public static SamCodeTraceabilityStates getSamCodeTraceabilityStates(DataRepository dataRepository) {
+        if (hasSamCodeTraceabilityStates(dataRepository)) {
+            return dataRepository.getData(SamCodeTraceabilityStates.ID, SamCodeTraceabilityStates.class).orElseThrow();
         }
         return null;
     }
