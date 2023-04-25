@@ -3,6 +3,7 @@ package edu.kit.kastel.ardoco.lissa.diagramrecognition.services
 import edu.kit.kastel.ardoco.lissa.DiagramRecognition
 import edu.kit.kastel.ardoco.lissa.diagramrecognition.visualize
 import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import org.junit.jupiter.api.Assertions
@@ -41,7 +42,7 @@ class SketchRecognitionServiceTest {
     fun testSimpleRecognitionWithColors() {
         val file = File(PATH_TO_HL_ARCHITECTURE)
         val diagram = getState().diagrams.find { it.location == file }!!
-        Assertions.assertEquals(8, diagram.boxes.filter { it.classification != "Label" }.size)
+        Assertions.assertEquals(8, diagram.boxes.filter { it.classification != Classification.LABEL }.size)
         Assertions.assertEquals(35, diagram.textBoxes.size)
 
         val testDriver = diagram.boxes.filter { it.texts.any { tb -> tb.text.lowercase().contains("driver") } }

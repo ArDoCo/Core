@@ -36,6 +36,10 @@
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
+      <artifactId>diagram-recognition</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>model-provider</artifactId>
     </dependency>
     <dependency>

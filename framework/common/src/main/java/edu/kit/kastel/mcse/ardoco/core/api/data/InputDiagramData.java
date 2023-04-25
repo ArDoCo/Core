@@ -27,6 +27,15 @@ public class InputDiagramData implements PipelineStepData {
     }
 
     /**
+     * Create the data by a directory of image files.
+     *
+     * @param diagramDirectory the directory containing diagrams and sketches
+     */
+    public InputDiagramData(File diagramDirectory) {
+        this(Objects.requireNonNull(diagramDirectory).getAbsolutePath());
+    }
+
+    /**
      * Get all image files of the given directory (not recursive).
      * 
      * @return a list of image files ordered by name

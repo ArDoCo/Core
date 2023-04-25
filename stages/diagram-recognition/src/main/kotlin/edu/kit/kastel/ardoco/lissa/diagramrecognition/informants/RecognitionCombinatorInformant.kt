@@ -2,6 +2,7 @@ package edu.kit.kastel.ardoco.lissa.diagramrecognition.informants
 
 import edu.kit.kastel.ardoco.lissa.diagramrecognition.boundingBox
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
@@ -23,7 +24,7 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
     override fun run() {
         val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
         for (diagram in diagramRecognitionState.diagrams) {
-            val entities = diagram.boxes.filter { it.classification != "Label" }
+            val entities = diagram.boxes.filter { it.classification != Classification.LABEL }
             val texts = diagram.textBoxes
             combineBoxesAndText(entities, texts)
             calculateDominatingColors(diagram.location.readBytes(), entities)

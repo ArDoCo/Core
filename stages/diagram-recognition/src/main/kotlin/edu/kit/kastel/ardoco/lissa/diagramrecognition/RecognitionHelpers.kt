@@ -1,6 +1,7 @@
 package edu.kit.kastel.ardoco.lissa.diagramrecognition
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse
@@ -33,7 +34,7 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     val g2d: Graphics2D = image.createGraphics()
     g2d.stroke = BasicStroke(2F)
 
-    val colorMap = mutableMapOf<String, Color>()
+    val colorMap = mutableMapOf<Classification, Color>()
     var currentColor = 0
 
     val textBoxes = diagram.textBoxes.map {
@@ -49,7 +50,7 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
         g2d.color = colorMap[box.classification]
         val coordinates = box.box
         g2d.drawRect(coordinates[0], coordinates[1], coordinates[2] - coordinates[0], coordinates[3] - coordinates[1])
-        if (box.classification == "TEXT") {
+        if (box.classification == Classification.TEXT) {
             g2d.drawString(
                 box.texts.joinToString { it.text },
                 coordinates[0],

@@ -3,6 +3,7 @@ package edu.kit.kastel.ardoco.lissa.diagramrecognition.informants
 import com.fasterxml.jackson.module.kotlin.readValue
 import edu.kit.kastel.ardoco.lissa.diagramrecognition.executeRequest
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
@@ -38,7 +39,7 @@ class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
     }
 
     override fun processImage(diagram: Diagram, imageData: ByteArray) {
-        val textsWithHints = detectTextBoxes(ByteArrayInputStream(imageData), diagram.boxes.filter { it.classification == "Label" })
+        val textsWithHints = detectTextBoxes(ByteArrayInputStream(imageData), diagram.boxes.filter { it.classification == Classification.LABEL })
         val textsWithoutHints = detectTextBoxes(ByteArrayInputStream(imageData), listOf())
         val texts = mergeTexts(textsWithHints, textsWithoutHints)
         texts.forEach { diagram.addTextBox(it) }
@@ -54,7 +55,7 @@ class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         val textRecognition = sendOCRRequest(
             image,
             container.apiPort,
-            detectedBoxesOfObjectDetection.filter { it.classification == "Label" },
+            detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL },
         )
         logger.debug("Processed OCRService Request")
         return oom.readValue(textRecognition)
@@ -94,6 +95,6 @@ class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
             box.box[3] + EXPANSION_IN_PX,
         )
         // Copy References here. No Copies!
-        return Box(box.uuid, newPositions.toIntArray(), box.confidence, box.classification, box.texts, null)
+        return Box(box.uuid, newPositions.toIntArray(), box.confidence, box.classification.classificationString, box.texts, null)
     }
 }

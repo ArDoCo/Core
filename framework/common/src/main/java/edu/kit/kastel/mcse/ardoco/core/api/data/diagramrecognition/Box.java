@@ -92,8 +92,8 @@ public final class Box implements Serializable {
      * 
      * @return the classification
      */
-    public String getClassification() {
-        return classification;
+    public Classification getClassification() {
+        return Classification.byString(classification);
     }
 
     /**

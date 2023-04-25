@@ -1,6 +1,9 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.io.File;
+
+import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.InputTextData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
@@ -232,5 +235,17 @@ public final class DataRepositoryHelper {
      */
     public static DiagramRecognitionState getDiagramRecognitionState(DataRepository dataRepository) {
         return dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
+    }
+
+    /**
+     * Save diagram directory as {@link InputDiagramData}.
+     * 
+     * @param dataRepository   the data repository
+     * @param diagramDirectory the diagram directory
+     */
+    public static void putDiagramDirectory(DataRepository dataRepository, File diagramDirectory) {
+        InputDiagramData data = new InputDiagramData(diagramDirectory);
+        dataRepository.addData(InputDiagramData.ID, data);
+
     }
 }

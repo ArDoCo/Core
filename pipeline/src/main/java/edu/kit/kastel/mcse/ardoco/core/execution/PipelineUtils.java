@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.NlpInformant;
@@ -125,5 +126,18 @@ public class PipelineUtils {
         var textProvider = new TextPreprocessingAgent(dataRepository);
         textProvider.applyConfiguration(additionalConfigs);
         return textProvider;
+    }
+
+    /**
+     * Creates a {@link DiagramRecognition} that will handle the diagram recognition.
+     *
+     * @param additionalConfigs the additional configuration that should be applied
+     * @param dataRepository    the data repository
+     * @return a DiagramRecognition with the provided diagrams
+     */
+    public static DiagramRecognition getDiagramDetection(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var diagramDetection = new DiagramRecognition(dataRepository);
+        diagramDetection.applyConfiguration(additionalConfigs);
+        return diagramDetection;
     }
 }
