@@ -23,8 +23,6 @@ public class ArCoTLInformant extends Informant {
 
     @Override
     public void run() {
-        logger.info("Hi from ArCoTLInformant");
-
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var samCodeTraceabilityStates = DataRepositoryHelper.getSamCodeTraceabilityStates(dataRepository);

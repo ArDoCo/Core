@@ -7,32 +7,31 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.SamCodeTraceabilityStates;
-import edu.kit.kastel.mcse.ardoco.core.codetraceability.agents.InitialCodeTraceabilityAgent;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.agents.TransitiveTraceabilityAgent;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
-public class SamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
+public class SadSamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
 
     private final MutableList<PipelineAgent> agents;
 
     @Configurable
     private List<String> enabledAgents;
 
-    public SamCodeTraceabilityLinkRecovery(DataRepository dataRepository) {
-        super(SamCodeTraceabilityLinkRecovery.class.getSimpleName(), dataRepository);
+    public SadSamCodeTraceabilityLinkRecovery(DataRepository dataRepository) {
+        super(SadSamCodeTraceabilityLinkRecovery.class.getSimpleName(), dataRepository);
 
-        agents = Lists.mutable.of(new InitialCodeTraceabilityAgent(dataRepository));
+        agents = Lists.mutable.of(new TransitiveTraceabilityAgent(dataRepository));
         enabledAgents = agents.collect(Agent::getId);
     }
 
     @Override
     protected void initializeState() {
-        var samCodeTraceabilityStates = SamCodeTraceabilityStatesImpl.build();
-        getDataRepository().addData(SamCodeTraceabilityStates.ID, samCodeTraceabilityStates);
+        var sadSamCodeTraceabilityStates = SadSamCodeTraceabilityStatesImpl.build();
+        getDataRepository().addData(SadSamCodeTraceabilityStatesImpl.ID, sadSamCodeTraceabilityStates);
     }
 
     @Override
