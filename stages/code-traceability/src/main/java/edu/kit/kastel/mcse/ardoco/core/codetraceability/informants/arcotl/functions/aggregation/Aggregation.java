@@ -1,0 +1,32 @@
+package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation;
+
+import java.util.List;
+import java.util.Objects;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.NodeResult;
+
+/**
+ * An aggregation function. Aggregations are immutable.
+ */
+public abstract class Aggregation {
+
+    public abstract NodeResult calculateConfidences(ArchitectureModel archModel, CodeModel codeModel, List<NodeResult> childrenResults);
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getClass());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        return true;
+    }
+}
