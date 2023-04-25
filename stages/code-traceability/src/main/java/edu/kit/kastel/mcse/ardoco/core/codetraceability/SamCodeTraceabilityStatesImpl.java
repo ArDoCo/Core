@@ -27,4 +27,5 @@ public class SamCodeTraceabilityStatesImpl implements SamCodeTraceabilityStates 
     public SamCodeTraceabilityState getSamCodeTraceabilityState(Metamodel mm) {
         return samCodeTraceabilityStates.get(mm);
     }
+    
 }
