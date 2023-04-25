@@ -9,6 +9,7 @@ import java.util.Map;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.SadSamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -114,11 +115,18 @@ public class PipelineUtils {
         return textProvider;
     }
 
-    public static SamCodeTraceabilityLinkRecovery getSamCodeTraceabilityLinkRecovery(Map<String, String> additionalConfigs, File inputArchitectureModel,
-            ArchitectureModelType architectureModelType, DataRepository dataRepository) {
+    public static SamCodeTraceabilityLinkRecovery getSamCodeTraceabilityLinkRecovery(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         //TODO
         var samCodeTraceabilityLinkRecovery = new SamCodeTraceabilityLinkRecovery(dataRepository);
         samCodeTraceabilityLinkRecovery.applyConfiguration(additionalConfigs);
         return samCodeTraceabilityLinkRecovery;
+    }
+
+    public static SadSamCodeTraceabilityLinkRecovery getSadSamCodeTraceabilityLinkRecovery(Map<String, String> additionalConfigs,
+            DataRepository dataRepository) {
+        //TODO
+        var sadSamCodeTraceabilityLinkRecovery = new SadSamCodeTraceabilityLinkRecovery(dataRepository);
+        sadSamCodeTraceabilityLinkRecovery.applyConfiguration(additionalConfigs);
+        return sadSamCodeTraceabilityLinkRecovery;
     }
 }

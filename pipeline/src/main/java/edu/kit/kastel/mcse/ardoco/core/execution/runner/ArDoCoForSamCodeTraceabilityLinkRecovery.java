@@ -38,7 +38,6 @@ public class ArDoCoForSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
 
         //TODO
         arDoCo.addPipelineStep(PipelineUtils.getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
-        arDoCo.addPipelineStep(
-                PipelineUtils.getSamCodeTraceabilityLinkRecovery(additionalConfigs, inputArchitectureModel, architectureModelType, dataRepository));
+        arDoCo.addPipelineStep(PipelineUtils.getSamCodeTraceabilityLinkRecovery(additionalConfigs, dataRepository));
     }
 }
