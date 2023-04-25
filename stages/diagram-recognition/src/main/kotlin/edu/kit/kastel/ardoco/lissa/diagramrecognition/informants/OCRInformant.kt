@@ -66,7 +66,7 @@ class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
         val multipart: HttpEntity = builder.build()
-        val uploadFile = HttpPost("http://${hostIp()}:$port/ocr/")
+        val uploadFile = HttpPost("http://${hostIP()}:$port/ocr/")
         if (labels.isNotEmpty()) {
             val uri: URI = URIBuilder(uploadFile.uri).addParameter("regions", boxCoordinates).build()
             uploadFile.uri = uri

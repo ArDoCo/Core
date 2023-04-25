@@ -8,14 +8,14 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class TextBox implements Serializable {
-    @JsonProperty
-    private int x;
-    @JsonProperty
-    private int y;
-    @JsonProperty
-    private int w;
-    @JsonProperty
-    private int h;
+    @JsonProperty("x")
+    private int xCoordinate;
+    @JsonProperty("y")
+    private int yCoordinate;
+    @JsonProperty("w")
+    private int width;
+    @JsonProperty("h")
+    private int height;
     @JsonProperty
     private double confidence;
     @JsonProperty
@@ -26,18 +26,23 @@ public final class TextBox implements Serializable {
         // Jackson JSON
     }
 
-    public TextBox(int x, int y, int w, int h, double confidence, String text, Integer dominatingColor) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+    public TextBox(int xCoordinate, int yCoordinate, int width, int height, double confidence, String text, Integer dominatingColor) {
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.width = width;
+        this.height = height;
         this.confidence = confidence;
         this.text = text;
         this.dominatingColor = dominatingColor;
     }
 
+    /**
+     * Get the coordinates of the absolute box as (x1,y1,x2,y2) in pixel.
+     * 
+     * @return the absolute coordinates of the box
+     */
     public int[] absoluteBox() {
-        return new int[] { x, y, x + w, y + h };
+        return new int[] { xCoordinate, yCoordinate, xCoordinate + width, yCoordinate + height };
     }
 
     public int area() {
@@ -45,20 +50,20 @@ public final class TextBox implements Serializable {
         return abs(box[0] - box[2]) * abs(box[1] - box[3]);
     }
 
-    public int getX() {
-        return x;
+    public int getXCoordinate() {
+        return xCoordinate;
     }
 
-    public int getY() {
-        return y;
+    public int getYCoordinate() {
+        return yCoordinate;
     }
 
     public int getWidth() {
-        return w;
+        return width;
     }
 
     public int getHeight() {
-        return h;
+        return height;
     }
 
     public double getConfidence() {

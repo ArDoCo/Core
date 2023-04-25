@@ -16,14 +16,37 @@ abstract class DockerInformant : Informant {
 
     companion object {
         // E.g., 127.0.0.1
-        val REMOTE_DOCKER_IP: String? = System.getenv("REMOTE_DOCKER_IP")
+        private val REMOTE_DOCKER_IP: String? = System.getenv("REMOTE_DOCKER_IP")
 
         // E.g., 2375
-        val REMOTE_DOCKER_PORT: Int? = System.getenv("REMOTE_DOCKER_PORT")?.toIntOrNull()
+        private val REMOTE_DOCKER_PORT: Int? = System.getenv("REMOTE_DOCKER_PORT")?.toIntOrNull()
 
-        val REMOTE = REMOTE_DOCKER_IP != null && REMOTE_DOCKER_PORT != null
+        private val REMOTE = REMOTE_DOCKER_IP != null && REMOTE_DOCKER_PORT != null
+        private val dockerManagerCache: MutableMap<String, DockerManager> = mutableMapOf()
+
+        /**
+         * Create a DockerManager from Namespace (or load from cache).
+         * @param[namespace] the namespace to use
+         */
+        @Synchronized
+        protected fun createDockerManager(namespace: String): DockerManager {
+            if (namespace in dockerManagerCache.keys) {
+                return dockerManagerCache[namespace]!!
+            }
+            val manager = if (REMOTE) {
+                // Use Remote Docker as it is faster (can only be used by admins of the ArDoCo Organization)
+                DockerManager(REMOTE_DOCKER_IP!!, REMOTE_DOCKER_PORT!!, "lissa", true)
+            } else {
+                DockerManager("lissa", true)
+            }
+            dockerManagerCache[namespace] = manager
+            return manager
+        }
     }
 
+    /**
+     * A configured object mapper for serialization / deserialization of objects.
+     */
     protected val oom: ObjectMapper = createObjectMapper()
     private val image: String
     private val defaultPort: Int
@@ -31,7 +54,15 @@ abstract class DockerInformant : Informant {
 
     private val docker: DockerManager?
 
-    constructor(
+    /**
+     * Create the docker informant.
+     * @param[image] the docker image to use
+     * @param[defaultPort] the default port of the image's service
+     * @param[useDocker] whether or not to use the docker image (just for debugging)
+     * @param[id] the id of the informant
+     * @param[dataRepository] the data repository of the informant
+     */
+    protected constructor(
         image: String,
         defaultPort: Int,
         useDocker: Boolean,
@@ -41,24 +72,24 @@ abstract class DockerInformant : Informant {
         this.image = image
         this.defaultPort = defaultPort
         this.useDocker = useDocker
-        docker = if (useDocker) initDocker() else null
+        docker = if (useDocker) createDockerManager("lissa") else null
     }
 
-    private fun initDocker(): DockerManager {
-        return if (REMOTE) {
-            // Use Remote Docker as it is faster (can only be used by admins of the ArDoCo Organization)
-            logger.debug("Use Docker Remote ..")
-            DockerManager(REMOTE_DOCKER_IP!!, REMOTE_DOCKER_PORT!!, "lissa", true)
-        } else {
-            DockerManager("lissa", true)
-        }
-    }
+    /**
+     * Get the host IP to connect
+     * @return the IP of the host to connect
+     */
+    protected fun hostIP() = if (REMOTE) REMOTE_DOCKER_IP else "127.0.0.1"
 
-    fun hostIp() = if (REMOTE) REMOTE_DOCKER_IP else "127.0.0.1"
-
+    /**
+     * The information about the spawned container (e.g., the information about the port mapping)
+     */
     protected lateinit var container: ContainerResponse
 
-    fun start() {
+    /**
+     * Start the container.
+     */
+    protected fun start() {
         if (useDocker) {
             this.container = docker!!.createContainerByImage(image, true, false)
         } else {
@@ -66,12 +97,19 @@ abstract class DockerInformant : Informant {
         }
     }
 
-    fun stop() {
+    /**
+     * Stop the container.
+     */
+    protected fun stop() {
         if (useDocker && this::container.isInitialized) {
             this.docker!!.shutdown(container.containerId)
         }
     }
 
+    /**
+     * Ensure the readiness of the container or service by its entrypoint (e.g., "ocr" to access "http://IP:Port/ocr").
+     * @throws[IllegalStateException] if failed after multiple retries
+     */
     protected fun ensureReadiness(entryPoint: String) {
         val tries = 15
         val waiting = 10000L
@@ -79,8 +117,7 @@ abstract class DockerInformant : Informant {
         HttpClients.createDefault().use { client ->
             for (currentTry in IntStream.range(0, tries)) {
                 try {
-                    val get =
-                        if (!REMOTE) HttpGet("http://127.0.0.1:${container.apiPort}/$entryPoint/") else HttpGet("http://$REMOTE_DOCKER_IP:${container.apiPort}/$entryPoint/")
+                    val get = HttpGet("http://${hostIP()}:${container.apiPort}/$entryPoint/")
                     val response = client.execute(get)
                     val responseEntity = response?.entity
                     val data = when (val contentStream = responseEntity?.content) {

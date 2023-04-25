@@ -43,6 +43,7 @@
         <module>recommendation-generator</module>
         <module>text-extraction</module>
         <module>text-preprocessing</module>
+        <module>diagram-recognition</module>
       </modules>
     </profile>
 

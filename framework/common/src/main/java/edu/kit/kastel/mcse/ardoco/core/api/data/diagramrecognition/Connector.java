@@ -21,7 +21,7 @@ public final class Connector implements Serializable {
         this.texts = texts;
     }
 
-    public String getUuid() {
+    public String getUUID() {
         return uuid;
     }
 

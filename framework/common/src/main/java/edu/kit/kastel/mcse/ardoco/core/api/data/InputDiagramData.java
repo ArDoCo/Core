@@ -5,18 +5,32 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
+/**
+ * This {@link PipelineStepData} gives access to diagrams associated with the project to analyze.
+ */
 public class InputDiagramData implements PipelineStepData {
     public static final String ID = "InputDiagramData";
 
-    private transient String pathToDiagrams;
+    private final transient String pathToDiagrams;
 
+    /**
+     * Create the data by a directory of image files.
+     * 
+     * @param pathToDiagrams the path to a directory containing diagrams and sketches
+     */
     public InputDiagramData(String pathToDiagrams) {
-        this.pathToDiagrams = pathToDiagrams;
+        this.pathToDiagrams = Objects.requireNonNull(pathToDiagrams);
     }
 
+    /**
+     * Get all image files of the given directory (not recursive).
+     * 
+     * @return a list of image files ordered by name
+     */
     public List<File> getFiles() {
         if (pathToDiagrams == null)
             return List.of();
