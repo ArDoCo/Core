@@ -71,7 +71,7 @@ public class ConnectionStateFile {
             builder.append(modelInstance.getFullType());
             builder.append(VALUE_SEPARATOR);
 
-            builder.append(df.format(instanceLink.getProbability()));
+            builder.append(df.format(instanceLink.getConfidence()));
             builder.append(VALUE_SEPARATOR);
             ImmutableList<String> sentences = textInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
             builder.append(String.join(LIST_SEPARATOR, sentences));
@@ -143,7 +143,7 @@ public class ConnectionStateFile {
                 String uid = currentModelInstance.getUid();
                 String modelName = currentModelInstance.getFullName();
                 String modelType = currentModelInstance.getFullType();
-                String linkProbability = df.format(currentLink.getProbability());
+                String linkProbability = df.format(currentLink.getConfidence());
                 ImmutableList<String> sentences = currentTextInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
                 String name = currentTextInstance.getName();
                 String type = currentTextInstance.getType();
@@ -153,8 +153,8 @@ public class ConnectionStateFile {
                 ImmutableSet<String> claimants = currentTextInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
                 String currentModelLine = String.join(VALUE_SEPARATOR, uid, modelName, modelType);
-                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type, String.join(
-                        LIST_SEPARATOR, names), String.join(LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
+                String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type,
+                        String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR, types), probability, String.join(LIST_SEPARATOR, claimants));
                 if (modelOrder == 0) {
 
                     if (!parts.get(3).equals(linkProbability) ||//

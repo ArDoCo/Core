@@ -69,8 +69,8 @@ public class SadSamTraceLink extends TraceLink implements Comparable<SadSamTrace
      *
      * @return probability/confidence of this trace link
      */
-    public double getProbability() {
-        return instanceLink.getProbability();
+    public double getConfidence() {
+        return instanceLink.getConfidence();
     }
 
     /**
