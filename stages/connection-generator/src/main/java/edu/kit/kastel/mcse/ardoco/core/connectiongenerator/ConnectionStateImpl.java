@@ -75,8 +75,9 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
      */
     @Override
     public ImmutableList<InstanceLink> getInstanceLinks(String name, String type) {
-        return Lists.immutable.fromStream(instanceLinks.stream().filter(imapping -> imapping.getModelInstance().getNameParts().contains(name))//
-                                                       .filter(imapping -> imapping.getModelInstance().getTypeParts().contains(type)));
+        return Lists.immutable.fromStream(instanceLinks.stream()
+                .filter(imapping -> imapping.getModelInstance().getNameParts().contains(name))//
+                .filter(imapping -> imapping.getModelInstance().getTypeParts().contains(type)));
     }
 
     /**
