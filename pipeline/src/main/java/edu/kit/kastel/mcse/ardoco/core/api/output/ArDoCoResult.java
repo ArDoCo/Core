@@ -24,7 +24,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
@@ -103,8 +102,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     private static String formatTraceLinksHumanReadable(SadSamTraceLink traceLink) {
-        InstanceLink instanceLink = traceLink.getInstanceLink();
-        String modelElementName = instanceLink.getModelInstance().getFullName();
+        String modelElementName = traceLink.getInstanceLink().getModelInstance().getFullName();
         String modelElementUid = traceLink.getModelElementUid();
         String modelInfo = String.format("%s (%s)", modelElementName, modelElementUid);
 
