@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.ardoco.core</groupId>
@@ -14,8 +13,7 @@
     inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
     Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
     This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research Labs
-    (46.23.01).
-  </description>
+    (46.23.01).</description>
   <url>https://github.com/ArDoCo/Core</url>
   <licenses>
     <license>
@@ -92,8 +90,7 @@
     <sonar.organization>ardoco</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir},
-      ${project.basedir}/../../${aggregate.report.dir}
-    </sonar.coverage.jacoco.xmlReportPaths>
+      ${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
     <stanford.corenlp.version>4.5.3</stanford.corenlp.version>
@@ -137,16 +134,16 @@
         <artifactId>inconsistency-detection</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>code-traceability</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- Informalin -->
       <dependency>
         <groupId>io.github.ardoco.core</groupId>
         <artifactId>common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.ardoco.core</groupId>
-        <artifactId>models</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -421,8 +418,8 @@
                 <include>*.md</include>
                 <include>.gitignore</include>
               </includes>
-              <trimTrailingWhitespace/>
-              <endWithNewline/>
+              <trimTrailingWhitespace></trimTrailingWhitespace>
+              <endWithNewline></endWithNewline>
               <indent>
                 <tabs>true</tabs>
                 <spacesPerTab>4</spacesPerTab>
@@ -435,7 +432,7 @@
               <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
             </eclipse>
-            <removeUnusedImports/>
+            <removeUnusedImports></removeUnusedImports>
             <licenseHeader>
               <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/license-header</file>

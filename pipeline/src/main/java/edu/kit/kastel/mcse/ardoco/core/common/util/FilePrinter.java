@@ -1,6 +1,9 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -42,8 +45,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
@@ -402,17 +403,17 @@ public final class FilePrinter {
 
         try (var pw = new FileWriter(file, StandardCharsets.UTF_8)) {
             inconsistencies.flatCollect(Inconsistency::toFileOutput)
-                           .asLazy()
-                           .collect(FilePrinter::convertToCSV)
-                           .distinct()
-                           .toSortedList(getInconsistencyStringComparator())
-                           .forEach(s -> {
-                               try {
-                                   pw.append(s).append("\n");
-                               } catch (IOException e) {
-                                   logger.error(e.getMessage(), e);
-                               }
-                           });
+                    .asLazy()
+                    .collect(FilePrinter::convertToCSV)
+                    .distinct()
+                    .toSortedList(getInconsistencyStringComparator())
+                    .forEach(s -> {
+                        try {
+                            pw.append(s).append("\n");
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    });
         } catch (IOException e) {
             logger.error(GENERIC_ERROR);
             logger.debug(e.getMessage(), e);
