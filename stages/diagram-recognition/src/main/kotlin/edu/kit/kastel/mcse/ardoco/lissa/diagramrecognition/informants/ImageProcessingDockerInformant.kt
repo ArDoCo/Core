@@ -10,13 +10,13 @@ abstract class ImageProcessingDockerInformant(
     useDocker: Boolean,
     id: String,
     dataRepository: DataRepository,
-    private val defaultEndpoint: String,
+    private val defaultEndpoint: String
 ) : DockerInformant(
     image,
     defaultPort,
     useDocker,
     id,
-    dataRepository,
+    dataRepository
 ) {
     final override fun run() {
         try {

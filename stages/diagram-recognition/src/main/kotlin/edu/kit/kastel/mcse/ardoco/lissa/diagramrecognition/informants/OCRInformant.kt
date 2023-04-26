@@ -22,7 +22,7 @@ class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
     DOCKER_OCR_VIA_DOCKER,
     ID,
     dataRepository,
-    "ocr",
+    "ocr"
 ) {
     companion object {
         const val ID = "OCRInformant"
@@ -55,7 +55,7 @@ class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         val textRecognition = sendOCRRequest(
             image,
             container.apiPort,
-            detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL },
+            detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL }
         )
         logger.debug("Processed OCRService Request")
         return oom.readValue(textRecognition)
@@ -92,7 +92,7 @@ class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
             box.box[0] - EXPANSION_IN_PX,
             box.box[1] - EXPANSION_IN_PX,
             box.box[2] + EXPANSION_IN_PX,
-            box.box[3] + EXPANSION_IN_PX,
+            box.box[3] + EXPANSION_IN_PX
         )
         // Copy References here. No Copies!
         return Box(box.uuid, newPositions.toIntArray(), box.confidence, box.classification.classificationString, box.texts, null)

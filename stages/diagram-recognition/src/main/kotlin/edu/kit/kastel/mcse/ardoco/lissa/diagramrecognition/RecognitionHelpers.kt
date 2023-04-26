@@ -66,7 +66,7 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
             g2d.drawString(
                 box.texts.joinToString { it.text },
                 coordinates[0],
-                coordinates[1],
+                coordinates[1]
             )
         }
     }
@@ -129,7 +129,7 @@ fun IntArray.boundingBox(relative: Boolean = false): BoundingBox {
             this[0].toDouble(),
             this[1].toDouble(),
             this[2].toDouble() - this[0].toDouble(),
-            this[3].toDouble() - this[1].toDouble(),
+            this[3].toDouble() - this[1].toDouble()
         )
     }
     return BoundingBox(this[0].toDouble(), this[1].toDouble(), this[2].toDouble(), this[3].toDouble())

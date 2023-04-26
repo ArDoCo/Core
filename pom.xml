@@ -502,6 +502,11 @@
               <nrOfIndentSpace>2</nrOfIndentSpace>
             </sortPom>
           </pom>
+          <kotlin>
+            <ktlint>
+              <editorConfigPath>.editorconfig</editorConfigPath>
+            </ktlint>
+          </kotlin>
           <ratchetFrom>origin/main</ratchetFrom>
         </configuration>
       </plugin>
@@ -570,20 +575,6 @@
         </executions>
       </plugin>
       <!-- Kotlin -->
-      <plugin>
-        <groupId>com.github.gantsign.maven</groupId>
-        <artifactId>ktlint-maven-plugin</artifactId>
-        <version>1.16.0</version>
-        <executions>
-          <execution>
-            <id>ktlint:check</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <phase>verify</phase>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.jetbrains.dokka</groupId>
         <artifactId>dokka-maven-plugin</artifactId>

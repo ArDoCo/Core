@@ -18,7 +18,7 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
     DOCKER_SKETCH_RECOGNITION_VIA_DOCKER,
     ID,
     dataRepository,
-    "sketches",
+    "sketches"
 ) {
     companion object {
         const val DOCKER_SKETCH_RECOGNITION = "ghcr.io/lissa-approach/detectron2-sr:latest"

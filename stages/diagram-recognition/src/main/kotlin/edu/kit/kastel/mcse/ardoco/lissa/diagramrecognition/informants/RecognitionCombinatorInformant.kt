@@ -66,7 +66,7 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
     private fun getPixels(image: BufferedImage, box: Array<Int>): List<Int> {
         val result = mutableListOf<Int>()
         for (x in IntStream.range(box[0], box[2])) for (y in IntStream.range(box[1], box[3])) result.add(
-            image.getRGB(x, y),
+            image.getRGB(x, y)
         )
         return result
     }

@@ -19,7 +19,7 @@ class DiagramRecognitionAgent(dataRepository: DataRepository) : PipelineAgent(ID
     private val informants = listOf(
         ObjectDetectionInformant(dataRepository),
         OCRInformant(dataRepository),
-        RecognitionCombinatorInformant(dataRepository),
+        RecognitionCombinatorInformant(dataRepository)
     )
 
     @Configurable

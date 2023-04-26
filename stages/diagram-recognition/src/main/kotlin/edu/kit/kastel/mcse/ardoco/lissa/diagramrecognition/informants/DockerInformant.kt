@@ -68,7 +68,7 @@ abstract class DockerInformant : Informant {
         defaultPort: Int,
         useDocker: Boolean,
         id: String,
-        dataRepository: DataRepository,
+        dataRepository: DataRepository
     ) : super(id, dataRepository) {
         this.image = image
         this.defaultPort = defaultPort

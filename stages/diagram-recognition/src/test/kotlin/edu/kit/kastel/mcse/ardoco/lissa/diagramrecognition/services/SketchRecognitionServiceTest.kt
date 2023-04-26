@@ -66,7 +66,7 @@ class SketchRecognitionServiceTest {
         visualize(
             FileInputStream(File(PATH_TO_HL_ARCHITECTURE)),
             diagram,
-            FileOutputStream(destination),
+            FileOutputStream(destination)
         )
         if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(destination)
     }
@@ -80,7 +80,7 @@ class SketchRecognitionServiceTest {
         visualize(
             FileInputStream(File(PATH)),
             diagram,
-            FileOutputStream(destination),
+            FileOutputStream(destination)
         )
         if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(destination)
     }

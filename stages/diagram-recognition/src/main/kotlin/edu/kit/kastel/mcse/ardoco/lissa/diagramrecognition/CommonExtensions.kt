@@ -14,7 +14,7 @@ fun createObjectMapper(): ObjectMapper {
             .withFieldVisibility(JsonAutoDetect.Visibility.ANY) //
             .withGetterVisibility(JsonAutoDetect.Visibility.NONE) //
             .withSetterVisibility(JsonAutoDetect.Visibility.NONE) //
-            .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE),
+            .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
     )
     return objectMapper.registerKotlinModule()
 }
