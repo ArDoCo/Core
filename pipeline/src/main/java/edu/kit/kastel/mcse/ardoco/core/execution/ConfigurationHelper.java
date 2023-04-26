@@ -3,11 +3,13 @@ package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
@@ -134,51 +136,47 @@ public class ConfigurationHelper {
         findImportantFields(clazz.getSuperclass(), fields);
     }
 
-    @SuppressWarnings("java:S3011")
     private static AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
             IllegalAccessException {
         var constructors = Arrays.asList(clazz.getDeclaredConstructors());
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 0)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance();
-        }
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(Map.of());
-        }
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)
-                    .findFirst()
-                    .orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance((DataRepository) null);
-        }
+        AbstractConfigurable result = null;
 
-        if (constructors.stream()
-                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)
-                    .findFirst()
-                    .orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(null, null);
-        }
+        result = findAndCreate(constructors, c -> c.getParameterCount() == 0, new Object[0]);
+        if (result != null)
+            return result;
 
-        if (constructors.stream()
-                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)
-                    .findFirst()
-                    .orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(null, List.of());
-        }
+        result = findAndCreate(constructors, c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class, new Object[] { Map.of() });
+        if (result != null)
+            return result;
+
+        result = findAndCreate(constructors, c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class, new Object[] {
+                new DataRepository() });
+        if (result != null)
+            return result;
+
+        result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c
+                .getParameterTypes()[1] == DataRepository.class, new Object[] { null, null });
+        if (result != null)
+            return result;
+
+        result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c
+                .getParameterTypes()[1] == List.class, new Object[] { null, List.of() });
+        if (result != null)
+            return result;
 
         throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
 
+    }
+
+    @SuppressWarnings("java:S3011")
+    private static AbstractConfigurable findAndCreate(Collection<Constructor<?>> constructors, Predicate<Constructor<?>> selector, Object[] parameters)
+            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        if (constructors.stream().noneMatch(selector)) {
+            return null;
+        }
+        var constructor = constructors.stream().filter(selector).findFirst().orElseThrow();
+        constructor.setAccessible(true);
+        return (AbstractConfigurable) constructor.newInstance(parameters);
     }
 
 }

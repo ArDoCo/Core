@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.data.text.NlpInformant;
@@ -22,6 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGen
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 
 public class PipelineUtils {
 

@@ -1,12 +1,12 @@
-package edu.kit.kastel.ardoco.lissa.diagramrecognition.informants
+package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
-import edu.kit.kastel.ardoco.lissa.diagramrecognition.boundingBox
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.util.stream.IntStream

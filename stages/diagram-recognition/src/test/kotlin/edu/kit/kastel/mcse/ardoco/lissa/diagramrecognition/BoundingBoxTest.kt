@@ -1,4 +1,4 @@
-package edu.kit.kastel.ardoco.lissa.diagramrecognition
+package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

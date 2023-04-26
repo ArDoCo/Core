@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
  */
 public class InputDiagramData implements PipelineStepData {
     public static final String ID = "InputDiagramData";
+    private static final List<String> ALLOWED_FILE_TYPES = List.of("jpg", "png", "jpeg");
 
     private final transient String pathToDiagrams;
 
@@ -52,7 +53,7 @@ public class InputDiagramData implements PipelineStepData {
             return List.of();
         List<File> diagrams = Arrays.stream(allFiles)
                 .filter(File::isFile)
-                .filter(f -> f.getName().toLowerCase().endsWith(".jpg") || f.getName().toLowerCase().endsWith(".png"))
+                .filter(f -> ALLOWED_FILE_TYPES.stream().anyMatch(t -> f.getName().toLowerCase().endsWith("." + t)))
                 .sorted(Comparator.comparing(File::getName))
                 .toList();
         logger.info("Found {} diagrams to consider.", diagrams.size());

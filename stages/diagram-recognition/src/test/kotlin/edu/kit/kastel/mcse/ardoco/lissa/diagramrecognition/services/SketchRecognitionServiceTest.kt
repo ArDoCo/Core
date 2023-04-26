@@ -1,11 +1,11 @@
-package edu.kit.kastel.ardoco.lissa.diagramrecognition.services
+package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.services
 
-import edu.kit.kastel.ardoco.lissa.DiagramRecognition
-import edu.kit.kastel.ardoco.lissa.diagramrecognition.visualize
 import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.visualize
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

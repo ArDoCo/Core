@@ -1,4 +1,4 @@
-package edu.kit.kastel.ardoco.lissa.diagramrecognition
+package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification

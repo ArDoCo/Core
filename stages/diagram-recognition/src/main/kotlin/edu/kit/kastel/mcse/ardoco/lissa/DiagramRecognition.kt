@@ -1,12 +1,13 @@
-package edu.kit.kastel.ardoco.lissa
+package edu.kit.kastel.mcse.ardoco.lissa
 
-import edu.kit.kastel.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
-import edu.kit.kastel.ardoco.lissa.diagramrecognition.model.DiagramImpl
 import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
 
 class DiagramRecognition : AbstractExecutionStage {
 
@@ -15,6 +16,8 @@ class DiagramRecognition : AbstractExecutionStage {
     }
 
     private val agents: List<PipelineAgent>
+
+    @Configurable
     private var enabledAgents: MutableList<String>
 
     constructor(dataRepository: DataRepository) : super(ID, dataRepository) {

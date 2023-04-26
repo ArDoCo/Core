@@ -1,11 +1,11 @@
-package edu.kit.kastel.ardoco.lissa.diagramrecognition.informants
+package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import edu.kit.kastel.ardoco.lissa.diagramrecognition.createObjectMapper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.docker.ContainerResponse
 import edu.kit.kastel.mcse.ardoco.docker.DockerManager
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.apache.hc.client5.http.impl.classic.HttpClients
 import java.io.IOException
@@ -52,7 +52,7 @@ abstract class DockerInformant : Informant {
     private val defaultPort: Int
     private val useDocker: Boolean
 
-    private val docker: DockerManager?
+    private var dockerManager: DockerManager? = null
 
     /**
      * Create the docker informant.
@@ -72,7 +72,6 @@ abstract class DockerInformant : Informant {
         this.image = image
         this.defaultPort = defaultPort
         this.useDocker = useDocker
-        docker = if (useDocker) createDockerManager("lissa") else null
     }
 
     /**
@@ -91,7 +90,7 @@ abstract class DockerInformant : Informant {
      */
     protected fun start() {
         if (useDocker) {
-            this.container = docker!!.createContainerByImage(image, true, false)
+            this.container = docker().createContainerByImage(image, true, false)
         } else {
             this.container = ContainerResponse("", defaultPort)
         }
@@ -102,8 +101,19 @@ abstract class DockerInformant : Informant {
      */
     protected fun stop() {
         if (useDocker && this::container.isInitialized) {
-            this.docker!!.shutdown(container.containerId)
+            this.docker().shutdown(container.containerId)
         }
+    }
+
+    private fun docker(): DockerManager {
+        if (!useDocker) {
+            error("Try to get docker while docker is disabled")
+        }
+        if (dockerManager != null) {
+            return dockerManager!!
+        }
+        dockerManager = createDockerManager("lissa")
+        return dockerManager!!
     }
 
     /**

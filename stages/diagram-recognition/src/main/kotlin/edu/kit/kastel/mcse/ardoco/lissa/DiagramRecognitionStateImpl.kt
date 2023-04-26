@@ -1,4 +1,4 @@
-package edu.kit.kastel.ardoco.lissa
+package edu.kit.kastel.mcse.ardoco.lissa
 
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
