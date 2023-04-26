@@ -3,9 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.ardoco.core</groupId>
-    <artifactId>kotlin-base</artifactId>
+    <artifactId>stages</artifactId>
     <version>0.8.2-SNAPSHOT</version>
-    <relativePath>../../framework/kotlin-base/pom.xml</relativePath>
   </parent>
 
   <artifactId>diagram-recognition</artifactId>
@@ -26,6 +25,16 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit5</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

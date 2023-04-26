@@ -1,6 +1,5 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.configuration;
-
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,18 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+
 public final class ConfigurationInstantiatorUtils {
-    private ConfigurationInstantiatorUtils(){
+    private ConfigurationInstantiatorUtils() {
         throw new IllegalAccessError();
     }
 
     /**
      * Create an AbstractConfigurable by Reflection.
+     * 
      * @param clazz the class of the AbstractConfigurable
      * @return the abstract configurable
      * @throws InvocationTargetException if constructor execution does not work
-     * @throws InstantiationException if constructor execution does not work
-     * @throws IllegalAccessException if constructor execution does not work
+     * @throws InstantiationException    if constructor execution does not work
+     * @throws IllegalAccessException    if constructor execution does not work
      */
     public static AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
             IllegalAccessException {

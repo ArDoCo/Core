@@ -20,7 +20,6 @@
   <modules>
     <module>common</module>
     <module>models</module>
-    <module>kotlin-base</module>
   </modules>
 
   <properties>
