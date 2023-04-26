@@ -4,9 +4,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
 import org.apache.hc.client5.http.classic.methods.HttpPost
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse
 import org.apache.hc.client5.http.impl.classic.HttpClients
-import org.apache.hc.core5.http.HttpEntity
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -14,16 +12,14 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Double.max
 import java.lang.Double.min
-import java.util.Scanner
-import java.util.UUID
+import java.util.*
 import javax.imageio.ImageIO
 
 private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
 
 fun executeRequest(postRequest: HttpPost): String {
     HttpClients.createDefault().use {
-        val httpResponse: CloseableHttpResponse? = it.execute(postRequest)
-        val responseEntity: HttpEntity? = httpResponse?.entity
+        val responseEntity = it.execute(postRequest) { httpResponse -> httpResponse.entity }
         val contentStream = responseEntity?.content
         return if (contentStream == null) "" else Scanner(contentStream).useDelimiter("\\A").next() ?: ""
     }
@@ -38,7 +34,14 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     var currentColor = 0
 
     val textBoxes = diagram.textBoxes.map {
-        val tb = Box(UUID.randomUUID().toString(), it.absoluteBox().map { value -> value }.toIntArray(), 1.0, "TEXT", mutableListOf(it), null)
+        val tb = Box(
+            UUID.randomUUID().toString(),
+            it.absoluteBox().map { value -> value }.toIntArray(),
+            1.0,
+            "TEXT",
+            mutableListOf(it),
+            null
+        )
         tb
     }
 

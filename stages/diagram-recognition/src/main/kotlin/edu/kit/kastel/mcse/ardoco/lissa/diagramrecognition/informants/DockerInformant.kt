@@ -128,8 +128,7 @@ abstract class DockerInformant : Informant {
             for (currentTry in IntStream.range(0, tries)) {
                 try {
                     val get = HttpGet("http://${hostIP()}:${container.apiPort}/$entryPoint/")
-                    val response = client.execute(get)
-                    val responseEntity = response?.entity
+                    val responseEntity = client.execute(get) { it.entity }
                     val data = when (val contentStream = responseEntity?.content) {
                         null -> ""
                         else -> Scanner(contentStream).useDelimiter("\\A").use { it.next() } ?: ""
