@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationInstantiatorUtils;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +83,7 @@ public class ConfigurationHelper {
 
     protected static void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz)
             throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        var object = createObject(clazz);
+        var object = ConfigurationInstantiatorUtils.createObject(clazz);
         List<Field> fields = new ArrayList<>();
         findImportantFields(object.getClass(), fields);
         fillConfigs(object, fields, configs);
@@ -135,48 +136,4 @@ public class ConfigurationHelper {
         }
         findImportantFields(clazz.getSuperclass(), fields);
     }
-
-    private static AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
-            IllegalAccessException {
-        var constructors = Arrays.asList(clazz.getDeclaredConstructors());
-        AbstractConfigurable result = null;
-
-        result = findAndCreate(constructors, c -> c.getParameterCount() == 0, new Object[0]);
-        if (result != null)
-            return result;
-
-        result = findAndCreate(constructors, c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class, new Object[] { Map.of() });
-        if (result != null)
-            return result;
-
-        result = findAndCreate(constructors, c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class, new Object[] {
-                new DataRepository() });
-        if (result != null)
-            return result;
-
-        result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c
-                .getParameterTypes()[1] == DataRepository.class, new Object[] { null, null });
-        if (result != null)
-            return result;
-
-        result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c
-                .getParameterTypes()[1] == List.class, new Object[] { null, List.of() });
-        if (result != null)
-            return result;
-
-        throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
-
-    }
-
-    @SuppressWarnings("java:S3011")
-    private static AbstractConfigurable findAndCreate(Collection<Constructor<?>> constructors, Predicate<Constructor<?>> selector, Object[] parameters)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        if (constructors.stream().noneMatch(selector)) {
-            return null;
-        }
-        var constructor = constructors.stream().filter(selector).findFirst().orElseThrow();
-        constructor.setAccessible(true);
-        return (AbstractConfigurable) constructor.newInstance(parameters);
-    }
-
 }
