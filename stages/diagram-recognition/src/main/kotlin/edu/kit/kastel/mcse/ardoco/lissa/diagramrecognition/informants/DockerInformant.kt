@@ -7,6 +7,7 @@ import edu.kit.kastel.mcse.ardoco.docker.ContainerResponse
 import edu.kit.kastel.mcse.ardoco.docker.DockerManager
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import org.apache.hc.client5.http.classic.methods.HttpGet
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler
 import org.apache.hc.client5.http.impl.classic.HttpClients
 import java.io.IOException
 import java.util.*
@@ -128,11 +129,7 @@ abstract class DockerInformant : Informant {
             for (currentTry in IntStream.range(0, tries)) {
                 try {
                     val get = HttpGet("http://${hostIP()}:${container.apiPort}/$entryPoint/")
-                    val responseEntity = client.execute(get) { it.entity }
-                    val data = when (val contentStream = responseEntity?.content) {
-                        null -> ""
-                        else -> Scanner(contentStream).useDelimiter("\\A").use { it.next() } ?: ""
-                    }
+                    val data = client.execute(get, BasicHttpClientResponseHandler())
                     if (data.startsWith("Hello from ")) return
                 } catch (e: IOException) {
                     logger.debug("${e.message} -- Try $currentTry", e)

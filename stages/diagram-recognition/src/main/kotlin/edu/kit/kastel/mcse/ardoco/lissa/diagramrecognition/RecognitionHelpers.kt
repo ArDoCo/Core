@@ -3,11 +3,16 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import org.apache.hc.client5.http.classic.methods.HttpPost
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler
 import org.apache.hc.client5.http.impl.classic.HttpClients
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Double.max
@@ -16,12 +21,16 @@ import java.util.*
 import javax.imageio.ImageIO
 
 private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
-
+private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
 fun executeRequest(postRequest: HttpPost): String {
     HttpClients.createDefault().use {
-        val responseEntity = it.execute(postRequest) { httpResponse -> httpResponse.entity }
-        val contentStream = responseEntity?.content
-        return if (contentStream == null) "" else Scanner(contentStream).useDelimiter("\\A").next() ?: ""
+        try {
+            val content = it.execute(postRequest, BasicHttpClientResponseHandler())
+            return content ?: ""
+        } catch (e: IOException) {
+            logger.error(e.message, e)
+            return ""
+        }
     }
 }
 
