@@ -2,7 +2,7 @@
 Model
 ==========
 
-.. warning:: This site is deprecated and currently built up
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
 
 
 Model Extraction State

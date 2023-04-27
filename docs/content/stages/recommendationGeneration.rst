@@ -2,7 +2,7 @@ Recommendation Generation
 ===========================
 
 
-.. warning:: This site is deprecated
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
 
 
 As described in the `Overview <https://github.com/ArDoCo/Core/wiki/Overview>`_, the `Recommendation Agent <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/recommendationGenerator/RecommendationAgent.java>`_ creates recommendations for model elements based on the textual knowledge.

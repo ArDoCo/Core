@@ -2,7 +2,7 @@
 Extracted Text Data
 ====================
 
-.. warning:: This site is deprecated
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
 
 Text Extraction State
 ------------------------

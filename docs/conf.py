@@ -23,21 +23,7 @@ project = 'ArDoCo - The Consistency Analyzer'
 copyright = f"2020-{datetime.now().year}, Sophie Corallo, Jan Keim, Dominik Fuchß"
 author = 'Sophie Corallo, Jan Keim, Dominik Fuchß'
 
-
-# The full version, including alpha/beta/rc tags
-def _find_release():
-    with open(os.path.join(os.path.dirname(__file__), "..", ".mvn", "maven.config"), "r") as file:
-        for line in file.readlines():
-            line = line.strip()
-            if line.startswith("-Drevision="):
-                version = line[len("-Drevision="):].strip()
-                if "-SNAPSHOT" in version:
-                    version = version[0:version.index("-")] + " (dev)"
-                return version
-    return "unknown"
-
-
-release = _find_release()
+release = "0.8.0"
 
 # -- General configuration ---------------------------------------------------
 
