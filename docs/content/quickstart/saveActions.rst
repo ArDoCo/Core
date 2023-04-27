@@ -2,6 +2,8 @@
 Save Actions
 ==================
 
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
+
 Go to your Eclipse Workspace folder and open the file ``.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs``.
 
 There, exchange all the ``sp_cleanup.`` properties to the following:

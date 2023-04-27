@@ -1,6 +1,8 @@
 Pipeline
 ===============
 
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
+
 ArDoCo recognizes inconsistencies between a model and a documentation.
 Therefore, it is divided into multiple steps that can be seen as pipeline:
 

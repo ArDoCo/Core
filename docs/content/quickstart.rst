@@ -1,6 +1,8 @@
 Quickstart
 =============
 
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
+
 The ArDoCo-Core is a maven project and can be embedded by using its specs (from the `pom <https://github.com/ArDoCo/Core/blob/main/pom.xml>`_).
 
 You can run and configure the execution with the :doc:`CLI <quickstart/cli>`.

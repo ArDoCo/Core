@@ -1,7 +1,7 @@
 Text Data
 ================
 
-.. note:: This documentation is currently built up
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
 
 
 Word

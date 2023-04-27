@@ -1,6 +1,8 @@
 ArDoCo
 ===========
 
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
+
 ArDoCo (Architecture Documentation Consistency) is a framework to connect architecture documentation and models while identifying missing or deviating elements (inconsistencies).
 An element can be any representable item of the model, like a component or a relation.
 To do so, ArDoCo first creates trace links and then makes use of them and other information to identify inconsistencies.

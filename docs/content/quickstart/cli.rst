@@ -1,6 +1,8 @@
 Command Line Interface
 ===========================
 
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
+
 `ArDoCo Core <https://github.com/ArDoCo/Core>`_ contains a CLI that supports the execution of ArDoCo.
 
 It is necessary to specify an input model as well as a textual documentation.
