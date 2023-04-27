@@ -2,7 +2,7 @@
 Stages
 ======
 
-.. warning:: This site is deprecated
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
 
 As described in the [Overview](https://github.com/ArDoCo/Core/wiki/Overview), every stage of the approach is represented by a different component.
 In this section of the wiki, the common principles of these parts are described.

@@ -1,6 +1,8 @@
 Standard Configuration
 =========================
 
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
+
 .. code-block::
 
     ArticleTypeNameExtractor::enabled=false

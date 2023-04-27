@@ -1,7 +1,7 @@
 Connection Generation
 ===========================
 
-.. warning:: This site is deprecated
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
 
 As described in the `Overview <https://github.com/ArDoCo/Core/wiki/Overview>`_, the `Connection Agent <https://github.com/ArDoCo/Core/blob/main/src/main/java/modelconnector/connectionGenerator/ConnectionAgent.java>`_ creates connections between elements (extracted from the model) and textually identified elements.
 The goal in this stage is to identify similar elements on both sides.

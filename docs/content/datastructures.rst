@@ -12,4 +12,4 @@ Data Structures
    data/inconsistencyData
 
 
-.. note:: This documentation is currently built up
+.. error:: This site is deprecated. Please use our new `Wiki <https://github.com/ArDoCo/Core/wiki>`_
