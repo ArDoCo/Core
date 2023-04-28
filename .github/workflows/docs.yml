@@ -16,12 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3.5.2
         with:
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.SDQ_TOKEN }}
       - uses: actions/checkout@v3.5.2
         with:
           repository: ${{ github.repository }}.wiki
           path: wiki
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.SDQ_TOKEN }}
           
       - name: Remove contents in Wiki
         working-directory: wiki
