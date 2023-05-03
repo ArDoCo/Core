@@ -32,8 +32,8 @@ public class ReferenceInformant extends Informant {
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
             findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(modelState, recommendationState, textState);
         }

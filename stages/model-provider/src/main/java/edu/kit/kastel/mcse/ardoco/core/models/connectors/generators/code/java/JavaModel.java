@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jdt.core.dom.*;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.*;
 import edu.kit.kastel.mcse.ardoco.core.api.models.code.*;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.EnumDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.MethodDeclarationFinder;

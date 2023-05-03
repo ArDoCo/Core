@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 
 /**
  * A trace link between exactly one architecture endpoint and exactly one code

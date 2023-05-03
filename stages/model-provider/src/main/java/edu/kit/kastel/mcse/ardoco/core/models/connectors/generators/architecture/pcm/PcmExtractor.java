@@ -5,11 +5,11 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureComponent;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureInterface;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureMethod;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmComponent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmInterface;
@@ -23,31 +23,29 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
  */
 public final class PcmExtractor extends ArchitectureExtractor {
 
-    private static final PcmExtractor extractor = new PcmExtractor();
-
-    private PcmExtractor() {
-    }
-
-    public static PcmExtractor getExtractor() {
-        return extractor;
+    public PcmExtractor(String path) {
+        super(path);
     }
 
     /**
      * Extracts an architecture model, i.e. an AMTL instance, from a PCM instance.
      *
-     * @param path the path of the PCM instance's repository
      * @return the extracted architecture model
      */
     @Override
-    public ArchitectureModel extractModel(String path) {
+    public ArchitectureModel extractModel() {
         PcmModel originalModel = new PcmModel(new File(path));
         Set<ArchitectureInterface> interfaces = extractInterfaces(originalModel);
         Set<ArchitectureComponent> components = extractComponents(originalModel, interfaces);
         Set<ArchitectureItem> endpoints = new HashSet<>();
         endpoints.addAll(interfaces);
         endpoints.addAll(components);
-        ArchitectureModel model = new ArchitectureModel(endpoints);
-        return model;
+        return new ArchitectureModel(endpoints);
+    }
+
+    @Override
+    public String getModelId() {
+        return "PCM";
     }
 
     private static Set<ArchitectureInterface> extractInterfaces(PcmModel originalModel) {

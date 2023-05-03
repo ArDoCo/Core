@@ -1,10 +1,10 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.models.code;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Model;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
 /**
  * A code model that is a CMTL instance.

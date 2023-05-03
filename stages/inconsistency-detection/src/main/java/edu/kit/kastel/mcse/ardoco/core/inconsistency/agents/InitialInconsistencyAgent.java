@@ -26,8 +26,8 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     public InitialInconsistencyAgent(DataRepository dataRepository) {
         super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
 
-        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(
-                dataRepository));
+        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository),
+                new UnwantedWordsFilter(dataRepository));
         enabledFilters = filters.collect(Informant::getId);
     }
 
@@ -37,8 +37,8 @@ public class InitialInconsistencyAgent extends PipelineAgent {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
             var recommendationState = recommendationStates.getRecommendationState(metamodel);

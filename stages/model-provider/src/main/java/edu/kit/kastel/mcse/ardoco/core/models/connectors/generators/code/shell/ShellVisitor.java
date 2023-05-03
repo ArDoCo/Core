@@ -17,10 +17,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.python.util.PythonInterpreter;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.ProgrammingLanguage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
 
 public class ShellVisitor implements FileVisitor<Path> {
 

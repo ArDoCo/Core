@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.TraceLinkGenerator;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -27,19 +27,20 @@ public class ArCoTLInformant extends Informant {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var samCodeTraceabilityStates = DataRepositoryHelper.getSamCodeTraceabilityStates(dataRepository);
 
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var samCodeTraceabilityState = samCodeTraceabilityStates.getSamCodeTraceabilityState(metamodel);
 
             //TODO
+            // TODO use PcmExtractor or UmlExtractor for Architecture and the AllLanguagesExtractor for code
+            // for this, create a second model-provider that simple executes these and stores the resulting CodeModel and ArchitectureModel in the DataRepository
             ArchitectureModel architectureModel = null;
             CodeModel codeModel = null;
             Node root = TraceLinkGenerator.getRoot();
             var traceLinks = TraceLinkGenerator.generateTraceLinks(root, architectureModel, codeModel); //TODO
             samCodeTraceabilityState.addTraceLinks(traceLinks);
         }
-
     }
 
     @Override

@@ -1,7 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.NodeResult;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.StandaloneHeuristicNode;
 

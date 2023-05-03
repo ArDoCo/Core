@@ -2,8 +2,8 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.compu
 
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 

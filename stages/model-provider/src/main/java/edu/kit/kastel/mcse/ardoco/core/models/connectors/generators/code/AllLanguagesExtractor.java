@@ -7,30 +7,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.ProgrammingLanguage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.JavaExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.shell.ShellExtractor;
 
 public final class AllLanguagesExtractor extends CodeExtractor {
 
-    private static final AllLanguagesExtractor extractor = new AllLanguagesExtractor();
-    private static final Map<ProgrammingLanguage, CodeExtractor> codeExtractors = Map.of(ProgrammingLanguage.JAVA, JavaExtractor.getExtractor(),
-            ProgrammingLanguage.SHELL, ShellExtractor.getExtractor());
+    private final Map<ProgrammingLanguage, CodeExtractor> codeExtractors;
 
-    private AllLanguagesExtractor() {
-    }
-
-    public static AllLanguagesExtractor getExtractor() {
-        return extractor;
+    public AllLanguagesExtractor(String path) {
+        super(path);
+        codeExtractors = Map.of(ProgrammingLanguage.JAVA, new JavaExtractor(path), ProgrammingLanguage.SHELL, new ShellExtractor(path));
     }
 
     @Override
-    public CodeModel extractModel(String path) {
+    public CodeModel extractModel() {
         List<CodeModel> models = new ArrayList<>();
         for (CodeExtractor extractor : codeExtractors.values()) {
-            CodeModel model = extractor.extractModel(path);
+            var model = extractor.extractModel();
             models.add(model);
         }
         Set<CodeItem> codeEndpoints = new HashSet<>();

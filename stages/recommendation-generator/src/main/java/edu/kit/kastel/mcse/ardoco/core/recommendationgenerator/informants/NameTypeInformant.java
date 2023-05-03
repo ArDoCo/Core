@@ -47,8 +47,8 @@ public class NameTypeInformant extends Informant {
     }
 
     private void exec(TextState textState, ModelStates modelStates, RecommendationStates recommendationStates, Word word) {
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
             addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);

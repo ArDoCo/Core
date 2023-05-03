@@ -12,6 +12,11 @@ class RunnerBaseTest {
     protected final String inputText = "src/test/resources/teastore.txt";
     protected final String inputModelArchitecture = "src/test/resources/teastore.repository";
     protected final String inputModelArchitectureUml = "src/test/resources/teastore.uml";
+    protected final String inputCode = "TODO"; //TODO
+    // TODO: make a BeforeAll that clones the repository to the resource folder if not already present
+    // This can also be a utility function in a way that clones (only the newest commit) to a given location. We need to use this for evaluation later.
+    // This way, we can also support simply providing a git-link and a checkout folder
+
     protected final String outputDir = "src/test/resources/testout";
     protected final String additionalConfigs = "src/test/resources/additionalConfig.txt";
     protected final String projectName = "teastore";

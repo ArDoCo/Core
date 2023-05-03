@@ -38,8 +38,8 @@ public class CompoundRecommendationInformant extends Informant {
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
 
-        for (var model : modelStatesData.modelIds()) {
-            var modelState = modelStatesData.getModelState(model);
+        for (var model : modelStatesData.extractionModelIds()) {
+            var modelState = modelStatesData.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
             createRecommendationInstancesFromCompoundNounMappings(textState, recommendationState, modelState);

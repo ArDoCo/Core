@@ -7,9 +7,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeModule;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodePackage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModule;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
