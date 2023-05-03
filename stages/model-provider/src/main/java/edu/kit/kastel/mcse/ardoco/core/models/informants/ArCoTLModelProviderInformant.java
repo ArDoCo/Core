@@ -3,59 +3,55 @@ package edu.kit.kastel.mcse.ardoco.core.models.informants;
 
 import java.util.Map;
 
-import org.eclipse.collections.api.list.ImmutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelExtractionStateImpl;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
  * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
  * extraction state.
  */
-public final class ModelProviderInformant extends Informant {
+public final class ArCoTLModelProviderInformant extends Informant {
     private static final String MODEL_STATES_DATA = "ModelStatesData";
-    private ModelConnector modelConnector;
+    private Extractor extractor;
     private ModelExtractionStateImpl modelState = null;
 
     // Needed for Configuration Generation
     @SuppressWarnings("unused")
-    private ModelProviderInformant() {
+    private ArCoTLModelProviderInformant() {
         super(null, null);
-        this.modelConnector = null;
+        this.extractor = null;
     }
 
     /**
      * Instantiates a new model provider that uses the provided {@link ModelConnector} to extract information into the {@link DataRepository}.
      *
      * @param dataRepository the data repository
-     * @param modelConnector the model connector
+     * @param extractor      the model connector
      */
-    public ModelProviderInformant(DataRepository dataRepository, ModelConnector modelConnector) {
-        super("ModelProvider " + modelConnector.getModelId(), dataRepository);
-        this.modelConnector = modelConnector;
+    public ArCoTLModelProviderInformant(DataRepository dataRepository, Extractor extractor) {
+        super("Extractor " + extractor.getClass().getSimpleName(), dataRepository);
+        this.extractor = extractor;
     }
 
     @Override
     public void run() {
-        if (modelConnector == null) {
+        if (extractor == null) {
             return;
         }
-        ImmutableList<ModelInstance> instances = modelConnector.getInstances();
-        modelState = new ModelExtractionStateImpl(modelConnector.getModelId(), modelConnector.getMetamodel(), instances);
-
-        addModelStateToDataRepository();
+        addModelStateToDataRepository(extractor.getModelId(), extractor.extractModel());
     }
 
-    private void addModelStateToDataRepository() {
+    private void addModelStateToDataRepository(String modelId, Model model) {
         var dataRepository = getDataRepository();
-        var optionalData = dataRepository.getData(MODEL_STATES_DATA, ModelStates.class);
-        ModelStates modelStates;
-        modelStates = optionalData.orElseGet(ModelStates::new);
-        modelStates.addModelExtractionState(modelConnector.getModelId(), modelState);
+        var modelStates = dataRepository.getData(MODEL_STATES_DATA, ModelStates.class).orElseGet(ModelStates::new);
+
+        modelStates.addModel(modelId, model);
+
         dataRepository.addData(MODEL_STATES_DATA, modelStates);
     }
 

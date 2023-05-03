@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.UmlExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.generators.ArchitectureExtractorTest;
 
@@ -15,7 +15,8 @@ class UmlExtractorTest extends ArchitectureExtractorTest {
 
     @Test
     void extractorTest() {
-        ArchitectureModel model = UmlExtractor.getExtractor().extractModel("src/test/resources/mediastore/architecture/uml/ms.uml");
+        UmlExtractor umlExtractor = new UmlExtractor("src/test/resources/mediastore/architecture/uml/ms.uml");
+        ArchitectureModel model = umlExtractor.extractModel();
         checkModel(model);
     }
 }

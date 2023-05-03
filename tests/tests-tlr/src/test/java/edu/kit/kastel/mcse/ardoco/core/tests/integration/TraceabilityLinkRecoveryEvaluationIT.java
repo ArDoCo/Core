@@ -285,8 +285,8 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var sentences = data.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText().getSentences();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
-        for (String modelId : modelStates.modelIds()) {
-            var instances = modelStates.getModelState(modelId).getInstances();
+        for (String modelId : modelStates.extractionModelIds()) {
+            var instances = modelStates.getModelExtractionState(modelId).getInstances();
 
             var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);
             var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);

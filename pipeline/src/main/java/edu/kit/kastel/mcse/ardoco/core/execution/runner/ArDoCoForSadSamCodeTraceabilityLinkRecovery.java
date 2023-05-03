@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
+import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
 
 public class ArDoCoForSadSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoForSadSamCodeTraceabilityLinkRecovery.class);
@@ -20,11 +21,10 @@ public class ArDoCoForSadSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         super(projectName);
     }
 
-    public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs,
-            File outputDir) {
-        //TODO
+    public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
+            Map<String, String> additionalConfigs, File outputDir) {
         try {
-            definePipeline(inputText, inputArchitectureModel, architectureModelType, additionalConfigs);
+            definePipeline(inputText, inputArchitectureModel, architectureModelType, inputCode, additionalConfigs);
         } catch (IOException e) {
             logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             isSetUp = false;
@@ -35,8 +35,8 @@ public class ArDoCoForSadSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         isSetUp = true;
     }
 
-    private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs)
-            throws IOException {
+    private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
+            Map<String, String> additionalConfigs) throws IOException {
         ArDoCo arDoCo = this.getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
@@ -53,8 +53,11 @@ public class ArDoCoForSadSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         arDoCo.addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
 
-        //TODO
+        ArCoTLModelProviderAgent arCoTLModelProviderAgent = PipelineUtils.getArCoTLModelProviderAgent(inputArchitectureModel, architectureModelType, inputCode,
+                additionalConfigs, dataRepository);
+        arDoCo.addPipelineStep(arCoTLModelProviderAgent);
         arDoCo.addPipelineStep(PipelineUtils.getSamCodeTraceabilityLinkRecovery(additionalConfigs, dataRepository));
+
         arDoCo.addPipelineStep(PipelineUtils.getSadSamCodeTraceabilityLinkRecovery(additionalConfigs, dataRepository));
     }
 }

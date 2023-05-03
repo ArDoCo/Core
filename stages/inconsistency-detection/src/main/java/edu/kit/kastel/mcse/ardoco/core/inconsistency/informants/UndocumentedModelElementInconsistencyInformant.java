@@ -42,8 +42,8 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
         var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
 
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             var metaModel = modelState.getMetamodel();
             var connectionState = connectionStates.getConnectionState(metaModel);
             var inconsistencyState = inconsistencyStates.getInconsistencyState(metaModel);

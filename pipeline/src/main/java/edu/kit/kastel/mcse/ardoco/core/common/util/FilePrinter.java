@@ -84,8 +84,8 @@ public final class FilePrinter {
             inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
         }
 
-        for (var model : getModelStatesData(data).modelIds()) {
-            var modelState = getModelStatesData(data).getModelState(model);
+        for (var model : getModelStatesData(data).extractionModelIds()) {
+            var modelState = getModelStatesData(data).getModelExtractionState(model);
             var metaModel = modelState.getMetamodel();
             var recommendationState = getRecommendationStates(data).getRecommendationState(metaModel);
             var connectionState = getConnectionStates(data).getConnectionState(metaModel);

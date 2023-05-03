@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 /**
  * This analyzer searches for the occurrence of instance names and types of the extraction state and adds them as names
  * and types to the text extraction state.
- *
  */
 public class ExtractionDependentOccurrenceInformant extends Informant {
 
@@ -40,8 +39,8 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
     }
 
     private void exec(TextState textState, ModelStates modelStates, Word word) {
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
 
             searchForName(modelState, textState, word);
             searchForType(modelState, textState, word);

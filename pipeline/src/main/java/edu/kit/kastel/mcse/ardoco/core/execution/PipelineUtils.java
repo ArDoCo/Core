@@ -14,9 +14,15 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityLinkR
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
+import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.UmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.PcmExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.UmlExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.AllLanguagesExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
@@ -100,6 +106,18 @@ public class PipelineUtils {
             case UML -> new UmlModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
+    }
+
+    public static ArCoTLModelProviderAgent getArCoTLModelProviderAgent(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
+            Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
+            case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+            case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+        };
+        CodeExtractor codeExtractor = new AllLanguagesExtractor(inputCode.getAbsolutePath());
+        ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));
+        agent.applyConfiguration(additionalConfigs);
+        return agent;
     }
 
     /**

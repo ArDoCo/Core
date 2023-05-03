@@ -49,8 +49,8 @@ public class NameTypeConnectionInformant extends Informant {
     }
 
     private void exec(TextState textState, ModelStates modelStates, RecommendationStates recommendationStates, Word word) {
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
             checkForNameAfterType(textState, word, modelState, recommendationState);
             checkForNameBeforeType(textState, word, modelState, recommendationState);

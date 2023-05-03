@@ -1,9 +1,9 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.models.architecture;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture;
 
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Model;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
 /**
  * An architecture model that is an AMTL instance.

@@ -256,7 +256,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public List<String> getModelIds() {
         ModelStates modelStates = getModelStates();
-        return Lists.mutable.ofAll(modelStates.modelIds());
+        return Lists.mutable.ofAll(modelStates.extractionModelIds());
     }
 
     /**
@@ -267,7 +267,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public ModelExtractionState getModelState(String modelId) {
         ModelStates modelStates = getModelStates();
-        return modelStates.getModelState(modelId);
+        return modelStates.getModelExtractionState(modelId);
     }
 
     /**

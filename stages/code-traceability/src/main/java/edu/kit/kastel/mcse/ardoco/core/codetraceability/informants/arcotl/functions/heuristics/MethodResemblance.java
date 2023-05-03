@@ -3,11 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.funct
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureInterface;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureMethod;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.ControlElement;
-import edu.kit.kastel.mcse.ardoco.core.api.models.code.Datatype;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ControlElement;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.NameComparisonUtils;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.Confidence;
 

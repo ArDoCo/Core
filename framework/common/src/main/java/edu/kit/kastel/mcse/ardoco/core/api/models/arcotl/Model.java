@@ -1,7 +1,10 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.models;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 
 import java.util.Set;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 
 public abstract class Model extends ModelElement {
 

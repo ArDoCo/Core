@@ -5,11 +5,11 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureComponent;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureInterface;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureMethod;
-import edu.kit.kastel.mcse.ardoco.core.api.models.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.UmlComponent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.UmlInterface;
@@ -21,31 +21,29 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
  */
 public final class UmlExtractor extends ArchitectureExtractor {
 
-    private static final UmlExtractor extractor = new UmlExtractor();
-
-    private UmlExtractor() {
-    }
-
-    public static UmlExtractor getExtractor() {
-        return extractor;
+    public UmlExtractor(String path) {
+        super(path);
     }
 
     /**
      * Extracts an architecture model, i.e. an AMTL instance, from a UML instance.
      *
-     * @param path the path of the UML instance's repository
      * @return the extracted architecture model
      */
     @Override
-    public ArchitectureModel extractModel(String path) {
+    public ArchitectureModel extractModel() {
         UmlModel originalModel = new UmlModel(new File(path));
         Set<ArchitectureInterface> interfaces = extractInterfaces(originalModel);
         Set<ArchitectureComponent> components = extractComponents(originalModel, interfaces);
         Set<ArchitectureItem> endpoints = new HashSet<>();
         endpoints.addAll(interfaces);
         endpoints.addAll(components);
-        ArchitectureModel model = new ArchitectureModel(endpoints);
-        return model;
+        return new ArchitectureModel(endpoints);
+    }
+
+    @Override
+    public String getModelId() {
+        return "UML";
     }
 
     private static Set<ArchitectureInterface> extractInterfaces(UmlModel originalModel) {

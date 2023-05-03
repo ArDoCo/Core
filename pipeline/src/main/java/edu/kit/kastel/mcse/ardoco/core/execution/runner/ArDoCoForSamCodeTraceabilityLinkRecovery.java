@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
+import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
 
 public class ArDoCoForSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoForSadSamTraceabilityLinkRecovery.class);
@@ -18,10 +19,10 @@ public class ArDoCoForSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         super(projectName);
     }
 
-    public void setUp(File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs, File outputDir) {
-        //TODO
+    public void setUp(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode, Map<String, String> additionalConfigs,
+            File outputDir) {
         try {
-            definePipeline(inputArchitectureModel, architectureModelType, additionalConfigs);
+            definePipeline(inputArchitectureModel, architectureModelType, inputCode, additionalConfigs);
         } catch (IOException e) {
             logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             isSetUp = false;
@@ -31,13 +32,15 @@ public class ArDoCoForSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         isSetUp = true;
     }
 
-    private void definePipeline(File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs)
+    private void definePipeline(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode, Map<String, String> additionalConfigs)
             throws IOException {
         ArDoCo arDoCo = this.getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
         //TODO
-        arDoCo.addPipelineStep(PipelineUtils.getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
+        ArCoTLModelProviderAgent arCoTLModelProviderAgent = PipelineUtils.getArCoTLModelProviderAgent(inputArchitectureModel, architectureModelType, inputCode,
+                additionalConfigs, dataRepository);
+        arDoCo.addPipelineStep(arCoTLModelProviderAgent);
         arDoCo.addPipelineStep(PipelineUtils.getSamCodeTraceabilityLinkRecovery(additionalConfigs, dataRepository));
     }
 }
