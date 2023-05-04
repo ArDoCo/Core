@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public abstract class ConfidenceAggregator extends Aggregation {
      * @param endpointTuple the endpoint tuple for which confidences are to be
      *                      returned
      * @return the specified endpoint tuple's confidences from all of the specified
-     * node results
+     *         node results
      * @throws IllegalStateException if not all of the specified
      *                               node results have a calculated confidence for the specified endpoint tuple
      */

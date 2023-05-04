@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree;
 
 import java.util.Objects;

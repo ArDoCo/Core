@@ -33,10 +33,9 @@ public abstract class ModelElement {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof ModelElement other)) {
             return false;
         }
-        ModelElement other = (ModelElement) obj;
         return Objects.equals(id, other.id);
     }
 }

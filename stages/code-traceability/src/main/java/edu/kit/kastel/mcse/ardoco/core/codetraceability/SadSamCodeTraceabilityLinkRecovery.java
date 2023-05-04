@@ -7,6 +7,7 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.SadSamCodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.agents.TransitiveTraceabilityAgent;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -30,8 +31,8 @@ public class SadSamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
 
     @Override
     protected void initializeState() {
-        var sadSamCodeTraceabilityStates = SadSamCodeTraceabilityStatesImpl.build();
-        getDataRepository().addData(SadSamCodeTraceabilityStatesImpl.ID, sadSamCodeTraceabilityStates);
+        var sadSamCodeTraceabilityStates = new SadSamCodeTraceabilityStateImpl();
+        getDataRepository().addData(SadSamCodeTraceabilityState.ID, sadSamCodeTraceabilityStates);
     }
 
     @Override

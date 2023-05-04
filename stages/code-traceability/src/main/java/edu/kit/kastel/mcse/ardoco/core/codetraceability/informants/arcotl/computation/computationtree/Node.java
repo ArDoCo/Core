@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public abstract class Node {
      * @param existingResult a partial computation result that already exists and
      *                       therefore doesn't need to be computed again
      * @return the results of all computation nodes in the subtree rooted at this
-     * node
+     *         node
      */
     public ComputationResult compute(ArchitectureModel archModel, CodeModel codeModel, ComputationResult existingResult) {
         ComputationResult result = new ComputationResult();
@@ -116,7 +117,7 @@ public abstract class Node {
      * @param result    the computation result that is used in the confidence
      *                  calculation
      * @return the calculated confidences for each endpoint tuple with endpoints in
-     * the specified architecture and code models
+     *         the specified architecture and code models
      */
     public abstract NodeResult calculateConfidences(ArchitectureModel archModel, CodeModel codeModel, ComputationResult result);
 

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation;
 
 import java.util.Set;
@@ -43,7 +44,7 @@ public class Computation {
      * Every endpoint tuple whose confidence has a value gets returned.
      *
      * @return trace links for every endpoint tuple whose confidence in the root's
-     * result has a value
+     *         result has a value
      */
     public Set<SamCodeTraceLink> getTraceLinks() {
         return result.getTraceLinks(root);

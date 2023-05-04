@@ -36,7 +36,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
                 }
             }
 
-            assert (textState.getNounMappings().contains(nounMappingToMerge));
+            assert textState.getNounMappings().contains(nounMappingToMerge);
 
             var references = nounMapping.getReferenceWords().toList();
             references.addAllIterable(nounMappingToMerge.getReferenceWords());

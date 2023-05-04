@@ -12,4 +12,5 @@ public abstract class ArchitectureExtractor extends Extractor {
 
     @Override
     public abstract ArchitectureModel extractModel();
+
 }

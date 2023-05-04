@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 
-public class ArDoCoForSamCodeTraceabilityLinkRecoveryTest extends RunnerBaseTest {
+public class ArDoCoForSamCodeTraceabilityLinkRecoveryTest extends CodeRunnerBaseTest {
 
     @Test
     @DisplayName("Test ArDoCo for SAM-Code-TLR (PCM)")

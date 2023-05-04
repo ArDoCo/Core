@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmRepository;
 
-// TODO we currently more or less have two connectors/extractors: this one and the PcmExtractor
 public class PcmXmlModelConnector implements ModelConnector {
 
     private final PcmRepository repository;

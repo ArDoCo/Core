@@ -49,10 +49,9 @@ public class EndpointTuple {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof EndpointTuple other)) {
             return false;
         }
-        EndpointTuple other = (EndpointTuple) obj;
         return Objects.equals(firstEndpoint, other.firstEndpoint) && Objects.equals(secondEndpoint, other.secondEndpoint);
     }
 

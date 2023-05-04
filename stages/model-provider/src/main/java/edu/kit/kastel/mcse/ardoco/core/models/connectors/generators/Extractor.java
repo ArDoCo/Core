@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
 public abstract class Extractor {
@@ -17,5 +18,9 @@ public abstract class Extractor {
 
     public abstract Model extractModel();
 
-    public abstract String getModelId();
+    public String getModelId() {
+        return getModelType().getModelId();
+    }
+
+    public abstract ModelType getModelType();
 }
