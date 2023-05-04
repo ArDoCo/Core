@@ -51,6 +51,15 @@ public class ModelStates implements PipelineStepData {
     }
 
     /**
+     * Return the set of IDs of all {@link Model Models} that are contained within this object.
+     *
+     * @return the IDs of all contained {@link Model Models}
+     */
+    public Set<String> modelIds() {
+        return models.keySet();
+    }
+
+    /**
      * Adds a {@link Model} with the given id to the set of {@link Model Models}
      *
      * @param id    the id

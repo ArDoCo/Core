@@ -8,10 +8,24 @@ public class TransitiveTraceLink extends TraceLink {
     private final TraceLink firstTraceLink;
     private final TraceLink secondTraceLink;
 
-    public TransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
+    private TransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
         super(new EndpointTuple(firstTraceLink.getEndpointTuple().firstEndpoint(), secondTraceLink.getEndpointTuple().secondEndpoint()));
         this.firstTraceLink = firstTraceLink;
         this.secondTraceLink = secondTraceLink;
+    }
+
+    public static TransitiveTraceLink createTransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
+        if (isValidTransitiveTraceLink(firstTraceLink, secondTraceLink)) {
+            return new TransitiveTraceLink(firstTraceLink, secondTraceLink);
+        }
+        return null; // TODO what to do here?
+    }
+
+    public static boolean isValidTransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
+        var secondEndpointOfFirstTl = firstTraceLink.getEndpointTuple().secondEndpoint();
+        var firstEndpointOfSecondTl = secondTraceLink.getEndpointTuple().firstEndpoint();
+
+        return secondEndpointOfFirstTl.equals(firstEndpointOfSecondTl);
     }
 
     @Override

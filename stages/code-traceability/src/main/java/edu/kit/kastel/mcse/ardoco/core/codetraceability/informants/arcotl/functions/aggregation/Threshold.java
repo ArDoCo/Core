@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class Threshold extends ConfidenceAggregator {
     }
 
     /**
-     * Returns a new aggregation node with the specified children nodes. The aggregation function uses the specified threshold. The threshold must be between 0 and 1, or an
+     * Returns a new aggregation node with the specified children nodes. The aggregation function uses the specified threshold. The threshold must be between 0
+     * and 1, or an
      * {@code IllegalArgumentException} gets thrown.
      *
      * @param threshold the threshold of the aggregation function,

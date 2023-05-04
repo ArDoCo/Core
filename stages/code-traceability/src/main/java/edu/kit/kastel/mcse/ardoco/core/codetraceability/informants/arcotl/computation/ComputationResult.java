@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation;
 
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class ComputationResult {
      * @param endpointTuple the endpoint tuple for which a confidence is to be
      *                      returned
      * @return the confidence of the combination of computation node and endpoint
-     * tuple, or null if it doesn't exist yet
+     *         tuple, or null if it doesn't exist yet
      */
     public Confidence getConfidence(Node node, EndpointTuple endpointTuple) {
         if (!exists(node)) {
@@ -73,7 +74,7 @@ public class ComputationResult {
      *
      * @param node the computation node for which the trace links are to be returned
      * @return trace links for every endpoint tuple whose confidence in the
-     * specified computation node's result has a value
+     *         specified computation node's result has a value
      */
     public Set<SamCodeTraceLink> getTraceLinks(Node node) {
         if (!exists(node)) {
@@ -122,7 +123,7 @@ public class ComputationResult {
      *
      * @param node the computation node whose result's existence is checked
      * @return true if the specified computation node already has a result; false
-     * otherwise
+     *         otherwise
      */
     public boolean exists(Node node) {
         return resultMap.containsKey(node);
@@ -131,10 +132,10 @@ public class ComputationResult {
     public List<String> getConfidenceStrings(Node node, EndpointTuple endpointTuple) {
         Map<String, Integer> levelToConfidences = getConfidenceStringsToLevelMap(node, endpointTuple, 1);
         List<String> result = levelToConfidences.entrySet()
-                                                .stream()
-                                                .sorted(Map.Entry.comparingByValue())
-                                                .map(entry -> entry.getKey())
-                                                .collect(Collectors.toList());
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .map(entry -> entry.getKey())
+                .collect(Collectors.toList());
         return result;
     }
 

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl;
 
 import java.util.HashMap;
@@ -21,8 +22,8 @@ public final class TraceLinkGenerator {
     private static final Node interfaceName = new ComponentNameResemblance(ComponentNameResemblance.NameConfig.INTERFACE,
             NameComparisonUtils.PreprocessingMethod.NONE).getNode();
     private static final Node interfaceMethod = new MethodResemblance().getNode();
-    private static final Node interfaceBest = MatchBest.getMatchBestCodeNode(
-            MatchBest.getMatchBestArchNode(Maximum.getMaximumNode(interfaceName, interfaceMethod)));
+    private static final Node interfaceBest = MatchBest.getMatchBestCodeNode(MatchBest.getMatchBestArchNode(Maximum.getMaximumNode(interfaceName,
+            interfaceMethod)));
 
     private static final Node packageNodeStem = new PackageResemblance(NameComparisonUtils.PreprocessingMethod.STEMMING).getNode();
     private static final Node packageBest = MatchBest.getMatchBestCodeNode(MatchBest.getMatchBestArchNode(packageNodeStem));
@@ -34,8 +35,8 @@ public final class TraceLinkGenerator {
     private static final Node compNameInherited = Maximum.getMaximumNode(new InheritLinks().getNode(compNameBest), compNameBest);
 
     private static final Node compCombined = Maximum.getMaximumNode(MatchSequentially.getMatchSeqArchNode(packageFiltered, compNameInherited),
-            new ComponentNameResemblance(ComponentNameResemblance.NameConfig.COMPONENT_WITHOUT_PACKAGE,
-                    NameComparisonUtils.PreprocessingMethod.NONE).getNode());
+            new ComponentNameResemblance(ComponentNameResemblance.NameConfig.COMPONENT_WITHOUT_PACKAGE, NameComparisonUtils.PreprocessingMethod.NONE)
+                    .getNode());
 
     private static final Node commonWords = Maximum.getMaximumNode(new ComponentNameResemblanceTest().getNode(compCombined), compCombined);
 
@@ -94,9 +95,8 @@ public final class TraceLinkGenerator {
         Node compNameBest = MatchBest.getMatchBestCodeNode(compName);
         Node compNameInherited = Maximum.getMaximumNode(new InheritLinks().getNode(compNameBest), compNameBest);
 
-        Node compCombined = Maximum.getMaximumNode(MatchSequentially.getMatchSeqArchNode(packageFiltered, compNameInherited),
-                new ComponentNameResemblance(ComponentNameResemblance.NameConfig.COMPONENT_WITHOUT_PACKAGE,
-                        NameComparisonUtils.PreprocessingMethod.NONE).getNode());
+        Node compCombined = Maximum.getMaximumNode(MatchSequentially.getMatchSeqArchNode(packageFiltered, compNameInherited), new ComponentNameResemblance(
+                ComponentNameResemblance.NameConfig.COMPONENT_WITHOUT_PACKAGE, NameComparisonUtils.PreprocessingMethod.NONE).getNode());
 
         Node commonWords = Maximum.getMaximumNode(new ComponentNameResemblanceTest().getNode(compCombined), compCombined);
 

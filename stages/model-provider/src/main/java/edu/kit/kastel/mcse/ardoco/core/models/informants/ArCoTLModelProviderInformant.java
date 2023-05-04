@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.models.informants;
 
 import java.util.Map;
+import java.util.Optional;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
@@ -48,11 +49,14 @@ public final class ArCoTLModelProviderInformant extends Informant {
 
     private void addModelStateToDataRepository(String modelId, Model model) {
         var dataRepository = getDataRepository();
-        var modelStates = dataRepository.getData(MODEL_STATES_DATA, ModelStates.class).orElseGet(ModelStates::new);
+        Optional<ModelStates> modelStatesOptional = dataRepository.getData(MODEL_STATES_DATA, ModelStates.class);
+        var modelStates = modelStatesOptional.orElseGet(ModelStates::new);
 
         modelStates.addModel(modelId, model);
 
-        dataRepository.addData(MODEL_STATES_DATA, modelStates);
+        if (modelStatesOptional.isEmpty()) {
+            dataRepository.addData(MODEL_STATES_DATA, modelStates);
+        }
     }
 
     @Override

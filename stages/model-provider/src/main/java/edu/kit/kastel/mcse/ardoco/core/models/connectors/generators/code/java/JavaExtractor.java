@@ -18,6 +18,8 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 
@@ -44,6 +46,11 @@ public final class JavaExtractor extends CodeExtractor {
         return codeModel;
     }
 
+    @Override
+    public ModelType getModelType() {
+        return CodeModelType.CODE_MODEL;
+    }
+
     private static Map<String, CompilationUnit> parseDirectory(Path dir) {
         ASTParser parser = getJavaParser();
         final String[] sources = getEntries(dir, ".java");
@@ -67,19 +74,18 @@ public final class JavaExtractor extends CodeExtractor {
         final ASTParser parser = ASTParser.newParser(AST.getJLSLatest());
         parser.setResolveBindings(true);
         parser.setStatementsRecovery(true);
-        parser.setCompilerOptions(
-                Map.of(JavaCore.COMPILER_SOURCE, javaCoreVersion, JavaCore.COMPILER_COMPLIANCE, javaCoreVersion, JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM,
-                        javaCoreVersion));
+        parser.setCompilerOptions(Map.of(JavaCore.COMPILER_SOURCE, javaCoreVersion, JavaCore.COMPILER_COMPLIANCE, javaCoreVersion,
+                JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, javaCoreVersion));
         return parser;
     }
 
     private static String[] getEntries(Path dir, String suffix) {
         try (Stream<Path> paths = Files.walk(dir)) {
             return paths.filter(path -> Files.isRegularFile(path) && path.getFileName().toString().toLowerCase().endsWith(suffix))
-                        .map(Path::toAbsolutePath)
-                        .map(Path::normalize)
-                        .map(Path::toString)
-                        .toArray(i -> new String[i]);
+                    .map(Path::toAbsolutePath)
+                    .map(Path::normalize)
+                    .map(Path::toString)
+                    .toArray(i -> new String[i]);
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }

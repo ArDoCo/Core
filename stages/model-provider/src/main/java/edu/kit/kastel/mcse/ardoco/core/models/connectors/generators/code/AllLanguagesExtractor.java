@@ -33,7 +33,7 @@ public final class AllLanguagesExtractor extends CodeExtractor {
         for (CodeModel model : models) {
             codeEndpoints.addAll(model.getContent());
         }
-        CodeModel finalModel = new CodeModel(codeEndpoints);
-        return finalModel;
+        return new CodeModel(codeEndpoints);
     }
+
 }

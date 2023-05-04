@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
@@ -44,8 +46,8 @@ public final class PcmExtractor extends ArchitectureExtractor {
     }
 
     @Override
-    public String getModelId() {
-        return "PCM";
+    public ModelType getModelType() {
+        return ArchitectureModelType.PCM;
     }
 
     private static Set<ArchitectureInterface> extractInterfaces(PcmModel originalModel) {

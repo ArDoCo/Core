@@ -89,6 +89,7 @@ public abstract class RecommendedInstance extends Entity {
      *
      * @return the name as string
      */
+    @Override
     public abstract String getName();
 
     /**

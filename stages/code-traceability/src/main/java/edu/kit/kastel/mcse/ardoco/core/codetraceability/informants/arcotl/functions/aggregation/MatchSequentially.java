@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation;
 
 import java.util.List;
@@ -7,8 +8,8 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.comput
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.AggregationNode;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 
-//If the endpoint E1 is linked (i.e. has a confidence with a value) to different endpoints by the children,
-//only the links from the first child with a link for the endpoint E1 is used.
+// If the endpoint E1 is linked (i.e. has a confidence with a value) to different endpoints by the children,
+// only the links from the first child with a link for the endpoint E1 is used.
 public class MatchSequentially extends Matcher {
 
     private static final MatchSequentially matchSeqArch = new MatchSequentially(EndpointType.ARCHITECTURE);

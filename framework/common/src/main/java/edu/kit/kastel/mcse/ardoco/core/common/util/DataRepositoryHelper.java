@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import edu.kit.kastel.mcse.ardoco.core.api.InputTextData;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.SamCodeTraceabilityStates;
+import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.SamCodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
@@ -203,26 +203,26 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Checks whether there is {@link SamCodeTraceabilityStates} stored within the provided {@link DataRepository}
+     * Checks whether there is {@link SamCodeTraceabilityState} stored within the provided {@link DataRepository}
      *
      * @param dataRepository the DataRepository to access
-     * @return true, if there is {@link SamCodeTraceabilityStates} within the {@link DataRepository}; else, false
+     * @return true, if there is {@link SamCodeTraceabilityState} within the {@link DataRepository}; else, false
      */
     public static boolean hasSamCodeTraceabilityStates(DataRepository dataRepository) {
-        return dataRepository.getData(SamCodeTraceabilityStates.ID, SamCodeTraceabilityStates.class).isPresent();
+        return dataRepository.getData(SamCodeTraceabilityState.ID, SamCodeTraceabilityState.class).isPresent();
     }
 
     /**
-     * Returns the {@link SamCodeTraceabilityStates} stored within the provided {@link DataRepository}.
+     * Returns the {@link SamCodeTraceabilityState} stored within the provided {@link DataRepository}.
      * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
      * To make sure that there is data present, use {@link #hasInconsistencyStates(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
      */
-    public static SamCodeTraceabilityStates getSamCodeTraceabilityStates(DataRepository dataRepository) {
+    public static SamCodeTraceabilityState getSamCodeTraceabilityState(DataRepository dataRepository) {
         if (hasSamCodeTraceabilityStates(dataRepository)) {
-            return dataRepository.getData(SamCodeTraceabilityStates.ID, SamCodeTraceabilityStates.class).orElseThrow();
+            return dataRepository.getData(SamCodeTraceabilityState.ID, SamCodeTraceabilityState.class).orElseThrow();
         }
         return null;
     }

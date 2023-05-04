@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.comput
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.AggregationNode;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 
-//filter every node after the first from the first
+// filter every node after the first from the first
 public class Filter extends Matcher {
 
     private boolean filterAlways;

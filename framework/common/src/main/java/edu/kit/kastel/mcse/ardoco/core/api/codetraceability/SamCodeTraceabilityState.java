@@ -1,11 +1,15 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.codetraceability;
 
 import java.util.Collection;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
+import org.eclipse.collections.api.set.ImmutableSet;
 
-public interface SamCodeTraceabilityState extends IConfigurable {
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
+
+public interface SamCodeTraceabilityState extends PipelineStepData {
+    String ID = "SamCodeTraceabilityState";
 
     /**
      * Add a {@link SamCodeTraceLink} to this state.
@@ -22,4 +26,6 @@ public interface SamCodeTraceabilityState extends IConfigurable {
      * @return whether the operation was successful
      */
     boolean addTraceLinks(Collection<SamCodeTraceLink> traceLinks);
+
+    ImmutableSet<SamCodeTraceLink> getTraceLinks();
 }

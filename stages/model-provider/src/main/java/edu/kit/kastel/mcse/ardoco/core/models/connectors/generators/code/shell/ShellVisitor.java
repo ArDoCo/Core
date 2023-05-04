@@ -88,8 +88,25 @@ public class ShellVisitor implements FileVisitor<Path> {
             interpreter.set("code", code);
 
             // Use Pygments as in Python
-            interpreter.exec(
-                    "from pygments.lexers import guess_lexer_for_filename\n" + "from pygments.lexers import guess_lexer\n" + "from pygments.lexers import BashLexer\n" + "from pygments.util import ClassNotFound\n" + "lexer_name = ''\n" + "try:\n" + "  lexer = guess_lexer_for_filename(filename, code)\n" + "  lexer_name = lexer.name\n" + "except ClassNotFound:\n" + "  try:\n" + "    lexer = guess_lexer(code)\n" + "    lexer_name = lexer.name\n" + "  except:\n" + "    pass\n" + "except:\n" + "  pass\n");
+            String executionCode = """
+                    from pygments.lexers import guess_lexer_for_filename
+                    from pygments.lexers import guess_lexer
+                    from pygments.lexers import BashLexer
+                    from pygments.util import ClassNotFound
+                    lexer_name = ''
+                    try:
+                      lexer = guess_lexer_for_filename(filename, code)
+                      lexer_name = lexer.name
+                    except ClassNotFound:
+                      try:
+                        lexer = guess_lexer(code)
+                        lexer_name = lexer.name
+                      except:
+                        pass
+                    except:
+                      pass
+                    """;
+            interpreter.exec(executionCode);
 
             // Get the lexer's name that has been set in the variable
             String lexerName = interpreter.get("lexer_name", String.class);

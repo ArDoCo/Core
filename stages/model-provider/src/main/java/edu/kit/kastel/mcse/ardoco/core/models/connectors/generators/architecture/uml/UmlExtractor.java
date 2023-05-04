@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
@@ -42,8 +44,8 @@ public final class UmlExtractor extends ArchitectureExtractor {
     }
 
     @Override
-    public String getModelId() {
-        return "UML";
+    public ModelType getModelType() {
+        return ArchitectureModelType.UML;
     }
 
     private static Set<ArchitectureInterface> extractInterfaces(UmlModel originalModel) {

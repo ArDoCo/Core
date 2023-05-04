@@ -1,11 +1,14 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.TraceLinkGenerator;
@@ -25,22 +28,29 @@ public class ArCoTLInformant extends Informant {
     public void run() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
-        var samCodeTraceabilityStates = DataRepositoryHelper.getSamCodeTraceabilityStates(dataRepository);
+        var samCodeTraceabilityState = DataRepositoryHelper.getSamCodeTraceabilityState(dataRepository);
 
-        for (var model : modelStates.extractionModelIds()) {
-            var modelState = modelStates.getModelExtractionState(model);
-            Metamodel metamodel = modelState.getMetamodel();
-            var samCodeTraceabilityState = samCodeTraceabilityStates.getSamCodeTraceabilityState(metamodel);
-
-            //TODO
-            // TODO use PcmExtractor or UmlExtractor for Architecture and the AllLanguagesExtractor for code
-            // for this, create a second model-provider that simple executes these and stores the resulting CodeModel and ArchitectureModel in the DataRepository
-            ArchitectureModel architectureModel = null;
-            CodeModel codeModel = null;
-            Node root = TraceLinkGenerator.getRoot();
-            var traceLinks = TraceLinkGenerator.generateTraceLinks(root, architectureModel, codeModel); //TODO
-            samCodeTraceabilityState.addTraceLinks(traceLinks);
+        ArchitectureModel architectureModel = null;
+        CodeModel codeModel = null;
+        for (var modelId : modelStates.modelIds()) {
+            if (isAnArchitectureModel(modelId)) {
+                architectureModel = (ArchitectureModel) modelStates.getModel(modelId);
+            } else if (isACodeModel(modelId)) {
+                codeModel = (CodeModel) modelStates.getModel(modelId);
+            }
         }
+
+        Node root = TraceLinkGenerator.getRoot();
+        var traceLinks = TraceLinkGenerator.generateTraceLinks(root, architectureModel, codeModel);
+        samCodeTraceabilityState.addTraceLinks(traceLinks);
+    }
+
+    private static boolean isACodeModel(String modelId) {
+        return Arrays.stream(CodeModelType.values()).anyMatch(codeModelType -> codeModelType.getModelId().equals(modelId));
+    }
+
+    private static boolean isAnArchitectureModel(String modelId) {
+        return Arrays.stream(ArchitectureModelType.values()).anyMatch(architectureModelType -> architectureModelType.getModelId().equals(modelId));
     }
 
     @Override
