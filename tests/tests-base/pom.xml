@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>tests</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
