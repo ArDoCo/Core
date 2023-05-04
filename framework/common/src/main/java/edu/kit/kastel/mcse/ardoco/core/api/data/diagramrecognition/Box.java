@@ -38,7 +38,7 @@ public final class Box implements Serializable {
      * @param uuid            a unique identifier
      * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
      * @param confidence      a confidence value
-     * @param classification  the classification (e.g., "LABEL")
+     * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for further details
      * @param textBoxes       the text boxes that are attached to this box
      * @param dominatingColor a dominating color in the box (iff present)
      */

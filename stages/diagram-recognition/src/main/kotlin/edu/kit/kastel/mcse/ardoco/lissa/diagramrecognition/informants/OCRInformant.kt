@@ -16,7 +16,7 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.net.URI
 
-class OCRInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
+class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
     DOCKER_OCR,
     DEFAULT_PORT,
     DOCKER_OCR_VIA_DOCKER,
