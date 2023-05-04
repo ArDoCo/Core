@@ -63,6 +63,10 @@
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>inconsistency-detection</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>diagram-recognition</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
