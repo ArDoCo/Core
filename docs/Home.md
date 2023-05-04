@@ -9,7 +9,7 @@ Before contributing, please read the [Quickstart Guide](quickstart).
 
 JavaDocs can be found [here](https://ardoco.github.io/Core-Docs/).
 
-## Requirements
+## System Requirements
 
 The `complete` profile includes all the requirements that the special profiles also need. This profile is activated by
 default.
