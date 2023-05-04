@@ -1,43 +1,63 @@
-The ArDoCo-Core is a maven project and can be embedded by using its specs (from the [pom](https://github.com/ArDoCo/Core/blob/main/pom.xml)).
+The ArDoCo-Core is a maven project and can be embedded by using its specs (from
+the [pom](https://github.com/ArDoCo/Core/blob/main/pom.xml)).
 
 You can run and configure the execution with the CLI.
 
 Please acknowledge the [code of conduct](https://github.com/ArDoCo/Core/blob/main/CODE_OF_CONDUCT.md).
 
 ## Forking the project & submitting pull requests
-This project uses Sonarcloud to check code quality. There are Github Actions that automatically verify the build and generate a Sonarcloud-report. Additionally, pull requests are automatically checked. If the build fails or the Quality Gate is not passed, it is marked in the Pull Request and you need to fix the PR until it passes. Otherwise, the PR won’t get merged.
 
-If you fork the project, make sure to create a Sonarcloud token to make sure everything works for you and the Sonarcloud check does not fail. You need to enable Sonarcloud for you and add a Sonarcloud token to the repository of the fork as secret.
+This project uses Sonarcloud to check code quality. There are Github Actions that automatically verify the build and
+generate a Sonarcloud-report. Additionally, pull requests are automatically checked. If the build fails or the Quality
+Gate is not passed, it is marked in the Pull Request and you need to fix the PR until it passes. Otherwise, the PR won’t
+get merged.
+
+If you fork the project, make sure to create a Sonarcloud token to make sure everything works for you and the Sonarcloud
+check does not fail. You need to enable Sonarcloud for you and add a Sonarcloud token to the repository of the fork as
+secret.
 
 Follow the following steps to do so:
 
-* Log into SonarCloud and click on your profile and then go to My Account and then Security. Alternatively go directly to account/security.
-* Generate your access token for SonarCloud and copy it. The access token will be provided to the build pipeline as a secret environment variable.
-* Go to your repository settings in Github, then to Secrets
+* Log into SonarCloud and click on your profile and then go to My Account and then Security. Alternatively go directly
+  to account/security.
+* Generate your access token for SonarCloud and copy it. The access token will be provided to the build pipeline as a
+  secret environment variable.
+* Go to your repository settings in GitHub, then to Secrets
 * Add a new secret with name SONAR_TOKEN and the value of the just generated access token.
 
 ### Formatter
+
 Please use the provided [formatter](https://github.com/ArDoCo/Core/blob/main/formatter.xml) when contributing.
 
-Additionally, make use of the spotless-plugin for maven to format your code. You can run it via mvn spotless:apply ([more info](https://github.com/diffplug/spotless/tree/main/plugin-maven)).
+Additionally, make use of the spotless-plugin for maven to format your code. You can run it via mvn spotless:
+apply ([more info](https://github.com/diffplug/spotless/tree/main/plugin-maven)).
 
 ### Documentation
+
 ⚠️ WIP
 
 ## Command Line Interface (CLI)
+
 [ArDoCo CLI](https://github.com/ArDoCo/CLI) contains a CLI that supports the execution of ArDoCo.
 
-It is necessary to specify an input model as well as a textual documentation. Usually, our model is an architectural model. However, the model can also contain a (Java) code model that you can insert using the [CodeModelExtractors](https://github.com/ArDoCo/Core/tree/main/framework/java-model-extractor).
+It is necessary to specify an input model as well as a textual documentation. Usually, our model is an architectural
+model. However, the model can also contain a (Java) code model that you can insert using
+the [CodeModelExtractors](https://github.com/ArDoCo/Core/tree/main/framework/java-model-extractor).
 
-All results (trace links, inconsistencies, etc. between the input model and documentation) are written to the specified output location.
+All results (trace links, inconsistencies, etc. between the input model and documentation) are written to the specified
+output location.
 
-The [CLI](https://github.com/ArDoCo/CLI/blob/main/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoCLI.java) is part of the [CLI project](https://github.com/ArDoCo/CLI) of ArDoCo.
+The [CLI](https://github.com/ArDoCo/CLI/blob/main/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoCLI.java)
+is part of the [CLI project](https://github.com/ArDoCo/CLI) of ArDoCo.
 
 ## Standard Configuration
+
 ⚠️ WIP
 
 ## Save Actions (Eclipse)
-Go to your Eclipse Workspace folder and open the file `.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs`.
+
+Go to your Eclipse Workspace folder and open the
+file `.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs`.
 There, exchange all the `sp_cleanup.` properties to the following:
 
 ```

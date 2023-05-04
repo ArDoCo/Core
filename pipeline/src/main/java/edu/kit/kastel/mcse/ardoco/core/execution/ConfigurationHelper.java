@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationInstantiatorUtils;
 
 public class ConfigurationHelper {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationHelper.class);
@@ -80,7 +80,7 @@ public class ConfigurationHelper {
 
     protected static void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz)
             throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        var object = createObject(clazz);
+        var object = ConfigurationInstantiatorUtils.createObject(clazz);
         List<Field> fields = new ArrayList<>();
         findImportantFields(object.getClass(), fields);
         fillConfigs(object, fields, configs);
@@ -133,52 +133,4 @@ public class ConfigurationHelper {
         }
         findImportantFields(clazz.getSuperclass(), fields);
     }
-
-    @SuppressWarnings("java:S3011")
-    private static AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
-            IllegalAccessException {
-        var constructors = Arrays.asList(clazz.getDeclaredConstructors());
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 0)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance();
-        }
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(Map.of());
-        }
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)
-                    .findFirst()
-                    .orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance((DataRepository) null);
-        }
-
-        if (constructors.stream()
-                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)
-                    .findFirst()
-                    .orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(null, null);
-        }
-
-        if (constructors.stream()
-                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)
-                    .findFirst()
-                    .orElseThrow();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(null, List.of());
-        }
-
-        throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
-
-    }
-
 }
