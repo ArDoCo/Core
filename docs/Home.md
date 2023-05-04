@@ -20,7 +20,7 @@ The dependencies of the other profiles at a glance:
 
 * tlr: -
 * inconsistency: -
-* lissa (LInking Sketches and Software Architecture): docker (local
+* lissa (LInking Sketches and Software Architecture): Docker (local
   or [remote](https://github.com/ArDoCo/Core/blob/lissa/stages/diagram-recognition/src/main/kotlin/edu/kit/kastel/mcse/ardoco/lissa/diagramrecognition/informants/DockerInformant.kt#L20-L23))
 
 ## Case Studies & Benchmarks
