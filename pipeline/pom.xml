@@ -8,38 +8,59 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>pipeline</artifactId>
+  <packaging>pom</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-tlr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-id</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>connection-generator</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>recommendation-generator</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>inconsistency-detection</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>text-extraction</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>text-preprocessing</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>model-provider</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>code-traceability</artifactId>
     </dependency>
 
@@ -63,4 +84,40 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>complete</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-tlr</module>
+        <module>pipeline-id</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Traceability Link Recovery -->
+      <id>tlr</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-tlr</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Inconsistency Detection -->
+      <id>inconsistency</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-id</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

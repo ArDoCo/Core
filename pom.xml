@@ -100,37 +100,47 @@
     <dependencies>
       <!-- ArDoCo -->
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>text-extraction</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>text-preprocessing</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>recommendation-generator</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
-        <artifactId>pipeline</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-tlr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-id</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>connection-generator</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>model-provider</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>inconsistency-detection</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -142,7 +152,7 @@
 
       <!-- Informalin -->
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>common</artifactId>
         <version>${project.version}</version>
       </dependency>

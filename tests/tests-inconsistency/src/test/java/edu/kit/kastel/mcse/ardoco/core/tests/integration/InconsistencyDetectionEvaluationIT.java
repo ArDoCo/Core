@@ -81,7 +81,7 @@ class InconsistencyDetectionEvaluationIT {
      * Tests the inconsistency detection for missing model elements on all {@link Project projects}.
      * <p>
      * NOTE: if you only want to test a specific project, you can simply set up the EnumSource. For more details, see
-     * https://www.baeldung.com/parameterized-tests-junit-5#3-enum
+     * <a href="https://www.baeldung.com/parameterized-tests-junit-5#3-enum">here</a>
      * Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
      * However, make sure to revert this before you commit and push!
      *
