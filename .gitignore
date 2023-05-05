@@ -11,6 +11,7 @@ tests/src/test/resources/config.properties
 /pipeline/src/test/resources/testout/
 
 tmp*
+temp*
 
 .vscode/*
 

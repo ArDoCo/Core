@@ -19,10 +19,12 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>text-extraction</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>text-preprocessing</artifactId>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -33,30 +35,32 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>recommendation-generator</artifactId>
+      <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>pipeline</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>connection-generator</artifactId>
-      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>model-provider</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>tests-base</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pipeline-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pipeline-tlr</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

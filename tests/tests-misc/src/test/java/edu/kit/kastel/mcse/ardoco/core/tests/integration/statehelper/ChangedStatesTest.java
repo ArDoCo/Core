@@ -20,8 +20,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.execution.runner.DefaultArDoCoRunner;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoForInconsistencyDetection;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.ConnectionStateFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper.files.RecommendationStateFile;
@@ -58,11 +59,8 @@ public class ChangedStatesTest {
     }
 
     private static ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel) {
-        DefaultArDoCoRunner runner = new DefaultArDoCoRunner.Builder(name).withInputText(inputText)
-                .withInputModelArchitecture(inputModel)
-                .withPcmModelType()
-                .withOutputDir(OUTPUT)
-                .build();
+        var runner = new ArDoCoForInconsistencyDetection(name);
+        runner.setUp(inputText, inputModel, ArchitectureModelType.PCM, Map.of(), new File(OUTPUT));
         return runner.run();
     }
 
