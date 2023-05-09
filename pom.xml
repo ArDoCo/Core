@@ -10,7 +10,7 @@
 
   <groupId>io.github.ardoco</groupId>
   <artifactId>text-provider-json</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.4</version>
   <packaging>jar</packaging>
   <name>TextProvider JSON</name>
   <url>https://ardoco.github.io/textprovider-json/</url>
@@ -37,7 +37,7 @@
     <connection>scm:git:git://github.com/ArDoCo/textprovider-json.git</connection>
     <developerConnection>scm:git:ssh://github.com:ArDoCo/textprovider-json.git</developerConnection>
     <url>http://github.com/ArDoCo/textprovider-json/tree/main</url>
-    <tag>HEAD</tag>
+    <tag>v0.0.4</tag>
   </scm>
   <issueManagement>
     <system>GitHub Issues</system>
