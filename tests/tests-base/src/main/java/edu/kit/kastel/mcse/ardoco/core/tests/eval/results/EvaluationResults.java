@@ -27,9 +27,20 @@ public record EvaluationResults<T>(double precision, double recall, double f1, I
                         .precision(), recall, expectedResults.recall(), f1, expectedResults.f1());
     }
 
+    public String getExtendedResultStringWithExpected(ExpectedResults expectedResults) {
+        StringBuilder outputBuilder = new StringBuilder();
+        outputBuilder.append(String.format(Locale.ENGLISH,
+                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", precision, expectedResults
+                        .precision(), recall, expectedResults.recall(), f1, expectedResults.f1()));
+        outputBuilder.append(String.format(Locale.ENGLISH, "%n\tAccuracy:%9.2f (min. expected: %.2f)%n\tSpecificity:%6.2f (min. expected: %.2f)", accuracy,
+                expectedResults.accuracy(), specificity, expectedResults.specificity()));
+        outputBuilder.append(String.format(Locale.ENGLISH, "%n\tPhi Coef.:%8.2f (min. expected: %.2f)", phiCoefficient, expectedResults.phiCoefficient()));
+        return outputBuilder.toString();
+    }
+
     /**
      * returns the weight (truePos + falseNeg)
-     * 
+     *
      * @return the weight
      */
     public int getWeight() {
@@ -45,7 +56,7 @@ public record EvaluationResults<T>(double precision, double recall, double f1, I
 
     /**
      * creates new {@link EvaluationResults} from a {@link ResultMatrix}
-     * 
+     *
      * @param matrix the {@link ResultMatrix}
      * @return new {@link EvaluationResults}
      */

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.SamCodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
@@ -25,10 +26,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -111,6 +114,16 @@ public record ArDoCoResult(DataRepository dataRepository) {
         String sentenceInfo = String.format("S%3d: \"%s\"", sentenceNumber, sentence.getText());
 
         return String.format("%-42s <--> %s", modelInfo, sentenceInfo);
+    }
+
+    /**
+     * Return the list of {@link SamCodeTraceLink SamCodeTraceLinks}. If there are none, it will return an empty list.
+     *
+     * @return the list of {@link SamCodeTraceLink SamCodeTraceLinks}.
+     */
+    public List<SamCodeTraceLink> getSamCodeTraceLinks() {
+        var samCodeTraceabilityState = getSamCodeTraceabilityState();
+        return samCodeTraceabilityState.getTraceLinks().toList();
     }
 
     /**
@@ -220,7 +233,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
             var modelState = getModelState(modelId);
             return connectionStates.getConnectionState(modelState.getMetamodel());
         }
-        logger.warn("No ConnectionState found, returning new empty one");
+        logger.warn("No ConnectionState found, returning new empty one.");
         return new ConnectionStateImpl();
     }
 
@@ -236,8 +249,21 @@ public record ArDoCoResult(DataRepository dataRepository) {
             var modelState = getModelState(modelId);
             return inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
         }
-        logger.warn("No InconsistencyState found, returning new empty one");
+        logger.warn("No InconsistencyState found, returning new empty one.");
         return new InconsistencyStateImpl();
+    }
+
+    /**
+     * Returns the internal {@link SamCodeTraceabilityState} or a new and empty state.
+     *
+     * @return the {@link SamCodeTraceabilityState} state or a new state, if there is no {@link SamCodeTraceabilityState} for the given model ID
+     */
+    public SamCodeTraceabilityState getSamCodeTraceabilityState() {
+        if (DataRepositoryHelper.hasSamCodeTraceabilityState(dataRepository)) {
+            return DataRepositoryHelper.getSamCodeTraceabilityState(dataRepository);
+        }
+        logger.warn("No SamCodeTraceabilityState found, returning new empty one.");
+        return new SamCodeTraceabilityStateImpl();
     }
 
     /**

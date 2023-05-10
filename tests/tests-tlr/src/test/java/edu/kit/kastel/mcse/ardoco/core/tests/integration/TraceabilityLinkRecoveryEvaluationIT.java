@@ -214,7 +214,7 @@ class TraceabilityLinkRecoveryEvaluationIT {
         var modelId = modelIds.stream().findFirst().orElseThrow();
 
         var goldStandard = project.getTlrGoldStandard();
-        EvaluationResults<String> results = calculateResults(goldStandard.toImmutable(), arDoCoResult, modelId);
+        EvaluationResults<String> results = calculateResults(goldStandard, arDoCoResult, modelId);
 
         ExpectedResults expectedResults = project.getExpectedTraceLinkResults();
 

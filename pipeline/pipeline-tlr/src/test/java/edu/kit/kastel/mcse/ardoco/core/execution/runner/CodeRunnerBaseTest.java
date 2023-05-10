@@ -20,7 +20,7 @@ class CodeRunnerBaseTest extends RunnerBaseTest {
         File codeLocation = new File(inputCode);
 
         if (!codeLocation.exists()) {
-            var successfulClone = CodeUtils.cloneRepository(inputCodeRepository, inputCode);
+            var successfulClone = CodeUtils.shallowCloneRepository(inputCodeRepository, inputCode);
             if (!successfulClone) {
                 Assertions.fail("Could not clone repository.");
             }
