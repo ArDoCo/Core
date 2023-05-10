@@ -1,7 +1,9 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
@@ -10,7 +12,9 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.*;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 
 /**
  * This utility class provides methods for running the tests, especially regarding the evaluations.
@@ -23,7 +27,7 @@ public class TestUtil {
 
     /**
      * compares the tlr results with the expected results and creates a new {@link EvaluationResults}.
-     * 
+     *
      * @param arDoCoResult the ArDoCoResult
      * @param results      Collection representing the results
      * @param goldStandard Collection representing the gold standard
@@ -84,7 +88,7 @@ public class TestUtil {
      * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link EvaluationResults evaluation
      * results}.
      * Uses the total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
-     * 
+     *
      * @param arDoCoResult   the output of ArDoCo
      * @param truePositives  nr of true positives
      * @param falsePositives nr of false positives
@@ -122,7 +126,7 @@ public class TestUtil {
     /**
      * Log the provided {@link EvaluationResults} using the provided logger and name. The log put out the result string provided by the
      * {@link EvaluationResults}.
-     * 
+     *
      * @param logger  Logger to use
      * @param name    Name to show in the output
      * @param results the results
@@ -134,7 +138,7 @@ public class TestUtil {
     /**
      * Creates a string from the given results that can be used, e.g., for logging. Extracts the name as well as precision, recall and F1-score and displays
      * them line by line.
-     * 
+     *
      * @param name    the name that should be displayed
      * @param results the results
      * @return a String containing the name and the results (precision, recall, F1) line by line
@@ -168,7 +172,7 @@ public class TestUtil {
     /**
      * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, provided the
      * expected results.
-     * 
+     *
      * @param logger          Logger to use
      * @param name            Name to show in the output
      * @param results         the results
@@ -177,5 +181,14 @@ public class TestUtil {
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultStringWithExpected(expectedResults));
         logger.info(infoString);
+    }
+
+    public static void logExtendedResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
+        var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getExtendedResultStringWithExpected(expectedResults));
+        logger.info(infoString);
+    }
+
+    public static String createTraceLinkString(String firstElementId, String secondElementId) {
+        return new StringBuilder(firstElementId).append(",").append(secondElementId).toString();
     }
 }

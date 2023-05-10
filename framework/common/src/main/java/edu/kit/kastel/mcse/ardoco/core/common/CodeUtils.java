@@ -19,7 +19,7 @@ public class CodeUtils {
         super();
     }
 
-    public static boolean cloneRepository(String repositoryLink, String desiredCodeLocation) {
+    public static boolean shallowCloneRepository(String repositoryLink, String desiredCodeLocation) {
         File codeLocation;
         try {
             codeLocation = Files.createDirectories(Paths.get(desiredCodeLocation)).toFile();
@@ -28,8 +28,7 @@ public class CodeUtils {
             return false;
         }
 
-        try {
-            Git.cloneRepository().setURI(repositoryLink).setDirectory(codeLocation).setDepth(1).call();
+        try (Git git = Git.cloneRepository().setURI(repositoryLink).setDirectory(codeLocation).setDepth(1).call()) {
             return true;
         } catch (GitAPIException e) {
             logger.warn("An error occurred when cloning the repository.", e);
@@ -37,12 +36,11 @@ public class CodeUtils {
         }
     }
 
-    public static boolean removeCodeFolder(String codeLocation) {
+    public static void removeCodeFolder(String codeLocation) {
         try {
             FileUtils.deleteDirectory(new File(codeLocation));
-            return true;
         } catch (IOException e) {
-            return false;
+            logger.warn("An exception occurred when removing a code folder.", e);
         }
     }
 }

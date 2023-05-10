@@ -3,12 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.compu
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 
 public class SamCodeEndpointTuple extends EndpointTuple {
 
-    public SamCodeEndpointTuple(ArchitectureItem architectureItem, CodeItem codeItem) {
+    public SamCodeEndpointTuple(ArchitectureItem architectureItem, CodeCompilationUnit codeItem) {
         super(architectureItem, codeItem);
     }
 

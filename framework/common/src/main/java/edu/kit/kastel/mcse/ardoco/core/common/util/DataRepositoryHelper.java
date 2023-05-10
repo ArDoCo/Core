@@ -208,7 +208,7 @@ public final class DataRepositoryHelper {
      * @param dataRepository the DataRepository to access
      * @return true, if there is {@link SamCodeTraceabilityState} within the {@link DataRepository}; else, false
      */
-    public static boolean hasSamCodeTraceabilityStates(DataRepository dataRepository) {
+    public static boolean hasSamCodeTraceabilityState(DataRepository dataRepository) {
         return dataRepository.getData(SamCodeTraceabilityState.ID, SamCodeTraceabilityState.class).isPresent();
     }
 
@@ -221,7 +221,7 @@ public final class DataRepositoryHelper {
      * @return the state
      */
     public static SamCodeTraceabilityState getSamCodeTraceabilityState(DataRepository dataRepository) {
-        if (hasSamCodeTraceabilityStates(dataRepository)) {
+        if (hasSamCodeTraceabilityState(dataRepository)) {
             return dataRepository.getData(SamCodeTraceabilityState.ID, SamCodeTraceabilityState.class).orElseThrow();
         }
         return null;

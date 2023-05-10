@@ -29,7 +29,6 @@ public class InitialCodeTraceabilityAgent extends PipelineAgent {
     @Override
     protected void initializeState() {
         // empty
-        // TODO what is needed?
     }
 
     @Override

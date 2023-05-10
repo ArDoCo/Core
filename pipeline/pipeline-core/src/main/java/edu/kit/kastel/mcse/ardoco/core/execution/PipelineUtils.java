@@ -134,7 +134,6 @@ public class PipelineUtils {
     }
 
     public static SamCodeTraceabilityLinkRecovery getSamCodeTraceabilityLinkRecovery(Map<String, String> additionalConfigs, DataRepository dataRepository) {
-        //TODO
         var samCodeTraceabilityLinkRecovery = new SamCodeTraceabilityLinkRecovery(dataRepository);
         samCodeTraceabilityLinkRecovery.applyConfiguration(additionalConfigs);
         return samCodeTraceabilityLinkRecovery;

@@ -31,8 +31,8 @@ public class SamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
 
     @Override
     protected void initializeState() {
-        var samCodeTraceabilityStates = new SamCodeTraceabilityStateImpl();
-        getDataRepository().addData(SamCodeTraceabilityState.ID, samCodeTraceabilityStates);
+        var samCodeTraceabilityState = new SamCodeTraceabilityStateImpl();
+        getDataRepository().addData(SamCodeTraceabilityState.ID, samCodeTraceabilityState);
     }
 
     @Override
