@@ -3,9 +3,17 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants;
 
 import java.util.Map;
 
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
@@ -18,7 +26,37 @@ public class TraceLinkCombiner extends Informant {
 
     @Override
     public void run() {
-        logger.info("Hi from TraceLinkCombiner");
+        MutableSet<TransitiveTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+        var samCodeTraceLinks = DataRepositoryHelper.getSamCodeTraceabilityState(getDataRepository()).getTraceLinks();
+        ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());
+        for (var modelId : modelStatesData.extractionModelIds()) {
+            var metamodel = modelStatesData.getModelExtractionState(modelId).getMetamodel();
+            var connectionState = DataRepositoryHelper.getConnectionStates(getDataRepository()).getConnectionState(metamodel);
+            var sadSamTraceLinks = connectionState.getTraceLinks();
+
+            var combinedLinks = combineToTransitiveTraceLinks(sadSamTraceLinks, samCodeTraceLinks);
+            transitiveTraceLinks.addAll(combinedLinks.toList());
+        }
+        // TODO save these links
+        System.out.println(transitiveTraceLinks.size());
+    }
+
+    private ImmutableSet<TransitiveTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,
+            ImmutableSet<SamCodeTraceLink> samCodeTraceLinks) {
+        MutableSet<TransitiveTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+        for (var sadSamTraceLink : sadSamTraceLinks) {
+            String modelElementUid = sadSamTraceLink.getModelElementUid();
+            for (var samCodeTraceLink : samCodeTraceLinks) {
+                String samCodeTraceLinkModelElementId = samCodeTraceLink.getEndpointTuple().firstEndpoint().getId();
+                if (modelElementUid.equals(samCodeTraceLinkModelElementId)) {
+                    var transitiveTraceLinkOptional = TransitiveTraceLink.createTransitiveTraceLink(sadSamTraceLink, samCodeTraceLink);
+                    if (transitiveTraceLinkOptional.isPresent()) {
+                        transitiveTraceLinks.add(transitiveTraceLinkOptional.get());
+                    }
+                }
+            }
+        }
+        return transitiveTraceLinks.toImmutable();
     }
 
     @Override

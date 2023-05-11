@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class TransitiveTraceLink extends TraceLink {
 
@@ -14,16 +15,16 @@ public class TransitiveTraceLink extends TraceLink {
         this.secondTraceLink = secondTraceLink;
     }
 
-    public static TransitiveTraceLink createTransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
+    public static Optional<TransitiveTraceLink> createTransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
         if (isValidTransitiveTraceLink(firstTraceLink, secondTraceLink)) {
-            return new TransitiveTraceLink(firstTraceLink, secondTraceLink);
+            return Optional.of(new TransitiveTraceLink(firstTraceLink, secondTraceLink));
         }
-        return null; // TODO what to do here?
+        return Optional.empty();
     }
 
     public static boolean isValidTransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
-        var secondEndpointOfFirstTl = firstTraceLink.getEndpointTuple().secondEndpoint();
-        var firstEndpointOfSecondTl = secondTraceLink.getEndpointTuple().firstEndpoint();
+        var secondEndpointOfFirstTl = firstTraceLink.getEndpointTuple().secondEndpoint().getId();
+        var firstEndpointOfSecondTl = secondTraceLink.getEndpointTuple().firstEndpoint().getId();
 
         return secondEndpointOfFirstTl.equals(firstEndpointOfSecondTl);
     }

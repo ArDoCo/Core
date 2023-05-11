@@ -12,12 +12,7 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
@@ -40,7 +35,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 
-public class ArCoTLEvaluationIT {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class ArCoTLEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(ArCoTLEvaluationIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
@@ -115,17 +111,17 @@ public class ArCoTLEvaluationIT {
 
     private void compareResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     private boolean prepareCode(CodeProject codeProject) {
@@ -165,20 +161,20 @@ public class ArCoTLEvaluationIT {
 
         // True Positives are the trace links that are contained on both lists
         Set<String> truePositives = distinctTraceLinks.stream()
-                .filter(tl -> isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                .collect(Collectors.toSet());
+                                                      .filter(tl -> isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
+                                                      .collect(Collectors.toSet());
         ImmutableList<String> truePositivesList = Lists.immutable.ofAll(truePositives);
 
         // False Positives are the trace links that are only contained in the result set
         Set<String> falsePositives = distinctTraceLinks.stream()
-                .filter(tl -> !isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                .collect(Collectors.toSet());
+                                                       .filter(tl -> !isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
+                                                       .collect(Collectors.toSet());
         ImmutableList<String> falsePositivesList = Lists.immutable.ofAll(falsePositives);
 
         // False Negatives are the trace links that are only contained in the gold standard
         Set<String> falseNegatives = distinctGoldStandard.stream()
-                .filter(gstl -> !isGoldStandardTraceLinkContainedInTraceLinks(gstl, distinctTraceLinks))
-                .collect(Collectors.toSet());
+                                                         .filter(gstl -> !isGoldStandardTraceLinkContainedInTraceLinks(gstl, distinctTraceLinks))
+                                                         .collect(Collectors.toSet());
         ImmutableList<String> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
 
         int trueNegatives = getTrueNegatives(arDoCoResult);
