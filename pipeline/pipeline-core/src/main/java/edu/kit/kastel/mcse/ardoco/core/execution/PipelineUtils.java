@@ -102,8 +102,8 @@ public class PipelineUtils {
     public static ModelProviderAgent getArchitectureModelProvider(File inputArchitectureModel, ArchitectureModelType architectureModelType,
             DataRepository dataRepository) throws IOException {
         ModelConnector connector = switch (architectureModelType) {
-        case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
-        case UML -> new UmlModelConnector(inputArchitectureModel);
+            case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
+            case UML -> new UmlModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
     }
@@ -111,8 +111,8 @@ public class PipelineUtils {
     public static ArCoTLModelProviderAgent getArCoTLModelProviderAgent(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             Map<String, String> additionalConfigs, DataRepository dataRepository) {
         ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
-        case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
-        case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+            case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+            case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
         };
         CodeExtractor codeExtractor = new AllLanguagesExtractor(inputCode.getAbsolutePath());
         ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));
@@ -141,7 +141,6 @@ public class PipelineUtils {
 
     public static SadSamCodeTraceabilityLinkRecovery getSadSamCodeTraceabilityLinkRecovery(Map<String, String> additionalConfigs,
             DataRepository dataRepository) {
-        //TODO
         var sadSamCodeTraceabilityLinkRecovery = new SadSamCodeTraceabilityLinkRecovery(dataRepository);
         sadSamCodeTraceabilityLinkRecovery.applyConfiguration(additionalConfigs);
         return sadSamCodeTraceabilityLinkRecovery;

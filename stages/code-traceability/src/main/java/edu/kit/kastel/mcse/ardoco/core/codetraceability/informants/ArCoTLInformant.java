@@ -28,7 +28,7 @@ public class ArCoTLInformant extends Informant {
     public void run() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
-        var samCodeTraceabilityState = DataRepositoryHelper.getSamCodeTraceabilityState(dataRepository);
+        var samCodeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(dataRepository);
 
         ArchitectureModel architectureModel = null;
         CodeModel codeModel = null;
@@ -42,7 +42,7 @@ public class ArCoTLInformant extends Informant {
 
         Node root = TraceLinkGenerator.getRoot();
         var traceLinks = TraceLinkGenerator.generateTraceLinks(root, architectureModel, codeModel);
-        samCodeTraceabilityState.addTraceLinks(traceLinks);
+        samCodeTraceabilityState.addSamCodeTraceLinks(traceLinks);
     }
 
     private static boolean isACodeModel(String modelId) {

@@ -9,6 +9,8 @@ import org.eclipse.collections.api.set.MutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
@@ -27,18 +29,22 @@ public class TraceLinkCombiner extends Informant {
     @Override
     public void run() {
         MutableSet<TransitiveTraceLink> transitiveTraceLinks = Sets.mutable.empty();
-        var samCodeTraceLinks = DataRepositoryHelper.getSamCodeTraceabilityState(getDataRepository()).getTraceLinks();
+        CodeTraceabilityState codeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(getDataRepository());
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());
+        ConnectionStates connectionStates = DataRepositoryHelper.getConnectionStates(getDataRepository());
+
+        var samCodeTraceLinks = codeTraceabilityState.getSamCodeTraceLinks();
         for (var modelId : modelStatesData.extractionModelIds()) {
             var metamodel = modelStatesData.getModelExtractionState(modelId).getMetamodel();
-            var connectionState = DataRepositoryHelper.getConnectionStates(getDataRepository()).getConnectionState(metamodel);
+            var connectionState = connectionStates.getConnectionState(metamodel);
             var sadSamTraceLinks = connectionState.getTraceLinks();
 
             var combinedLinks = combineToTransitiveTraceLinks(sadSamTraceLinks, samCodeTraceLinks);
             transitiveTraceLinks.addAll(combinedLinks.toList());
         }
-        // TODO save these links
+
         System.out.println(transitiveTraceLinks.size());
+        codeTraceabilityState.addTransitiveTraceLinks(transitiveTraceLinks); // TODO
     }
 
     private ImmutableSet<TransitiveTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,

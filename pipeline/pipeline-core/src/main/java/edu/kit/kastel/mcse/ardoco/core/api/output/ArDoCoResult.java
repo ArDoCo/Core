@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.SamCodeTraceabilityState;
+import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
@@ -31,7 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.Recommendatio
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityStateImpl;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.CodeTraceabilityStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -123,7 +123,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public List<SamCodeTraceLink> getSamCodeTraceLinks() {
         var samCodeTraceabilityState = getSamCodeTraceabilityState();
-        return samCodeTraceabilityState.getTraceLinks().toList();
+        return samCodeTraceabilityState.getSamCodeTraceLinks().toList();
     }
 
     /**
@@ -254,16 +254,16 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the internal {@link SamCodeTraceabilityState} or a new and empty state.
+     * Returns the internal {@link CodeTraceabilityState} or a new and empty state.
      *
-     * @return the {@link SamCodeTraceabilityState} state or a new state, if there is no {@link SamCodeTraceabilityState} for the given model ID
+     * @return the {@link CodeTraceabilityState} state or a new state, if there is no {@link CodeTraceabilityState} for the given model ID
      */
-    public SamCodeTraceabilityState getSamCodeTraceabilityState() {
-        if (DataRepositoryHelper.hasSamCodeTraceabilityState(dataRepository)) {
-            return DataRepositoryHelper.getSamCodeTraceabilityState(dataRepository);
+    public CodeTraceabilityState getSamCodeTraceabilityState() {
+        if (DataRepositoryHelper.hasCodeTraceabilityState(dataRepository)) {
+            return DataRepositoryHelper.getCodeTraceabilityState(dataRepository);
         }
         logger.warn("No SamCodeTraceabilityState found, returning new empty one.");
-        return new SamCodeTraceabilityStateImpl();
+        return new CodeTraceabilityStateImpl();
     }
 
     /**
