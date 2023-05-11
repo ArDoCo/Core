@@ -43,8 +43,7 @@ public class TraceLinkCombiner extends Informant {
             transitiveTraceLinks.addAll(combinedLinks.toList());
         }
 
-        System.out.println(transitiveTraceLinks.size());
-        codeTraceabilityState.addTransitiveTraceLinks(transitiveTraceLinks); // TODO
+        codeTraceabilityState.addTransitiveTraceLinks(transitiveTraceLinks);
     }
 
     private ImmutableSet<TransitiveTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,

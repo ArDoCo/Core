@@ -22,35 +22,35 @@ public enum CodeProject {
             "https://github.com/ArDoCo/MediaStore3.git", // Repository
             "../../temp/code/mediastore",// (temporary) code location
             "src/test/resources/gs/goldstandard-mediastore.csv", // location of the gold standard for SAM-Code
-            new ExpectedResults(.0, .0, .0, .0, .0, .0) //expected results
+            new ExpectedResults(.98, .99, .99, .99, .99, .99) //expected results
     ),
 
     TEASTORE(Project.TEASTORE, // Project
             "https://github.com/ArDoCo/TeaStore.git", // Repository
             "../../temp/code/teastore",// (temporary) code location
             "src/test/resources/gs/goldstandard-teastore.csv",// location of the gold standard for SAM-Code
-            new ExpectedResults(.0, .0, .0, .0, .0, .0) //expected results
+            new ExpectedResults(.97, .97, .97, .99, .96, .99) //expected results
     ),
 
     TEAMMATES(Project.TEAMMATES, // Project
             "https://github.com/ArDoCo/teammates.git",// Repository
             "../../temp/code/teammates",// (temporary) code location
             "src/test/resources/gs/goldstandard-teammates.csv",// location of the gold standard for SAM-Code
-            new ExpectedResults(.0, .0, .0, .0, .0, .0) //expected results
+            new ExpectedResults(.99, .99, .99, .99, .99, .99) //expected results
     ),
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,// Project
             "https://github.com/ArDoCo/bigbluebutton.git",// Repository
             "../../temp/code/bigbluebutton",// (temporary) code location
             "src/test/resources/gs/goldstandard-bigbluebutton.csv",// location of the gold standard for SAM-Code
-            new ExpectedResults(.0, .0, .0, .0, .0, .0) //expected results
+            new ExpectedResults(.93, .98, .96, .99, .95, .99) //expected results
     ),
 
     JABREF(Project.JABREF, // Project
             "https://github.com/ArDoCo/jabref.git",// Repository
             "../../temp/code/jabref",// (temporary) code location
             "src/test/resources/gs/goldstandard-jabref.csv", // location of the gold standard for SAM-Code
-            new ExpectedResults(.0, .0, .0, .0, .0, .0) //expected results
+            new ExpectedResults(.99, .99, .99, .99, .99, .99) //expected results
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);

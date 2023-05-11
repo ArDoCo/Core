@@ -29,6 +29,14 @@ public class TransitiveTraceLink extends TraceLink {
         return secondEndpointOfFirstTl.equals(firstEndpointOfSecondTl);
     }
 
+    public TraceLink getFirstTraceLink() {
+        return firstTraceLink;
+    }
+
+    public TraceLink getSecondTraceLink() {
+        return secondTraceLink;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(getEndpointTuple());
@@ -42,7 +50,9 @@ public class TransitiveTraceLink extends TraceLink {
         if (!(obj instanceof TransitiveTraceLink other)) {
             return false;
         }
-        return Objects.equals(getEndpointTuple(), other.getEndpointTuple());
+        return Objects.equals(getFirstTraceLink(), other.getFirstTraceLink()) && //
+                Objects.equals(getSecondTraceLink(), other.getSecondTraceLink()) && //
+                Objects.equals(getEndpointTuple(), other.getEndpointTuple());
     }
 
     @Override
