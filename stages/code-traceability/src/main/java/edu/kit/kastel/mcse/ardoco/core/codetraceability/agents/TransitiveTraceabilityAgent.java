@@ -30,7 +30,6 @@ public class TransitiveTraceabilityAgent extends PipelineAgent {
     @Override
     protected void initializeState() {
         // empty
-        // TODO what is needed?
     }
 
     @Override

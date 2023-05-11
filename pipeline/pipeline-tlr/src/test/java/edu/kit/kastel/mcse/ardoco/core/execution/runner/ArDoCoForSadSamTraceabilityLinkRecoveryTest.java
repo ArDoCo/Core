@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 import java.io.File;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,7 @@ class ArDoCoForSadSamTraceabilityLinkRecoveryTest extends RunnerBaseTest {
         Assertions.assertNotNull(runner.run());
     }
 
+    @Disabled("Disabled for faster builds. Enable if you need to check UML models.")
     @Test
     @DisplayName("Test ArDoCo for SAD-SAM-TLR (UML)")
     void testSadSamTlrUml() {
