@@ -27,6 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
@@ -122,8 +123,18 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @return the list of {@link SamCodeTraceLink SamCodeTraceLinks}.
      */
     public List<SamCodeTraceLink> getSamCodeTraceLinks() {
-        var samCodeTraceabilityState = getSamCodeTraceabilityState();
+        var samCodeTraceabilityState = getCodeTraceabilityState();
         return samCodeTraceabilityState.getSamCodeTraceLinks().toList();
+    }
+
+    /**
+     * Return the list of {@link TransitiveTraceLink TransitiveTraceLinks}. If there are none, it will return an empty list.
+     *
+     * @return the list of {@link TransitiveTraceLink TransitiveTraceLinks}.
+     */
+    public List<TransitiveTraceLink> getTransitiveTraceLinks() {
+        var samCodeTraceabilityState = getCodeTraceabilityState();
+        return samCodeTraceabilityState.getTransitiveTraceLinks().toList();
     }
 
     /**
@@ -258,7 +269,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      *
      * @return the {@link CodeTraceabilityState} state or a new state, if there is no {@link CodeTraceabilityState} for the given model ID
      */
-    public CodeTraceabilityState getSamCodeTraceabilityState() {
+    public CodeTraceabilityState getCodeTraceabilityState() {
         if (DataRepositoryHelper.hasCodeTraceabilityState(dataRepository)) {
             return DataRepositoryHelper.getCodeTraceabilityState(dataRepository);
         }
