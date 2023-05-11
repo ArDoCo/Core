@@ -18,39 +18,44 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 public enum CodeProject {
     MEDIASTORE(//
-            Project.MEDIASTORE, // Project
-            "https://github.com/ArDoCo/MediaStore3.git", // Repository
-            "../../temp/code/mediastore",// (temporary) code location
-            "src/test/resources/gs/goldstandard-mediastore.csv", // location of the gold standard for SAM-Code
-            new ExpectedResults(.98, .99, .99, .99, .99, .99) //expected results
+            Project.MEDIASTORE, //
+            "https://github.com/ArDoCo/MediaStore3.git", //
+            "../../temp/code/mediastore",//
+            "src/test/resources/gs/goldstandard-mediastore.csv", //
+            new ExpectedResults(.98, .99, .99, .99, .99, .99), //
+            new ExpectedResults(.0, .0, .0, .0, .0, .0) //
     ),
 
-    TEASTORE(Project.TEASTORE, // Project
-            "https://github.com/ArDoCo/TeaStore.git", // Repository
-            "../../temp/code/teastore",// (temporary) code location
-            "src/test/resources/gs/goldstandard-teastore.csv",// location of the gold standard for SAM-Code
-            new ExpectedResults(.97, .97, .97, .99, .96, .99) //expected results
+    TEASTORE(Project.TEASTORE, //
+            "https://github.com/ArDoCo/TeaStore.git", //
+            "../../temp/code/teastore",//
+            "src/test/resources/gs/goldstandard-teastore.csv",//
+            new ExpectedResults(.97, .97, .97, .99, .96, .99), //
+            new ExpectedResults(.0, .0, .0, .0, .0, .0) //
     ),
 
-    TEAMMATES(Project.TEAMMATES, // Project
-            "https://github.com/ArDoCo/teammates.git",// Repository
-            "../../temp/code/teammates",// (temporary) code location
-            "src/test/resources/gs/goldstandard-teammates.csv",// location of the gold standard for SAM-Code
-            new ExpectedResults(.99, .99, .99, .99, .99, .99) //expected results
+    TEAMMATES(Project.TEAMMATES, //
+            "https://github.com/ArDoCo/teammates.git",//
+            "../../temp/code/teammates",//
+            "src/test/resources/gs/goldstandard-teammates.csv",//
+            new ExpectedResults(.99, .99, .99, .99, .99, .99), //
+            new ExpectedResults(.0, .0, .0, .0, .0, .0) //
     ),
 
-    BIGBLUEBUTTON(Project.BIGBLUEBUTTON,// Project
-            "https://github.com/ArDoCo/bigbluebutton.git",// Repository
-            "../../temp/code/bigbluebutton",// (temporary) code location
-            "src/test/resources/gs/goldstandard-bigbluebutton.csv",// location of the gold standard for SAM-Code
-            new ExpectedResults(.93, .98, .96, .99, .95, .99) //expected results
+    BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
+            "https://github.com/ArDoCo/bigbluebutton.git",//
+            "../../temp/code/bigbluebutton",//
+            "src/test/resources/gs/goldstandard-bigbluebutton.csv",//
+            new ExpectedResults(.93, .98, .96, .99, .95, .99), //
+            new ExpectedResults(.0, .0, .0, .0, .0, .0) //
     ),
 
-    JABREF(Project.JABREF, // Project
-            "https://github.com/ArDoCo/jabref.git",// Repository
-            "../../temp/code/jabref",// (temporary) code location
-            "src/test/resources/gs/goldstandard-jabref.csv", // location of the gold standard for SAM-Code
-            new ExpectedResults(.99, .99, .99, .99, .99, .99) //expected results
+    JABREF(Project.JABREF, //
+            "https://github.com/ArDoCo/jabref.git",//
+            "../../temp/code/jabref",//
+            "src/test/resources/gs/goldstandard-jabref.csv", //
+            new ExpectedResults(.99, .99, .99, .99, .99, .99), //
+            new ExpectedResults(.0, .0, .0, .0, .0, .0) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
@@ -59,14 +64,17 @@ public enum CodeProject {
     private final String codeLocation;
     private final String samCodeGoldStandardLocation;
     private final Project project;
-    private final ExpectedResults expectedResults;
+    private final ExpectedResults expectedResultsForSamCode;
+    private final ExpectedResults expectedResultsForSadSamCode;
 
-    CodeProject(Project project, String codeRepository, String codeLocation, String samCodeGoldStandardLocation, ExpectedResults expectedResults) {
+    CodeProject(Project project, String codeRepository, String codeLocation, String samCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode,
+            ExpectedResults expectedResultsForSadSamCode) {
         this.project = project;
         this.codeRepository = codeRepository;
         this.codeLocation = codeLocation;
         this.samCodeGoldStandardLocation = samCodeGoldStandardLocation;
-        this.expectedResults = expectedResults;
+        this.expectedResultsForSamCode = expectedResultsForSamCode;
+        this.expectedResultsForSadSamCode = expectedResultsForSadSamCode;
     }
 
     public Project getProject() {
@@ -81,8 +89,12 @@ public enum CodeProject {
         return codeLocation;
     }
 
-    public ExpectedResults getExpectedResults() {
-        return expectedResults;
+    public ExpectedResults getExpectedResultsForSamCode() {
+        return expectedResultsForSamCode;
+    }
+
+    public ExpectedResults getExpectedResultsForSadSamCode() {
+        return expectedResultsForSadSamCode;
     }
 
     public ImmutableList<String> getSamCodeGoldStandard() {

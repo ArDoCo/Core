@@ -164,8 +164,8 @@ public class TestUtil {
         var fn = results.falseNegatives().size();
         var precisionDenominator = tp + fp;
         var recallDenominator = tp + fn;
-        var logString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7d/%d = %.3f%n\tRecall:%10d/%d = %.3f", name, tp, precisionDenominator, results
-                .precision(), tp, recallDenominator, results.recall());
+        var logString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7d/%d = %.3f%n\tRecall:%10d/%d = %.3f", name, tp, precisionDenominator,
+                results.precision(), tp, recallDenominator, results.recall());
         logger.info(logString);
     }
 
@@ -189,6 +189,6 @@ public class TestUtil {
     }
 
     public static String createTraceLinkString(String firstElementId, String secondElementId) {
-        return new StringBuilder(firstElementId).append(",").append(secondElementId).toString();
+        return firstElementId + "," + secondElementId;
     }
 }
