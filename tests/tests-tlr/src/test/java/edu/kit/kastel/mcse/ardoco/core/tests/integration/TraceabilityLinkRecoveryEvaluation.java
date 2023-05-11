@@ -81,10 +81,12 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         var goldStandard = getGoldStandard(codeProject);
         var evaluationResults = calculateEvaluationResults(result, goldStandard);
 
-        ExpectedResults expectedResults = codeProject.getExpectedResults();
+        ExpectedResults expectedResults = getExpectedResults(codeProject);
         TestUtil.logExtendedResultsWithExpected(logger, codeProject.name(), evaluationResults, expectedResults);
         compareResults(evaluationResults, expectedResults);
     }
+
+    protected abstract ExpectedResults getExpectedResults(CodeProject codeProject);
 
     protected abstract ImmutableList<String> getGoldStandard(CodeProject codeProject);
 

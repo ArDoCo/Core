@@ -21,6 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSamCodeTraceabilityLin
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 class SamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvaluation {
 
@@ -62,6 +63,11 @@ class SamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecove
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
         return codeProject.getSamCodeGoldStandard();
+    }
+
+    @Override
+    protected ExpectedResults getExpectedResults(CodeProject codeProject) {
+        return codeProject.getExpectedResultsForSamCode();
     }
 
     @Override
