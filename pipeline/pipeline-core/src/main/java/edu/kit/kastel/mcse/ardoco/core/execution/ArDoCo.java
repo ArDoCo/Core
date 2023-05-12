@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -70,14 +71,21 @@ public final class ArDoCo extends Pipeline {
             return null;
         }
 
-        var startTime = System.currentTimeMillis();
+        var startTime = Instant.now();
         this.run();
-        var duration = Duration.ofMillis(System.currentTimeMillis() - startTime);
+        var endTime = Instant.now();
 
         ArDoCoResult arDoCoResult = new ArDoCoResult(this.getDataRepository());
         saveOutput(this.projectName, outputDir, arDoCoResult);
 
-        classLogger.info("Finished in {}.{}s.", duration.getSeconds(), duration.toMillisPart());
+        if (logger.isInfoEnabled()) {
+            var duration = Duration.between(startTime, endTime);
+            long minutesPart = duration.toMinutes();
+            int secondsPart = duration.toSecondsPart();
+            int millisPart = duration.toMillisPart();
+            String durationString = String.format("%02d:%02d.%03d", minutesPart, secondsPart, millisPart);
+            classLogger.info(durationString);
+        }
         return arDoCoResult;
     }
 
