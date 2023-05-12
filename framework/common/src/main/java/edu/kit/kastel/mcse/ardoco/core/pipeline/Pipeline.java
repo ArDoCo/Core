@@ -71,7 +71,7 @@ public class Pipeline extends AbstractPipelineStep {
             if (logger.isInfoEnabled()) {
                 var end = Instant.now();
                 var duration = Duration.between(start, end);
-                int minutesPart = duration.toMinutesPart();
+                long minutesPart = duration.toMinutes();
                 int secondsPart = duration.toSecondsPart();
                 int millisPart = duration.toMillisPart();
                 String durationString;
