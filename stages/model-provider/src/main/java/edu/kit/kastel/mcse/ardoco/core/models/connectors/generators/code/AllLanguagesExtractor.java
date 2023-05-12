@@ -17,23 +17,28 @@ public final class AllLanguagesExtractor extends CodeExtractor {
 
     private final Map<ProgrammingLanguage, CodeExtractor> codeExtractors;
 
+    private CodeModel extractedModel = null;
+
     public AllLanguagesExtractor(String path) {
         super(path);
         codeExtractors = Map.of(ProgrammingLanguage.JAVA, new JavaExtractor(path), ProgrammingLanguage.SHELL, new ShellExtractor(path));
     }
 
     @Override
-    public CodeModel extractModel() {
-        List<CodeModel> models = new ArrayList<>();
-        for (CodeExtractor extractor : codeExtractors.values()) {
-            var model = extractor.extractModel();
-            models.add(model);
+    public synchronized CodeModel extractModel() {
+        if (extractedModel == null) {
+            List<CodeModel> models = new ArrayList<>();
+            for (CodeExtractor extractor : codeExtractors.values()) {
+                var model = extractor.extractModel();
+                models.add(model);
+            }
+            Set<CodeItem> codeEndpoints = new HashSet<>();
+            for (CodeModel model : models) {
+                codeEndpoints.addAll(model.getContent());
+            }
+            this.extractedModel = new CodeModel(codeEndpoints);
         }
-        Set<CodeItem> codeEndpoints = new HashSet<>();
-        for (CodeModel model : models) {
-            codeEndpoints.addAll(model.getContent());
-        }
-        return new CodeModel(codeEndpoints);
+        return extractedModel;
     }
 
 }

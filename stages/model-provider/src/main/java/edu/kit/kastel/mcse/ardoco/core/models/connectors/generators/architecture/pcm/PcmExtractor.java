@@ -2,7 +2,9 @@
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
@@ -37,9 +39,9 @@ public final class PcmExtractor extends ArchitectureExtractor {
     @Override
     public ArchitectureModel extractModel() {
         PcmModel originalModel = new PcmModel(new File(path));
-        Set<ArchitectureInterface> interfaces = extractInterfaces(originalModel);
-        Set<ArchitectureComponent> components = extractComponents(originalModel, interfaces);
-        Set<ArchitectureItem> endpoints = new HashSet<>();
+        List<ArchitectureInterface> interfaces = extractInterfaces(originalModel);
+        List<ArchitectureComponent> components = extractComponents(originalModel, interfaces);
+        List<ArchitectureItem> endpoints = new ArrayList<>();
         endpoints.addAll(interfaces);
         endpoints.addAll(components);
         return new ArchitectureModel(endpoints);
@@ -50,8 +52,8 @@ public final class PcmExtractor extends ArchitectureExtractor {
         return ArchitectureModelType.PCM;
     }
 
-    private static Set<ArchitectureInterface> extractInterfaces(PcmModel originalModel) {
-        Set<ArchitectureInterface> interfaces = new HashSet<>();
+    private static List<ArchitectureInterface> extractInterfaces(PcmModel originalModel) {
+        List<ArchitectureInterface> interfaces = new ArrayList<>();
         for (PcmInterface originalInterface : originalModel.getRepository().getInterfaces()) {
             Set<ArchitectureMethod> signatures = new HashSet<>();
             for (PcmSignature originalMethod : originalInterface.getMethods()) {
@@ -64,8 +66,8 @@ public final class PcmExtractor extends ArchitectureExtractor {
         return interfaces;
     }
 
-    private static Set<ArchitectureComponent> extractComponents(PcmModel originalModel, Set<ArchitectureInterface> interfaces) {
-        Set<ArchitectureComponent> components = new HashSet<>();
+    private static List<ArchitectureComponent> extractComponents(PcmModel originalModel, List<ArchitectureInterface> interfaces) {
+        List<ArchitectureComponent> components = new ArrayList<>();
         for (PcmComponent originalComponent : originalModel.getRepository().getComponents()) {
             Set<ArchitectureComponent> subcomponents = new HashSet<>();
             Set<ArchitectureInterface> providedInterfaces = new HashSet<>();
@@ -85,7 +87,7 @@ public final class PcmExtractor extends ArchitectureExtractor {
         return components;
     }
 
-    private static ArchitectureInterface findInterface(String id, Set<ArchitectureInterface> interfaces) {
+    private static ArchitectureInterface findInterface(String id, List<ArchitectureInterface> interfaces) {
         return interfaces.stream().filter(modelInterface -> modelInterface.getId().equals(id)).findFirst().orElseThrow();
     }
 

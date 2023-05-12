@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.funct
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
@@ -15,7 +14,7 @@ public abstract class Matcher extends Aggregation {
     protected enum EndpointType {
         ARCHITECTURE("Architecture"), CODE("Code");
 
-        private String name;
+        private final String name;
 
         EndpointType(String name) {
             this.name = name;
@@ -35,7 +34,7 @@ public abstract class Matcher extends Aggregation {
     @Override
     public NodeResult calculateConfidences(ArchitectureModel archModel, CodeModel codeModel, List<NodeResult> childrenResults) {
         NodeResult matchResult = new NodeResult(archModel, codeModel);
-        Set<? extends Entity> endpoints;
+        List<? extends Entity> endpoints;
         switch (endpointTypeToMatch) {
         case ARCHITECTURE:
             endpoints = archModel.getEndpoints();
@@ -65,10 +64,9 @@ public abstract class Matcher extends Aggregation {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof Matcher other)) {
             return false;
         }
-        Matcher other = (Matcher) obj;
         return Objects.equals(endpointTypeToMatch, other.endpointTypeToMatch);
     }
 

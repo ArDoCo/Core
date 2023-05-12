@@ -1,23 +1,39 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 /**
  * A code item of a code model.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({ //
+        @JsonSubTypes.Type(value = CodeModule.class, name = "CodeModule"),//
+        @JsonSubTypes.Type(value = ComputationalObject.class, name = "ComputationalObject"), //
+        @JsonSubTypes.Type(value = Datatype.class, name = "Datatype") //
+})
 public abstract class CodeItem extends Entity {
+
+    CodeItem() {
+        // Jackson
+    }
 
     /**
      * Creates a new code item with the specified name.
      *
      * @param name the name of the code item to be created
      */
-    public CodeItem(String name) {
+    protected CodeItem(String name) {
         super(name);
+        CodeItemRepository.getInstance().addCodeItem(this);
     }
 
     /**
@@ -25,16 +41,16 @@ public abstract class CodeItem extends Entity {
      *
      * @return the content of this code item
      */
-    public Set<CodeItem> getContent() {
-        return new HashSet<>();
+    public List<CodeItem> getContent() {
+        return new ArrayList<>();
     }
 
-    public Set<Datatype> getAllDatatypes() {
-        return new HashSet<>();
+    public List<Datatype> getAllDataTypes() {
+        return new ArrayList<>();
     }
 
-    public Set<CodeItem> getAllDatatypesAndSelf() {
-        Set<CodeItem> result = new HashSet<>(getAllDatatypes());
+    public Set<CodeItem> getAllDataTypesAndSelf() {
+        Set<CodeItem> result = new HashSet<>(getAllDataTypes());
         result.add(this);
         return result;
     }

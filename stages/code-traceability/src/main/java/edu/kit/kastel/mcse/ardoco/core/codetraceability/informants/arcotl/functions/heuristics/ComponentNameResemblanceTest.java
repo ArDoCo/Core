@@ -40,7 +40,7 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
         for (Entity ae : getArchModel().getEndpoints()) {
             filteredCommonWords = NameComparisonUtils.removeWords(filteredCommonWords, ae);
         }
-        Set<CodeItem> items = compUnit.getAllDatatypesAndSelf();
+        Set<CodeItem> items = compUnit.getAllDataTypesAndSelf();
         if (areSimilar(items, Set.of(archEndpoint), filteredCommonWords)) {
             return new Confidence(1.0);
         }
@@ -51,7 +51,7 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
             if (!InheritLinks.areInSamePackage(compUnit, linkedCompUnit)) {
                 continue;
             }
-            if (!areSimilar(items, linkedCompUnit.getAllDatatypesAndSelf(), filteredCommonWords)) {
+            if (!areSimilar(items, linkedCompUnit.getAllDataTypesAndSelf(), filteredCommonWords)) {
                 continue;
             }
             Confidence extendedConfidence = getNodeResult().getConfidence(new EndpointTuple(archEndpoint, linkedCompUnit));

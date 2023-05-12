@@ -31,7 +31,7 @@ public class InheritLinks extends DependentHeuristic {
             return new Confidence();
         }
         Confidence maxConfidence = new Confidence();
-        for (Datatype codeType : compUnit.getAllDatatypes()) {
+        for (Datatype codeType : compUnit.getAllDataTypes()) {
             Confidence extendedConfidence = inheritLinks(archEndpoint, codeType);
             if (extendedConfidence.compareTo(maxConfidence) > 0) {
                 maxConfidence = extendedConfidence;

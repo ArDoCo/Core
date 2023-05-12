@@ -1,12 +1,19 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * An entity with a name. Is a model element.
  */
 public abstract class Entity extends ModelElement {
 
+    @JsonProperty
     private String name;
+
+    protected Entity() {
+        // Jackson
+    }
 
     /**
      * Creates a new entity with the specified name.
@@ -34,5 +41,23 @@ public abstract class Entity extends ModelElement {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Entity entity))
+            return false;
+        if (!super.equals(o))
+            return false;
+        return name.equals(entity.name) && getId().equals(entity.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + name.hashCode();
+        return 31 * result + getId().hashCode();
     }
 }

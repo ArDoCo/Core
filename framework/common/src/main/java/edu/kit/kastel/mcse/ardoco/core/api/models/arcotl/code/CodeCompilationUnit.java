@@ -6,16 +6,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 /**
  * A compilation unit of a code model. A possible candidate for the code endpoint of a
  * trace link that connects corresponding elements of an architecture model and
  * a code model.
  */
+@JsonTypeName("CodeCompilationUnit")
 public class CodeCompilationUnit extends CodeModule {
 
+    @JsonProperty
     private List<String> pathElements;
+    @JsonProperty
     private String extension;
+    @JsonProperty
     private ProgrammingLanguage language;
+
+    private CodeCompilationUnit() {
+        // Jackson
+    }
 
     public CodeCompilationUnit(String name, Set<? extends CodeItem> content, List<String> pathElements, String extension, ProgrammingLanguage language) {
         super(name, content);
@@ -29,9 +40,9 @@ public class CodeCompilationUnit extends CodeModule {
     }
 
     @Override
-    public Set<Datatype> getAllDatatypes() {
-        Set<Datatype> result = new HashSet<>();
-        getContent().forEach(c -> result.addAll(c.getAllDatatypes()));
+    public List<Datatype> getAllDataTypes() {
+        List<Datatype> result = new ArrayList<>();
+        getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
         return result;
     }
 

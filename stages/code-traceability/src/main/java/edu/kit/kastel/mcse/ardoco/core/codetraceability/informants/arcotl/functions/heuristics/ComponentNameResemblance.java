@@ -48,7 +48,7 @@ public class ComponentNameResemblance extends StandaloneHeuristic {
             return new Confidence();
         }
         Confidence maxConfidence = new Confidence();
-        for (var codeEntity : compUnit.getAllDatatypesAndSelf()) {
+        for (var codeEntity : compUnit.getAllDataTypesAndSelf()) {
             Confidence singleConfidence = calculateNameResemblanceSingle(archEndpoint, codeEntity);
             if (singleConfidence.compareTo(maxConfidence) > 0) {
                 maxConfidence = singleConfidence;

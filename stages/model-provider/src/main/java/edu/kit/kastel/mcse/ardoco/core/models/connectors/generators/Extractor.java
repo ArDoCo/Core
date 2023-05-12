@@ -11,6 +11,10 @@ public abstract class Extractor {
         this.path = path;
     }
 
+    public String getPath() {
+        return path;
+    }
+
     public final Model extractModel(String path) {
         this.path = path;
         return extractModel();

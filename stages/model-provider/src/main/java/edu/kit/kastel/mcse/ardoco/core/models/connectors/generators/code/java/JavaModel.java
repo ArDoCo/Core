@@ -79,11 +79,14 @@ public final class JavaModel {
             ITypeBinding binding = javaClassifier.binding();
             ITypeBinding[] implInterfacesBindings = binding.getInterfaces();
             List<JavaInterface> javaImplInterfaces = Arrays.stream(implInterfacesBindings)
-                    .map(implInterfaceBinding -> javaInterfaces.stream()
-                            .filter(javaInterface -> javaInterface.binding().getErasure().isEqualTo(implInterfaceBinding.getErasure()))
-                            .findFirst()
-                            .orElseThrow())
-                    .toList();
+                                                           .map(implInterfaceBinding -> javaInterfaces.stream()
+                                                                                                      .filter(javaInterface -> javaInterface.binding()
+                                                                                                                                            .getErasure()
+                                                                                                                                            .isEqualTo(
+                                                                                                                                                    implInterfaceBinding.getErasure()))
+                                                                                                      .findFirst()
+                                                                                                      .orElseThrow())
+                                                           .toList();
             Set<Datatype> codeImplInterfaces = new HashSet<>();
             javaImplInterfaces.forEach(javaImplInterface -> codeImplInterfaces.add(javaImplInterface.codeInterface()));
             javaClassifier.codeClassifier().setImplementedTypes(codeImplInterfaces);
@@ -95,11 +98,14 @@ public final class JavaModel {
             ITypeBinding binding = javaInterface.binding();
             ITypeBinding[] extendedInterfacesBindings = binding.getInterfaces();
             List<JavaInterface> javaExtendedInterfaces = Arrays.stream(extendedInterfacesBindings)
-                    .map(extendedInterfaceBinding -> javaInterfaces.stream()
-                            .filter(otherJavaInterface -> otherJavaInterface.binding().getErasure().isEqualTo(extendedInterfaceBinding.getErasure()))
-                            .findFirst()
-                            .orElseThrow())
-                    .toList();
+                                                               .map(extendedInterfaceBinding -> javaInterfaces.stream()
+                                                                                                              .filter(otherJavaInterface -> otherJavaInterface.binding()
+                                                                                                                                                              .getErasure()
+                                                                                                                                                              .isEqualTo(
+                                                                                                                                                                      extendedInterfaceBinding.getErasure()))
+                                                                                                              .findFirst()
+                                                                                                              .orElseThrow())
+                                                               .toList();
             Set<Datatype> codeExtendedInterfaces = new HashSet<>();
             javaExtendedInterfaces.forEach(javaExtendedInterface -> codeExtendedInterfaces.add(javaExtendedInterface.codeInterface()));
             javaInterface.codeInterface().setExtendedTypes(codeExtendedInterfaces);
@@ -114,9 +120,11 @@ public final class JavaModel {
                 continue;
             }
             JavaClassifier javaSuperclass = javaClassifiers.stream()
-                    .filter(otherJavaClass -> otherJavaClass.binding().getErasure().isEqualTo(superclassBinding.getErasure()))
-                    .findFirst()
-                    .orElseThrow();
+                                                           .filter(otherJavaClass -> otherJavaClass.binding()
+                                                                                                   .getErasure()
+                                                                                                   .isEqualTo(superclassBinding.getErasure()))
+                                                           .findFirst()
+                                                           .orElseThrow();
             Set<Datatype> superclasses = new HashSet<>();
             superclasses.add(javaSuperclass.codeClassifier());
             javaClassifier.codeClassifier().setExtendedTypes(superclasses);
@@ -170,7 +178,7 @@ public final class JavaModel {
             } else {
                 modelContent.add(codeCompilationUnit);
             }
-            Set<Datatype> types = extractTypes(compilationUnit);
+            List<Datatype> types = extractTypes(compilationUnit);
             types.forEach(t -> t.setCompilationUnit(codeCompilationUnit));
             codeCompilationUnit.setContent(types);
         }
@@ -191,8 +199,8 @@ public final class JavaModel {
         codeModel = new CodeModel(modelContent);
     }
 
-    private Set<Datatype> extractTypes(CompilationUnit compilationUnit) {
-        Set<Datatype> codeTypes = new HashSet<>();
+    private List<Datatype> extractTypes(CompilationUnit compilationUnit) {
+        List<Datatype> codeTypes = new ArrayList<>();
         Set<TypeDeclaration> typeDeclarations = TypeDeclarationFinder.find(compilationUnit);
         for (TypeDeclaration typeDeclaration : typeDeclarations) {
             codeTypes.add(processTypeDeclaration(typeDeclaration));
@@ -285,7 +293,7 @@ public final class JavaModel {
             }
         }
         for (CodePackage codePackage : packageMap.values()) {
-            Set<CodeModule> mergedPackageElements = new HashSet<>();
+            List<CodeModule> mergedPackageElements = new ArrayList<>();
             mergedPackageElements.addAll(codePackage.getCompilationUnits());
             mergedPackageElements.addAll(mergePackages(codePackage.getSubpackages()));
             mergedPackageElements.forEach(packageElement -> packageElement.setParent(codePackage));

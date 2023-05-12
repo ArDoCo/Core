@@ -2,7 +2,9 @@
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
@@ -35,9 +37,9 @@ public final class UmlExtractor extends ArchitectureExtractor {
     @Override
     public ArchitectureModel extractModel() {
         UmlModel originalModel = new UmlModel(new File(path));
-        Set<ArchitectureInterface> interfaces = extractInterfaces(originalModel);
-        Set<ArchitectureComponent> components = extractComponents(originalModel, interfaces);
-        Set<ArchitectureItem> endpoints = new HashSet<>();
+        List<ArchitectureInterface> interfaces = extractInterfaces(originalModel);
+        List<ArchitectureComponent> components = extractComponents(originalModel, interfaces);
+        List<ArchitectureItem> endpoints = new ArrayList<>();
         endpoints.addAll(interfaces);
         endpoints.addAll(components);
         return new ArchitectureModel(endpoints);
@@ -48,8 +50,8 @@ public final class UmlExtractor extends ArchitectureExtractor {
         return ArchitectureModelType.UML;
     }
 
-    private static Set<ArchitectureInterface> extractInterfaces(UmlModel originalModel) {
-        Set<ArchitectureInterface> interfaces = new HashSet<>();
+    private static List<ArchitectureInterface> extractInterfaces(UmlModel originalModel) {
+        List<ArchitectureInterface> interfaces = new ArrayList<>();
         for (UmlInterface originalInterface : originalModel.getModel().getInterfaces()) {
             Set<ArchitectureMethod> signatures = new HashSet<>();
             for (OwnedOperation originalMethod : originalInterface.getOperations()) {
@@ -62,8 +64,8 @@ public final class UmlExtractor extends ArchitectureExtractor {
         return interfaces;
     }
 
-    private static Set<ArchitectureComponent> extractComponents(UmlModel originalModel, Set<ArchitectureInterface> interfaces) {
-        Set<ArchitectureComponent> components = new HashSet<>();
+    private static List<ArchitectureComponent> extractComponents(UmlModel originalModel, List<ArchitectureInterface> interfaces) {
+        List<ArchitectureComponent> components = new ArrayList<>();
         for (UmlComponent originalComponent : originalModel.getModel().getComponents()) {
             Set<ArchitectureComponent> subcomponents = new HashSet<>();
             Set<ArchitectureInterface> providedInterfaces = new HashSet<>();
@@ -83,7 +85,7 @@ public final class UmlExtractor extends ArchitectureExtractor {
         return components;
     }
 
-    private static ArchitectureInterface findInterface(String id, Set<ArchitectureInterface> interfaces) {
+    private static ArchitectureInterface findInterface(String id, List<ArchitectureInterface> interfaces) {
         return interfaces.stream().filter(modelInterface -> modelInterface.getId().equals(id)).findFirst().orElseThrow();
     }
 }
