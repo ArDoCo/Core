@@ -70,7 +70,7 @@ public class ProvidedInterfaceCorrespondence extends DependentHeuristic {
     private Set<CodeCompilationUnit> getAllOverridenTypes(CodeCompilationUnit ce) {
         Set<CodeCompilationUnit> overridenCompUnits = new HashSet<>();
         Set<Datatype> overridenTypes = new HashSet<>();
-        for (Datatype codeType : ce.getAllDatatypes()) {
+        for (Datatype codeType : ce.getAllDataTypes()) {
             overridenTypes.addAll(MethodResemblance.getAllExtendedTypes(codeType));
             MethodResemblance.getAllImplementedInterfaces(codeType).forEach(i -> overridenTypes.addAll(MethodResemblance.getAllExtendedTypes(i)));
         }
@@ -103,20 +103,6 @@ public class ProvidedInterfaceCorrespondence extends DependentHeuristic {
         }
         return Set.of();
     }
-
-    /*
-    // TODO can we delete this?
-    // returns subpackages + package itself
-    public static Set<CodePackage> getAllSubpackages(CodePackage a) {
-        Set<CodePackage> allSubpackages = new HashSet<>();
-        allSubpackages.add(a);
-        for (CodePackage subpackage : a.getSubpackages()) {
-            allSubpackages.add(subpackage);
-            allSubpackages.addAll(getAllSubpackages(subpackage));
-        }
-        return allSubpackages;
-    }
-    */
 
     @Override
     public String toString() {

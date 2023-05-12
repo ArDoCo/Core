@@ -1,28 +1,47 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeName("InterfaceUnit")
 public class InterfaceUnit extends Datatype {
 
-    private Set<CodeItem> content;
+    @JsonProperty
+    private List<String> content;
+
+    private InterfaceUnit() {
+        // Jackson
+    }
 
     public InterfaceUnit(String name, Set<? extends CodeItem> content) {
         super(name);
-        this.content = new HashSet<>(content);
+        this.content = new ArrayList<>();
+        for (var codeItem : content) {
+            this.content.add(codeItem.getId());
+        }
+    }
+
+    @JsonGetter("content")
+    protected List<String> getContentIds() {
+        return content;
     }
 
     @Override
-    public Set<CodeItem> getContent() {
-        return new HashSet<>(content);
+    public List<CodeItem> getContent() {
+        return CodeItemRepository.getInstance().getCodeItemsFromIds(content);
     }
 
     @Override
-    public Set<Datatype> getAllDatatypes() {
-        Set<Datatype> result = new HashSet<>();
+    public List<Datatype> getAllDataTypes() {
+        List<Datatype> result = new ArrayList<>();
         result.add(this);
-        getContent().forEach(c -> result.addAll(c.getAllDatatypes()));
+        getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
         return result;
     }
 }

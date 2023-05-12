@@ -22,7 +22,7 @@ public class MethodResemblance extends StandaloneHeuristic {
         }
 
         Set<ControlElement> firstMethods = compUnit.getDeclaredMethods();
-        for (Datatype datatype : compUnit.getAllDatatypes()) {
+        for (Datatype datatype : compUnit.getAllDataTypes()) {
             for (ControlElement codeMethod : datatype.getDeclaredMethods()) {
                 if (!isImplementedMethod(codeMethod, datatype) && !isExtendedMethod(codeMethod, datatype)) {
                     firstMethods.add(codeMethod);

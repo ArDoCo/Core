@@ -4,7 +4,14 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeName("CodePackage")
 public class CodePackage extends CodeModule {
+
+    private CodePackage() {
+        // Jackson
+    }
 
     public CodePackage(String name) {
         super(name, new HashSet<>());

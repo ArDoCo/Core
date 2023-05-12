@@ -1,48 +1,86 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({ //
+        @JsonSubTypes.Type(value = CodeAssembly.class, name = "CodeAssembly"),//
+        @JsonSubTypes.Type(value = CodeCompilationUnit.class, name = "CodeCompilationUnit"), //
+        @JsonSubTypes.Type(value = CodePackage.class, name = "CodePackage"), //
+})
+@JsonTypeName("CodeModule")
 public class CodeModule extends CodeItem {
 
-    private Optional<CodeModule> parent;
-    private Set<CodeItem> content;
+    @JsonProperty
+    private String parentId;
+    @JsonProperty
+    private List<String> content;
+
+    CodeModule() {
+        // Jackson
+    }
 
     public CodeModule(String name, Set<? extends CodeItem> content) {
         super(name);
-        this.content = new HashSet<>(content);
-        parent = Optional.empty();
+        this.content = new ArrayList<>();
+        for (var codeItem : content) {
+            this.content.add(codeItem.getId());
+        }
+        parentId = null;
+    }
+
+    @JsonGetter("content")
+    protected List<String> getContentIds() {
+        return content;
     }
 
     @Override
-    public Set<CodeItem> getContent() {
-        return new HashSet<>(content);
+    public List<CodeItem> getContent() {
+        return CodeItemRepository.getInstance().getCodeItemsFromIds(content);
     }
 
-    public void setContent(Set<? extends CodeItem> content) {
-        this.content = new HashSet<>(content);
+    public void setContent(List<? extends CodeItem> content) {
+        this.content = new ArrayList<>();
+        for (var codeItem : content) {
+            this.content.add(codeItem.getId());
+        }
     }
 
     public void addContent(CodeItem content) {
-        this.content.add(content);
+        this.content.add(content.getId());
     }
 
-    public void addContent(Set<? extends CodeItem> content) {
-        this.content.addAll(content);
+    public void addContent(List<? extends CodeItem> content) {
+        this.content.addAll(content.stream().map(CodeItem::getId).toList());
     }
 
     public CodeModule getParent() {
-        return parent.get();
+        CodeItem codeItem = CodeItemRepository.getInstance().getCodeItem(parentId);
+        if (codeItem instanceof CodeModule codeModule) {
+            return codeModule;
+        }
+        return null;
     }
 
     public boolean hasParent() {
-        return parent.isPresent();
+        return getParent() != null;
     }
 
     public void setParent(CodeModule parent) {
-        this.parent = Optional.of(parent);
+        this.parentId = parent.getId();
+        if (!CodeItemRepository.getInstance().containsCodeItem(parentId)) {
+            CodeItemRepository.getInstance().addCodeItem(parent);
+        }
     }
 
     @Override

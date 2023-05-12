@@ -28,6 +28,8 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExt
  */
 public final class JavaExtractor extends CodeExtractor {
 
+    private CodeModel extractedModel = null;
+
     public JavaExtractor(String path) {
         super(path);
     }
@@ -38,12 +40,14 @@ public final class JavaExtractor extends CodeExtractor {
      * @return the extracted code model
      */
     @Override
-    public CodeModel extractModel() {
-        Path directoryPath = Path.of(path);
-        Map<String, CompilationUnit> compUnitMap = parseDirectory(directoryPath);
-        JavaModel javaModel = new JavaModel(compUnitMap);
-        CodeModel codeModel = javaModel.getCodeModel();
-        return codeModel;
+    public synchronized CodeModel extractModel() {
+        if (extractedModel == null) {
+            Path directoryPath = Path.of(path);
+            Map<String, CompilationUnit> compUnitMap = parseDirectory(directoryPath);
+            JavaModel javaModel = new JavaModel(compUnitMap);
+            this.extractedModel = javaModel.getCodeModel();
+        }
+        return this.extractedModel;
     }
 
     @Override
@@ -74,18 +78,19 @@ public final class JavaExtractor extends CodeExtractor {
         final ASTParser parser = ASTParser.newParser(AST.getJLSLatest());
         parser.setResolveBindings(true);
         parser.setStatementsRecovery(true);
-        parser.setCompilerOptions(Map.of(JavaCore.COMPILER_SOURCE, javaCoreVersion, JavaCore.COMPILER_COMPLIANCE, javaCoreVersion,
-                JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, javaCoreVersion));
+        parser.setCompilerOptions(
+                Map.of(JavaCore.COMPILER_SOURCE, javaCoreVersion, JavaCore.COMPILER_COMPLIANCE, javaCoreVersion, JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM,
+                        javaCoreVersion));
         return parser;
     }
 
     private static String[] getEntries(Path dir, String suffix) {
         try (Stream<Path> paths = Files.walk(dir)) {
             return paths.filter(path -> Files.isRegularFile(path) && path.getFileName().toString().toLowerCase().endsWith(suffix))
-                    .map(Path::toAbsolutePath)
-                    .map(Path::normalize)
-                    .map(Path::toString)
-                    .toArray(i -> new String[i]);
+                        .map(Path::toAbsolutePath)
+                        .map(Path::normalize)
+                        .map(Path::toString)
+                        .toArray(i -> new String[i]);
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }

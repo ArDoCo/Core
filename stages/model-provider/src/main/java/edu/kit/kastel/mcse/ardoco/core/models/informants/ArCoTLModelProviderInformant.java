@@ -7,9 +7,11 @@ import java.util.Optional;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelExtractionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
@@ -44,7 +46,20 @@ public final class ArCoTLModelProviderInformant extends Informant {
         if (extractor == null) {
             return;
         }
-        addModelStateToDataRepository(extractor.getModelId(), extractor.extractModel());
+
+        Model extractedModel = null;
+        if (extractor instanceof CodeExtractor codeExtractor) {
+            extractedModel = codeExtractor.readInCodeModel();
+        }
+
+        if (extractedModel == null) {
+            logger.info("Extracting code model.");
+            extractedModel = extractor.extractModel();
+            if (extractor instanceof CodeExtractor codeExtractor && extractedModel instanceof CodeModel codeModel) {
+                codeExtractor.writeOutCodeModel(codeModel);
+            }
+        }
+        addModelStateToDataRepository(extractor.getModelId(), extractedModel);
     }
 
     private void addModelStateToDataRepository(String modelId, Model model) {

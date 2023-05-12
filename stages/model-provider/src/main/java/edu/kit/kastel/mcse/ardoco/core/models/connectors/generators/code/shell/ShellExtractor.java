@@ -12,13 +12,18 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExt
 
 public final class ShellExtractor extends CodeExtractor {
 
+    private CodeModel extractedModel = null;
+
     public ShellExtractor(String path) {
         super(path);
     }
 
     @Override
-    public CodeModel extractModel() {
-        return parseCode(new File(path));
+    public synchronized CodeModel extractModel() {
+        if (extractedModel == null) {
+            this.extractedModel = parseCode(new File(path));
+        }
+        return this.extractedModel;
     }
 
     private static CodeModel parseCode(File file) {

@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.generators;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,7 @@ public class ArchitectureExtractorTest {
     public void checkModel(ArchitectureModel model) {
         Assertions.assertNotNull(model);
 
-        Set<? extends ArchitectureItem> modelContent = model.getContent();
+        List<? extends ArchitectureItem> modelContent = model.getContent();
         Assertions.assertFalse(modelContent.isEmpty());
         for (Entity archEndpoint : modelContent) {
             Assertions.assertNotNull(archEndpoint);
