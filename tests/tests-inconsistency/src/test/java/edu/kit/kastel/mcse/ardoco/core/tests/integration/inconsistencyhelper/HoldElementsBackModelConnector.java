@@ -59,6 +59,8 @@ public class HoldElementsBackModelConnector implements ModelConnector {
     }
 
     /**
+     * Returns the ModelInstance that is held back. If nothing is held back, returns null
+     *
      * @return the ModelInstance that is held back. If nothing is held back, returns null
      */
     public ModelInstance getCurrentHoldBack() {
@@ -69,6 +71,8 @@ public class HoldElementsBackModelConnector implements ModelConnector {
     }
 
     /**
+     * Returns the number of actual instances (including all held back elements)
+     *
      * @return the number of actual instances (including all held back elements)
      */
     public int numberOfActualInstances() {

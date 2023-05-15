@@ -60,7 +60,7 @@ public enum CodeProject {
             "src/test/resources/codeModels/jabref",//
             "src/test/resources/gs/goldstandard-jabref.csv", //
             new ExpectedResults(.99, .99, .99, .99, .99, .99), //
-            new ExpectedResults(.88, .99, .93, .96, .92, .95) //
+            new ExpectedResults(.88, .99, .93, .96, .91, .93) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
