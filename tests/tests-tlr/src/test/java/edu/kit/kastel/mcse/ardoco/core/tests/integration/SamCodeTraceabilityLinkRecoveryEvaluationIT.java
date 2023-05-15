@@ -62,7 +62,7 @@ class SamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecove
     }
 
     @Override
-    protected int getTrueNegatives(ArDoCoResult arDoCoResult) {
+    protected int getConfusionMatrixSum(ArDoCoResult arDoCoResult) {
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(arDoCoResult.dataRepository());
         Model codeModel = modelStatesData.getModel(CodeModelType.CODE_MODEL.getModelId());
         Model architectureModel = modelStatesData.getModel(ArchitectureModelType.PCM.getModelId());

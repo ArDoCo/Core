@@ -50,7 +50,6 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     @AfterAll
     static void afterAll() {
-        // TODO write results
         System.setProperty(LOGGING_ARDOCO_CORE, "error");
 
         // Remove repositories
@@ -88,7 +87,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         runTraceLinkEvaluation(project);
     }
 
-    protected void runTraceLinkEvaluation(CodeProject codeProject) {
+    protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
         ArDoCoRunner runner = getAndSetupRunner(codeProject);
 
         var result = runner.run();
@@ -100,6 +99,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         ExpectedResults expectedResults = getExpectedResults(codeProject);
         TestUtil.logExtendedResultsWithExpected(logger, codeProject.name(), evaluationResults, expectedResults);
         compareResults(evaluationResults, expectedResults);
+        return result;
     }
 
     protected File getInputCode(CodeProject codeProject) {
@@ -125,13 +125,12 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         return additionalConfigsMap;
     }
 
-    private boolean prepareCode(CodeProject codeProject) {
+    private void prepareCode(CodeProject codeProject) {
         File codeLocation = new File(codeProject.getCodeLocation());
 
         if (!codeLocation.exists()) {
-            return CodeUtils.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
+            CodeUtils.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
         }
-        return true;
     }
 
     protected abstract ExpectedResults getExpectedResults(CodeProject codeProject);
@@ -140,17 +139,17 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected void compareResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     /**
@@ -169,29 +168,29 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
         // True Positives are the trace links that are contained on both lists
         Set<String> truePositives = distinctTraceLinks.stream()
-                .filter(tl -> isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                .collect(Collectors.toSet());
+                                                      .filter(tl -> isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
+                                                      .collect(Collectors.toSet());
         ImmutableList<String> truePositivesList = Lists.immutable.ofAll(truePositives);
 
         // False Positives are the trace links that are only contained in the result set
         Set<String> falsePositives = distinctTraceLinks.stream()
-                .filter(tl -> !isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                .collect(Collectors.toSet());
+                                                       .filter(tl -> !isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
+                                                       .collect(Collectors.toSet());
         ImmutableList<String> falsePositivesList = Lists.immutable.ofAll(falsePositives);
 
         // False Negatives are the trace links that are only contained in the gold standard
         Set<String> falseNegatives = distinctGoldStandard.stream()
-                .filter(gstl -> !isGoldStandardTraceLinkContainedInTraceLinks(gstl, distinctTraceLinks))
-                .collect(Collectors.toSet());
+                                                         .filter(gstl -> !isGoldStandardTraceLinkContainedInTraceLinks(gstl, distinctTraceLinks))
+                                                         .collect(Collectors.toSet());
         ImmutableList<String> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
 
-        int trueNegatives = getTrueNegatives(arDoCoResult);
+        int trueNegatives = getConfusionMatrixSum(arDoCoResult) - truePositives.size() - falsePositives.size() - falseNegatives.size();
         return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
     }
 
     protected abstract ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult);
 
-    protected abstract int getTrueNegatives(ArDoCoResult arDoCoResult);
+    protected abstract int getConfusionMatrixSum(ArDoCoResult arDoCoResult);
 
     private static boolean areTraceLinksMatching(String goldStandardTraceLink, String traceLink) {
         return goldStandardTraceLink.equals(traceLink) || traceLink.startsWith(goldStandardTraceLink);

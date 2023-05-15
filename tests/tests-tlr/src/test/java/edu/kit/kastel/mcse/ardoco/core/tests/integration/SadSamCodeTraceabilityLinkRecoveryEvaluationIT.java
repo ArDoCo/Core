@@ -88,7 +88,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRec
     }
 
     @Override
-    protected int getTrueNegatives(ArDoCoResult arDoCoResult) {
+    protected int getConfusionMatrixSum(ArDoCoResult arDoCoResult) {
         DataRepository dataRepository = arDoCoResult.dataRepository();
 
         Text text = DataRepositoryHelper.getAnnotatedText(dataRepository);

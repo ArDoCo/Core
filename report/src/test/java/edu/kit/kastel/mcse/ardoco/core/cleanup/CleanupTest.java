@@ -17,9 +17,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.CodeUtils;
  */
 public class CleanupTest {
 
-    private static final List<String> codeFolders = List.of("../temp/code");
+    private static final List<String> codeFolders = List.of("../temp/code", "temp/code");
 
-    private static final List<String> folders = List.of("../temp/");
+    private static final List<String> folders = List.of("../temp/", "temp/");
 
     @Test
     void canTearDownTest() {

@@ -38,6 +38,8 @@ public class MissingElementInconsistencyCandidate {
     }
 
     /**
+     * Returns the {@link RecommendedInstance}
+     *
      * @return the recommendedInstance
      */
     public RecommendedInstance getRecommendedInstance() {
