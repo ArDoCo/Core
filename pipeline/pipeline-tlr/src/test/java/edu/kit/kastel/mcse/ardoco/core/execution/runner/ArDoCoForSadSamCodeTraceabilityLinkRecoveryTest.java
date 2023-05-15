@@ -12,7 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 
-@Disabled("Disabled as other (integration) tests cover the same functionality. Enable for debugging/local development.")
 class ArDoCoForSadSamCodeTraceabilityLinkRecoveryTest extends CodeRunnerBaseTest {
 
     @Test

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO improve this so this does not have to be in the src/main/java
 class RunnerBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(RunnerBaseTest.class);
 
