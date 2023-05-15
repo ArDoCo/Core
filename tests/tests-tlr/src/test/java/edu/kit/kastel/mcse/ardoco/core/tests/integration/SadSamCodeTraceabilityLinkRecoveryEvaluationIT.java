@@ -28,6 +28,12 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 class SadSamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvaluation {
     @Override
+    protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
+        var traceLinks = arDoCoResult.getTransitiveTraceLinks();
+        return !traceLinks.isEmpty();
+    }
+
+    @Override
     protected ArDoCoRunner getAndSetupRunner(CodeProject codeProject) {
         String name = codeProject.name().toLowerCase();
         Project textProject = codeProject.getProject();

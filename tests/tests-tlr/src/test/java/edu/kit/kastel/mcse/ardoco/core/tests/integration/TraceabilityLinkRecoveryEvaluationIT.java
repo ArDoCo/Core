@@ -124,6 +124,12 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
     }
 
     @Override
+    protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
+        var traceLinks = arDoCoResult.getAllTraceLinks();
+        return !traceLinks.isEmpty();
+    }
+
+    @Override
     protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
         var result = super.runTraceLinkEvaluation(codeProject);
         DATA_MAP.put(codeProject.getProject(), result);

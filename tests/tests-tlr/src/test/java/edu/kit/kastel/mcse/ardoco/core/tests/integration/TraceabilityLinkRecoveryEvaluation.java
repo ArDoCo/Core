@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,6 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
@@ -42,6 +44,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
     protected static boolean analyzeCodeDirectly = false;
+    protected static Map<Project, ArDoCoResult> resultMap = new EnumMap<>(Project.class);
 
     @BeforeAll
     static void beforeAll() {
@@ -74,7 +77,8 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     @Order(1)
     void evaluateTraceLinkRecoveryIT(CodeProject project) {
         analyzeCodeDirectly = false;
-        runTraceLinkEvaluation(project);
+        var results = runTraceLinkEvaluation(project);
+        resultMap.put(project.getProject(), results);
     }
 
     @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
@@ -88,9 +92,14 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     }
 
     protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
-        ArDoCoRunner runner = getAndSetupRunner(codeProject);
-
-        var result = runner.run();
+        var project = codeProject.getProject();
+        ArDoCoResult result = resultMap.get(project);
+        if (result != null && resultHasRequiredData(result)) {
+            return result;
+        } else {
+            ArDoCoRunner runner = getAndSetupRunner(codeProject);
+            result = runner.run();
+        }
         Assertions.assertNotNull(result);
 
         var goldStandard = getGoldStandard(codeProject);
@@ -101,6 +110,8 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         compareResults(evaluationResults, expectedResults);
         return result;
     }
+
+    protected abstract boolean resultHasRequiredData(ArDoCoResult potentialResults);
 
     protected File getInputCode(CodeProject codeProject) {
         File inputCode;
