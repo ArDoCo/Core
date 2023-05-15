@@ -15,11 +15,11 @@ class CodeRunnerBaseTest extends RunnerBaseTest {
 
     @BeforeAll
     static void setup() {
-        File codeLocation = new File(inputCode);
-
         if (System.getenv("testCodeFull") != null) {
             inputCode = "../../temp/code/teastore";
         }
+
+        File codeLocation = new File(inputCode);
 
         if (!codeLocation.exists()) {
             var successfulClone = CodeUtils.shallowCloneRepository(inputCodeRepository, inputCode);
