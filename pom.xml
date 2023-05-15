@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.ardoco.core</groupId>
@@ -14,8 +13,7 @@
     inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
     Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
     This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research Labs
-    (46.23.01).
-  </description>
+    (46.23.01).</description>
   <url>https://github.com/ArDoCo/Core</url>
   <licenses>
     <license>
@@ -92,8 +90,7 @@
     <sonar.organization>ardoco</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir},
-      ${project.basedir}/../../${aggregate.report.dir}
-    </sonar.coverage.jacoco.xmlReportPaths>
+      ${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
     <stanford.corenlp.version>4.5.3</stanford.corenlp.version>
