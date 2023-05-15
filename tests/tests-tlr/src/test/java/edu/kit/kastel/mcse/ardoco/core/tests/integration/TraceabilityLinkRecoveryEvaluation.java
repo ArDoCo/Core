@@ -1,7 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.CodeUtils;
+import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
@@ -36,7 +40,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     protected static final String ADDITIONAL_CONFIG = null;
 
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
-    protected static final boolean removeRepositories = false;
+    protected static boolean analyzeCodeDirectly = false;
 
     @BeforeAll
     static void beforeAll() {
@@ -49,7 +53,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         System.setProperty(LOGGING_ARDOCO_CORE, "error");
 
         // Remove repositories
-        if (removeRepositories) {
+        if (analyzeCodeDirectly) {
             for (CodeProject codeProject : CodeProject.values()) {
                 CodeUtils.removeCodeFolder(codeProject.getCodeLocation());
             }
@@ -69,6 +73,17 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     @EnumSource(value = CodeProject.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(1)
     void evaluateTraceLinkRecoveryIT(CodeProject project) {
+        analyzeCodeDirectly = false;
+        runTraceLinkEvaluation(project);
+    }
+
+    @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
+    @DisplayName("Evaluate TLR (Full)")
+    @ParameterizedTest(name = "Evaluating {0}")
+    @EnumSource(value = CodeProject.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @Order(1)
+    void evaluateTraceLinkRecoveryFullIT(CodeProject project) {
+        analyzeCodeDirectly = true;
         runTraceLinkEvaluation(project);
     }
 
@@ -86,11 +101,41 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         compareResults(evaluationResults, expectedResults);
     }
 
+    protected File getInputCode(CodeProject codeProject) {
+        File inputCode;
+        if (analyzeCodeDirectly) {
+            prepareCode(codeProject);
+            inputCode = new File(codeProject.getCodeLocation());
+        } else {
+            inputCode = new File(codeProject.getCodeModelLocation());
+        }
+        return inputCode;
+    }
+
+    protected abstract ArDoCoRunner getAndSetupRunner(CodeProject codeProject);
+
+    protected static Map<String, String> getAdditionalConfigsMap() {
+        Map<String, String> additionalConfigsMap;
+        if (ADDITIONAL_CONFIG != null) {
+            additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(ADDITIONAL_CONFIG));
+        } else {
+            additionalConfigsMap = new HashMap<>();
+        }
+        return additionalConfigsMap;
+    }
+
+    private boolean prepareCode(CodeProject codeProject) {
+        File codeLocation = new File(codeProject.getCodeLocation());
+
+        if (!codeLocation.exists()) {
+            return CodeUtils.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
+        }
+        return true;
+    }
+
     protected abstract ExpectedResults getExpectedResults(CodeProject codeProject);
 
     protected abstract ImmutableList<String> getGoldStandard(CodeProject codeProject);
-
-    protected abstract ArDoCoRunner getAndSetupRunner(CodeProject codeProject);
 
     protected void compareResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
@@ -105,15 +150,6 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
                         "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
                 () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
                         "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
-    }
-
-    protected boolean prepareCode(CodeProject codeProject) {
-        File codeLocation = new File(codeProject.getCodeLocation());
-
-        if (!codeLocation.exists()) {
-            return CodeUtils.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
-        }
-        return true;
     }
 
     /**
