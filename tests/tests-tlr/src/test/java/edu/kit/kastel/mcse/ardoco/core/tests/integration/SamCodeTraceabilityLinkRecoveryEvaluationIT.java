@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -18,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSamCodeTraceabilityLinkRecovery;
-import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
@@ -28,17 +26,10 @@ class SamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecove
     @Override
     protected ArDoCoForSamCodeTraceabilityLinkRecovery getAndSetupRunner(CodeProject codeProject) {
         String name = codeProject.name().toLowerCase();
-
-        prepareCode(codeProject);
-
+        File inputCode = getInputCode(codeProject);
         File inputArchitectureModel = codeProject.getProject().getModelFile();
-        File inputCode = new File(codeProject.getCodeLocation());
-        Map<String, String> additionalConfigsMap;
-        if (ADDITIONAL_CONFIG != null) {
-            additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(ADDITIONAL_CONFIG));
-        } else {
-            additionalConfigsMap = new HashMap<>();
-        }
+        Map<String, String> additionalConfigsMap = getAdditionalConfigsMap();
+
         var runner = new ArDoCoForSamCodeTraceabilityLinkRecovery(name);
         runner.setUp(inputArchitectureModel, ArchitectureModelType.PCM, inputCode, additionalConfigsMap, outputDir);
         return runner;

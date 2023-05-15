@@ -21,6 +21,7 @@ public enum CodeProject {
             Project.MEDIASTORE, //
             "https://github.com/ArDoCo/MediaStore3.git", //
             "../../temp/code/mediastore",//
+            "src/test/resources/codeModels/mediastore",//
             "src/test/resources/gs/goldstandard-mediastore.csv", //
             new ExpectedResults(.98, .99, .99, .99, .99, .99), //
             new ExpectedResults(.99, .51, .67, .99, .71, .99) //
@@ -29,6 +30,7 @@ public enum CodeProject {
     TEASTORE(Project.TEASTORE, //
             "https://github.com/ArDoCo/TeaStore.git", //
             "../../temp/code/teastore",//
+            "src/test/resources/codeModels/teastore",//
             "src/test/resources/gs/goldstandard-teastore.csv",//
             new ExpectedResults(.97, .97, .97, .99, .96, .99), //
             new ExpectedResults(.99, .95, .97, .99, .97, .99) //
@@ -37,6 +39,7 @@ public enum CodeProject {
     TEAMMATES(Project.TEAMMATES, //
             "https://github.com/ArDoCo/teammates.git",//
             "../../temp/code/teammates",//
+            "src/test/resources/codeModels/teammates",//
             "src/test/resources/gs/goldstandard-teammates.csv",//
             new ExpectedResults(.99, .99, .99, .99, .99, .99), //
             new ExpectedResults(.58, .99, .73, .97, .75, .97) //
@@ -45,6 +48,7 @@ public enum CodeProject {
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
             "https://github.com/ArDoCo/bigbluebutton.git",//
             "../../temp/code/bigbluebutton",//
+            "src/test/resources/codeModels/bigbluebutton",//
             "src/test/resources/gs/goldstandard-bigbluebutton.csv",//
             new ExpectedResults(.93, .98, .96, .99, .95, .99), //
             new ExpectedResults(.77, .98, .86, .98, .86, .98) //
@@ -53,6 +57,7 @@ public enum CodeProject {
     JABREF(Project.JABREF, //
             "https://github.com/ArDoCo/jabref.git",//
             "../../temp/code/jabref",//
+            "src/test/resources/codeModels/jabref",//
             "src/test/resources/gs/goldstandard-jabref.csv", //
             new ExpectedResults(.99, .99, .99, .99, .99, .99), //
             new ExpectedResults(.88, .99, .93, .96, .92, .95) //
@@ -62,16 +67,18 @@ public enum CodeProject {
 
     private final String codeRepository;
     private final String codeLocation;
+    private final String codeModelLocation;
     private final String samCodeGoldStandardLocation;
     private final Project project;
     private final ExpectedResults expectedResultsForSamCode;
     private final ExpectedResults expectedResultsForSadSamCode;
 
-    CodeProject(Project project, String codeRepository, String codeLocation, String samCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode,
-            ExpectedResults expectedResultsForSadSamCode) {
+    CodeProject(Project project, String codeRepository, String codeLocation, String codeModelLocation, String samCodeGoldStandardLocation,
+            ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
         this.project = project;
         this.codeRepository = codeRepository;
         this.codeLocation = codeLocation;
+        this.codeModelLocation = codeModelLocation;
         this.samCodeGoldStandardLocation = samCodeGoldStandardLocation;
         this.expectedResultsForSamCode = expectedResultsForSamCode;
         this.expectedResultsForSadSamCode = expectedResultsForSadSamCode;
@@ -87,6 +94,10 @@ public enum CodeProject {
 
     public String getCodeLocation() {
         return codeLocation;
+    }
+
+    public String getCodeModelLocation() {
+        return codeModelLocation;
     }
 
     public ExpectedResults getExpectedResultsForSamCode() {
