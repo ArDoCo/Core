@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.CodeUtils;
  * a certain state for the file system during all tests for all modules but want to clean up afterward.
  * One concrete example are code repositories that we check out initially and that we want to remove at the end for a clean state.
  */
-public class CleanupTest {
+class CleanupTest {
 
     private static final List<String> codeFolders = List.of("../temp/code", "temp/code");
 
