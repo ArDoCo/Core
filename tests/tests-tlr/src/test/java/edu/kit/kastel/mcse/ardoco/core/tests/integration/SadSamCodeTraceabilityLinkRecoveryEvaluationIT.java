@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
@@ -34,7 +35,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRec
         File inputArchitectureModel = codeProject.getProject().getModelFile();
         File inputCode = getInputCode(codeProject);
         Map<String, String> additionalConfigsMap = getAdditionalConfigsMap();
-        
+
         var runner = new ArDoCoForSadSamCodeTraceabilityLinkRecovery(name);
         runner.setUp(textInput, inputArchitectureModel, ArchitectureModelType.PCM, inputCode, additionalConfigsMap, outputDir);
         return runner;

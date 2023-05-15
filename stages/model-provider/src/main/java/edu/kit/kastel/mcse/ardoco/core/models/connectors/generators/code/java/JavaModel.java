@@ -79,14 +79,11 @@ public final class JavaModel {
             ITypeBinding binding = javaClassifier.binding();
             ITypeBinding[] implInterfacesBindings = binding.getInterfaces();
             List<JavaInterface> javaImplInterfaces = Arrays.stream(implInterfacesBindings)
-                                                           .map(implInterfaceBinding -> javaInterfaces.stream()
-                                                                                                      .filter(javaInterface -> javaInterface.binding()
-                                                                                                                                            .getErasure()
-                                                                                                                                            .isEqualTo(
-                                                                                                                                                    implInterfaceBinding.getErasure()))
-                                                                                                      .findFirst()
-                                                                                                      .orElseThrow())
-                                                           .toList();
+                    .map(implInterfaceBinding -> javaInterfaces.stream()
+                            .filter(javaInterface -> javaInterface.binding().getErasure().isEqualTo(implInterfaceBinding.getErasure()))
+                            .findFirst()
+                            .orElseThrow())
+                    .toList();
             Set<Datatype> codeImplInterfaces = new HashSet<>();
             javaImplInterfaces.forEach(javaImplInterface -> codeImplInterfaces.add(javaImplInterface.codeInterface()));
             javaClassifier.codeClassifier().setImplementedTypes(codeImplInterfaces);
@@ -98,14 +95,11 @@ public final class JavaModel {
             ITypeBinding binding = javaInterface.binding();
             ITypeBinding[] extendedInterfacesBindings = binding.getInterfaces();
             List<JavaInterface> javaExtendedInterfaces = Arrays.stream(extendedInterfacesBindings)
-                                                               .map(extendedInterfaceBinding -> javaInterfaces.stream()
-                                                                                                              .filter(otherJavaInterface -> otherJavaInterface.binding()
-                                                                                                                                                              .getErasure()
-                                                                                                                                                              .isEqualTo(
-                                                                                                                                                                      extendedInterfaceBinding.getErasure()))
-                                                                                                              .findFirst()
-                                                                                                              .orElseThrow())
-                                                               .toList();
+                    .map(extendedInterfaceBinding -> javaInterfaces.stream()
+                            .filter(otherJavaInterface -> otherJavaInterface.binding().getErasure().isEqualTo(extendedInterfaceBinding.getErasure()))
+                            .findFirst()
+                            .orElseThrow())
+                    .toList();
             Set<Datatype> codeExtendedInterfaces = new HashSet<>();
             javaExtendedInterfaces.forEach(javaExtendedInterface -> codeExtendedInterfaces.add(javaExtendedInterface.codeInterface()));
             javaInterface.codeInterface().setExtendedTypes(codeExtendedInterfaces);
@@ -120,11 +114,9 @@ public final class JavaModel {
                 continue;
             }
             JavaClassifier javaSuperclass = javaClassifiers.stream()
-                                                           .filter(otherJavaClass -> otherJavaClass.binding()
-                                                                                                   .getErasure()
-                                                                                                   .isEqualTo(superclassBinding.getErasure()))
-                                                           .findFirst()
-                                                           .orElseThrow();
+                    .filter(otherJavaClass -> otherJavaClass.binding().getErasure().isEqualTo(superclassBinding.getErasure()))
+                    .findFirst()
+                    .orElseThrow();
             Set<Datatype> superclasses = new HashSet<>();
             superclasses.add(javaSuperclass.codeClassifier());
             javaClassifier.codeClassifier().setExtendedTypes(superclasses);

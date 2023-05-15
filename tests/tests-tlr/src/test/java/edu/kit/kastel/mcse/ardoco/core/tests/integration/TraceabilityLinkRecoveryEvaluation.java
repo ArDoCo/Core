@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
@@ -139,17 +140,17 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected void compareResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
-                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
-                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
-                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
+                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
+                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
+                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
-                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
-                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
+                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
+                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     /**
@@ -168,20 +169,20 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
         // True Positives are the trace links that are contained on both lists
         Set<String> truePositives = distinctTraceLinks.stream()
-                                                      .filter(tl -> isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                                                      .collect(Collectors.toSet());
+                .filter(tl -> isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
+                .collect(Collectors.toSet());
         ImmutableList<String> truePositivesList = Lists.immutable.ofAll(truePositives);
 
         // False Positives are the trace links that are only contained in the result set
         Set<String> falsePositives = distinctTraceLinks.stream()
-                                                       .filter(tl -> !isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                                                       .collect(Collectors.toSet());
+                .filter(tl -> !isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
+                .collect(Collectors.toSet());
         ImmutableList<String> falsePositivesList = Lists.immutable.ofAll(falsePositives);
 
         // False Negatives are the trace links that are only contained in the gold standard
         Set<String> falseNegatives = distinctGoldStandard.stream()
-                                                         .filter(gstl -> !isGoldStandardTraceLinkContainedInTraceLinks(gstl, distinctTraceLinks))
-                                                         .collect(Collectors.toSet());
+                .filter(gstl -> !isGoldStandardTraceLinkContainedInTraceLinks(gstl, distinctTraceLinks))
+                .collect(Collectors.toSet());
         ImmutableList<String> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
 
         int trueNegatives = getTrueNegatives(arDoCoResult);
