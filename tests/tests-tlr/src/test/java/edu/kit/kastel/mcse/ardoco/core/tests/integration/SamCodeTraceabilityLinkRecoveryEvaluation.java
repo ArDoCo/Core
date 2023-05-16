@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +23,6 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSamCodeTraceabilityLin
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
 
 class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
 
