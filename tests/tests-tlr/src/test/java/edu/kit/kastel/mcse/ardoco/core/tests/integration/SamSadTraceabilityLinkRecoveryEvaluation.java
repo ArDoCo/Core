@@ -5,36 +5,25 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
@@ -43,85 +32,16 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLRUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLModelFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLPreviousFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSentenceFile;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.*;
 
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
  * defined in the enum {@link Project}.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvaluation {
-    private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluationIT.class);
-
-    private static final String OUTPUT = "src/test/resources/testout";
-    private static final Path OUTPUT_PATH = Path.of(OUTPUT);
-    private static final List<Pair<Project, EvaluationResults<TestLink>>> RESULTS = new ArrayList<>();
-    private static final MutableList<EvaluationResults<String>> PROJECT_RESULTS = Lists.mutable.empty();
-    private static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
-    private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
-
-    private String name;
-    private File inputText;
-    private File inputModel;
-    private final File outputDir = new File(OUTPUT);
-
-    @BeforeAll
-    static void beforeAll() {
-        System.setProperty(LOGGING_ARDOCO_CORE, "info");
-    }
-
-    @AfterAll
-    static void afterAll() {
-        if (logger.isInfoEnabled()) {
-            var name = "Overall Weighted";
-            var results = ResultCalculatorUtil.calculateWeightedAverageResults(PROJECT_RESULTS.toImmutable());
-            TestUtil.logResults(logger, name, results);
-
-            name = "Overall Macro";
-            results = ResultCalculatorUtil.calculateAverageResults(PROJECT_RESULTS.toImmutable());
-            TestUtil.logResults(logger, name, results);
-        }
-
-        var evalDir = Path.of(OUTPUT).resolve("ardoco_eval_tl");
-        try {
-            Files.createDirectories(evalDir);
-
-            TLSummaryFile.save(evalDir.resolve("summary.txt"), RESULTS, DATA_MAP);
-            TLModelFile.save(evalDir.resolve("models.txt"), DATA_MAP);
-            TLSentenceFile.save(evalDir.resolve("sentences.txt"), DATA_MAP);
-            TLLogFile.append(evalDir.resolve("log.txt"), RESULTS);
-            TLPreviousFile.save(evalDir.resolve("previous.csv"), RESULTS, logger); // save before loading
-            TLDiffFile.save(evalDir.resolve("diff.txt"), RESULTS, TLPreviousFile.load(evalDir.resolve("previous.csv"), DATA_MAP), DATA_MAP);
-        } catch (IOException e) {
-            logger.error("Failed to write output.", e);
-        }
-
-        System.setProperty(LOGGING_ARDOCO_CORE, "error");
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
-    @DisplayName("Evaluate TLR (Historical)")
-    @ParameterizedTest(name = "Evaluating {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(2)
-    void evaluateHistoricalDataTraceLinkRecoveryIT(Project project) {
-        analyzeCodeDirectly = false;
-
-        ArDoCoResult arDoCoResult = getArDoCoResult(project);
-        Assertions.assertNotNull(arDoCoResult);
-
-        checkResults(project, arDoCoResult);
-        writeDetailedOutput(project, arDoCoResult);
-    }
+class SamSadTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
@@ -141,9 +61,10 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
         var project = codeProject.getProject();
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
 
-        name = project.name().toLowerCase();
-        inputModel = project.getModelFile();
-        inputText = project.getTextFile();
+        String name = project.name().toLowerCase();
+        File inputModel = project.getModelFile();
+        File inputText = project.getTextFile();
+        File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(name);
         runner.setUp(inputText, inputModel, ArchitectureModelType.PCM, additionalConfigsMap, outputDir);
@@ -187,10 +108,10 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
         return results;
     }
 
-    private ArDoCoResult getArDoCoResult(Project project) {
-        name = project.name().toLowerCase();
-        inputModel = project.getModelFile();
-        inputText = project.getTextFile();
+    protected ArDoCoResult getArDoCoResult(Project project) {
+        String name = project.name().toLowerCase();
+        var inputModel = project.getModelFile();
+        var inputText = project.getTextFile();
 
         var arDoCoResult = DATA_MAP.get(project);
         if (arDoCoResult == null) {
@@ -201,52 +122,14 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
         return arDoCoResult;
     }
 
-    private ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel, ArchitectureModelType architectureModelType,
+    protected ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel, ArchitectureModelType architectureModelType,
             File additionalConfigurations) {
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(additionalConfigurations);
+        File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(name);
         runner.setUp(inputText, inputModel, architectureModelType, additionalConfigsMap, outputDir);
         return runner.run();
-    }
-
-    /**
-     * Test if the results from executing ArDoCo with UML are the same as with PCM
-     *
-     * @param project the project, provided by the EnumSource
-     */
-    @Disabled("Only enable this for local tests.")
-    @DisplayName("Compare TLR for UML/PCM")
-    @ParameterizedTest(name = "Evaluating {0}")
-    @EnumSource(value = Project.class)
-    @Order(10)
-    void compareTraceLinkRecoveryForPcmAndUmlIT(Project project) {
-
-        var ardocoRunForPCM = getArDoCoResult(project);
-        Assertions.assertNotNull(ardocoRunForPCM);
-
-        var arDoCo = ArDoCo.getInstance(name);
-        var preprocessingData = ardocoRunForPCM.getPreprocessingData();
-        DataRepositoryHelper.putPreprocessingData(arDoCo.getDataRepository(), preprocessingData);
-
-        File umlModelFile = project.getModelFile(ArchitectureModelType.UML);
-        File additionalConfigurations = project.getAdditionalConfigurationsFile();
-        var ardocoRunForUML = getArDoCoResult(name, inputText, umlModelFile, ArchitectureModelType.UML, additionalConfigurations);
-        Assertions.assertNotNull(ardocoRunForUML);
-
-        var pcmTLs = ardocoRunForPCM.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
-        var umlTLs = ardocoRunForUML.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
-
-        Assertions.assertAll( //
-                () -> Assertions.assertEquals(pcmTLs.size(), umlTLs.size()), //
-                () -> Assertions.assertIterableEquals(pcmTLs, umlTLs) //
-        );
     }
 
     /**
@@ -255,7 +138,7 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
      * @param project      the result's project
      * @param arDoCoResult the result
      */
-    private void checkResults(Project project, ArDoCoResult arDoCoResult) {
+    protected static void checkResults(Project project, ArDoCoResult arDoCoResult) {
 
         var modelIds = arDoCoResult.getModelIds();
         var modelId = modelIds.stream().findFirst().orElseThrow();
@@ -271,7 +154,8 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
 
     }
 
-    private void logAndSaveProjectResult(Project project, ArDoCoResult arDoCoResult, EvaluationResults<String> results, ExpectedResults expectedResults) {
+    private static void logAndSaveProjectResult(Project project, ArDoCoResult arDoCoResult, EvaluationResults<String> results,
+            ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
             String projectName = project.name().toLowerCase();
             TestUtil.logResultsWithExpected(logger, projectName, results, expectedResults);
@@ -279,8 +163,8 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
             var data = arDoCoResult.dataRepository();
             printDetailedDebug(results, data);
             try {
-                RESULTS.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project)
-                        .toImmutable())));
+                RESULTS.add(Tuples.pair(project,
+                        TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project).toImmutable())));
                 DATA_MAP.put(project, arDoCoResult);
                 PROJECT_RESULTS.add(results);
             } catch (IOException e) {
@@ -290,24 +174,24 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
         }
     }
 
-    private void compareResultWithExpected(EvaluationResults<String> results, ExpectedResults expectedResults) {
+    private static void compareResultWithExpected(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
-    private static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {
+    static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {
         String name = project.name().toLowerCase();
-        var path = OUTPUT_PATH.resolve(name);
+        var path = Path.of(OUTPUT).resolve(name);
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
@@ -316,14 +200,14 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
         FilePrinter.printResultsInFiles(path, name, arDoCoResult);
     }
 
-    private EvaluationResults<String> calculateResults(ImmutableList<String> goldStandard, ArDoCoResult arDoCoResult, String modelId) {
+    private static EvaluationResults<String> calculateResults(ImmutableList<String> goldStandard, ArDoCoResult arDoCoResult, String modelId) {
         var traceLinks = arDoCoResult.getTraceLinksForModelAsStrings(modelId);
         logger.info("Found {} trace links", traceLinks.size());
 
         return TestUtil.compareTLR(arDoCoResult, traceLinks, goldStandard);
     }
 
-    private void printDetailedDebug(EvaluationResults<String> results, DataRepository data) {
+    private static void printDetailedDebug(EvaluationResults<String> results, DataRepository data) {
         var falseNegatives = results.falseNegatives().stream().map(Object::toString);
         var falsePositives = results.falsePositives().stream().map(Object::toString);
 
@@ -347,7 +231,7 @@ class TraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvalu
 
     }
 
-    private MutableList<String> createOutputStrings(Stream<String> traceLinkStrings, ImmutableList<Sentence> sentences,
+    private static MutableList<String> createOutputStrings(Stream<String> traceLinkStrings, ImmutableList<Sentence> sentences,
             ImmutableList<ModelInstance> instances) {
         var outputList = Lists.mutable.<String>empty();
         for (var traceLinkString : traceLinkStrings.toList()) {
