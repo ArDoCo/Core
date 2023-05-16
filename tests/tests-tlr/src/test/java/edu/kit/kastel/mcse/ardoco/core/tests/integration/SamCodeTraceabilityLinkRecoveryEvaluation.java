@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -20,8 +21,9 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSamCodeTraceabilityLin
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
 
-class SamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecoveryEvaluation {
+class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
@@ -34,7 +36,8 @@ class SamCodeTraceabilityLinkRecoveryEvaluationIT extends TraceabilityLinkRecove
         String name = codeProject.name().toLowerCase();
         File inputCode = getInputCode(codeProject);
         File inputArchitectureModel = codeProject.getProject().getModelFile();
-        Map<String, String> additionalConfigsMap = getAdditionalConfigsMap();
+        Map<String, String> additionalConfigsMap = new HashMap<>();
+        File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSamCodeTraceabilityLinkRecovery(name);
         runner.setUp(inputArchitectureModel, ArchitectureModelType.PCM, inputCode, additionalConfigsMap, outputDir);
