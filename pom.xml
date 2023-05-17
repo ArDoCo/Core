@@ -470,8 +470,8 @@
                 <include>*.md</include>
                 <include>.gitignore</include>
               </includes>
-              <trimTrailingWhitespace />
-              <endWithNewline />
+              <trimTrailingWhitespace></trimTrailingWhitespace>
+              <endWithNewline></endWithNewline>
               <indent>
                 <tabs>true</tabs>
                 <spacesPerTab>4</spacesPerTab>
@@ -484,7 +484,7 @@
               <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
             </eclipse>
-            <removeUnusedImports />
+            <removeUnusedImports></removeUnusedImports>
             <licenseHeader>
               <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/license-header</file>
@@ -507,7 +507,6 @@
               <editorConfigPath>.editorconfig</editorConfigPath>
             </ktlint>
           </kotlin>
-          <ratchetFrom>origin/main</ratchetFrom>
         </configuration>
       </plugin>
       <plugin>
