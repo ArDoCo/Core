@@ -25,7 +25,7 @@ Future user interfaces like a Graphical User Interface (GUI) or a web interface 
 
 ## Documentation
 
-For more information about the setup or the architecture have a look on the [docs](https://ardoco.github.io/Core).
+For more information about the setup or the architecture have a look on the [Wiki](https://github.com/ArDoCo/Core/wiki).
 The docs are at some points deprecated, the general overview and setup should still hold.
 You can find the generated JavaDocs at [ArDoCo.github.io/Core-Docs](https://ArDoCo.github.io/Core-Docs/).
 
@@ -43,7 +43,7 @@ To test the Core, you could use case studies and benchmarks provided in ..
 	<dependency>
 		<groupId>io.github.ardoco.core</groupId>
 		<artifactId>pipeline</artifactId> <!-- or any other subproject -->
-		<version>0.7.0-SNAPSHOT</version>
+		<version>VERSION</version>
 	</dependency>
 </dependencies>
 ```
