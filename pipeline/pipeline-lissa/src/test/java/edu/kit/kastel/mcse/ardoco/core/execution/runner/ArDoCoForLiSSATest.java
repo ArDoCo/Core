@@ -12,10 +12,11 @@ import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
-import static edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification.LABEL;
+import edu.kit.kastel.mcse.ardoco.core.execution.RunnerBaseTest;
+import static edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification.LABEL;
 
 @DisabledIfEnvironmentVariable(named = "NO_DOCKER", matches = "true")
 class ArDoCoForLiSSATest extends RunnerBaseTest {
@@ -30,7 +31,6 @@ class ArDoCoForLiSSATest extends RunnerBaseTest {
         var runner = new ArDoCoForLiSSA(PROJECT_NAME);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(ADDITIONAL_CONFIGS));
         runner.setUp(DIAGRAM_DIRECTORY, INPUT_TEXT, INPUT_MODEL_ARCHITECTURE, ArchitectureModelType.PCM, additionalConfigsMap, OUTPUT_DIR);
-
 
         testRunnerAssertions(runner);
         var result = runner.run();

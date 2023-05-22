@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
+import edu.kit.kastel.mcse.ardoco.core.execution.RunnerBaseTest;
 
 class ArDoCoForInconsistencyDetectionTest extends RunnerBaseTest {
 

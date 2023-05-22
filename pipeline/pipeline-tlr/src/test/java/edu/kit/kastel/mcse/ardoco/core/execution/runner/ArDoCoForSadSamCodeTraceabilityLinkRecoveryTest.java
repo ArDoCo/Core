@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamCodeTraceabilityLinkRecovery;
+import edu.kit.kastel.mcse.ardoco.core.execution.CodeRunnerBaseTest;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 
 class ArDoCoForSadSamCodeTraceabilityLinkRecoveryTest extends CodeRunnerBaseTest {
