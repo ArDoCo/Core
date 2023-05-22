@@ -52,10 +52,10 @@ public class InputDiagramData implements PipelineStepData {
         if (allFiles == null)
             return List.of();
         List<File> diagrams = Arrays.stream(allFiles)
-                                    .filter(File::isFile)
-                                    .filter(f -> ALLOWED_FILE_TYPES.stream().anyMatch(t -> f.getName().toLowerCase().endsWith("." + t)))
-                                    .sorted(Comparator.comparing(File::getName))
-                                    .toList();
+                .filter(File::isFile)
+                .filter(f -> ALLOWED_FILE_TYPES.stream().anyMatch(t -> f.getName().toLowerCase().endsWith("." + t)))
+                .sorted(Comparator.comparing(File::getName))
+                .toList();
         logger.info("Found {} diagrams to consider.", diagrams.size());
         return diagrams;
     }

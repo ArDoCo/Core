@@ -39,7 +39,6 @@ class DiagramRecognition : AbstractExecutionStage {
         enabledAgents = this.agents.map { it.id }.toMutableList()
     }
 
-
     override fun initializeState() {
         val inputDiagrams = dataRepository.getData(InputDiagramData.ID, InputDiagramData::class.java)
         if (inputDiagrams.isEmpty) {
