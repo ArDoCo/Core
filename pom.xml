@@ -140,6 +140,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-lissa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>connection-generator</artifactId>
         <version>${project.version}</version>
       </dependency>
