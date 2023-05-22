@@ -13,6 +13,20 @@ class DiagramRecognition : AbstractExecutionStage {
 
     companion object {
         const val ID = "DiagramRecognition"
+
+        /**
+         * Creates a [DiagramRecognition] that will handle the diagram recognition.
+         *
+         * @param additionalConfigs the additional configuration that should be applied
+         * @param dataRepository    the data repository
+         * @return a DiagramRecognition with the provided diagrams
+         */
+        @JvmStatic
+        fun get(additionalConfigs: Map<String?, String?>?, dataRepository: DataRepository?): DiagramRecognition? {
+            val diagramDetection = DiagramRecognition(dataRepository!!)
+            diagramDetection.applyConfiguration(additionalConfigs)
+            return diagramDetection
+        }
     }
 
     private val agents: List<PipelineAgent>
@@ -24,6 +38,7 @@ class DiagramRecognition : AbstractExecutionStage {
         this.agents = listOf(DiagramRecognitionAgent(dataRepository))
         enabledAgents = this.agents.map { it.id }.toMutableList()
     }
+
 
     override fun initializeState() {
         val inputDiagrams = dataRepository.getData(InputDiagramData.ID, InputDiagramData::class.java)

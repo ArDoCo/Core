@@ -236,13 +236,13 @@ class TraceLinkEvaluationIT {
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
         var umlTLs = ardocoRunForUML.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
 
         Assertions.assertAll( //
                 () -> Assertions.assertEquals(pcmTLs.size(), umlTLs.size()), //

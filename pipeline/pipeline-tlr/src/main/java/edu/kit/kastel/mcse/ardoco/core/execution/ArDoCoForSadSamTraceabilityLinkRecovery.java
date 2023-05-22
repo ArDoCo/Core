@@ -11,7 +11,12 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
+import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoForSadSamTraceabilityLinkRecovery.class);
@@ -47,11 +52,11 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
         }
         DataRepositoryHelper.putInputText(dataRepository, text);
 
-        this.getArDoCo().addPipelineStep(PipelineUtils.getTextPreprocessing(additionalConfigs, dataRepository));
-        this.getArDoCo().addPipelineStep(PipelineUtils.getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
+        this.getArDoCo().addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
+        this.getArDoCo().addPipelineStep(ModelProviderAgent.get(inputArchitectureModel, architectureModelType, dataRepository));
 
-        this.getArDoCo().addPipelineStep(PipelineUtils.getTextExtraction(additionalConfigs, dataRepository));
-        this.getArDoCo().addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
-        this.getArDoCo().addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
+        this.getArDoCo().addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
+        this.getArDoCo().addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
+        this.getArDoCo().addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
     }
 }

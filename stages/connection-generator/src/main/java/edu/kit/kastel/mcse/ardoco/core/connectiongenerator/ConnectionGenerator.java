@@ -43,6 +43,19 @@ public class ConnectionGenerator extends AbstractExecutionStage {
         enabledAgents = agents.collect(Agent::getId);
     }
 
+    /**
+     * Creates a {@link ConnectionGenerator} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of connectionGenerator
+     */
+    public static ConnectionGenerator get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var connectionGenerator = new ConnectionGenerator(dataRepository);
+        connectionGenerator.applyConfiguration(additionalConfigs);
+        return connectionGenerator;
+    }
+
     @Override
     protected void initializeState() {
         var connectionStates = ConnectionStatesImpl.build();

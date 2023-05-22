@@ -11,8 +11,14 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
+import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 
 /**
  * The Runner for the Linking Sketches and Software Architecture Approach (LiSSA)
@@ -64,12 +70,12 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
         DataRepositoryHelper.putInputText(dataRepository, text);
         DataRepositoryHelper.putDiagramDirectory(dataRepository, diagramDirectory);
 
-        arDoCo.addPipelineStep(PipelineUtils.getDiagramDetection(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getTextPreprocessing(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getArchitectureModelProvider(inputArchitectureModel, architectureModelType, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getTextExtraction(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getInconsistencyChecker(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(DiagramRecognition.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(ModelProviderAgent.get(inputArchitectureModel, architectureModelType, dataRepository));
+        arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(InconsistencyChecker.get(additionalConfigs, dataRepository));
     }
 }

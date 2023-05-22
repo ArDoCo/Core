@@ -30,6 +30,12 @@ public class SadSamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
         enabledAgents = agents.collect(Agent::getId);
     }
 
+    public static SadSamCodeTraceabilityLinkRecovery get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var sadSamCodeTraceabilityLinkRecovery = new SadSamCodeTraceabilityLinkRecovery(dataRepository);
+        sadSamCodeTraceabilityLinkRecovery.applyConfiguration(additionalConfigs);
+        return sadSamCodeTraceabilityLinkRecovery;
+    }
+
     @Override
     protected void initializeState() {
         DataRepository dataRepository = getDataRepository();

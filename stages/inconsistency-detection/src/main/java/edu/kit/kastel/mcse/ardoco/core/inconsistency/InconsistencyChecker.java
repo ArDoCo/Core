@@ -32,6 +32,19 @@ public class InconsistencyChecker extends AbstractExecutionStage {
         enabledAgents = agents.collect(Agent::getId);
     }
 
+    /**
+     * Creates an {@link InconsistencyChecker} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of InconsistencyChecker
+     */
+    public static InconsistencyChecker get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var inconsistencyChecker = new InconsistencyChecker(dataRepository);
+        inconsistencyChecker.applyConfiguration(additionalConfigs);
+        return inconsistencyChecker;
+    }
+
     @Override
     protected void initializeState() {
         var inconsistencyStates = InconsistencyStatesImpl.build();
