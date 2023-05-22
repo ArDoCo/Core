@@ -1,9 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Connector
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.TextBox
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Connector
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import java.io.File
 
 class DiagramImpl(private val location: File) :

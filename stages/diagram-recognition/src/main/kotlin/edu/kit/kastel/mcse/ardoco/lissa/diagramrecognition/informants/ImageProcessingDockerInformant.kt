@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 

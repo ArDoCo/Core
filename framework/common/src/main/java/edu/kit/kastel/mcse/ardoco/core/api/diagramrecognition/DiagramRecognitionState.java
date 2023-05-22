@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition;
+package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.util.List;
 
@@ -13,14 +13,14 @@ public interface DiagramRecognitionState extends PipelineStepData {
 
     /**
      * Add a new diagram to the state.
-     * 
+     *
      * @param diagram the diagram
      */
     void addDiagram(Diagram diagram);
 
     /**
      * Get a list of all recognized diagrams.
-     * 
+     *
      * @return all recognized diagrams
      */
     List<Diagram> getDiagrams();

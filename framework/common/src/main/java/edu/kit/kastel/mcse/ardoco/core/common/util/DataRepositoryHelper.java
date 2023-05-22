@@ -3,12 +3,12 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.File;
 
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.InputTextData;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;

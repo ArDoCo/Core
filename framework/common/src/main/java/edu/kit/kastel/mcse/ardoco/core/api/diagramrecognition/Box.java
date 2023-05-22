@@ -1,7 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition;
-
-import static java.lang.Math.abs;
+package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,6 +9,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static java.lang.Math.abs;
 
 /**
  * This class represents a box that is detected by the image recognition.
@@ -34,7 +34,7 @@ public final class Box implements Serializable {
 
     /**
      * Create a new box that is detected on the image.
-     * 
+     *
      * @param uuid            a unique identifier
      * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
      * @param confidence      a confidence value
@@ -53,7 +53,7 @@ public final class Box implements Serializable {
 
     /**
      * Calculate the area of the box in square pixel.
-     * 
+     *
      * @return the area of the box
      */
     public int area() {
@@ -62,7 +62,7 @@ public final class Box implements Serializable {
 
     /**
      * Get the identifier of this box
-     * 
+     *
      * @return a UUID of the box
      */
     public String getUUID() {
@@ -71,7 +71,7 @@ public final class Box implements Serializable {
 
     /**
      * Get the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
-     * 
+     *
      * @return the coordinates
      */
     public int[] getBox() {
@@ -80,7 +80,7 @@ public final class Box implements Serializable {
 
     /**
      * Get the confidence of the recognized box.
-     * 
+     *
      * @return a confidence value
      */
     public double getConfidence() {
@@ -89,7 +89,7 @@ public final class Box implements Serializable {
 
     /**
      * Get the classification (e.g., "LABEL").
-     * 
+     *
      * @return the classification
      */
     public Classification getClassification() {
@@ -98,7 +98,7 @@ public final class Box implements Serializable {
 
     /**
      * Add a text box that shall be associated with the box.
-     * 
+     *
      * @param textBox the textbox
      */
     public void addTextBox(TextBox textBox) {
@@ -107,7 +107,7 @@ public final class Box implements Serializable {
 
     /**
      * Get all text boxes that are associated with the box.
-     * 
+     *
      * @return all associated text boxes
      */
     public List<TextBox> getTexts() {
@@ -116,7 +116,7 @@ public final class Box implements Serializable {
 
     /**
      * Get the dominating color of the box (iff present)
-     * 
+     *
      * @return the dominating color or {@code null} if not present
      */
     public Integer getDominatingColor() {
@@ -125,7 +125,7 @@ public final class Box implements Serializable {
 
     /**
      * Set the dominating color of the box as RGB value.
-     * 
+     *
      * @param dominatingColor the dominating color
      */
     public void setDominatingColor(Integer dominatingColor) {

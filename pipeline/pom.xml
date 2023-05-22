@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.ardoco.core</groupId>
@@ -9,6 +10,7 @@
   </parent>
   <artifactId>pipeline</artifactId>
   <packaging>pom</packaging>
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,6 +37,10 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>connection-generator</artifactId>
@@ -99,6 +105,7 @@
         <module>pipeline-core</module>
         <module>pipeline-tlr</module>
         <module>pipeline-id</module>
+        <module>pipeline-lissa</module>
       </modules>
     </profile>
     <profile>
@@ -121,6 +128,17 @@
       <modules>
         <module>pipeline-core</module>
         <module>pipeline-id</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Linking Sketeches and Software Architecture -->
+      <id>lissa</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-lissa</module>
       </modules>
     </profile>
   </profiles>
