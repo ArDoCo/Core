@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.execution.runner;
+package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 import edu.kit.kastel.mcse.ardoco.core.common.CodeUtils;
 
-class CodeRunnerBaseTest extends RunnerBaseTest {
+public class CodeRunnerBaseTest extends RunnerBaseTest {
     protected static final String inputCodeRepository = "https://github.com/ArDoCo/TeaStore.git";
 
     protected static String inputCode = "../pipeline-core/src/test/resources/code/teastore";

@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.execution.runner;
+package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO improve this so this does not have to be in the src/main/java
-class RunnerBaseTest {
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
+
+public class RunnerBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(RunnerBaseTest.class);
 
     protected static final String INPUT_TEXT = "../pipeline-core/src/test/resources/teastore.txt";
