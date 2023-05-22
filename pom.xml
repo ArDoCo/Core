@@ -762,7 +762,7 @@
       </modules>
     </profile>
     <profile>
-      <!-- Linking Sketeches and Software Architecture -->
+      <!-- Linking Sketches and Software Architecture -->
       <id>lissa</id>
       <activation>
         <activeByDefault>false</activeByDefault>

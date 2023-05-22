@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data;
+package edu.kit.kastel.mcse.ardoco.core.api;
 
 import java.io.File;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class InputDiagramData implements PipelineStepData {
 
     /**
      * Create the data by a directory of image files.
-     * 
+     *
      * @param pathToDiagrams the path to a directory containing diagrams and sketches
      */
     public InputDiagramData(String pathToDiagrams) {
@@ -38,7 +38,7 @@ public class InputDiagramData implements PipelineStepData {
 
     /**
      * Get all image files of the given directory (not recursive).
-     * 
+     *
      * @return a list of image files ordered by name
      */
     public List<File> getFiles() {
@@ -52,10 +52,10 @@ public class InputDiagramData implements PipelineStepData {
         if (allFiles == null)
             return List.of();
         List<File> diagrams = Arrays.stream(allFiles)
-                .filter(File::isFile)
-                .filter(f -> ALLOWED_FILE_TYPES.stream().anyMatch(t -> f.getName().toLowerCase().endsWith("." + t)))
-                .sorted(Comparator.comparing(File::getName))
-                .toList();
+                                    .filter(File::isFile)
+                                    .filter(f -> ALLOWED_FILE_TYPES.stream().anyMatch(t -> f.getName().toLowerCase().endsWith("." + t)))
+                                    .sorted(Comparator.comparing(File::getName))
+                                    .toList();
         logger.info("Found {} diagrams to consider.", diagrams.size());
         return diagrams;
     }

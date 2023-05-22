@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition;
+package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.Serializable;
 import java.util.ArrayList;

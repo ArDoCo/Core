@@ -1,11 +1,11 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition;
-
-import static java.lang.Math.abs;
+package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static java.lang.Math.abs;
 
 public final class TextBox implements Serializable {
     @JsonProperty("x")
@@ -38,7 +38,7 @@ public final class TextBox implements Serializable {
 
     /**
      * Get the coordinates of the absolute box as (x1,y1,x2,y2) in pixel.
-     * 
+     *
      * @return the absolute coordinates of the box
      */
     public int[] absoluteBox() {

@@ -1,7 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.lissa
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
