@@ -1,6 +1,6 @@
-# Traceability Link Recovery between Software Architecture Model (SAM) and Code
+# Traceability Link Recovery between Software Architecture Models (SAMs) and Code
 
-The project ARCOTL (Architecture-Code-Trace Links) aims to automatically generate trace links between code and a model of the architecture.
+The sub-project ARCOTL (Architecture-Code-Trace Links) aims to automatically generate trace links between code and a model of the architecture.
 It supports multiple programming languages for the code (Java and Shell) and metamodels for the architecture model (PCM and UML).
 To this end the project introduces intermediate models for the architecture (AMTL - Architecture Model for Trace Links) and Code (CMTL - Code Model for Trace
 Links).
