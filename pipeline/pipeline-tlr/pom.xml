@@ -17,7 +17,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>pipeline-core</artifactId>
     </dependency>
   </dependencies>
