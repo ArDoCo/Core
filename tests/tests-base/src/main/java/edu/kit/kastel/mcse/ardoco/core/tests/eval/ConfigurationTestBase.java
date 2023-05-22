@@ -4,14 +4,18 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationInstantiatorUtils;
 
 /**
  * This test class deals with the configurations.
@@ -77,7 +81,7 @@ public abstract class ConfigurationTestBase {
 
     protected void processConfigurationOfClass(Map<String, String> configs, Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException,
             InstantiationException, IllegalAccessException {
-        var object = createObject(clazz);
+        var object = ConfigurationInstantiatorUtils.createObject(clazz);
         List<Field> fields = new ArrayList<>();
         findImportantFields(object.getClass(), fields);
         fillConfigs(object, fields, configs);
@@ -128,50 +132,5 @@ public abstract class ConfigurationTestBase {
             }
         }
         findImportantFields(clazz.getSuperclass(), fields);
-    }
-
-    private AbstractConfigurable createObject(Class<? extends AbstractConfigurable> clazz) throws InvocationTargetException, InstantiationException,
-            IllegalAccessException {
-        var constructors = Arrays.asList(clazz.getDeclaredConstructors());
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 0)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 0).findFirst().get();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance();
-        }
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class)) {
-            var constructor = constructors.stream().filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class).findFirst().get();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(Map.of());
-        }
-        if (constructors.stream().anyMatch(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class)
-                    .findFirst()
-                    .get();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(new Object[] { null });
-        }
-        if (constructors.stream()
-                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c.getParameterTypes()[1] == DataRepository.class)
-                    .findFirst()
-                    .get();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(new Object[] { null, null });
-        }
-
-        if (constructors.stream()
-                .anyMatch(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)) {
-            var constructor = constructors.stream()
-                    .filter(c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c.getParameterTypes()[1] == List.class)
-                    .findFirst()
-                    .get();
-            constructor.setAccessible(true);
-            return (AbstractConfigurable) constructor.newInstance(new Object[] { null, List.of() });
-        }
-
-        fail("No suitable constructor has been found for " + clazz);
-        throw new Error("Not reachable code");
     }
 }

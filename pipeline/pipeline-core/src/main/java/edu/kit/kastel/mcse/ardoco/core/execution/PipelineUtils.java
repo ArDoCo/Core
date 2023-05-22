@@ -28,6 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGen
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLPProvider;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 
 public class PipelineUtils {
 
@@ -144,5 +145,18 @@ public class PipelineUtils {
         var sadSamCodeTraceabilityLinkRecovery = new SadSamCodeTraceabilityLinkRecovery(dataRepository);
         sadSamCodeTraceabilityLinkRecovery.applyConfiguration(additionalConfigs);
         return sadSamCodeTraceabilityLinkRecovery;
+    }
+    
+    /**
+     * Creates a {@link DiagramRecognition} that will handle the diagram recognition.
+     *
+     * @param additionalConfigs the additional configuration that should be applied
+     * @param dataRepository    the data repository
+     * @return a DiagramRecognition with the provided diagrams
+     */
+    public static DiagramRecognition getDiagramDetection(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var diagramDetection = new DiagramRecognition(dataRepository);
+        diagramDetection.applyConfiguration(additionalConfigs);
+        return diagramDetection;
     }
 }

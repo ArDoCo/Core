@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
-    <version>0.8.3-SNAPSHOT</version>
+    <version>0.9.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>stages</artifactId>
@@ -28,6 +28,7 @@
         <module>recommendation-generator</module>
         <module>text-extraction</module>
         <module>text-preprocessing</module>
+        <module>diagram-recognition</module>
         <module>code-traceability</module>
       </modules>
     </profile>
@@ -43,6 +44,7 @@
         <module>recommendation-generator</module>
         <module>text-extraction</module>
         <module>text-preprocessing</module>
+        <module>diagram-recognition</module>
         <module>code-traceability</module>
       </modules>
     </profile>
@@ -74,6 +76,15 @@
         <module>recommendation-generator</module>
         <module>text-extraction</module>
         <module>text-preprocessing</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>lissa</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>diagram-recognition</module>
       </modules>
     </profile>
     <profile>
