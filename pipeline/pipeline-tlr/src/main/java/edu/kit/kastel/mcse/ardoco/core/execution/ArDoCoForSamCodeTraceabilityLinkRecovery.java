@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
 
@@ -37,10 +38,9 @@ public class ArDoCoForSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         ArDoCo arDoCo = this.getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
-        //TODO
-        ArCoTLModelProviderAgent arCoTLModelProviderAgent = PipelineUtils.getArCoTLModelProviderAgent(inputArchitectureModel, architectureModelType, inputCode,
+        ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(inputArchitectureModel, architectureModelType, inputCode,
                 additionalConfigs, dataRepository);
         arDoCo.addPipelineStep(arCoTLModelProviderAgent);
-        arDoCo.addPipelineStep(PipelineUtils.getSamCodeTraceabilityLinkRecovery(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(SamCodeTraceabilityLinkRecovery.get(additionalConfigs, dataRepository));
     }
 }
