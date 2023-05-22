@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
+import static edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification.LABEL;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.RunnerBaseTest;
-import static edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification.LABEL;
 
 @DisabledIfEnvironmentVariable(named = "NO_DOCKER", matches = "true")
 class ArDoCoForLiSSATest extends RunnerBaseTest {

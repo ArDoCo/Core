@@ -43,8 +43,8 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             Map<String, String> additionalConfigs, DataRepository dataRepository) {
         ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
-            case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
-            case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+        case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+        case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
         };
         CodeExtractor codeExtractor = new AllLanguagesExtractor(inputCode.getAbsolutePath());
         ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));

@@ -1,11 +1,11 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import static java.lang.Math.abs;
+
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import static java.lang.Math.abs;
 
 public final class TextBox implements Serializable {
     @JsonProperty("x")

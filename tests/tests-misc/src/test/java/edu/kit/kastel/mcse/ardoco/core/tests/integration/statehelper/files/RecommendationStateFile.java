@@ -129,13 +129,13 @@ public class RecommendationStateFile {
                 ImmutableList<String> names = currentRecommendedInstance.getNameMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 ImmutableList<String> types = currentRecommendedInstance.getTypeMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 ImmutableList<String> sentences = currentRecommendedInstance.getSentenceNumbers()
-                                                                            .toSortedList()
-                                                                            .collect(no -> Integer.toString(no))
-                                                                            .toImmutable();
+                        .toSortedList()
+                        .collect(no -> Integer.toString(no))
+                        .toImmutable();
                 ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
 
-                String currentLine = String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names),
-                        String.join(LIST_SEPARATOR, types), String.join(LIST_SEPARATOR, sentences), String.join(LIST_SEPARATOR, claimants));
+                String currentLine = String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR,
+                        types), String.join(LIST_SEPARATOR, sentences), String.join(LIST_SEPARATOR, claimants));
                 if (nameOrder == 0 && typeOrder == 0) {
 
                     if (!parts[2].equals(probability) ||//

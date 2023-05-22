@@ -20,8 +20,8 @@ class ArDoCoForSamCodeTraceabilityLinkRecoveryTest extends CodeRunnerBaseTest {
     void testSamCodeTlrPcm() {
         var runner = new ArDoCoForSamCodeTraceabilityLinkRecovery(PROJECT_NAME);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(ADDITIONAL_CONFIGS));
-        runner.setUp(new File(INPUT_MODEL_ARCHITECTURE), ArchitectureModelType.PCM, new File(CodeRunnerBaseTest.inputCode), additionalConfigsMap,
-                new File(OUTPUT_DIR));
+        runner.setUp(new File(INPUT_MODEL_ARCHITECTURE), ArchitectureModelType.PCM, new File(CodeRunnerBaseTest.inputCode), additionalConfigsMap, new File(
+                OUTPUT_DIR));
 
         testRunnerAssertions(runner);
         Assertions.assertNotNull(runner.run());
@@ -33,8 +33,8 @@ class ArDoCoForSamCodeTraceabilityLinkRecoveryTest extends CodeRunnerBaseTest {
     void testSamCodeTlrUml() {
         var runner = new ArDoCoForSamCodeTraceabilityLinkRecovery(PROJECT_NAME);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(ADDITIONAL_CONFIGS));
-        runner.setUp(new File(INPUT_MODEL_ARCHITECTURE_UML), ArchitectureModelType.UML, new File(CodeRunnerBaseTest.inputCode), additionalConfigsMap,
-                new File(OUTPUT_DIR));
+        runner.setUp(new File(INPUT_MODEL_ARCHITECTURE_UML), ArchitectureModelType.UML, new File(CodeRunnerBaseTest.inputCode), additionalConfigsMap, new File(
+                OUTPUT_DIR));
 
         testRunnerAssertions(runner);
         Assertions.assertNotNull(runner.run());
