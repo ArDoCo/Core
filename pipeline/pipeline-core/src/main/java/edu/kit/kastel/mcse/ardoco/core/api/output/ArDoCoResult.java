@@ -32,12 +32,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.Recommendatio
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.codetraceability.CodeTraceabilityStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyStateImpl;
-import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationStateImpl;
 
 /**
  * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it.
@@ -124,7 +120,9 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public List<SamCodeTraceLink> getSamCodeTraceLinks() {
         var samCodeTraceabilityState = getCodeTraceabilityState();
-        return samCodeTraceabilityState.getSamCodeTraceLinks().toList();
+        if (samCodeTraceabilityState != null)
+            return samCodeTraceabilityState.getSamCodeTraceLinks().toList();
+        return List.of();
     }
 
     /**
@@ -134,7 +132,9 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public List<TransitiveTraceLink> getTransitiveTraceLinks() {
         var samCodeTraceabilityState = getCodeTraceabilityState();
-        return samCodeTraceabilityState.getTransitiveTraceLinks().toList();
+        if (samCodeTraceabilityState != null)
+            return samCodeTraceabilityState.getTransitiveTraceLinks().toList();
+        return List.of();
     }
 
     /**
@@ -233,10 +233,10 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the internal {@link ConnectionState} for the modelId with the given ID or a new and empty state.
+     * Returns the internal {@link ConnectionState} for the modelId with the given ID or null, if there is none.
      *
      * @param modelId the ID of the model
-     * @return the connection state or a new state, if there is no {@link ConnectionState} for the given model ID
+     * @return the connection state or null, if there is no {@link ConnectionState} for the given model ID
      */
     public ConnectionState getConnectionState(String modelId) {
         if (DataRepositoryHelper.hasConnectionStates(dataRepository)) {
@@ -244,15 +244,15 @@ public record ArDoCoResult(DataRepository dataRepository) {
             var modelState = getModelState(modelId);
             return connectionStates.getConnectionState(modelState.getMetamodel());
         }
-        logger.warn("No ConnectionState found, returning new empty one.");
-        return new ConnectionStateImpl();
+        logger.warn("No ConnectionState found.");
+        return null;
     }
 
     /**
-     * Returns the internal {@link InconsistencyState} for the modelId with the given ID or a new and empty state.
+     * Returns the internal {@link InconsistencyState} for the modelId with the given ID or null, if there is none.
      *
      * @param modelId the ID of the model
-     * @return the inconsistency state or a new state, if there is no {@link InconsistencyState} for the given model ID
+     * @return the inconsistency state or null, if there is no {@link InconsistencyState} for the given model ID
      */
     public InconsistencyState getInconsistencyState(String modelId) {
         if (DataRepositoryHelper.hasInconsistencyStates(dataRepository)) {
@@ -260,21 +260,21 @@ public record ArDoCoResult(DataRepository dataRepository) {
             var modelState = getModelState(modelId);
             return inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
         }
-        logger.warn("No InconsistencyState found, returning new empty one.");
-        return new InconsistencyStateImpl();
+        logger.warn("No InconsistencyState found.");
+        return null;
     }
 
     /**
-     * Returns the internal {@link CodeTraceabilityState} or a new and empty state.
+     * Returns the internal {@link CodeTraceabilityState} or null, if there is none.
      *
-     * @return the {@link CodeTraceabilityState} state or a new state, if there is no {@link CodeTraceabilityState} for the given model ID
+     * @return the {@link CodeTraceabilityState} state or null, if there is no {@link CodeTraceabilityState} for the given model ID
      */
     public CodeTraceabilityState getCodeTraceabilityState() {
         if (DataRepositoryHelper.hasCodeTraceabilityState(dataRepository)) {
             return DataRepositoryHelper.getCodeTraceabilityState(dataRepository);
         }
-        logger.warn("No SamCodeTraceabilityState found, returning new empty one.");
-        return new CodeTraceabilityStateImpl();
+        logger.warn("No SamCodeTraceabilityState found.");
+        return null;
     }
 
     /**
@@ -317,18 +317,18 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the internal {@link RecommendationState} for the given {@link Metamodel}.
+     * Returns the internal {@link RecommendationState} for the given {@link Metamodel} or null, if there is none.
      *
      * @param metamodel the metamodel
-     * @return the recommendation state
+     * @return the recommendation state or null, if there is none
      */
     public RecommendationState getRecommendationState(Metamodel metamodel) {
         if (DataRepositoryHelper.hasRecommendationStates(dataRepository)) {
             var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
             return recommendationStates.getRecommendationState(metamodel);
         }
-        logger.warn("No RecommendationState found, returning new empty one");
-        return new RecommendationStateImpl();
+        logger.warn("No RecommendationState found");
+        return null;
     }
 
     public PreprocessingData getPreprocessingData() {
