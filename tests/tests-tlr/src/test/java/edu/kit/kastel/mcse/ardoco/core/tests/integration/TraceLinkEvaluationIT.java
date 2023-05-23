@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.common.CodeUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
@@ -74,7 +74,7 @@ class TraceLinkEvaluationIT {
     private static void cleanUpCodeRepositories() {
         if (analyzeCodeDirectly) {
             for (CodeProject codeProject : CodeProject.values()) {
-                CodeUtils.removeCodeFolder(codeProject.getCodeLocation());
+                RepositoryHandler.removeRepository(codeProject.getCodeLocation());
             }
         }
     }
@@ -236,13 +236,13 @@ class TraceLinkEvaluationIT {
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
         var umlTLs = ardocoRunForUML.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
 
         Assertions.assertAll( //
                 () -> Assertions.assertEquals(pcmTLs.size(), umlTLs.size()), //

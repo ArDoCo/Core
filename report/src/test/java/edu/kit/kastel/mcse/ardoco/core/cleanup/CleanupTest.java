@@ -8,7 +8,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.common.CodeUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
 
 /**
  * This is a "fake" test class that should clean up after everything else is run. Sometimes, we want to have, e.g.,
@@ -40,7 +40,7 @@ class CleanupTest {
         for (var folder : folders) {
             File file = new File(folder);
             if (file.exists()) {
-                CodeUtils.removeCodeFolder(folder);
+                RepositoryHandler.removeRepository(folder);
             }
         }
     }

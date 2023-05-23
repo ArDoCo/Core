@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.common.JavaUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
@@ -266,9 +265,9 @@ public final class SimilarityUtils {
         boolean instanceNameAndRIName = areWordsSimilar(instance.getFullName(), ri.getName());
         boolean instanceNamesAndRIs = SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNames, similarity);
         boolean longestNameSplitAndRINames = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNames, similarity);
-        boolean listOfNamesSimilarEnough = 1.0 * JavaUtils.similarEntriesOfList(instanceNames, recommendedInstanceNames) / Math.max(instanceNames.size(),
+        boolean listOfNamesSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, recommendedInstanceNames) / Math.max(instanceNames.size(),
                 recommendedInstanceNames.size()) >= similarity;
-        boolean listOfNameSplitSimilarEnough = 1.0 * JavaUtils.similarEntriesOfList(longestNameSplit, recommendedInstanceNames) / Math.max(instanceNames.size(),
+        boolean listOfNameSplitSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, recommendedInstanceNames) / Math.max(instanceNames.size(),
                 recommendedInstanceNames.size()) >= similarity;
 
         if (instanceNameAndRIName || instanceNamesAndRIs || longestNameSplitAndRINames || listOfNamesSimilarEnough || listOfNameSplitSimilarEnough) {
@@ -281,9 +280,9 @@ public final class SimilarityUtils {
 
                 boolean instanceNamesXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(instanceNames, surfaceFormWords, similarity);
                 boolean longestNameXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity);
-                boolean listOfNamesXSurfaceFormSimilarEnough = 1.0 * JavaUtils.similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames
-                        .size(), surfaceFormWords.size()) >= similarity;
-                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * JavaUtils.similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(
+                boolean listOfNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames.size(),
+                        surfaceFormWords.size()) >= similarity;
+                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(
                         longestNameSplit.size(), surfaceFormWords.size()) >= similarity;
 
                 if (instanceNamesXSurfaceForms || longestNameXSurfaceForms || listOfNamesXSurfaceFormSimilarEnough || listOfSplitNamesXSurfaceFormSimilarEnough) {
@@ -311,11 +310,11 @@ public final class SimilarityUtils {
         CosineSimilarity cosineSimilarity = new CosineSimilarity();
 
         Map<CharSequence, Integer> firstVector = firstPhraseVector.entrySet()
-                .stream()
-                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+                                                                  .stream()
+                                                                  .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
         Map<CharSequence, Integer> secondVector = secondPhraseVector.entrySet()
-                .stream()
-                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+                                                                    .stream()
+                                                                    .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
 
         return cosineSimilarity.cosineSimilarity(firstVector, secondVector);
     }
@@ -359,11 +358,27 @@ public final class SimilarityUtils {
         // Maybe REWORK. Remove NounMappings?
         if ((coversOtherPhraseVector(firstPhraseMapping, secondPhraseMapping) || coversOtherPhraseVector(secondPhraseMapping,
                 firstPhraseMapping)) && containsAllNounMappingsOfPhraseMapping(textState, firstPhraseMapping,
-                        secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState, secondPhraseMapping, firstPhraseMapping)) {
+                secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState, secondPhraseMapping, firstPhraseMapping)) {
             // HARD CODED... Change?
             return 1.0;
         }
 
         return strategy.applyAsDouble(firstPhraseMapping, secondPhraseMapping);
+    }
+
+    private static int similarEntriesOfList(ImmutableList<String> list1, ImmutableList<String> list2) {
+        MutableList<String> removed = Lists.mutable.empty();
+
+        for (var element : list1) {
+            if (list2.contains(element)) {
+                removed.add(element);
+            } else {
+                if (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
+                    removed.add(element);
+                }
+            }
+        }
+
+        return removed.size();
     }
 }

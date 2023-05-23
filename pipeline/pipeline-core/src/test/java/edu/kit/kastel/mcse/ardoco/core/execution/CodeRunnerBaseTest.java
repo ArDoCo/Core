@@ -6,7 +6,7 @@ import java.io.File;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 
-import edu.kit.kastel.mcse.ardoco.core.common.CodeUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
 
 public class CodeRunnerBaseTest extends RunnerBaseTest {
     protected static final String inputCodeRepository = "https://github.com/ArDoCo/TeaStore.git";
@@ -22,7 +22,7 @@ public class CodeRunnerBaseTest extends RunnerBaseTest {
         File codeLocation = new File(inputCode);
 
         if (!codeLocation.exists()) {
-            var successfulClone = CodeUtils.shallowCloneRepository(inputCodeRepository, inputCode);
+            var successfulClone = RepositoryHandler.shallowCloneRepository(inputCodeRepository, inputCode);
             if (!successfulClone) {
                 Assertions.fail("Could not clone repository.");
             }
