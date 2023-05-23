@@ -19,13 +19,13 @@ import java.util.OptionalDouble;
  */
 public class Confidence implements Comparable<Confidence> {
 
-    private OptionalDouble confidence;
+    private final OptionalDouble confidenceOptional;
 
     /**
      * Creates a new confidence that doesn't have a value.
      */
     public Confidence() {
-        confidence = OptionalDouble.empty();
+        confidenceOptional = OptionalDouble.empty();
     }
 
     /**
@@ -41,7 +41,7 @@ public class Confidence implements Comparable<Confidence> {
         if (!(confidenceValue >= 0 && confidenceValue <= 1)) {
             throw new IllegalArgumentException("Confidence value must not be smaller than 0 or bigger than 1");
         }
-        this.confidence = OptionalDouble.of(confidenceValue);
+        this.confidenceOptional = OptionalDouble.of(confidenceValue);
     }
 
     /**
@@ -51,8 +51,8 @@ public class Confidence implements Comparable<Confidence> {
      * @return the value of this confidence
      * @throws NoSuchElementException if no value exists
      */
-    public double getValue() {
-        return confidence.getAsDouble();
+    public double getValue() throws NoSuchElementException {
+        return confidenceOptional.getAsDouble();
     }
 
     /**
@@ -61,7 +61,7 @@ public class Confidence implements Comparable<Confidence> {
      * @return true if this confidence has a value; false otherwise
      */
     public boolean hasValue() {
-        return confidence.isPresent();
+        return confidenceOptional.isPresent();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Confidence implements Comparable<Confidence> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(confidence);
+        return Objects.hashCode(confidenceOptional);
     }
 
     @Override
@@ -95,13 +95,13 @@ public class Confidence implements Comparable<Confidence> {
             return false;
         }
         Confidence other = (Confidence) obj;
-        return Objects.equals(confidence, other.confidence);
+        return Objects.equals(confidenceOptional, other.confidenceOptional);
     }
 
     @Override
     public String toString() {
-        if (hasValue()) {
-            return Double.valueOf(confidence.getAsDouble()).toString();
+        if (confidenceOptional.isPresent()) {
+            return Double.toString(confidenceOptional.getAsDouble());
         }
         return "no value";
     }

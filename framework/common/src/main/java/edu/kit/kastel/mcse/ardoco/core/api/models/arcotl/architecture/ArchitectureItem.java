@@ -15,7 +15,7 @@ public abstract class ArchitectureItem extends Entity {
      *
      * @param name the name of the architecture item to be created
      */
-    public ArchitectureItem(String name) {
+    protected ArchitectureItem(String name) {
         super(name);
     }
 
@@ -25,7 +25,7 @@ public abstract class ArchitectureItem extends Entity {
      * @param name the name of the architecture item to be created
      * @param id   the identifier of the architecture item to be created
      */
-    public ArchitectureItem(String name, String id) {
+    protected ArchitectureItem(String name, String id) {
         super(name, id);
     }
 }

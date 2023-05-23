@@ -7,7 +7,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
@@ -36,25 +42,27 @@ public class ConfigurationHelper {
         if (additionalConfigsFile != null && (!additionalConfigsFile.exists() || !additionalConfigsFile.isFile())) {
             throw new IllegalArgumentException("File " + additionalConfigsFile + " is not a valid configuration file!");
         }
-        if (additionalConfigsFile != null) {
-            try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8)) {
-                while (scanner.hasNextLine()) {
-                    var line = scanner.nextLine();
-                    if (line == null || line.isBlank()) {
-                        continue;
-                    }
-                    var values = line.split(AbstractConfigurable.KEY_VALUE_CONNECTOR, 2);
-                    if (values.length != 2) {
-                        logger.error(
-                                "Found config line \"{}\". Layout has to be: 'KEY" + AbstractConfigurable.KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName" + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "AttributeName" + AbstractConfigurable.KEY_VALUE_CONNECTOR + "42",
-                                line);
-                    } else {
-                        additionalConfigs.put(values[0], values[1]);
-                    }
+        if (additionalConfigsFile == null) {
+            return additionalConfigs;
+        }
+
+        try (var scanner = new Scanner(additionalConfigsFile, StandardCharsets.UTF_8)) {
+            while (scanner.hasNextLine()) {
+                var line = scanner.nextLine();
+                if (line == null || line.isBlank()) {
+                    continue;
                 }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                var values = line.split(AbstractConfigurable.KEY_VALUE_CONNECTOR, 2);
+                if (values.length != 2) {
+                    logger.error(
+                            "Found config line \"{}\". Layout has to be: 'KEY" + AbstractConfigurable.KEY_VALUE_CONNECTOR + "VALUE', e.g., 'SimpleClassName" + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "AttributeName" + AbstractConfigurable.KEY_VALUE_CONNECTOR + "42",
+                            line);
+                } else {
+                    additionalConfigs.put(values[0], values[1]);
+                }
             }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }
         return additionalConfigs;
     }

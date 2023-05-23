@@ -27,7 +27,7 @@ public class InheritLinks extends DependentHeuristic {
     }
 
     private Confidence inheritLinks(ArchitectureItem archEndpoint, CodeCompilationUnit compUnit) {
-        if (getNodeResult().getLinkedEndpoints(compUnit).size() > 0) {
+        if (!getNodeResult().getLinkedEndpoints(compUnit).isEmpty()) {
             return new Confidence();
         }
         Confidence maxConfidence = new Confidence();
@@ -46,7 +46,7 @@ public class InheritLinks extends DependentHeuristic {
 
         Confidence maxConfidence = new Confidence();
         for (Datatype extendedType : extendedTypes) {
-            if (!areInSamePackage(codeType.getCompilationUnit(), extendedType.getCompilationUnit())) {
+            if (areInDifferentPackages(codeType.getCompilationUnit(), extendedType.getCompilationUnit())) {
                 continue;
             }
             Confidence extendedConfidence = getNodeResult().getConfidence(new EndpointTuple(archEndpoint, extendedType.getCompilationUnit()));
@@ -57,16 +57,11 @@ public class InheritLinks extends DependentHeuristic {
         return maxConfidence;
     }
 
-    public static boolean areInSamePackage(CodeCompilationUnit fileA, CodeCompilationUnit fileB) {
+    public static boolean areInDifferentPackages(CodeCompilationUnit fileA, CodeCompilationUnit fileB) {
         if (fileA.hasParent() != fileB.hasParent()) {
-            return false;
+            return true;
         }
-        if (fileA.hasParent() && fileB.hasParent()) {
-            if (!fileA.getParent().equals(fileB.getParent())) {
-                return false;
-            }
-        }
-        return true;
+        return fileA.hasParent() && fileB.hasParent() && !fileA.getParent().equals(fileB.getParent());
     }
 
     @Override

@@ -25,9 +25,6 @@ public abstract class Aggregation {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        return true;
+        return (obj instanceof Aggregation);
     }
 }

@@ -1,6 +1,9 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
@@ -15,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.comput
  * A heuristic.
  */
 public abstract class Heuristic {
+    protected static final Logger logger = LoggerFactory.getLogger(Heuristic.class);
 
     protected final NodeResult getNodeResult(ArchitectureModel archModel, CodeModel codeModel) {
         NodeResult confidences = new NodeResult();
@@ -35,10 +39,16 @@ public abstract class Heuristic {
     }
 
     protected Confidence calculateConfidence(ArchitectureComponent archComponent, CodeCompilationUnit compUnit) {
+        if (archComponent == null || compUnit == null) {
+            logger.warn("null values when calculating confidence");
+        }
         return new Confidence();
     }
 
     protected Confidence calculateConfidence(ArchitectureInterface archInterface, CodeCompilationUnit compUnit) {
+        if (archInterface == null || compUnit == null) {
+            logger.warn("null values when calculating confidence");
+        }
         return new Confidence();
     }
 
@@ -52,9 +62,6 @@ public abstract class Heuristic {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        return true;
+        return (obj instanceof Heuristic);
     }
 }

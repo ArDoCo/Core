@@ -174,11 +174,11 @@ public class NameComparisonUtils {
     }
 
     private static String concatStrings(List<String> names) {
-        String concated = "";
+        StringBuilder concat = new StringBuilder();
         for (String name : names) {
-            concated += name;
+            concat.append(name);
         }
-        return concated;
+        return concat.toString();
     }
 
     private static int getWordCount(String name) {
@@ -192,16 +192,11 @@ public class NameComparisonUtils {
     }
 
     private static boolean areEqual(String name1, String name2, PreprocessingMethod methodToUse) {
-        switch (methodToUse) {
-        case NONE:
-            return areEqual(name1, name2);
-        case STEMMING:
-            return areEqualStemmed(name1, name2);
-        case LEMMATIZATION:
-            return areEqualLemmatized(name1, name2);
-        default:
-            throw new IllegalStateException("Unsupported preprocessing method used: " + methodToUse);
-        }
+        return switch (methodToUse) {
+        case NONE -> areEqual(name1, name2);
+        case STEMMING -> areEqualStemmed(name1, name2);
+        case LEMMATIZATION -> areEqualLemmatized(name1, name2);
+        };
     }
 
     private static boolean areEqual(String name1, String name2) {
@@ -232,13 +227,6 @@ public class NameComparisonUtils {
             CoreLabel tok = document.tokens().get(i);
             CoreLabel tok2 = document2.tokens().get(i);
             if (!areEqual(tok.lemma(), tok2.lemma())) {
-                /*
-                if (areEqualStemmed(tok.word(), tok2.word())) {
-                    System.out.println(String.format("%s\t%s", tok.word(), tok.lemma()));
-                    System.out.println(String.format("%s\t%s", tok2.word(), tok2.lemma()));
-                    System.out.println();
-                }
-                */
                 return false;
             }
         }

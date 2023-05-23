@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -65,5 +66,27 @@ public class CodeModel extends Model {
         Set<CodePackage> codePackages = new HashSet<>();
         getContent().forEach(c -> codePackages.addAll(c.getAllPackages()));
         return codePackages;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof CodeModel codeModel))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        if (!Objects.equals(codeItemRepository, codeModel.codeItemRepository))
+            return false;
+        return Objects.equals(content, codeModel.content);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (codeItemRepository != null ? codeItemRepository.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        return result;
     }
 }

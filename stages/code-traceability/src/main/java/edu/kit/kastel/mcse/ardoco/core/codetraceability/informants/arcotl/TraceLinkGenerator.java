@@ -48,7 +48,7 @@ public final class TraceLinkGenerator {
 
     private static final Node root = Filter.getFilterArchNode(maxCompInterface, new ProvidedInterfaceCorrespondence().getNode(maxCompInterface));
 
-    public static final Map<Node, String> treeConfigs = new HashMap<>();
+    private static final Map<Node, String> treeConfigs = new HashMap<>();
 
     static {
         treeConfigs.put(interfaceName, "interfaceName");
@@ -106,8 +106,7 @@ public final class TraceLinkGenerator {
         Node pathBest = MatchBest.getMatchBestCodeNode(MatchBest.getMatchBestArchNode(path));
         Node maxCompInterface = Maximum.getMaximumNode(pathBest, compFiltered, interfaceBest);
 
-        Node root = Filter.getFilterArchNode(maxCompInterface, new ProvidedInterfaceCorrespondence().getNode(maxCompInterface));
-        return root;
+        return Filter.getFilterArchNode(maxCompInterface, new ProvidedInterfaceCorrespondence().getNode(maxCompInterface));
     }
 
     public static Set<SamCodeTraceLink> generateTraceLinks(Node root, ArchitectureModel archModel, CodeModel codeModel) {
@@ -119,8 +118,7 @@ public final class TraceLinkGenerator {
         }
 
         Computation computation = new Computation(root, archModel, codeModel);
-        Set<SamCodeTraceLink> traceLinks = computation.getTraceLinks();
-        return traceLinks;
+        return computation.getTraceLinks();
     }
 
     public static Set<SamCodeTraceLink> generateTraceLinks(ArchitectureModel archModel, CodeModel codeModel) {

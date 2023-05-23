@@ -45,4 +45,22 @@ public class ClassUnit extends Datatype {
         getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
         return result;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof ClassUnit classUnit))
+            return false;
+        if (!super.equals(o))
+            return false;
+        return content.equals(classUnit.content);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + content.hashCode();
+        return result;
+    }
 }

@@ -20,7 +20,7 @@ public abstract class Node {
      * Creates a computation node without children nodes, i.e. a leaf in the
      * computation tree.
      */
-    public Node() {
+    protected Node() {
         this.children = new ArrayList<>();
     }
 
@@ -29,7 +29,7 @@ public abstract class Node {
      *
      * @param child the child of the node to be created
      */
-    public Node(Node child) {
+    protected Node(Node child) {
         this.children = new ArrayList<>();
         children.add(child);
     }
@@ -39,7 +39,7 @@ public abstract class Node {
      *
      * @param children the children of the node to be created
      */
-    public Node(List<Node> children) {
+    protected Node(List<Node> children) {
         this.children = children;
     }
 

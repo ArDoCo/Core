@@ -27,16 +27,11 @@ public class Average extends ConfidenceAggregator {
             throw new IllegalArgumentException("The number of weights must not be zero");
         }
         for (double weight : weights) {
-            if (!(weight >= 0)) {
+            if (weight < 0) {
                 throw new IllegalArgumentException("Weights must not be smaller than 0");
             }
         }
         this.weights = Optional.of(new ArrayList<>(weights));
-    }
-
-    public static AggregationNode getAverageNode(Node... children) {
-        Average average = new Average();
-        return new AggregationNode(average, List.of(children));
     }
 
     /**
@@ -78,7 +73,7 @@ public class Average extends ConfidenceAggregator {
     }
 
     private double getWeight(int index) {
-        if (!weights.isPresent()) {
+        if (weights.isEmpty()) {
             return 1.0;
         }
         return weights.get().get(index);

@@ -57,4 +57,23 @@ public class Filter extends Matcher {
     public String toString() {
         return "Filter" + super.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Filter filter))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        return filterAlways == filter.filterAlways;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (filterAlways ? 1 : 0);
+        return result;
+    }
 }

@@ -11,11 +11,11 @@ public abstract class ModelElement {
 
     private final String id;
 
-    public ModelElement() {
+    protected ModelElement() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public ModelElement(String id) {
+    protected ModelElement(String id) {
         this.id = id;
     }
 

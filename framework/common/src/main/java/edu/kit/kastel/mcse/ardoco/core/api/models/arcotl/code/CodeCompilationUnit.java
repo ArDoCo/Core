@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -70,19 +71,45 @@ public class CodeCompilationUnit extends CodeModule {
     }
 
     public String getPath() {
-        String path = "";
+        StringBuilder pathBuilder = new StringBuilder();
         for (String pathElement : pathElements) {
-            path += (pathElement + "/");
+            pathBuilder.append(pathElement).append("/");
         }
         String ending = "";
         if (!extension.isEmpty()) {
             ending = "." + extension;
         }
-        return path + getName() + ending;
+        pathBuilder.append(getName()).append(ending);
+        return pathBuilder.toString();
     }
 
     @Override
     public String toString() {
         return getPath();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof CodeCompilationUnit that))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        if (!Objects.equals(pathElements, that.pathElements))
+            return false;
+        if (!Objects.equals(extension, that.extension))
+            return false;
+        return language == that.language;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (pathElements != null ? pathElements.hashCode() : 0);
+        result = 31 * result + (extension != null ? extension.hashCode() : 0);
+        result = 31 * result + (language != null ? language.hashCode() : 0);
+        return result;
     }
 }

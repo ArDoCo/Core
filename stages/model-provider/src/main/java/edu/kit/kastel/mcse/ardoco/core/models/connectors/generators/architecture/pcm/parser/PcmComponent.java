@@ -47,8 +47,12 @@ public final class PcmComponent {
     }
 
     void init(List<PcmInterface> interfaces) {
-        provided = providedInterfaceIds.stream().map(id -> interfaces.stream().filter(it -> it.getId().equals(id.id())).findFirst().orElseThrow()).toList();
-        required = requiredInterfaceIds.stream().map(id -> interfaces.stream().filter(it -> it.getId().equals(id.id())).findFirst().orElseThrow()).toList();
+        provided = providedInterfaceIds.stream()
+                .map(currId -> interfaces.stream().filter(it -> it.getId().equals(currId.id())).findFirst().orElseThrow())
+                .toList();
+        required = requiredInterfaceIds.stream()
+                .map(currId -> interfaces.stream().filter(it -> it.getId().equals(currId.id())).findFirst().orElseThrow())
+                .toList();
     }
 
     public List<PcmInterface> getRequired() {

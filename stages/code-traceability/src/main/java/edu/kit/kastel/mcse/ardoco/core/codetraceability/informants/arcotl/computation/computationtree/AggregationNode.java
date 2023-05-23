@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functi
  */
 public class AggregationNode extends Node {
 
-    private Aggregation aggregation;
+    private final Aggregation aggregation;
 
     /**
      * Creates an aggregation node with the specified aggregation as function and
@@ -43,8 +43,7 @@ public class AggregationNode extends Node {
         for (Node child : getChildren()) {
             childrenResults.add(result.getNodeResult(child));
         }
-        NodeResult nodeResult = aggregation.calculateConfidences(archModel, codeModel, childrenResults);
-        return nodeResult;
+        return aggregation.calculateConfidences(archModel, codeModel, childrenResults);
     }
 
     @Override
@@ -71,10 +70,10 @@ public class AggregationNode extends Node {
 
     @Override
     public String toString() {
-        String childrenString = ", Children:";
+        StringBuilder childrenStringBuilder = new StringBuilder(", Children:");
         for (Node child : getChildren()) {
-            childrenString += " " + child.getMethodName();
+            childrenStringBuilder.append(" ").append(child.getMethodName());
         }
-        return aggregation.toString() + childrenString;
+        return aggregation.toString() + childrenStringBuilder;
     }
 }

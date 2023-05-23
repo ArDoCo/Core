@@ -187,7 +187,7 @@ class TraceLinkEvaluationIT {
     @Order(20)
     void evaluateSadSamTlrIT(CodeProject project) {
         analyzeCodeDirectly = false;
-        var evaluation = new SamSadTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
@@ -199,12 +199,12 @@ class TraceLinkEvaluationIT {
     @Order(21)
     void evaluateSadSamTlrHistoricalIT(Project project) {
         analyzeCodeDirectly = false;
-        var evaluation = new SamSadTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
         ArDoCoResult arDoCoResult = evaluation.getArDoCoResult(project);
         Assertions.assertNotNull(arDoCoResult);
 
-        SamSadTraceabilityLinkRecoveryEvaluation.checkResults(project, arDoCoResult);
-        SamSadTraceabilityLinkRecoveryEvaluation.writeDetailedOutput(project, arDoCoResult);
+        SadSamTraceabilityLinkRecoveryEvaluation.checkResults(project, arDoCoResult);
+        SadSamTraceabilityLinkRecoveryEvaluation.writeDetailedOutput(project, arDoCoResult);
     }
 
     /**
@@ -221,7 +221,7 @@ class TraceLinkEvaluationIT {
         String name = project.name();
         var inputText = project.getTextFile();
 
-        var evaluation = new SamSadTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
 
         var ardocoRunForPCM = evaluation.getArDoCoResult(project);
         Assertions.assertNotNull(ardocoRunForPCM);
@@ -236,13 +236,13 @@ class TraceLinkEvaluationIT {
         Assertions.assertNotNull(ardocoRunForUML);
 
         var pcmTLs = ardocoRunForPCM.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
         var umlTLs = ardocoRunForUML.getAllTraceLinks()
-                .toList()
-                .sortThisBy(SadSamTraceLink::getModelElementUid)
-                .sortThisByInt(SadSamTraceLink::getSentenceNumber);
+                                    .toList()
+                                    .sortThisBy(SadSamTraceLink::getModelElementUid)
+                                    .sortThisByInt(SadSamTraceLink::getSentenceNumber);
 
         Assertions.assertAll( //
                 () -> Assertions.assertEquals(pcmTLs.size(), umlTLs.size()), //

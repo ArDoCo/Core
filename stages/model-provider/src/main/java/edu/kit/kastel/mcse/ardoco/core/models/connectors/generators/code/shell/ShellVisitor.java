@@ -16,6 +16,8 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.python.util.PythonInterpreter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
@@ -23,6 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
 
 public class ShellVisitor implements FileVisitor<Path> {
+    private static final Logger logger = LoggerFactory.getLogger(ShellVisitor.class);
 
     private final Path startingDir;
     private final Set<CodeItem> codeEndpoints;
@@ -58,7 +61,7 @@ public class ShellVisitor implements FileVisitor<Path> {
         try (FileReader reader = new FileReader(path.toFile())) {
             code = IOUtils.toString(reader);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("Exception when reading file", e);
         }
         if (!isShellFile(fileName, code)) {
             return FileVisitResult.CONTINUE;

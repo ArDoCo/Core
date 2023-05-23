@@ -30,7 +30,6 @@ public final class PcmParameter {
     }
 
     void init(List<PcmDatatype> datatypes) {
-        // TODO null for external types
         type = datatypes.stream().filter(datatype -> datatype.getId().equals(typeId)).findFirst().orElse(null);
     }
 }
