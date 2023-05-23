@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -68,11 +69,12 @@ public abstract class CodeExtractor extends Extractor {
 
     private static ObjectMapper createObjectMapper() {
         ObjectMapper oom = new ObjectMapper();
-        oom.setVisibility(oom.getSerializationConfig().getDefaultVisibilityChecker() //
-                             .withFieldVisibility(JsonAutoDetect.Visibility.ANY)//
-                             .withGetterVisibility(JsonAutoDetect.Visibility.NONE)//
-                             .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
-                             .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
+        oom.setVisibility(oom.getSerializationConfig()
+                .getDefaultVisibilityChecker() //
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)//
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)//
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
         return oom;
     }
 

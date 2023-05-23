@@ -282,8 +282,8 @@ public final class SimilarityUtils {
                 boolean longestNameXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity);
                 boolean listOfNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames.size(),
                         surfaceFormWords.size()) >= similarity;
-                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(
-                        longestNameSplit.size(), surfaceFormWords.size()) >= similarity;
+                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(longestNameSplit
+                        .size(), surfaceFormWords.size()) >= similarity;
 
                 if (instanceNamesXSurfaceForms || longestNameXSurfaceForms || listOfNamesXSurfaceFormSimilarEnough || listOfSplitNamesXSurfaceFormSimilarEnough) {
                     return true;
@@ -310,11 +310,11 @@ public final class SimilarityUtils {
         CosineSimilarity cosineSimilarity = new CosineSimilarity();
 
         Map<CharSequence, Integer> firstVector = firstPhraseVector.entrySet()
-                                                                  .stream()
-                                                                  .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
         Map<CharSequence, Integer> secondVector = secondPhraseVector.entrySet()
-                                                                    .stream()
-                                                                    .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey().getText(), Map.Entry::getValue));
 
         return cosineSimilarity.cosineSimilarity(firstVector, secondVector);
     }
@@ -358,7 +358,7 @@ public final class SimilarityUtils {
         // Maybe REWORK. Remove NounMappings?
         if ((coversOtherPhraseVector(firstPhraseMapping, secondPhraseMapping) || coversOtherPhraseVector(secondPhraseMapping,
                 firstPhraseMapping)) && containsAllNounMappingsOfPhraseMapping(textState, firstPhraseMapping,
-                secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState, secondPhraseMapping, firstPhraseMapping)) {
+                        secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState, secondPhraseMapping, firstPhraseMapping)) {
             // HARD CODED... Change?
             return 1.0;
         }
