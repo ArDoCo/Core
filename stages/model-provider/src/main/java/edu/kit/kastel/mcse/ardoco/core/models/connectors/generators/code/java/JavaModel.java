@@ -107,7 +107,7 @@ public final class JavaModel {
     }
 
     private void initSuperclasses() {
-        for (JavaClassifier javaClassifier : javaClassifiers) { // TODO alternatively javaTypes could get used
+        for (JavaClassifier javaClassifier : javaClassifiers) {
             ITypeBinding binding = javaClassifier.binding();
             ITypeBinding superclassBinding = binding.getSuperclass();
             if (null == superclassBinding) {
@@ -165,7 +165,7 @@ public final class JavaModel {
                     ProgrammingLanguage.JAVA);
             codeCompilationUnits.add(codeCompilationUnit);
             if (null != packageDeclaration) {
-                CodePackage codePackage = getPackage(null, packageNames, codeCompilationUnit);
+                CodePackage codePackage = getPackage(packageNames, codeCompilationUnit);
                 codePackages.add(codePackage);
             } else {
                 modelContent.add(codeCompilationUnit);
@@ -180,13 +180,7 @@ public final class JavaModel {
         initExtendedInterfaces();
         initSuperclasses();
 
-        //
-
-        for (CodePackage codePackage : mergedCodePackages) {
-            modelContent.add(codePackage);
-        }
-
-        //
+        modelContent.addAll(mergedCodePackages);
 
         codeModel = new CodeModel(modelContent);
     }
@@ -238,8 +232,7 @@ public final class JavaModel {
     }
 
     private static ControlElement extractMethod(MethodDeclaration methodDeclaration) {
-        ControlElement codeMethod = new ControlElement(methodDeclaration.getName().getIdentifier());
-        return codeMethod;
+        return new ControlElement(methodDeclaration.getName().getIdentifier());
     }
 
     private static List<String> getPackageNames(Name name) {
@@ -257,14 +250,14 @@ public final class JavaModel {
         return packageNames;
     }
 
-    private static CodePackage getPackage(CodePackage parent, List<String> packageNames, CodeCompilationUnit codeCompilationUnit) {
+    private static CodePackage getPackage(List<String> packageNames, CodeCompilationUnit codeCompilationUnit) {
         if (packageNames.isEmpty()) {
             return null;
         }
         List<String> packageNamesCopy = new ArrayList<>(packageNames);
         String name = packageNamesCopy.remove(0);
         CodePackage codePackage = new CodePackage(name);
-        CodePackage childCodePackage = getPackage(codePackage, packageNamesCopy, codeCompilationUnit);
+        CodePackage childCodePackage = getPackage(packageNamesCopy, codeCompilationUnit);
         if (null == childCodePackage) {
             codePackage.addContent(codeCompilationUnit);
         } else {

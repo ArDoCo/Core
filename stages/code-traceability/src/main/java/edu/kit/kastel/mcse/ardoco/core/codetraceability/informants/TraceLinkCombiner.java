@@ -6,8 +6,6 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
@@ -20,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 public class TraceLinkCombiner extends Informant {
-    private static final Logger logger = LoggerFactory.getLogger(TraceLinkCombiner.class);
 
     public TraceLinkCombiner(DataRepository dataRepository) {
         super(TraceLinkCombiner.class.getSimpleName(), dataRepository);
@@ -33,6 +30,9 @@ public class TraceLinkCombiner extends Informant {
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());
         ConnectionStates connectionStates = DataRepositoryHelper.getConnectionStates(getDataRepository());
 
+        if (codeTraceabilityState == null || modelStatesData == null || connectionStates == null) {
+            return;
+        }
         var samCodeTraceLinks = codeTraceabilityState.getSamCodeTraceLinks();
         for (var modelId : modelStatesData.extractionModelIds()) {
             var metamodel = modelStatesData.getModelExtractionState(modelId).getMetamodel();
@@ -55,9 +55,7 @@ public class TraceLinkCombiner extends Informant {
                 String samCodeTraceLinkModelElementId = samCodeTraceLink.getEndpointTuple().firstEndpoint().getId();
                 if (modelElementUid.equals(samCodeTraceLinkModelElementId)) {
                     var transitiveTraceLinkOptional = TransitiveTraceLink.createTransitiveTraceLink(sadSamTraceLink, samCodeTraceLink);
-                    if (transitiveTraceLinkOptional.isPresent()) {
-                        transitiveTraceLinks.add(transitiveTraceLinkOptional.get());
-                    }
+                    transitiveTraceLinkOptional.ifPresent(transitiveTraceLinks::add);
                 }
             }
         }

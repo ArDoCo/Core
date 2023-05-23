@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
+import java.util.Objects;
+
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.NodeResult;
@@ -33,5 +35,27 @@ public abstract class DependentHeuristic extends Heuristic {
         this.nodeResult = nodeResult;
         this.archModel = archModel;
         return getNodeResult(archModel, codeModel);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof DependentHeuristic that))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        if (!Objects.equals(nodeResult, that.nodeResult))
+            return false;
+        return Objects.equals(archModel, that.archModel);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (nodeResult != null ? nodeResult.hashCode() : 0);
+        result = 31 * result + (archModel != null ? archModel.hashCode() : 0);
+        return result;
     }
 }

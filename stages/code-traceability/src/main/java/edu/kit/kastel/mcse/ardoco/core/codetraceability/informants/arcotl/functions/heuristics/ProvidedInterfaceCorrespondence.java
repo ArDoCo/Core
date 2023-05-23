@@ -52,10 +52,7 @@ public class ProvidedInterfaceCorrespondence extends DependentHeuristic {
         if (componentPackages.isEmpty() || interfaces.isEmpty()) {
             return false;
         }
-        if (interfaces.stream().anyMatch(i -> componentPackages.stream().anyMatch(p -> overrides(p.getAllCompilationUnits(), i)))) {
-            return true;
-        }
-        return false;
+        return interfaces.stream().anyMatch(i -> componentPackages.stream().anyMatch(p -> overrides(p.getAllCompilationUnits(), i)));
     }
 
     private boolean overrides(Set<CodeCompilationUnit> ces, Entity i) {

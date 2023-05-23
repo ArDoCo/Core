@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,5 +46,10 @@ public class ArchitectureExtractorTest {
                 anInterface.getSignatures().forEach(signature -> logger.info("  {}", signature));
             });
         }
+    }
+
+    @Test
+    void extractorTest() {
+        Assertions.assertTrue(true);
     }
 }

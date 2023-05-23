@@ -10,7 +10,7 @@ public abstract class HeuristicNode extends Node {
     /**
      * Creates a heuristic node with no children.
      */
-    public HeuristicNode() {
+    protected HeuristicNode() {
     }
 
     /**
@@ -18,7 +18,7 @@ public abstract class HeuristicNode extends Node {
      *
      * @param child the child of the heuristic node to be created
      */
-    public HeuristicNode(Node child) {
+    protected HeuristicNode(Node child) {
         super(child);
     }
 }

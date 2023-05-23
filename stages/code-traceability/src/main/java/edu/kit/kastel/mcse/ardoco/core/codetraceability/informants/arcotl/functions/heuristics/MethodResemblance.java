@@ -55,10 +55,7 @@ public class MethodResemblance extends StandaloneHeuristic {
     private boolean isImplementedMethod(ControlElement codeMethod, Datatype codeType) {
         Set<ControlElement> implMethods = new HashSet<>();
         getAllImplementedInterfaces(codeType).forEach(i -> getAllExtendedTypes(i).forEach(j -> implMethods.addAll(j.getDeclaredMethods())));
-        if (implMethods.stream().anyMatch(implMethod -> implMethod.getName().equalsIgnoreCase(codeMethod.getName()))) {
-            return true;
-        }
-        return false;
+        return implMethods.stream().anyMatch(implMethod -> implMethod.getName().equalsIgnoreCase(codeMethod.getName()));
     }
 
     private boolean isExtendedMethod(ControlElement codeMethod, Datatype codeType) {
@@ -66,10 +63,7 @@ public class MethodResemblance extends StandaloneHeuristic {
         Set<Datatype> extendedTypes = getAllExtendedTypes(codeType);
         extendedTypes.remove(codeType);
         extendedTypes.forEach(i -> extendedMethods.addAll(i.getDeclaredMethods()));
-        if (extendedMethods.stream().anyMatch(i -> i.getName().equalsIgnoreCase(codeMethod.getName()))) {
-            return true;
-        }
-        return false;
+        return extendedMethods.stream().anyMatch(i -> i.getName().equalsIgnoreCase(codeMethod.getName()));
     }
 
     // returns extended types + type itself

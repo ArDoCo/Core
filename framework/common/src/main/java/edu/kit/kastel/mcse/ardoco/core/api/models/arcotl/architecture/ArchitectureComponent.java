@@ -12,9 +12,10 @@ import java.util.Set;
  */
 public class ArchitectureComponent extends ArchitectureItem {
 
-    private Set<ArchitectureComponent> subcomponents;
-    private Set<ArchitectureInterface> providedInterfaces;
-    private Set<ArchitectureInterface> requiredInterfaces;
+    private final Set<ArchitectureComponent> subcomponents;
+    private final Set<ArchitectureInterface> providedInterfaces;
+
+    private final Set<ArchitectureInterface> requiredInterfaces;
 
     public ArchitectureComponent(String name, String id, Set<ArchitectureComponent> subcomponents, Set<ArchitectureInterface> providedInterfaces,
             Set<ArchitectureInterface> requiredInterfaces) {
@@ -56,5 +57,30 @@ public class ArchitectureComponent extends ArchitectureItem {
     @Override
     public String toString() {
         return "Component: " + getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof ArchitectureComponent that))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        if (!subcomponents.equals(that.subcomponents))
+            return false;
+        if (!providedInterfaces.equals(that.providedInterfaces))
+            return false;
+        return requiredInterfaces.equals(that.requiredInterfaces);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + subcomponents.hashCode();
+        result = 31 * result + providedInterfaces.hashCode();
+        result = 31 * result + requiredInterfaces.hashCode();
+        return result;
     }
 }

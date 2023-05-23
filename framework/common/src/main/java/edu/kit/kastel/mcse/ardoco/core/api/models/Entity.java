@@ -20,11 +20,11 @@ public abstract class Entity extends ModelElement {
      *
      * @param name the name of the entity to be created
      */
-    public Entity(String name) {
+    protected Entity(String name) {
         this.name = name;
     }
 
-    public Entity(String name, String id) {
+    protected Entity(String name, String id) {
         super(id);
         this.name = name;
     }

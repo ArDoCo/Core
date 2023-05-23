@@ -10,13 +10,13 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.comput
 
 public class Threshold extends ConfidenceAggregator {
 
-    private double threshold;
+    private final double limit;
 
     private Threshold(double threshold) {
         if (!(threshold >= 0 && threshold <= 1)) {
             throw new IllegalArgumentException("Threshold must not be smaller than 0 or bigger than 1");
         }
-        this.threshold = threshold;
+        this.limit = threshold;
     }
 
     /**
@@ -43,7 +43,7 @@ public class Threshold extends ConfidenceAggregator {
                 bestConfidence = confidence;
             }
         }
-        Confidence thresholdConfidence = new Confidence(threshold);
+        Confidence thresholdConfidence = new Confidence(limit);
         if (bestConfidence.compareTo(thresholdConfidence) >= 0) {
             return bestConfidence;
         }
@@ -52,7 +52,7 @@ public class Threshold extends ConfidenceAggregator {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), threshold);
+        return Objects.hash(getClass(), limit);
     }
 
     @Override
@@ -64,11 +64,11 @@ public class Threshold extends ConfidenceAggregator {
             return false;
         }
         Threshold other = (Threshold) obj;
-        return threshold == other.threshold;
+        return limit == other.limit;
     }
 
     @Override
     public String toString() {
-        return "Threshold-" + threshold;
+        return "Threshold-" + limit;
     }
 }

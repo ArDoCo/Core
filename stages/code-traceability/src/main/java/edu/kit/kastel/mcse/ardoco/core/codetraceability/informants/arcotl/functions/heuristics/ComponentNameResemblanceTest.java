@@ -48,10 +48,8 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
         Set<Entity> linkedEndpoints = getNodeResult().getLinkedEndpoints(archEndpoint);
         for (Entity linkedEndpoint : linkedEndpoints) {
             CodeCompilationUnit linkedCompUnit = (CodeCompilationUnit) linkedEndpoint;
-            if (!InheritLinks.areInSamePackage(compUnit, linkedCompUnit)) {
-                continue;
-            }
-            if (!areSimilar(items, linkedCompUnit.getAllDataTypesAndSelf(), filteredCommonWords)) {
+            if (InheritLinks.areInDifferentPackages(compUnit, linkedCompUnit) || !areSimilar(items, linkedCompUnit.getAllDataTypesAndSelf(),
+                    filteredCommonWords)) {
                 continue;
             }
             Confidence extendedConfidence = getNodeResult().getConfidence(new EndpointTuple(archEndpoint, linkedCompUnit));

@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
@@ -27,10 +26,6 @@ public class ComputationResult {
      */
     public ComputationResult() {
         resultMap = new HashMap<>();
-    }
-
-    public Map<Node, NodeResult> getResultMap() {
-        return resultMap;
     }
 
     /**
@@ -131,12 +126,7 @@ public class ComputationResult {
 
     public List<String> getConfidenceStrings(Node node, EndpointTuple endpointTuple) {
         Map<String, Integer> levelToConfidences = getConfidenceStringsToLevelMap(node, endpointTuple, 1);
-        List<String> result = levelToConfidences.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue())
-                .map(entry -> entry.getKey())
-                .collect(Collectors.toList());
-        return result;
+        return levelToConfidences.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).toList();
     }
 
     private Map<String, Integer> getConfidenceStringsToLevelMap(Node node, EndpointTuple endpointTuple, int level) {

@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.models.ModelExtractionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -20,8 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
  */
 public final class ArCoTLModelProviderInformant extends Informant {
     private static final String MODEL_STATES_DATA = "ModelStatesData";
-    private Extractor extractor;
-    private ModelExtractionStateImpl modelState = null;
+    private final Extractor extractor;
 
     // Needed for Configuration Generation
     @SuppressWarnings("unused")

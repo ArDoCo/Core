@@ -32,7 +32,7 @@ public class Required extends DependentHeuristic {
         if (allLinks.size() <= 1) {
             return new Confidence();
         }
-        if (hasRequired(archEndpoint, allLinks)) { // TODO also subcomponents
+        if (hasRequired(archEndpoint, allLinks)) {
             return new Confidence(1.0);
         }
         return new Confidence();

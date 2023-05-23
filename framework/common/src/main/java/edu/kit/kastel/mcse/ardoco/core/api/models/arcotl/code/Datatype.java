@@ -82,4 +82,29 @@ public class Datatype extends CodeItem {
             this.implementedDataTypesIds.add(datatype.getId());
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Datatype datatype))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        if (!Objects.equals(compilationUnitId, datatype.compilationUnitId))
+            return false;
+        if (!Objects.equals(extendedDataTypesIds, datatype.extendedDataTypesIds))
+            return false;
+        return Objects.equals(implementedDataTypesIds, datatype.implementedDataTypesIds);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (compilationUnitId != null ? compilationUnitId.hashCode() : 0);
+        result = 31 * result + (extendedDataTypesIds != null ? extendedDataTypesIds.hashCode() : 0);
+        result = 31 * result + (implementedDataTypesIds != null ? implementedDataTypesIds.hashCode() : 0);
+        return result;
+    }
 }

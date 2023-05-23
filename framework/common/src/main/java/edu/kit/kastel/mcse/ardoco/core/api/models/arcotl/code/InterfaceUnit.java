@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -42,6 +43,25 @@ public class InterfaceUnit extends Datatype {
         List<Datatype> result = new ArrayList<>();
         result.add(this);
         getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof InterfaceUnit that))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        return Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (content != null ? content.hashCode() : 0);
         return result;
     }
 }

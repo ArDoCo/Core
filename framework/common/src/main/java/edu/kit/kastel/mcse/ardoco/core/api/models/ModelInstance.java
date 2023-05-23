@@ -8,7 +8,7 @@ import org.eclipse.collections.api.list.ImmutableList;
  */
 public abstract class ModelInstance extends Entity {
 
-    public ModelInstance(String name, String id) {
+    protected ModelInstance(String name, String id) {
         super(name, id);
     }
 
