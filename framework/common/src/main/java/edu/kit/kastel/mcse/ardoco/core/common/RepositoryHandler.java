@@ -12,10 +12,10 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CodeUtils {
-    private static final Logger logger = LoggerFactory.getLogger(CodeUtils.class);
+public class RepositoryHandler {
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryHandler.class);
 
-    private CodeUtils() {
+    private RepositoryHandler() {
         super();
     }
 
@@ -36,9 +36,9 @@ public class CodeUtils {
         }
     }
 
-    public static void removeCodeFolder(String codeLocation) {
+    public static void removeRepository(String repositoryLocation) {
         try {
-            FileUtils.deleteDirectory(new File(codeLocation));
+            FileUtils.deleteDirectory(new File(repositoryLocation));
         } catch (IOException e) {
             logger.warn("An exception occurred when removing a code folder.", e);
         }

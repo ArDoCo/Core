@@ -6,14 +6,13 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.common.JsonUtils;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 
 public abstract class CodeExtractor extends Extractor {
@@ -34,7 +33,7 @@ public abstract class CodeExtractor extends Extractor {
     }
 
     public void writeOutCodeModel(CodeModel codeModel) {
-        ObjectMapper objectMapper = JsonUtils.createObjectMapper();
+        ObjectMapper objectMapper = createObjectMapper();
         objectMapper.registerModule(new Jdk8Module());
         try {
             File file = new File(getCodeModelFileString());
@@ -52,7 +51,7 @@ public abstract class CodeExtractor extends Extractor {
     public static CodeModel readInCodeModel(File codeModelFile) {
         if (codeModelFile != null && codeModelFile.isFile()) {
             logger.info("Reading in existing code model.");
-            ObjectMapper objectMapper = JsonUtils.createObjectMapper();
+            ObjectMapper objectMapper = createObjectMapper();
             objectMapper.registerModule(new Jdk8Module());
             try {
                 return objectMapper.readValue(codeModelFile, CodeModel.class);
@@ -65,6 +64,16 @@ public abstract class CodeExtractor extends Extractor {
 
     private String getCodeModelFileString() {
         return path + File.separator + CODE_MODEL_FILE_NAME;
+    }
+
+    private static ObjectMapper createObjectMapper() {
+        ObjectMapper oom = new ObjectMapper();
+        oom.setVisibility(oom.getSerializationConfig().getDefaultVisibilityChecker() //
+                             .withFieldVisibility(JsonAutoDetect.Visibility.ANY)//
+                             .withGetterVisibility(JsonAutoDetect.Visibility.NONE)//
+                             .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
+                             .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
+        return oom;
     }
 
 }
