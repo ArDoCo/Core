@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
   </parent>
 
   <groupId>io.github.ardoco</groupId>
@@ -60,12 +60,12 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.15.0</version>
+      <version>2.15.1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.15.0</version>
+      <version>2.15.1</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>com.networknt</groupId>
       <artifactId>json-schema-validator</artifactId>
-      <version>1.0.81</version>
+      <version>1.0.82</version>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
