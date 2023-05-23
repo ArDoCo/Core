@@ -4,7 +4,7 @@
 
   <groupId>io.github.ardoco.core</groupId>
   <artifactId>parent</artifactId>
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.3</version>
   <packaging>pom</packaging>
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
@@ -55,7 +55,7 @@
   <scm>
     <connection>scm:git:git://github.com/ArDoCo/Core.git</connection>
     <developerConnection>scm:git:ssh://github.com:ArDoCo/Core.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v0.9.3</tag>
     <url>http://github.com/ArDoCo/Core/tree/main</url>
   </scm>
   <issueManagement>
@@ -470,8 +470,8 @@
                 <include>*.md</include>
                 <include>.gitignore</include>
               </includes>
-              <trimTrailingWhitespace/>
-              <endWithNewline/>
+              <trimTrailingWhitespace />
+              <endWithNewline />
               <indent>
                 <tabs>true</tabs>
                 <spacesPerTab>4</spacesPerTab>
@@ -484,7 +484,7 @@
               <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/formatter.xml</file>
             </eclipse>
-            <removeUnusedImports/>
+            <removeUnusedImports />
             <licenseHeader>
               <!--suppress UnresolvedMavenProperty -->
               <file>${maven.multiModuleProjectDirectory}/license-header</file>
