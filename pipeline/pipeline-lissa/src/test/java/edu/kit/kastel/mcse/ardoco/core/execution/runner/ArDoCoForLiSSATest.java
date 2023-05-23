@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.execution.RunnerBaseTest;
 @DisabledIfEnvironmentVariable(named = "NO_DOCKER", matches = "true")
 class ArDoCoForLiSSATest extends RunnerBaseTest {
 
-    private static final String DIAGRAM_DIRECTORY = "src/test/resources/";
+    private static final String DIAGRAM_DIRECTORY = "../pipeline-core/src/test/resources/";
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoForLiSSATest.class);
 
     @Test
