@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>stages</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -18,8 +18,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
+      <version>${revision}</version>
     </dependency>
 
     <dependency>
@@ -33,7 +34,6 @@
       <artifactId>stanford-corenlp</artifactId>
       <version>4.5.2</version>
     </dependency>
-
     <dependency>
       <groupId>edu.stanford.nlp</groupId>
       <artifactId>stanford-corenlp</artifactId>

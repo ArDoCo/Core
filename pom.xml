@@ -4,8 +4,9 @@
 
   <groupId>io.github.ardoco.core</groupId>
   <artifactId>parent</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
+
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
     or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
@@ -70,6 +71,8 @@
   </distributionManagement>
 
   <properties>
+    <revision>0.9.4-SNAPSHOT</revision>
+
     <project.source.encoding>UTF-8</project.source.encoding>
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -92,7 +95,7 @@
     <mockito.version>5.2.0</mockito.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
-    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <sonar.moduleKey>io.github.ardoco.core:${project.artifactId}</sonar.moduleKey>
     <sonar.organization>ardoco</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir},
@@ -104,78 +107,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- ArDoCo -->
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>text-extraction</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>text-preprocessing</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>recommendation-generator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-tlr</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-id</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-lissa</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>connection-generator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>model-provider</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>inconsistency-detection</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>code-traceability</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Informalin -->
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- LiSSA -->
-      <dependency>
-        <groupId>io.github.ardoco.core</groupId>
-        <artifactId>diagram-recognition</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Other Dependencies -->
       <dependency>
         <groupId>org.reflections</groupId>
         <artifactId>reflections</artifactId>

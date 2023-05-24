@@ -4,14 +4,9 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>pipeline</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>pipeline-core</artifactId>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
 </project>

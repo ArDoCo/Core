@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>report</artifactId>
@@ -19,19 +19,22 @@
   <dependencies>
     <!-- InFormALin -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
+      <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
     <!-- ArDoCo -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>text-extraction</artifactId>
+      <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>text-preprocessing</artifactId>
+      <version>${revision}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -40,68 +43,83 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>recommendation-generator</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>pipeline-core</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>pipeline-tlr</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>pipeline-id</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>connection-generator</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>model-provider</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>inconsistency-detection</artifactId>
+      <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>diagram-recognition</artifactId>
+      <artifactId>pipeline-core</artifactId>
+      <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>pipeline-tlr</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>pipeline-id</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>connection-generator</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>inconsistency-detection</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>code-traceability</artifactId>
+      <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>tests-misc</artifactId>
-      <version>${project.version}</version>
+      <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>tests-tlr</artifactId>
-      <version>${project.version}</version>
+      <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>tests-inconsistency</artifactId>
-      <version>${project.version}</version>
+      <version>${revision}</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>diagram-recognition</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>pipeline-lissa</artifactId>
+      <version>${revision}</version>
     </dependency>
 
     <dependency>
