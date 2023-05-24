@@ -6,29 +6,24 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Maps;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 class CodeItemRepository {
-    private static volatile CodeItemRepository INSTANCE;
+    private static CodeItemRepository instance;
 
     @JsonProperty
-    private Map<String, CodeItem> repository = Maps.mutable.empty();
+    private final Map<String, CodeItem> repository = Maps.mutable.empty();
 
     private CodeItemRepository() {
-        INSTANCE = this;
+        instance = this;
     }
 
-    static CodeItemRepository getInstance() {
-        if (INSTANCE == null) {
-            synchronized (CodeItemRepository.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new CodeItemRepository();
-                }
-            }
+    static synchronized CodeItemRepository getInstance() {
+        if (instance == null) {
+            instance = new CodeItemRepository();
         }
 
-        return INSTANCE;
+        return instance;
     }
 
     public Map<String, CodeItem> getRepository() {
