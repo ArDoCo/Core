@@ -501,6 +501,7 @@
               <indentBlankLines>false</indentBlankLines>
               <nrOfIndentSpace>2</nrOfIndentSpace>
               <expandEmptyElements>false</expandEmptyElements>
+              <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
             </sortPom>
           </pom>
           <kotlin>
