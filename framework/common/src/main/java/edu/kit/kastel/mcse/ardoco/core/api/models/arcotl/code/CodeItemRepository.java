@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Maps;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 class CodeItemRepository {
