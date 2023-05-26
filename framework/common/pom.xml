@@ -10,9 +10,6 @@
   <artifactId>common</artifactId>
   <name>Common Utilities and Pipeline Definitions</name>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

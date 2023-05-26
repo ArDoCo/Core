@@ -9,13 +9,7 @@
   </parent>
   <artifactId>tests-tlr</artifactId>
 
-  <properties>
-    <maven.deploy.skip>true</maven.deploy.skip>
-    <sonar.skip>true</sonar.skip>
-  </properties>
-
   <dependencies>
-
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>connection-generator</artifactId>

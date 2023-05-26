@@ -10,10 +10,6 @@
   <artifactId>stages</artifactId>
   <packaging>pom</packaging>
 
-  <properties>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
-  </properties>
-
   <profiles>
     <profile>
       <id>complete</id>
