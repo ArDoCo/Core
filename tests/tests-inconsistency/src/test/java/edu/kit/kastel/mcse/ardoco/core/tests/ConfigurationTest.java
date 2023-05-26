@@ -29,11 +29,13 @@ class ConfigurationTest extends ConfigurationTestBase {
      *
      * @throws Exception if anything goes wrong
      */
+    @Override
     @Test
     public void showCurrentConfiguration() throws Exception {
         super.showCurrentConfiguration();
     }
 
+    @Override
     @Test
     public void testValidityOfConfigurableFields() throws Exception {
         super.testValidityOfConfigurableFields();

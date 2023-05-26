@@ -16,10 +16,10 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 
 public class RecommendationStateFile {
 
@@ -52,9 +52,12 @@ public class RecommendationStateFile {
         builder.append(String.join(VALUE_SEPARATOR, "Name", "Type", "Probability", "Names", "Types", "Sentences", "Claimants", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
-        for (RecommendedInstance recommendation : recommendationState.getRecommendedInstances()
-                .toSortedListBy(RecommendedInstance::getType)
-                .sortThisBy(RecommendedInstance::getName)) {
+        ImmutableList<RecommendedInstance> recommendedInstances = Lists.immutable.empty();
+        if (recommendationState != null) {
+            recommendedInstances = recommendationState.getRecommendedInstances();
+        }
+
+        for (RecommendedInstance recommendation : recommendedInstances.toSortedListBy(RecommendedInstance::getType).sortThisBy(RecommendedInstance::getName)) {
             builder.append(recommendation.getName());
             builder.append(VALUE_SEPARATOR);
             builder.append(recommendation.getType());
@@ -82,9 +85,11 @@ public class RecommendationStateFile {
         var builder = new StringBuilder();
 
         var currentRecommendationState = arDoCoResult.getRecommendationState(metaModel);
-        var currentRecommendedInstances = currentRecommendationState.getRecommendedInstances()
-                .toSortedListBy(RecommendedInstance::getType)
-                .sortThisBy(RecommendedInstance::getName);
+        ImmutableList<RecommendedInstance> recommendedInstances = Lists.immutable.empty();
+        if (currentRecommendationState != null) {
+            recommendedInstances = currentRecommendationState.getRecommendedInstances();
+        }
+        var currentRecommendedInstances = recommendedInstances.toSortedListBy(RecommendedInstance::getType).sortThisBy(RecommendedInstance::getName);
 
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);

@@ -29,6 +29,7 @@
         <module>text-extraction</module>
         <module>text-preprocessing</module>
         <module>diagram-recognition</module>
+        <module>code-traceability</module>
       </modules>
     </profile>
     <profile>
@@ -44,6 +45,7 @@
         <module>text-extraction</module>
         <module>text-preprocessing</module>
         <module>diagram-recognition</module>
+        <module>code-traceability</module>
       </modules>
     </profile>
 
@@ -59,6 +61,7 @@
         <module>recommendation-generator</module>
         <module>text-extraction</module>
         <module>text-preprocessing</module>
+        <module>code-traceability</module>
       </modules>
     </profile>
     <profile>

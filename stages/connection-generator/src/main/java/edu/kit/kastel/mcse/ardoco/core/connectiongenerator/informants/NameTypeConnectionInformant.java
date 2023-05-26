@@ -7,15 +7,15 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -49,8 +49,8 @@ public class NameTypeConnectionInformant extends Informant {
     }
 
     private void exec(TextState textState, ModelStates modelStates, RecommendationStates recommendationStates, Word word) {
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
             checkForNameAfterType(textState, word, modelState, recommendationState);
             checkForNameBeforeType(textState, word, modelState, recommendationState);

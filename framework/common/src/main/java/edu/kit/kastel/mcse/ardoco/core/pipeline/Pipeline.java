@@ -71,7 +71,16 @@ public class Pipeline extends AbstractPipelineStep {
             if (logger.isInfoEnabled()) {
                 var end = Instant.now();
                 var duration = Duration.between(start, end);
-                String durationString = String.format("%01d.%03d s", duration.toSecondsPart(), duration.toMillisPart());
+                long minutesPart = duration.toMinutes();
+                int secondsPart = duration.toSecondsPart();
+                int millisPart = duration.toMillisPart();
+                String durationString;
+                if (minutesPart > 0) {
+                    durationString = String.format("%02d:%02d.%03d", minutesPart, secondsPart, millisPart);
+                } else {
+                    durationString = String.format("%01d.%03d s", secondsPart, millisPart);
+                }
+
                 logger.info("Finished {} - {} in {}", this.getId(), pipelineStep.getId(), durationString);
             }
         }

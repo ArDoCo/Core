@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
@@ -39,6 +39,19 @@ public class RecommendationGenerator extends AbstractExecutionStage {
 
         );
         this.enabledAgents = agents.collect(Agent::getId);
+    }
+
+    /**
+     * Creates a {@link RecommendationGenerator} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of {@link RecommendationGenerator}
+     */
+    public static RecommendationGenerator get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var recommendationGenerator = new RecommendationGenerator(dataRepository);
+        recommendationGenerator.applyConfiguration(additionalConfigs);
+        return recommendationGenerator;
     }
 
     @Override

@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.tuple.Pair;
@@ -30,7 +35,7 @@ public class TLPreviousFile {
 
     /**
      * Loads the previous results
-     * 
+     *
      * @param sourceFile file to load from
      * @return the previous results
      * @throws IOException if file access fails
@@ -59,7 +64,10 @@ public class TLPreviousFile {
             var correctLinks = TLGoldStandardFile.loadLinks(project);
             var foundLinks = foundLinkMap.get(project);
 
-            results.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), Lists.immutable.ofAll(foundLinks), correctLinks.toImmutable())));
+            ArDoCoResult arDoCoResult = DATA_MAP.get(project);
+            if (arDoCoResult != null) {
+                results.add(Tuples.pair(project, TestUtil.compareTLR(arDoCoResult, Lists.immutable.ofAll(foundLinks), correctLinks.toImmutable())));
+            }
         }
 
         return results;
@@ -67,7 +75,7 @@ public class TLPreviousFile {
 
     /**
      * Saves the given results to the given file.
-     * 
+     *
      * @param targetFile     file to save to
      * @param projectResults results to save
      * @throws IOException if writing to file system fails

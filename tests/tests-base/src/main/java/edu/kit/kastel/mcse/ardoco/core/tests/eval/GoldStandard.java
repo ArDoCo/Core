@@ -12,8 +12,8 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 
 public class GoldStandard {
     private Logger logger = LoggerFactory.getLogger(GoldStandard.class);

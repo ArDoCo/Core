@@ -10,12 +10,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -204,7 +205,7 @@ public enum Project {
      *
      * @return a list with the entries of the goldstandard for TLR
      */
-    public MutableList<String> getTlrGoldStandard() {
+    public ImmutableList<String> getTlrGoldStandard() {
         var path = Paths.get(this.getTlrGoldStandardFile().toURI());
         List<String> goldLinks = Lists.mutable.empty();
         try {
@@ -213,7 +214,7 @@ public enum Project {
             logger.error(e.getMessage(), e);
         }
         goldLinks.remove(0);
-        return Lists.mutable.ofAll(goldLinks);
+        return Lists.immutable.ofAll(goldLinks);
     }
 
     /**

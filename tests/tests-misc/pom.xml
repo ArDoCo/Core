@@ -18,18 +18,19 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>tests-base</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>text-extraction</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>text-preprocessing</artifactId>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -40,32 +41,38 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>recommendation-generator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>pipeline</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-      </exclusions>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>connection-generator</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>model-provider</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>inconsistency-detection</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>diagram-recognition</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pipeline-id</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pipeline-tlr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pipeline-lissa</artifactId>
     </dependency>
   </dependencies>
 

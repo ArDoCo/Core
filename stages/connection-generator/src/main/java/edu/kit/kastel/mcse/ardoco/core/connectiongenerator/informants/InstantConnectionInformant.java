@@ -3,11 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -30,8 +30,8 @@ public class InstantConnectionInformant extends Informant {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
             var connectionState = connectionStates.getConnectionState(metamodel);

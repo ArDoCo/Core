@@ -18,9 +18,9 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 
 public class ConnectionStateFile {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionStateFile.class);
@@ -71,7 +71,7 @@ public class ConnectionStateFile {
             builder.append(modelInstance.getFullType());
             builder.append(VALUE_SEPARATOR);
 
-            builder.append(df.format(instanceLink.getProbability()));
+            builder.append(df.format(instanceLink.getConfidence()));
             builder.append(VALUE_SEPARATOR);
             ImmutableList<String> sentences = textInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
             builder.append(String.join(LIST_SEPARATOR, sentences));
@@ -143,7 +143,7 @@ public class ConnectionStateFile {
                 String uid = currentModelInstance.getUid();
                 String modelName = currentModelInstance.getFullName();
                 String modelType = currentModelInstance.getFullType();
-                String linkProbability = df.format(currentLink.getProbability());
+                String linkProbability = df.format(currentLink.getConfidence());
                 ImmutableList<String> sentences = currentTextInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
                 String name = currentTextInstance.getName();
                 String type = currentTextInstance.getType();

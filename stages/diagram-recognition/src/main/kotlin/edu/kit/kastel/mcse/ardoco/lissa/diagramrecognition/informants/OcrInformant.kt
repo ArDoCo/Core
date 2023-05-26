@@ -1,10 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.TextBox
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.executeRequest
 import org.apache.hc.client5.http.classic.methods.HttpPost

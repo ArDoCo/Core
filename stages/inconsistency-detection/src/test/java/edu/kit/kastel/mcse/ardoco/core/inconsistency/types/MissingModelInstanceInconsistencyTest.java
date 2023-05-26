@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**

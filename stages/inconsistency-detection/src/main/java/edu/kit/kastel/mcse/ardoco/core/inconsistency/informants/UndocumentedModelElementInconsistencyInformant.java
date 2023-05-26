@@ -9,9 +9,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.InstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -42,8 +42,8 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
         var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
 
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             var metaModel = modelState.getMetamodel();
             var connectionState = connectionStates.getConnectionState(metaModel);
             var inconsistencyState = inconsistencyStates.getInconsistencyState(metaModel);

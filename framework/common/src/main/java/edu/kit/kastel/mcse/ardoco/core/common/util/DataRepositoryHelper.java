@@ -3,16 +3,17 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.File;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.InputTextData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
+import edu.kit.kastel.mcse.ardoco.core.api.InputTextData;
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
@@ -206,6 +207,31 @@ public final class DataRepositoryHelper {
     }
 
     /**
+     * Checks whether there is {@link CodeTraceabilityState} stored within the provided {@link DataRepository}
+     *
+     * @param dataRepository the DataRepository to access
+     * @return true, if there is {@link CodeTraceabilityState} within the {@link DataRepository}; else, false
+     */
+    public static boolean hasCodeTraceabilityState(DataRepository dataRepository) {
+        return dataRepository.getData(CodeTraceabilityState.ID, CodeTraceabilityState.class).isPresent();
+    }
+
+    /**
+     * Returns the {@link CodeTraceabilityState} stored within the provided {@link DataRepository}.
+     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
+     * To make sure that there is data present, use {@link #hasInconsistencyStates(DataRepository)}
+     *
+     * @param dataRepository the DataRepository to access
+     * @return the state
+     */
+    public static CodeTraceabilityState getCodeTraceabilityState(DataRepository dataRepository) {
+        if (hasCodeTraceabilityState(dataRepository)) {
+            return dataRepository.getData(CodeTraceabilityState.ID, CodeTraceabilityState.class).orElseThrow();
+        }
+        return null;
+    }
+
+    /**
      * Put the given {@link PreprocessingData} into the given {@link DataRepository}. This will override existing data!
      *
      * @param dataRepository    the dataRepository
@@ -239,7 +265,7 @@ public final class DataRepositoryHelper {
 
     /**
      * Save diagram directory as {@link InputDiagramData}.
-     * 
+     *
      * @param dataRepository   the data repository
      * @param diagramDirectory the diagram directory
      */

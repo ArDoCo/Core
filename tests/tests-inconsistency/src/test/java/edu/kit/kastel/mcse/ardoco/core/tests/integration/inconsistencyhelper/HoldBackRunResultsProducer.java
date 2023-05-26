@@ -9,24 +9,28 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
-import edu.kit.kastel.mcse.ardoco.core.execution.PipelineUtils;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.model.informants.ModelProviderInformant;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
+import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 public class HoldBackRunResultsProducer {
     private File inputText;
     private File inputModel;
-    private PcmXMLModelConnector pcmModel;
+    private PcmXmlModelConnector pcmModel;
 
     public HoldBackRunResultsProducer() {
         super();
@@ -73,7 +77,7 @@ public class HoldBackRunResultsProducer {
 
     private HoldElementsBackModelConnector constructHoldElementsBackModelConnector() {
         try {
-            pcmModel = new PcmXMLModelConnector(inputModel);
+            pcmModel = new PcmXmlModelConnector(inputModel);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -88,14 +92,14 @@ public class HoldBackRunResultsProducer {
         DataRepositoryHelper.putInputText(dataRepository, text);
         var additionalConfigs = project.getAdditionalConfigurations();
 
-        arDoCo.addPipelineStep(PipelineUtils.getTextPreprocessing(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
 
         addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
             arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
         } else {
-            arDoCo.addPipelineStep(PipelineUtils.getInconsistencyChecker(additionalConfigs, dataRepository));
+            arDoCo.addPipelineStep(InconsistencyChecker.get(additionalConfigs, dataRepository));
         }
 
         return arDoCo;
@@ -121,7 +125,7 @@ public class HoldBackRunResultsProducer {
         if (useInconsistencyBaseline) {
             arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
         } else {
-            arDoCo.addPipelineStep(PipelineUtils.getInconsistencyChecker(additionalConfigs, dataRepository));
+            arDoCo.addPipelineStep(InconsistencyChecker.get(additionalConfigs, dataRepository));
         }
         return arDoCo;
     }
@@ -129,8 +133,8 @@ public class HoldBackRunResultsProducer {
     private static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
             Map<String, String> additionalConfigs) {
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
-        arDoCo.addPipelineStep(PipelineUtils.getTextExtraction(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getRecommendationGenerator(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(PipelineUtils.getConnectionGenerator(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
     }
 }

@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 /**
  * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur

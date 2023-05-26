@@ -9,11 +9,11 @@ import java.util.function.UnaryOperator;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -45,8 +45,8 @@ public class ProjectNameInformant extends Informant {
         var projectName = DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        for (var model : modelStates.modelIds()) {
-            var modelState = modelStates.getModelState(model);
+        for (var model : modelStates.extractionModelIds()) {
+            var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
 

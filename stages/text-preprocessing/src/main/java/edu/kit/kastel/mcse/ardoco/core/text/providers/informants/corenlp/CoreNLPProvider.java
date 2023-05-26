@@ -4,9 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 import java.util.Map;
 import java.util.Properties;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.NlpInformant;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.stanford.nlp.pipeline.CoreDocument;

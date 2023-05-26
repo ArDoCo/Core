@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 import java.util.EnumMap;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
 
 public class RecommendationStatesImpl implements RecommendationStates {
     private Map<Metamodel, RecommendationStateImpl> recommendationStates;

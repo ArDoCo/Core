@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.models.pcm.PCMModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmModel;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 class LoadPCMTest {
@@ -19,7 +19,7 @@ class LoadPCMTest {
     void loadAllProjectComponentsTest(Project project) throws IOException {
         var pcmModelFile = project.getModelFile(ArchitectureModelType.PCM);
         Assertions.assertNotNull(pcmModelFile);
-        PCMModel model = new PCMModel(pcmModelFile);
+        PcmModel model = new PcmModel(pcmModelFile);
         Assertions.assertFalse(model.getRepository().getComponents().isEmpty());
 
         for (var component : model.getRepository().getComponents()) {

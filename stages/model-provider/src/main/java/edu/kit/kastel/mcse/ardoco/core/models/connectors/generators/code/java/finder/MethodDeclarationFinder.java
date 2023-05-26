@@ -1,0 +1,26 @@
+/* Licensed under MIT 2023. */
+package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+
+public class MethodDeclarationFinder extends ASTVisitor {
+
+    private Set<MethodDeclaration> methodDeclarations = new HashSet<>();
+
+    public static Set<MethodDeclaration> find(ASTNode node) {
+        MethodDeclarationFinder finder = new MethodDeclarationFinder();
+        node.accept(finder);
+        return finder.methodDeclarations;
+    }
+
+    @Override
+    public boolean visit(MethodDeclaration methodDeclaration) {
+        methodDeclarations.add(methodDeclaration);
+        return super.visit(methodDeclaration);
+    }
+}

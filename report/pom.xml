@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>report</artifactId>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,12 +23,6 @@
       <artifactId>common</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>models</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
     <!-- ArDoCo -->
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -52,14 +46,18 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>pipeline</artifactId>
+      <artifactId>pipeline-core</artifactId>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pipeline-tlr</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pipeline-id</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -83,6 +81,12 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>code-traceability</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>tests-misc</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
@@ -97,6 +101,12 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>tests-inconsistency</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
