@@ -72,6 +72,7 @@
 
   <properties>
     <revision>0.9.4-SNAPSHOT</revision>
+    <ardoco.version>${revision}</ardoco.version>
 
     <project.source.encoding>UTF-8</project.source.encoding>
     <java.version>17</java.version>
