@@ -23,7 +23,6 @@
       <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
-    <!-- InFormALin -->
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
@@ -36,7 +35,6 @@
       <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
-
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>diagram-recognition</artifactId>
@@ -90,7 +88,6 @@
       <version>${revision}</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>tests-misc</artifactId>
@@ -103,7 +100,6 @@
       <version>${revision}</version>
       <scope>test</scope>
     </dependency>
-    <!-- ArDoCo -->
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>text-extraction</artifactId>
@@ -121,7 +117,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
