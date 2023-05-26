@@ -52,7 +52,7 @@
       </modules>
     </profile>
     <profile>
-      <id>deploy</id>
+      <id>deployment</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
