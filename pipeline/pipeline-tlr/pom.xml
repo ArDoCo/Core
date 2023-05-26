@@ -17,6 +17,21 @@
   <dependencies>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
+      <artifactId>code-traceability</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>connection-generator</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>pipeline-core</artifactId>
       <version>${revision}</version>
     </dependency>
@@ -29,12 +44,7 @@
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>text-preprocessing</artifactId>
-      <version>${revision}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>model-provider</artifactId>
+      <artifactId>recommendation-generator</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
@@ -44,17 +54,7 @@
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>recommendation-generator</artifactId>
-      <version>${revision}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>connection-generator</artifactId>
-      <version>${revision}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>code-traceability</artifactId>
+      <artifactId>text-preprocessing</artifactId>
       <version>${revision}</version>
     </dependency>
   </dependencies>

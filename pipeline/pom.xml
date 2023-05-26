@@ -50,9 +50,9 @@
       </activation>
       <modules>
         <module>pipeline-core</module>
-        <module>pipeline-tlr</module>
         <module>pipeline-id</module>
         <module>pipeline-lissa</module>
+        <module>pipeline-tlr</module>
       </modules>
     </profile>
     <profile>
