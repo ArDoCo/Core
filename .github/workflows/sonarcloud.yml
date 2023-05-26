@@ -2,6 +2,8 @@ name: Sonar Cloud
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -10,8 +12,8 @@ on:
 
 jobs:
   sonarcloud:
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    uses: informalin/actions/.github/workflows/sonarcloud.yml@main
+    if: ${{ github.actor != 'dependabot[bot]' }} 
+    uses: ardoco/actions/.github/workflows/sonarcloud.yml@main
     with:
       with-submodules: true
     secrets:
