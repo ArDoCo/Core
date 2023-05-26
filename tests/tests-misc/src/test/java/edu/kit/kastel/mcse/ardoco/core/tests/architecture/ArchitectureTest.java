@@ -19,22 +19,25 @@ public class ArchitectureTest {
     @ArchTest
     public static final ArchRule modelInstancesOnlyAfterModelExtraction = classes().that()
             .haveSimpleName("ModelInstance")
+            .or()
+            .haveSimpleName("Model")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..model..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..output..", "..tests..");
+            .resideInAnyPackage("..models..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..output..", "..tests..");
 
     @ArchTest
     public static final ArchRule linksOnlyAfterConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..api..", "..tests..");
+            .resideInAnyPackage("..connectiongenerator..", "..codetraceability..", "..tracelinks..", "..inconsistency..", "..pipeline..", "..common..",
+                    "..api..", "..tests..");
 
     @ArchTest
     public static final ArchRule usingLinkAsNamingOnlyInConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()
-            .resideInAnyPackage("..connectiongenerator..", "..output..", "..tests..");
+            .resideInAnyPackage("..models.tracelinks..", "..connectiongenerator..", "..output..", "..tests..");
 
     @ArchTest
     public static final ArchRule inconsistencyOnlyAfterInconsistencyDetection = classes().that()
@@ -51,13 +54,15 @@ public class ArchitectureTest {
             .layer("TextExtractor")
             .definedBy("..textextraction..")
             .layer("ModelExtractor")
-            .definedBy("..model..")
+            .definedBy("..core.models..")
             .layer("RecommendationGenerator")
             .definedBy("..recommendationgenerator..")
             .layer("ConnectionGenerator")
             .definedBy("..connectiongenerator..")
             .layer("InconsistencyDetection")
             .definedBy("..inconsistency..")
+            .layer("CodeTraceability")
+            .definedBy("..codetraceability..")
             .layer("Pipeline")
             .definedBy("..pipeline..")
             .layer("Execution")
@@ -68,11 +73,12 @@ public class ArchitectureTest {
             .whereLayer("InconsistencyDetection")
             .mayOnlyBeAccessedByLayers("Pipeline", "Common", "Execution")
             .whereLayer("ConnectionGenerator")
-            .mayOnlyBeAccessedByLayers("InconsistencyDetection", "Pipeline", "Common", "Execution")
+            .mayOnlyBeAccessedByLayers("CodeTraceability", "InconsistencyDetection", "Pipeline", "Common", "Execution")
             .whereLayer("RecommendationGenerator")
             .mayOnlyBeAccessedByLayers("ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common", "Execution")
             .whereLayer("TextExtractor")
             .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common", "Execution")
             .whereLayer("ModelExtractor")
-            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "InconsistencyDetection", "Pipeline", "Common", "Execution");
+            .mayOnlyBeAccessedByLayers("RecommendationGenerator", "ConnectionGenerator", "CodeTraceability", "InconsistencyDetection", "Pipeline", "Common",
+                    "Execution");
 }

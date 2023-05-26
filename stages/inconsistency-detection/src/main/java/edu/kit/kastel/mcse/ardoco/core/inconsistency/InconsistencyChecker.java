@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
@@ -30,6 +30,19 @@ public class InconsistencyChecker extends AbstractExecutionStage {
         agents = Lists.mutable.of(new InitialInconsistencyAgent(dataRepository), new MissingModelElementInconsistencyAgent(dataRepository),
                 new UndocumentedModelElementInconsistencyAgent(dataRepository));
         enabledAgents = agents.collect(Agent::getId);
+    }
+
+    /**
+     * Creates an {@link InconsistencyChecker} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of InconsistencyChecker
+     */
+    public static InconsistencyChecker get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var inconsistencyChecker = new InconsistencyChecker(dataRepository);
+        inconsistencyChecker.applyConfiguration(additionalConfigs);
+        return inconsistencyChecker;
     }
 
     @Override

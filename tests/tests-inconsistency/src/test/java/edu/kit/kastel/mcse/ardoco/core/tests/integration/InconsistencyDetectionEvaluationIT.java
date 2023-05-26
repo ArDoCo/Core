@@ -30,13 +30,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.InconsistentSentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.ModelInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.data.model.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.model.connectors.PcmXMLModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
@@ -79,9 +79,9 @@ class InconsistencyDetectionEvaluationIT {
 
     /**
      * Tests the inconsistency detection for missing model elements on all {@link Project projects}.
-     *
+     * <p>
      * NOTE: if you only want to test a specific project, you can simply set up the EnumSource. For more details, see
-     * https://www.baeldung.com/parameterized-tests-junit-5#3-enum
+     * <a href="https://www.baeldung.com/parameterized-tests-junit-5#3-enum">here</a>
      * Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
      * However, make sure to revert this before you commit and push!
      *
@@ -304,9 +304,9 @@ class InconsistencyDetectionEvaluationIT {
         return TestUtil.compareInconsistencies(arDoCoResult, actualSentences, expectedLines);
     }
 
-    private static PcmXMLModelConnector getPcmModel(Project project) {
+    private static PcmXmlModelConnector getPcmModel(Project project) {
         try {
-            return new PcmXMLModelConnector(project.getModelFile());
+            return new PcmXmlModelConnector(project.getModelFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

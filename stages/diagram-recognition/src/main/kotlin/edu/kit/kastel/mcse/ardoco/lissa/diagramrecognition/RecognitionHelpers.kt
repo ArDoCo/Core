@@ -1,8 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Box
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler

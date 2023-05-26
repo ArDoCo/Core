@@ -8,40 +8,38 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>pipeline</artifactId>
+  <packaging>pom</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-tlr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>pipeline-id</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>connection-generator</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>common</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>recommendation-generator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>inconsistency-detection</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>text-extraction</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>text-preprocessing</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>diagram-recognition</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>model-provider</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -62,4 +60,52 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>complete</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-tlr</module>
+        <module>pipeline-id</module>
+        <module>pipeline-lissa</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Traceability Link Recovery -->
+      <id>tlr</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-tlr</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Inconsistency Detection -->
+      <id>inconsistency</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-id</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Linking Sketches and Software Architecture -->
+      <id>lissa</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-lissa</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

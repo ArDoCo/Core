@@ -8,7 +8,7 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.inconsistency.TextInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
 
 public record MissingModelInstanceInconsistency(String name, int sentence, double confidence) implements TextInconsistency {
 

@@ -1,7 +1,13 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
@@ -11,11 +17,11 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.data.textextraction.NounMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
@@ -25,7 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
  * measured by the probability. Every recommended instance has a unique name.
  */
-public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, NounMappingChangeListener {
+public class RecommendedInstanceImpl extends RecommendedInstance implements Claimant, NounMappingChangeListener {
 
     private static final AggregationFunctions GLOBAL_AGGREGATOR = AggregationFunctions.AVERAGE;
     /**
@@ -44,6 +50,7 @@ public class RecommendedInstanceImpl implements RecommendedInstance, Claimant, N
     private final Set<NounMapping> nameMappings;
 
     private RecommendedInstanceImpl(String name, String type) {
+        super(name, UUID.randomUUID().toString());
         this.type = type;
         this.name = name;
         this.internalConfidence = new Confidence(AggregationFunctions.AVERAGE);

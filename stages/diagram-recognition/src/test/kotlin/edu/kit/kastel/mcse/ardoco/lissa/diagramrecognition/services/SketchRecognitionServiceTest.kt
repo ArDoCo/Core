@@ -1,8 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.services
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Classification
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.visualize

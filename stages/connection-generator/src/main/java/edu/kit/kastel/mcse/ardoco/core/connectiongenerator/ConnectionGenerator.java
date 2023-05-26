@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
@@ -41,6 +41,19 @@ public class ConnectionGenerator extends AbstractExecutionStage {
         agents = Lists.mutable.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new ProjectNameFilterAgent(dataRepository),
                 new InstanceConnectionAgent(dataRepository));
         enabledAgents = agents.collect(Agent::getId);
+    }
+
+    /**
+     * Creates a {@link ConnectionGenerator} and applies the additional configuration to it.
+     *
+     * @param additionalConfigs the additional configuration
+     * @param dataRepository    the data repository
+     * @return an instance of connectionGenerator
+     */
+    public static ConnectionGenerator get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var connectionGenerator = new ConnectionGenerator(dataRepository);
+        connectionGenerator.applyConfiguration(additionalConfigs);
+        return connectionGenerator;
     }
 
     @Override

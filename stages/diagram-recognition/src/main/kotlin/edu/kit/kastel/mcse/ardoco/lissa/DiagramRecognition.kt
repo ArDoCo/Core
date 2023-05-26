@@ -1,7 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.lissa
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.InputDiagramData
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
@@ -13,6 +13,20 @@ class DiagramRecognition : AbstractExecutionStage {
 
     companion object {
         const val ID = "DiagramRecognition"
+
+        /**
+         * Creates a [DiagramRecognition] that will handle the diagram recognition.
+         *
+         * @param additionalConfigs the additional configuration that should be applied
+         * @param dataRepository    the data repository
+         * @return a DiagramRecognition with the provided diagrams
+         */
+        @JvmStatic
+        fun get(additionalConfigs: Map<String?, String?>?, dataRepository: DataRepository?): DiagramRecognition? {
+            val diagramDetection = DiagramRecognition(dataRepository!!)
+            diagramDetection.applyConfiguration(additionalConfigs)
+            return diagramDetection
+        }
     }
 
     private val agents: List<PipelineAgent>

@@ -1,7 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.lissa
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.Diagram
-import edu.kit.kastel.mcse.ardoco.core.api.data.diagramrecognition.DiagramRecognitionState
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 
 class DiagramRecognitionStateImpl : DiagramRecognitionState {
     private val diagrams = mutableListOf<Diagram>()

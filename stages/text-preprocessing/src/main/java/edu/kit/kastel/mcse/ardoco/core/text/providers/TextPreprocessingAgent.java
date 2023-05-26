@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
@@ -27,6 +28,19 @@ public class TextPreprocessingAgent extends PipelineAgent {
         super(TextPreprocessingAgent.class.getSimpleName(), data);
         informants = List.of(new CoreNLPProvider(data));
         enabledInformants = informants.stream().map(AbstractPipelineStep::getId).toList();
+    }
+
+    /**
+     * Creates a {@link CoreNLPProvider} as {@link NlpInformant} and reads the provided text.
+     *
+     * @param additionalConfigs the additional configuration that should be applied
+     * @param dataRepository    the data repository
+     * @return a CoreNLPProvider with the provided text read in
+     */
+    public static TextPreprocessingAgent get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        var textProvider = new TextPreprocessingAgent(dataRepository);
+        textProvider.applyConfiguration(additionalConfigs);
+        return textProvider;
     }
 
     @Override
