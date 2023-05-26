@@ -4,21 +4,34 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>tests</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>tests-inconsistency</artifactId>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.deploy.skip>true</maven.deploy.skip>
-    <sonar.skip>true</sonar.skip>
-  </properties>
-
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>connection-generator</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>inconsistency-detection</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>pipeline-id</artifactId>
+      <version>${revision}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -26,15 +39,29 @@
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>text-extraction</artifactId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>recommendation-generator</artifactId>
+      <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>tests-base</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>text-extraction</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>text-preprocessing</artifactId>
+      <version>${revision}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -42,32 +69,6 @@
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>recommendation-generator</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>connection-generator</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>model-provider</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>inconsistency-detection</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>tests-base</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

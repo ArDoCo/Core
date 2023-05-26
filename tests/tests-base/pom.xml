@@ -4,26 +4,21 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>tests</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>tests-base</artifactId>
 
-  <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
-    <dependency>
-      <groupId>org.eclipse.collections</groupId>
-      <artifactId>eclipse-collections</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.collections</groupId>
+      <artifactId>eclipse-collections</artifactId>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>

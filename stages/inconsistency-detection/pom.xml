@@ -4,33 +4,33 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>stages</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>inconsistency-detection</artifactId>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
+      <version>${revision}</version>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>recommendation-generator</artifactId>
+      <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>text-extraction</artifactId>
+      <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

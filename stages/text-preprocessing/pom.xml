@@ -4,28 +4,15 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>stages</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>text-preprocessing</artifactId>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>common</artifactId>
-    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
 
     <!-- Stanford -->
@@ -51,9 +38,19 @@
       <classifier>models</classifier>
     </dependency>
     <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>common</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

@@ -4,8 +4,9 @@
 
   <groupId>io.github.ardoco.core</groupId>
   <artifactId>parent</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
+
   <name>ArDoCo (Core) - The Consistency Analyzer</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
     or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
@@ -70,6 +71,8 @@
   </distributionManagement>
 
   <properties>
+    <revision>0.9.4-SNAPSHOT</revision>
+
     <project.source.encoding>UTF-8</project.source.encoding>
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -79,7 +82,7 @@
     <!-- Kotlin -->
     <kotlin.code.style>official</kotlin.code.style>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
-    <kotlin.version>1.9.0-Beta</kotlin.version>
+    <kotlin.version>1.8.21</kotlin.version>
 
     <!-- Plugin Versions -->
     <slf4j.version>2.0.7</slf4j.version>
@@ -104,94 +107,38 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- ArDoCo -->
       <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>text-extraction</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>text-preprocessing</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>recommendation-generator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-tlr</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-id</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-lissa</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>connection-generator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>model-provider</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>inconsistency-detection</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>code-traceability</artifactId>
-        <version>${project.version}</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
 
-      <!-- Informalin -->
       <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>common</artifactId>
-        <version>${project.version}</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jdk8</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
 
-      <!-- LiSSA -->
+      <!-- Kotlin -->
       <dependency>
-        <groupId>io.github.ardoco.core</groupId>
-        <artifactId>diagram-recognition</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Other Dependencies -->
-      <dependency>
-        <groupId>org.reflections</groupId>
-        <artifactId>reflections</artifactId>
-        <version>0.10.2</version>
-      </dependency>
-
-      <!-- Eclipse collections -->
-      <dependency>
-        <groupId>org.eclipse.collections</groupId>
-        <artifactId>eclipse-collections-api</artifactId>
-        <version>${eclipse-collections.version}</version>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-kotlin</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.collections</groupId>
-        <artifactId>eclipse-collections</artifactId>
-        <version>${eclipse-collections.version}</version>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.11.0</version>
       </dependency>
 
       <!-- Commons -->
@@ -206,16 +153,39 @@
         <version>1.10.0</version>
       </dependency>
 
-      <!-- Testing -->
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j.version}</version>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5</artifactId>
+        <version>5.2.1</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>log4j-over-slf4j</artifactId>
-        <version>${slf4j.version}</version>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.24.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.collections</groupId>
+        <artifactId>eclipse-collections</artifactId>
+        <version>${eclipse-collections.version}</version>
+      </dependency>
+
+      <!-- Eclipse collections -->
+      <dependency>
+        <groupId>org.eclipse.collections</groupId>
+        <artifactId>eclipse-collections-api</artifactId>
+        <version>${eclipse-collections.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jgit</groupId>
+        <artifactId>org.eclipse.jgit</artifactId>
+        <version>6.5.0.202303070854-r</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-test-junit5</artifactId>
+        <version>${kotlin.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -230,20 +200,20 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
         <version>${junit.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-junit-jupiter</artifactId>
+        <artifactId>mockito-core</artifactId>
         <version>${mockito.version}</version>
         <scope>test</scope>
       </dependency>
@@ -255,80 +225,31 @@
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
+        <artifactId>mockito-junit-jupiter</artifactId>
         <version>${mockito.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit</artifactId>
-        <version>6.5.0.202303070854-r</version>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>0.10.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>log4j-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
 
+      <!-- Testing -->
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.datatype</groupId>
-        <artifactId>jackson-datatype-jdk8</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents.client5</groupId>
-        <artifactId>httpclient5</artifactId>
-        <version>5.2.1</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>2.11.0</version>
-      </dependency>
-
-      <!-- Kotlin -->
-      <dependency>
-        <groupId>com.fasterxml.jackson.module</groupId>
-        <artifactId>jackson-module-kotlin</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>3.24.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-test-junit5</artifactId>
-        <version>${kotlin.version}</version>
-        <scope>test</scope>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-module-kotlin</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-reflect</artifactId>
@@ -338,6 +259,11 @@
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
       <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
   </dependencies>
   <repositories>
@@ -364,28 +290,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>3.6.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>test-jar</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -423,6 +327,42 @@
           </configuration>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.1.0</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <phase>integration-test</phase>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.3.0</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>flatten-maven-plugin</artifactId>
           <version>1.5.0</version>
@@ -436,32 +376,18 @@
           </configuration>
           <executions>
             <execution>
-              <id>flatten</id>
-              <goals>
-                <goal>flatten</goal>
-              </goals>
-              <phase>process-resources</phase>
-            </execution>
-            <execution>
               <id>flatten.clean</id>
               <goals>
                 <goal>clean</goal>
               </goals>
               <phase>clean</phase>
             </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.1.0</version>
-          <executions>
             <execution>
+              <id>flatten</id>
               <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
+                <goal>flatten</goal>
               </goals>
-              <phase>integration-test</phase>
+              <phase>process-resources</phase>
             </execution>
           </executions>
         </plugin>
@@ -479,23 +405,6 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <tagNameFormat>v@{project.version}</tagNameFormat>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
@@ -539,6 +448,14 @@
               <nrOfIndentSpace>2</nrOfIndentSpace>
               <expandEmptyElements>false</expandEmptyElements>
               <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+              <sortDependencies>groupId,artifactId</sortDependencies>
+              <sortDependencyExclusions>groupId,artifactId</sortDependencyExclusions>
+              <sortDependencyManagement>groupId,artifactId</sortDependencyManagement>
+              <sortPlugins>groupId,artifactId</sortPlugins>
+              <sortProperties>false</sortProperties>
+              <sortModules>true</sortModules>
+              <sortExecutions>true</sortExecutions>
+              <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
             </sortPom>
           </pom>
           <kotlin>
@@ -550,42 +467,11 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.5.0</version>
-        <configuration>
-          <updatePomFile>true</updatePomFile>
-          <flattenMode>resolveCiFriendliesOnly</flattenMode>
-        </configuration>
-        <executions>
-          <execution>
-            <id>flatten</id>
-            <goals>
-              <goal>flatten</goal>
-            </goals>
-            <phase>process-resources</phase>
-          </execution>
-          <execution>
-            <id>flatten.clean</id>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <phase>clean</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoreNonCompile>true</ignoreNonCompile>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -601,67 +487,15 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.10</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.0</version>
         <executions>
           <execution>
-            <id>prepare-agent</id>
+            <id>attach-sources</id>
             <goals>
-              <goal>prepare-agent</goal>
+              <goal>jar-no-fork</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Kotlin -->
-      <plugin>
-        <groupId>org.jetbrains.dokka</groupId>
-        <artifactId>dokka-maven-plugin</artifactId>
-        <version>1.8.10</version>
-        <configuration>
-          <failOnWarning>false</failOnWarning>
-          <reportUndocumented>false</reportUndocumented>
-          <skipEmptyPackages>true</skipEmptyPackages>
-          <documentedVisibilities>
-            <visibility>PUBLIC</visibility>
-            <visibility>PROTECTED</visibility>
-          </documentedVisibilities>
-        </configuration>
-        <executions>
-          <execution>
-            <id>dokka:pre-site</id>
-            <goals>
-              <goal>dokka</goal>
-            </goals>
-            <phase>pre-site</phase>
-          </execution>
-          <execution>
-            <id>dokka:javadoc</id>
-            <goals>
-              <goal>javadocJar</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <version>${kotlin.version}</version>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <goals>
-              <goal>test-compile</goal>
-            </goals>
-            <phase>test-compile</phase>
           </execution>
         </executions>
       </plugin>
@@ -696,6 +530,121 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten.clean</id>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <phase>clean</phase>
+          </execution>
+          <execution>
+            <id>flatten</id>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <phase>process-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.15.0</version>
+        <configuration>
+          <ruleSet>
+            <rule>
+              <groupId>org.jetbrains.kotlin</groupId>
+              <ignoreVersion>
+                <type>regex</type>
+                <version>.+-(alpha|Alpha|beta|Beta).*</version>
+              </ignoreVersion>
+            </rule>
+          </ruleSet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.10</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Kotlin -->
+      <plugin>
+        <groupId>org.jetbrains.dokka</groupId>
+        <artifactId>dokka-maven-plugin</artifactId>
+        <version>1.8.10</version>
+        <configuration>
+          <failOnWarning>false</failOnWarning>
+          <reportUndocumented>false</reportUndocumented>
+          <skipEmptyPackages>true</skipEmptyPackages>
+          <documentedVisibilities>
+            <visibility>PUBLIC</visibility>
+            <visibility>PROTECTED</visibility>
+          </documentedVisibilities>
+        </configuration>
+        <executions>
+          <execution>
+            <id>dokka:javadoc</id>
+            <goals>
+              <goal>javadocJar</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+          <execution>
+            <id>dokka:pre-site</id>
+            <goals>
+              <goal>dokka</goal>
+            </goals>
+            <phase>pre-site</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -740,9 +689,9 @@
       <modules>
         <module>framework</module>
         <module>pipeline</module>
+        <module>report</module>
         <module>stages</module>
         <module>tests</module>
-        <module>report</module>
       </modules>
     </profile>
     <profile>

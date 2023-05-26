@@ -4,40 +4,17 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>pipeline</artifactId>
   <packaging>pom</packaging>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-tlr</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>pipeline-id</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
+      <version>${revision}</version>
     </dependency>
 
     <dependency>
@@ -69,9 +46,21 @@
       </activation>
       <modules>
         <module>pipeline-core</module>
-        <module>pipeline-tlr</module>
         <module>pipeline-id</module>
         <module>pipeline-lissa</module>
+        <module>pipeline-tlr</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>deploy</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-id</module>
+        <module>pipeline-lissa</module>
+        <module>pipeline-tlr</module>
       </modules>
     </profile>
     <profile>

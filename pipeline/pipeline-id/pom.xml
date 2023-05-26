@@ -4,47 +4,49 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>pipeline</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>pipeline-id</artifactId>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>pipeline-core</artifactId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>connection-generator</artifactId>
+      <version>${revision}</version>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>inconsistency-detection</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>pipeline-core</artifactId>
-      <version>${project.version}</version>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>pipeline-core</artifactId>
+      <version>${revision}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>connection-generator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>inconsistency-detection</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>recommendation-generator</artifactId>
+      <version>${revision}</version>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>text-preprocessing</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
     </dependency>
   </dependencies>
 </project>
