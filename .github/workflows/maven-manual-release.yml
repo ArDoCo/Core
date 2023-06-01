@@ -21,4 +21,3 @@ jobs:
     with:
       release-version: ${{ github.event.inputs.release-version }}
       next-version: ${{ github.event.inputs.next-version }}
-      runs-on: self-hosted

@@ -16,7 +16,6 @@ jobs:
     uses: ardoco/actions/.github/workflows/sonarcloud.yml@main
     with:
       with-submodules: true
-      runs-on: self-hosted
     secrets:
       SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
 

@@ -12,6 +12,5 @@ jobs:
     uses: ardoco/actions/.github/workflows/maven-update.yml@main
     with:
       with-submodules: true
-      runs-on: self-hosted
     secrets:
       PAT: ${{ secrets.SDQ_TOKEN }}
