@@ -13,61 +13,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  pre_job:
-    name: "Check for duplicate jobs"
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          concurrent_skipping: 'same_content_newer'
-          skip_after_successful_duplicate: 'true'
-          
-  build:
-    needs: pre_job
-    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
-    name: "Build and/or Deploy"
-    runs-on: self-hosted
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: ${{ inputs.with-submodules }}
+  verify:
+    uses: ardoco/actions/.github/workflows/maven.yml@main
+    with:
+      deploy: false
+      with-submodules: true
+    secrets:
+      OSSRH_USER: ""
+      OSSRH_TOKEN: ""
+      GPG_KEY: ${{secrets.GPG_KEY}}
 
-    - name: Java with Cache
-      uses: actions/setup-java@v3
-      if: ${{ !inputs.deploy }}
-      with:
-        java-version: 17
-        distribution: 'temurin'
-        cache: 'maven'
-
-
-    - name: Java without Cache
-      uses: actions/setup-java@v3
-      if: ${{ inputs.deploy }}
-      with:
-        java-version: 17
-        distribution: 'temurin'
-
-    - name: Maven Verify
-      shell: bash
-      run: mvn -U -B verify
-
-    - name: Set maven settings.xml
-      uses: whelk-io/maven-settings-xml-action@v21
-      if: ${{ inputs.deploy }}
-      with:
-        servers: '[{ "id": "ossrh", "username": "${{ secrets.OSSRH_USER }}", "password": "${{ secrets.OSSRH_TOKEN }}" }]'
-
-    - name: Import GPG key
-      uses: crazy-max/ghaction-import-gpg@v5
-      if: ${{ inputs.deploy }}
-      with:
-        gpg_private_key: ${{ secrets.GPG_KEY }}
-
-    - name: Publish Package
-      if: ${{ inputs.deploy }}
-      shell: bash
-      run: mvn -DskipTests -P deployment -U -B deploy
