@@ -5,6 +5,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import org.apache.hc.client5.http.classic.methods.HttpPost
+import org.apache.hc.client5.http.config.RequestConfig
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler
 import org.apache.hc.client5.http.impl.classic.HttpClients
 import org.slf4j.Logger
@@ -18,13 +19,18 @@ import java.io.OutputStream
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 
 private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
 private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
-fun executeRequest(postRequest: HttpPost): String {
+fun executeRequest(postRequest: HttpPost, modifyTimeout: Boolean = true): String {
     HttpClients.createDefault().use {
         try {
+            if (modifyTimeout) {
+                val newConfig = RequestConfig.copy(postRequest.config).setResponseTimeout(5, TimeUnit.MINUTES).build()
+                postRequest.config = newConfig
+            }
             val content = it.execute(postRequest, BasicHttpClientResponseHandler())
             return content ?: ""
         } catch (e: IOException) {
