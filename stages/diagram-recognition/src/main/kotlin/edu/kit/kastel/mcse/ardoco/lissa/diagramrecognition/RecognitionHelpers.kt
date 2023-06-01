@@ -28,7 +28,8 @@ fun executeRequest(postRequest: HttpPost, modifyTimeout: Boolean = true): String
     HttpClients.createDefault().use {
         try {
             if (modifyTimeout) {
-                val newConfig = RequestConfig.copy(postRequest.config).setResponseTimeout(5, TimeUnit.MINUTES).build()
+                val basicConfig = postRequest.config ?: RequestConfig.custom().build()
+                val newConfig = RequestConfig.copy(basicConfig).setResponseTimeout(5, TimeUnit.MINUTES).build()
                 postRequest.config = newConfig
             }
             val content = it.execute(postRequest, BasicHttpClientResponseHandler())
