@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022-2023. */
 package io.github.ardoco.textproviderjson.textobject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -46,7 +48,11 @@ public class SentenceImpl implements Sentence {
 
     @Override
     public ImmutableList<Phrase> getPhrases() {
-        return this.phrases;
+        List<Phrase> allPhrases = new ArrayList<>(this.phrases.toList());
+        for (Phrase phrase : this.phrases.toList()) {
+            allPhrases.addAll(phrase.getSubPhrases().toList());
+        }
+        return Lists.immutable.ofAll(allPhrases);
     }
 
     @Override

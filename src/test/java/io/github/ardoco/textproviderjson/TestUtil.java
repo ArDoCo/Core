@@ -87,12 +87,12 @@ public final class TestUtil {
      */
     public static Text generateDefaultText() {
         TextImpl text = new TextImpl();
-        List<WordImpl> words = new ArrayList<>(List.of(new WordImpl(text, 1, 1, "This", POSTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 2, 1, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 3, 1,
-                        "me", POSTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 4, 1, ".", POSTag.CLOSER, ".",
+        List<WordImpl> words = new ArrayList<>(List.of(new WordImpl(text, 0, 0, "This", POSTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
+                new WordImpl(text, 1, 0, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 2, 0,
+                        "me", POSTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 3, 0, ".", POSTag.CLOSER, ".",
                                 new ArrayList<>(), new ArrayList<>())));
 
-        SentenceImpl sentence1 = new SentenceImpl(1, "This is me.", Lists.immutable.ofAll(words));
+        SentenceImpl sentence1 = new SentenceImpl(0, "This is me.", Lists.immutable.ofAll(words));
 
         Phrase subsubphrase1 = new PhraseImpl(Lists.immutable.of(words.get(2)), PhraseType.NP, new ArrayList<>());
         List<Phrase> subsubphrases = new ArrayList<>(List.of(subsubphrase1));
@@ -101,8 +101,8 @@ public final class TestUtil {
         List<Phrase> subphrases = new ArrayList<>(List.of(subphrase1, subphrase2));
         Phrase phrase1 = new PhraseImpl(Lists.immutable.of(words.get(3)), PhraseType.S, subphrases);
         List<Phrase> phrases = new ArrayList<>(List.of(phrase1));
-
-        sentence1.setPhrases(Lists.immutable.ofAll(phrases));
+        Phrase rootPhrase = new PhraseImpl(Lists.immutable.empty(), PhraseType.ROOT, phrases);
+        sentence1.setPhrases(Lists.immutable.of(rootPhrase));
 
         List<Sentence> sentences = new ArrayList<>();
         sentences.add(sentence1);

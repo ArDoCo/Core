@@ -22,12 +22,12 @@ public class PhraseImpl implements Phrase {
 
     private final PhraseType type;
 
-    private final List<Phrase> subPhrases;
+    private final List<Phrase> childPhrases;
 
-    public PhraseImpl(ImmutableList<Word> words, PhraseType type, List<Phrase> subPhrases) {
+    public PhraseImpl(ImmutableList<Word> words, PhraseType type, List<Phrase> childPhrases) {
         this.words = words;
         this.type = type;
-        this.subPhrases = subPhrases;
+        this.childPhrases = childPhrases;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PhraseImpl implements Phrase {
     public ImmutableList<Word> getContainedWords() {
         if (words == null) {
             List<Word> collectedWords = new ArrayList<>();
-            for (Phrase subphrase : subPhrases) {
+            for (Phrase subphrase : childPhrases) {
                 collectedWords.addAll(subphrase.getContainedWords().castToList());
             }
             this.words = Lists.immutable.ofAll(collectedWords);
@@ -65,12 +65,16 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public ImmutableList<Phrase> getSubPhrases() {
-        return Lists.immutable.ofAll(this.subPhrases);
+        List<Phrase> subPhrases = new ArrayList<>(childPhrases);
+        for (Phrase childPhrase : childPhrases) {
+            subPhrases.addAll(childPhrase.getSubPhrases().toList());
+        }
+        return Lists.immutable.ofAll(subPhrases);
     }
 
     @Override
     public boolean isSuperPhraseOf(Phrase other) {
-        List<Phrase> subphrases = this.subPhrases;
+        List<Phrase> subphrases = this.childPhrases;
         while (!subphrases.isEmpty()) {
             if (subphrases.contains(other)) {
                 return true;
@@ -121,11 +125,12 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(o instanceof PhraseImpl phrase))
             return false;
-        return Objects.equals(words, phrase.words) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(subPhrases, phrase.subPhrases);
+        return Objects.equals(words, phrase.words) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(childPhrases,
+                phrase.childPhrases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(words, text, type, subPhrases);
+        return Objects.hash(words, text, type, childPhrases);
     }
 }
