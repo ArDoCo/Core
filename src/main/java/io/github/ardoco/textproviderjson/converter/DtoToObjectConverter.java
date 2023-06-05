@@ -16,7 +16,6 @@ import io.github.ardoco.textproviderjson.textobject.*;
  */
 public class DtoToObjectConverter {
 
-    private static final String CONSTITUENCY_TREE_ROOT = "ROOT";
     private static final String CONSTITUENCY_TREE_SEPARATOR = " ";
     private static final char CONSTITUENCY_TREE_OPEN_BRACKET = '(';
     private static final char CONSTITUENCY_TREE_CLOSE_BRACKET = ')';
@@ -42,20 +41,13 @@ public class DtoToObjectConverter {
     private Sentence convertToSentence(SentenceDTO sentenceDTO, Text parentText) {
         List<Word> words = sentenceDTO.getWords().stream().map(wordDto -> convertToWord(wordDto, parentText)).toList();
         String constituencyTree = sentenceDTO.getConstituencyTree();
-        SentenceImpl sentence = new SentenceImpl((int) sentenceDTO.getSentenceNo(), sentenceDTO.getText(), Lists.immutable.ofAll(words));
+        SentenceImpl sentence = new SentenceImpl((int) sentenceDTO.getSentenceNo() - 1, sentenceDTO.getText(), Lists.immutable.ofAll(words));
         Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
         sentence.setPhrases(Lists.immutable.of(phrases));
         return sentence;
     }
 
     public Phrase parseConstituencyTree(String constituencyTree, List<Word> wordsOfSentence) {
-        // cut of root
-        int lengthOfBracketAndSpace = 2;
-        String treeWithoutRoot = constituencyTree.substring(lengthOfBracketAndSpace + CONSTITUENCY_TREE_ROOT.length(), constituencyTree.length() - 1);
-        return findSubphrases(treeWithoutRoot, wordsOfSentence);
-    }
-
-    private Phrase findSubphrases(String constituencyTree, List<Word> wordsOfSentence) {
         // remove outer brackets
         String tree = constituencyTree.substring(1, constituencyTree.length() - 1);
         PhraseType phraseType = PhraseType.get(tree.split(CONSTITUENCY_TREE_SEPARATOR, 2)[0]);
@@ -70,7 +62,7 @@ public class DtoToObjectConverter {
             if (isWord(subtree)) {
                 words.add(wordsOfSentence.remove(0));
             } else {
-                subPhrases.add(findSubphrases(subtree, wordsOfSentence));
+                subPhrases.add(parseConstituencyTree(subtree, wordsOfSentence));
             }
         }
         return new PhraseImpl(Lists.immutable.ofAll(words), phraseType, subPhrases);
@@ -106,15 +98,15 @@ public class DtoToObjectConverter {
     private Word convertToWord(WordDTO wordDTO, Text parent) {
         List<DependencyImpl> incomingDep = wordDTO.getIncomingDependencies().stream().map(this::convertIncomingDependency).toList();
         List<DependencyImpl> outgoingDep = wordDTO.getOutgoingDependencies().stream().map(this::convertOutgoingDependency).toList();
-        return new WordImpl(parent, (int) wordDTO.getId(), (int) wordDTO.getSentenceNo(), wordDTO.getText(), POSTag.get(wordDTO.getPosTag().toString()), wordDTO
-                .getLemma(), incomingDep, outgoingDep);
+        return new WordImpl(parent, (int) wordDTO.getId() - 1, (int) wordDTO.getSentenceNo() - 1, wordDTO.getText(), POSTag.get(wordDTO.getPosTag().toString()),
+                wordDTO.getLemma(), incomingDep, outgoingDep);
     }
 
     private DependencyImpl convertIncomingDependency(IncomingDependencyDTO dependencyDTO) {
-        return new DependencyImpl(dependencyDTO.getDependencyTag(), dependencyDTO.getSourceWordId());
+        return new DependencyImpl(dependencyDTO.getDependencyTag(), dependencyDTO.getSourceWordId() - 1);
     }
 
     private DependencyImpl convertOutgoingDependency(OutgoingDependencyDTO dependencyDTO) {
-        return new DependencyImpl(dependencyDTO.getDependencyTag(), dependencyDTO.getTargetWordId());
+        return new DependencyImpl(dependencyDTO.getDependencyTag(), dependencyDTO.getTargetWordId() - 1);
     }
 }
