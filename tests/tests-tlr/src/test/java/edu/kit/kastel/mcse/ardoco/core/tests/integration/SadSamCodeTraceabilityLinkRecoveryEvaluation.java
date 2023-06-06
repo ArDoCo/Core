@@ -72,25 +72,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        MutableList<String> goldStandard = Lists.mutable.empty();
-
-        ImmutableList<String> samCodeGoldStandard = codeProject.getSamCodeGoldStandard();
-        ImmutableList<String> sadSamGoldStandard = codeProject.getProject().getTlrGoldStandard();
-
-        var samCodeGoldStandardMultiMap = samCodeGoldStandard.collect(tl -> tl.split(",")).groupBy(tl -> tl[0]).collectValues(tl -> tl[1]);
-        var sadSamGoldStandardMultiMap = sadSamGoldStandard.collect(tl -> tl.split(",")).groupBy(tl -> tl[0]).collectValues(tl -> tl[1]);
-
-        for (var modelId : sadSamGoldStandardMultiMap.keysView()) {
-            var sentenceNumbers = sadSamGoldStandardMultiMap.get(modelId);
-            for (var codeId : samCodeGoldStandardMultiMap.get(modelId)) {
-                for (var sentenceNumber : sentenceNumbers) {
-                    String traceLink = TestUtil.createTraceLinkString(String.valueOf(sentenceNumber), codeId);
-                    goldStandard.add(traceLink);
-                }
-            }
-        }
-
-        return goldStandard.sortThis().toImmutable();
+        return codeProject.getSadCodeGoldStandard();
     }
 
     @Override
