@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.eclipse.collections.api.factory.Lists;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import io.github.ardoco.textproviderjson.dto.PosTag;
 import io.github.ardoco.textproviderjson.dto.SentenceDTO;
 import io.github.ardoco.textproviderjson.dto.TextDTO;

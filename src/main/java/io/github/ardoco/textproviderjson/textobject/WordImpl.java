@@ -7,7 +7,7 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.text.*;
 
 public class WordImpl implements Word {
 

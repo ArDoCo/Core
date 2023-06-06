@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.*;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
 
 public class OutgoingDependencyDTO {
     private DependencyTag dependencyType;

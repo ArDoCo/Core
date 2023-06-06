@@ -7,7 +7,7 @@ import java.util.List;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.text.*;
 import io.github.ardoco.textproviderjson.dto.*;
 import io.github.ardoco.textproviderjson.textobject.*;
 

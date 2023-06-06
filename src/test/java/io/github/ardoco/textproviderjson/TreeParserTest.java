@@ -8,10 +8,10 @@ import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.POSTag;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.WordImpl;
