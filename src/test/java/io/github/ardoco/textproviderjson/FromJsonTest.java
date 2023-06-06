@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
 import io.github.ardoco.textproviderjson.converter.JsonConverter;
 import io.github.ardoco.textproviderjson.dto.*;
 

@@ -3,7 +3,7 @@ package io.github.ardoco.textproviderjson.textobject;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
 
 public class DependencyImpl {
 

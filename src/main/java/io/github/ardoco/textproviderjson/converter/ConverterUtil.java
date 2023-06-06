@@ -3,8 +3,8 @@ package io.github.ardoco.textproviderjson.converter;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.data.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
 /**
  * This utility class provides methods for the converter
