@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -121,6 +122,8 @@ public enum CodeProject {
 
         MutableList<String> goldStandard = Lists.mutable.empty();
         for (var line : lines) {
+            if (line.isBlank())
+                continue;
             var parts = line.split(",");
             String modelElementId = parts[0];
             String codeElementId = parts[2];
@@ -144,6 +147,7 @@ public enum CodeProject {
             logger.error(e.getMessage(), e);
         }
         lines.remove(0);
+        lines = lines.stream().filter(Predicate.not(String::isBlank)).toList();
         return lines;
     }
 
