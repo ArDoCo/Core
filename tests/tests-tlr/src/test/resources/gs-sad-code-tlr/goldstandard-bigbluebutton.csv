@@ -1,4 +1,16 @@
 sentenceID,codeID
+4,bigbluebutton-html5/
+4,build/packages-template/bbb-html5
+5,bigbluebutton-html5/
+5,build/packages-template/bbb-html5
+6,bigbluebutton-html5/
+6,bigbluebutton-html5/
+6,build/packages-template/bbb-html5
+6,build/packages-template/bbb-html5
+8,bigbluebutton-html5/
+8,build/packages-template/bbb-html5
+9,bigbluebutton-html5/
+9,build/packages-template/bbb-html5
 10,bigbluebutton-html5/
 10,build/packages-template/bbb-html5
 11,bigbluebutton-html5/
@@ -30,8 +42,6 @@ sentenceID,codeID
 35,build/packages-template/bbb-web/
 37,bigbluebutton-html5/
 37,build/packages-template/bbb-html5
-4,bigbluebutton-html5/
-4,build/packages-template/bbb-html5
 44,bbb-common-message/src/main/java/org/bigbluebutton/common2/redis/pubsub/
 45,bbb-common-message/src/main/java/org/bigbluebutton/common2/redis/pubsub/
 45,bigbluebutton-html5/
@@ -44,8 +54,6 @@ sentenceID,codeID
 47,bbb-common-message/src/main/java/org/bigbluebutton/common2/redis/RedisStorageService.java#RedisStorageService
 49,akka-bbb-apps/
 49,build/packages-template/bbb-apps-akka/
-5,bigbluebutton-html5/
-5,build/packages-template/bbb-html5
 50,akka-bbb-apps/
 50,build/packages-template/bbb-apps-akka/
 52,akka-bbb-apps/
@@ -77,10 +85,6 @@ sentenceID,codeID
 59,build/packages-template/bbb-freeswitch-core/
 59,build/packages-template/bbb-freeswitch-sounds/
 59,freeswitch.placeholder.sh#freeswitch.placeholder
-6,bigbluebutton-html5/
-6,bigbluebutton-html5/
-6,build/packages-template/bbb-html5
-6,build/packages-template/bbb-html5
 61,akka-bbb-fsesl/src/main/java/org/bigbluebutton/freeswitch/
 61,bbb-fsesl-client/src/main/java/org/freeswitch/
 61,bbb-fsesl-client/src/test/java/org/freeswitch/
@@ -119,7 +123,3 @@ sentenceID,codeID
 77,bbb-common-message/src/main/java/org/bigbluebutton/common2/redis/pubsub/
 78,bbb-common-web/src/main/java/org/bigbluebutton/presentation/
 79,bbb-common-web/src/main/java/org/bigbluebutton/presentation/
-8,bigbluebutton-html5/
-8,build/packages-template/bbb-html5
-9,bigbluebutton-html5/
-9,build/packages-template/bbb-html5
