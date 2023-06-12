@@ -25,8 +25,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/mediastore",//
             "src/test/resources/gs-code-tlr/goldstandard-mediastore.csv", //
             "src/test/resources/gs-sad-code-tlr/goldstandard-mediastore.csv", //
-            new ExpectedResults(.98, .99, .99, .99, .99, .99), //
-            new ExpectedResults(.99, .51, .67, .99, .71, .99) //
+            new ExpectedResults(.980, .999, .990, .999, .990, .999), //
+            new ExpectedResults(.999, .512, .675, .990, .715, .999) //
     ),
 
     TEASTORE(Project.TEASTORE, //
@@ -35,8 +35,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/teastore",//
             "src/test/resources/gs-code-tlr/goldstandard-teastore.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-teastore.csv",//
-            new ExpectedResults(.97, .97, .97, .99, .96, .99), //
-            new ExpectedResults(.99, .95, .97, .99, .97, .99) //
+            new ExpectedResults(.975, .975, .975, .997, .965, .999), //
+            new ExpectedResults(.999, .955, .975, .997, .975, .999) //
     ),
 
     TEAMMATES(Project.TEAMMATES, //
@@ -45,8 +45,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/teammates",//
             "src/test/resources/gs-code-tlr/goldstandard-teammates.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-teammates.csv",//
-            new ExpectedResults(.99, .99, .99, .99, .99, .99), //
-            new ExpectedResults(.58, .99, .73, .97, .75, .97) //
+            new ExpectedResults(.999, .999, .999, .999, .999, .999), //
+            new ExpectedResults(.715, .992, .825, .975, .835, .975) //
     ),
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
@@ -55,8 +55,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/bigbluebutton",//
             "src/test/resources/gs-code-tlr/goldstandard-bigbluebutton.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-bigbluebutton.csv",//
-            new ExpectedResults(.93, .98, .96, .99, .95, .99), //
-            new ExpectedResults(.77, .98, .86, .98, .86, .98) //
+            new ExpectedResults(.935, .985, .965, .989, .955, .999), //
+            new ExpectedResults(.775, .985, .865, .985, .865, .985) //
     ),
 
     JABREF(Project.JABREF, //
@@ -65,8 +65,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/jabref",//
             "src/test/resources/gs-code-tlr/goldstandard-jabref.csv", //
             "src/test/resources/gs-sad-code-tlr/goldstandard-jabref.csv", //
-            new ExpectedResults(.99, .99, .99, .99, .99, .99), //
-            new ExpectedResults(.88, .99, .93, .96, .91, .93) //
+            new ExpectedResults(.999, .999, .999, .999, .999, .999), //
+            new ExpectedResults(.885, .999, .935, .960, .915, .935) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);

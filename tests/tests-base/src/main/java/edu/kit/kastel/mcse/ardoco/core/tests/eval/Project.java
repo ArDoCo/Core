@@ -57,7 +57,7 @@ public enum Project {
             "../src/test/resources/benchmark/teammates/text_2021/goldstandard.csv", //
             "../src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "../src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
-            new ExpectedResults(.555, .899, .686, .973, .695, .976), //
+            new ExpectedResults(.875, .925, .895, .985, .895, .985), //
             new ExpectedResults(.178, .759, .284, .851, .291, .851) //
     ), //
     TEAMMATES_HISTORICAL( //
@@ -75,7 +75,7 @@ public enum Project {
             "../src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard.csv", //
             "../src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "../src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
-            new ExpectedResults(.877, .826, .850, .984, .843, .993), //
+            new ExpectedResults(.895, .826, .855, .985, .855, .993), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
