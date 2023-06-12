@@ -131,7 +131,17 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     protected abstract int getConfusionMatrixSum(ArDoCoResult arDoCoResult);
 
     private static boolean areTraceLinksMatching(String goldStandardTraceLink, String traceLink) {
-        return goldStandardTraceLink.equals(traceLink) || traceLink.startsWith(goldStandardTraceLink);
+        traceLink = traceLink.strip();
+        goldStandardTraceLink = goldStandardTraceLink.strip();
+        if (goldStandardTraceLink.equals(traceLink)) {
+            return true;
+        }
+        if (traceLink.contains("#") && goldStandardTraceLink.endsWith("/")) {
+            return traceLink.startsWith(goldStandardTraceLink);
+        } else if (goldStandardTraceLink.contains("#") && traceLink.endsWith("/")) {
+            return goldStandardTraceLink.startsWith(traceLink);
+        }
+        return false;
     }
 
     private static boolean isTraceLinkContainedInGoldStandard(String traceLink, Set<String> goldStandard) {

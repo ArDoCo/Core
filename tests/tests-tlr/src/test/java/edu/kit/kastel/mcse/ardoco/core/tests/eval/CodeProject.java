@@ -25,8 +25,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/mediastore",//
             "src/test/resources/gs-code-tlr/goldstandard-mediastore.csv", //
             "src/test/resources/gs-sad-code-tlr/goldstandard-mediastore.csv", //
-            new ExpectedResults(.980, .999, .990, .999, .990, .999), //
-            new ExpectedResults(.999, .512, .675, .990, .715, .999) //
+            new ExpectedResults(.967, .983, .975, .998, .965, .999), //
+            new ExpectedResults(.880, .459, .605, .990, .625, .999) //
     ),
 
     TEASTORE(Project.TEASTORE, //
@@ -46,7 +46,7 @@ public enum CodeProject {
             "src/test/resources/gs-code-tlr/goldstandard-teammates.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-teammates.csv",//
             new ExpectedResults(.999, .999, .999, .999, .999, .999), //
-            new ExpectedResults(.715, .990, .825, .975, .835, .975) //
+            new ExpectedResults(.605, .983, .751, .975, .755, .975) //
     ),
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
@@ -55,8 +55,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/bigbluebutton",//
             "src/test/resources/gs-code-tlr/goldstandard-bigbluebutton.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-bigbluebutton.csv",//
-            new ExpectedResults(.935, .985, .965, .989, .955, .999), //
-            new ExpectedResults(.775, .985, .865, .985, .865, .985) //
+            new ExpectedResults(.874, .981, .925, .989, .915, .985), //
+            new ExpectedResults(.663, .973, .789, .985, .795, .985) //
     ),
 
     JABREF(Project.JABREF, //
