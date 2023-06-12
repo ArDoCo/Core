@@ -2,19 +2,14 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
 import java.util.Map;
-import java.util.Properties;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 public class CoreNLPProvider extends NlpInformant {
-    private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
-    private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
 
     private Text annotatedText;
 
@@ -56,26 +51,9 @@ public class CoreNLPProvider extends NlpInformant {
         return annotatedText;
     }
 
-    private static Properties getStanfordProperties(Properties properties) {
-        if (properties == null) {
-            throw new IllegalArgumentException("Properties are null");
-        }
-        var allStanfordProperties = new Properties(properties);
-        allStanfordProperties.setProperty("annotators", ANNOTATORS);
-
-        allStanfordProperties.put("parse", DEPENDENCIES_ANNOTATION);
-        allStanfordProperties.put("depparse", DEPENDENCIES_ANNOTATION);
-        allStanfordProperties.put("coref.algorithm", "fastneural");
-
-        return allStanfordProperties;
-    }
-
     private Text processText(String inputText) {
-        Properties props = getStanfordProperties(new Properties());
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        CoreDocument document = new CoreDocument(inputText);
-        pipeline.annotate(document);
-        return new TextImpl(document);
+        TextProcessor textProcessor = new TextProcessorFactory().createCoreNlpTextProcessor();
+        return textProcessor.processText(inputText);
     }
 
     @Override
