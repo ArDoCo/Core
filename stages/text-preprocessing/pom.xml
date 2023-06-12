@@ -57,5 +57,10 @@
       <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.github.ardoco</groupId>
+      <artifactId>text-provider-json</artifactId>
+      <version>0.1.0</version>
+    </dependency>
   </dependencies>
 </project>
