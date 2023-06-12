@@ -46,7 +46,7 @@ public enum CodeProject {
             "src/test/resources/gs-code-tlr/goldstandard-teammates.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-teammates.csv",//
             new ExpectedResults(.999, .999, .999, .999, .999, .999), //
-            new ExpectedResults(.715, .992, .825, .975, .835, .975) //
+            new ExpectedResults(.715, .990, .825, .975, .835, .975) //
     ),
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//

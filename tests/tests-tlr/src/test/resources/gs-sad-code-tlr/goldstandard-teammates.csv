@@ -106,6 +106,7 @@ sentenceID,codeID
 101,src/main/java/teammates/common/exception/EntityAlreadyExistsException.java#EntityAlreadyExistsException
 101,src/main/java/teammates/storage/
 101,src/test/java/teammates/storage/
+107,src/main/java/teammates/common/datatransfer/attributes/EntityAttributes.java#EntityAttributes
 109,src/main/java/teammates/common/exception/EntityDoesNotExistException.java#EntityDoesNotExistException
 110,src/main/java/teammates/common/exception/InvalidParametersException.java#InvalidParametersException
 118,src/main/java/teammates/storage/
