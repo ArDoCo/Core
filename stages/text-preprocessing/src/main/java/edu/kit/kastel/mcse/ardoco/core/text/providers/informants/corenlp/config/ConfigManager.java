@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * This Singleton has access to the config file.
+ * This Singleton manages access to the config file.
  */
 public class ConfigManager {
     private static ConfigManager instance;
@@ -28,7 +28,21 @@ public class ConfigManager {
         return instance;
     }
 
+    /**
+     * gets the value of the given key in the config file
+     * @param key   the key
+     * @return      the value
+     */
     public String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    /**
+     * sets the value of the given key in the config file
+     * @param key       the key
+     * @param value     the new value
+     */
+    public void setProperty(String key, String value) {
+        properties.setProperty(key, value);
     }
 }

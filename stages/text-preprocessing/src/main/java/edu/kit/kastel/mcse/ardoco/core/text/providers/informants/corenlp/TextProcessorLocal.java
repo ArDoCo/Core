@@ -6,6 +6,9 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 import java.util.Properties;
 
+/**
+ * This text processor processes texts locally using CoreNLP.
+ */
 public class TextProcessorLocal implements TextProcessor {
     private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";

@@ -15,6 +15,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * This text processor processes texts by sending requests to a microservice, which provides text processing using CoreNLP.
+ */
 public class TextProcessorService implements TextProcessor {
 
     @Override
@@ -29,6 +32,10 @@ public class TextProcessorService implements TextProcessor {
         return new DtoToObjectConverter().convertText(textDto);
     }
 
+    /**
+     * checks if the CoreNLP microservice is available and can provide its services.
+     * @return  whether the microservice is available
+     */
     public static boolean isMicroserviceAvailable() {
         String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl") + ConfigManager.getInstance().getProperty("healthService");
         try {
@@ -38,7 +45,7 @@ public class TextProcessorService implements TextProcessor {
             con.setConnectTimeout(5000); // timeout after 5 sec
             int statusCode = con.getResponseCode();
             con.disconnect();
-            if (statusCode != 200) {
+            if (statusCode != HttpURLConnection.HTTP_OK) {
                 return false;
             }
         } catch (Exception e) {
