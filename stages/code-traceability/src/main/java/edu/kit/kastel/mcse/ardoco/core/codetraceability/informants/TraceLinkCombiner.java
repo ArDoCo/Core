@@ -10,6 +10,7 @@ import org.eclipse.collections.api.set.MutableSet;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
@@ -25,7 +26,7 @@ public class TraceLinkCombiner extends Informant {
 
     @Override
     public void run() {
-        MutableSet<TransitiveTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+        MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
         CodeTraceabilityState codeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(getDataRepository());
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());
         ConnectionStates connectionStates = DataRepositoryHelper.getConnectionStates(getDataRepository());
@@ -43,12 +44,12 @@ public class TraceLinkCombiner extends Informant {
             transitiveTraceLinks.addAll(combinedLinks.toList());
         }
 
-        codeTraceabilityState.addTransitiveTraceLinks(transitiveTraceLinks);
+        codeTraceabilityState.addSadCodeTraceLinks(transitiveTraceLinks);
     }
 
-    private ImmutableSet<TransitiveTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,
+    private ImmutableSet<SadCodeTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,
             ImmutableSet<SamCodeTraceLink> samCodeTraceLinks) {
-        MutableSet<TransitiveTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+        MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
         for (var sadSamTraceLink : sadSamTraceLinks) {
             String modelElementUid = sadSamTraceLink.getModelElementUid();
             for (var samCodeTraceLink : samCodeTraceLinks) {

@@ -35,7 +35,7 @@ public class ArCoTLInformant extends Informant {
             }
         }
 
-        Node root = TraceLinkGenerator.getRoot();
+        Node root = TraceLinkGenerator.getRoot(); //TODO maybe add preprocessing
         var traceLinks = TraceLinkGenerator.generateTraceLinks(root, architectureModel, codeModel);
         samCodeTraceabilityState.addSamCodeTraceLinks(traceLinks);
     }

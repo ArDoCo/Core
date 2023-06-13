@@ -117,7 +117,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
                 var endpointPath = endpoint.toString();
                 if (endpointPath.startsWith(codeEntry)) {
                     var firstEntry = splitTraceLink[0].strip();
-                    String newTraceLink = firstEntry + "," + endpointPath;
+                    String newTraceLink = TestUtil.createTraceLinkString(firstEntry, endpointPath);
                     enrolledTraceLink.add(newTraceLink);
                 }
             }

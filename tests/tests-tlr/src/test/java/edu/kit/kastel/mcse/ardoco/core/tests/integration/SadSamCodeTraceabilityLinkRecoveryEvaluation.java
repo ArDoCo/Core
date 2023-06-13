@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -33,7 +34,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
-        var traceLinks = arDoCoResult.getTransitiveTraceLinks();
+        var traceLinks = arDoCoResult.getSadCodeTraceLinks();
         return !traceLinks.isEmpty();
     }
 
@@ -54,13 +55,18 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult) {
-        var traceLinks = arDoCoResult.getTransitiveTraceLinks();
+        var traceLinks = arDoCoResult.getSadCodeTraceLinks();
 
         MutableList<String> resultsMut = Lists.mutable.empty();
         for (var traceLink : traceLinks) {
             EndpointTuple endpointTuple = traceLink.getEndpointTuple();
             var codeElement = (CodeCompilationUnit) endpointTuple.secondEndpoint();
-            String sentenceNumber = String.valueOf(((SadSamTraceLink) traceLink.getFirstTraceLink()).getSentenceNumber() + 1);
+            String sentenceNumber;
+            if (traceLink instanceof TransitiveTraceLink transitiveTraceLink) {
+                sentenceNumber = String.valueOf(((SadSamTraceLink) transitiveTraceLink.getFirstTraceLink()).getSentenceNumber() + 1);
+            } else {
+                sentenceNumber = traceLink.getEndpointTuple().firstEndpoint().getId(); //TODO check!
+            }
             String traceLinkString = TestUtil.createTraceLinkString(sentenceNumber, codeElement.toString());
             resultsMut.add(traceLinkString);
         }
