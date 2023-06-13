@@ -25,8 +25,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/mediastore",//
             "src/test/resources/gs-code-tlr/goldstandard-mediastore.csv", //
             "src/test/resources/gs-sad-code-tlr/goldstandard-mediastore.csv", //
-            new ExpectedResults(.967, .983, .975, .998, .965, .999), //
-            new ExpectedResults(.880, .459, .605, .990, .625, .999) //
+            new ExpectedResults(.975, .995, .985, .995, .985, .995), //
+            new ExpectedResults(.995, .515, .675, .990, .715, .999) //
     ),
 
     TEASTORE(Project.TEASTORE, //
@@ -36,7 +36,7 @@ public enum CodeProject {
             "src/test/resources/gs-code-tlr/goldstandard-teastore.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-teastore.csv",//
             new ExpectedResults(.975, .975, .975, .997, .965, .999), //
-            new ExpectedResults(.999, .955, .975, .997, .975, .999) //
+            new ExpectedResults(.999, .708, .829, .976, .831, .999) //
     ),
 
     TEAMMATES(Project.TEAMMATES, //
@@ -46,7 +46,7 @@ public enum CodeProject {
             "src/test/resources/gs-code-tlr/goldstandard-teammates.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-teammates.csv",//
             new ExpectedResults(.999, .999, .999, .999, .999, .999), //
-            new ExpectedResults(.605, .983, .751, .975, .755, .975) //
+            new ExpectedResults(.605, .954, .742, .975, .750, .975) //
     ),
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
@@ -55,8 +55,8 @@ public enum CodeProject {
             "src/test/resources/codeModels/bigbluebutton",//
             "src/test/resources/gs-code-tlr/goldstandard-bigbluebutton.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-bigbluebutton.csv",//
-            new ExpectedResults(.874, .981, .925, .989, .915, .985), //
-            new ExpectedResults(.663, .973, .789, .985, .795, .985) //
+            new ExpectedResults(.874, .953, .912, .989, .908, .985), //
+            new ExpectedResults(.663, .906, .766, .985, .769, .985) //
     ),
 
     JABREF(Project.JABREF, //

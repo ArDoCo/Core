@@ -60,11 +60,8 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
         for (var traceLink : traceLinks) {
             EndpointTuple endpointTuple = traceLink.getEndpointTuple();
             var codeElement = (CodeCompilationUnit) endpointTuple.secondEndpoint();
-            String codeElementString = codeElement.toString() + "#" + codeElement.getName();
-
             String sentenceNumber = String.valueOf(((SadSamTraceLink) traceLink.getFirstTraceLink()).getSentenceNumber() + 1);
-
-            String traceLinkString = TestUtil.createTraceLinkString(sentenceNumber, codeElementString);
+            String traceLinkString = TestUtil.createTraceLinkString(sentenceNumber, codeElement.toString());
             resultsMut.add(traceLinkString);
         }
         return resultsMut.toImmutable();
@@ -73,6 +70,11 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
         return codeProject.getSadCodeGoldStandard();
+    }
+
+    @Override
+    protected ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result) {
+        return enrollGoldStandardForCode(goldStandard, result);
     }
 
     @Override
