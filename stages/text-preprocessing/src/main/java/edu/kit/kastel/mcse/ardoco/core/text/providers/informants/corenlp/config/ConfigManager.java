@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.microservice;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,9 +9,10 @@ import java.util.Properties;
  */
 public class ConfigManager {
     private static ConfigManager instance;
-    private Properties properties;
+    private final Properties properties;
+    private final String filePath = "config.properties";
 
-    private ConfigManager(String filePath) {
+    private ConfigManager() {
         properties = new Properties();
         try (FileInputStream fileInputStream = new FileInputStream(filePath);) {
             properties.load(fileInputStream);
@@ -20,9 +21,9 @@ public class ConfigManager {
         }
     }
 
-    public static ConfigManager getInstance(String filePath) {
+    public static ConfigManager getInstance() {
         if (instance == null) {
-            instance = new ConfigManager(filePath);
+            instance = new ConfigManager();
         }
         return instance;
     }
