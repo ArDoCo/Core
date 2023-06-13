@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class TextProcessorService implements TextProcessor {
 
@@ -46,7 +48,7 @@ public class TextProcessorService implements TextProcessor {
     }
 
     private String sendCorenlpRequest(String inputText) throws IOException {
-        inputText = inputText.replace(" ", "%20");
+        inputText = URLEncoder.encode(inputText, StandardCharsets.UTF_8);
         String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl")
                 + ConfigManager.getInstance().getProperty("corenlpService")
                 + inputText;
@@ -57,7 +59,9 @@ public class TextProcessorService implements TextProcessor {
         URL url = new URL(requestUrl);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
-//        int status = con.getResponseCode();
+        if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            return null; // TODO error handling
+        }
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream())
         );
