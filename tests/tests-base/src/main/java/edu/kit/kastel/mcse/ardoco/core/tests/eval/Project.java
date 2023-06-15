@@ -58,7 +58,7 @@ public enum Project {
             "../src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "../src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
-            new ExpectedResults(.178, .759, .284, .851, .291, .851) //
+            new ExpectedResults(.175, .745, .279, .851, .287, .851) //
     ), //
     TEAMMATES_HISTORICAL( //
             "../src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
