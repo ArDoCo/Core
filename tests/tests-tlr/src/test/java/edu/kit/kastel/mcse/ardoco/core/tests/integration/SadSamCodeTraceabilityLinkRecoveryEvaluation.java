@@ -9,23 +9,18 @@ import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
@@ -57,20 +52,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
     protected ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult) {
         var traceLinks = arDoCoResult.getSadCodeTraceLinks();
 
-        MutableList<String> resultsMut = Lists.mutable.empty();
-        for (var traceLink : traceLinks) {
-            EndpointTuple endpointTuple = traceLink.getEndpointTuple();
-            var codeElement = (CodeCompilationUnit) endpointTuple.secondEndpoint();
-            String sentenceNumber;
-            if (traceLink instanceof TransitiveTraceLink transitiveTraceLink) {
-                sentenceNumber = String.valueOf(((SadSamTraceLink) transitiveTraceLink.getFirstTraceLink()).getSentenceNumber() + 1);
-            } else {
-                sentenceNumber = traceLink.getEndpointTuple().firstEndpoint().getId(); //TODO check!
-            }
-            String traceLinkString = TestUtil.createTraceLinkString(sentenceNumber, codeElement.toString());
-            resultsMut.add(traceLinkString);
-        }
-        return resultsMut.toImmutable();
+        return TraceLinkUtilities.getSadCodeTraceLinksAsStringList(Lists.immutable.ofAll(traceLinks));
     }
 
     @Override

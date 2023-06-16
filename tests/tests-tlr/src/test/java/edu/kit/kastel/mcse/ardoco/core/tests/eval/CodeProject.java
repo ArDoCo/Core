@@ -14,7 +14,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 public enum CodeProject {
@@ -127,7 +127,7 @@ public enum CodeProject {
             var parts = line.split(",");
             String modelElementId = parts[0];
             String codeElementId = parts[2];
-            goldStandard.add(TestUtil.createTraceLinkString(modelElementId, codeElementId));
+            goldStandard.add(TraceLinkUtilities.createTraceLinkString(modelElementId, codeElementId));
         }
         return goldStandard.toImmutable();
     }

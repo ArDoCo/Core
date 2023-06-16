@@ -25,6 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
@@ -90,9 +91,8 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
 
     @Override
     protected ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult) {
-        var modelIds = arDoCoResult.getModelIds();
-        var modelId = modelIds.stream().findFirst().orElseThrow();
-        return arDoCoResult.getTraceLinksForModelAsStrings(modelId).toImmutableList();
+        var sadSamTls = Lists.immutable.ofAll(arDoCoResult.getAllTraceLinks());
+        return TraceLinkUtilities.getSadSamTraceLinksAsStringList(sadSamTls);
     }
 
     @Override
