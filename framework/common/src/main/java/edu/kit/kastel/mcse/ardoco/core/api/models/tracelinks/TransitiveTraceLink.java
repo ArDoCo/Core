@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 import java.util.Objects;
 import java.util.Optional;
 
-public class TransitiveTraceLink extends TraceLink {
+public class TransitiveTraceLink extends SadCodeTraceLink {
 
     private final TraceLink firstTraceLink;
     private final TraceLink secondTraceLink;

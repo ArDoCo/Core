@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -33,7 +34,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
-        var traceLinks = arDoCoResult.getTransitiveTraceLinks();
+        var traceLinks = arDoCoResult.getSadCodeTraceLinks();
         return !traceLinks.isEmpty();
     }
 
@@ -54,17 +55,19 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult) {
-        var traceLinks = arDoCoResult.getTransitiveTraceLinks();
+        var traceLinks = arDoCoResult.getSadCodeTraceLinks();
 
         MutableList<String> resultsMut = Lists.mutable.empty();
         for (var traceLink : traceLinks) {
             EndpointTuple endpointTuple = traceLink.getEndpointTuple();
             var codeElement = (CodeCompilationUnit) endpointTuple.secondEndpoint();
-            String codeElementString = codeElement.toString() + "#" + codeElement.getName();
-
-            String sentenceNumber = String.valueOf(((SadSamTraceLink) traceLink.getFirstTraceLink()).getSentenceNumber() + 1);
-
-            String traceLinkString = TestUtil.createTraceLinkString(sentenceNumber, codeElementString);
+            String sentenceNumber;
+            if (traceLink instanceof TransitiveTraceLink transitiveTraceLink) {
+                sentenceNumber = String.valueOf(((SadSamTraceLink) transitiveTraceLink.getFirstTraceLink()).getSentenceNumber() + 1);
+            } else {
+                sentenceNumber = traceLink.getEndpointTuple().firstEndpoint().getId(); //TODO check!
+            }
+            String traceLinkString = TestUtil.createTraceLinkString(sentenceNumber, codeElement.toString());
             resultsMut.add(traceLinkString);
         }
         return resultsMut.toImmutable();
@@ -72,25 +75,12 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        MutableList<String> goldStandard = Lists.mutable.empty();
+        return codeProject.getSadCodeGoldStandard();
+    }
 
-        ImmutableList<String> samCodeGoldStandard = codeProject.getSamCodeGoldStandard();
-        ImmutableList<String> sadSamGoldStandard = codeProject.getProject().getTlrGoldStandard();
-
-        var samCodeGoldStandardMultiMap = samCodeGoldStandard.collect(tl -> tl.split(",")).groupBy(tl -> tl[0]).collectValues(tl -> tl[1]);
-        var sadSamGoldStandardMultiMap = sadSamGoldStandard.collect(tl -> tl.split(",")).groupBy(tl -> tl[0]).collectValues(tl -> tl[1]);
-
-        for (var modelId : sadSamGoldStandardMultiMap.keysView()) {
-            var sentenceNumbers = sadSamGoldStandardMultiMap.get(modelId);
-            for (var codeId : samCodeGoldStandardMultiMap.get(modelId)) {
-                for (var sentenceNumber : sentenceNumbers) {
-                    String traceLink = TestUtil.createTraceLinkString(String.valueOf(sentenceNumber), codeId);
-                    goldStandard.add(traceLink);
-                }
-            }
-        }
-
-        return goldStandard.sortThis().toImmutable();
+    @Override
+    protected ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result) {
+        return enrollGoldStandardForCode(goldStandard, result);
     }
 
     @Override
