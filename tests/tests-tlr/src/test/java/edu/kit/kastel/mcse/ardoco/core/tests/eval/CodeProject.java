@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -23,8 +24,9 @@ public enum CodeProject {
             "../../temp/code/mediastore",//
             "src/test/resources/codeModels/mediastore",//
             "src/test/resources/gs-code-tlr/goldstandard-mediastore.csv", //
-            new ExpectedResults(.98, .99, .99, .99, .99, .99), //
-            new ExpectedResults(.99, .51, .67, .99, .71, .99) //
+            "src/test/resources/gs-sad-code-tlr/goldstandard-mediastore.csv", //
+            new ExpectedResults(.975, .995, .985, .995, .985, .995), //
+            new ExpectedResults(.995, .515, .675, .990, .715, .999) //
     ),
 
     TEASTORE(Project.TEASTORE, //
@@ -32,8 +34,9 @@ public enum CodeProject {
             "../../temp/code/teastore",//
             "src/test/resources/codeModels/teastore",//
             "src/test/resources/gs-code-tlr/goldstandard-teastore.csv",//
-            new ExpectedResults(.97, .97, .97, .99, .96, .99), //
-            new ExpectedResults(.99, .95, .97, .99, .97, .99) //
+            "src/test/resources/gs-sad-code-tlr/goldstandard-teastore.csv",//
+            new ExpectedResults(.975, .975, .975, .997, .965, .999), //
+            new ExpectedResults(.999, .708, .829, .976, .831, .999) //
     ),
 
     TEAMMATES(Project.TEAMMATES, //
@@ -41,8 +44,9 @@ public enum CodeProject {
             "../../temp/code/teammates",//
             "src/test/resources/codeModels/teammates",//
             "src/test/resources/gs-code-tlr/goldstandard-teammates.csv",//
-            new ExpectedResults(.99, .99, .99, .99, .99, .99), //
-            new ExpectedResults(.58, .99, .73, .97, .75, .97) //
+            "src/test/resources/gs-sad-code-tlr/goldstandard-teammates.csv",//
+            new ExpectedResults(.999, .999, .999, .999, .999, .999), //
+            new ExpectedResults(.605, .942, .738, .974, .745, .975) //
     ),
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
@@ -50,8 +54,9 @@ public enum CodeProject {
             "../../temp/code/bigbluebutton",//
             "src/test/resources/codeModels/bigbluebutton",//
             "src/test/resources/gs-code-tlr/goldstandard-bigbluebutton.csv",//
-            new ExpectedResults(.93, .98, .96, .99, .95, .99), //
-            new ExpectedResults(.77, .98, .86, .98, .86, .98) //
+            "src/test/resources/gs-sad-code-tlr/goldstandard-bigbluebutton.csv",//
+            new ExpectedResults(.874, .953, .912, .989, .908, .985), //
+            new ExpectedResults(.663, .906, .766, .985, .769, .985) //
     ),
 
     JABREF(Project.JABREF, //
@@ -59,8 +64,9 @@ public enum CodeProject {
             "../../temp/code/jabref",//
             "src/test/resources/codeModels/jabref",//
             "src/test/resources/gs-code-tlr/goldstandard-jabref.csv", //
-            new ExpectedResults(.99, .99, .99, .99, .99, .99), //
-            new ExpectedResults(.88, .99, .93, .96, .91, .93) //
+            "src/test/resources/gs-sad-code-tlr/goldstandard-jabref.csv", //
+            new ExpectedResults(.999, .999, .999, .999, .999, .999), //
+            new ExpectedResults(.885, .999, .935, .960, .915, .935) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
@@ -69,17 +75,19 @@ public enum CodeProject {
     private final String codeLocation;
     private final String codeModelLocation;
     private final String samCodeGoldStandardLocation;
+    private final String sadCodeGoldStandardLocation;
     private final Project project;
     private final ExpectedResults expectedResultsForSamCode;
     private final ExpectedResults expectedResultsForSadSamCode;
 
     CodeProject(Project project, String codeRepository, String codeLocation, String codeModelLocation, String samCodeGoldStandardLocation,
-            ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
+            String sadCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
         this.project = project;
         this.codeRepository = codeRepository;
         this.codeLocation = codeLocation;
         this.codeModelLocation = codeModelLocation;
         this.samCodeGoldStandardLocation = samCodeGoldStandardLocation;
+        this.sadCodeGoldStandardLocation = sadCodeGoldStandardLocation;
         this.expectedResultsForSamCode = expectedResultsForSamCode;
         this.expectedResultsForSadSamCode = expectedResultsForSadSamCode;
     }
@@ -110,8 +118,28 @@ public enum CodeProject {
 
     public ImmutableList<String> getSamCodeGoldStandard() {
         File samCodeGoldStandardFile = new File(samCodeGoldStandardLocation);
-        var path = Paths.get(samCodeGoldStandardFile.toURI());
+        List<String> lines = getLinesFromGoldStandardFile(samCodeGoldStandardFile);
 
+        MutableList<String> goldStandard = Lists.mutable.empty();
+        for (var line : lines) {
+            if (line.isBlank())
+                continue;
+            var parts = line.split(",");
+            String modelElementId = parts[0];
+            String codeElementId = parts[2];
+            goldStandard.add(TestUtil.createTraceLinkString(modelElementId, codeElementId));
+        }
+        return goldStandard.toImmutable();
+    }
+
+    public ImmutableList<String> getSadCodeGoldStandard() {
+        File sadCodeGoldStandardFile = new File(sadCodeGoldStandardLocation);
+        List<String> lines = getLinesFromGoldStandardFile(sadCodeGoldStandardFile);
+        return Lists.immutable.ofAll(lines);
+    }
+
+    private static List<String> getLinesFromGoldStandardFile(File samCodeGoldStandardFile) {
+        var path = Paths.get(samCodeGoldStandardFile.toURI());
         List<String> lines = Lists.mutable.empty();
         try {
             lines = Files.readAllLines(path);
@@ -119,15 +147,8 @@ public enum CodeProject {
             logger.error(e.getMessage(), e);
         }
         lines.remove(0);
-
-        MutableList<String> goldStandard = Lists.mutable.empty();
-        for (var line : lines) {
-            var parts = line.split(",");
-            String modelElementId = parts[0];
-            String codeElementId = parts[2];
-            goldStandard.add(TestUtil.createTraceLinkString(modelElementId, codeElementId));
-        }
-        return goldStandard.toImmutable();
+        lines = lines.stream().filter(Predicate.not(String::isBlank)).toList();
+        return lines;
     }
 
 }

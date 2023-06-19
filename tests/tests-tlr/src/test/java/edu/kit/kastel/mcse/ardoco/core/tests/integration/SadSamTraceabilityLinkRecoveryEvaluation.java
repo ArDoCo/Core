@@ -38,8 +38,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLRUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
 
 /**
- * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
- * defined in the enum {@link Project}.
+ * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are defined in the enum {@link Project}.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
@@ -82,6 +81,11 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
         var project = codeProject.getProject();
         return project.getTlrGoldStandard();
+    }
+
+    @Override
+    protected ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result) {
+        return goldStandard;
     }
 
     @Override
