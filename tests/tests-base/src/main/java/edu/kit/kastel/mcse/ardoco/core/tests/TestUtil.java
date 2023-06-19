@@ -85,9 +85,8 @@ public class TestUtil {
     }
 
     /**
-     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link EvaluationResults evaluation
-     * results}.
-     * Uses the total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
+     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link EvaluationResults evaluation results}. Uses the
+     * total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
      *
      * @param arDoCoResult   the output of ArDoCo
      * @param truePositives  nr of true positives
@@ -107,9 +106,8 @@ public class TestUtil {
     }
 
     /**
-     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link EvaluationResults evaluation
-     * results}.
-     * Uses the total sum of all sentences in the {@link ArDoCoResult} and then substracts the true positives, false positives, and false negatives.
+     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link EvaluationResults evaluation results}. Uses the
+     * total sum of all sentences in the {@link ArDoCoResult} and then substracts the true positives, false positives, and false negatives.
      *
      * @param arDoCoResult   the output of ArDoCo
      * @param truePositives  nr of true positives
@@ -148,11 +146,8 @@ public class TestUtil {
     }
 
     /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name. The log contains Precision and Recall printed with explicit
-     * numbers for the calculation.
-     * See the following example output:
-     * Precision: 4/4 = 1.000
-     * Recall: 4/6 = 0.667
+     * Log the provided {@link EvaluationResults} using the provided logger and name. The log contains Precision and Recall printed with explicit numbers for
+     * the calculation. See the following example output: <br> Precision: 4/4 = 1.000<br> Recall: 4/6 = 0.667
      *
      * @param logger  Logger to use
      * @param name    Name to show in the output
@@ -170,8 +165,7 @@ public class TestUtil {
     }
 
     /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, provided the
-     * expected results.
+     * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, provided the expected results.
      *
      * @param logger          Logger to use
      * @param name            Name to show in the output
@@ -188,7 +182,4 @@ public class TestUtil {
         logger.info(infoString);
     }
 
-    public static String createTraceLinkString(String firstElementId, String secondElementId) {
-        return firstElementId + "," + secondElementId;
-    }
 }
