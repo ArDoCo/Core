@@ -496,7 +496,7 @@ public final class FilePrinter {
 
     public static void writeTraceLinksAsCsv(ArDoCoResult arDoCoResult, File outputDir) {
         String name = arDoCoResult.getProjectName();
-        String header = "firstEntityId,secondEntityID";
+        String header;
 
         var sadSamTls = Lists.immutable.ofAll(arDoCoResult.getAllTraceLinks());
         if (!sadSamTls.isEmpty()) {

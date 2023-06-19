@@ -14,15 +14,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink
 
 public class TraceLinkUtilities {
 
-    private static String entrySeparator;
+    private static final String ENTRY_SEPARATOR = ",";
 
     private TraceLinkUtilities() {
         throw new IllegalStateException();
     }
 
     public static String createTraceLinkString(String firstElementId, String secondElementId) {
-        entrySeparator = ",";
-        return firstElementId + entrySeparator + secondElementId;
+        return firstElementId + ENTRY_SEPARATOR + secondElementId;
     }
 
     public static ImmutableList<String> getSadSamTraceLinksAsStringList(ImmutableList<SadSamTraceLink> sadSamTraceLinks) {
@@ -50,7 +49,7 @@ public class TraceLinkUtilities {
             if (traceLink instanceof TransitiveTraceLink transitiveTraceLink) {
                 sentenceNumber = String.valueOf(((SadSamTraceLink) transitiveTraceLink.getFirstTraceLink()).getSentenceNumber() + 1);
             } else {
-                sentenceNumber = traceLink.getEndpointTuple().firstEndpoint().getId(); //TODO check!
+                sentenceNumber = traceLink.getEndpointTuple().firstEndpoint().getId();
             }
             String traceLinkString = TraceLinkUtilities.createTraceLinkString(sentenceNumber, codeElement.toString());
             resultsMut.add(traceLinkString);
