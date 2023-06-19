@@ -23,6 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
@@ -122,7 +123,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
                 var endpointPath = endpoint.toString();
                 if (endpointPath.startsWith(codeEntry)) {
                     var firstEntry = splitTraceLink[0].strip();
-                    String newTraceLink = TestUtil.createTraceLinkString(firstEntry, endpointPath);
+                    String newTraceLink = TraceLinkUtilities.createTraceLinkString(firstEntry, endpointPath);
                     enrolledTraceLink.add(newTraceLink);
                 }
             }
