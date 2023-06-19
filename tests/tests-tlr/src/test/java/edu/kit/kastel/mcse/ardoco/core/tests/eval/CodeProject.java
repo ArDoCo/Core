@@ -46,7 +46,7 @@ public enum CodeProject {
             "src/test/resources/gs-code-tlr/goldstandard-teammates.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-teammates.csv",//
             new ExpectedResults(.999, .999, .999, .999, .999, .999), //
-            new ExpectedResults(.605, .942, .738, .974, .745, .975) //
+            new ExpectedResults(.705, .909, .795, .975, .785, .975) //
     ),
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
@@ -56,7 +56,7 @@ public enum CodeProject {
             "src/test/resources/gs-code-tlr/goldstandard-bigbluebutton.csv",//
             "src/test/resources/gs-sad-code-tlr/goldstandard-bigbluebutton.csv",//
             new ExpectedResults(.874, .953, .912, .989, .908, .985), //
-            new ExpectedResults(.663, .906, .766, .985, .769, .985) //
+            new ExpectedResults(.765, .905, .835, .985, .825, .985) //
     ),
 
     JABREF(Project.JABREF, //
