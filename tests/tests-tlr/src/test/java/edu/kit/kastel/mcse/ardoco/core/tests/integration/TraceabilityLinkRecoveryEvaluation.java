@@ -35,6 +35,9 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 public abstract class TraceabilityLinkRecoveryEvaluation {
     private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
     private static final String WARNING_NO_CODE_MODEL = "Could not get code model to enroll gold standard. Using not enrolled gold standard!";
+    // The path separator is to show that a code entry is not a class but rather a directory that ends with, currently, a "/" (unix style)
+    // If the path separator in the gold standards are changed, this needs to update
+    public static final String GOLD_STANDARD_PATH_SEPARATOR = "/";
 
     protected static Map<Project, ArDoCoResult> resultMap = new EnumMap<>(Project.class);
 
@@ -108,12 +111,14 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         return enrolledGoldStandard.toImmutable();
     }
 
+    // This private method is currently only used to enroll the gold standard. If you decide to use it for enrolling something else, make sure that the assumptions hold
+    // The main assumption currently is: Paths to directories end with a "/".
     private static List<String> enrollTraceLink(Model codeModel, String traceLink) {
         MutableList<String> enrolledTraceLink = Lists.mutable.empty();
 
         var splitTraceLink = traceLink.split(",");
         var codeEntry = splitTraceLink[1].strip();
-        if (codeEntry.endsWith("/")) {
+        if (codeEntry.endsWith(GOLD_STANDARD_PATH_SEPARATOR)) {
             for (var endpoint : codeModel.getEndpoints()) {
                 var endpointPath = endpoint.toString();
                 if (endpointPath.startsWith(codeEntry)) {

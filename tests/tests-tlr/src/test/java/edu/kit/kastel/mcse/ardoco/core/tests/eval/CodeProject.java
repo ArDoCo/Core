@@ -150,5 +150,4 @@ public enum CodeProject {
         lines = lines.stream().filter(Predicate.not(String::isBlank)).toList();
         return lines;
     }
-
 }
