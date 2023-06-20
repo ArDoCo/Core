@@ -46,13 +46,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalcu
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
 
 /**
- * Integration test that evaluates the inconsistency detection capabilities of ArDoCo. Runs on the projects that are
- * defined in the enum {@link Project}.
+ * Integration test that evaluates the inconsistency detection capabilities of ArDoCo. Runs on the projects that are defined in the enum {@link Project}.
  * <p>
- * Currently, the focus lies on detecting elements that are mentioned in the text but are not represented in the model.
- * For this, we run an evaluation that holds back (removes) one element from the model. This way, we know that there is
- * a missing element and the trace links to this element (in the gold standard) are the spots of inconsistency then. We
- * run this multiple times so each element was held back once.
+ * Currently, the focus lies on detecting elements that are mentioned in the text but are not represented in the model. For this, we run an evaluation that
+ * holds back (removes) one element from the model. This way, we know that there is a missing element and the trace links to this element (in the gold standard)
+ * are the spots of inconsistency then. We run this multiple times so each element was held back once.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class InconsistencyDetectionEvaluationIT {
@@ -82,8 +80,7 @@ class InconsistencyDetectionEvaluationIT {
      * <p>
      * NOTE: if you only want to test a specific project, you can simply set up the EnumSource. For more details, see
      * <a href="https://www.baeldung.com/parameterized-tests-junit-5#3-enum">here</a>
-     * Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource
-     * However, make sure to revert this before you commit and push!
+     * Example: add ", names = { "BIGBLUEBUTTON" }" to EnumSource However, make sure to revert this before you commit and push!
      *
      * @param project Project that gets inserted automatically with the enum {@link Project}.
      */
@@ -122,8 +119,8 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     /**
-     * Tests the baseline approach that reports a missing model element inconsistency for each sentence that is not traced to a model
-     * element. This test is enabled by providing the environment variable "testBaseline" with any value.
+     * Tests the baseline approach that reports a missing model element inconsistency for each sentence that is not traced to a model element. This test is
+     * enabled by providing the environment variable "testBaseline" with any value.
      *
      * @param project Project that gets inserted automatically with the enum {@link Project}.
      */
@@ -326,10 +323,9 @@ class InconsistencyDetectionEvaluationIT {
                 () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
                         .recall() + " is below the expected minimum value " + expectedResults.recall()), //
                 () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
-        Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                        .f1() + " is below the expected minimum value " + expectedResults.f1()), () -> Assertions.assertTrue(results
+                                .accuracy() >= expectedResults.accuracy(), "Accuracy " + results
+                                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
                 () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
                         .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }

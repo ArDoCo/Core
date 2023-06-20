@@ -25,6 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
@@ -36,9 +37,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
- * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it.
- * Besides accessing all data from the calculation steps, this record also provides some convenience methods to directly
- * access results such as found trace links and detected inconsistencies.
+ * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it. Besides accessing all data from the
+ * calculation steps, this record also provides some convenience methods to directly access results such as found trace links and detected inconsistencies.
  */
 public record ArDoCoResult(DataRepository dataRepository) {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoResult.class);
@@ -67,8 +67,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link SadSamTraceLink}s that were found for the Model with the given ID as strings in the format
-     * "ModelElementId,SentenceNo".
+     * Returns the set of {@link SadSamTraceLink}s that were found for the Model with the given ID as strings in the format "ModelElementId,SentenceNo".
      *
      * @param modelId the ID of the model that should be traced
      * @return Trace links for the model with the given id as Strings
@@ -130,10 +129,10 @@ public record ArDoCoResult(DataRepository dataRepository) {
      *
      * @return the list of {@link TransitiveTraceLink TransitiveTraceLinks}.
      */
-    public List<TransitiveTraceLink> getTransitiveTraceLinks() {
+    public List<SadCodeTraceLink> getSadCodeTraceLinks() {
         var samCodeTraceabilityState = getCodeTraceabilityState();
         if (samCodeTraceabilityState != null)
-            return samCodeTraceabilityState.getTransitiveTraceLinks().toList();
+            return samCodeTraceabilityState.getSadCodeTraceLinks().toList();
         return List.of();
     }
 
@@ -152,8 +151,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns a list of {@link Inconsistency inconsistencies} that were found for the model with the given ID and that
-     * are of the given Inconsistency class.
+     * Returns a list of {@link Inconsistency inconsistencies} that were found for the model with the given ID and that are of the given Inconsistency class.
      *
      * @param modelId           the ID of the model
      * @param inconsistencyType type of the Inconsistency that should be returned

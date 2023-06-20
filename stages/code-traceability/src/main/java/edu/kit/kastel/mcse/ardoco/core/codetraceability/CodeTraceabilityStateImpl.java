@@ -8,14 +8,14 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 
 public class CodeTraceabilityStateImpl extends AbstractState implements CodeTraceabilityState {
 
     private transient MutableList<SamCodeTraceLink> samCodeTraceLinks = Lists.mutable.empty();
-    private transient MutableList<TransitiveTraceLink> transitiveTraceLinks = Lists.mutable.empty();
+    private transient MutableList<SadCodeTraceLink> transitiveTraceLinks = Lists.mutable.empty();
 
     @Override
     public boolean addSamCodeTraceLink(SamCodeTraceLink traceLink) {
@@ -33,17 +33,17 @@ public class CodeTraceabilityStateImpl extends AbstractState implements CodeTrac
     }
 
     @Override
-    public boolean addTransitiveTraceLinks(TransitiveTraceLink traceLink) {
+    public boolean addSadCodeTraceLink(SadCodeTraceLink traceLink) {
         return this.transitiveTraceLinks.add(traceLink);
     }
 
     @Override
-    public boolean addTransitiveTraceLinks(Collection<TransitiveTraceLink> traceLinks) {
+    public boolean addSadCodeTraceLinks(Collection<SadCodeTraceLink> traceLinks) {
         return this.transitiveTraceLinks.addAll(traceLinks);
     }
 
     @Override
-    public ImmutableSet<TransitiveTraceLink> getTransitiveTraceLinks() {
+    public ImmutableSet<SadCodeTraceLink> getSadCodeTraceLinks() {
         return this.transitiveTraceLinks.toImmutableSet();
     }
 

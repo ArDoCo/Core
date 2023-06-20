@@ -9,18 +9,15 @@ import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSamCodeTraceabilityLinkRecovery;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -49,21 +46,18 @@ class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
     protected ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult) {
         var traceLinks = arDoCoResult.getSamCodeTraceLinks();
 
-        MutableList<String> resultsMut = Lists.mutable.empty();
-        for (var traceLink : traceLinks) {
-            EndpointTuple endpointTuple = traceLink.getEndpointTuple();
-            var modelElement = endpointTuple.firstEndpoint();
-            var codeElement = (CodeCompilationUnit) endpointTuple.secondEndpoint();
-            String codeElementString = codeElement.toString() + "#" + codeElement.getName();
-            String traceLinkString = TestUtil.createTraceLinkString(modelElement.getId(), codeElementString);
-            resultsMut.add(traceLinkString);
-        }
-        return resultsMut.toImmutable();
+        return TraceLinkUtilities.getSamCodeTraceLinksAsStringList(Lists.immutable.ofAll(traceLinks));
     }
 
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        return codeProject.getSamCodeGoldStandard();
+        ImmutableList<String> samCodeGoldStandard = codeProject.getSamCodeGoldStandard();
+        return samCodeGoldStandard;
+    }
+
+    @Override
+    protected ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result) {
+        return enrollGoldStandardForCode(goldStandard, result);
     }
 
     @Override

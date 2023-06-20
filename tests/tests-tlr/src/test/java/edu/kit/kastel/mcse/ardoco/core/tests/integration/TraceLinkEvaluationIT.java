@@ -147,7 +147,7 @@ class TraceLinkEvaluationIT {
     }
 
     @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
-    @DisplayName("Evaluate SAD-SAM-Cod TLR (Full)")
+    @DisplayName("Evaluate SAD-SAM-Code TLR (Full)")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(9)

@@ -96,6 +96,7 @@ public final class ArDoCo extends Pipeline {
 
         classLogger.info("Starting to write output...");
         FilePrinter.writeTraceabilityLinkRecoveryOutput(getOutputFile(name, outputDir, "traceLinks_"), arDoCoResult);
+        FilePrinter.writeTraceLinksAsCsv(arDoCoResult, outputDir);
         FilePrinter.writeInconsistencyOutput(getOutputFile(name, outputDir, "inconsistencyDetection_"), arDoCoResult);
         classLogger.info("Finished to write output.");
     }
