@@ -1,7 +1,6 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.TextImpl;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
@@ -10,11 +9,16 @@ import java.util.Properties;
 /**
  * This text processor processes texts locally using CoreNLP.
  */
-public class TextProcessorLocal implements TextProcessor {
+public class TextProcessorLocal {
     private static final String ANNOTATORS = "tokenize,ssplit,pos,parse,depparse,lemma"; // further: ",ner,coref"
     private static final String DEPENDENCIES_ANNOTATION = "EnhancedPlusPlusDependenciesAnnotation";
 
-    @Override
+    /**
+     * processes and annotates a given text locally using CoreNLP.
+     *
+     * @param inputText the input text
+     * @return the annotated text
+     */
     public Text processText(String inputText) {
         Properties props = getStanfordProperties(new Properties());
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);

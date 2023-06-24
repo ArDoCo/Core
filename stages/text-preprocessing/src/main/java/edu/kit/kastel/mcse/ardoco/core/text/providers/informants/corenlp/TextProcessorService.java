@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 
@@ -18,17 +18,17 @@ import java.nio.charset.StandardCharsets;
 /**
  * This text processor processes texts by sending requests to a microservice, which provides text processing using CoreNLP.
  */
-public class TextProcessorService implements TextProcessor {
+public class TextProcessorService {
 
-    @Override
-    public Text processText(String inputText) {
+    /**
+     * processes and annotates a given text by sending requests to a microservice
+     * @param inputText the input text
+     * @return          the annotated text
+     */
+    public Text processText(String inputText) throws IOException {
         TextDTO textDto;
-        try {
-            String jsonText = sendCorenlpRequest(inputText);
-            textDto = JsonConverter.fromJsonString(jsonText);
-        } catch (IOException e) {
-            return null; // todo error handling
-        }
+        String jsonText = sendCorenlpRequest(inputText);
+        textDto = JsonConverter.fromJsonString(jsonText);
         return new DtoToObjectConverter().convertText(textDto);
     }
 
@@ -45,7 +45,7 @@ public class TextProcessorService implements TextProcessor {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            return null; // TODO error handling
+            throw new IOException("HTTP error code: " + con.getResponseCode());
         }
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream())

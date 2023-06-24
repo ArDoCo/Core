@@ -8,7 +8,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor.TextProcessor;
 
 public class CoreNLPProvider extends NlpInformant {
 
@@ -53,8 +52,7 @@ public class CoreNLPProvider extends NlpInformant {
     }
 
     private Text processText(String inputText) {
-        TextProcessor textProcessor = new TextProcessorFactory().createCoreNlpTextProcessor();
-        return textProcessor.processText(inputText);
+        return new TextProcessor().processText(inputText);
     }
 
     @Override
