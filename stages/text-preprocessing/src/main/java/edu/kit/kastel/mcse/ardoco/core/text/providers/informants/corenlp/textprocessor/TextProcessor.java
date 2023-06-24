@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 

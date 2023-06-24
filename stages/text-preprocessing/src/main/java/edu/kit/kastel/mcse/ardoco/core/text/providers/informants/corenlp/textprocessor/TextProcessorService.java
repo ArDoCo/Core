@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 
@@ -30,28 +30,6 @@ public class TextProcessorService implements TextProcessor {
             return null; // todo error handling
         }
         return new DtoToObjectConverter().convertText(textDto);
-    }
-
-    /**
-     * checks if the CoreNLP microservice is available and can provide its services.
-     * @return  whether the microservice is available
-     */
-    public static boolean isMicroserviceAvailable() {
-        String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl") + ConfigManager.getInstance().getProperty("healthService");
-        try {
-            URL url = new URL(requestUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setConnectTimeout(5000); // timeout after 5 sec
-            int statusCode = con.getResponseCode();
-            con.disconnect();
-            if (statusCode != HttpURLConnection.HTTP_OK) {
-                return false;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 
     private String sendCorenlpRequest(String inputText) throws IOException {
