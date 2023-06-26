@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
     <modules>
         <module>diagram-recognition-mock</module>
+        <module>diagram-connection-generator</module>
     </modules>
 
     <profiles>

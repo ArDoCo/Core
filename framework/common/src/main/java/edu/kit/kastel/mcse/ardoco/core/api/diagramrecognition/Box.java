@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * This class represents a box that is detected by the image recognition.
  */
-public final class Box implements Serializable {
+public final class Box extends DiagramElement implements Serializable {
     @JsonProperty
     private String uuid = UUID.randomUUID().toString();
     // the four coordinates x1,y1,x2,y2
@@ -130,5 +130,20 @@ public final class Box implements Serializable {
      */
     public void setDominatingColor(Integer dominatingColor) {
         this.dominatingColor = dominatingColor;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+    }
+
+    @Override
+    public Diagram getDiagram() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return uuid;
     }
 }

@@ -17,11 +17,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
-import runner.ArDoCoForERID;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoForERID;
 import tests.eval.DiagramProject;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramRecognitionEvaluation {
+public class DiagramRecognitionTest {
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
     private static List<DiagramProject> getHistoricalProjects() {
@@ -54,7 +54,7 @@ public class DiagramRecognitionEvaluation {
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalProjects")
     @Order(1)
-    void evaluateHistoricalDiagramRecognition(DiagramProject project) {
+    void evaluateNonHistoricalDiagramRecognition(DiagramProject project) {
         run(project);
     }
 
@@ -62,15 +62,16 @@ public class DiagramRecognitionEvaluation {
     @ParameterizedTest(name = "{0}")
     @MethodSource("getHistoricalProjects")
     @Order(2)
-    void evaluateNonHistoricalDiagramRecognition(DiagramProject project) {
+    void evaluateHistoricalDiagramRecognition(DiagramProject project) {
 
     }
 
     private void run(DiagramProject project) {
         var runner = new ArDoCoForERID(project.name());
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
-        runner.setUp(project.getDiagramsGoldStandardFile(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM, additionalConfigsMap,
-                new File(OUTPUT_DIR));
+        var params = new ArDoCoForERID.Parameters(project.getDiagramsGoldStandardFile(), project.getTextFile(), project.getModelFile(),
+                ArchitectureModelType.PCM, additionalConfigsMap, new File(OUTPUT_DIR));
+        runner.setUp(params);
 
         var result = runner.run();
         Assertions.assertNotNull(result);
