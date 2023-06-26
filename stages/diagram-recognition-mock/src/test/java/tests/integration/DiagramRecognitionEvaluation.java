@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.tests.integration;
+package tests.integration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
-import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoForERID;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.DiagramProject;
+import runner.ArDoCoForERID;
+import tests.eval.DiagramProject;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiagramRecognitionEvaluation {

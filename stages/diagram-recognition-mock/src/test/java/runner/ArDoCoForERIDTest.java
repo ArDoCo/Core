@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.execution.runner;
+package runner;
 
 import java.io.File;
 

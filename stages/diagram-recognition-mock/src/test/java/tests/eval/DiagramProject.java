@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2023. */
-package edu.kit.kastel.mcse.ardoco.core.tests.eval;
+package tests.eval;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 /**
@@ -25,77 +26,77 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
  */
 public enum DiagramProject {
     MEDIASTORE(//
-            "../src/test/resources/benchmark/mediastore/model_2016/pcm/ms.repository", //
-            "../src/test/resources/benchmark/mediastore/text_2016/mediastore.txt", //
-            "../src/test/resources/benchmark/mediastore/text_2016/goldstandard.csv", //
-            "../src/test/resources/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/mediastore/text_2016/goldstandard_UME.csv", //
-            "../src/test/resources/benchmark/mediastore/diagrams_2016/goldstandard.json", //
+            "../../tests/src/test/resources/benchmark/mediastore/model_2016/pcm/ms.repository", //
+            "../../tests/src/test/resources/benchmark/mediastore/text_2016/mediastore.txt", //
+            "../../tests/src/test/resources/benchmark/mediastore/text_2016/goldstandard.csv", //
+            "../../tests/src/test/resources/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "../../tests/src/test/resources/benchmark/mediastore/text_2016/goldstandard_UME.csv", //
+            "../../tests/src/test/resources/benchmark/mediastore/diagrams_2016/goldstandard.json", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
             new ExpectedResults(.212, .792, .328, .702, .227, .690) //
     ), //
     TEASTORE( //
-            "../src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "../src/test/resources/benchmark/teastore/text_2020/teastore.txt", //
-            "../src/test/resources/benchmark/teastore/text_2020/goldstandard.csv", //
-            "../src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teastore/text_2020/goldstandard_UME.csv", //
-            "../src/test/resources/benchmark/teastore/diagrams_2018/goldstandard.json", //
+            "../../tests/src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
+            "../../tests/src/test/resources/benchmark/teastore/text_2020/teastore.txt", //
+            "../../tests/src/test/resources/benchmark/teastore/text_2020/goldstandard.csv", //
+            "../../tests/src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "../../tests/src/test/resources/benchmark/teastore/text_2020/goldstandard_UME.csv", //
+            "../../tests/src/test/resources/benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994) //
     ), //
     TEASTORE_HISTORICAL( //
-            "../src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "../src/test/resources/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
-            "../src/test/resources/benchmark/teastore/text_2018/goldstandard_AB.csv", //
-            "../src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
-            "../src/test/resources/benchmark/teastore/diagrams_2018/goldstandard.json", //
+            "../../tests/src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
+            "../../tests/src/test/resources/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
+            "../../tests/src/test/resources/benchmark/teastore/text_2018/goldstandard_AB.csv", //
+            "../../tests/src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "../../tests/src/test/resources/benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
+            "../../tests/src/test/resources/benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.163, .982, .278, .376, .146, .289) //
     ), //
     TEAMMATES( //
-            "../src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "../src/test/resources/benchmark/teammates/text_2021/teammates.txt", //
-            "../src/test/resources/benchmark/teammates/text_2021/goldstandard.csv", //
-            "../src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
-            "../src/test/resources/benchmark/teammates/diagrams_2023/goldstandard.json", //
+            "../../tests/src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
+            "../../tests/src/test/resources/benchmark/teammates/text_2021/teammates.txt", //
+            "../../tests/src/test/resources/benchmark/teammates/text_2021/goldstandard.csv", //
+            "../../tests/src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "../../tests/src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
+            "../../tests/src/test/resources/benchmark/teammates/diagrams_2023/goldstandard.json", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
             new ExpectedResults(.175, .745, .279, .851, .287, .851) //
     ), //
     TEAMMATES_HISTORICAL( //
-            "../src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "../src/test/resources/benchmark/teammates/text_2015/teammates_2015.txt", //
-            "../src/test/resources/benchmark/teammates/text_2015/goldstandard.csv", //
-            "../src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teammates/text_2015/goldstandard_UME.csv", //
-            "../src/test/resources/benchmark/teammates/diagrams_2015/goldstandard.json", //
+            "../../tests/src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
+            "../../tests/src/test/resources/benchmark/teammates/text_2015/teammates_2015.txt", //
+            "../../tests/src/test/resources/benchmark/teammates/text_2015/goldstandard.csv", //
+            "../../tests/src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "../../tests/src/test/resources/benchmark/teammates/text_2015/goldstandard_UME.csv", //
+            "../../tests/src/test/resources/benchmark/teammates/diagrams_2015/goldstandard.json", //
             new ExpectedResults(.524, .695, .597, .970, .589, .979), //
             new ExpectedResults(.168, .629, .263, .863, .260, .870) //
     ), //
     BIGBLUEBUTTON( //
-            "../src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard.csv", //
-            "../src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
-            "../src/test/resources/benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard.csv", //
+            "../../tests/src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "../../tests/src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
-            "../src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard.csv", //
-            "../src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
-            "../src/test/resources/benchmark/bigbluebutton/diagrams_2015/goldstandard.json", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard.csv", //
+            "../../tests/src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "../../tests/src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
+            "../../tests/src/test/resources/benchmark/bigbluebutton/diagrams_2015/goldstandard.json", //
             new ExpectedResults(.807, .617, .699, .978, .695, .993), //
             new ExpectedResults(.085, .175, .111, .813, .018, .869) //
     );
 
-    private static final Logger logger = LoggerFactory.getLogger(Project.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiagramProject.class);
 
     private final String model;
     private final String textFile;
@@ -125,8 +126,8 @@ public enum DiagramProject {
      * @param name the name of the project
      * @return the Optional containing the project with the given name or is empty if no such is found.
      */
-    public static Optional<Project> getFromName(String name) {
-        for (Project project : Project.values()) {
+    public static Optional<DiagramProject> getFromName(String name) {
+        for (DiagramProject project : DiagramProject.values()) {
             if (project.name().equalsIgnoreCase(name)) {
                 return Optional.of(project);
             }

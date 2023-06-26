@@ -1,4 +1,6 @@
-package edu.kit.kastel.mcse.ardoco.core.execution.runner;
+package runner;
+
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 
 import java.io.File;
 import java.io.IOException;
