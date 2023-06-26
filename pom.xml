@@ -52,8 +52,11 @@
       <timezone>GMT+1</timezone>
     </developer>
   </developers>
+    <modules>
+        <module>pipeline/pipeline-erid</module>
+    </modules>
 
-  <scm>
+    <scm>
     <connection>scm:git:git://github.com/ArDoCo/Core.git</connection>
     <developerConnection>scm:git:ssh://github.com:ArDoCo/Core.git</developerConnection>
     <tag>HEAD</tag>

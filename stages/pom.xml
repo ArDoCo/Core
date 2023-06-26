@@ -9,8 +9,11 @@
 
   <artifactId>stages</artifactId>
   <packaging>pom</packaging>
+    <modules>
+        <module>diagram-recognition-mock</module>
+    </modules>
 
-  <profiles>
+    <profiles>
     <profile>
       <id>complete</id>
       <activation>
