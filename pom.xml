@@ -70,12 +70,12 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-json-schema</artifactId>
-      <version>4.4.3</version>
+      <version>4.4.4</version>
     </dependency>
     <dependency>
       <groupId>com.networknt</groupId>
       <artifactId>json-schema-validator</artifactId>
-      <version>1.0.84</version>
+      <version>1.0.85</version>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
