@@ -9,6 +9,9 @@
   </parent>
   <artifactId>tests</artifactId>
   <packaging>pom</packaging>
+    <modules>
+        <module>tests-resources</module>
+    </modules>
     <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
     <sonar.skip>true</sonar.skip>

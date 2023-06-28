@@ -1,6 +1,5 @@
 package tests.integration;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,15 +14,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
-import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoForERID;
+import tests.TestRunner;
 import tests.eval.DiagramProject;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiagramRecognitionTest {
-    private static final String OUTPUT_DIR = "src/test/resources/testout";
-
     private static List<DiagramProject> getHistoricalProjects() {
         return filterForHistoricalProjects(List.of(DiagramProject.values()));
     }
@@ -63,22 +59,19 @@ public class DiagramRecognitionTest {
     @MethodSource("getHistoricalProjects")
     @Order(2)
     void evaluateHistoricalDiagramRecognition(DiagramProject project) {
-
+        run(project);
     }
 
     private void run(DiagramProject project) {
-        var runner = new ArDoCoForERID(project.name());
+        var runner = new TestRunner(project.name());
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
-        var params = new ArDoCoForERID.Parameters(project.getDiagramsGoldStandardFile(), project.getTextFile(), project.getModelFile(),
-                ArchitectureModelType.PCM, additionalConfigsMap, new File(OUTPUT_DIR));
+        var params = new TestRunner.Parameters(project.getDiagramsGoldStandardFile(), additionalConfigsMap);
         runner.setUp(params);
 
-        var result = runner.run();
-        Assertions.assertNotNull(result);
-        var diagramRecognition = result.dataRepository().getData(DiagramRecognitionState.ID, DiagramRecognitionState.class);
-        Assertions.assertTrue(diagramRecognition.isPresent());
-        Assertions.assertEquals(1, diagramRecognition.get().getDiagrams().size());
-        var diagram = diagramRecognition.get().getDiagrams().get(0);
-        //Assertions.assertEquals(6, diagram.getBoxes().stream().filter(it -> it.getClassification() != LABEL).count());
+        runner.runWithoutSaving();
+        var dataRepository = runner.getArDoCo().getDataRepository();
+        var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).get();
+        var diagrams = diagramRecognition.getDiagrams();
+        Assertions.assertTrue(diagrams.size() > 0);
     }
 }

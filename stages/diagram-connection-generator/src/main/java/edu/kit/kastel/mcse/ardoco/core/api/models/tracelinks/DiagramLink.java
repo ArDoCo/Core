@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
+import java.text.MessageFormat;
+
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -29,8 +31,12 @@ public class DiagramLink extends EndpointTuple {
         return recommendedInstance;
     }
 
+    public DiagramElement getDiagramElement() {
+        return diagramElement;
+    }
+
     @Override
     public String toString() {
-        return "{" + recommendedInstance.getName() + "}-{" + diagramElement + "}-{" + confidence + "}-{" + claimant.getClass().getSimpleName() + "}";
+        return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3}]", recommendedInstance.getName(), diagramElement, confidence, claimant.getClass().getSimpleName());
     }
 }

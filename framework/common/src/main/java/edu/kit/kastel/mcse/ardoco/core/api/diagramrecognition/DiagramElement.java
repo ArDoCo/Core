@@ -21,6 +21,14 @@ public abstract class DiagramElement extends Entity {
     public abstract Diagram getDiagram();
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DiagramElement other) {
+            return getBoundingBox().equals(other.getBoundingBox());
+        }
+        return false;
+    }
+
+    @Override
     public int hashCode() {
         return getBoundingBox().hashCode();
     }

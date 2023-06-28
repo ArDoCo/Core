@@ -9,7 +9,6 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -18,8 +17,8 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     private final Set<DiagramLink> diagramLinks = new HashSet<>();
 
     @Override
-    public ImmutableSet<InstanceLink> getDiagramLinks() {
-        return Sets.immutable.of();
+    public ImmutableSet<DiagramLink> getDiagramLinks() {
+        return Sets.immutable.ofAll(diagramLinks);
     }
 
     @Override

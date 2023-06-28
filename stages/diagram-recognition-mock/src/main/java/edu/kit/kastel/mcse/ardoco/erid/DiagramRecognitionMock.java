@@ -13,8 +13,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramG;
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramsG;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramG;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramsG;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 
 public class DiagramRecognitionMock extends AbstractExecutionStage {

@@ -1,0 +1,1183 @@
+{
+    "$schema": "../../DiagramSchema.json",
+    "diagrams": [
+        {
+            "name": "highlevelArchitecture.png",
+            "boxes": [
+                {
+                    "boundingBox": {
+                        "x": 147,
+                        "y": 8,
+                        "w": 186,
+                        "h": 525
+                    },
+                    "textBoxes": [],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 169,
+                                "y": 49,
+                                "w": 123,
+                                "h": 88
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "E2E",
+                                    "boundingBox": {
+                                        "x": 218,
+                                        "y": 63,
+                                        "w": 25,
+                                        "h": 10
+                                    }
+                                },
+                                {
+                                    "text": "TestNG, Seleium(Java)",
+                                    "boundingBox": {
+                                        "x": 186,
+                                        "y": 96,
+                                        "w": 89,
+                                        "h": 29
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        15,
+                                        185
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 169,
+                                "y": 151,
+                                "w": 123,
+                                "h": 120
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "UI (browser)",
+                                    "boundingBox": {
+                                        "x": 190,
+                                        "y": 164,
+                                        "w": 81,
+                                        "h": 12
+                                    }
+                                },
+                                {
+                                    "text": "HTML,SCSS, Angular (TypeScript), Bootstrap",
+                                    "boundingBox": {
+                                        "x": 188,
+                                        "y": 198,
+                                        "w": 85,
+                                        "h": 61
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        4,
+                                        5,
+                                        7,
+                                        25,
+                                        29,
+                                        81,
+                                        85,
+                                        97
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 169,
+                                "y": 329,
+                                "w": 123,
+                                "h": 88
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "Test Driver",
+                                    "boundingBox": {
+                                        "x": 193,
+                                        "y": 342,
+                                        "w": 75,
+                                        "h": 11
+                                    }
+                                },
+                                {
+                                    "text": "TestNG, Jest",
+                                    "boundingBox": {
+                                        "x": 202,
+                                        "y": 376,
+                                        "w": 55,
+                                        "h": 29
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        10,
+                                        163,
+                                        168
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 169,
+                                "y": 455,
+                                "w": 123,
+                                "h": 55
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "Client",
+                                    "boundingBox": {
+                                        "x": 212,
+                                        "y": 468,
+                                        "w": 38,
+                                        "h": 11
+                                    }
+                                },
+                                {
+                                    "text": "Java",
+                                    "boundingBox": {
+                                        "x": 216,
+                                        "y": 485,
+                                        "w": 26,
+                                        "h": 13
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        18,
+                                        194
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": []
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 374,
+                        "y": 304,
+                        "w": 485,
+                        "h": 253
+                    },
+                    "textBoxes": [],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 551,
+                                "y": 345,
+                                "w": 123,
+                                "h": 55
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "Common",
+                                    "boundingBox": {
+                                        "x": 582,
+                                        "y": 359,
+                                        "w": 61,
+                                        "h": 10
+                                    }
+                                },
+                                {
+                                    "text": "Java",
+                                    "boundingBox": {
+                                        "x": 598,
+                                        "y": 375,
+                                        "w": 26,
+                                        "h": 13
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        20,
+                                        155,
+                                        174,
+                                        175
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 396,
+                                "y": 431,
+                                "w": 123,
+                                "h": 104
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "UI (server)",
+                                    "boundingBox": {
+                                        "x": 432,
+                                        "y": 445,
+                                        "w": 51,
+                                        "h": 27
+                                    }
+                                },
+                                {
+                                    "text": "Java Servlets",
+                                    "boundingBox": {
+                                        "x": 431,
+                                        "y": 494,
+                                        "w": 53,
+                                        "h": 26
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        4,
+                                        5,
+                                        7,
+                                        25,
+                                        29,
+                                        81,
+                                        85,
+                                        97
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 551,
+                                "y": 447,
+                                "w": 123,
+                                "h": 71
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "Logic",
+                                    "boundingBox": {
+                                        "x": 595,
+                                        "y": 460,
+                                        "w": 34,
+                                        "h": 14
+                                    }
+                                },
+                                {
+                                    "text": "Java",
+                                    "boundingBox": {
+                                        "x": 598,
+                                        "y": 494,
+                                        "w": 26,
+                                        "h": 13
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        7,
+                                        47,
+                                        68,
+                                        77,
+                                        78,
+                                        87,
+                                        97,
+                                        122,
+                                        129,
+                                        131,
+                                        176,
+                                        185
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 706,
+                                "y": 447,
+                                "w": 123,
+                                "h": 71
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "Storage",
+                                    "boundingBox": {
+                                        "x": 741,
+                                        "y": 461,
+                                        "w": 52,
+                                        "h": 13
+                                    }
+                                },
+                                {
+                                    "text": "Java",
+                                    "boundingBox": {
+                                        "x": 753,
+                                        "y": 494,
+                                        "w": 26,
+                                        "h": 13
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        1,
+                                        9,
+                                        88,
+                                        101,
+                                        118,
+                                        120,
+                                        123,
+                                        128,
+                                        177
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": []
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 706,
+                        "y": 605,
+                        "w": 123,
+                        "h": 80
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "Google Cloud Datastore",
+                            "boundingBox": {
+                                "x": 734,
+                                "y": 632,
+                                "w": 66,
+                                "h": 44
+                            }
+                        }
+                    ],
+                    "subBoxes": [],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                9,
+                                122,
+                                137,
+                                138,
+                                141
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "packageDiagram.png",
+            "boxes": [
+                {
+                    "boundingBox": {
+                        "x": 277,
+                        "y": 6,
+                        "w": 610,
+                        "h": 126
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "Common",
+                            "boundingBox": {
+                                "x": 548,
+                                "y": 23,
+                                "w": 67,
+                                "h": 10
+                            }
+                        }
+                    ],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 320,
+                                "y": 49,
+                                "w": 119,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "common:util",
+                                    "boundingBox": {
+                                        "x": 332,
+                                        "y": 80,
+                                        "w": 84,
+                                        "h": 11
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        156,
+                                        157
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 471,
+                                "y": 49,
+                                "w": 172,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "common::exception",
+                                    "boundingBox": {
+                                        "x": 484,
+                                        "y": 80,
+                                        "w": 137,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        156,
+                                        158
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 676,
+                                "y": 49,
+                                "w": 187,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "common::datatransfer",
+                                    "boundingBox": {
+                                        "x": 688,
+                                        "y": 80,
+                                        "w": 153,
+                                        "h": 11
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        127,
+                                        156,
+                                        159,
+                                        160
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                1,
+                                20,
+                                155,
+                                174,
+                                175
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 199,
+                        "y": 169,
+                        "w": 172,
+                        "h": 242
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "UI",
+                            "boundingBox": {
+                                "x": 278,
+                                "y": 186,
+                                "w": 13,
+                                "h": 10
+                            }
+                        }
+                    ],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 242,
+                                "y": 212,
+                                "w": 104,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "ui::webapi",
+                                    "boundingBox": {
+                                        "x": 255,
+                                        "y": 243,
+                                        "w": 69,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": []
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 238,
+                                "y": 328,
+                                "w": 109,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "ui::website",
+                                    "boundingBox": {
+                                        "x": 250,
+                                        "y": 359,
+                                        "w": 74,
+                                        "h": 11
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        22,
+                                        23,
+                                        26
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                1,
+                                4,
+                                5,
+                                7,
+                                25,
+                                29,
+                                81,
+                                85,
+                                97
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 454,
+                        "y": 169,
+                        "w": 187,
+                        "h": 405
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "Logic",
+                            "boundingBox": {
+                                "x": 527,
+                                "y": 185,
+                                "w": 40,
+                                "h": 14
+                            }
+                        }
+                    ],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 498,
+                                "y": 212,
+                                "w": 106,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "logic::core",
+                                    "boundingBox": {
+                                        "x": 511,
+                                        "y": 243,
+                                        "w": 71,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        84,
+                                        86
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 504,
+                                "y": 328,
+                                "w": 95,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "logic::api",
+                                    "boundingBox": {
+                                        "x": 516,
+                                        "y": 359,
+                                        "w": 60,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        84,
+                                        85
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 486,
+                                "y": 491,
+                                "w": 130,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "logic::external",
+                                    "boundingBox": {
+                                        "x": 499,
+                                        "y": 522,
+                                        "w": 95,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": []
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                1,
+                                7,
+                                47,
+                                68,
+                                77,
+                                78,
+                                87,
+                                97,
+                                122,
+                                129,
+                                131,
+                                176,
+                                185
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 678,
+                        "y": 169,
+                        "w": 202,
+                        "h": 405
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "Storage",
+                            "boundingBox": {
+                                "x": 749,
+                                "y": 186,
+                                "w": 60,
+                                "h": 13
+                            }
+                        }
+                    ],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 702,
+                                "y": 212,
+                                "w": 134,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "storage::entity",
+                                    "boundingBox": {
+                                        "x": 715,
+                                        "y": 244,
+                                        "w": 101,
+                                        "h": 13
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        125,
+                                        130,
+                                        132
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 714,
+                                "y": 328,
+                                "w": 115,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "storage::api",
+                                    "boundingBox": {
+                                        "x": 726,
+                                        "y": 359,
+                                        "w": 81,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        130,
+                                        131
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 702,
+                                "y": 491,
+                                "w": 143,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "storage::search",
+                                    "boundingBox": {
+                                        "x": 714,
+                                        "y": 522,
+                                        "w": 108,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        130,
+                                        133
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                1,
+                                9,
+                                88,
+                                101,
+                                118,
+                                120,
+                                123,
+                                128,
+                                177
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 6,
+                        "y": 448,
+                        "w": 150,
+                        "h": 126
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "TestDriver",
+                            "boundingBox": {
+                                "x": 40,
+                                "y": 464,
+                                "w": 82,
+                                "h": 11
+                            }
+                        }
+                    ],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 49,
+                                "y": 491,
+                                "w": 83,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "test",
+                                    "boundingBox": {
+                                        "x": 72,
+                                        "y": 523,
+                                        "w": 27,
+                                        "h": 10
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": []
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                1,
+                                10,
+                                163,
+                                168
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 193,
+                        "y": 448,
+                        "w": 224,
+                        "h": 405
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "E2E",
+                            "boundingBox": {
+                                "x": 292,
+                                "y": 465,
+                                "w": 26,
+                                "h": 10
+                            }
+                        }
+                    ],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 217,
+                                "y": 491,
+                                "w": 156,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "e2e::pageobjects",
+                                    "boundingBox": {
+                                        "x": 230,
+                                        "y": 522,
+                                        "w": 121,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        187,
+                                        189
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 240,
+                                "y": 654,
+                                "w": 111,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "e2e::cases",
+                                    "boundingBox": {
+                                        "x": 252,
+                                        "y": 686,
+                                        "w": 76,
+                                        "h": 10
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        187,
+                                        190
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 250,
+                                "y": 770,
+                                "w": 90,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "e2e::util",
+                                    "boundingBox": {
+                                        "x": 263,
+                                        "y": 801,
+                                        "w": 55,
+                                        "h": 11
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        187,
+                                        188
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                1,
+                                15,
+                                185
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 649,
+                        "y": 611,
+                        "w": 207,
+                        "h": 242
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "Client",
+                            "boundingBox": {
+                                "x": 731,
+                                "y": 627,
+                                "w": 43,
+                                "h": 11
+                            }
+                        }
+                    ],
+                    "subBoxes": [
+                        {
+                            "boundingBox": {
+                                "x": 693,
+                                "y": 654,
+                                "w": 126,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "client::scripts",
+                                    "boundingBox": {
+                                        "x": 706,
+                                        "y": 685,
+                                        "w": 91,
+                                        "h": 14
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": [
+                                        195,
+                                        198
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "boundingBox": {
+                                "x": 681,
+                                "y": 770,
+                                "w": 151,
+                                "h": 58
+                            },
+                            "textBoxes": [
+                                {
+                                    "text": "client::connector",
+                                    "boundingBox": {
+                                        "x": 693,
+                                        "y": 801,
+                                        "w": 117,
+                                        "h": 11
+                                    }
+                                }
+                            ],
+                            "subBoxes": [],
+                            "tracelinks": [
+                                {
+                                    "name": "text_2021/teammates.txt",
+                                    "sentences": []
+                                }
+                            ]
+                        }
+                    ],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                1,
+                                18,
+                                194
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "boundingBox": {
+                        "x": 781,
+                        "y": 886,
+                        "w": 91,
+                        "h": 79
+                    },
+                    "textBoxes": [
+                        {
+                            "text": "Google Cloud Datastore",
+                            "boundingBox": {
+                                "x": 793,
+                                "y": 913,
+                                "w": 66,
+                                "h": 44
+                            }
+                        }
+                    ],
+                    "subBoxes": [],
+                    "tracelinks": [
+                        {
+                            "name": "text_2021/teammates.txt",
+                            "sentences": [
+                                9,
+                                122,
+                                137,
+                                138,
+                                141
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
