@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -19,6 +18,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -110,21 +111,16 @@ public enum DiagramProject {
 
     private static final Logger logger = LoggerFactory.getLogger(DiagramProject.class);
 
+    private static final Map<String, File> tempFiles = Maps.mutable.empty();
+
     private final Map<ArchitectureModelType, File> allModelFiles = Maps.mutable.empty();
 
     private final String model;
-    private File modelFile;
-    private File modelUMLFile;
     private final String text;
-    private final File textFile;
     private final String configurations;
-    private final File configurationsFile;
     private final String goldStandardTraceabilityLinkRecovery;
-    private final File goldStandardTraceabilityLinkRecoveryFile;
     private final String goldStandardMissingTextForModelElement;
-    private final File goldStandardMissingTextForModelElementFile;
     private final String goldStandardDiagrams;
-    private final File goldStandardDiagramsFile;
     private final ExpectedResults expectedTraceLinkResults;
     private final ExpectedResults expectedInconsistencyResults;
 
@@ -134,9 +130,7 @@ public enum DiagramProject {
             String goldStandardDiagrams, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
         //We need to keep the pathes aswell, because the actual files are just temporary at this point due to jar packaging
         this.model = model;
-        this.modelFile = getFileFromTestResources(model);
         this.architectureModelType = setupArchitectureModelType();
-        allModelFiles.put(architectureModelType, modelFile);
         this.text = text;
         this.configurations = configurations;
         this.goldStandardTraceabilityLinkRecovery = goldStandardTraceabilityLinkRecovery;
@@ -144,12 +138,6 @@ public enum DiagramProject {
         this.goldStandardDiagrams = goldStandardDiagrams;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
-
-        this.textFile = getFileFromTestResources(text);
-        this.configurationsFile = getFileFromTestResources(configurations);
-        this.goldStandardTraceabilityLinkRecoveryFile = getFileFromTestResources(goldStandardTraceabilityLinkRecovery);
-        this.goldStandardMissingTextForModelElementFile = getFileFromTestResources(goldStandardMissingTextForModelElement);
-        this.goldStandardDiagramsFile = getFileFromTestResources(goldStandardDiagrams);
     }
 
     /**
@@ -162,7 +150,7 @@ public enum DiagramProject {
     }
 
     public ArchitectureModelType getArchitectureModelType() {
-        return this.architectureModelType;
+        return architectureModelType;
     }
 
     private ArchitectureModelType setupArchitectureModelType() {
@@ -191,20 +179,22 @@ public enum DiagramProject {
         return Optional.empty();
     }
 
-    private File getTemporaryFileFromInputStream(InputStream is) {
+    private static File getTemporaryFileFromString(String path) {
         //Create .tmp file with ArDoCo prefix
         try {
+            var is = DiagramProject.class.getClassLoader().getResourceAsStream(path);
             var temp = File.createTempFile("ArDoCo", null);
             temp.deleteOnExit();
             Files.copy(is, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            tempFiles.put(path, temp);
             return temp;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private File getFileFromTestResources(String path) {
-        return getTemporaryFileFromInputStream(DiagramProject.class.getClassLoader().getResourceAsStream(path));
+    public static File getFileFromTestResources(@NotNull String path) {
+        return tempFiles.getOrDefault(path, getTemporaryFileFromString(path));
     }
 
     /**
@@ -213,7 +203,7 @@ public enum DiagramProject {
      * @return the File that represents the model for this project
      */
     public File getModelFile() {
-        return modelFile;
+        return getFileFromTestResources(model);
     }
 
     /**
@@ -223,9 +213,6 @@ public enum DiagramProject {
      * @return the File that represents the model for this project or null
      */
     public File getModelFile(ArchitectureModelType modelType) {
-        if (modelType.equals(this.architectureModelType))
-            return modelFile;
-
         var newModelFile = allModelFiles.getOrDefault(modelType, null);
         if (newModelFile == null) {
             newModelFile = getFileFromTestResources(model.replace(getModelDir(architectureModelType), getModelDir(modelType))
@@ -259,12 +246,21 @@ public enum DiagramProject {
     }
 
     /**
+     * Returns the String path that represents the text for this project.
+     *
+     * @return the path as a string
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
      * Returns the File that represents the text for this project.
      *
      * @return the File that represents the text for this project
      */
     public File getTextFile() {
-        return textFile;
+        return getFileFromTestResources(text);
     }
 
     /**
@@ -282,7 +278,7 @@ public enum DiagramProject {
      * @return the file for additional configurations
      */
     public File getAdditionalConfigurationsFile() {
-        return configurationsFile;
+        return getFileFromTestResources(configurations);
     }
 
     /**
@@ -291,7 +287,7 @@ public enum DiagramProject {
      * @return the File that represents the gold standard for this project
      */
     public File getTlrGoldStandardFile() {
-        return goldStandardTraceabilityLinkRecoveryFile;
+        return getFileFromTestResources(goldStandardTraceabilityLinkRecovery);
     }
 
     /**
@@ -334,7 +330,7 @@ public enum DiagramProject {
     }
 
     private File getMissingTextForModelElementGoldStandardFile() {
-        return goldStandardMissingTextForModelElementFile;
+        return getFileFromTestResources(goldStandardMissingTextForModelElement);
     }
 
     /**
@@ -343,7 +339,7 @@ public enum DiagramProject {
      * @return the File that represents the gold standard for this project
      */
     public File getDiagramsGoldStandardFile() {
-        return goldStandardDiagramsFile;
+        return getFileFromTestResources(goldStandardDiagrams);
     }
 
     /**
@@ -365,13 +361,17 @@ public enum DiagramProject {
     }
 
     public ImmutableSet<DiaTexTraceLink> getDiagramTextTraceLinksFromGoldstandard() {
+        return getDiagramTextTraceLinksFromGoldstandard(text);
+    }
+
+    public ImmutableSet<DiaTexTraceLink> getDiagramTextTraceLinksFromGoldstandard(@Nullable String textGoldstandard) {
         MutableSet<DiaTexTraceLink> diagramLinks = Sets.mutable.empty();
-        return Sets.immutable.fromStream(getDiagramsFromGoldstandard().stream().flatMap(d -> d.getTraceLinks().stream()));
+        return Sets.immutable.fromStream(getDiagramsFromGoldstandard().stream().flatMap(d -> d.getTraceLinks(textGoldstandard).stream()));
     }
 
     public ImmutableSet<DiagramG> getDiagramsFromGoldstandard() {
         try {
-            return Sets.immutable.ofAll(Set.of(new ObjectMapper().readValue(goldStandardDiagramsFile, DiagramsG.class).diagrams));
+            return Sets.immutable.ofAll(Set.of(new ObjectMapper().readValue(getDiagramsGoldStandardFile(), DiagramsG.class).diagrams));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

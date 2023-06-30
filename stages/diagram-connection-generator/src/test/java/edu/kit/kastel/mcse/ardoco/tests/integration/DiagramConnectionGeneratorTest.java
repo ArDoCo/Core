@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.tests.TestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
@@ -73,9 +71,7 @@ public class DiagramConnectionGeneratorTest {
     private void run(DiagramProject project) {
         logger.info("Evaluate Diagram Connection for {}", project.name());
         var runner = new TestRunner(project.name());
-        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
-        var params = new TestRunner.Parameters(project.getDiagramsGoldStandardFile(), project.getTextFile(), project.getModelFile(), ArchitectureModelType.PCM,
-                additionalConfigsMap, new File(OUTPUT_DIR), true);
+        var params = new TestRunner.Parameters(project, new File(OUTPUT_DIR), true);
 
         runner.setUp(params);
         runner.runWithoutSaving();

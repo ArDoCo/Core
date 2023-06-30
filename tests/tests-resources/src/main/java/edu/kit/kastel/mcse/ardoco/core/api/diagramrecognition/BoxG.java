@@ -1,29 +1,46 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 
 /**
  * Connector for the {@link Box} JSON representation.
  */
-public class BoxG {
-    public BoundingBoxG boundingBox;
-    public TextBoxG[] textBoxes;
-    public BoxG[] subBoxes;
-    public TracelinkG[] tracelinks;
+public class BoxG extends Box {
+    public final BoundingBoxG boundingBox;
+    public final TextBoxG[] textBoxes;
+    public final BoxG[] subBoxes;
+    public final TracelinkG[] tracelinks;
 
-    public Box toShallowBox() {
-        String uuid = Arrays.stream(boundingBox.toCoordinates()).mapToObj(Integer::toString).reduce("box", (l, r) -> l + "-" + r);
-        return new Box(uuid, boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(),
-                Arrays.stream(textBoxes).map(TextBoxG::toTextBox).collect(Collectors.toList()), null);
+    /**
+     * Create a new box from the goldstandard.
+     *
+     * @param boundingBox the {@link BoundingBox} of the box.
+     * @param textBoxes   all {@link TextBox} instances that are directly contained in this box (does not include sub boxes!)
+     * @param subBoxes    all subboxes that are contained withing the bounding box of this box
+     * @param tracelinks  all tracelinks associated with this box (does not include sub boxes!)
+     */
+    @JsonCreator
+    public BoxG(@JsonProperty("boundingBox") BoundingBoxG boundingBox, @JsonProperty("textBoxes") TextBoxG[] textBoxes,
+            @JsonProperty("subBoxes") BoxG[] subBoxes, @JsonProperty("tracelinks") TracelinkG[] tracelinks) {
+        super(getUUID(boundingBox), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), null);
+        this.boundingBox = boundingBox;
+        this.textBoxes = textBoxes;
+        this.subBoxes = subBoxes;
+        this.tracelinks = tracelinks;
+    }
+
+    private static String getUUID(BoundingBoxG boundingBox) {
+        return Arrays.stream(boundingBox.toCoordinates()).mapToObj(Integer::toString).reduce("box", (l, r) -> l + "-" + r);
     }
 
     public ImmutableSet<DiaTexTraceLink> getTraceLinks() {
-        return Sets.immutable.fromStream(Arrays.stream(tracelinks).flatMap(t -> t.toTraceLinks(toShallowBox()).stream()));
+        return Sets.immutable.fromStream(Arrays.stream(tracelinks).flatMap(t -> t.toTraceLinks(this).stream()));
     }
 }

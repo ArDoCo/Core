@@ -8,34 +8,40 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 
 public class DiagramG implements Diagram {
-    private final File location;
+    private final String path;
     private final List<Box> properBoxes = new ArrayList<>();
     private final List<TextBox> properTextBoxes = new ArrayList<>();
     private final ImmutableSet<DiaTexTraceLink> traceLinks;
 
     @JsonCreator
-    public DiagramG(@JsonProperty("name") String name, @JsonProperty("boxes") BoxG[] boxes) {
-        location = new File("src/test/resources/Benchmark/teastore/diagrams_2018/Overview.jpg");
+    public DiagramG(@JsonProperty("path") String path, @JsonProperty("boxes") BoxG[] boxes) {
+        this.path = path;
         addBoxes(boxes);
-        traceLinks = Sets.immutable.fromStream(Arrays.stream(boxes).flatMap(b -> b.getTraceLinks().stream()));
+        this.traceLinks = Sets.immutable.fromStream(Arrays.stream(boxes).flatMap(b -> b.getTraceLinks().stream()));
     }
 
     private void addBoxes(BoxG[] boxes) {
         for (BoxG boxG : boxes) {
-            addBox(boxG.toShallowBox());
+            addBox(boxG);
             addBoxes(boxG.subBoxes);
         }
     }
 
+    public String getPath() {
+        return path;
+    }
+
     @Override
     public File getLocation() {
-        return location;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -85,5 +91,17 @@ public class DiagramG implements Diagram {
 
     public ImmutableSet<DiaTexTraceLink> getTraceLinks() {
         return traceLinks;
+    }
+
+    /**
+     * Retrieves a set of diagram text trace links associated with the diagram
+     *
+     * @param textGoldstandard Partial path to the goldstandard text file
+     * @return Set of tracelinks
+     */
+    public @NotNull ImmutableSet<DiaTexTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
+        if (textGoldstandard == null)
+            return getTraceLinks();
+        return Sets.immutable.fromStream(traceLinks.stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())));
     }
 }

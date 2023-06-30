@@ -2,7 +2,7 @@
     "$schema": "../../DiagramSchema.json",
     "diagrams": [
         {
-            "name": "bbb-arch-overview.png",
+            "path": "benchmark/bigbluebutton/diagrams_2021/bbb-arch-overview.png",
             "boxes": [
                 {
                     "boundingBox": {
@@ -36,6 +36,20 @@
                                 14,
                                 70,
                                 71
+                            ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                6,
+                                8,
+                                10,
+                                14,
+                                14,
+                                15,
+                                16,
+                                98,
+                                99
                             ]
                         }
                     ]
@@ -75,6 +89,22 @@
                                 45,
                                 71
                             ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                19,
+                                23,
+                                46,
+                                57,
+                                99
+                            ]
                         }
                     ]
                 },
@@ -105,6 +135,14 @@
                                 66,
                                 67
                             ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                89,
+                                91,
+                                92
+                            ]
                         }
                     ]
                 },
@@ -131,10 +169,23 @@
                         {
                             "name": "text_2021/bigbluebutton_1SentPerLine.txt",
                             "sentences": [
+                                5,
                                 63,
                                 65,
                                 68,
-                                71
+                                71,
+                                72
+                            ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                9,
+                                85,
+                                89,
+                                93,
+                                99,
+                                100
                             ]
                         }
                     ]
@@ -167,6 +218,15 @@
                                 58,
                                 77
                             ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                55,
+                                57,
+                                77,
+                                108
+                            ]
                         }
                     ]
                 },
@@ -195,6 +255,13 @@
                             "sentences": [
                                 78,
                                 79
+                            ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                111,
+                                113
                             ]
                         }
                     ]
@@ -228,6 +295,16 @@
                                 52,
                                 58
                             ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                31,
+                                66,
+                                68,
+                                70,
+                                77
+                            ]
                         }
                     ]
                 },
@@ -256,6 +333,13 @@
                             "sentences": [
                                 55,
                                 58
+                            ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                75,
+                                77
                             ]
                         }
                     ]
@@ -288,6 +372,15 @@
                                 35,
                                 76
                             ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                35,
+                                43,
+                                45,
+                                107
+                            ]
                         }
                     ]
                 },
@@ -313,6 +406,10 @@
                     "tracelinks": [
                         {
                             "name": "text_2021/bigbluebutton_1SentPerLine.txt",
+                            "sentences": []
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
                             "sentences": []
                         }
                     ]
@@ -343,6 +440,13 @@
                                 46,
                                 47
                             ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                60,
+                                62
+                            ]
                         }
                     ]
                 },
@@ -369,12 +473,25 @@
                         {
                             "name": "text_2021/bigbluebutton_1SentPerLine.txt",
                             "sentences": [
-                                55,
                                 56,
+                                57,
+                                58,
                                 59,
+                                60,
                                 61,
                                 64,
                                 70
+                            ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                77,
+                                80,
+                                82,
+                                83,
+                                86,
+                                98
                             ]
                         }
                     ]
@@ -405,6 +522,14 @@
                                 37,
                                 38,
                                 39
+                            ]
+                        },
+                        {
+                            "name": "text_2021/bigbluebutton.txt",
+                            "sentences": [
+                                46,
+                                47,
+                                48
                             ]
                         }
                     ]

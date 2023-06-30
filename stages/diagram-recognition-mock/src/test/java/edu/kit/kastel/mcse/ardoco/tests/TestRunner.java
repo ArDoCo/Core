@@ -1,8 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.tests;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +9,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunnerExt;
 import edu.kit.kastel.mcse.ardoco.erid.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class TestRunner extends ArDoCoRunnerExt<TestRunner.Parameters> {
     public TestRunner(String projectName) {
         super(projectName);
     }
 
-    public record Parameters(File goldStandardDirectory, Map<String, String> additionalConfigs) {
+    public record Parameters(DiagramProject diagramProject) {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(TestRunner.class);
@@ -39,9 +38,9 @@ public class TestRunner extends ArDoCoRunnerExt<TestRunner.Parameters> {
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
-        var data = new InputDiagramDataMock(p.goldStandardDirectory);
+        var data = new InputDiagramDataMock(p.diagramProject);
         dataRepository.addData(InputDiagramDataMock.ID, data);
 
-        arDoCo.addPipelineStep(DiagramRecognitionMock.get(p.additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(DiagramRecognitionMock.get(p.diagramProject().getAdditionalConfigurations(), dataRepository));
     }
 }

@@ -2,7 +2,7 @@
     "$schema": "../../DiagramSchema.json",
     "diagrams": [
         {
-            "name": "Overview.png",
+            "path": "benchmark/teastore/diagrams_2018/goldstandard.png",
             "boxes": [
                 {
                     "boundingBox": {

@@ -64,8 +64,7 @@ public class DiagramRecognitionTest {
 
     private void run(DiagramProject project) {
         var runner = new TestRunner(project.name());
-        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
-        var params = new TestRunner.Parameters(project.getDiagramsGoldStandardFile(), additionalConfigsMap);
+        var params = new TestRunner.Parameters(project);
         runner.setUp(params);
 
         runner.runWithoutSaving();

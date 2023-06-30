@@ -13,7 +13,7 @@
         "diagram": {
             "type": "object",
             "properties": {
-                "name": {
+                "path": {
                     "type": "string"
                 },
                 "boxes": {
@@ -24,7 +24,7 @@
                 }
             },
             "required": [
-                "name",
+                "path",
                 "boxes"
             ]
         },

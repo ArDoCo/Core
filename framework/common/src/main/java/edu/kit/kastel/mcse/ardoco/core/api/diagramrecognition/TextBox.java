@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class TextBox implements Serializable {
+public class TextBox implements Serializable {
     @JsonProperty("x")
     private int xCoordinate;
     @JsonProperty("y")

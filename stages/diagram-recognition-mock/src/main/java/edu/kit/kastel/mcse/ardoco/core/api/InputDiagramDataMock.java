@@ -1,8 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api;
 
-import java.io.File;
-
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
+import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 /**
  * This {@link PipelineStepData} gives access to the diagram goldstandard associated with the project to analyze.
@@ -10,21 +9,13 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 public class InputDiagramDataMock implements PipelineStepData {
     public static final String ID = "InputDiagramDataMock";
 
-    private final String diagramGoldStandard;
+    private final DiagramProject diagramProject;
 
-    public InputDiagramDataMock(File diagramGoldStandard) {
-        this.diagramGoldStandard = diagramGoldStandard.getPath();
+    public InputDiagramDataMock(DiagramProject diagramProject) {
+        this.diagramProject = diagramProject;
     }
 
-    public InputDiagramDataMock(String diagramGoldStandard) {
-        this.diagramGoldStandard = diagramGoldStandard;
-    }
-
-    public File getFile() {
-        return new File(diagramGoldStandard);
-    }
-
-    public String getPath() {
-        return diagramGoldStandard;
+    public DiagramProject getDiagramProject() {
+        return diagramProject;
     }
 }

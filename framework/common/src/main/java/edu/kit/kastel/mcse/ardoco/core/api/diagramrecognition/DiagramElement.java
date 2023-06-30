@@ -13,13 +13,6 @@ public abstract class DiagramElement extends Entity {
      */
     public abstract BoundingBox getBoundingBox();
 
-    /**
-     * Diagram this element belongs to
-     *
-     * @return the {@link Diagram}
-     */
-    public abstract Diagram getDiagram();
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DiagramElement other) {

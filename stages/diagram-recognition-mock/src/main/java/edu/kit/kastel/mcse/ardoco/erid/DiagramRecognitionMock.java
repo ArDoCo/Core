@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.erid;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramG;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramsG;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 
 public class DiagramRecognitionMock extends AbstractExecutionStage {
@@ -38,9 +34,9 @@ public class DiagramRecognitionMock extends AbstractExecutionStage {
         }
         logger.info("Creating DiagramRecognitionMock State");
         var diagramRecognitionState = new DiagramRecognitionStateImpl();
-        var diagrams = loadDiagrams(inputDiagramsMock.get().getFile());
+        var diagrams = inputDiagramsMock.get().getDiagramProject().getDiagramsFromGoldstandard();
         for (var diagram : diagrams) {
-            logger.debug("Loaded Diagram {}", diagram.getLocation());
+            logger.debug("Loaded Diagram {}", diagram.getPath());
             diagramRecognitionState.addDiagram(diagram);
         }
         getDataRepository().addData(DiagramRecognitionState.ID, diagramRecognitionState);
@@ -49,13 +45,5 @@ public class DiagramRecognitionMock extends AbstractExecutionStage {
     @Override
     protected List<PipelineAgent> getEnabledAgents() {
         return new ArrayList<>();
-    }
-
-    private DiagramG[] loadDiagrams(File goldStandard) {
-        try {
-            return mapper.readValue(goldStandard, DiagramsG.class).diagrams;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
