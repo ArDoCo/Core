@@ -11,15 +11,7 @@
 
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>diagram-recognition-mock</artifactId>
-    <packaging>pom</packaging>
-
-    <properties>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jackson.version>2.14.2</jackson.version>
-        <slf4j.version>2.0.7</slf4j.version>
-    </properties>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -108,6 +100,11 @@
             <artifactId>tests-resources</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -1,4 +1,4 @@
-package tests;
+package edu.kit.kastel.mcse.ardoco.tests;
 
 import java.io.File;
 import java.io.IOException;

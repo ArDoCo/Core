@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2023. */
-package tests.eval;
+package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.File;
 import java.io.IOException;

@@ -318,16 +318,16 @@ class InconsistencyDetectionEvaluationIT {
 
     private void checkResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()), () -> Assertions.assertTrue(results
-                                .accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()),
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     private void writeOutResults(Project project, List<EvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
@@ -502,8 +502,8 @@ class InconsistencyDetectionEvaluationIT {
         var falseNegatives = result.falseNegatives().toList();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
 
-        var results = EvaluationResults.createEvaluationResults(new ResultMatrix<String>(truePositives.toImmutable(), 0, falsePositives.toImmutable(),
-                falseNegatives.toImmutable()));
+        var results = EvaluationResults.createEvaluationResults(
+                new ResultMatrix<String>(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives.toImmutable()));
         allResults.add(results);
     }
 
@@ -555,5 +555,4 @@ class InconsistencyDetectionEvaluationIT {
         var id = arDoCoResult.getModelIds().get(0);
         return arDoCoResult.getInconsistenciesOfTypeForModel(id, MissingModelInstanceInconsistency.class);
     }
-
 }
