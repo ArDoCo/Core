@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
@@ -195,6 +197,26 @@ public enum DiagramProject {
 
     public static File getFileFromTestResources(@NotNull String path) {
         return tempFiles.getOrDefault(path, getTemporaryFileFromString(path));
+    }
+
+    public static List<DiagramProject> getHistoricalProjects() {
+        return filterForHistoricalProjects(List.of(values()));
+    }
+
+    public static List<DiagramProject> getNonHistoricalProjects() {
+        return filterForNonHistoricalProjects(List.of(values()));
+    }
+
+    private static <T extends Enum<T>> List<T> filterForHistoricalProjects(Collection<T> unfilteredProjects) {
+        return filterForProjects(unfilteredProjects, p -> p.name().endsWith("HISTORICAL"));
+    }
+
+    private static <T extends Enum<T>> List<T> filterForNonHistoricalProjects(Collection<T> unfilteredProjects) {
+        return filterForProjects(unfilteredProjects, p -> !p.name().endsWith("HISTORICAL"));
+    }
+
+    private static <T extends Enum<T>> List<T> filterForProjects(Collection<T> unfilteredProjects, Predicate<T> filter) {
+        return unfilteredProjects.stream().filter(filter).toList();
     }
 
     /**

@@ -7,12 +7,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 public class DiaTexTraceLink {
     private final DiagramElement diagramElement;
     private final int sentenceNo;
     private final Word word;
+
+    private Text text;
 
     private final String goldStandard;
 
@@ -61,6 +64,11 @@ public class DiaTexTraceLink {
         return word;
     }
 
+    /**
+     * Gets the sentence number, indexing starts at 1.
+     *
+     * @return sentence number
+     */
     public int getSentenceNo() {
         return sentenceNo;
     }
@@ -80,6 +88,13 @@ public class DiaTexTraceLink {
 
     @Override
     public String toString() {
-        return MessageFormat.format("[{0}]-[{1}]", sentenceNo, diagramElement);
+        if (text == null)
+            return MessageFormat.format("[{0}]-[{1}]", sentenceNo, diagramElement);
+        var sentenceText = text.getSentences().get(getSentenceNo() - 1).getText();
+        return MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), sentenceText);
+    }
+
+    public void setText(Text text) {
+        this.text = text;
     }
 }

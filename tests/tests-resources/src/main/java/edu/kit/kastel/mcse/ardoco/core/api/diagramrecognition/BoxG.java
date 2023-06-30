@@ -13,16 +13,16 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
  * Connector for the {@link Box} JSON representation.
  */
 public class BoxG extends Box {
-    public final BoundingBoxG boundingBox;
-    public final TextBoxG[] textBoxes;
-    public final BoxG[] subBoxes;
-    public final TracelinkG[] tracelinks;
+    private final BoundingBoxG boundingBox;
+    private final TextBoxG[] textBoxes;
+    private final BoxG[] subBoxes;
+    private final TracelinkG[] tracelinks;
 
     /**
      * Create a new box from the goldstandard.
      *
-     * @param boundingBox the {@link BoundingBox} of the box.
-     * @param textBoxes   all {@link TextBox} instances that are directly contained in this box (does not include sub boxes!)
+     * @param boundingBox the {@link BoundingBoxG} of the box.
+     * @param textBoxes   all {@link TextBoxG} instances that are directly contained in this box (does not include sub boxes!)
      * @param subBoxes    all subboxes that are contained withing the bounding box of this box
      * @param tracelinks  all tracelinks associated with this box (does not include sub boxes!)
      */
@@ -42,5 +42,15 @@ public class BoxG extends Box {
 
     public ImmutableSet<DiaTexTraceLink> getTraceLinks() {
         return Sets.immutable.fromStream(Arrays.stream(tracelinks).flatMap(t -> t.toTraceLinks(this).stream()));
+    }
+
+    public BoxG[] getSubBoxes() {
+        return subBoxes;
+    }
+
+    @Override
+    public String toString() {
+        var allText = getTexts().stream().map(t -> t.getText()).reduce((l, r) -> l + " | " + r).orElse("");
+        return allText.substring(0, Math.min(allText.length(), 20));
     }
 }

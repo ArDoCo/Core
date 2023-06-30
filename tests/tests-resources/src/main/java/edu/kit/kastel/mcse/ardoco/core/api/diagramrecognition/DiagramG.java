@@ -31,7 +31,7 @@ public class DiagramG implements Diagram {
     private void addBoxes(BoxG[] boxes) {
         for (BoxG boxG : boxes) {
             addBox(boxG);
-            addBoxes(boxG.subBoxes);
+            addBoxes(boxG.getSubBoxes());
         }
     }
 

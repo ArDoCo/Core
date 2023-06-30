@@ -1,10 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Predicate;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -26,35 +22,9 @@ public class DiagramConnectionGeneratorTest {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorTest.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
-    private static List<DiagramProject> getHistoricalProjects() {
-        return filterForHistoricalProjects(List.of(DiagramProject.values()));
-    }
-
-    private static List<DiagramProject> getNonHistoricalProjects() {
-        return filterForNonHistoricalProjects(List.of(DiagramProject.values()));
-    }
-
-    private static <T extends Enum<T>> List<T> filterForHistoricalProjects(Collection<T> unfilteredProjects) {
-        return filterForProjects(unfilteredProjects, p -> p.name().endsWith("HISTORICAL"));
-    }
-
-    private static <T extends Enum<T>> List<T> filterForNonHistoricalProjects(Collection<T> unfilteredProjects) {
-        return filterForProjects(unfilteredProjects, p -> !p.name().endsWith("HISTORICAL"));
-    }
-
-    private static <T extends Enum<T>> List<T> filterForProjects(Collection<T> unfilteredProjects, Predicate<T> filter) {
-        List<T> projects = new ArrayList<>();
-        for (var project : unfilteredProjects) {
-            if (filter.test(project)) {
-                projects.add(project);
-            }
-        }
-        return projects;
-    }
-
     @DisplayName("Evaluate Diagram Connection Generator")
     @ParameterizedTest(name = "{0}")
-    @MethodSource("getNonHistoricalProjects")
+    @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
     @Order(1)
     void evaluateNonHistoricalDiagramRecognition(DiagramProject project) {
         run(project);
@@ -62,7 +32,7 @@ public class DiagramConnectionGeneratorTest {
 
     @DisplayName("Evaluate Diagram Connection Generator (Historical)")
     @ParameterizedTest(name = "{0}")
-    @MethodSource("getHistoricalProjects")
+    @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getHistoricalProjects")
     @Order(2)
     void evaluateHistoricalDiagramRecognition(DiagramProject project) {
         run(project);
@@ -77,14 +47,15 @@ public class DiagramConnectionGeneratorTest {
         runner.runWithoutSaving();
 
         var dataRepository = runner.getArDoCo().getDataRepository();
+        var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).get().getText();
         var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).get();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).get();
         var diagrams = diagramRecognition.getDiagrams();
         //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var diagramLinks = diagramConnectionState.getDiagramLinks();
-        var traceLinks = diagramConnectionState.getTraceLinks();
-        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard();
+        var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).toList();
+        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard().stream().peek(t -> t.setText(text)).toList();
 
         var totalSentences = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).get().getText().getSentences().size();
         var totalDiagramElements = diagrams.stream().flatMap(d -> d.getBoxes().stream()).toList().size();
