@@ -2,7 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
-public abstract class DiagramElement extends Entity {
+public abstract class DiagramElement extends Entity implements Comparable<DiagramElement> {
     public record BoundingBox(int minX, int minY, int maxX, int maxH) {
     }
 
@@ -24,5 +24,10 @@ public abstract class DiagramElement extends Entity {
     @Override
     public int hashCode() {
         return getBoundingBox().hashCode();
+    }
+
+    @Override
+    public int compareTo(DiagramElement o) {
+        return hashCode() - o.hashCode();
     }
 }

@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
-public class DiaTexTraceLink {
+public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     private final DiagramElement diagramElement;
     private final int sentenceNo;
     private final Word word;
@@ -96,5 +96,13 @@ public class DiaTexTraceLink {
 
     public void setText(Text text) {
         this.text = text;
+    }
+
+    @Override
+    public int compareTo(@NotNull DiaTexTraceLink o) {
+        var comp = diagramElement.compareTo(o.diagramElement);
+        if (comp == 0)
+            return sentenceNo - o.getSentenceNo();
+        return comp;
     }
 }

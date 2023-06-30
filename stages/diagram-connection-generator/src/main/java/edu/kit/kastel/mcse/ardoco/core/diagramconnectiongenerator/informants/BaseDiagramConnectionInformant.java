@@ -1,8 +1,15 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.informants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
+
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
@@ -10,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
@@ -22,6 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 public class BaseDiagramConnectionInformant extends Informant {
+    private final Pattern abbreviationsPattern = Pattern.compile("\\b(?:[A-Z][a-z]*){2,}");
 
     public BaseDiagramConnectionInformant(DataRepository dataRepository) {
         super(BaseDiagramConnectionInformant.class.getSimpleName(), dataRepository);
@@ -79,9 +86,34 @@ public class BaseDiagramConnectionInformant extends Informant {
         var instances = new ArrayList<Pair<DiagramElement, ModelInstance>>();
 
         for (Box box : diagram.getBoxes()) {
-            var nameTemp = box.getTexts().stream().map(TextBox::getText).reduce("", (l, r) -> l + r).replaceAll("\\s+", "");
-            instances.add(new Pair<DiagramElement, ModelInstance>(box, new ModelInstanceImpl(nameTemp, "", Integer.toString(nameTemp.hashCode()))));
+            var names = possibleNames(box);
+            names.forEach(
+                    name -> instances.add(new Pair<DiagramElement, ModelInstance>(box, new ModelInstanceImpl(name, "", Integer.toString(name.hashCode())))));
         }
+
         return instances;
+    }
+
+    private Set<String> possibleNames(Box box) {
+        var names = Sets.mutable.<String>empty();
+        var withoutComma = Sets.mutable.<String>empty();
+        var abbreviations = Sets.mutable.<String>empty();
+
+        names.addAll(box.getTexts().stream().flatMap(t -> processText(t.getText()).stream()).toList());
+        names.addAll(names.stream().flatMap(t -> possibleAbbreviations(t).stream()).toList());
+
+        return names;
+    }
+
+    private ImmutableSet<String> processText(String text) {
+        var split = Arrays.stream(text.split(",|\\(|\\)"));
+        split = split.map(s -> s.replaceAll("\\s+", ""));
+        split = split.filter(t -> !t.equals(""));
+        return Sets.immutable.fromStream(split);
+    }
+
+    private ImmutableSet<String> possibleAbbreviations(String text) {
+        var matcher = abbreviationsPattern.matcher(text);
+        return Sets.immutable.fromStream(matcher.results().map(MatchResult::group));
     }
 }

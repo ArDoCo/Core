@@ -5,6 +5,7 @@ import java.io.File;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -38,6 +39,11 @@ public class DiagramConnectionGeneratorTest {
         run(project);
     }
 
+    @Test
+    void teamstoreTest() {
+        run(DiagramProject.TEAMMATES);
+    }
+
     private void run(DiagramProject project) {
         logger.info("Evaluate Diagram Connection for {}", project.name());
         var runner = new TestRunner(project.name());
@@ -54,16 +60,18 @@ public class DiagramConnectionGeneratorTest {
         //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var diagramLinks = diagramConnectionState.getDiagramLinks();
-        var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).toList();
-        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard().stream().peek(t -> t.setText(text)).toList();
+        var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).sorted().toList();
+        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard().stream().peek(t -> t.setText(text)).sorted().toList();
 
         var totalSentences = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).get().getText().getSentences().size();
         var totalDiagramElements = diagrams.stream().flatMap(d -> d.getBoxes().stream()).toList().size();
         var total = totalSentences * totalDiagramElements;
         //TODO
-        var TP = goldStandardTraceLinks.stream().filter(g -> traceLinks.contains(g)).toList().size();
-        var FP = traceLinks.stream().filter(t -> !goldStandardTraceLinks.contains(t)).toList().size();
-        var fnLinks = goldStandardTraceLinks.stream().filter(g -> !traceLinks.contains(g)).toList();
+        var tpLinks = goldStandardTraceLinks.stream().filter(g -> traceLinks.contains(g)).sorted().toList();
+        var TP = tpLinks.size();
+        var fpLinks = traceLinks.stream().filter(t -> !goldStandardTraceLinks.contains(t)).sorted().toList();
+        var FP = fpLinks.size();
+        var fnLinks = goldStandardTraceLinks.stream().filter(g -> !traceLinks.contains(g)).sorted().toList();
         var FN = fnLinks.size();
         var TN = total - TP - FP - FN;
         var P = TP / (double) (TP + FP);
