@@ -41,15 +41,15 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
+                                4,
+                                5,
                                 6,
-                                8,
-                                10,
+                                11,
+                                12,
+                                13,
                                 14,
-                                14,
-                                15,
-                                16,
-                                98,
-                                99
+                                70,
+                                71
                             ]
                         }
                     ]
@@ -93,17 +93,17 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
+                                6,
+                                8,
+                                9,
                                 10,
-                                11,
                                 12,
                                 13,
-                                14,
                                 15,
-                                19,
-                                23,
-                                46,
-                                57,
-                                99
+                                18,
+                                37,
+                                45,
+                                71
                             ]
                         }
                     ]
@@ -139,9 +139,9 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                89,
-                                91,
-                                92
+                                65,
+                                66,
+                                67
                             ]
                         }
                     ]
@@ -180,12 +180,12 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                9,
-                                85,
-                                89,
-                                93,
-                                99,
-                                100
+                                5,
+                                63,
+                                65,
+                                68,
+                                71,
+                                72
                             ]
                         }
                     ]
@@ -222,10 +222,10 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                55,
-                                57,
-                                77,
-                                108
+                                44,
+                                45,
+                                58,
+                                77
                             ]
                         }
                     ]
@@ -260,8 +260,8 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                111,
-                                113
+                                78,
+                                79
                             ]
                         }
                     ]
@@ -299,11 +299,11 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                31,
-                                66,
-                                68,
-                                70,
-                                77
+                                25,
+                                49,
+                                50,
+                                52,
+                                58
                             ]
                         }
                     ]
@@ -338,8 +338,8 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                75,
-                                77
+                                55,
+                                58
                             ]
                         }
                     ]
@@ -376,10 +376,10 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
+                                28,
+                                34,
                                 35,
-                                43,
-                                45,
-                                107
+                                76
                             ]
                         }
                     ]
@@ -444,8 +444,8 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                60,
-                                62
+                                46,
+                                47
                             ]
                         }
                     ]
@@ -486,12 +486,14 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                77,
-                                80,
-                                82,
-                                83,
-                                86,
-                                98
+                                56,
+                                57,
+                                58,
+                                59,
+                                60,
+                                61,
+                                64,
+                                70
                             ]
                         }
                     ]
@@ -527,9 +529,9 @@
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
-                                46,
-                                47,
-                                48
+                                37,
+                                38,
+                                39
                             ]
                         }
                     ]
