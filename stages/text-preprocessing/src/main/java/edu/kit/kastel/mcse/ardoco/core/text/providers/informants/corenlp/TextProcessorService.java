@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * This text processor processes texts by sending requests to a microservice, which provides text processing using CoreNLP.
@@ -37,13 +38,40 @@ public class TextProcessorService {
         String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl")
                 + ConfigManager.getInstance().getProperty("corenlpService")
                 + inputText;
-        return sendGetRequest(requestUrl);
+        return sendAuthenticatedGetRequest(requestUrl);
     }
 
     private String sendGetRequest(String requestUrl) throws IOException {
         URL url = new URL(requestUrl);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
+        String content = readGetResponse(con);
+        con.disconnect();
+        return content;
+    }
+
+    public String sendAuthenticatedGetRequest(String requestUrl) throws IOException {
+        String username = System.getenv("USERNAME");
+        String password = System.getenv("PASSWORD");
+        if (username == null || password == null) {
+            throw new IOException("Environment variables USERNAME and PASSWORD must be set.");
+        }
+        URL url = new URL(requestUrl);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        // Encode the username and password
+        String authString = username + ":" + password;
+        String encodedAuthString = Base64.getEncoder().encodeToString(authString.getBytes());
+        String authHeaderValue = "Basic " + encodedAuthString;
+        con.setRequestProperty("Authorization", authHeaderValue);
+
+        String content = readGetResponse(con);
+        con.disconnect();
+        return content;
+    }
+
+    private String readGetResponse(HttpURLConnection con) throws IOException {
         if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new IOException("HTTP error code: " + con.getResponseCode());
         }

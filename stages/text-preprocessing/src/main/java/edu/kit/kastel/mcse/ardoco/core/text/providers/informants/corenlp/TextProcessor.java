@@ -23,7 +23,6 @@ public class TextProcessor {
     public Text processText(String inputText) {
         if (ConfigManager.getInstance().getProperty("nlpProviderSource").equals("microservice")
                 && MicroserviceChecker.isMicroserviceAvailable()) {
-            // return a text processor that uses the CoreNLP microservice
             int k = 0;
             while (k < maxFailedServiceRequests) {
                 try {
@@ -32,6 +31,7 @@ public class TextProcessor {
                     return processedText;
                 } catch (IOException e) {
                     k++;
+                    logger.warn("Could not process text with CoreNLP microservice. Trying again. Error: " + e.getMessage());
                 }
             }
             logger.warn("Could not process text with CoreNLP microservice. Processing locally instead.");
