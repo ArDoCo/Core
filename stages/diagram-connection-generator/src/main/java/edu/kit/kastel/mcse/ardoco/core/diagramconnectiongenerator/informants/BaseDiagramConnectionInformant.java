@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -62,6 +63,7 @@ public class BaseDiagramConnectionInformant extends Informant {
         var recommendedInstances = recommendationState.getRecommendedInstances();
         for (Diagram diagram : diagramState.getDiagrams()) {
             for (Pair<DiagramElement, ModelInstance> pair : diagramToModelInstances(diagram)) {
+                //SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstances.get(10), dataRepository.getData("ModelStatesData", ModelStates.class).get().getModelExtractionState("_tRJJ0KESEeu-mYqkDskRow").getInstances().get(4))
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
                     diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1);
@@ -74,6 +76,7 @@ public class BaseDiagramConnectionInformant extends Informant {
             DiagramConnectionState diagramConnectionState) {
         for (Diagram diagram : diagramState.getDiagrams()) {
             for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
+                //TODO SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, dataRepository.getData("ModelStatesData", ModelStates.class).get().getModelExtractionState("_tRJJ0KESEeu-mYqkDskRow").getInstances().get(4))
                 var sameInstances = diagramToModelInstances(diagram).stream()
                         .filter(pair -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second()));
                 sameInstances.forEach(pair -> diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1));
@@ -96,8 +99,6 @@ public class BaseDiagramConnectionInformant extends Informant {
 
     private Set<String> possibleNames(Box box) {
         var names = Sets.mutable.<String>empty();
-        var withoutComma = Sets.mutable.<String>empty();
-        var abbreviations = Sets.mutable.<String>empty();
 
         names.addAll(box.getTexts().stream().flatMap(t -> processText(t.getText()).stream()).toList());
         names.addAll(names.stream().flatMap(t -> possibleAbbreviations(t).stream()).toList());
@@ -106,10 +107,14 @@ public class BaseDiagramConnectionInformant extends Informant {
     }
 
     private ImmutableSet<String> processText(String text) {
-        var split = Arrays.stream(text.split(",|\\(|\\)"));
-        split = split.map(s -> s.replaceAll("\\s+", ""));
-        split = split.filter(t -> !t.equals(""));
-        return Sets.immutable.fromStream(split);
+        //Split up "Sth (Sthelse)"
+        var split = Arrays.stream(text.split(",|\\(|\\)")).map(s -> s.trim()).collect(Collectors.toList());
+        //Split up "camelCase", "CamelCase", "CamelABBREVIATIONCase" etc
+        var decameled = split.stream().flatMap(s -> Arrays.stream(s.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])"))).reduce((l, r) -> l + " " + r);
+        if (decameled.isPresent())
+            split.add(decameled.get());
+        split.remove("");
+        return Sets.immutable.ofAll(split);
     }
 
     private ImmutableSet<String> possibleAbbreviations(String text) {

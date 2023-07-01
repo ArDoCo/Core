@@ -44,6 +44,11 @@ public class DiagramConnectionGeneratorTest {
         run(DiagramProject.TEAMMATES);
     }
 
+    @Test
+    void teastoreTest() {
+        run(DiagramProject.TEASTORE);
+    }
+
     private void run(DiagramProject project) {
         logger.info("Evaluate Diagram Connection for {}", project.name());
         var runner = new TestRunner(project.name());

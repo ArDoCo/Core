@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Box extends DiagramElement implements Serializable {
     @JsonProperty
-    private String uuid = UUID.randomUUID().toString();
+    private String uuid;
     // the four coordinates x1,y1,x2,y2
     @JsonProperty("box")
     private int[] coordinates;
@@ -28,8 +28,10 @@ public class Box extends DiagramElement implements Serializable {
     private transient List<TextBox> textBoxes = new ArrayList<>();
     private transient Integer dominatingColor = null;
 
+    // Jackson JSON
     private Box() {
-        // Jackson JSON
+        super(UUID.randomUUID().toString());
+        this.uuid = getName();
     }
 
     /**
@@ -43,6 +45,7 @@ public class Box extends DiagramElement implements Serializable {
      * @param dominatingColor a dominating color in the box (iff present)
      */
     public Box(String uuid, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes, Integer dominatingColor) {
+        super(uuid);
         this.uuid = uuid;
         this.coordinates = coordinates;
         this.confidence = confidence;

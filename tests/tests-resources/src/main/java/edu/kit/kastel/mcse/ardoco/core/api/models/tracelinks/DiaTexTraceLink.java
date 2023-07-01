@@ -76,6 +76,8 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DiaTexTraceLink other) {
+            if (this.goldStandard != null && other.goldStandard != null && this.goldStandard != other.goldStandard)
+                return false;
             return this.sentenceNo == other.getSentenceNo() && diagramElement.equals(other.getDiagramElement());
         }
         return false;
@@ -83,7 +85,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sentenceNo, diagramElement);
+        return Objects.hash(sentenceNo, diagramElement, goldStandard);
     }
 
     @Override
@@ -100,9 +102,19 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
 
     @Override
     public int compareTo(@NotNull DiaTexTraceLink o) {
-        var comp = diagramElement.compareTo(o.diagramElement);
-        if (comp == 0)
-            return sentenceNo - o.getSentenceNo();
-        return comp;
+        var gs = 0;
+        if (goldStandard != null && o.goldStandard == null)
+            gs = -1;
+        if (goldStandard == null && o.goldStandard != null)
+            gs = 1;
+        if (goldStandard != null && o.goldStandard != null)
+            gs = goldStandard.compareTo(o.goldStandard);
+        if (gs == 0) {
+            var comp = diagramElement.compareTo(o.diagramElement);
+            if (comp == 0)
+                return sentenceNo - o.getSentenceNo();
+            return comp;
+        }
+        return gs;
     }
 }

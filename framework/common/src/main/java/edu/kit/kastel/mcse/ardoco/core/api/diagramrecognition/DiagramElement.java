@@ -6,6 +6,10 @@ public abstract class DiagramElement extends Entity implements Comparable<Diagra
     public record BoundingBox(int minX, int minY, int maxX, int maxH) {
     }
 
+    protected DiagramElement(String name) {
+        super(name);
+    }
+
     /**
      * Returns a {@link BoundingBox}, which encases the element.
      *
