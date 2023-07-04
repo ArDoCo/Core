@@ -138,14 +138,14 @@ public class ObjectToDtoConverter {
     private IncomingDependencyDTO convertToDepInDTO(DependencyImpl dependency) {
         IncomingDependencyDTO dependencyDTO = new IncomingDependencyDTO();
         dependencyDTO.setDependencyTag(dependency.getDependencyTag());
-        dependencyDTO.setSourceWordId(dependency.getWordId());
+        dependencyDTO.setSourceWordId(dependency.getWordId() + 1L);
         return dependencyDTO;
     }
 
     private OutgoingDependencyDTO convertToDepOutDTO(DependencyImpl dependency) {
         OutgoingDependencyDTO dependencyDTO = new OutgoingDependencyDTO();
         dependencyDTO.setDependencyTag(dependency.getDependencyTag());
-        dependencyDTO.setTargetWordId(dependency.getWordId());
+        dependencyDTO.setTargetWordId(dependency.getWordId() + 1L);
         return dependencyDTO;
     }
 }
