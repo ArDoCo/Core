@@ -1,7 +1,6 @@
 /* Licensed under MIT 2023. */
 package io.github.ardoco.textproviderjson.converter;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
@@ -35,7 +34,7 @@ public final class JsonConverter {
         ObjectMapper mapper = new ObjectMapper();
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
 
-        InputStream inputSchema = new FileInputStream(SCHEMA_PATH);
+        InputStream inputSchema = JsonConverter.class.getClassLoader().getResourceAsStream(SCHEMA_PATH);
         JsonSchema schema = schemaFactory.getSchema(inputSchema);
 
         Set<ValidationMessage> message = schema.validate(mapper.readTree(json));
