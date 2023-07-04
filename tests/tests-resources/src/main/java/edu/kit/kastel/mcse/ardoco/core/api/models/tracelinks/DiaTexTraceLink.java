@@ -28,7 +28,6 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word) {
         this.diagramElement = diagramElement;
         this.goldStandard = null;
-        //TODO I do not like that the information where indexing start isn't explicit, maybe add a wrapper, enum, or sth.
         this.sentenceNo = word.getSentenceNo() + 1;
         this.word = word;
     }
@@ -76,11 +75,15 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DiaTexTraceLink other) {
-            if (this.goldStandard != null && other.goldStandard != null && this.goldStandard != other.goldStandard)
+            if (this.goldStandard != null && other.goldStandard != null && !this.goldStandard.equals(other.goldStandard))
                 return false;
-            return this.sentenceNo == other.getSentenceNo() && diagramElement.equals(other.getDiagramElement());
+            return equalEndpoints(other);
         }
         return false;
+    }
+
+    public boolean equalEndpoints(DiaTexTraceLink other) {
+        return this.sentenceNo == other.getSentenceNo() && diagramElement.equals(other.getDiagramElement());
     }
 
     @Override

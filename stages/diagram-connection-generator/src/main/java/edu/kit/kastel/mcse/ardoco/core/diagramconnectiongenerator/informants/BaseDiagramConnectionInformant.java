@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
@@ -55,6 +55,7 @@ public class BaseDiagramConnectionInformant extends Informant {
 
             findTextOfDiagramInstancesInSupposedMappings(diagramState, recommendationState, diagramConnectionState);
             createLinksForEqualOrSimilarRecommendedInstances(diagramState, recommendationState, diagramConnectionState);
+            createLinksBasedOnDiagramElements(diagramState, recommendationState, diagramConnectionState);
         }
     }
 
@@ -63,7 +64,6 @@ public class BaseDiagramConnectionInformant extends Informant {
         var recommendedInstances = recommendationState.getRecommendedInstances();
         for (Diagram diagram : diagramState.getDiagrams()) {
             for (Pair<DiagramElement, ModelInstance> pair : diagramToModelInstances(diagram)) {
-                //SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstances.get(10), dataRepository.getData("ModelStatesData", ModelStates.class).get().getModelExtractionState("_tRJJ0KESEeu-mYqkDskRow").getInstances().get(4))
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
                     diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1);
@@ -76,10 +76,24 @@ public class BaseDiagramConnectionInformant extends Informant {
             DiagramConnectionState diagramConnectionState) {
         for (Diagram diagram : diagramState.getDiagrams()) {
             for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
-                //TODO SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, dataRepository.getData("ModelStatesData", ModelStates.class).get().getModelExtractionState("_tRJJ0KESEeu-mYqkDskRow").getInstances().get(4))
                 var sameInstances = diagramToModelInstances(diagram).stream()
                         .filter(pair -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second()));
                 sameInstances.forEach(pair -> diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1));
+            }
+        }
+    }
+
+    private void createLinksBasedOnDiagramElements(@NotNull DiagramRecognitionState diagramState, @NotNull RecommendationState recommendationState,
+            @NotNull DiagramConnectionState diagramConnectionState) {
+        for (Diagram diagram : diagramState.getDiagrams()) {
+            for (var box : diagram.getBoxes()) {
+                for (var tBox : box.getTexts()) {
+                    for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
+                        if (isShorteningOf(recommendedInstance.getName(), tBox.getText())) {
+                            diagramConnectionState.addToDiagramLinks(recommendedInstance, box, this, 1);
+                        }
+                    }
+                }
             }
         }
     }
@@ -90,29 +104,29 @@ public class BaseDiagramConnectionInformant extends Informant {
 
         for (Box box : diagram.getBoxes()) {
             var names = possibleNames(box);
-            names.forEach(
-                    name -> instances.add(new Pair<DiagramElement, ModelInstance>(box, new ModelInstanceImpl(name, "", Integer.toString(name.hashCode())))));
+            names.forEach(name -> instances.add(new Pair<>(box, new ModelInstanceImpl(name, "", Integer.toString(name.hashCode())))));
         }
 
         return instances;
     }
 
-    private Set<String> possibleNames(Box box) {
+    private ImmutableSet<String> possibleNames(@NotNull Box box) {
         var names = Sets.mutable.<String>empty();
 
         names.addAll(box.getTexts().stream().flatMap(t -> processText(t.getText()).stream()).toList());
         names.addAll(names.stream().flatMap(t -> possibleAbbreviations(t).stream()).toList());
+        var noBlank = names.stream().map(s -> s.replaceAll("\\s+", "")).toList();
+        names.addAll(noBlank);
 
-        return names;
+        return Sets.immutable.ofAll(names);
     }
 
-    private ImmutableSet<String> processText(String text) {
+    private ImmutableSet<String> processText(@NotNull String text) {
         //Split up "Sth (Sthelse)"
-        var split = Arrays.stream(text.split(",|\\(|\\)")).map(s -> s.trim()).collect(Collectors.toList());
+        var split = Arrays.stream(text.split(",|\\(|\\)")).map(String::trim).collect(Collectors.toList());
         //Split up "camelCase", "CamelCase", "CamelABBREVIATIONCase" etc
         var decameled = split.stream().flatMap(s -> Arrays.stream(s.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])"))).reduce((l, r) -> l + " " + r);
-        if (decameled.isPresent())
-            split.add(decameled.get());
+        decameled.ifPresent(split::add);
         split.remove("");
         return Sets.immutable.ofAll(split);
     }
@@ -120,5 +134,54 @@ public class BaseDiagramConnectionInformant extends Informant {
     private ImmutableSet<String> possibleAbbreviations(String text) {
         var matcher = abbreviationsPattern.matcher(text);
         return Sets.immutable.fromStream(matcher.results().map(MatchResult::group));
+    }
+
+    private boolean containsAllInOrder(@NotNull String s, @NotNull String query) {
+        var previous = -1;
+        for (char c : query.toCharArray()) {
+            var current = s.indexOf(String.valueOf(c));
+            if (current <= previous)
+                return false;
+            previous = current;
+        }
+        return true;
+    }
+
+    private boolean isShorteningOf(@NotNull String text, @NotNull String shortening) {
+        if (!couldBeShortening(shortening))
+            return false;
+
+        var lc = text.toLowerCase();
+        var shortLc = shortening.toLowerCase();
+
+        //Check if the entire shortening is contained within the single word
+        if (!lc.contains(" "))
+            return lc.startsWith(shortLc.substring(0, 1)) && containsAllInOrder(lc, shortLc);
+
+        var reg = "";
+        for (var c : shortLc.toCharArray()) {
+            reg += c + "|";
+        }
+
+        var onlyShorteningLettersAndBlank = "\\[^(" + reg + "\\s)\\]";
+        var split = lc.split("\\s+");
+        var reducedText = Arrays.stream(split).filter(s -> s.startsWith(onlyShorteningLettersAndBlank)).reduce("", (l, r) -> l + r);
+
+        //The text contains words that are irrelevant to the supposed shortening
+        if (reducedText.length() != split.length)
+            return false;
+
+        return containsAllInOrder(reducedText, shortLc);
+    }
+
+    private boolean couldBeShortening(@NotNull String text) {
+        if (text.isEmpty())
+            return false;
+        var upperCaseCharacters = 0;
+        for (char c : text.toCharArray()) {
+            if (Character.isUpperCase(c))
+                upperCaseCharacters++;
+        }
+        return upperCaseCharacters >= 0.5 * text.length();
     }
 }

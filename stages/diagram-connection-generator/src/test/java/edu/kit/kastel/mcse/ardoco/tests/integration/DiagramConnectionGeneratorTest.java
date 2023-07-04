@@ -1,6 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import java.io.File;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -14,9 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.tests.TestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
+import edu.kit.kastel.mcse.ardoco.tests.eval.results.Results;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiagramConnectionGeneratorTest {
@@ -49,6 +51,16 @@ public class DiagramConnectionGeneratorTest {
         run(DiagramProject.TEASTORE);
     }
 
+    @Test
+    void bbbTest() {
+        run(DiagramProject.BIGBLUEBUTTON);
+    }
+
+    @Test
+    void msTest() {
+        run(DiagramProject.MEDIASTORE);
+    }
+
     private void run(DiagramProject project) {
         logger.info("Evaluate Diagram Connection for {}", project.name());
         var runner = new TestRunner(project.name());
@@ -59,29 +71,13 @@ public class DiagramConnectionGeneratorTest {
 
         var dataRepository = runner.getArDoCo().getDataRepository();
         var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).get().getText();
-        var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).get();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).get();
-        var diagrams = diagramRecognition.getDiagrams();
         //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var diagramLinks = diagramConnectionState.getDiagramLinks();
-        var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).sorted().toList();
-        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard().stream().peek(t -> t.setText(text)).sorted().toList();
-
-        var totalSentences = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).get().getText().getSentences().size();
-        var totalDiagramElements = diagrams.stream().flatMap(d -> d.getBoxes().stream()).toList().size();
-        var total = totalSentences * totalDiagramElements;
-        //TODO
-        var tpLinks = goldStandardTraceLinks.stream().filter(g -> traceLinks.contains(g)).sorted().toList();
-        var TP = tpLinks.size();
-        var fpLinks = traceLinks.stream().filter(t -> !goldStandardTraceLinks.contains(t)).sorted().toList();
-        var FP = fpLinks.size();
-        var fnLinks = goldStandardTraceLinks.stream().filter(g -> !traceLinks.contains(g)).sorted().toList();
-        var FN = fnLinks.size();
-        var TN = total - TP - FP - FN;
-        var P = TP / (double) (TP + FP);
-        var R = TP / (double) (TP + FN);
-        var acc = (TP + TN) / (double) (TP + TN + FP + FN);
-        logger.info("TP:{}, FP:{}, TN:{}, FN:{}, P:{}, R:{}, Acc:{}", TP, FP, TN, FN, P, R, acc);
+        var traceLinks = new TreeSet<>(diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).collect(Collectors.toSet()));
+        var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
+        logger.info(result.toString());
+        assert (result.asExpected());
     }
 }

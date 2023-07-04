@@ -196,11 +196,14 @@
                         {
                             "name": "mediastore/text_2016/mediastore.txt",
                             "sentences": [
+                                12,
                                 23,
                                 24,
                                 25,
                                 31,
-                                32
+                                32,
+                                33,
+                                34
                             ]
                         }
                     ]

@@ -48,7 +48,8 @@ public enum DiagramProject {
             "benchmark/mediastore/text_2016/goldstandard_UME.csv", //
             "benchmark/mediastore/diagrams_2016/goldstandard.json", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
-            new ExpectedResults(.212, .792, .328, .702, .227, .690) //
+            new ExpectedResults(.212, .792, .328, .702, .227, .690), //
+            new ExpectedResults(.866, .896, .88, .982, .871, .988) //
     ), //
     TEASTORE( //
             "benchmark/teastore/model_2020/pcm/teastore.repository", //
@@ -58,17 +59,8 @@ public enum DiagramProject {
             "benchmark/teastore/text_2020/goldstandard_UME.csv", //
             "benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.962, .703, .784, .957, .808, .994) //
-    ), //
-    TEASTORE_HISTORICAL( //
-            "benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "benchmark/teastore/text_2018/teastore_2018_AB.txt", //
-            "benchmark/teastore/text_2018/goldstandard_AB.csv", //
-            "configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
-            "benchmark/teastore/diagrams_2018/goldstandard.json", //
-            new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.163, .982, .278, .376, .146, .289) //
+            new ExpectedResults(.962, .703, .784, .957, .808, .994), //
+            new ExpectedResults(.839, .777, .807, .960, .786, .982) //
     ), //
     TEAMMATES( //
             "benchmark/teammates/model_2021/pcm/teammates.repository", //
@@ -78,17 +70,8 @@ public enum DiagramProject {
             "benchmark/teammates/text_2021/goldstandard_UME.csv", //
             "benchmark/teammates/diagrams_2023/goldstandard.json", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
-            new ExpectedResults(.175, .745, .279, .851, .287, .851) //
-    ), //
-    TEAMMATES_HISTORICAL( //
-            "benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "benchmark/teammates/text_2015/teammates_2015.txt", //
-            "benchmark/teammates/text_2015/goldstandard.csv", //
-            "configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/teammates/text_2015/goldstandard_UME.csv", //
-            "benchmark/teammates/diagrams_2015/goldstandard.json", //
-            new ExpectedResults(.524, .695, .597, .970, .589, .979), //
-            new ExpectedResults(.168, .629, .263, .863, .260, .870) //
+            new ExpectedResults(.175, .745, .279, .851, .287, .851), //
+            new ExpectedResults(.110, .642, .188, .956, .254, .958) //
     ), //
     BIGBLUEBUTTON( //
             "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -98,7 +81,30 @@ public enum DiagramProject {
             "benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
             "benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
-            new ExpectedResults(.887, .461, .429, .956, .534, .984) //
+            new ExpectedResults(.887, .461, .429, .956, .534, .984), //
+            new ExpectedResults(.693, .423, .525, .958, .522, .988) //
+    ), //
+    TEASTORE_HISTORICAL( //
+            "benchmark/teastore/model_2020/pcm/teastore.repository", //
+            "benchmark/teastore/text_2018/teastore_2018_AB.txt", //
+            "benchmark/teastore/text_2018/goldstandard_AB.csv", //
+            "configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
+            "benchmark/teastore/diagrams_2018/goldstandard.json", //
+            new ExpectedResults(.999, .740, .850, .984, .853, .999), //
+            new ExpectedResults(.163, .982, .278, .376, .146, .289), //
+            new ExpectedResults(0, 0, 0, 0, 0, 0) //
+    ), //
+    TEAMMATES_HISTORICAL( //
+            "benchmark/teammates/model_2021/pcm/teammates.repository", //
+            "benchmark/teammates/text_2015/teammates_2015.txt", //
+            "benchmark/teammates/text_2015/goldstandard.csv", //
+            "configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "benchmark/teammates/text_2015/goldstandard_UME.csv", //
+            "benchmark/teammates/diagrams_2015/goldstandard.json", //
+            new ExpectedResults(.524, .695, .597, .970, .589, .979), //
+            new ExpectedResults(.168, .629, .263, .863, .260, .870), //
+            new ExpectedResults(0, 0, 0, 0, 0, 0) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
             "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -108,7 +114,8 @@ public enum DiagramProject {
             "benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
             "benchmark/bigbluebutton/diagrams_2015/goldstandard.json", //
             new ExpectedResults(.807, .617, .699, .978, .695, .993), //
-            new ExpectedResults(.085, .175, .111, .813, .018, .869) //
+            new ExpectedResults(.085, .175, .111, .813, .018, .869), //
+            new ExpectedResults(0, 0, 0, 0, 0, 0) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(DiagramProject.class);
@@ -126,10 +133,13 @@ public enum DiagramProject {
     private final ExpectedResults expectedTraceLinkResults;
     private final ExpectedResults expectedInconsistencyResults;
 
+    private final ExpectedResults expectedDiagramTraceLinkResults;
+
     private final ArchitectureModelType architectureModelType;
 
     DiagramProject(String model, String text, String goldStandardTraceabilityLinkRecovery, String configurations, String goldStandardMissingTextForModelElement,
-            String goldStandardDiagrams, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
+            String goldStandardDiagrams, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults,
+            ExpectedResults expectedDiagramTraceLinkResults) {
         //We need to keep the pathes aswell, because the actual files are just temporary at this point due to jar packaging
         this.model = model;
         this.architectureModelType = setupArchitectureModelType();
@@ -140,6 +150,7 @@ public enum DiagramProject {
         this.goldStandardDiagrams = goldStandardDiagrams;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
+        this.expectedDiagramTraceLinkResults = expectedDiagramTraceLinkResults;
     }
 
     /**
@@ -371,6 +382,15 @@ public enum DiagramProject {
      */
     public ExpectedResults getExpectedTraceLinkResults() {
         return expectedTraceLinkResults;
+    }
+
+    /**
+     * Returns the expected results from the diagram trace link recovery
+     *
+     * @return the expectedDiagramTraceLinkResults
+     */
+    public ExpectedResults getExpectedDiagramTraceLinkResults() {
+        return expectedDiagramTraceLinkResults;
     }
 
     /**
