@@ -91,7 +91,7 @@
     <junit.version>5.10.0-M1</junit.version>
     <eclipse-collections.version>12.0.0.M1</eclipse-collections.version>
     <jackson.version>2.15.2</jackson.version>
-    <javaparser.version>3.25.3</javaparser.version>
+    <javaparser.version>3.25.4</javaparser.version>
     <error-prone.version>2.20.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
 
