@@ -61,7 +61,7 @@ public enum DiagramProject {
             "benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994), //
-            new ExpectedResults(.999, .161, .850, .972, .848, .999) //
+            new ExpectedResults(.999, .740, .850, .972, .847, .999) //
     ), //
     TEAMMATES( //
             "benchmark/teammates/model_2021/pcm/teammates.repository", //

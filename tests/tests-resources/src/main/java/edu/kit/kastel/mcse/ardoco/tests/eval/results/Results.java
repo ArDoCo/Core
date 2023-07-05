@@ -21,14 +21,17 @@ public record Results(double precision, double recall, double f1, double accurac
         var totalSentences = text.getSentences().size();
         var totalDiagramElements = project.getDiagramsFromGoldstandard().stream().flatMap(d -> d.getBoxes().stream()).toList().size();
         var total = totalSentences * totalDiagramElements;
-        var tpLinks = new TreeSet<>(
-                goldStandardTraceLinks.stream().filter(g -> traceLinks.stream().anyMatch(t -> t.equalEndpoints(g))).collect(Collectors.toSet()));
+        var tpLinks = goldStandardTraceLinks.stream()
+                .filter(g -> traceLinks.stream().anyMatch(t -> t.equalEndpoints(g)))
+                .collect(Collectors.toCollection(TreeSet::new));
         var TP = tpLinks.size();
-        var fpLinks = new TreeSet<>(
-                traceLinks.stream().filter(t -> goldStandardTraceLinks.stream().noneMatch(g -> g.equalEndpoints(t))).collect(Collectors.toSet()));
+        var fpLinks = traceLinks.stream()
+                .filter(t -> goldStandardTraceLinks.stream().noneMatch(g -> g.equalEndpoints(t)))
+                .collect(Collectors.toCollection(TreeSet::new));
         var FP = fpLinks.size();
-        var fnLinks = new TreeSet<>(
-                goldStandardTraceLinks.stream().filter(g -> traceLinks.stream().noneMatch(t -> t.equalEndpoints(g))).collect(Collectors.toSet()));
+        var fnLinks = goldStandardTraceLinks.stream()
+                .filter(g -> traceLinks.stream().noneMatch(t -> t.equalEndpoints(g)))
+                .collect(Collectors.toCollection(TreeSet::new));
         var FN = fnLinks.size();
         var TN = total - TP - FP - FN;
         var P = TP / (double) (TP + FP);

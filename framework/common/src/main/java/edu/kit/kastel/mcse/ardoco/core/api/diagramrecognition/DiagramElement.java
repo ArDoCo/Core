@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
 
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
@@ -30,6 +32,17 @@ public abstract class DiagramElement extends Entity implements Comparable<Diagra
      */
     public @NotNull Diagram getDiagram() {
         return this.diagram;
+    }
+
+    /**
+     * Returns all elements with a bounding box that is entirely contained in this element's bounding box. See
+     * {@link BoundingBox#containsEntirely(BoundingBox)}.
+     *
+     * @return the set of elements which are considered sub elements
+     */
+    public @NotNull ImmutableSet<DiagramElement> getSubElements() {
+        var all = getDiagram().getBoxes();
+        return Sets.immutable.fromStream(all.stream().filter(de -> !de.equals(this) && getBoundingBox().containsEntirely(de.getBoundingBox())));
     }
 
     @Override

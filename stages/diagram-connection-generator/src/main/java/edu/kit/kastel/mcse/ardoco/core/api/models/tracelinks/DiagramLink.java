@@ -2,11 +2,13 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.text.MessageFormat;
 
+import org.jetbrains.annotations.NotNull;
+
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-public class DiagramLink extends EndpointTuple {
+public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink> {
     private final RecommendedInstance recommendedInstance;
     private final DiagramElement diagramElement;
     private final Claimant claimant;
@@ -38,5 +40,14 @@ public class DiagramLink extends EndpointTuple {
     @Override
     public String toString() {
         return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3}]", recommendedInstance.getName(), diagramElement, confidence, claimant.getClass().getSimpleName());
+    }
+
+    @Override
+    public int compareTo(@NotNull DiagramLink o) {
+        var comp = getRecommendedInstance().getName().compareTo(o.getRecommendedInstance().getName());
+        if (comp == 0) {
+            return getDiagramElement().compareTo(o.getDiagramElement());
+        }
+        return comp;
     }
 }

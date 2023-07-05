@@ -42,7 +42,7 @@ public class DiagramConnectionGeneratorTest {
     }
 
     @Test
-    void teamstoreTest() {
+    void teammatesTest() {
         run(DiagramProject.TEAMMATES);
     }
 
@@ -74,7 +74,7 @@ public class DiagramConnectionGeneratorTest {
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).get();
         //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
-        var diagramLinks = diagramConnectionState.getDiagramLinks();
+        var diagramLinks = diagramConnectionState.getDiagramLinks().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).collect(Collectors.toCollection(TreeSet::new));
         var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         logger.info(result.toString());
