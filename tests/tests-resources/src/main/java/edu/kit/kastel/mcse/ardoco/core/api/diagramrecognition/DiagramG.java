@@ -10,8 +10,13 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 
@@ -20,9 +25,15 @@ public class DiagramG implements Diagram {
     private final List<Box> properBoxes = new ArrayList<>();
     private final List<TextBox> properTextBoxes = new ArrayList<>();
     private final ImmutableSet<DiaTexTraceLink> traceLinks;
+    private final File location;
 
     @JsonCreator
-    public DiagramG(@JsonProperty("path") String path, @JsonProperty("boxes") BoxG[] boxes) {
+    public DiagramG(@JacksonInject File location, @JsonProperty("path") String path, @JsonProperty("boxes") JsonNode boxesNode) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramG.class, this));
+        var boxes = objectMapper.treeToValue(boxesNode, BoxG[].class);
+
+        this.location = location;
         this.path = path;
         addBoxes(boxes);
         this.traceLinks = Sets.immutable.fromStream(Arrays.stream(boxes).flatMap(b -> b.getTraceLinks().stream()));
@@ -39,9 +50,14 @@ public class DiagramG implements Diagram {
         return path;
     }
 
+    public String getShortPath() {
+        var split = getPath().split("/|\\\\");
+        return split[split.length - 1];
+    }
+
     @Override
     public File getLocation() {
-        throw new UnsupportedOperationException();
+        return location;
     }
 
     @Override
@@ -103,5 +119,10 @@ public class DiagramG implements Diagram {
         if (textGoldstandard == null)
             return getTraceLinks();
         return Sets.immutable.fromStream(traceLinks.stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())));
+    }
+
+    @Override
+    public String toString() {
+        return getShortPath();
     }
 }

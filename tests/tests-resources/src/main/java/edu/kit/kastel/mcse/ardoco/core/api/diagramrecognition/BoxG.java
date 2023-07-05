@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+
 import java.util.Arrays;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -27,9 +29,9 @@ public class BoxG extends Box {
      * @param tracelinks  all tracelinks associated with this box (does not include sub boxes!)
      */
     @JsonCreator
-    public BoxG(@JsonProperty("boundingBox") BoundingBoxG boundingBox, @JsonProperty("textBoxes") TextBoxG[] textBoxes,
+    public BoxG(@JacksonInject DiagramG diagram, @JsonProperty("boundingBox") BoundingBoxG boundingBox, @JsonProperty("textBoxes") TextBoxG[] textBoxes,
             @JsonProperty("subBoxes") BoxG[] subBoxes, @JsonProperty("tracelinks") TracelinkG[] tracelinks) {
-        super(getUUID(boundingBox), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), null);
+        super(diagram, getUUID(boundingBox), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), null);
         this.boundingBox = boundingBox;
         this.textBoxes = textBoxes;
         this.subBoxes = subBoxes;
@@ -50,7 +52,8 @@ public class BoxG extends Box {
 
     @Override
     public String toString() {
-        var allText = getTexts().stream().map(t -> t.getText()).reduce((l, r) -> l + " | " + r).orElse("");
-        return allText.substring(0, Math.min(allText.length(), 20));
+        var allText = getTexts().stream().map(TextBox::getText).reduce((l, r) -> l + " | " + r).orElse("");
+        var preText = getDiagram() + "/";
+        return preText + allText.substring(0, Math.min(allText.length(), 20));
     }
 }

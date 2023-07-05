@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.jetbrains.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -30,7 +31,8 @@ public class Box extends DiagramElement implements Serializable {
 
     // Jackson JSON
     private Box() {
-        super(UUID.randomUUID().toString());
+        //TODO violates the DiagramElement constructor contract
+        super(null, UUID.randomUUID().toString());
         this.uuid = getName();
     }
 
@@ -44,14 +46,20 @@ public class Box extends DiagramElement implements Serializable {
      * @param textBoxes       the text boxes that are attached to this box
      * @param dominatingColor a dominating color in the box (iff present)
      */
-    public Box(String uuid, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes, Integer dominatingColor) {
-        super(uuid);
+    public Box(@NotNull Diagram diagram, String uuid, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes,
+            Integer dominatingColor) {
+        super(diagram, uuid);
         this.uuid = uuid;
         this.coordinates = coordinates;
         this.confidence = confidence;
         this.classification = classification;
         this.textBoxes = textBoxes;
         this.dominatingColor = dominatingColor;
+    }
+
+    //TODO violates the constructor contract, for compatibility as of now
+    public Box(String uuid, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes, Integer dominatingColor) {
+        this(null, uuid, coordinates, confidence, classification, textBoxes, dominatingColor);
     }
 
     /**
@@ -135,6 +143,7 @@ public class Box extends DiagramElement implements Serializable {
         this.dominatingColor = dominatingColor;
     }
 
+    @NotNull
     @Override
     public BoundingBox getBoundingBox() {
         return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);

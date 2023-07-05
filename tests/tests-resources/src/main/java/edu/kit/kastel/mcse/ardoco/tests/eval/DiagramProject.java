@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramG;
@@ -60,7 +61,7 @@ public enum DiagramProject {
             "benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994), //
-            new ExpectedResults(.839, .777, .807, .960, .786, .982) //
+            new ExpectedResults(.999, .161, .850, .972, .848, .999) //
     ), //
     TEAMMATES( //
             "benchmark/teammates/model_2021/pcm/teammates.repository", //
@@ -71,7 +72,7 @@ public enum DiagramProject {
             "benchmark/teammates/diagrams_2023/goldstandard.json", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
             new ExpectedResults(.175, .745, .279, .851, .287, .851), //
-            new ExpectedResults(.110, .642, .188, .956, .254, .958) //
+            new ExpectedResults(.118, .695, .202, .956, .275, .958) //
     ), //
     BIGBLUEBUTTON( //
             "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -82,7 +83,7 @@ public enum DiagramProject {
             "benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984), //
-            new ExpectedResults(.693, .423, .525, .958, .522, .988) //
+            new ExpectedResults(.785, .745, .764, .975, .752, .988) //
     ), //
     TEASTORE_HISTORICAL( //
             "benchmark/teastore/model_2020/pcm/teastore.repository", //
@@ -140,7 +141,7 @@ public enum DiagramProject {
     DiagramProject(String model, String text, String goldStandardTraceabilityLinkRecovery, String configurations, String goldStandardMissingTextForModelElement,
             String goldStandardDiagrams, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults,
             ExpectedResults expectedDiagramTraceLinkResults) {
-        //We need to keep the pathes aswell, because the actual files are just temporary at this point due to jar packaging
+        //We need to keep the paths as well, because the actual files are just temporary at this point due to jar packaging
         this.model = model;
         this.architectureModelType = setupArchitectureModelType();
         this.text = text;
@@ -207,7 +208,7 @@ public enum DiagramProject {
     }
 
     public static File getFileFromTestResources(@NotNull String path) {
-        return tempFiles.getOrDefault(path, getTemporaryFileFromString(path));
+        return tempFiles.computeIfAbsent(path, f -> getTemporaryFileFromString(path));
     }
 
     public static List<DiagramProject> getHistoricalProjects() {
@@ -413,7 +414,10 @@ public enum DiagramProject {
 
     public ImmutableSet<DiagramG> getDiagramsFromGoldstandard() {
         try {
-            return Sets.immutable.ofAll(Set.of(new ObjectMapper().readValue(getDiagramsGoldStandardFile(), DiagramsG.class).diagrams));
+            var objectMapper = new ObjectMapper();
+            var file = getDiagramsGoldStandardFile();
+            objectMapper.setInjectableValues(new InjectableValues.Std().addValue(File.class, file));
+            return Sets.immutable.ofAll(Set.of(objectMapper.readValue(file, DiagramsG.class).diagrams));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -75,7 +75,7 @@ public class DiagramConnectionGeneratorTest {
         //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var diagramLinks = diagramConnectionState.getDiagramLinks();
-        var traceLinks = new TreeSet<>(diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).collect(Collectors.toSet()));
+        var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).collect(Collectors.toCollection(TreeSet::new));
         var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         logger.info(result.toString());
         assert (result.asExpected());

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -89,7 +88,7 @@ public class BaseDiagramConnectionInformant extends Informant {
             for (var box : diagram.getBoxes()) {
                 for (var tBox : box.getTexts()) {
                     for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
-                        if (isShorteningOf(recommendedInstance.getName(), tBox.getText())) {
+                        if (isInitialismOf(recommendedInstance.getName(), tBox.getText())) {
                             diagramConnectionState.addToDiagramLinks(recommendedInstance, box, this, 1);
                         }
                     }
@@ -113,22 +112,33 @@ public class BaseDiagramConnectionInformant extends Informant {
     private ImmutableSet<String> possibleNames(@NotNull Box box) {
         var names = Sets.mutable.<String>empty();
 
-        names.addAll(box.getTexts().stream().flatMap(t -> processText(t.getText()).stream()).toList());
-        names.addAll(names.stream().flatMap(t -> possibleAbbreviations(t).stream()).toList());
-        var noBlank = names.stream().map(s -> s.replaceAll("\\s+", "")).toList();
-        names.addAll(noBlank);
+        for (var textBox : box.getTexts()) {
+            var text = textBox.getText();
+            var splitAndDecameled = processText(text).toList();
+            var possibleAbbr = possibleAbbreviations(text);
+            var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
+            names.addAll(splitAndDecameled);
+            names.addAll(noBlank);
+        }
 
         return Sets.immutable.ofAll(names);
     }
 
     private ImmutableSet<String> processText(@NotNull String text) {
+        var words = Sets.mutable.<String>empty();
         //Split up "Sth (Sthelse)"
-        var split = Arrays.stream(text.split(",|\\(|\\)")).map(String::trim).collect(Collectors.toList());
+        var split = Arrays.stream(text.split(",|\\(|\\)")).map(String::trim).toList();
+        //Reduce back to single string, remove duplicate whitespaces
+        var deCameledSplit = split.stream().map(this::deCamel).toList();
+        words.addAll(split);
+        words.addAll(deCameledSplit);
+        words.remove("");
+        return Sets.immutable.ofAll(words);
+    }
+
+    private String deCamel(String input) {
         //Split up "camelCase", "CamelCase", "CamelABBREVIATIONCase" etc
-        var decameled = split.stream().flatMap(s -> Arrays.stream(s.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])"))).reduce((l, r) -> l + " " + r);
-        decameled.ifPresent(split::add);
-        split.remove("");
-        return Sets.immutable.ofAll(split);
+        return String.join(" ", input.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")).replaceAll("\\s+", " ");
     }
 
     private ImmutableSet<String> possibleAbbreviations(String text) {
@@ -147,34 +157,34 @@ public class BaseDiagramConnectionInformant extends Informant {
         return true;
     }
 
-    private boolean isShorteningOf(@NotNull String text, @NotNull String shortening) {
-        if (!couldBeShortening(shortening))
+    private boolean isInitialismOf(@NotNull String text, @NotNull String Initialism) {
+        if (!couldBeInitialism(Initialism))
             return false;
 
         var lc = text.toLowerCase();
-        var shortLc = shortening.toLowerCase();
+        var initialLc = Initialism.toLowerCase();
 
-        //Check if the entire shortening is contained within the single word
+        //Check if the entire Initialism is contained within the single word
         if (!lc.contains(" "))
-            return lc.startsWith(shortLc.substring(0, 1)) && containsAllInOrder(lc, shortLc);
+            return lc.startsWith(initialLc.substring(0, 1)) && containsAllInOrder(lc, initialLc);
 
         var reg = "";
-        for (var c : shortLc.toCharArray()) {
+        for (var c : initialLc.toCharArray()) {
             reg += c + "|";
         }
 
-        var onlyShorteningLettersAndBlank = "\\[^(" + reg + "\\s)\\]";
+        var onlyInitialismLettersAndBlank = "\\[^(" + reg + "\\s)\\]";
         var split = lc.split("\\s+");
-        var reducedText = Arrays.stream(split).filter(s -> s.startsWith(onlyShorteningLettersAndBlank)).reduce("", (l, r) -> l + r);
+        var reducedText = Arrays.stream(split).filter(s -> s.startsWith(onlyInitialismLettersAndBlank)).reduce("", (l, r) -> l + r);
 
-        //The text contains words that are irrelevant to the supposed shortening
+        //The text contains words that are irrelevant to the supposed Initialism
         if (reducedText.length() != split.length)
             return false;
 
-        return containsAllInOrder(reducedText, shortLc);
+        return containsAllInOrder(reducedText, initialLc);
     }
 
-    private boolean couldBeShortening(@NotNull String text) {
+    private boolean couldBeInitialism(@NotNull String text) {
         if (text.isEmpty())
             return false;
         var upperCaseCharacters = 0;
