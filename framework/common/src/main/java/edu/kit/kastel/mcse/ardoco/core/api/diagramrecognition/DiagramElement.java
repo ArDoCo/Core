@@ -11,9 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 public abstract class DiagramElement extends Entity implements Comparable<DiagramElement> {
     private final Diagram diagram;
 
-    public record BoundingBox(int minX, int minY, int maxX, int maxH) {
-    }
-
     protected DiagramElement(@NotNull Diagram diagram, @NotNull String name) {
         super(name);
         this.diagram = diagram;
