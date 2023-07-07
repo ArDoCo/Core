@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
+import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,6 +12,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -50,7 +53,7 @@ class TraceLinkEvaluationIT {
     protected static final String OUTPUT = "src/test/resources/testout";
 
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
-    protected static boolean analyzeCodeDirectly = false;
+    protected static AtomicBoolean analyzeCodeDirectly = ANALYZE_CODE_DIRECTLY;
 
     protected static final List<Pair<Project, EvaluationResults<TestLink>>> RESULTS = new ArrayList<>();
     protected static final MutableList<EvaluationResults<String>> PROJECT_RESULTS = Lists.mutable.empty();
@@ -63,8 +66,6 @@ class TraceLinkEvaluationIT {
 
     @AfterAll
     static void afterAll() {
-        cleanUpCodeRepositories();
-
         logOverallResultsForSadSamTlr();
         writeOutputForSadSamTlr();
 
@@ -72,11 +73,13 @@ class TraceLinkEvaluationIT {
     }
 
     private static void cleanUpCodeRepositories() {
-        if (analyzeCodeDirectly) {
-            for (CodeProject codeProject : CodeProject.values()) {
-                RepositoryHandler.removeRepository(codeProject.getCodeLocation());
-            }
+        for (CodeProject codeProject : CodeProject.values()) {
+            cleanUpCodeRepository(codeProject);
         }
+    }
+
+    private static void cleanUpCodeRepository(CodeProject codeProject) {
+        RepositoryHandler.removeRepository(codeProject.getCodeLocation());
     }
 
     private static void logOverallResultsForSadSamTlr() {
@@ -138,7 +141,10 @@ class TraceLinkEvaluationIT {
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(1)
     void evaluateSadSamCodeTlrIT(CodeProject project) {
-        analyzeCodeDirectly = false;
+        analyzeCodeDirectly.set(false);
+        if (analyzeCodeDirectly.get())
+            cleanUpCodeRepository(project);
+
         var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
@@ -152,7 +158,10 @@ class TraceLinkEvaluationIT {
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(9)
     void evaluateSadSamCodeTlrFullIT(CodeProject project) {
-        analyzeCodeDirectly = true;
+        analyzeCodeDirectly.set(true);
+        if (analyzeCodeDirectly.get())
+            cleanUpCodeRepository(project);
+
         var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
         ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
@@ -163,7 +172,10 @@ class TraceLinkEvaluationIT {
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(10)
     void evaluateSamCodeTlrIT(CodeProject project) {
-        analyzeCodeDirectly = false;
+        analyzeCodeDirectly.set(false);
+        if (analyzeCodeDirectly.get())
+            cleanUpCodeRepository(project);
+
         var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation();
         ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
@@ -175,7 +187,10 @@ class TraceLinkEvaluationIT {
     @EnumSource(value = CodeProject.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(19)
     void evaluateSamCodeTlrFullIT(CodeProject project) {
-        analyzeCodeDirectly = true;
+        analyzeCodeDirectly.set(true);
+        if (analyzeCodeDirectly.get())
+            cleanUpCodeRepository(project);
+
         var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation();
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
@@ -186,7 +201,10 @@ class TraceLinkEvaluationIT {
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(20)
     void evaluateSadSamTlrIT(CodeProject project) {
-        analyzeCodeDirectly = false;
+        analyzeCodeDirectly.set(false);
+        if (analyzeCodeDirectly.get())
+            cleanUpCodeRepository(project);
+
         var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
@@ -198,7 +216,8 @@ class TraceLinkEvaluationIT {
     @MethodSource("getHistoricalProjects")
     @Order(21)
     void evaluateSadSamTlrHistoricalIT(Project project) {
-        analyzeCodeDirectly = false;
+        analyzeCodeDirectly.set(false);
+
         var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
         ArDoCoResult arDoCoResult = evaluation.getArDoCoResult(project);
         Assertions.assertNotNull(arDoCoResult);

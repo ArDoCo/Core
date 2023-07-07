@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -64,11 +65,11 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected File getInputCode(CodeProject codeProject) {
         File inputCode;
-        if (TraceLinkEvaluationIT.analyzeCodeDirectly) {
+        if (TraceLinkEvaluationIT.analyzeCodeDirectly.get()) {
             prepareCode(codeProject);
             inputCode = new File(codeProject.getCodeLocation());
         } else {
-            inputCode = new File(codeProject.getCodeModelLocation());
+            inputCode = new File(codeProject.getCodeModelDirectory());
         }
         return inputCode;
     }
@@ -78,7 +79,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     private void prepareCode(CodeProject codeProject) {
         File codeLocation = new File(codeProject.getCodeLocation());
 
-        if (!codeLocation.exists()) {
+        if (!codeLocation.exists() || Objects.requireNonNull(codeLocation.listFiles()).length == 0) {
             RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
         }
     }
