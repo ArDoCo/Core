@@ -20,6 +20,8 @@ import edu.kit.kastel.mcse.ardoco.tests.TestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.results.Results;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiagramConnectionGeneratorTest {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorTest.class);
@@ -78,6 +80,6 @@ public class DiagramConnectionGeneratorTest {
         var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).collect(Collectors.toCollection(TreeSet::new));
         var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         logger.info(result.toString());
-        assert (result.asExpected());
+        assertTrue(result.asExpected());
     }
 }

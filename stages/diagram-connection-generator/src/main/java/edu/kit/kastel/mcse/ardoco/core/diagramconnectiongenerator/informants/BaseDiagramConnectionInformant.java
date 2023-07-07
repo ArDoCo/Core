@@ -21,6 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
+import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -28,7 +29,11 @@ import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 public class BaseDiagramConnectionInformant extends Informant {
-    private final Pattern abbreviationsPattern = Pattern.compile("\\b(?:[A-Z][a-z]*){2,}");
+    /**
+     * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
+     * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
+     */
+    private final Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
 
     public BaseDiagramConnectionInformant(DataRepository dataRepository) {
         super(BaseDiagramConnectionInformant.class.getSimpleName(), dataRepository);
@@ -46,7 +51,8 @@ public class BaseDiagramConnectionInformant extends Informant {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).get();
-        for (var model : modelStates.extractionModelIds()) {
+        var modelIds = modelStates.extractionModelIds();
+        for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel mm = modelState.getMetamodel();
             var recommendationState = recommendationStates.getRecommendationState(mm);
@@ -61,8 +67,10 @@ public class BaseDiagramConnectionInformant extends Informant {
     private void findTextOfDiagramInstancesInSupposedMappings(DiagramRecognitionState diagramState, RecommendationState recommendationState,
             DiagramConnectionState diagramConnectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
-        for (Diagram diagram : diagramState.getDiagrams()) {
-            for (Pair<DiagramElement, ModelInstance> pair : diagramToModelInstances(diagram)) {
+        var diagrams = diagramState.getDiagrams();
+        for (Diagram diagram : diagrams) {
+            var diagramModelInstances = diagramToModelInstances(diagram);
+            for (Pair<DiagramElement, ModelInstance> pair : diagramModelInstances) {
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
                     diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1);
@@ -73,9 +81,12 @@ public class BaseDiagramConnectionInformant extends Informant {
 
     private void createLinksForEqualOrSimilarRecommendedInstances(DiagramRecognitionState diagramState, RecommendationState recommendationState,
             DiagramConnectionState diagramConnectionState) {
-        for (Diagram diagram : diagramState.getDiagrams()) {
-            for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
-                var sameInstances = diagramToModelInstances(diagram).stream()
+        var diagrams = diagramState.getDiagrams();
+        for (Diagram diagram : diagrams) {
+            var diagramModelInstances = diagramToModelInstances(diagram);
+            var ris = recommendationState.getRecommendedInstances();
+            for (var recommendedInstance : ris) {
+                var sameInstances = diagramModelInstances.stream()
                         .filter(pair -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second()));
                 sameInstances.forEach(pair -> diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1));
             }
@@ -84,10 +95,14 @@ public class BaseDiagramConnectionInformant extends Informant {
 
     private void createLinksBasedOnDiagramElements(@NotNull DiagramRecognitionState diagramState, @NotNull RecommendationState recommendationState,
             @NotNull DiagramConnectionState diagramConnectionState) {
-        for (Diagram diagram : diagramState.getDiagrams()) {
-            for (var box : diagram.getBoxes()) {
-                for (var tBox : box.getTexts()) {
-                    for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
+        var diagrams = diagramState.getDiagrams();
+        for (Diagram diagram : diagrams) {
+            var boxes = diagram.getBoxes();
+            for (var box : boxes) {
+                var texts = box.getTexts();
+                for (var tBox : texts) {
+                    var ris = recommendationState.getRecommendedInstances();
+                    for (var recommendedInstance : ris) {
                         if (isInitialismOf(recommendedInstance.getName(), tBox.getText())) {
                             diagramConnectionState.addToDiagramLinks(recommendedInstance, box, this, 1);
                         }
@@ -101,7 +116,8 @@ public class BaseDiagramConnectionInformant extends Informant {
         //Create model instances so we can reuse a lot of code
         var instances = new ArrayList<Pair<DiagramElement, ModelInstance>>();
 
-        for (Box box : diagram.getBoxes()) {
+        var boxes = diagram.getBoxes();
+        for (Box box : boxes) {
             var names = possibleNames(box);
             names.forEach(name -> instances.add(new Pair<>(box, new ModelInstanceImpl(name, "", Integer.toString(name.hashCode())))));
         }
@@ -112,10 +128,12 @@ public class BaseDiagramConnectionInformant extends Informant {
     private ImmutableSet<String> possibleNames(@NotNull Box box) {
         var names = Sets.mutable.<String>empty();
 
-        for (var textBox : box.getTexts()) {
+        var texts = box.getTexts();
+        for (var textBox : texts) {
             var text = textBox.getText();
             var splitAndDecameled = processText(text).toList();
-            var possibleAbbr = possibleAbbreviations(text);
+            //TODO use in a sensible way
+            var abbreviations = possibleAbbreviations(text).stream().map(a -> AbbreviationDisambiguationHelper.get(a)).toList();
             var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
             names.addAll(splitAndDecameled);
             names.addAll(noBlank);
@@ -148,7 +166,8 @@ public class BaseDiagramConnectionInformant extends Informant {
 
     private boolean containsAllInOrder(@NotNull String s, @NotNull String query) {
         var previous = -1;
-        for (char c : query.toCharArray()) {
+        var cArray = query.toCharArray();
+        for (char c : cArray) {
             var current = s.indexOf(String.valueOf(c));
             if (current <= previous)
                 return false;
@@ -169,7 +188,8 @@ public class BaseDiagramConnectionInformant extends Informant {
             return lc.startsWith(initialLc.substring(0, 1)) && containsAllInOrder(lc, initialLc);
 
         var reg = "";
-        for (var c : initialLc.toCharArray()) {
+        var initialLcArray = initialLc.toCharArray();
+        for (var c : initialLcArray) {
             reg += c + "|";
         }
 
@@ -188,7 +208,8 @@ public class BaseDiagramConnectionInformant extends Informant {
         if (text.isEmpty())
             return false;
         var upperCaseCharacters = 0;
-        for (char c : text.toCharArray()) {
+        var cArray = text.toCharArray();
+        for (char c : cArray) {
             if (Character.isUpperCase(c))
                 upperCaseCharacters++;
         }
