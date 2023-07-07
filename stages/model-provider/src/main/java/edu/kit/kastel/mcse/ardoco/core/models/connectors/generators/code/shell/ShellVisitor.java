@@ -94,7 +94,6 @@ public class ShellVisitor implements FileVisitor<Path> {
             String executionCode = """
                     from pygments.lexers import guess_lexer_for_filename
                     from pygments.lexers import guess_lexer
-                    from pygments.lexers import BashLexer
                     from pygments.util import ClassNotFound
                     lexer_name = ''
                     try:
