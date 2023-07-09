@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -9,6 +8,7 @@ import java.util.HashMap;
 
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
@@ -26,46 +26,50 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
 
-public class AbbreviationDisambiguationHelper {
-    private static Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
-    private static final String abbreviationsCom = "https://www.abbreviations.com/";
-    private static MutableMap<String, Abbreviation> abbreviations;
-    private static File abbreviationsFile;
+public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMap<String, AbbreviationDisambiguationHelper.Abbreviation>> {
     @Configurable
     public static final int limit = 3;
+    private static Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
+    private static final String abbreviationsCom = "https://www.abbreviations.com/";
+    private static AbbreviationDisambiguationHelper instance;
+    private MutableMap<String, Abbreviation> abbreviations;
 
-    private AbbreviationDisambiguationHelper() {
-        throw new IllegalStateException("Cannot be instantiated");
+    public static synchronized @NotNull AbbreviationDisambiguationHelper getInstance() {
+        if (instance == null) {
+            instance = new AbbreviationDisambiguationHelper();
+        }
+        return instance;
     }
 
-    public static ImmutableSet<String> get(@NotNull String abbreviation) {
+    private AbbreviationDisambiguationHelper() {
+    }
+
+    public ImmutableSet<String> get(@NotNull String abbreviation) {
         //Specifically check. We do not want to mess up our files.
         if (abbreviation == null || abbreviation.isEmpty() || abbreviation.isBlank())
             throw new IllegalArgumentException();
 
         if (abbreviations == null)
-            abbreviations = read();
+            abbreviations = Maps.mutable.ofMapIterable(load());
 
-        var abbr = abbreviations.computeIfAbsent(abbreviation, AbbreviationDisambiguationHelper::disambiguate);
+        var abbr = abbreviations.computeIfAbsent(abbreviation, this::disambiguate);
         return Sets.immutable.ofAll(abbr.meanings());
     }
 
-    private static Abbreviation disambiguate(@NotNull String abbreviation) {
+    private Abbreviation disambiguate(@NotNull String abbreviation) {
         //Specifically check. We do not want to mess up our files.
         if (abbreviation == null || abbreviation.isEmpty() || abbreviation.isBlank())
             throw new IllegalArgumentException();
 
         var abbr = crawl(abbreviation);
         abbreviations.put(abbr.abbreviation(), abbr);
-        save();
+        save(abbreviations);
 
         return abbr;
     }
 
-    public static Abbreviation crawl(@NotNull String abbreviation) {
+    public Abbreviation crawl(@NotNull String abbreviation) {
         logger.info("Using crawler to disambiguate {}", abbreviation);
         MutableSet<String> meanings = Sets.mutable.empty();
         try {
@@ -82,52 +86,38 @@ public class AbbreviationDisambiguationHelper {
     }
 
     /**
-     * Gets the abbreviation file from the disk. Creates a new file, if the file doesn't exist. Can throw an IOException during file creation.
-     *
-     * @return the file
-     * @throws IOException can be caused when creating a new file
-     */
-    private static @NotNull File getAbbreviationsFile() throws IOException {
-        if (abbreviationsFile != null)
-            return abbreviationsFile;
-
-        AppDirs appDirs = AppDirsFactory.getInstance();
-        var arDoCoDataDir = appDirs.getUserDataDir("ArDoCo", null, "MCSE", true);
-        //var projectDataDir = arDoCoDataDir + "/projects/" + DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
-        abbreviationsFile = new File(arDoCoDataDir + "/abbreviations.json");
-        if (abbreviationsFile.getParentFile().mkdirs()) {
-            logger.info("Created directory {}", abbreviationsFile.getParentFile().getCanonicalPath());
-        }
-        if (abbreviationsFile.createNewFile()) {
-            logger.info("Created abbreviation file {}", abbreviationsFile.getCanonicalPath());
-            save();
-        }
-
-        return abbreviationsFile;
-    }
-
-    /**
      * Gets the abbreviation file from the disk and parses its content.
      *
      * @return the abbreviations
      */
-    public static @NotNull MutableMap<String, Abbreviation> read() {
+    @Override
+    public @NotNull ImmutableMap<String, Abbreviation> load() {
+        if (abbreviations != null)
+            return Maps.immutable.ofMap(abbreviations);
         try {
             logger.info("Reading abbreviations file");
-            var map = toMutableMap(new ObjectMapper().readValue(getAbbreviationsFile(), Abbreviation[].class));
+            var map = toMutableMap(new ObjectMapper().readValue(getFile(), Abbreviation[].class));
             logger.info("Found {} cached abbreviation", map.keySet().size());
-            return map;
+            return Maps.immutable.ofMap(map);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void save() {
-        Collection<Abbreviation> values = Sets.mutable.empty();
-        if (abbreviations != null) {
-            values = abbreviations.values();
-        }
-        try (PrintWriter out = new PrintWriter(getAbbreviationsFile())) {
+    @Override
+    public String getIdentifier() {
+        return "abbreviations";
+    }
+
+    @Override
+    public ImmutableMap<String, Abbreviation> getDefault() {
+        return Maps.immutable.empty();
+    }
+
+    @Override
+    public void save(ImmutableMap<String, AbbreviationDisambiguationHelper.Abbreviation> content) {
+        Collection<Abbreviation> values = content.valuesView().toList();
+        try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
             String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(values);
             out.print(json);
@@ -137,7 +127,11 @@ public class AbbreviationDisambiguationHelper {
         }
     }
 
-    private static @NotNull MutableMap<String, Abbreviation> toMutableMap(@NotNull Abbreviation[] abbreviations) {
+    private void save(MutableMap<String, AbbreviationDisambiguationHelper.Abbreviation> content) {
+        save(Maps.immutable.ofMap(content));
+    }
+
+    private @NotNull MutableMap<String, Abbreviation> toMutableMap(@NotNull Abbreviation[] abbreviations) {
         var all = new HashMap<String, Abbreviation>();
         for (var abbr : abbreviations) {
             all.put(abbr.abbreviation(), abbr);

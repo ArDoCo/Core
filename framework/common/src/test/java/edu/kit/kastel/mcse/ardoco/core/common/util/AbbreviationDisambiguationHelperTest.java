@@ -20,7 +20,7 @@ class AbbreviationDisambiguationHelperTest {
 
     @Test
     void get() {
-        var abbreviation = AbbreviationDisambiguationHelper.get("DB");
+        var abbreviation = AbbreviationDisambiguationHelper.getInstance().get("DB");
         assertNotNull(abbreviation);
         assertEquals(abbreviation.size(), Math.min(AbbreviationDisambiguationHelper.limit, 3));
     }
@@ -34,20 +34,20 @@ class AbbreviationDisambiguationHelperTest {
     }
 
     @Test
-    void read() {
-        var abbreviations = AbbreviationDisambiguationHelper.read();
+    void load() {
+        var abbreviations = AbbreviationDisambiguationHelper.getInstance().load();
         assertNotNull(abbreviations);
     }
 
     @Test
     void crawl() {
-        var abbreviation = AbbreviationDisambiguationHelper.crawl("DB");
+        var abbreviation = AbbreviationDisambiguationHelper.getInstance().crawl("DB");
         assertNotNull(abbreviation);
         assertEquals(abbreviation.abbreviation(), "DB");
         assertEquals(abbreviation.meanings().size(), Math.min(AbbreviationDisambiguationHelper.limit, 3));
 
         //Let's hope no one ever comes up with a sensible meaning for this non-sense. Until then, it will remain as our way to test how we handle no search results.
-        var nonSens = AbbreviationDisambiguationHelper.crawl("8DAS8UDZGU23HG1U");
+        var nonSens = AbbreviationDisambiguationHelper.getInstance().crawl("8DAS8UDZGU23HG1U");
         assertNotNull(nonSens);
         assertTrue(nonSens.meanings().isEmpty());
     }
