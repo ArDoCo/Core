@@ -22,6 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DBPediaHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -131,9 +132,13 @@ public class BaseDiagramConnectionInformant extends Informant {
         var texts = box.getTexts();
         for (var textBox : texts) {
             var text = textBox.getText();
-            var splitAndDecameled = processText(text).toList();
-            //TODO use in a sensible way
-            var abbreviations = possibleAbbreviations(text).stream().map(a -> AbbreviationDisambiguationHelper.get(a)).toList();
+            var splitAndDecameled = processText(text).toList()
+                    .stream()
+                    .filter(s -> !DBPediaHelper.isWordMarkupLanguage(s))
+                    .filter(s -> !DBPediaHelper.isWordProgrammingLanguage(s))
+                    .filter(s -> !DBPediaHelper.isWordSoftware(s))
+                    .toList();
+            var abbreviations = possibleAbbreviations(text).stream().map(AbbreviationDisambiguationHelper.getInstance()::get).toList();
             var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
             names.addAll(splitAndDecameled);
             names.addAll(noBlank);

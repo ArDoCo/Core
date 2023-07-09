@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
-    private static Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(DBPediaHelper.class);
     private static DBPediaHelper instance;
     private Record record;
 
@@ -39,11 +39,23 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
                 \n
                 SELECT ?label \n
                 WHERE { \n
+                        {
                         ?pl dbo:abstract ?abstract .\n
                         ?pl rdfs:label ?label .\n
                         ?pl rdf:type yago:ProgrammingLanguage106898352 .\n
                         FILTER (LANG(?abstract) = 'en') .\n
                         FILTER (LANG(?label)='en')
+                        }
+                        UNION
+                        {
+                        ?pl dbo:abstract ?abstract .\n
+                        ?pl rdfs:label ?label .\n
+                        ?pl dbo:influenced ?influenced .\n
+                        ?pl dbo:influencedBy ?influencedBy .\n
+                        ?pl rdf:type dbo:ProgrammingLanguage .\n
+                        FILTER (LANG(?abstract) = 'en') .\n
+                        FILTER (LANG(?label)='en')
+                        }
                 }
                 GROUP BY ?label""");
 
@@ -70,8 +82,31 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
                 GROUP BY ?label""");
 
         var languages = runQuery(qs);
-        logger.info("Retrieved {} programming languages from DBPedia", languages.size());
+        logger.info("Retrieved {} markup languages from DBPedia", languages.size());
         return languages;
+    }
+
+    private List<String> loadSoftware() {
+        ParameterizedSparqlString qs = new ParameterizedSparqlString("""
+                prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n
+                prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>\n
+                PREFIX dbo:     <http://dbpedia.org/ontology/>
+                PREFIX yago: <http://dbpedia.org/class/yago/>
+                \n
+                SELECT ?label \n
+                WHERE { \n
+                        ?p rdf:type dbo:Software .\n
+                        ?p dbo:programmingLanguage ?pl .\n
+                        ?pl dbo:abstract ?abstract .\n
+                        ?pl rdfs:label ?label .\n
+                        FILTER (LANG(?abstract) = 'en') .\n
+                        FILTER (LANG(?label)='en')
+                }
+                GROUP BY ?label""");
+
+        var software = runQuery(qs);
+        logger.info("Retrieved {} software from DBPedia", software.size());
+        return software;
     }
 
     private List<String> runQuery(ParameterizedSparqlString query) {
@@ -99,7 +134,7 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
 
     @Override
     public Record getDefault() {
-        return new Record(loadProgrammingLanguages(), loadMarkupLanguages());
+        return new Record(loadProgrammingLanguages(), loadMarkupLanguages(), loadSoftware());
     }
 
     @Override
@@ -108,9 +143,9 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
             return record;
         try {
             logger.info("Reading {} file", getIdentifier());
-            Record r = new ObjectMapper().readValue(getFile(), new TypeReference<Record>() {
+            record = new ObjectMapper().readValue(getFile(), new TypeReference<Record>() {
             });
-            return r;
+            return record;
         } catch (IOException e) {
             logger.error("Error reading {} file", getIdentifier());
             throw new RuntimeException(e);
@@ -122,6 +157,18 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
         return "dbpedia";
     }
 
-    public record Record(List<String> programmingLanguages, List<String> markupLanguages) {
+    public record Record(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {
+    }
+
+    public static boolean isWordProgrammingLanguage(String word) {
+        return getInstance().load().programmingLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
+    }
+
+    public static boolean isWordMarkupLanguage(String word) {
+        return getInstance().load().markupLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
+    }
+
+    public static boolean isWordSoftware(String word) {
+        return getInstance().load().software().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
     }
 }
