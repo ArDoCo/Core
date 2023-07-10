@@ -29,8 +29,9 @@ public class CodeCompilationUnit extends CodeModule {
         // Jackson
     }
 
-    public CodeCompilationUnit(String name, Set<? extends CodeItem> content, List<String> pathElements, String extension, ProgrammingLanguage language) {
-        super(name, content);
+    public CodeCompilationUnit(CodeItemRepository codeItemRepository, String name, Set<? extends CodeItem> content, List<String> pathElements, String extension,
+            ProgrammingLanguage language) {
+        super(codeItemRepository, name, content);
         this.pathElements = new ArrayList<>(pathElements);
         this.extension = extension;
         this.language = language;

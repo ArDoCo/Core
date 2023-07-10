@@ -1,2 +1,0 @@
-UnwantedWordsFilter::enableCommonBlacklist=true
-UnwantedWordsFilter::customBlacklist=assertion,backdoor,check,classes,code,cron,end,failure,javascript,key,limit,minute,origin,processing,queue,request,servlet,task,testing,unit,utility,origin

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 
@@ -20,9 +21,11 @@ public abstract class CodeExtractor extends Extractor {
     private static final Logger logger = LoggerFactory.getLogger(CodeExtractor.class);
 
     private static final String CODE_MODEL_FILE_NAME = "codeModel.acm";
+    protected final CodeItemRepository codeItemRepository;
 
-    protected CodeExtractor(String path) {
+    protected CodeExtractor(CodeItemRepository codeItemRepository, String path) {
         super(path);
+        this.codeItemRepository = codeItemRepository;
     }
 
     @Override
