@@ -80,7 +80,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         File codeLocation = new File(codeProject.getCodeLocation());
 
         if (!codeLocation.exists() || Objects.requireNonNull(codeLocation.listFiles()).length == 0) {
-            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
+            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation(), codeProject.getCommitHash());
         }
     }
 
