@@ -86,6 +86,15 @@
     </profile>
 
     <profile>
+      <id>deployment</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>tests-base</module>
+      </modules>
+    </profile>
+    <profile>
       <!-- Traceability Link Recovery -->
       <id>tlr</id>
       <activation>

@@ -13,12 +13,12 @@ public class CodePackage extends CodeModule {
         // Jackson
     }
 
-    public CodePackage(String name) {
-        super(name, new HashSet<>());
+    public CodePackage(CodeItemRepository codeItemRepository, String name) {
+        super(codeItemRepository, name, new HashSet<>());
     }
 
-    public CodePackage(String name, Set<? extends CodeItem> content) {
-        super(name, content);
+    public CodePackage(CodeItemRepository codeItemRepository, String name, Set<? extends CodeItem> content) {
+        super(codeItemRepository, name, content);
     }
 
     public Set<CodePackage> getSubpackages() {

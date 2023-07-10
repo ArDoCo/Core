@@ -5,10 +5,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.AbbreviatedObjectId;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +23,7 @@ public class RepositoryHandler {
         super();
     }
 
-    public static boolean shallowCloneRepository(String repositoryLink, String desiredCodeLocation) {
+    public static boolean shallowCloneRepository(String repositoryLink, String desiredCodeLocation, String desiredHash) {
         File codeLocation;
         try {
             codeLocation = Files.createDirectories(Paths.get(desiredCodeLocation)).toFile();
@@ -29,6 +33,15 @@ public class RepositoryHandler {
         }
 
         try (Git git = Git.cloneRepository().setURI(repositoryLink).setDirectory(codeLocation).setDepth(1).call()) {
+            List<RevCommit> commits = new ArrayList<>();
+            git.log().setMaxCount(1).call().forEach(commits::add);
+            assert commits.size() == 1;
+            if (commits.get(0).getId().startsWith(AbbreviatedObjectId.fromString(desiredHash)))
+                return true;
+
+            // Checkout correct code version
+            git.fetch().setUnshallow(true).call();
+            git.checkout().setName(desiredHash).call();
             return true;
         } catch (GitAPIException e) {
             logger.warn("An error occurred when cloning the repository.", e);

@@ -14,8 +14,8 @@ public class ComputationalObject extends CodeItem {
         // Jackson
     }
 
-    public ComputationalObject(String name) {
-        super(name);
+    public ComputationalObject(CodeItemRepository codeItemRepository, String name) {
+        super(codeItemRepository, name);
     }
 
 }
