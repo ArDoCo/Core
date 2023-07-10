@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
@@ -46,7 +47,8 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
         case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
         case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
         };
-        CodeExtractor codeExtractor = new AllLanguagesExtractor(inputCode.getAbsolutePath());
+        CodeItemRepository codeItemRepository = new CodeItemRepository();
+        CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, inputCode.getAbsolutePath());
         ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));
         agent.applyConfiguration(additionalConfigs);
         return agent;

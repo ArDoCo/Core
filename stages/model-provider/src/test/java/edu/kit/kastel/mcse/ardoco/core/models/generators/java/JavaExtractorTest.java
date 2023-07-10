@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.JavaExtractor;
 
@@ -15,7 +16,7 @@ class JavaExtractorTest {
 
     @Test
     void extractorTest() {
-        var extractor = new JavaExtractor("src/test/resources/interface");
+        var extractor = new JavaExtractor(new CodeItemRepository(), "src/test/resources/interface");
         CodeModel model = extractor.extractModel();
         Assertions.assertNotNull(model);
         for (Entity codePackage : model.getAllPackages()) {
