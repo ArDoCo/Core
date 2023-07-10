@@ -13,6 +13,8 @@ public class CodeRunnerBaseTest extends RunnerBaseTest {
 
     protected static String inputCode = "../pipeline-core/src/test/resources/code/teastore";
 
+    protected static String commitHash = "bdc49020a55cfa97eaabbb25744fefbc2697defa";
+
     @BeforeAll
     static void setup() {
         if (System.getenv("testCodeFull") != null) {
@@ -22,7 +24,7 @@ public class CodeRunnerBaseTest extends RunnerBaseTest {
         File codeLocation = new File(inputCode);
 
         if (!codeLocation.exists()) {
-            var successfulClone = RepositoryHandler.shallowCloneRepository(inputCodeRepository, inputCode);
+            var successfulClone = RepositoryHandler.shallowCloneRepository(inputCodeRepository, inputCode, commitHash);
             if (!successfulClone) {
                 Assertions.fail("Could not clone repository.");
             }

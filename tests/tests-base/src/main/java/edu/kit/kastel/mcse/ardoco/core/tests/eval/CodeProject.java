@@ -25,6 +25,7 @@ public enum CodeProject {
     MEDIASTORE(//
             Project.MEDIASTORE, //
             "https://github.com/ArDoCo/MediaStore3.git", //
+            "94c398fa02b3d6b8d71517522a7206d37ed3a9af", //
             "/benchmark/mediastore/model_2016/code/codeModel.acm",//
             "/benchmark/mediastore/model_2016/goldstandard_sam-code.csv", //
             "/benchmark/mediastore/text_2016/goldstandard_code.csv", //
@@ -34,6 +35,7 @@ public enum CodeProject {
 
     TEASTORE(Project.TEASTORE, //
             "https://github.com/ArDoCo/TeaStore.git", //
+            "bdc49020a55cfa97eaabbb25744fefbc2697defa", //
             "/benchmark/teastore/model_2020/code/codeModel.acm",//
             "/benchmark/teastore/model_2020/goldstandard_sam-code.csv", //
             "/benchmark/teastore/text_2020/goldstandard_code.csv", //
@@ -43,8 +45,9 @@ public enum CodeProject {
 
     TEAMMATES(Project.TEAMMATES, //
             "https://github.com/ArDoCo/teammates.git",//
+            "b24519a2af9e17b2bc9c025e87e4cf60009c425d",//
             "/benchmark/teammates/model_2021/code/codeModel.acm",//
-            "/benchmark/teammates/model_2021/goldstandard_sam-code.csv", //
+            "/benchmark/teammates/model_2021/goldstandard_sam-code.csv",//
             "/benchmark/teammates/text_2021/goldstandard_code.csv", //
             new ExpectedResults(.999, .999, .999, .999, .999, .999), //
             new ExpectedResults(.705, .909, .795, .975, .785, .975) //
@@ -52,6 +55,7 @@ public enum CodeProject {
 
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
             "https://github.com/ArDoCo/bigbluebutton.git",//
+            "8fa2507d6c3865a9850004fd6fefd09738e68406",//
             "/benchmark/bigbluebutton/model_2021/code/codeModel.acm",//
             "/benchmark/bigbluebutton/model_2021/goldstandard_sam-code.csv", //
             "/benchmark/bigbluebutton/text_2021/goldstandard_code.csv", //
@@ -61,6 +65,7 @@ public enum CodeProject {
 
     JABREF(Project.JABREF, //
             "https://github.com/ArDoCo/jabref.git",//
+            "6269698cae437610ec79c38e6dd611eef7e88afe",//
             "/benchmark/jabref/model_2021/code/codeModel.acm",//
             "/benchmark/jabref/model_2021/goldstandard_sam-code.csv", //
             "/benchmark/jabref/text_2021/goldstandard_code.csv", //
@@ -71,6 +76,7 @@ public enum CodeProject {
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
 
     private final String codeRepository;
+    private final String commitHash;
     private final String codeModelLocationInResources;
     private final String samCodeGoldStandardLocation;
     private final String sadCodeGoldStandardLocation;
@@ -78,10 +84,11 @@ public enum CodeProject {
     private final ExpectedResults expectedResultsForSamCode;
     private final ExpectedResults expectedResultsForSadSamCode;
 
-    CodeProject(Project project, String codeRepository, String codeModelLocationInResources, String samCodeGoldStandardLocation,
+    CodeProject(Project project, String codeRepository, String commitHash, String codeModelLocationInResources, String samCodeGoldStandardLocation,
             String sadCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
         this.project = project;
         this.codeRepository = codeRepository;
+        this.commitHash = commitHash;
         this.codeModelLocationInResources = codeModelLocationInResources;
         this.samCodeGoldStandardLocation = samCodeGoldStandardLocation;
         this.sadCodeGoldStandardLocation = sadCodeGoldStandardLocation;
@@ -95,6 +102,10 @@ public enum CodeProject {
 
     public String getCodeRepository() {
         return codeRepository;
+    }
+
+    public String getCommitHash() {
+        return commitHash;
     }
 
     public String getCodeLocation() {
@@ -174,4 +185,5 @@ public enum CodeProject {
         temporary.mkdirs();
         return temporary;
     }
+
 }
