@@ -72,12 +72,6 @@ class TraceLinkEvaluationIT {
         System.setProperty(LOGGING_ARDOCO_CORE, "error");
     }
 
-    private static void cleanUpCodeRepositories() {
-        for (CodeProject codeProject : CodeProject.values()) {
-            cleanUpCodeRepository(codeProject);
-        }
-    }
-
     private static void cleanUpCodeRepository(CodeProject codeProject) {
         RepositoryHandler.removeRepository(codeProject.getCodeLocation());
     }
@@ -136,10 +130,40 @@ class TraceLinkEvaluationIT {
         return projects;
     }
 
-    @DisplayName("Evaluate SAD-SAM-Code TLR")
+    @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
+    @DisplayName("Evaluate SAD-SAM-Code TLR (Full)")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(1)
+    void evaluateSadSamCodeTlrFullIT(CodeProject project) {
+        analyzeCodeDirectly.set(true);
+        if (analyzeCodeDirectly.get())
+            cleanUpCodeRepository(project);
+
+        var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
+        ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
+        Assertions.assertNotNull(results);
+    }
+
+    @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
+    @DisplayName("Evaluate SAM-Code TLR (Full)")
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = CodeProject.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @Order(2)
+    void evaluateSamCodeTlrFullIT(CodeProject project) {
+        analyzeCodeDirectly.set(true);
+        if (analyzeCodeDirectly.get())
+            cleanUpCodeRepository(project);
+
+        var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation();
+        var results = evaluation.runTraceLinkEvaluation(project);
+        Assertions.assertNotNull(results);
+    }
+
+    @DisplayName("Evaluate SAD-SAM-Code TLR")
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("getNonHistoricalCodeProjects")
+    @Order(9)
     void evaluateSadSamCodeTlrIT(CodeProject project) {
         analyzeCodeDirectly.set(false);
         if (analyzeCodeDirectly.get())
@@ -150,21 +174,6 @@ class TraceLinkEvaluationIT {
         Assertions.assertNotNull(results);
 
         TraceabilityLinkRecoveryEvaluation.resultMap.put(project.getProject(), results);
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
-    @DisplayName("Evaluate SAD-SAM-Code TLR (Full)")
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("getNonHistoricalCodeProjects")
-    @Order(9)
-    void evaluateSadSamCodeTlrFullIT(CodeProject project) {
-        analyzeCodeDirectly.set(true);
-        if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
-
-        var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
-        ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
-        Assertions.assertNotNull(results);
     }
 
     @DisplayName("Evaluate SAM-Code TLR")
@@ -178,21 +187,6 @@ class TraceLinkEvaluationIT {
 
         var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation();
         ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
-        Assertions.assertNotNull(results);
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
-    @DisplayName("Evaluate SAM-Code TLR (Full)")
-    @ParameterizedTest(name = "{0}")
-    @EnumSource(value = CodeProject.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
-    @Order(19)
-    void evaluateSamCodeTlrFullIT(CodeProject project) {
-        analyzeCodeDirectly.set(true);
-        if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
-
-        var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation();
-        var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
 
