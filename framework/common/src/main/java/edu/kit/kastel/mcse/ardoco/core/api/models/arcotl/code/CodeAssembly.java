@@ -12,7 +12,7 @@ public class CodeAssembly extends CodeModule {
         // Jackson
     }
 
-    public CodeAssembly(String name, Set<? extends CodeItem> content) {
-        super(name, content);
+    public CodeAssembly(CodeItemRepository codeItemRepository, String name, Set<? extends CodeItem> content) {
+        super(codeItemRepository, name, content);
     }
 }

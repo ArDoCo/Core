@@ -9,23 +9,10 @@ import org.eclipse.collections.api.factory.Maps;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-class CodeItemRepository {
-    private static CodeItemRepository instance;
+public class CodeItemRepository {
 
     @JsonProperty
     private final Map<String, CodeItem> repository = Maps.mutable.empty();
-
-    private CodeItemRepository() {
-        instance = this;
-    }
-
-    static synchronized CodeItemRepository getInstance() {
-        if (instance == null) {
-            instance = new CodeItemRepository();
-        }
-
-        return instance;
-    }
 
     public Map<String, CodeItem> getRepository() {
         return repository;
@@ -45,5 +32,9 @@ class CodeItemRepository {
 
     List<CodeItem> getCodeItemsFromIds(List<String> codeItemIds) {
         return codeItemIds.stream().map(this::getCodeItem).filter(Objects::nonNull).toList();
+    }
+
+    void init() {
+        this.repository.values().forEach(it -> it.registerCurrentCodeItemRepository(this));
     }
 }

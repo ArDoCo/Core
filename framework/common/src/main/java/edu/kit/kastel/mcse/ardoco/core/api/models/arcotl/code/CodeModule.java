@@ -31,8 +31,8 @@ public class CodeModule extends CodeItem {
         // Jackson
     }
 
-    public CodeModule(String name, Set<? extends CodeItem> content) {
-        super(name);
+    public CodeModule(CodeItemRepository codeItemRepository, String name, Set<? extends CodeItem> content) {
+        super(codeItemRepository, name);
         this.content = new ArrayList<>();
         for (var codeItem : content) {
             this.content.add(codeItem.getId());
@@ -47,7 +47,7 @@ public class CodeModule extends CodeItem {
 
     @Override
     public List<CodeItem> getContent() {
-        return CodeItemRepository.getInstance().getCodeItemsFromIds(content);
+        return codeItemRepository.getCodeItemsFromIds(content);
     }
 
     public void setContent(List<? extends CodeItem> content) {
@@ -66,7 +66,7 @@ public class CodeModule extends CodeItem {
     }
 
     public CodeModule getParent() {
-        CodeItem codeItem = CodeItemRepository.getInstance().getCodeItem(parentId);
+        CodeItem codeItem = codeItemRepository.getCodeItem(parentId);
         if (codeItem instanceof CodeModule codeModule) {
             return codeModule;
         }
@@ -79,8 +79,8 @@ public class CodeModule extends CodeItem {
 
     public void setParent(CodeModule parent) {
         this.parentId = parent.getId();
-        if (!CodeItemRepository.getInstance().containsCodeItem(parentId)) {
-            CodeItemRepository.getInstance().addCodeItem(parent);
+        if (!codeItemRepository.containsCodeItem(parentId)) {
+            codeItemRepository.addCodeItem(parent);
         }
     }
 

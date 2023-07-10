@@ -21,12 +21,14 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.fi
 
 public final class JavaModel {
 
+    private final CodeItemRepository codeItemRepository;
     private Set<JavaType> javaTypes;
     private Set<JavaClassifier> javaClassifiers;
     private Set<JavaInterface> javaInterfaces;
     private CodeModel codeModel;
 
-    public JavaModel(Map<String, CompilationUnit> compUnitMap) {
+    public JavaModel(CodeItemRepository codeItemRepository, Map<String, CompilationUnit> compUnitMap) {
+        this.codeItemRepository = codeItemRepository;
         javaTypes = new HashSet<>();
         javaClassifiers = new HashSet<>();
         javaInterfaces = new HashSet<>();
@@ -161,8 +163,8 @@ public final class JavaModel {
                 Name fullName = packageDeclaration.getName();
                 packageNames = getPackageNames(fullName);
             }
-            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(fileNameWithoutExtension, new HashSet<>(), pathElements, extension,
-                    ProgrammingLanguage.JAVA);
+            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new HashSet<>(), pathElements,
+                    extension, ProgrammingLanguage.JAVA);
             codeCompilationUnits.add(codeCompilationUnit);
             if (null != packageDeclaration) {
                 CodePackage codePackage = getPackage(packageNames, codeCompilationUnit);
@@ -182,7 +184,7 @@ public final class JavaModel {
 
         modelContent.addAll(mergedCodePackages);
 
-        codeModel = new CodeModel(modelContent);
+        codeModel = new CodeModel(codeItemRepository, modelContent);
     }
 
     private List<Datatype> extractTypes(CompilationUnit compilationUnit) {
@@ -201,7 +203,7 @@ public final class JavaModel {
     private ClassUnit processEnumDeclaration(EnumDeclaration enumDeclaration) {
         String name = enumDeclaration.getName().getIdentifier();
         Set<ControlElement> declaredMethods = extractMethods(enumDeclaration);
-        ClassUnit codeClassifier = new ClassUnit(name, declaredMethods);
+        ClassUnit codeClassifier = new ClassUnit(codeItemRepository, name, declaredMethods);
         addClassifier(codeClassifier, enumDeclaration);
         return codeClassifier;
     }
@@ -211,18 +213,18 @@ public final class JavaModel {
         Set<ControlElement> declaredMethods = extractMethods(typeDeclaration);
         Datatype codeType;
         if (typeDeclaration.isInterface()) {
-            InterfaceUnit codeInterface = new InterfaceUnit(name, declaredMethods);
+            InterfaceUnit codeInterface = new InterfaceUnit(codeItemRepository, name, declaredMethods);
             addInterface(codeInterface, typeDeclaration);
             codeType = codeInterface;
         } else {
-            ClassUnit classifier = new ClassUnit(name, declaredMethods);
+            ClassUnit classifier = new ClassUnit(codeItemRepository, name, declaredMethods);
             addClassifier(classifier, typeDeclaration);
             codeType = classifier;
         }
         return codeType;
     }
 
-    private static Set<ControlElement> extractMethods(ASTNode node) {
+    private Set<ControlElement> extractMethods(ASTNode node) {
         Set<ControlElement> declaredMethods = new HashSet<>();
         Set<MethodDeclaration> methodDeclarations = MethodDeclarationFinder.find(node);
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
@@ -231,8 +233,8 @@ public final class JavaModel {
         return declaredMethods;
     }
 
-    private static ControlElement extractMethod(MethodDeclaration methodDeclaration) {
-        return new ControlElement(methodDeclaration.getName().getIdentifier());
+    private ControlElement extractMethod(MethodDeclaration methodDeclaration) {
+        return new ControlElement(codeItemRepository, methodDeclaration.getName().getIdentifier());
     }
 
     private static List<String> getPackageNames(Name name) {
@@ -250,13 +252,13 @@ public final class JavaModel {
         return packageNames;
     }
 
-    private static CodePackage getPackage(List<String> packageNames, CodeCompilationUnit codeCompilationUnit) {
+    private CodePackage getPackage(List<String> packageNames, CodeCompilationUnit codeCompilationUnit) {
         if (packageNames.isEmpty()) {
             return null;
         }
         List<String> packageNamesCopy = new ArrayList<>(packageNames);
         String name = packageNamesCopy.remove(0);
-        CodePackage codePackage = new CodePackage(name);
+        CodePackage codePackage = new CodePackage(codeItemRepository, name);
         CodePackage childCodePackage = getPackage(packageNamesCopy, codeCompilationUnit);
         if (null == childCodePackage) {
             codePackage.addContent(codeCompilationUnit);
