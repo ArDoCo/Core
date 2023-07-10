@@ -84,6 +84,6 @@ public class ShellVisitor implements FileVisitor<Path> {
     }
 
     private static boolean isShellFile(String fileName, String code) {
-        return fileName.endsWith(".sh") || code.startsWith("#!/bin/bash");
+        return fileName.endsWith(".sh") || code.startsWith("#!/bin/bash") || code.startsWith("#!/bin/sh") || code.startsWith("#!/usr/bin/env bash");
     }
 }
