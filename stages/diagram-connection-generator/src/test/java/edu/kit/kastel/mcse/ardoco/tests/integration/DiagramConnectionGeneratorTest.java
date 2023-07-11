@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -19,8 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramCon
 import edu.kit.kastel.mcse.ardoco.tests.TestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.results.Results;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiagramConnectionGeneratorTest {
@@ -78,6 +78,10 @@ public class DiagramConnectionGeneratorTest {
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var diagramLinks = diagramConnectionState.getDiagramLinks().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).collect(Collectors.toCollection(TreeSet::new));
+        var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks()
+                .stream()
+                .peek(t -> t.setText(text))
+                .collect(Collectors.toCollection(TreeSet::new));
         var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         logger.info(result.toString());
         assertTrue(result.asExpected());

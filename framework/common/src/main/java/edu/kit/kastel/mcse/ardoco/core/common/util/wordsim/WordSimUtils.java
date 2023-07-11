@@ -11,27 +11,26 @@ import org.sqlite.SQLiteOpenMode;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
 
 /**
- * A static class that provides various utility methods to calculate similarity between different kinds of objects. This
- * class statically keeps a reference to a fallback {@link ComparisonStrategy} and a fallback list of word similarity
- * measures. These fallbacks can be changed with the {@link #setMeasures(Collection)} and
- * {@link #setStrategy(ComparisonStrategy)} methods. Any calls to methods that provide their own measures or strategies
- * will not utilize these fallbacks. Any calls that do not provide their own measures or strategies will utilize them.
- * As of right now, no protections against simultaneous write access from multiple threads exist. Therefore, this class
- * is not threadsafe.
+ * A static class that provides various utility methods to calculate similarity between different kinds of objects. This class statically keeps a reference to a
+ * fallback {@link ComparisonStrategy} and a fallback list of word similarity measures. These fallbacks can be changed with the {@link #setMeasures(Collection)}
+ * and {@link #setStrategy(ComparisonStrategy)} methods. Any calls to methods that provide their own measures or strategies will not utilize these fallbacks.
+ * Any calls that do not provide their own measures or strategies will utilize them. As of right now, no protections against simultaneous write access from
+ * multiple threads exist. Therefore, this class is not threadsafe.
  */
 public class WordSimUtils {
 
     private static ImmutableList<WordSimMeasure> measures = WordSimLoader.loadUsingProperties();
     private static ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
+    private static SimilarityStrategy similarityStrategy = SimilarityStrategy.AVERAGE;
 
     private WordSimUtils() {
     }
 
     /**
-     * Sets which measures should be used for similarity comparison. The specified collection of measures will be used
-     * for all subsequent comparisons.
+     * Sets which measures should be used for similarity comparison. The specified collection of measures will be used for all subsequent comparisons.
      *
      * @param measures the measures to use
      */
@@ -40,8 +39,7 @@ public class WordSimUtils {
     }
 
     /**
-     * Sets the default comparison strategy. The specified strategy will be used for all subsequent comparisons that
-     * themselves do not specify a strategy.
+     * Sets the default comparison strategy. The specified strategy will be used for all subsequent comparisons that themselves do not specify a strategy.
      *
      * @param strategy the new default strategy
      */
@@ -50,8 +48,16 @@ public class WordSimUtils {
     }
 
     /**
-     * Evaluates whether the words from the given {@link ComparisonContext} are similar using the specified comparison
-     * strategy.
+     * Sets the default similarity strategy. The specified strategy will be used for all subsequent comparisons that themselves do not specify a strategy.
+     *
+     * @param strategy the new default strategy
+     */
+    public static void setStrategy(SimilarityStrategy strategy) {
+        WordSimUtils.similarityStrategy = strategy;
+    }
+
+    /**
+     * Evaluates whether the words from the given {@link ComparisonContext} are similar using the specified comparison strategy.
      *
      * @param ctx      the context
      * @param strategy the strategy
@@ -76,8 +82,8 @@ public class WordSimUtils {
     }
 
     /**
-     * Evaluates whether the words from the given {@link ComparisonContext} are similar using the default comparison
-     * strategy. The default strategy can be changed with the {@link #setStrategy(ComparisonStrategy)} method.
+     * Evaluates whether the words from the given {@link ComparisonContext} are similar using the default comparison strategy. The default strategy can be
+     * changed with the {@link #setStrategy(ComparisonStrategy)} method.
      *
      * @param ctx the context
      * @return Returns {@code true} if the default strategy considers the words similar enough.
@@ -88,8 +94,8 @@ public class WordSimUtils {
     }
 
     /**
-     * Evaluates whether the given words are similar using the default comparison strategy. The default strategy can be
-     * changed with the {@link #setStrategy(ComparisonStrategy)} method.
+     * Evaluates whether the given words are similar using the default comparison strategy. The default strategy can be changed with the
+     * {@link #setStrategy(ComparisonStrategy)} method.
      *
      * @param firstWord  the first word
      * @param secondWord the second word
@@ -112,8 +118,8 @@ public class WordSimUtils {
     }
 
     /**
-     * Evaluates whether the given words are similar using the default comparison strategy. The default strategy can be
-     * changed with the {@link #setStrategy(ComparisonStrategy)} method.
+     * Evaluates whether the given words are similar using the default comparison strategy. The default strategy can be changed with the
+     * {@link #setStrategy(ComparisonStrategy)} method.
      *
      * @param firstWord  the first word
      * @param secondWord the second word
@@ -136,8 +142,8 @@ public class WordSimUtils {
     }
 
     /**
-     * Evaluates whether the given words are similar using the default comparison strategy. The default strategy can be
-     * changed with the {@link #setStrategy(ComparisonStrategy)} method.
+     * Evaluates whether the given words are similar using the default comparison strategy. The default strategy can be changed with the
+     * {@link #setStrategy(ComparisonStrategy)} method.
      *
      * @param firstWord  the first word
      * @param secondWord the second word
@@ -157,6 +163,10 @@ public class WordSimUtils {
      */
     public static boolean areWordsSimilar(String firstWord, Word secondWord, ComparisonStrategy strategy) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
+    }
+
+    public static double getSimilarity(String firstWord, String secondWord) {
+        return similarityStrategy.getSimilarity(new ComparisonContext(firstWord, secondWord, null, null, false), measures.toList());
     }
 
     public static SQLiteConfig getSqLiteConfig() {

@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.text.MessageFormat;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     private final DiagramElement diagramElement;
     private final int sentenceNo;
     private final Word word;
+    private final double confidence;
 
     private Text text;
 
@@ -24,12 +26,14 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
      *
      * @param diagramElement diagram element
      * @param word           word
+     * @param confidence     confidence
      */
-    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word) {
+    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull double confidence) {
         this.diagramElement = diagramElement;
         this.goldStandard = null;
         this.sentenceNo = word.getSentenceNo() + 1;
         this.word = word;
+        this.confidence = confidence;
     }
 
     /**
@@ -44,23 +48,33 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
         this.goldStandard = goldStandard;
         this.sentenceNo = sentenceNo;
         this.word = null;
+        this.confidence = 1.0;
     }
 
     /**
-     * Returns the path to the goldstandard text file, if this trace link originated from the goldstandard.
+     * Returns an optional containing the path to the goldstandard text file, if this trace link originated from the goldstandard.
      *
-     * @return path or null
+     * @return an optional containing the path or empty
      */
-    public @Nullable String getGoldStandard() {
-        return goldStandard;
+    public Optional<String> getGoldStandard() {
+        return Optional.ofNullable(goldStandard);
     }
 
     public @NotNull DiagramElement getDiagramElement() {
         return diagramElement;
     }
 
-    public @Nullable Word getWord() {
-        return word;
+    public double getConfidence() {
+        return confidence;
+    }
+
+    /**
+     * Returns an optional containing a word, if this trace link was created from a word.
+     *
+     * @return an optional containing the word or empty
+     */
+    public Optional<Word> getWord() {
+        return Optional.ofNullable(word);
     }
 
     /**
@@ -83,7 +97,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     }
 
     public boolean equalEndpoints(DiaTexTraceLink other) {
-        return this.sentenceNo == other.getSentenceNo() && diagramElement.equals(other.getDiagramElement());
+        return this.sentenceNo == other.getSentenceNo() && diagramElement.equals(other.diagramElement);
     }
 
     @Override
@@ -94,9 +108,9 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     @Override
     public String toString() {
         if (text == null)
-            return MessageFormat.format("[{0}]-[{1}]", sentenceNo, diagramElement);
+            return MessageFormat.format("[{0,number,#.###}]-[{1}]-[{2}]", confidence, sentenceNo, diagramElement);
         var sentenceText = text.getSentences().get(getSentenceNo() - 1).getText();
-        return MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), sentenceText);
+        return MessageFormat.format("[{0,number,#.###}]-[{1}]-[{2}]", confidence, diagramElement, sentenceText);
     }
 
     public void setText(Text text) {

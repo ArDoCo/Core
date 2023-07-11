@@ -25,6 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHel
 import edu.kit.kastel.mcse.ardoco.core.common.util.DBPediaHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -74,7 +75,8 @@ public class BaseDiagramConnectionInformant extends Informant {
             for (Pair<DiagramElement, ModelInstance> pair : diagramModelInstances) {
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
-                    diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1);
+                    diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this,
+                            WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName()));
                 }
             }
         }
@@ -89,7 +91,8 @@ public class BaseDiagramConnectionInformant extends Informant {
             for (var recommendedInstance : ris) {
                 var sameInstances = diagramModelInstances.stream()
                         .filter(pair -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second()));
-                sameInstances.forEach(pair -> diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this, 1));
+                sameInstances.forEach(pair -> diagramConnectionState.addToDiagramLinks(recommendedInstance, pair.first(), this,
+                        WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName())));
             }
         }
     }
@@ -105,7 +108,8 @@ public class BaseDiagramConnectionInformant extends Informant {
                     var ris = recommendationState.getRecommendedInstances();
                     for (var recommendedInstance : ris) {
                         if (isInitialismOf(recommendedInstance.getName(), tBox.getText())) {
-                            diagramConnectionState.addToDiagramLinks(recommendedInstance, box, this, 1);
+                            diagramConnectionState.addToDiagramLinks(recommendedInstance, box, this,
+                                    WordSimUtils.getSimilarity(recommendedInstance.getName(), tBox.getText()));
                         }
                     }
                 }

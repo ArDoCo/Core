@@ -16,22 +16,19 @@ public record Results(double precision, double recall, double f1, double accurac
                       ExpectedResults expectedResults) {
 
     public static Results create(DiagramProject project, Text text, Set<DiaTexTraceLink> traceLinks, ExpectedResults expected) {
-        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard().stream().peek(t -> t.setText(text)).sorted().toList();
+        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard()
+                .stream()
+                .peek(t -> t.setText(text))
+                .collect(Collectors.toCollection(TreeSet::new));
 
         var totalSentences = text.getSentences().size();
         var totalDiagramElements = project.getDiagramsFromGoldstandard().stream().flatMap(d -> d.getBoxes().stream()).toList().size();
         var total = totalSentences * totalDiagramElements;
-        var tpLinks = goldStandardTraceLinks.stream()
-                .filter(g -> traceLinks.stream().anyMatch(t -> t.equalEndpoints(g)))
-                .collect(Collectors.toCollection(TreeSet::new));
+        var tpLinks = intersection(traceLinks, goldStandardTraceLinks);
         var TP = tpLinks.size();
-        var fpLinks = traceLinks.stream()
-                .filter(t -> goldStandardTraceLinks.stream().noneMatch(g -> g.equalEndpoints(t)))
-                .collect(Collectors.toCollection(TreeSet::new));
+        var fpLinks = difference(traceLinks, goldStandardTraceLinks);
         var FP = fpLinks.size();
-        var fnLinks = goldStandardTraceLinks.stream()
-                .filter(g -> traceLinks.stream().noneMatch(t -> t.equalEndpoints(g)))
-                .collect(Collectors.toCollection(TreeSet::new));
+        var fnLinks = difference(goldStandardTraceLinks, traceLinks);
         var FN = fnLinks.size();
         var TN = total - TP - FP - FN;
         var P = TP / (double) (TP + FP);
@@ -43,6 +40,14 @@ public record Results(double precision, double recall, double f1, double accurac
         var phiCoefficient = (TP * TN - FP * FN) / Math.sqrt(radiant);
 
         return new Results(P, R, f1, acc, phiCoefficient, spec, tpLinks, fpLinks, fnLinks, TN, expected);
+    }
+
+    private static TreeSet<DiaTexTraceLink> intersection(Set<DiaTexTraceLink> a, Set<DiaTexTraceLink> b) {
+        return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    private static TreeSet<DiaTexTraceLink> difference(Set<DiaTexTraceLink> a, Set<DiaTexTraceLink> b) {
+        return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
     public static Results create(DiagramProject project, Text text, Set<DiaTexTraceLink> traceLinks) {

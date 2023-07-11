@@ -35,15 +35,18 @@ public class DiagramG implements Diagram {
 
         this.location = location;
         this.path = path;
-        addBoxes(boxes);
-        this.traceLinks = Sets.immutable.fromStream(Arrays.stream(boxes).flatMap(b -> b.getTraceLinks().stream()));
+        this.traceLinks = addBoxes(boxes);
     }
 
-    private void addBoxes(BoxG[] boxes) {
+    private ImmutableSet<DiaTexTraceLink> addBoxes(BoxG[] boxes) {
+        var traceLinks = Sets.mutable.<DiaTexTraceLink>empty();
         for (BoxG boxG : boxes) {
             addBox(boxG);
             addBoxes(boxG.getSubBoxes());
+            traceLinks.addAll(boxG.getTraceLinks().toList());
+            traceLinks.addAll(Arrays.stream(boxG.getSubBoxes()).flatMap(b -> b.getTraceLinks().stream()).toList());
         }
+        return traceLinks.toImmutable();
     }
 
     public String getPath() {
@@ -118,7 +121,7 @@ public class DiagramG implements Diagram {
     public @NotNull ImmutableSet<DiaTexTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
         if (textGoldstandard == null)
             return getTraceLinks();
-        return Sets.immutable.fromStream(traceLinks.stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())));
+        return Sets.immutable.fromStream(traceLinks.stream().filter(t -> t.getGoldStandard().map(textGoldstandard::contains).orElse(false)));
     }
 
     @Override

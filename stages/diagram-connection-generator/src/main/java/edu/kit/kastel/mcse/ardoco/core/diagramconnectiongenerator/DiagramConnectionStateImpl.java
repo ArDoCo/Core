@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
@@ -16,24 +17,20 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 public class DiagramConnectionStateImpl extends AbstractState implements DiagramConnectionState {
     private final Set<DiagramLink> diagramLinks = new HashSet<>();
 
+    @NotNull
     @Override
     public ImmutableSet<DiagramLink> getDiagramLinks() {
         return Sets.immutable.ofAll(diagramLinks);
     }
 
     @Override
-    public void addToDiagramLinks(RecommendedInstance ri, DiagramElement de, Claimant claimant, double confidence) {
+    public boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull Claimant claimant, double confidence) {
         var newDL = new DiagramLink(ri, de, claimant, confidence);
-        if (!diagramLinks.contains(newDL)) {
-            diagramLinks.add(newDL);
-        } else {
-            var optionalDiagramLink = diagramLinks.stream().filter(dl -> dl.equals(newDL)).findFirst();
-            if (optionalDiagramLink.isEmpty())
-                return;
-            var existing = optionalDiagramLink.get();
-            var newNameMappings = newDL.getRecommendedInstance().getNameMappings();
-            var newTypeMappings = newDL.getRecommendedInstance().getTypeMappings();
-            existing.getRecommendedInstance().addMappings(newNameMappings, newTypeMappings);
-        }
+        return diagramLinks.add(newDL);
+    }
+
+    @Override
+    public boolean removeFromDiagramLinks(@NotNull DiagramLink diagramLink) {
+        return diagramLinks.remove(diagramLink);
     }
 }

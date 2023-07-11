@@ -8,8 +8,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**
- * This word similarity measure uses the levenshtein distance (also sometimes called edit distance) algorithm to
- * calculate word similarity. This measure is configurable through three configuration options:
+ * This word similarity measure uses the levenshtein distance (also sometimes called edit distance) algorithm to calculate word similarity. This measure is
+ * configurable through three configuration options:
  *
  * <ul>
  * <li><b>maxDistance:</b> Word pairs with a levenshtein distance above this configuration value will not be considered
@@ -36,8 +36,7 @@ public class LevenshteinMeasure implements WordSimMeasure {
     }
 
     /**
-     * Constructs a new {@link LevenshteinMeasure}. The necessary arguments for this constructor are explained
-     * {@link LevenshteinMeasure here}.
+     * Constructs a new {@link LevenshteinMeasure}. The necessary arguments for this constructor are explained {@link LevenshteinMeasure here}.
      *
      * @param minLength   the min length
      * @param maxDistance the max distance
@@ -74,6 +73,13 @@ public class LevenshteinMeasure implements WordSimMeasure {
         } else {
             return distance <= maxDynamicDistance;
         }
+    }
+
+    @Override
+    public double getSimilarity(ComparisonContext ctx) {
+        String firstWord = ctx.firstTerm().toLowerCase();
+        String secondWord = ctx.secondTerm().toLowerCase();
+        return this.levenshteinDistance.apply(firstWord, secondWord) / (double) Math.max(firstWord.length(), secondWord.length());
     }
 
 }

@@ -14,9 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorBasedWor
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector.VectorSqliteDatabase;
 
 /**
- * This word similarity measures utilizes GloVe trained word vector representations to calculate word similarity. It
- * retrieves vectors for each word and compares them using cosine similarity. This measure additionally manages a cache
- * to improve lookup speeds.
+ * This word similarity measures utilizes GloVe trained word vector representations to calculate word similarity. It retrieves vectors for each word and
+ * compares them using cosine similarity. This measure additionally manages a cache to improve lookup speeds.
  */
 public class GloveMeasure extends VectorBasedWordSimMeasure {
 
@@ -52,15 +51,17 @@ public class GloveMeasure extends VectorBasedWordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        double similarity = Double.NaN;
+        return getSimilarity(ctx) >= this.similarityThreshold;
+    }
 
+    @Override
+    public double getSimilarity(ComparisonContext ctx) {
         try {
-            similarity = this.compareVectors(ctx.firstTerm(), ctx.secondTerm());
+            return this.compareVectors(ctx.firstTerm(), ctx.secondTerm());
         } catch (RetrieveVectorException e) {
             LOGGER.error("Failed to compare glove vectors: " + ctx, e);
+            return Double.NaN;
         }
-
-        return similarity >= this.similarityThreshold;
     }
 
 }

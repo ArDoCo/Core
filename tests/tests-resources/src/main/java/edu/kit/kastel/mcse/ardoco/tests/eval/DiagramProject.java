@@ -72,7 +72,7 @@ public enum DiagramProject {
             "benchmark/teammates/diagrams_2023/goldstandard.json", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
             new ExpectedResults(.175, .745, .279, .851, .287, .851), //
-            new ExpectedResults(.118, .695, .202, .956, .275, .958) //
+            new ExpectedResults(.325, .649, .434, .965, .445, .972) //
     ), //
     BIGBLUEBUTTON( //
             "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
