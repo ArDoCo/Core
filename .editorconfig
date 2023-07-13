@@ -269,3 +269,11 @@ ij_java_while_on_new_line = false
 ij_java_wrap_comments = true
 ij_java_wrap_first_method_in_call_chain = false
 ij_java_wrap_long_lines = false
+
+
+[pom.xml]
+insert_final_newline = false
+indent_size = 2
+ij_xml_attribute_wrap = off
+ij_xml_space_inside_empty_tag = true
+ij_xml_keep_whitespaces = true
