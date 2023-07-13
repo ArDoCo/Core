@@ -4,8 +4,10 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -22,6 +24,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 })
 public abstract class CodeItem extends Entity {
 
+    @JsonIgnore
+    protected CodeItemRepository codeItemRepository;
+
     CodeItem() {
         // Jackson
     }
@@ -31,9 +36,15 @@ public abstract class CodeItem extends Entity {
      *
      * @param name the name of the code item to be created
      */
-    protected CodeItem(String name) {
+    protected CodeItem(CodeItemRepository codeItemRepository, String name) {
         super(name);
-        CodeItemRepository.getInstance().addCodeItem(this);
+        this.codeItemRepository = Objects.requireNonNull(codeItemRepository);
+        this.codeItemRepository.addCodeItem(this);
+    }
+
+    void registerCurrentCodeItemRepository(CodeItemRepository codeItemRepository) {
+        codeItemRepository.addCodeItem(this);
+        this.codeItemRepository = codeItemRepository;
     }
 
     /**

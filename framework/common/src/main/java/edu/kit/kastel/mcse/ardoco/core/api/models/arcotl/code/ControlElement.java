@@ -10,7 +10,7 @@ public class ControlElement extends ComputationalObject {
         // Jackson
     }
 
-    public ControlElement(String name) {
-        super(name);
+    public ControlElement(CodeItemRepository codeItemRepository, String name) {
+        super(codeItemRepository, name);
     }
 }

@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
@@ -23,8 +24,12 @@ public class CodeModel extends Model {
     @JsonProperty
     private List<String> content;
 
+    @JsonIgnore
+    private boolean initialized;
+
     private CodeModel() {
         // Jackson
+        this.initialized = false;
     }
 
     /**
@@ -32,26 +37,33 @@ public class CodeModel extends Model {
      *
      * @param content the content of the code model
      */
-    public CodeModel(Set<? extends CodeItem> content) {
+    public CodeModel(CodeItemRepository codeItemRepository, Set<? extends CodeItem> content) {
+        this.initialized = true;
+        this.codeItemRepository = codeItemRepository;
         this.content = new ArrayList<>();
         for (var codeItem : content) {
             this.content.add(codeItem.getId());
         }
-        codeItemRepository = CodeItemRepository.getInstance();
     }
 
     @JsonGetter("content")
     protected List<String> getContentIds() {
+        if (!initialized)
+            initialize();
         return content;
     }
 
     @Override
     public List<? extends CodeItem> getContent() {
+        if (!initialized)
+            initialize();
         return codeItemRepository.getCodeItemsFromIds(content);
     }
 
     @Override
     public List<? extends CodeCompilationUnit> getEndpoints() {
+        if (!initialized)
+            initialize();
         List<CodeCompilationUnit> compilationUnits = new ArrayList<>();
         getContent().forEach(c -> compilationUnits.addAll(c.getAllCompilationUnits()));
         return compilationUnits;
@@ -63,9 +75,15 @@ public class CodeModel extends Model {
      * @return all code packages of this code model
      */
     public Set<? extends CodePackage> getAllPackages() {
+        if (!initialized)
+            initialize();
         Set<CodePackage> codePackages = new HashSet<>();
         getContent().forEach(c -> codePackages.addAll(c.getAllPackages()));
         return codePackages;
+    }
+
+    private void initialize() {
+        this.codeItemRepository.init();
     }
 
     @Override

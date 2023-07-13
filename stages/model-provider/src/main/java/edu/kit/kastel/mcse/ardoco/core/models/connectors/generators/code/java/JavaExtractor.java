@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.dom.FileASTRequestor;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 
@@ -30,8 +31,8 @@ public final class JavaExtractor extends CodeExtractor {
 
     private CodeModel extractedModel = null;
 
-    public JavaExtractor(String path) {
-        super(path);
+    public JavaExtractor(CodeItemRepository codeItemRepository, String path) {
+        super(codeItemRepository, path);
     }
 
     /**
@@ -44,7 +45,7 @@ public final class JavaExtractor extends CodeExtractor {
         if (extractedModel == null) {
             Path directoryPath = Path.of(path);
             Map<String, CompilationUnit> compUnitMap = parseDirectory(directoryPath);
-            JavaModel javaModel = new JavaModel(compUnitMap);
+            JavaModel javaModel = new JavaModel(codeItemRepository, compUnitMap);
             this.extractedModel = javaModel.getCodeModel();
         }
         return this.extractedModel;
