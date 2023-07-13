@@ -1,4 +1,4 @@
-package tests.integration;
+package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
-import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.tests.TestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
