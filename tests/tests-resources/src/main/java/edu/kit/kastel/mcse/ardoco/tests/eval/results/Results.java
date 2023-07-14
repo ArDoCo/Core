@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public record Results(double precision, double recall, double f1, double accuracy, double phiCoefficient, double specificity,
                       SortedSet<DiaTexTraceLink> truePositives, SortedSet<DiaTexTraceLink> falsePositives, SortedSet<DiaTexTraceLink> falseNegatives, int TN,
-                      ExpectedResults expectedResults) {
+                      ExpectedResults expectedResults, SortedSet<DiaTexTraceLink> all) {
 
     public static Results create(DiagramProject project, Text text, Set<DiaTexTraceLink> traceLinks, ExpectedResults expected) {
         var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard()
@@ -39,7 +39,7 @@ public record Results(double precision, double recall, double f1, double accurac
         var radiant = (TP + FP) * (TP + FN) * (TN + FP) * ((long) TN + FN);
         var phiCoefficient = (TP * TN - FP * FN) / Math.sqrt(radiant);
 
-        return new Results(P, R, f1, acc, phiCoefficient, spec, tpLinks, fpLinks, fnLinks, TN, expected);
+        return new Results(P, R, f1, acc, phiCoefficient, spec, tpLinks, fpLinks, fnLinks, TN, expected, new TreeSet<>(traceLinks));
     }
 
     private static TreeSet<DiaTexTraceLink> intersection(Set<DiaTexTraceLink> a, Set<DiaTexTraceLink> b) {

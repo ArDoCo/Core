@@ -72,7 +72,7 @@ public enum DiagramProject {
             "benchmark/teammates/diagrams_2023/goldstandard.json", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
             new ExpectedResults(.175, .745, .279, .851, .287, .851), //
-            new ExpectedResults(.325, .649, .434, .965, .445, .972) //
+            new ExpectedResults(.436, .696, .536, .973, .539, .979) //
     ), //
     BIGBLUEBUTTON( //
             "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -83,7 +83,7 @@ public enum DiagramProject {
             "benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984), //
-            new ExpectedResults(.785, .745, .764, .975, .752, .988) //
+            new ExpectedResults(.845, .745, .792, .978, .783, .991) //
     ), //
     TEASTORE_HISTORICAL( //
             "benchmark/teastore/model_2020/pcm/teastore.repository", //
