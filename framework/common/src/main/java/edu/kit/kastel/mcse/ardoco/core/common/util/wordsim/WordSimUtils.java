@@ -169,6 +169,10 @@ public class WordSimUtils {
         return similarityStrategy.getSimilarity(new ComparisonContext(firstWord, secondWord, null, null, false), measures.toList());
     }
 
+    public static double getSimilarity(String firstWord, String secondWord, boolean ignoreCase) {
+        return getSimilarity(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord);
+    }
+
     public static SQLiteConfig getSqLiteConfig() {
         var cfg = new SQLiteConfig();
         cfg.setReadOnly(true);

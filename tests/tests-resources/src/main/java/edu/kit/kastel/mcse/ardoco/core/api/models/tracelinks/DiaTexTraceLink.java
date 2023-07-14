@@ -3,7 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +22,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
     private final double confidence;
 
     private Text text;
+    private MutableSet<DiaTexTraceLink> related;
 
     private final String goldStandard;
 
@@ -133,5 +138,15 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
             return comp;
         }
         return gs;
+    }
+
+    public void setRelated(Set<DiaTexTraceLink> related) {
+        MutableSet<DiaTexTraceLink> set = Sets.mutable.ofAll(related);
+        set.remove(this);
+        this.related = set;
+    }
+
+    public ImmutableSet<DiaTexTraceLink> getRelated() {
+        return related.toImmutable();
     }
 }

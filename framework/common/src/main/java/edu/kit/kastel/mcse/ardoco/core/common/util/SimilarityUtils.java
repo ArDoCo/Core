@@ -31,6 +31,13 @@ public final class SimilarityUtils {
         throw new IllegalAccessError();
     }
 
+    public static ImmutableList<String> getSimilarSurfaceWords(RecommendedInstance recommendedInstance, ModelInstance instance) {
+        return Lists.immutable.fromStream(recommendedInstance.getNameMappings()
+                .stream()
+                .flatMap(n -> n.getSurfaceForms().stream())
+                .filter(s -> WordSimUtils.areWordsSimilar(s, instance.getFullName())));
+    }
+
     /**
      * Checks the similarity of two {@link NounMapping}s.
      *
@@ -61,8 +68,8 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Compares a given {@link NounMapping} with a given {@link ModelInstance} for similarity. Checks if all names, the
-     * longest name or a single name are similar to the reference of the NounMapping.
+     * Compares a given {@link NounMapping} with a given {@link ModelInstance} for similarity. Checks if all names, the longest name or a single name are
+     * similar to the reference of the NounMapping.
      *
      * @param nounMapping the {@link NounMapping}
      * @param instance    the {@link ModelInstance}
@@ -120,12 +127,16 @@ public final class SimilarityUtils {
     }
 
     private static boolean compareWordWithStringListEntries(Word word, ImmutableList<String> names) {
-        if (areWordsOfListsSimilar(names, Lists.immutable.with(word.getText()))) {
+        return compareWordWithStringListEntries(word.getText(), names);
+    }
+
+    private static boolean compareWordWithStringListEntries(String word, ImmutableList<String> names) {
+        if (areWordsOfListsSimilar(names, Lists.immutable.with(word))) {
             return true;
         }
 
         for (String name : names) {
-            if (areWordsSimilar(name, word.getText())) {
+            if (areWordsSimilar(name, word)) {
                 return true;
             }
         }
@@ -157,10 +168,9 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks the similarity of a list with test strings to a list of "original" strings. In this method all test
-     * strings are compared to all originals. For this the method uses the areWordsSimilar method with a given
-     * threshold. All matches are counted. If the proportion of similarities between the lists is greater than the given
-     * threshold the method returns true.
+     * Checks the similarity of a list with test strings to a list of "original" strings. In this method all test strings are compared to all originals. For
+     * this the method uses the areWordsSimilar method with a given threshold. All matches are counted. If the proportion of similarities between the lists is
+     * greater than the given threshold the method returns true.
      *
      * @param originals     list of original strings
      * @param words2test    list of test strings
@@ -186,8 +196,8 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Checks the similarity of a list, containing test strings, and a list of originals. This check is not
-     * bidirectional! This method uses the areWordsSimilar method with a given threshold.
+     * Checks the similarity of a list, containing test strings, and a list of originals. This check is not bidirectional! This method uses the areWordsSimilar
+     * method with a given threshold.
      *
      * @param originals  list of original strings
      * @param words2test list of test strings
@@ -198,10 +208,9 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Extracts most likely matches of a list of recommended instances by similarity to a given instance. For this, the
-     * method uses an increasing minimal proportional threshold with the method areWordsOfListsSimilar method. If all
-     * lists are similar to the given instance by a threshold of 1-increase value the while loop can be left. If the
-     * while loop ends with more than one possibility or all remaining lists are sorted out in the same run, all are
+     * Extracts most likely matches of a list of recommended instances by similarity to a given instance. For this, the method uses an increasing minimal
+     * proportional threshold with the method areWordsOfListsSimilar method. If all lists are similar to the given instance by a threshold of 1-increase value
+     * the while loop can be left. If the while loop ends with more than one possibility or all remaining lists are sorted out in the same run, all are
      * returned. Elsewhere only the remaining recommended instance is returned within the list.
      *
      * @param instance             instance to use as original for compare
@@ -282,8 +291,8 @@ public final class SimilarityUtils {
                 boolean longestNameXSurfaceForms = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, surfaceFormWords, similarity);
                 boolean listOfNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, surfaceFormWords) / Math.max(instanceNames.size(),
                         surfaceFormWords.size()) >= similarity;
-                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(longestNameSplit
-                        .size(), surfaceFormWords.size()) >= similarity;
+                boolean listOfSplitNamesXSurfaceFormSimilarEnough = 1.0 * similarEntriesOfList(longestNameSplit, surfaceFormWords) / Math.max(
+                        longestNameSplit.size(), surfaceFormWords.size()) >= similarity;
 
                 if (instanceNamesXSurfaceForms || longestNameXSurfaceForms || listOfNamesXSurfaceFormSimilarEnough || listOfSplitNamesXSurfaceFormSimilarEnough) {
                     return true;
@@ -358,7 +367,7 @@ public final class SimilarityUtils {
         // Maybe REWORK. Remove NounMappings?
         if ((coversOtherPhraseVector(firstPhraseMapping, secondPhraseMapping) || coversOtherPhraseVector(secondPhraseMapping,
                 firstPhraseMapping)) && containsAllNounMappingsOfPhraseMapping(textState, firstPhraseMapping,
-                        secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState, secondPhraseMapping, firstPhraseMapping)) {
+                secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState, secondPhraseMapping, firstPhraseMapping)) {
             // HARD CODED... Change?
             return 1.0;
         }

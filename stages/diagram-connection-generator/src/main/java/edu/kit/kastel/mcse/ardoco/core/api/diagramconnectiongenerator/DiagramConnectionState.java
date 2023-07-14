@@ -1,7 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator;
 
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,15 +34,17 @@ public interface DiagramConnectionState extends IConfigurable {
 
     /**
      * Creates a new diagram link using the specified parameters and adds it to the state. Returns true if a link with the same properties wasn't already
-     * contained by the state.
+     * contained by the state. The confidenceMap should contain a value for every word covered by this link.
      *
-     * @param ri         recommended instance
-     * @param de         diagram element
-     * @param claimant   the claimant responsible for the link
-     * @param confidence confidence in the link
+     * @param ri            recommended instance
+     * @param de            diagram element
+     * @param claimant      the claimant responsible for the link
+     * @param confidence    confidence in the link
+     * @param confidenceMap confidence map containing the confidences
      * @return true, if the link wasn't already contained, false else
      */
-    boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull Claimant claimant, double confidence);
+    boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull Claimant claimant, double confidence,
+            @NotNull Map<Word, Double> confidenceMap);
 
     /**
      * Removes the specified diagram link from the state. Returns true of the link was contained.
@@ -67,12 +70,15 @@ public interface DiagramConnectionState extends IConfigurable {
         for (var diagram : values) {
             var sameWord = diagram.stream().collect(Collectors.groupingBy(tl -> tl.getWord().map(Word::getPosition).orElse(-1)));
             sameWord.remove(-1);
-            allLinks.addAll(sameWord.values().stream().map(this::getMostSpecificTraceLink).flatMap(Optional::stream).toList());
+            allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
         }
         return allLinks.toImmutable();
     }
 
-    private Optional<DiaTexTraceLink> getMostSpecificTraceLink(@NotNull List<DiaTexTraceLink> traceLinks) {
-        return traceLinks.stream().max(Comparator.comparingDouble(DiaTexTraceLink::getConfidence));
+    private List<DiaTexTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiaTexTraceLink> traceLinks) {
+        var sorted = traceLinks.stream().sorted((t1, t2) -> Double.compare(t2.getConfidence(), t1.getConfidence())).toList();
+        var max = sorted.stream().findFirst().map(DiaTexTraceLink::getConfidence).orElse(Double.MAX_VALUE);
+        sorted.forEach(tl -> tl.setRelated(new HashSet<>(sorted)));
+        return sorted.stream().filter(tl -> Double.compare(tl.getConfidence(), max) >= 0).toList();
     }
 }

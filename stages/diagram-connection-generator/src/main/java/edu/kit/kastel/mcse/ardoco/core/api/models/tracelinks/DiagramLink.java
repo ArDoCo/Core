@@ -1,6 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.text.MessageFormat;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink> {
@@ -17,6 +19,7 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
     private final DiagramElement diagramElement;
     private final Claimant claimant;
     private final double confidence;
+    private final Map<Word, Double> confidenceMap;
 
     /**
      * @param recommendedInstance the recommended instance
@@ -24,13 +27,15 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
      * @param claimant            the {@link Claimant} responsible for the creation of this link
      * @param confidence          confidence in the link
      */
-    public DiagramLink(RecommendedInstance recommendedInstance, DiagramElement diagramElement, Claimant claimant, double confidence) {
+    public DiagramLink(RecommendedInstance recommendedInstance, DiagramElement diagramElement, Claimant claimant, double confidence,
+            Map<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
 
         this.recommendedInstance = recommendedInstance;
         this.diagramElement = diagramElement;
         this.claimant = claimant;
         this.confidence = confidence;
+        this.confidenceMap = confidenceMap;
     }
 
     public RecommendedInstance getRecommendedInstance() {
@@ -43,6 +48,14 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
 
     public double getConfidence() {
         return confidence;
+    }
+
+    public double getConfidence(Word word) {
+        return confidenceMap.getOrDefault(word, Double.MIN_VALUE);
+    }
+
+    public void setConfidence(Word word, double confidence) {
+        confidenceMap.put(word, confidence);
     }
 
     @Override
@@ -87,7 +100,7 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
         for (var nameMapping : getRecommendedInstance().getNameMappings()) {
             for (var word : nameMapping.getWords()) {
 
-                var traceLink = new DiaTexTraceLink(getDiagramElement(), word, getConfidence());
+                var traceLink = new DiaTexTraceLink(getDiagramElement(), word, getConfidence(word));
                 traceLinks.add(traceLink);
             }
         }

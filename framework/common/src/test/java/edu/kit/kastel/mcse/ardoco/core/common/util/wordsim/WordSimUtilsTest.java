@@ -11,5 +11,6 @@ class WordSimUtilsTest {
         assertEquals(WordSimUtils.getSimilarity("", ""), 1);
         assertEquals(WordSimUtils.getSimilarity("lorem", "lorem"), 1);
         assertEquals(WordSimUtils.getSimilarity("lorem ipsum", "lorem ipsum"), 1);
+        assertEquals(WordSimUtils.getSimilarity("lOrEm IpSuM", "lorem ipsum", true), 1);
     }
 }
