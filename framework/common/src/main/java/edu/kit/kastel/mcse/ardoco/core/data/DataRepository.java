@@ -9,28 +9,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class represents a data repository that can be used to store and fetch certain data ({@link PipelineStepData}.
- * Data can be added and fetched with the help of a data identifier (as string). Fetching also needs the necessary class
- * of data that is expected.
+ * This class represents a data repository that can be used to store and fetch certain data ({@link PipelineStepData}. Data can be added and fetched with the
+ * help of a data identifier (as string). Fetching also needs the necessary class of data that is expected.
  */
 public class DataRepository {
     private static final Logger logger = LoggerFactory.getLogger(DataRepository.class);
 
-    private final Map<String, PipelineStepData> data;
+    private Map<String, PipelineStepData> data;
 
     public DataRepository() {
         this.data = new HashMap<>();
     }
 
     /**
-     * Returns data with the given identifier and casts the {@link PipelineStepData} into the given class, if possible.
-     * If data with such identifier does not exist or cannot be cast, this method will return an empty Optional
-     * 
+     * Returns data with the given identifier and casts the {@link PipelineStepData} into the given class, if possible. If data with such identifier does not
+     * exist or cannot be cast, this method will return an empty Optional
+     *
      * @param identifier Data identifier string
      * @param clazz      class that the data should have
-     * @return Optional containing the requested data cast into the given class. The optional is empty is data could not
-     *         be found or casting was unsuccessful.
-     * @param <T> Type of data that is expected and cast into
+     * @param <T>        Type of data that is expected and cast into
+     * @return Optional containing the requested data cast into the given class. The optional is empty is data could not be found or casting was unsuccessful.
      */
     public <T extends PipelineStepData> Optional<T> getData(String identifier, Class<T> clazz) {
         var possibleData = data.get(identifier);
@@ -42,9 +40,8 @@ public class DataRepository {
     }
 
     /**
-     * Adds data to this repository using the identifier. If data with the given identifier already exists, overwrites
-     * it.
-     * 
+     * Adds data to this repository using the identifier. If data with the given identifier already exists, overwrites it.
+     *
      * @param identifier       Data identifier
      * @param pipelineStepData Data that should be saved
      */
@@ -54,4 +51,12 @@ public class DataRepository {
         }
     }
 
+    /**
+     * Adds all data to the existing repository using the provided repository.
+     *
+     * @param dataRepository data repository used to override the existing repository.
+     */
+    public void addAllData(DataRepository dataRepository) {
+        this.data.putAll(dataRepository.data);
+    }
 }
