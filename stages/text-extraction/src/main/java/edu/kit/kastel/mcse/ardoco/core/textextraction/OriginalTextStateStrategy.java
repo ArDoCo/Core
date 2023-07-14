@@ -1,6 +1,11 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -23,15 +28,20 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
+public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
-    private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = nm -> Objects.hash(nm.getReferenceWords().toSet(), nm.getWords());
-    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> Objects.equals(nm1.getReferenceWords().toSet(), nm2
-            .getReferenceWords()
-            .toSet()) && Objects.equals(nm1.getWords(), nm2.getWords());
+    private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = (Function<NounMapping, Integer> & Serializable) (nm) -> Objects.hash(
+            nm.getReferenceWords().toSet(), nm.getWords());
+    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (BiPredicate<NounMapping, NounMapping> & Serializable) (nm1, nm2) -> Objects.equals(
+            nm1.getReferenceWords().toSet(), nm2.getReferenceWords().toSet()) && Objects.equals(nm1.getWords(), nm2.getWords());
 
     OriginalTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
+    }
+
+    //For serialization
+    private OriginalTextStateStrategy() {
+        super();
     }
 
     @Override
@@ -43,8 +53,8 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
             if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
 
-                return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(), disposableNounMapping
-                        .getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
+                return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
+                        disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
             }
         }
         super.getTextState().addNounMappingAddPhraseMapping(disposableNounMapping);
@@ -68,11 +78,10 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
 
         var existingNounMappingDistribution = firstNounMapping.getDistribution().toMap();
         var disposableNounMappingDistribution = secondNounMapping.getDistribution().toMap();
-        var mergedRawMap = Arrays.stream(MappingKind.values())
-                .collect(Collectors.toMap( //
-                        kind -> kind, //
-                        kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
-                ));
+        var mergedRawMap = Arrays.stream(MappingKind.values()).collect(Collectors.toMap( //
+                kind -> kind, //
+                kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
+        ));
         MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
@@ -86,8 +95,9 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
 
         String mergedReference = mergedReferenceWords.collect(Word::getText).makeString(" ");
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords.toSortedSet()
-                .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
+        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping),
+                mergedWords.toSortedSet().toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(),
+                mergedReference);
 
         this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
         this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
@@ -100,5 +110,17 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
     @Override
     public Function<TextStateImpl, TextStateStrategy> creator() {
         return OriginalTextStateStrategy::new;
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.defaultWriteObject();
+        objectOutputStream.writeObject(getTextState());
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+        objectInputStream.defaultReadObject();
+        setTextState((TextStateImpl) objectInputStream.readObject());
     }
 }

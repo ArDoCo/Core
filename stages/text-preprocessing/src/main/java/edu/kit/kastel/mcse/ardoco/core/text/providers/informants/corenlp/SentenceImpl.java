@@ -1,6 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,9 +28,11 @@ class SentenceImpl implements Sentence {
     private ImmutableList<Word> words = Lists.immutable.empty();
     private ImmutableList<Phrase> phrases = Lists.immutable.empty();
 
-    private final TextImpl parent;
-    private final CoreSentence coreSentence;
-    private final int sentenceNumber;
+    private TextImpl parent;
+    private final transient CoreSentence coreSentence;
+    private int sentenceNumber;
+
+    private String text;
 
     public SentenceImpl(CoreSentence coreSentence, int sentenceNumber, TextImpl parent) {
         this.coreSentence = coreSentence;
@@ -49,7 +55,10 @@ class SentenceImpl implements Sentence {
 
     @Override
     public String getText() {
-        return coreSentence.text();
+        if (text == null) {
+            text = coreSentence.text();
+        }
+        return text;
     }
 
     @Override
@@ -112,5 +121,23 @@ class SentenceImpl implements Sentence {
 
     public SemanticGraph dependencyParse() {
         return this.coreSentence.dependencyParse();
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.defaultWriteObject();
+        objectOutputStream.writeInt(sentenceNumber);
+        objectOutputStream.writeObject(words);
+        objectOutputStream.writeObject(text);
+        objectOutputStream.writeObject(phrases);
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+        objectInputStream.defaultReadObject();
+        sentenceNumber = objectInputStream.readInt();
+        words = (ImmutableList<Word>) objectInputStream.readObject();
+        text = (String) objectInputStream.readObject();
+        phrases = (ImmutableList<Phrase>) objectInputStream.readObject();
     }
 }

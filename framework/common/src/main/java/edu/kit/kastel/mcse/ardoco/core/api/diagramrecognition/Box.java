@@ -26,8 +26,8 @@ public class Box extends DiagramElement implements Serializable {
     private double confidence;
     @JsonProperty("class")
     private String classification;
-    private transient List<TextBox> textBoxes = new ArrayList<>();
-    private transient Integer dominatingColor = null;
+    private List<TextBox> textBoxes = new ArrayList<>();
+    private Integer dominatingColor = null;
 
     // Jackson JSON
     private Box() {

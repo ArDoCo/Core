@@ -1,12 +1,14 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.text;
 
+import java.io.Serializable;
+
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * This interface defines the representation of a text.
  */
-public interface Text {
+public interface Text extends Serializable {
 
     /**
      * Gets the length of the text (amount of words).

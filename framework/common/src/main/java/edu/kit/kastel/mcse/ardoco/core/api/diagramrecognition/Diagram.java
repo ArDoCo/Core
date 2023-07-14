@@ -2,9 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
-public interface Diagram {
+public interface Diagram extends Serializable {
     File getLocation();
 
     void addBox(Box box);

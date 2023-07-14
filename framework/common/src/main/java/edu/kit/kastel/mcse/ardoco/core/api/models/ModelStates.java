@@ -11,8 +11,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";
 
-    private transient Map<String, ModelExtractionState> modelExtractionStates = new HashMap<>();
-    private transient Map<String, Model> models = new HashMap<>();
+    private Map<String, ModelExtractionState> modelExtractionStates = new HashMap<>();
+    private Map<String, Model> models = new HashMap<>();
 
     /**
      * Constructor to create a {@link ModelStates} object that holds all {@link ModelExtractionState}s

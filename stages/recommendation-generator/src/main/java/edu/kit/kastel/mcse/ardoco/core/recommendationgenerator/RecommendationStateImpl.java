@@ -15,13 +15,11 @@ import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
- * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
- * contained by the model by their probability.
- *
+ * The recommendation state encapsulates all recommended instances and relations. These recommendations should be contained by the model by their probability.
  */
 public class RecommendationStateImpl extends AbstractState implements RecommendationState {
 
-    private transient MutableList<RecommendedInstance> recommendedInstances;
+    private MutableList<RecommendedInstance> recommendedInstances;
 
     /**
      * Creates a new recommendation state.
@@ -66,17 +64,16 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public RecommendedInstance addRecommendedInstance(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameMappings,
             ImmutableList<NounMapping> typeMappings) {
         var recommendedInstance = new RecommendedInstanceImpl(name, type, claimant, probability, //
-                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())), Lists.immutable.withAll(new HashSet<>(typeMappings
-                        .castToCollection())));
+                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())),
+                Lists.immutable.withAll(new HashSet<>(typeMappings.castToCollection())));
         this.addRecommendedInstance(recommendedInstance);
 
         return recommendedInstance;
     }
 
     /**
-     * Adds a recommended instance to the state. If the in the stored instance an instance with the same name and type
-     * is contained it is extended. If an recommendedInstance with the same name can be found it is extended. Elsewhere
-     * a new recommended instance is created.
+     * Adds a recommended instance to the state. If the in the stored instance an instance with the same name and type is contained it is extended. If an
+     * recommendedInstance with the same name can be found it is extended. Elsewhere a new recommended instance is created.
      */
     private void addRecommendedInstance(RecommendedInstance ri) {
         if (recommendedInstances.contains(ri)) {
@@ -138,8 +135,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     @Override
     public ImmutableList<RecommendedInstance> getAnyRecommendedInstancesByMapping(NounMapping mapping) {
         return recommendedInstances //
-                .select(sinstance -> sinstance.getTypeMappings().contains(mapping) || sinstance.getNameMappings().contains(mapping))
-                .toImmutable();
+                .select(sinstance -> sinstance.getTypeMappings().contains(mapping) || sinstance.getNameMappings().contains(mapping)).toImmutable();
     }
 
     /**

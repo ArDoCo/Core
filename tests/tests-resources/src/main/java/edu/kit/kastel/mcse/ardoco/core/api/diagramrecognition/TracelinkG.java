@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -7,7 +8,7 @@ import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 
-public class TracelinkG {
+public class TracelinkG implements Serializable {
     public String name;
     public int[] sentences;
 

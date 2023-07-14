@@ -1,9 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import java.io.Serializable;
+
 /**
  * Connector for the {@link Box} and {@link TextBox} coordinates JSON representation.
  */
-public class BoundingBoxG {
+public class BoundingBoxG implements Serializable {
     public int x;
     public int y;
     public int w;

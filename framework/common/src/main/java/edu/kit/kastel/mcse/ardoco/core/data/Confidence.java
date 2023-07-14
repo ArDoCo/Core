@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,10 +14,10 @@ import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
- * This class represents a confidence for a certain (intermediate) result.
- * Different {@link Claimant Claimants} can add their confidences that get aggregated via one of the {@link AggregationFunctions} to a single confidence value.
+ * This class represents a confidence for a certain (intermediate) result. Different {@link Claimant Claimants} can add their confidences that get aggregated
+ * via one of the {@link AggregationFunctions} to a single confidence value.
  */
-public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
+public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence>, Serializable {
 
     private final AggregationFunctions confidenceAggregator;
 

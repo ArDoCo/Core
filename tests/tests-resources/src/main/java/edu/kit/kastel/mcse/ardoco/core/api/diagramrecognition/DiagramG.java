@@ -19,23 +19,29 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
+import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class DiagramG implements Diagram {
-    private final String path;
-    private final List<Box> properBoxes = new ArrayList<>();
-    private final List<TextBox> properTextBoxes = new ArrayList<>();
-    private final ImmutableSet<DiaTexTraceLink> traceLinks;
-    private final File location;
+    private String path;
+    private List<Box> properBoxes = new ArrayList<>();
+    private List<TextBox> properTextBoxes = new ArrayList<>();
+    private ImmutableSet<DiaTexTraceLink> traceLinks;
+    private DiagramProject project;
 
     @JsonCreator
-    public DiagramG(@JacksonInject File location, @JsonProperty("path") String path, @JsonProperty("boxes") JsonNode boxesNode) throws JsonProcessingException {
+    public DiagramG(@JacksonInject DiagramProject project, @JsonProperty("path") String path, @JsonProperty("boxes") JsonNode boxesNode)
+            throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramG.class, this));
         var boxes = objectMapper.treeToValue(boxesNode, BoxG[].class);
 
-        this.location = location;
+        this.project = project;
         this.path = path;
         this.traceLinks = addBoxes(boxes);
+    }
+
+    //Serialization
+    protected DiagramG() {
     }
 
     private ImmutableSet<DiaTexTraceLink> addBoxes(BoxG[] boxes) {
@@ -60,7 +66,7 @@ public class DiagramG implements Diagram {
 
     @Override
     public File getLocation() {
-        return location;
+        return project.getDiagramsGoldStandardFile();
     }
 
     @Override

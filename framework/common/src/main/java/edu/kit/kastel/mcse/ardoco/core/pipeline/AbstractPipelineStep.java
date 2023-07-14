@@ -1,16 +1,18 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
+import java.io.Serializable;
+
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
- * This class represents an abstract pipeline step and defines the core functionality. Together with {@link Pipeline}
- * and concrete implementations of this class represents a composite pattern.
+ * This class represents an abstract pipeline step and defines the core functionality. Together with {@link Pipeline} and concrete implementations of this class
+ * represents a composite pattern.
  */
-public abstract class AbstractPipelineStep extends AbstractConfigurable {
-    private final String id;
-    private final DataRepository dataRepository;
+public abstract class AbstractPipelineStep extends AbstractConfigurable implements Serializable {
+    protected String id;
+    protected DataRepository dataRepository;
 
     /**
      * Constructor for a pipeline step
@@ -22,6 +24,8 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
         this.id = id;
         this.dataRepository = dataRepository;
     }
+
+    protected AbstractPipelineStep() {}
 
     /**
      * Run the pipeline step.

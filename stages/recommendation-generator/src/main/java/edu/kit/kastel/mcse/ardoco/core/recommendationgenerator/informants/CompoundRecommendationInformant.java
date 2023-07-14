@@ -31,6 +31,10 @@ public class CompoundRecommendationInformant extends Informant {
         super(CompoundRecommendationInformant.class.getSimpleName(), dataRepository);
     }
 
+    //Serialization
+    protected CompoundRecommendationInformant() {
+    }
+
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();
@@ -49,8 +53,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     /**
-     * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a compound (in
-     * text-extraction)
+     * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a compound (in text-extraction)
      */
     private void createRecommendationInstancesFromCompoundNounMappings(TextState textState, RecommendationState recommendationState,
             ModelExtractionState modelState) {
@@ -63,8 +66,8 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     /**
-     * Find additional compounds and create RecommendedInstances for them. Additional compounds are when a word in a
-     * NounMapping has another word in front or afterwards and that compounds is a TypeMapping
+     * Find additional compounds and create RecommendedInstances for them. Additional compounds are when a word in a NounMapping has another word in front or
+     * afterwards and that compounds is a TypeMapping
      */
     private void findMoreCompoundsForRecommendationInstances(TextState textState, RecommendationState recommendationState, ModelExtractionState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
@@ -114,12 +117,12 @@ public class CompoundRecommendationInformant extends Informant {
         MutableSet<String> similarModelTypes = Sets.mutable.empty();
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
-            var currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                    .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, typeMapping.getReference())));
+            var currSimilarTypes = Lists.immutable.fromStream(
+                    typeIdentifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, typeMapping.getReference())));
             similarModelTypes.addAll(currSimilarTypes.toList());
             for (var word : typeMapping.getWords()) {
-                currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                        .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getLemma())));
+                currSimilarTypes = Lists.immutable.fromStream(
+                        typeIdentifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getLemma())));
                 similarModelTypes.addAll(currSimilarTypes.toList());
             }
         }

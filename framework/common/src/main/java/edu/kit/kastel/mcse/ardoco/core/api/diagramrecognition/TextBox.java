@@ -20,7 +20,7 @@ public class TextBox implements Serializable {
     private double confidence;
     @JsonProperty
     private String text;
-    private transient Integer dominatingColor;
+    private Integer dominatingColor;
 
     private TextBox() {
         // Jackson JSON

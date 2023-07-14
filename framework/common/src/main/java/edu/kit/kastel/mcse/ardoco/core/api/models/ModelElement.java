@@ -1,13 +1,14 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
 /**
  * A model element. Has an identifier. Two model elements are equal if and only if they have the same identifier.
  */
-public abstract class ModelElement {
+public abstract class ModelElement implements Serializable {
 
     private final String id;
 

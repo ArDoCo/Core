@@ -1,12 +1,14 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.text;
 
+import java.io.Serializable;
+
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * Represents a sentence within the document.
  */
-public interface Sentence {
+public interface Sentence extends Serializable {
 
     /**
      * Returns the sentence number (starting at {@code 0}.
@@ -16,8 +18,7 @@ public interface Sentence {
     int getSentenceNumber();
 
     /**
-     * Return the sentence number used for human readably output.
-     * Therefore, this method calculates the sentence number starting with {@code 1}.
+     * Return the sentence number used for human readably output. Therefore, this method calculates the sentence number starting with {@code 1}.
      *
      * @return the sentence number starting at one
      */

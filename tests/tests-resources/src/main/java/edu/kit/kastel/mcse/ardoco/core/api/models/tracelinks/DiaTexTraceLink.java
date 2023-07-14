@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
-public class DiaTexTraceLink implements Comparable<DiaTexTraceLink> {
+public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializable {
     private final DiagramElement diagramElement;
     private final int sentenceNo;
     private final Word word;

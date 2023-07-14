@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
 
-    private static final Comparator<ElementWrapper<NounMapping>> ORDER_NOUNMAPPING = (n1, n2) -> {
+    private static final Comparator<ElementWrapper<NounMapping>> ORDER_NOUNMAPPING = (Comparator<ElementWrapper<NounMapping>> & Serializable) (n1, n2) -> {
         if (n1.equals(n2))
             return 0;
         var nm1 = (NounMappingImpl) n1.getElement();
@@ -61,7 +62,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     private static final double MAPPING_KIND_MAX_DIFF = 0.1;
     private MutableList<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
-    private final transient TextStateStrategy strategy;
+    private transient TextStateStrategy strategy;
 
     /**
      * Creates a new name type relation state
@@ -167,15 +168,15 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public void mergeNounMappings(NounMapping nounMapping, NounMapping otherNounMapping, Claimant claimant, ImmutableList<Word> referenceWords) {
-        strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant, nounMapping.getProbabilityForKind(
-                nounMapping.getKind()));
+        strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant,
+                nounMapping.getProbabilityForKind(nounMapping.getKind()));
     }
 
     @Override
     public NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference) {
 
-        return this.addNounMapping(nounMapping.getWords().toImmutableSet(), nounMapping.getDistribution().toMap(), referenceWords, nounMapping
-                .getSurfaceForms(), reference);
+        return this.addNounMapping(nounMapping.getWords().toImmutableSet(), nounMapping.getDistribution().toMap(), referenceWords,
+                nounMapping.getSurfaceForms(), reference);
 
     }
 
@@ -235,8 +236,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
-        return strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping
-                .getProbabilityForKind(nounMapping.getKind()));
+        return strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant,
+                nounMapping.getProbabilityForKind(nounMapping.getKind()));
 
     }
 

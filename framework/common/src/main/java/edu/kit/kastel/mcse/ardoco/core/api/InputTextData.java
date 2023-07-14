@@ -7,7 +7,7 @@ public class InputTextData implements PipelineStepData {
 
     public static final String ID = "InputTextData";
 
-    private transient String text;
+    private String text;
 
     public InputTextData(String text) {
         super();

@@ -416,7 +416,7 @@ public enum DiagramProject {
         try {
             var objectMapper = new ObjectMapper();
             var file = getDiagramsGoldStandardFile();
-            objectMapper.setInjectableValues(new InjectableValues.Std().addValue(File.class, file));
+            objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramProject.class, this));
             return Sets.immutable.ofAll(Set.of(objectMapper.readValue(file, DiagramsG.class).diagrams));
         } catch (IOException e) {
             throw new RuntimeException(e);

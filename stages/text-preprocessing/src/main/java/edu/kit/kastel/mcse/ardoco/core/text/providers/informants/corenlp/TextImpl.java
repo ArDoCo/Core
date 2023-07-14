@@ -1,6 +1,11 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -12,7 +17,7 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 
 class TextImpl implements Text {
 
-    final CoreDocument coreDocument;
+    final transient CoreDocument coreDocument;
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
 
@@ -58,4 +63,19 @@ class TextImpl implements Text {
         words = wordList.toImmutable();
     }
 
+    @Serial
+    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.defaultWriteObject();
+        objectOutputStream.writeObject(getSentences());
+        objectOutputStream.writeObject(words());
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+        objectInputStream.defaultReadObject();
+        ImmutableList<Sentence> sentences = (ImmutableList<Sentence>) objectInputStream.readObject();
+        ImmutableList<Word> words = (ImmutableList<Word>) objectInputStream.readObject();
+        this.sentences = sentences;
+        this.words = words;
+    }
 }

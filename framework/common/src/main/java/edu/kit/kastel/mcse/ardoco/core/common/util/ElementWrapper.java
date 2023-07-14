@@ -1,11 +1,12 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-public final class ElementWrapper<E> {
+public final class ElementWrapper<E> implements Serializable {
 
     private final Class<E> elementType;
 
