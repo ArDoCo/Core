@@ -79,7 +79,7 @@ public class LevenshteinMeasure implements WordSimMeasure {
     public double getSimilarity(ComparisonContext ctx) {
         String firstWord = ctx.firstTerm().toLowerCase();
         String secondWord = ctx.secondTerm().toLowerCase();
-        return this.levenshteinDistance.apply(firstWord, secondWord) / (double) Math.max(firstWord.length(), secondWord.length());
+        return 1.0 - this.levenshteinDistance.apply(firstWord, secondWord) / (double) Math.max(Math.max(firstWord.length(), secondWord.length()), 1);
     }
 
 }
