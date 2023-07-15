@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -40,7 +41,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.
  */
-public enum DiagramProject {
+public enum DiagramProject implements Serializable {
     MEDIASTORE(//
             "benchmark/mediastore/model_2016/pcm/ms.repository", //
             "benchmark/mediastore/text_2016/mediastore.txt", //

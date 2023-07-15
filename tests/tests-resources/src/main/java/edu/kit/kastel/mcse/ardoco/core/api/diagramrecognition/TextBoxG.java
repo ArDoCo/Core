@@ -12,7 +12,7 @@ public class TextBoxG extends TextBox {
 
     @JsonCreator
     public TextBoxG(@JsonProperty("text") String text, @JsonProperty("boundingBox") BoundingBoxG boundingBox) {
-        super(boundingBox.x, boundingBox.y, boundingBox.w, boundingBox.h, 1, text, null);
+        super(boundingBox.x(), boundingBox.y(), boundingBox.w(), boundingBox.h(), 1, text, null);
         this.text = text;
         this.boundingBox = boundingBox;
     }

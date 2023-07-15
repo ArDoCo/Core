@@ -126,10 +126,10 @@ class SentenceImpl implements Sentence {
     @Serial
     private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
         objectOutputStream.defaultWriteObject();
-        objectOutputStream.writeInt(sentenceNumber);
-        objectOutputStream.writeObject(words);
-        objectOutputStream.writeObject(text);
-        objectOutputStream.writeObject(phrases);
+        objectOutputStream.writeInt(getSentenceNumber());
+        objectOutputStream.writeObject(getWords());
+        objectOutputStream.writeObject(getText());
+        objectOutputStream.writeObject(getPhrases());
     }
 
     @Serial

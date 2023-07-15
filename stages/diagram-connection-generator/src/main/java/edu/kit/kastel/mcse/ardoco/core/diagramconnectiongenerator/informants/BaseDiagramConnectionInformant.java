@@ -2,14 +2,14 @@ package edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.informants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
@@ -161,14 +161,13 @@ public class BaseDiagramConnectionInformant extends Informant {
         return instances;
     }
 
-    private ImmutableSet<String> getPossibleNames(@NotNull Box box) {
-        var names = Sets.mutable.<String>empty();
+    private Set<String> getPossibleNames(@NotNull Box box) {
+        var names = new LinkedHashSet<String>();
 
         var texts = box.getTexts();
         for (var textBox : texts) {
             var text = textBox.getText();
-            var splitAndDecameled = processText(text).toList()
-                    .stream()
+            var splitAndDecameled = processText(text).stream()
                     .filter(s -> !DBPediaHelper.isWordMarkupLanguage(s))
                     .filter(s -> !DBPediaHelper.isWordProgrammingLanguage(s))
                     .filter(s -> !DBPediaHelper.isWordSoftware(s))
@@ -179,11 +178,11 @@ public class BaseDiagramConnectionInformant extends Informant {
             names.addAll(noBlank);
         }
 
-        return Sets.immutable.ofAll(names);
+        return names;
     }
 
-    private ImmutableSet<String> processText(@NotNull String text) {
-        var words = Sets.mutable.<String>empty();
+    private Set<String> processText(@NotNull String text) {
+        var words = new LinkedHashSet<String>();
         //Split up "Sth (Sthelse)"
         var split = Arrays.stream(text.split(",|\\(|\\)")).map(String::trim).toList();
         //Reduce back to single string, remove duplicate whitespaces
@@ -191,7 +190,7 @@ public class BaseDiagramConnectionInformant extends Informant {
         words.addAll(split);
         words.addAll(deCameledSplit);
         words.remove("");
-        return Sets.immutable.ofAll(words);
+        return words;
     }
 
     private String getDeCameledText(String text) {
@@ -199,9 +198,9 @@ public class BaseDiagramConnectionInformant extends Informant {
         return String.join(" ", text.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")).replaceAll("\\s+", " ");
     }
 
-    private ImmutableSet<String> getPossibleAbbreviations(String text) {
+    private Set<String> getPossibleAbbreviations(String text) {
         var matcher = abbreviationsPattern.matcher(text);
-        return Sets.immutable.fromStream(matcher.results().map(MatchResult::group));
+        return new LinkedHashSet<>(matcher.results().map(MatchResult::group).toList());
     }
 
     private boolean containsAllInOrder(@NotNull String text, @NotNull String query) {

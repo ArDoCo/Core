@@ -2,16 +2,16 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 public abstract class DiagramElement extends Entity implements Comparable<DiagramElement> {
-    private final Diagram diagram;
+    private Diagram diagram;
 
     protected DiagramElement(@NotNull Diagram diagram, @NotNull String name) {
         super(name);
@@ -40,9 +40,9 @@ public abstract class DiagramElement extends Entity implements Comparable<Diagra
      *
      * @return the set of elements which are considered sub elements
      */
-    public @NotNull ImmutableSet<DiagramElement> getSubElements() {
+    public @NotNull Set<DiagramElement> getSubElements() {
         var all = getDiagram().getBoxes();
-        return Sets.immutable.fromStream(all.stream().filter(de -> !de.equals(this) && getBoundingBox().containsEntirely(de.getBoundingBox())));
+        return new LinkedHashSet<>(all.stream().filter(de -> !de.equals(this) && getBoundingBox().containsEntirely(de.getBoundingBox())).toList());
     }
 
     @Override
@@ -64,7 +64,9 @@ public abstract class DiagramElement extends Entity implements Comparable<Diagra
     }
 
     @Override
-    public int compareTo(DiagramElement o) {
+    public int compareTo(@NotNull DiagramElement o) {
+        if (equals(o))
+            return 0;
         return hashCode() - o.hashCode();
     }
 }

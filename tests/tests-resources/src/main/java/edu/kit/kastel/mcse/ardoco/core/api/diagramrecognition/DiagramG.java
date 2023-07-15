@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.factory.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.fasterxml.jackson.annotation.JacksonInject;
@@ -21,11 +21,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
-public class DiagramG implements Diagram {
+public class DiagramG implements Diagram, Comparable<DiagramG> {
     private String path;
     private List<Box> properBoxes = new ArrayList<>();
     private List<TextBox> properTextBoxes = new ArrayList<>();
-    private ImmutableSet<DiaTexTraceLink> traceLinks;
+    private List<DiaTexTraceLink> traceLinks;
     private DiagramProject project;
 
     @JsonCreator
@@ -40,23 +40,47 @@ public class DiagramG implements Diagram {
         this.traceLinks = addBoxes(boxes);
     }
 
-    //Serialization
-    protected DiagramG() {
+    public DiagramG(DiagramProject project, String path, BoxG[] boxes) {
+        this.project = project;
+        this.path = path;
+        this.traceLinks = addBoxes(boxes);
     }
 
-    private ImmutableSet<DiaTexTraceLink> addBoxes(BoxG[] boxes) {
-        var traceLinks = Sets.mutable.<DiaTexTraceLink>empty();
+    private List<DiaTexTraceLink> addBoxes(BoxG[] boxes) {
+        var traceLinks = Lists.mutable.<DiaTexTraceLink>empty();
         for (BoxG boxG : boxes) {
             addBox(boxG);
             addBoxes(boxG.getSubBoxes());
             traceLinks.addAll(boxG.getTraceLinks().toList());
             traceLinks.addAll(Arrays.stream(boxG.getSubBoxes()).flatMap(b -> b.getTraceLinks().stream()).toList());
         }
-        return traceLinks.toImmutable();
+        return traceLinks.distinct();
     }
 
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj instanceof DiagramG other) {
+            return path.equals(other.path);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(path);
+    }
+
+    @Override
+    public int compareTo(@NotNull DiagramG o) {
+        if (equals(o))
+            return 0;
+        return path.compareTo(o.path);
     }
 
     public String getShortPath() {
@@ -114,20 +138,24 @@ public class DiagramG implements Diagram {
         throw new NotImplementedException();
     }
 
-    public ImmutableSet<DiaTexTraceLink> getTraceLinks() {
+    public List<DiaTexTraceLink> getTraceLinks() {
         return traceLinks;
     }
 
     /**
-     * Retrieves a set of diagram text trace links associated with the diagram
+     * Retrieves a distinct list of diagram text trace links associated with the diagram
      *
      * @param textGoldstandard Partial path to the goldstandard text file
-     * @return Set of tracelinks
+     * @return List of tracelinks
      */
-    public @NotNull ImmutableSet<DiaTexTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
+    public @NotNull List<DiaTexTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
         if (textGoldstandard == null)
             return getTraceLinks();
-        return Sets.immutable.fromStream(traceLinks.stream().filter(t -> t.getGoldStandard().map(textGoldstandard::contains).orElse(false)));
+        return traceLinks.stream().filter(t -> t.getGoldStandard().map(textGoldstandard::contains).orElse(false)).distinct().toList();
+    }
+
+    public @NotNull DiagramProject getProject() {
+        return project;
     }
 
     @Override

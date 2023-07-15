@@ -1,11 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,11 +14,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 /**
  * Connector for the {@link Box} JSON representation.
  */
-public class BoxG extends Box {
-    private final BoundingBoxG boundingBox;
-    private final TextBoxG[] textBoxes;
-    private final BoxG[] subBoxes;
-    private final TracelinkG[] tracelinks;
+public class BoxG extends Box implements Serializable {
+    private BoundingBoxG boundingBox;
+    private TextBoxG[] textBoxes;
+    private BoxG[] subBoxes;
+    private TracelinkG[] tracelinks;
 
     /**
      * Create a new box from the goldstandard.

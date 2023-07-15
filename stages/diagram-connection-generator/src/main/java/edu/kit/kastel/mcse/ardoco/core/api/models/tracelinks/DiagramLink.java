@@ -65,6 +65,8 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
 
     @Override
     public int compareTo(@NotNull DiagramLink o) {
+        if (equals(o))
+            return 0;
         var comp = getRecommendedInstance().getName().compareTo(o.getRecommendedInstance().getName());
         if (comp == 0) {
             return getDiagramElement().compareTo(o.getDiagramElement());
@@ -77,16 +79,15 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof DiagramLink other)) {
-            return false;
+        if (obj instanceof DiagramLink other) {
+            return diagramElement.equals(other.diagramElement) && recommendedInstance.equals(other.recommendedInstance) && claimant.equals(other.claimant);
         }
-        return diagramElement.equals(other.diagramElement) && recommendedInstance.equals(other.recommendedInstance) && Double.compare(confidence,
-                other.confidence) == 0 && claimant.equals(other.claimant);
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(diagramElement, recommendedInstance, confidence, claimant);
+        return Objects.hash(diagramElement, recommendedInstance, claimant);
     }
 
     /**

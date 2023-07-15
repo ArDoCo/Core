@@ -2,13 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,15 +16,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializable {
-    private final DiagramElement diagramElement;
-    private final int sentenceNo;
-    private final Word word;
-    private final double confidence;
+    private DiagramElement diagramElement;
+    private Integer sentenceNo;
+    private Word word;
+    private double confidence;
 
     private Text text;
-    private MutableSet<DiaTexTraceLink> related;
+    private Set<DiaTexTraceLink> related = new LinkedHashSet<>();
 
-    private final String goldStandard;
+    private String goldStandard;
 
     /**
      * Creates a tracelink between a diagram element and a sentence number of a word
@@ -34,7 +33,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
      * @param word           word
      * @param confidence     confidence
      */
-    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull double confidence) {
+    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, double confidence) {
         this.diagramElement = diagramElement;
         this.goldStandard = null;
         this.sentenceNo = word.getSentenceNo() + 1;
@@ -89,26 +88,13 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
      * @return sentence number
      */
     public int getSentenceNo() {
+        if (sentenceNo == null)
+            sentenceNo = word.getSentenceNo();
         return sentenceNo;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof DiaTexTraceLink other) {
-            if (this.goldStandard != null && other.goldStandard != null && !this.goldStandard.equals(other.goldStandard))
-                return false;
-            return equalEndpoints(other);
-        }
-        return false;
     }
 
     public boolean equalEndpoints(DiaTexTraceLink other) {
         return this.sentenceNo == other.getSentenceNo() && diagramElement.equals(other.diagramElement);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sentenceNo, diagramElement, goldStandard);
     }
 
     @Override
@@ -124,7 +110,34 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof DiaTexTraceLink other) {
+            var gs = getGoldStandard();
+            var oGs = other.getGoldStandard();
+            if (Objects.equals(gs, oGs)) {
+                var de = getDiagramElement();
+                var oDe = other.getDiagramElement();
+                if (Objects.equals(de, oDe)) {
+                    var sn = getSentenceNo();
+                    var oSn = other.getSentenceNo();
+                    return Objects.equals(sn, oSn);
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSentenceNo(), getDiagramElement(), getGoldStandard().orElse(""));
+    }
+
+    @Override
     public int compareTo(@NotNull DiaTexTraceLink o) {
+        if (equals(o))
+            return 0;
         var gs = 0;
         if (goldStandard != null && o.goldStandard == null)
             gs = -1;
@@ -142,12 +155,12 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
     }
 
     public void setRelated(Set<DiaTexTraceLink> related) {
-        MutableSet<DiaTexTraceLink> set = Sets.mutable.ofAll(related);
+        Set<DiaTexTraceLink> set = new LinkedHashSet<>(related);
         set.remove(this);
         this.related = set;
     }
 
-    public ImmutableSet<DiaTexTraceLink> getRelated() {
-        return related.toImmutable();
+    public Set<DiaTexTraceLink> getRelated() {
+        return Collections.unmodifiableSet(related);
     }
 }

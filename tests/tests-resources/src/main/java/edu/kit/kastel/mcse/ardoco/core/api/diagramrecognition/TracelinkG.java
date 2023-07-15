@@ -8,10 +8,7 @@ import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 
-public class TracelinkG implements Serializable {
-    public String name;
-    public int[] sentences;
-
+public record TracelinkG(String name, int[] sentences) implements Serializable {
     public ImmutableSet<DiaTexTraceLink> toTraceLinks(DiagramElement diagramElement) {
         return Sets.immutable.fromStream(Arrays.stream(sentences).mapToObj(i -> new DiaTexTraceLink(diagramElement, i, name)));
     }

@@ -113,12 +113,16 @@ public class DiagramConnectionGeneratorTest {
     }
 
     @Configurable
-    private static final int repetitions = 3;
+    private static final int repetitions = 8;
     private static final Results[] results = new Results[repetitions];
 
     @RepeatedTest(repetitions)
+    @Order(3)
     void repetitionTest(RepetitionInfo repetitionInfo) {
+        logger.info("Starting repetition {}/{}", repetitionInfo.getCurrentRepetition(), repetitionInfo.getTotalRepetitions());
         results[repetitionInfo.getCurrentRepetition() - 1] = run(DiagramProject.TEAMMATES);
+        logger.info("Finished repetition {}/{}", repetitionInfo.getCurrentRepetition(), repetitionInfo.getTotalRepetitions());
+        logger.info("Alt: " + results[repetitionInfo.getCurrentRepetition() - 1]);
         if (repetitionInfo.getCurrentRepetition() == repetitionInfo.getTotalRepetitions()) {
             for (var i = 0; i < results.length - 1; i++) {
                 assertEquals(results[i], results[i + 1]);
