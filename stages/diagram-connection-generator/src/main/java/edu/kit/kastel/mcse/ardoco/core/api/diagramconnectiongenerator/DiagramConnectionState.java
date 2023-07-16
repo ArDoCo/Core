@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -47,6 +47,13 @@ public interface DiagramConnectionState extends IConfigurable {
             @NotNull Map<Word, Double> confidenceMap);
 
     /**
+     * Trys to add the diagram link to the state. Returns true if a link with the same properties wasn't already contained by the state.
+     *
+     * @return true, if the link wasn't already contained, false else
+     */
+    boolean addToDiagramLinks(@NotNull DiagramLink diagramLink);
+
+    /**
      * Removes the specified diagram link from the state. Returns true of the link was contained.
      *
      * @param diagramLink diagram link
@@ -54,30 +61,29 @@ public interface DiagramConnectionState extends IConfigurable {
      */
     boolean removeFromDiagramLinks(@NotNull DiagramLink diagramLink);
 
-    default @NotNull ImmutableSet<DiaTexTraceLink> getTraceLinks() {
-        var traceLinks = Lists.mutable.<DiaTexTraceLink>empty();
+    default @NotNull ImmutableSet<DiaWordTraceLink> getTraceLinks() {
+        var traceLinks = Sets.mutable.<DiaWordTraceLink>empty();
         for (var diagramLink : getDiagramLinks()) {
-            var tls = diagramLink.toTraceLinks().toList();
-            traceLinks.addAll(tls);
+            traceLinks.addAll(diagramLink.toTraceLinks().toList());
         }
-        return Sets.immutable.ofAll(traceLinks);
+        return traceLinks.toImmutable();
     }
 
     default @NotNull ImmutableSet<DiaTexTraceLink> getMostSpecificTraceLinks() {
-        var sameDiagram = getTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram()));
+        var sameDiagram = getTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram())); //134, 288
         var values = sameDiagram.values();
         var allLinks = Sets.mutable.<DiaTexTraceLink>empty();
         for (var diagram : values) {
-            var sameWord = diagram.stream().collect(Collectors.groupingBy(tl -> tl.getWord().map(Word::getPosition).orElse(-1)));
-            sameWord.remove(-1);
-            allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
+            var sameWord = diagram.stream().collect(Collectors.groupingBy(tl -> tl.getWord().getPosition()));
+            sameWord.remove(-1);//134 -> 123/122, 288 -> 110/109
+            allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());//134 -> 127/126, 288 -> 110/109
         }
         return allLinks.toImmutable();
     }
 
-    private List<DiaTexTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiaTexTraceLink> traceLinks) {
+    private List<DiaWordTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiaWordTraceLink> traceLinks) {
         var sorted = traceLinks.stream().sorted((t1, t2) -> Double.compare(t2.getConfidence(), t1.getConfidence())).toList();
-        var max = sorted.stream().findFirst().map(DiaTexTraceLink::getConfidence).orElse(Double.MAX_VALUE);
+        var max = sorted.stream().findFirst().map(DiaWordTraceLink::getConfidence).orElse(Double.MAX_VALUE);
         sorted.forEach(tl -> tl.setRelated(new HashSet<>(sorted)));
         return sorted.stream().filter(tl -> Double.compare(tl.getConfidence(), max) >= 0).toList();
     }

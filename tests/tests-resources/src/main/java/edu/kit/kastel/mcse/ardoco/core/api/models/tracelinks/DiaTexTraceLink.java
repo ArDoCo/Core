@@ -13,33 +13,15 @@ import org.jetbrains.annotations.Nullable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializable {
-    private DiagramElement diagramElement;
-    private Integer sentenceNo;
-    private Word word;
-    private double confidence;
+    protected final DiagramElement diagramElement;
+    private final int sentenceNo;
 
-    private Text text;
-    private Set<DiaTexTraceLink> related = new LinkedHashSet<>();
+    protected Text text;
+    protected Set<DiaTexTraceLink> related = new LinkedHashSet<>();
 
-    private String goldStandard;
-
-    /**
-     * Creates a tracelink between a diagram element and a sentence number of a word
-     *
-     * @param diagramElement diagram element
-     * @param word           word
-     * @param confidence     confidence
-     */
-    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, double confidence) {
-        this.diagramElement = diagramElement;
-        this.goldStandard = null;
-        this.sentenceNo = word.getSentenceNo() + 1;
-        this.word = word;
-        this.confidence = confidence;
-    }
+    private final String goldStandard;
 
     /**
      * Creates a tracelink between a diagram element and a sentence number
@@ -52,8 +34,6 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         this.diagramElement = diagramElement;
         this.goldStandard = goldStandard;
         this.sentenceNo = sentenceNo;
-        this.word = null;
-        this.confidence = 1.0;
     }
 
     /**
@@ -69,27 +49,12 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         return diagramElement;
     }
 
-    public double getConfidence() {
-        return confidence;
-    }
-
-    /**
-     * Returns an optional containing a word, if this trace link was created from a word.
-     *
-     * @return an optional containing the word or empty
-     */
-    public Optional<Word> getWord() {
-        return Optional.ofNullable(word);
-    }
-
     /**
      * Gets the sentence number, indexing starts at 1.
      *
      * @return sentence number
      */
     public int getSentenceNo() {
-        if (sentenceNo == null)
-            sentenceNo = word.getSentenceNo();
         return sentenceNo;
     }
 
@@ -100,9 +65,9 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
     @Override
     public String toString() {
         if (text == null)
-            return MessageFormat.format("[{0,number,#.###}]-[{1}]-[{2}]", confidence, sentenceNo, diagramElement);
+            return MessageFormat.format("[{0}]-[{1}]", getSentenceNo(), getDiagramElement());
         var sentenceText = text.getSentences().get(getSentenceNo() - 1).getText();
-        return MessageFormat.format("[{0,number,#.###}]-[{1}]-[{2}]", confidence, diagramElement, sentenceText);
+        return MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), sentenceText);
     }
 
     public void setText(Text text) {

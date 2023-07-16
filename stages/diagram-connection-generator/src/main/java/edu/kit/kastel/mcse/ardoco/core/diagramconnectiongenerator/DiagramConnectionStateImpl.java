@@ -43,6 +43,21 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     }
 
     @Override
+    public boolean addToDiagramLinks(@NotNull DiagramLink diagramLink) {
+        var added = diagramLinks.add(diagramLink);
+
+        if (added)
+            return true;
+
+        for (var dl : diagramLinks) {
+            if (dl.equals(diagramLink)) {
+                diagramLink.getConfidenceMap().forEach((word, conf) -> dl.setConfidence(word, Math.max(dl.getConfidence(word), conf)));
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean removeFromDiagramLinks(@NotNull DiagramLink diagramLink) {
         return diagramLinks.remove(diagramLink);
     }

@@ -12,10 +12,10 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public record Results(double precision, double recall, double f1, double accuracy, double phiCoefficient, double specificity,
-                      SortedSet<DiaTexTraceLink> truePositives, SortedSet<DiaTexTraceLink> falsePositives, SortedSet<DiaTexTraceLink> falseNegatives, int TN,
-                      ExpectedResults expectedResults, SortedSet<DiaTexTraceLink> all) {
+                      SortedSet<? extends DiaTexTraceLink> truePositives, SortedSet<? extends DiaTexTraceLink> falsePositives,
+                      SortedSet<? extends DiaTexTraceLink> falseNegatives, int TN, ExpectedResults expectedResults, SortedSet<? extends DiaTexTraceLink> all) {
 
-    public static Results create(DiagramProject project, Text text, Set<DiaTexTraceLink> traceLinks, ExpectedResults expected) {
+    public static Results create(DiagramProject project, Text text, Set<? extends DiaTexTraceLink> traceLinks, ExpectedResults expected) {
         var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard()
                 .stream()
                 .peek(t -> t.setText(text))
@@ -42,15 +42,15 @@ public record Results(double precision, double recall, double f1, double accurac
         return new Results(P, R, f1, acc, phiCoefficient, spec, tpLinks, fpLinks, fnLinks, TN, expected, new TreeSet<>(traceLinks));
     }
 
-    private static TreeSet<DiaTexTraceLink> intersection(Set<DiaTexTraceLink> a, Set<DiaTexTraceLink> b) {
+    private static TreeSet<? extends DiaTexTraceLink> intersection(Set<? extends DiaTexTraceLink> a, Set<? extends DiaTexTraceLink> b) {
         return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    private static TreeSet<DiaTexTraceLink> difference(Set<DiaTexTraceLink> a, Set<DiaTexTraceLink> b) {
+    private static TreeSet<? extends DiaTexTraceLink> difference(Set<? extends DiaTexTraceLink> a, Set<? extends DiaTexTraceLink> b) {
         return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public static Results create(DiagramProject project, Text text, Set<DiaTexTraceLink> traceLinks) {
+    public static Results create(DiagramProject project, Text text, Set<? extends DiaTexTraceLink> traceLinks) {
         return create(project, text, traceLinks, new ExpectedResults(0, 0, 0));
     }
 

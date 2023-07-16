@@ -54,6 +54,10 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
         return confidenceMap.getOrDefault(word, Double.MIN_VALUE);
     }
 
+    public Map<Word, Double> getConfidenceMap() {
+        return Map.copyOf(confidenceMap);
+    }
+
     public void setConfidence(Word word, double confidence) {
         confidenceMap.put(word, confidence);
     }
@@ -96,17 +100,15 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
      *
      * @return immutable set of diagram text tracelinks
      */
-    public @NotNull ImmutableSet<DiaTexTraceLink> toTraceLinks() {
-        MutableSet<DiaTexTraceLink> traceLinks = Sets.mutable.empty();
+    public @NotNull ImmutableSet<DiaWordTraceLink> toTraceLinks() {
+        MutableSet<DiaWordTraceLink> traceLinks = Sets.mutable.empty();
         for (var nameMapping : getRecommendedInstance().getNameMappings()) {
             for (var word : nameMapping.getWords()) {
-
-                var traceLink = new DiaTexTraceLink(getDiagramElement(), word, getConfidence(word));
+                var traceLink = new DiaWordTraceLink(getDiagramElement(), word, getConfidence(word));
                 traceLinks.add(traceLink);
             }
         }
         var result = Sets.immutable.ofAll(traceLinks);
-        assert result.size() == getRecommendedInstance().getSentenceNumbers().size();
         return result;
     }
 }

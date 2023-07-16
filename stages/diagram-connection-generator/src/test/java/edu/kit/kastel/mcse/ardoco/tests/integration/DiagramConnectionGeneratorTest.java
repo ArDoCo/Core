@@ -54,6 +54,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
                 .collect(Collectors.toCollection(TreeSet::new));
         var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         var altResult = Results.create(project, text, mostSpecificTraceLinks, project.getExpectedDiagramTraceLinkResults());
+        logger.info("{} Diagram Links, {} Trace Links, {} Most Specific Trace Links", diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size());
         logger.info(result.toString());
         logger.info("Alt: " + altResult);
         //assertTrue(altResult.asExpected());
