@@ -70,15 +70,15 @@ public interface DiagramConnectionState extends IConfigurable {
     }
 
     default @NotNull ImmutableSet<DiaTexTraceLink> getMostSpecificTraceLinks() {
-        var sameDiagram = getTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram())); //134, 288
+        var sameDiagram = getTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram()));
         var values = sameDiagram.values();
-        var allLinks = Sets.mutable.<DiaTexTraceLink>empty();
+        var allLinks = Sets.mutable.<DiaWordTraceLink>empty();
         for (var diagram : values) {
             var sameWord = diagram.stream().collect(Collectors.groupingBy(tl -> tl.getWord().getPosition()));
-            sameWord.remove(-1);//134 -> 123/122, 288 -> 110/109
-            allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());//134 -> 127/126, 288 -> 110/109
+            sameWord.remove(-1);
+            allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
         }
-        return allLinks.toImmutable();
+        return Sets.immutable.ofAll(allLinks);
     }
 
     private List<DiaWordTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiaWordTraceLink> traceLinks) {

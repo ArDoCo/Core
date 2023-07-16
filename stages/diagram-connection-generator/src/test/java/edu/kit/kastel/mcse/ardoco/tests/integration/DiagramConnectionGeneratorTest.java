@@ -33,7 +33,6 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.results.Results;
 public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator, Results> {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorTest.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
-    private static final Map<DiagramProject, DataRepository> preRun = new HashMap<>();
 
     public DiagramConnectionGeneratorTest() {
         super(new DiagramConnectionGenerator(null));

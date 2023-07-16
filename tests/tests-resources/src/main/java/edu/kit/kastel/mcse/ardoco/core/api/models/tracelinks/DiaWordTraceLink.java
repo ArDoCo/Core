@@ -57,14 +57,17 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
     public int compareTo(@NotNull DiaTexTraceLink o) {
         if (equals(o))
             return 0;
+        var supComp = super.compareTo(o);
         if (o instanceof DiaWordTraceLink other) {
-            var comp = Integer.compare(getWord().getPosition(), other.getWord().getPosition());
-            if (comp == 0) {
-                return Double.compare(getConfidence(), other.getConfidence());
+            if (supComp == 0) {
+                var comp = Integer.compare(getWord().getPosition(), other.getWord().getPosition());
+                if (comp == 0) {
+                    return Double.compare(getConfidence(), other.getConfidence());
+                }
+                return comp;
             }
-            return comp;
         }
-        return super.compareTo(o);
+        return supComp;
     }
 
     @Override

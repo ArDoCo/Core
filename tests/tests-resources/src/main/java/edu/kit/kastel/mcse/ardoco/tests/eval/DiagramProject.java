@@ -51,7 +51,7 @@ public enum DiagramProject implements Serializable {
             "benchmark/mediastore/diagrams_2016/goldstandard.json", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
             new ExpectedResults(.212, .792, .328, .702, .227, .690), //
-            new ExpectedResults(.866, .896, .88, .982, .871, .988) //
+            new ExpectedResults(.887, .94, .913, .978, .9, .983) //
     ), //
     TEASTORE( //
             "benchmark/teastore/model_2020/pcm/teastore.repository", //
@@ -62,7 +62,7 @@ public enum DiagramProject implements Serializable {
             "benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994), //
-            new ExpectedResults(.999, .740, .850, .972, .847, .999) //
+            new ExpectedResults(1, .821, .901, .973, .892, 1) //
     ), //
     TEAMMATES( //
             "benchmark/teammates/model_2021/pcm/teammates.repository", //
@@ -73,7 +73,7 @@ public enum DiagramProject implements Serializable {
             "benchmark/teammates/diagrams_2023/goldstandard.json", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
             new ExpectedResults(.175, .745, .279, .851, .287, .851), //
-            new ExpectedResults(.436, .696, .536, .973, .539, .979) //
+            new ExpectedResults(.468, .834, .599, .958, .606, .963) //
     ), //
     BIGBLUEBUTTON( //
             "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -84,7 +84,7 @@ public enum DiagramProject implements Serializable {
             "benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984), //
-            new ExpectedResults(.845, .745, .792, .978, .783, .991) //
+            new ExpectedResults(.874, .835, .854, .976, .841, .989) //
     ), //
     TEASTORE_HISTORICAL( //
             "benchmark/teastore/model_2020/pcm/teastore.repository", //
@@ -95,7 +95,7 @@ public enum DiagramProject implements Serializable {
             "benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.163, .982, .278, .376, .146, .289), //
-            new ExpectedResults(0, 0, 0, 0, 0, 0) //
+            new ExpectedResults(1, .961, .980, .993, 0.976, 1) //
     ), //
     TEAMMATES_HISTORICAL( //
             "benchmark/teammates/model_2021/pcm/teammates.repository", //
@@ -106,7 +106,7 @@ public enum DiagramProject implements Serializable {
             "benchmark/teammates/diagrams_2015/goldstandard.json", //
             new ExpectedResults(.524, .695, .597, .970, .589, .979), //
             new ExpectedResults(.168, .629, .263, .863, .260, .870), //
-            new ExpectedResults(0, 0, 0, 0, 0, 0) //
+            new ExpectedResults(.426, .744, .542, .959, .544, .967) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
             "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -117,7 +117,7 @@ public enum DiagramProject implements Serializable {
             "benchmark/bigbluebutton/diagrams_2015/goldstandard.json", //
             new ExpectedResults(.807, .617, .699, .978, .695, .993), //
             new ExpectedResults(.085, .175, .111, .813, .018, .869), //
-            new ExpectedResults(0, 0, 0, 0, 0, 0) //
+            new ExpectedResults(.752, .927, .831, .969, .819, .973) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(DiagramProject.class);

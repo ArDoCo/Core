@@ -33,7 +33,6 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class StageTest<T extends AbstractExecutionStage, V extends Record> {
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
-    private static final String OUTPUT_DIR = "src/test/resources/testout";
     private static final Map<DiagramProject, DataRepository> preRun = new HashMap<>();
     private final Class<? extends AbstractExecutionStage> stage;
     private final Set<Class<? extends PipelineAgent>> agents;
