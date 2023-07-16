@@ -43,4 +43,8 @@ public class PhraseAgent extends PipelineAgent {
         informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(informants);
+    }
 }

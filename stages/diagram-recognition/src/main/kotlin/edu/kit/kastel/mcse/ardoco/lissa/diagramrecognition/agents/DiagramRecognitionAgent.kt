@@ -32,4 +32,6 @@ class DiagramRecognitionAgent(dataRepository: DataRepository) : PipelineAgent(ID
     override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>?) {
         informants.forEach { it.applyConfiguration(additionalConfiguration) }
     }
+
+    override fun getPipelineSteps(): List<Informant> = informants
 }

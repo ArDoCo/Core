@@ -8,14 +8,12 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
 /**
- * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution
- * stage}.
+ * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution stage}.
  *
- * Implementing classes need to override {@link #getEnabledPipelineSteps()}.
- * Additionally, sub-classes are free to override {@link #initializeState()} to execute code at the beginning of the initialization before the main processing.
+ * Implementing classes need to override {@link #getEnabledPipelineSteps()}. Additionally, sub-classes are free to override {@link #initializeState()} to
+ * execute code at the beginning of the initialization before the main processing.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
-
     protected PipelineAgent(String id, DataRepository dataRepository) {
         super(id, dataRepository);
     }
@@ -45,8 +43,13 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
 
     /**
      * Return the enabled pipeline steps (informants)
-     * 
+     *
      * @return the list of Informants
      */
     protected abstract List<Informant> getEnabledPipelineSteps();
+
+    /**
+     * {@return the pipeline steps (informants) including disabled}
+     */
+    public abstract List<Informant> getPipelineSteps();
 }

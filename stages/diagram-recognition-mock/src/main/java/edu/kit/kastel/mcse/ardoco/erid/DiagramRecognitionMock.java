@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.erid;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +43,11 @@ public class DiagramRecognitionMock extends AbstractExecutionStage {
 
     @Override
     protected List<PipelineAgent> getEnabledAgents() {
-        return new ArrayList<>();
+        return List.of();
+    }
+
+    @Override
+    public List<PipelineAgent> getAgents() {
+        return List.of();
     }
 }

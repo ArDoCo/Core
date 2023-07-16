@@ -58,6 +58,8 @@ class DiagramRecognition : AbstractExecutionStage {
         return findByClassName(enabledAgents, agents)
     }
 
+    override fun getAgents(): List<PipelineAgent> = agents
+
     override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration)
         for (agent in agents) {

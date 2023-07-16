@@ -27,8 +27,7 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     private final List<Informant> informants;
 
     /**
-     * Instantiates a new model provider agent.
-     * The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
+     * Instantiates a new model provider agent. The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
      *
      * @param data       the DataRepository
      * @param extractors the list of ModelConnectors that should be used
@@ -44,8 +43,8 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             Map<String, String> additionalConfigs, DataRepository dataRepository) {
         ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
-        case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
-        case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+            case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+            case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
         };
         CodeItemRepository codeItemRepository = new CodeItemRepository();
         CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, inputCode.getAbsolutePath());
@@ -62,5 +61,10 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
         return new ArrayList<>(informants);
+    }
+
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(informants);
     }
 }

@@ -2,6 +2,8 @@ package edu.kit.kastel.mcse.ardoco.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,7 @@ public class TestRunner extends ArDoCoRunnerExt<TestRunner.Parameters> {
         super(projectName);
     }
 
-    public record Parameters(DiagramProject diagramProject, File outputDir, boolean useMockDiagrams) {
+    public record Parameters(DiagramProject diagramProject, File outputDir, boolean useMockDiagrams, Map<String, String> additionalConfiguration) {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(TestRunner.class);
@@ -39,6 +41,17 @@ public class TestRunner extends ArDoCoRunnerExt<TestRunner.Parameters> {
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
-        arDoCo.addPipelineStep(DiagramConnectionGenerator.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        arDoCo.addPipelineStep(DiagramConnectionGenerator.get(getAdditionalConfiguration(p), dataRepository));
+    }
+
+    /**
+     * {@return an additional configuration map extended by the additional configuration specified in the parameters}
+     *
+     * @param p the parameters
+     */
+    private Map<String, String> getAdditionalConfiguration(Parameters p) {
+        var copy = new HashMap<>(p.diagramProject.getAdditionalConfigurations());
+        copy.putAll(p.additionalConfiguration);
+        return copy;
     }
 }

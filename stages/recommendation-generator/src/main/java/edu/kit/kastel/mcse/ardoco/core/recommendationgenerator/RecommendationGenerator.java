@@ -66,6 +66,11 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     }
 
     @Override
+    public List<PipelineAgent> getAgents() {
+        return List.copyOf(agents);
+    }
+
+    @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         for (var agent : agents) {

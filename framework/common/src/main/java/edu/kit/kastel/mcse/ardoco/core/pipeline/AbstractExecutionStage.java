@@ -10,8 +10,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * This abstract class represents an execution step within ArDoCo. Examples are Text-Extraction, Recommendation-Generator, Connection-Generator, and
  * Inconsistency-Checker.
  * <p>
- * Implementing classes need to implement {@link #initializeState()} that cares for setting up the state for processing.
- * Additionally, implementing classes need to implement {@link #getEnabledAgents()} that returns the listof enabled {@link PipelineAgent pipeline agents}
+ * Implementing classes need to implement {@link #initializeState()} that cares for setting up the state for processing. Additionally, implementing classes need
+ * to implement {@link #getEnabledAgents()} that returns the listof enabled {@link PipelineAgent pipeline agents}
  */
 public abstract class AbstractExecutionStage extends Pipeline {
 
@@ -53,4 +53,9 @@ public abstract class AbstractExecutionStage extends Pipeline {
      * @return the list of agents
      */
     protected abstract List<PipelineAgent> getEnabledAgents();
+
+    /**
+     * {@return the {@link PipelineAgent agents}}
+     */
+    public abstract List<PipelineAgent> getAgents();
 }

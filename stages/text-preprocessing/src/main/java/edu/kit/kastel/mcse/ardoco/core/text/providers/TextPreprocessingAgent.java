@@ -52,4 +52,9 @@ public class TextPreprocessingAgent extends PipelineAgent {
     protected List<Informant> getEnabledPipelineSteps() {
         return findByClassName(enabledInformants, informants);
     }
+
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(informants);
+    }
 }

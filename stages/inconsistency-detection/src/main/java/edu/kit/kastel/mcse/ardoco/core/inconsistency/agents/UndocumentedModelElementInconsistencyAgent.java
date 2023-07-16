@@ -37,4 +37,9 @@ public class UndocumentedModelElementInconsistencyAgent extends PipelineAgent {
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
+
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(informants);
+    }
 }

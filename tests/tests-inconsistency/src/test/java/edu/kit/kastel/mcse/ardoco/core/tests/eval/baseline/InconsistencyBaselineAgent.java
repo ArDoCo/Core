@@ -11,6 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * Agent for {@link InconsistencyBaseline}
  */
 public class InconsistencyBaselineAgent extends PipelineAgent {
+    private final Informant informant = new InconsistencyBaselineInformant(getDataRepository());
 
     protected InconsistencyBaselineAgent(DataRepository dataRepository) {
         super(InconsistencyBaselineAgent.class.getSimpleName(), dataRepository);
@@ -18,6 +19,11 @@ public class InconsistencyBaselineAgent extends PipelineAgent {
 
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return List.of(new InconsistencyBaselineInformant(getDataRepository()));
+        return List.of(informant);
+    }
+
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.of(informant);
     }
 }

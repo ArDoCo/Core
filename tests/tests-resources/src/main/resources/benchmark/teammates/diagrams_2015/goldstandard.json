@@ -134,13 +134,7 @@
                     "tracelinks": [
                         {
                             "name": "teammates_2015.txt",
-                            "sentences": [],
-                            "tracelinks": [
-                                {
-                                    "name": "teammates_2015.txt",
-                                    "sentences": []
-                                }
-                            ]
+                            "sentences": []
                         }
                     ]
                 },

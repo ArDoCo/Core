@@ -40,4 +40,9 @@ public class InitialCodeTraceabilityAgent extends PipelineAgent {
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         informants.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
     }
+
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(informants);
+    }
 }

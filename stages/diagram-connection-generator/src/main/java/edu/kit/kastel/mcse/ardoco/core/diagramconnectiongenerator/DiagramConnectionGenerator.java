@@ -9,7 +9,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.agents.InstanceDiagramConnectionAgent;
+import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.agents.InitialDiagramConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
@@ -18,11 +18,11 @@ public class DiagramConnectionGenerator extends AbstractExecutionStage {
     private final MutableList<PipelineAgent> agents;
 
     @Configurable
-    private final List<String> enabledAgents;
+    private List<String> enabledAgents;
 
     public DiagramConnectionGenerator(DataRepository dataRepository) {
         super("DiagramConnectionGenerator", dataRepository);
-        agents = Lists.mutable.of(new InstanceDiagramConnectionAgent(dataRepository));
+        agents = Lists.mutable.of(new InitialDiagramConnectionAgent(dataRepository));
         enabledAgents = agents.collect(Agent::getId);
     }
 
@@ -51,4 +51,7 @@ public class DiagramConnectionGenerator extends AbstractExecutionStage {
             agent.applyConfiguration(additionalConfiguration);
         }
     }
+
+    @Override
+    public List<PipelineAgent> getAgents() { return List.copyOf(agents); }
 }

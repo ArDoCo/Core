@@ -26,8 +26,8 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     public InitialInconsistencyAgent(DataRepository dataRepository) {
         super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
 
-        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(
-                dataRepository));
+        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository),
+                new UnwantedWordsFilter(dataRepository));
         enabledFilters = filters.collect(Informant::getId);
     }
 
@@ -55,5 +55,10 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         filters.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
+    }
+
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(filters);
     }
 }

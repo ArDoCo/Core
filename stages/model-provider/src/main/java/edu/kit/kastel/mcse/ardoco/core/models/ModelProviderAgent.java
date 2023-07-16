@@ -65,4 +65,9 @@ public class ModelProviderAgent extends PipelineAgent {
     protected List<Informant> getEnabledPipelineSteps() {
         return new ArrayList<>(informants);
     }
+
+    @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(informants);
+    }
 }
