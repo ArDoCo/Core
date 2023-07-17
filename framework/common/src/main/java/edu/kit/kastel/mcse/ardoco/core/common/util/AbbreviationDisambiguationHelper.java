@@ -43,6 +43,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
     }
 
     private AbbreviationDisambiguationHelper() {
+        super("abbreviations", ".json", "");
     }
 
     public ImmutableSet<String> get(@NotNull String abbreviation) {
@@ -91,7 +92,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
      * @return the abbreviations
      */
     @Override
-    public @NotNull ImmutableMap<String, Abbreviation> load() {
+    public @NotNull ImmutableMap<String, Abbreviation> load(boolean allowReload) {
         if (abbreviations != null)
             return Maps.immutable.ofMap(abbreviations);
         try {
@@ -102,11 +103,6 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "abbreviations";
     }
 
     @Override

@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.tests.integration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;

@@ -37,6 +37,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     private final Class<? extends AbstractExecutionStage> stage;
     private final Set<Class<? extends PipelineAgent>> agents;
     private final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
+    private final Map<DiagramProject, TestDataRepositoryCache> dataRepositoryCaches = new HashMap<>();
 
     public StageTest(T stageInstance) {
         this.stage = stageInstance.getClass();
@@ -53,8 +54,12 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     }
 
     protected DataRepository run(DiagramProject project, Map<String, String> additionalConfigurations) {
-        var dataRepository = preRun.computeIfAbsent(project, this::setup);
+        var dataRepository = getDataRepository(project);
         return runTestRunner(project, additionalConfigurations, dataRepository);
+    }
+
+    protected DataRepository getDataRepository(DiagramProject diagramProject) {
+        return dataRepositoryCaches.computeIfAbsent(diagramProject, dp -> TestDataRepositoryCache.getInstance(stage, diagramProject)).get(this::setup);
     }
 
     protected DataRepository run(DiagramProject project) {

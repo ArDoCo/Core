@@ -28,6 +28,7 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
     }
 
     private DBPediaHelper() {
+        super("dbpedia", ".json", "");
     }
 
     private List<String> loadProgrammingLanguages() {
@@ -138,7 +139,7 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
     }
 
     @Override
-    public Record load() {
+    public Record load(boolean allowReload) {
         if (record != null)
             return record;
         try {
@@ -150,11 +151,6 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
             logger.error("Error reading {} file", getIdentifier());
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "dbpedia";
     }
 
     public record Record(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {
