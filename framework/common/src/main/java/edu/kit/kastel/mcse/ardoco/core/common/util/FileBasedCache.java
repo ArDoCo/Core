@@ -11,7 +11,7 @@ import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
 public abstract class FileBasedCache<T> {
-    private static Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(FileBasedCache.class);
     private File file;
     private final String identifier;
     private final String fileExtension;
@@ -42,7 +42,7 @@ public abstract class FileBasedCache<T> {
     public void resetFile() {
         try {
             if (file == null)
-                return;
+                file = getFileHandle();
             file.delete();
             getFile();
         } catch (IOException e) {
@@ -50,17 +50,22 @@ public abstract class FileBasedCache<T> {
         }
     }
 
-    public File getFile() throws IOException {
-        if (file != null)
-            return file;
-
+    public File getFileHandle() throws IOException {
         AppDirs appDirs = AppDirsFactory.getInstance();
         var arDoCoDataDir = appDirs.getUserDataDir("ArDoCo", null, "MCSE", true);
-        //var projectDataDir = arDoCoDataDir + "/projects/" + DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
         file = new File(arDoCoDataDir + "/" + subFolder + this.identifier + this.fileExtension);
         if (file.getParentFile().mkdirs()) {
             logger.info("Created directory {}", file.getParentFile().getCanonicalPath());
         }
+        return file;
+    }
+
+    public File getFile() throws IOException {
+        if (file != null && file.exists())
+            return file;
+
+        file = getFileHandle();
+
         if (file.createNewFile()) {
             logger.info("Created {} file {}", this.identifier, file.getCanonicalPath());
             T defaultContent = getDefault();
