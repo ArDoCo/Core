@@ -34,7 +34,7 @@ class DiaTexTraceLinkTest {
         Mockito.doReturn(mockPhrase).when(mockWord).getPhrase();
     }
 
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaTexTraceLink(BoxGTest.dummyBoxG, 0, "SomeStandard.json");
+    public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaGSTraceLink(BoxGTest.dummyBoxG, 0, "SomeStandard.json");
     public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGTest.dummyBoxG, mockWord, 0.5);
 
     public static List<DiaTexTraceLink> getDummyDiaTexTraceLinks() {

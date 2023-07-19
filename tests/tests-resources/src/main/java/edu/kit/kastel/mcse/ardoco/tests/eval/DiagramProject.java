@@ -33,6 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramsG;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandard;
@@ -126,18 +127,18 @@ public enum DiagramProject implements Serializable {
 
     private final Map<ArchitectureModelType, File> allModelFiles = Maps.mutable.empty();
 
-    private final String model;
-    private final String text;
-    private final String configurations;
-    private final String goldStandardTraceabilityLinkRecovery;
-    private final String goldStandardMissingTextForModelElement;
-    private final String goldStandardDiagrams;
-    private final ExpectedResults expectedTraceLinkResults;
-    private final ExpectedResults expectedInconsistencyResults;
+    public final String model;
+    public final String text;
+    public final String configurations;
+    public final String goldStandardTraceabilityLinkRecovery;
+    public final String goldStandardMissingTextForModelElement;
+    public final String goldStandardDiagrams;
+    public final ExpectedResults expectedTraceLinkResults;
+    public final ExpectedResults expectedInconsistencyResults;
 
-    private final ExpectedResults expectedDiagramTraceLinkResults;
+    public final ExpectedResults expectedDiagramTraceLinkResults;
 
-    private final ArchitectureModelType architectureModelType;
+    public final ArchitectureModelType architectureModelType;
 
     DiagramProject(String model, String text, String goldStandardTraceabilityLinkRecovery, String configurations, String goldStandardMissingTextForModelElement,
             String goldStandardDiagrams, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults,
@@ -194,7 +195,7 @@ public enum DiagramProject implements Serializable {
         return Optional.empty();
     }
 
-    private static File getTemporaryFileFromString(String path) {
+    private static @NotNull File getTemporaryFileFromString(@NotNull String path) {
         //Create .tmp file with ArDoCo prefix
         try {
             var is = DiagramProject.class.getClassLoader().getResourceAsStream(path);
@@ -404,11 +405,11 @@ public enum DiagramProject implements Serializable {
         return expectedInconsistencyResults;
     }
 
-    public ImmutableSet<DiaTexTraceLink> getDiagramTextTraceLinksFromGoldstandard() {
+    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard() {
         return getDiagramTextTraceLinksFromGoldstandard(text);
     }
 
-    public ImmutableSet<DiaTexTraceLink> getDiagramTextTraceLinksFromGoldstandard(@Nullable String textGoldstandard) {
+    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard(@Nullable String textGoldstandard) {
         MutableSet<DiaTexTraceLink> diagramLinks = Sets.mutable.empty();
         return Sets.immutable.fromStream(getDiagramsFromGoldstandard().stream().flatMap(d -> d.getTraceLinks(textGoldstandard).stream()));
     }

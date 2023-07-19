@@ -18,14 +18,14 @@ import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class DiagramG implements Diagram, Comparable<DiagramG> {
     private String path;
     private List<Box> properBoxes = new ArrayList<>();
     private List<TextBox> properTextBoxes = new ArrayList<>();
-    private List<DiaTexTraceLink> traceLinks;
+    private List<DiaGSTraceLink> traceLinks;
     private DiagramProject project;
 
     @JsonCreator
@@ -46,15 +46,19 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
         this.traceLinks = addBoxes(boxes);
     }
 
-    private List<DiaTexTraceLink> addBoxes(BoxG[] boxes) {
-        var traceLinks = Lists.mutable.<DiaTexTraceLink>empty();
+    private List<DiaGSTraceLink> addBoxes(BoxG[] boxes) {
+        var traceLinks = Lists.mutable.<DiaGSTraceLink>empty();
         for (BoxG boxG : boxes) {
             addBox(boxG);
             addBoxes(boxG.getSubBoxes());
-            traceLinks.addAll(boxG.getTraceLinks().toList());
-            traceLinks.addAll(Arrays.stream(boxG.getSubBoxes()).flatMap(b -> b.getTraceLinks().stream()).toList());
+            var boxTLs = boxG.getTraceLinks().toList();
+            traceLinks.addAll(boxTLs);
+            var subBoxTLs = Arrays.stream(boxG.getSubBoxes()).flatMap(b -> b.getTraceLinks().stream()).toList();
+            traceLinks.addAll(subBoxTLs);
         }
-        return traceLinks.distinct();
+
+        assert traceLinks.size() == traceLinks.distinct().size(); //Otherwise there are duplicates in the goldstandard
+        return traceLinks;
     }
 
     public String getPath() {
@@ -138,7 +142,7 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
         throw new NotImplementedException();
     }
 
-    public List<DiaTexTraceLink> getTraceLinks() {
+    public List<DiaGSTraceLink> getTraceLinks() {
         return traceLinks;
     }
 
@@ -148,10 +152,10 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
      * @param textGoldstandard Partial path to the goldstandard text file
      * @return List of tracelinks
      */
-    public @NotNull List<DiaTexTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
+    public @NotNull List<DiaGSTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
         if (textGoldstandard == null)
             return getTraceLinks();
-        return traceLinks.stream().filter(t -> t.getGoldStandard().map(textGoldstandard::contains).orElse(false)).distinct().toList();
+        return traceLinks.stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())).distinct().toList();
     }
 
     public @NotNull DiagramProject getProject() {

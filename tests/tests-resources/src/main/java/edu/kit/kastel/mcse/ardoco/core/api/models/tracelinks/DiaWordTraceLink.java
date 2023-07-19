@@ -23,7 +23,7 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
      * @param confidence     confidence
      */
     public DiaWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, double confidence) {
-        super(diagramElement, word.getSentenceNo() + 1, null);
+        super(diagramElement, word.getSentenceNo() + 1);
 
         this.word = word;
         this.confidence = confidence;

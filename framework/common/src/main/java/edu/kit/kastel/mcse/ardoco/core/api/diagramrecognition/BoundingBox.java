@@ -52,4 +52,18 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) {
     public boolean containsEntirely(@NotNull BoundingBox other) {
         return Double.compare(contains(other, true), 1.0) == 0;
     }
+
+    /**
+     * {@return the width}
+     */
+    public int width() {
+        return maxX - minX;
+    }
+
+    /**
+     * {@return the height}
+     */
+    public int height() {
+        return maxY - minY;
+    }
 }

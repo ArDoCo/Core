@@ -30,7 +30,7 @@ public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCa
     }
 
     private TestDataRepositoryCache(@NotNull Class<? extends AbstractExecutionStage> stage, DiagramProject diagramProject) {
-        super(diagramProject.name(), ".ser", "test/data-repositories/"+stage.getSimpleName()+"/");
+        super(diagramProject.name(), ".ser", "test/data-repositories/" + stage.getSimpleName() + "/");
         this.stage = stage;
         this.diagramProject = diagramProject;
     }
@@ -55,6 +55,7 @@ public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCa
             return record;
         } catch (InvalidClassException | ClassNotFoundException e) {
             if (allowReload) {
+                //TODO Fix on change
                 logger.warn("SerialVersionUID might have changed, resetting {} file", getIdentifier());
                 resetFile();
                 return load(false);

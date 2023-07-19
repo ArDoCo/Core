@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -42,8 +44,11 @@ public class BoxG extends Box implements Serializable {
         return Arrays.stream(boundingBox.toCoordinates()).mapToObj(Integer::toString).reduce("box", (l, r) -> l + "-" + r);
     }
 
-    public ImmutableSet<DiaTexTraceLink> getTraceLinks() {
-        return Sets.immutable.fromStream(Arrays.stream(tracelinks).flatMap(t -> t.toTraceLinks(this).stream()));
+    public ImmutableSet<DiaGSTraceLink> getTraceLinks() {
+        var list = Arrays.stream(tracelinks).flatMap(t -> t.toTraceLinks(this).stream()).toList();
+        var set = Sets.immutable.ofAll(list);
+        assert set.size() == list.size();
+        return set;
     }
 
     public BoxG[] getSubBoxes() {
