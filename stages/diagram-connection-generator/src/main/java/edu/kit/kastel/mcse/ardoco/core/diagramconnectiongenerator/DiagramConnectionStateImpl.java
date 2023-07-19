@@ -26,9 +26,9 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     }
 
     @Override
-    public boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull Claimant claimant, double confidence,
+    public boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String textIdentifier, @NotNull Claimant claimant, double confidence,
             @NotNull Map<Word, Double> confidenceMap) {
-        var newDL = new DiagramLink(ri, de, claimant, confidence, confidenceMap);
+        var newDL = new DiagramLink(ri, de, textIdentifier, claimant, confidence, confidenceMap);
         var added = diagramLinks.add(newDL);
 
         if (added)

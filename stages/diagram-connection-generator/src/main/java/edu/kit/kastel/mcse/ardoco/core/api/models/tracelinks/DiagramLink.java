@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink> {
     private final RecommendedInstance recommendedInstance;
     private final DiagramElement diagramElement;
+    private final String projectName;
     private final Claimant claimant;
     private final double confidence;
     private final Map<Word, Double> confidenceMap;
@@ -24,15 +25,17 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
     /**
      * @param recommendedInstance the recommended instance
      * @param diagramElement      the diagram element
+     * @param projectName         the name of the project
      * @param claimant            the {@link Claimant} responsible for the creation of this link
      * @param confidence          confidence in the link
      */
-    public DiagramLink(RecommendedInstance recommendedInstance, DiagramElement diagramElement, Claimant claimant, double confidence,
-            Map<Word, Double> confidenceMap) {
+    public DiagramLink(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
+            @NotNull Claimant claimant, double confidence, @NotNull Map<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
 
         this.recommendedInstance = recommendedInstance;
         this.diagramElement = diagramElement;
+        this.projectName = projectName;
         this.claimant = claimant;
         this.confidence = confidence;
         this.confidenceMap = confidenceMap;
@@ -104,7 +107,7 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
         MutableSet<DiaWordTraceLink> traceLinks = Sets.mutable.empty();
         for (var nameMapping : getRecommendedInstance().getNameMappings()) {
             for (var word : nameMapping.getWords()) {
-                var traceLink = new DiaWordTraceLink(getDiagramElement(), word, getConfidence(word));
+                var traceLink = new DiaWordTraceLink(getDiagramElement(), word, projectName, getConfidence(word));
                 traceLinks.add(traceLink);
             }
         }

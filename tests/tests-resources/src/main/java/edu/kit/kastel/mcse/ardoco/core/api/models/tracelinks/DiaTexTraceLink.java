@@ -5,30 +5,31 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
 public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializable {
     protected final DiagramElement diagramElement;
-    private final int sentenceNo;
+    protected final Sentence sentence;
+    protected final String projectName;
 
-    protected Text text;
     protected Set<DiaTexTraceLink> related = new LinkedHashSet<>();
 
     /**
-     * Creates a tracelink between a diagram element and a sentence number
+     * Creates a tracelink between a diagram element and a sentence
      *
      * @param diagramElement diagram element
-     * @param sentenceNo     sentence number, indexing starts at 1
+     * @param sentence       sentence
+     * @param projectName    project name
      */
-    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, int sentenceNo) {
+    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName) {
         this.diagramElement = diagramElement;
-        this.sentenceNo = sentenceNo;
+        this.sentence = sentence;
+        this.projectName = projectName;
     }
 
     public @NotNull DiagramElement getDiagramElement() {
@@ -41,27 +42,20 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
      * @return sentence number
      */
     public int getSentenceNo() {
-        return sentenceNo;
+        return sentence.getSentenceNumberForOutput();
     }
 
     public boolean equalEndpoints(DiaTexTraceLink other) {
-        return this.sentenceNo == other.getSentenceNo() && diagramElement.equals(other.diagramElement);
+        return this.getSentenceNo() == other.getSentenceNo() && getDiagramElement().equals(other.getDiagramElement());
     }
 
     @Override
     public String toString() {
-        return getSentence().map(s -> MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), s))
-                .orElse(MessageFormat.format("[{0}]-[{1}]", getSentenceNo(), getDiagramElement()));
+        return MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), getSentence().getText());
     }
 
-    public void setText(Text text) {
-        this.text = text;
-    }
-
-    public Optional<String> getSentence() {
-        if (text == null)
-            return Optional.empty();
-        return Optional.of(text.getSentences().get(getSentenceNo() - 1).getText());
+    public @NotNull Sentence getSentence() {
+        return this.sentence;
     }
 
     @Override
@@ -83,9 +77,9 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
     public int compareTo(@NotNull DiaTexTraceLink o) {
         if (equals(o))
             return 0;
-        var comp = diagramElement.compareTo(o.diagramElement);
+        var comp = getDiagramElement().compareTo(o.getDiagramElement());
         if (comp == 0)
-            return sentenceNo - o.getSentenceNo();
+            return getSentenceNo() - o.getSentenceNo();
         return comp;
     }
 

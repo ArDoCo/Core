@@ -20,10 +20,11 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
      *
      * @param diagramElement diagram element
      * @param word           word
+     * @param projectName    project name
      * @param confidence     confidence
      */
-    public DiaWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, double confidence) {
-        super(diagramElement, word.getSentenceNo() + 1);
+    public DiaWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull String projectName, double confidence) {
+        super(diagramElement, word.getSentence(), projectName);
 
         this.word = word;
         this.confidence = confidence;
@@ -72,9 +73,7 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
 
     @Override
     public String toString() {
-        if (text == null)
-            return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3,number,#.###}]", getSentenceNo(), getDiagramElement(), getWord().getPosition(), getConfidence());
-        var sentenceText = text.getSentences().get(getSentenceNo() - 1).getText();
-        return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3,number,#.###}]", getDiagramElement(), sentenceText, getWord().getPosition(), getConfidence());
+        return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3,number,#.###}]", getDiagramElement(), getSentence().getText(), getWord().getPosition(),
+                getConfidence());
     }
 }

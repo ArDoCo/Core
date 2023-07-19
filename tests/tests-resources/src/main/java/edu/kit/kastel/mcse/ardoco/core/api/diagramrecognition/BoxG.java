@@ -1,22 +1,22 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
-
 import java.io.Serializable;
 import java.util.Arrays;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.jetbrains.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 
 /**
  * Connector for the {@link Box} JSON representation.
  */
 public class BoxG extends Box implements Serializable {
+    private final DiagramG diagramG;
     private BoundingBoxG boundingBox;
     private TextBoxG[] textBoxes;
     private BoxG[] subBoxes;
@@ -34,6 +34,7 @@ public class BoxG extends Box implements Serializable {
     public BoxG(@JacksonInject DiagramG diagram, @JsonProperty("boundingBox") BoundingBoxG boundingBox, @JsonProperty("textBoxes") TextBoxG[] textBoxes,
             @JsonProperty("subBoxes") BoxG[] subBoxes, @JsonProperty("tracelinks") TracelinkG[] tracelinks) {
         super(diagram, getUUID(boundingBox), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), null);
+        this.diagramG = diagram;
         this.boundingBox = boundingBox;
         this.textBoxes = textBoxes;
         this.subBoxes = subBoxes;
@@ -45,7 +46,10 @@ public class BoxG extends Box implements Serializable {
     }
 
     public ImmutableSet<DiaGSTraceLink> getTraceLinks() {
-        var list = Arrays.stream(tracelinks).flatMap(t -> t.toTraceLinks(this).stream()).toList();
+        var list = Arrays.stream(tracelinks)
+                .filter(t -> getDiagram().getProject().getText().contains(t.name()))
+                .flatMap(t -> t.toTraceLinks(this).stream())
+                .toList();
         var set = Sets.immutable.ofAll(list);
         assert set.size() == list.size();
         return set;
@@ -53,6 +57,10 @@ public class BoxG extends Box implements Serializable {
 
     public BoxG[] getSubBoxes() {
         return subBoxes;
+    }
+
+    public @NotNull DiagramG getDiagram() {
+        return this.diagramG;
     }
 
     @Override

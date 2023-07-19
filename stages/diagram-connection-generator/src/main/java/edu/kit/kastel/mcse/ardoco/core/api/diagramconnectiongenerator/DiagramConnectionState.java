@@ -38,13 +38,14 @@ public interface DiagramConnectionState extends IConfigurable {
      *
      * @param ri            recommended instance
      * @param de            diagram element
+     * @param projectName   name of the project
      * @param claimant      the claimant responsible for the link
      * @param confidence    confidence in the link
      * @param confidenceMap confidence map containing the confidences
      * @return true, if the link wasn't already contained, false else
      */
-    boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull Claimant claimant, double confidence,
-            @NotNull Map<Word, Double> confidenceMap);
+    boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String projectName, @NotNull Claimant claimant,
+            double confidence, @NotNull Map<Word, Double> confidenceMap);
 
     /**
      * Trys to add the diagram link to the state. Returns true if a link with the same properties wasn't already contained by the state.

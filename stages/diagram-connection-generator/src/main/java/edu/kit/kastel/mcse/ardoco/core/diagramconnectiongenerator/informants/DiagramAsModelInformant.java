@@ -19,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -26,6 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 public class DiagramAsModelInformant extends Informant {
     @Configurable
     private int minSimilarSurfaceWords = 1;
+    private String projectName;
 
     public DiagramAsModelInformant(DataRepository dataRepository) {
         super(DiagramAsModelInformant.class.getSimpleName(), dataRepository);
@@ -39,10 +41,11 @@ public class DiagramAsModelInformant extends Informant {
     @Override
     public void run() {
         var dataRepository = getDataRepository();
-        var diagramState = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).get();
+        this.projectName = dataRepository.getData(ProjectPipelineData.ID, ProjectPipelineData.class).orElseThrow().getProjectName();
+        var diagramState = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).get();
+        var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var modelIds = modelStates.extractionModelIds();
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
@@ -65,7 +68,7 @@ public class DiagramAsModelInformant extends Informant {
             for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
-                    basedOnIncreasingMinimalProportionalThreshold.add(new DiagramLink(recommendedInstance, pair.first(), this,
+                    basedOnIncreasingMinimalProportionalThreshold.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
                             WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName()),
                             DiagramConnectionGeneratorUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                 }
@@ -87,7 +90,7 @@ public class DiagramAsModelInformant extends Informant {
                 for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
                     //Add based on overall similarity
                     if (SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
-                        basedOnOverallSimilarity.add(new DiagramLink(recommendedInstance, pair.first(), this,
+                        basedOnOverallSimilarity.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
                                 WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName()),
                                 DiagramConnectionGeneratorUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                     }
@@ -95,9 +98,9 @@ public class DiagramAsModelInformant extends Informant {
                     var similarSurfaceWords = SimilarityUtils.getSimilarSurfaceWords(recommendedInstance, pair.second());
                     if (similarSurfaceWords.size() >= minSimilarSurfaceWords) {
                         for (var similar : similarSurfaceWords) {
-                            basedOnSurfaceWords.add(
-                                    new DiagramLink(recommendedInstance, pair.first(), this, WordSimUtils.getSimilarity(similar, pair.second().getName()),
-                                            DiagramConnectionGeneratorUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
+                            basedOnSurfaceWords.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
+                                    WordSimUtils.getSimilarity(similar, pair.second().getName()),
+                                    DiagramConnectionGeneratorUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                         }
                     }
                 }

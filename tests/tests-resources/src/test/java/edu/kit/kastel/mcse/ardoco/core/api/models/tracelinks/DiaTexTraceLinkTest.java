@@ -20,10 +20,12 @@ import org.mockito.Mockito;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.BoxGTest;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 class DiaTexTraceLinkTest {
     public static final Word mockWord = Mockito.mock(Word.class, Mockito.withSettings().serializable());
+    public static final Sentence mockSentence = Mockito.mock(Sentence.class, Mockito.withSettings().serializable());
     public static final Phrase mockPhrase = Mockito.mock(Phrase.class, Mockito.withSettings().serializable());
 
     static {
@@ -32,10 +34,14 @@ class DiaTexTraceLinkTest {
         Mockito.doReturn(0).when(mockWord).getPosition();
         Mockito.doReturn(0).when(mockWord).getSentenceNo();
         Mockito.doReturn(mockPhrase).when(mockWord).getPhrase();
+        Mockito.doReturn("The SomeText example is part of a sentence").when(mockSentence).getText();
+        Mockito.doReturn(0).when(mockSentence).getSentenceNumber();
+        Mockito.doReturn(1).when(mockSentence).getSentenceNumberForOutput();
     }
 
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaGSTraceLink(BoxGTest.dummyBoxG, 0, "SomeStandard.json");
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGTest.dummyBoxG, mockWord, 0.5);
+    public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaGSTraceLink(BoxGTest.dummyBoxG, mockSentence, "SomeIdentifier",
+            "SomeStandard.json");
+    public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGTest.dummyBoxG, mockWord, "SomeIdentifier", 0.5);
 
     public static List<DiaTexTraceLink> getDummyDiaTexTraceLinks() {
         return List.of(dummyDiaTexTraceLinkSentence, dummyDiaTexTraceLinkWord);

@@ -45,11 +45,8 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var diagramLinks = diagramConnectionState.getDiagramLinks().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
-        var traceLinks = diagramConnectionState.getTraceLinks().stream().peek(t -> t.setText(text)).collect(Collectors.toCollection(TreeSet::new));
-        var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks()
-                .stream()
-                .peek(t -> t.setText(text))
-                .collect(Collectors.toCollection(TreeSet::new));
+        var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
+        var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
         var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         var altResult = Results.create(project, text, mostSpecificTraceLinks, project.getExpectedDiagramTraceLinkResults());
         logger.info("{} Diagram Links, {} Trace Links, {} Most Specific Trace Links", diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size());

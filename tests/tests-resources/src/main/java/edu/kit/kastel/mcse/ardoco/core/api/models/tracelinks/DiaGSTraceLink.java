@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
 public class DiaGSTraceLink extends DiaTexTraceLink {
     private final String goldStandard;
@@ -13,11 +14,12 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
      * Creates a tracelink between a diagram element and a sentence number
      *
      * @param diagramElement diagram element
-     * @param sentenceNo     sentence number, indexing starts at 1
+     * @param sentence       sentence
+     * @param projectName    project name
      * @param goldStandard   path to the gold standard file
      */
-    public DiaGSTraceLink(@NotNull DiagramElement diagramElement, int sentenceNo, @NotNull String goldStandard) {
-        super(diagramElement, sentenceNo);
+    public DiaGSTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName, @NotNull String goldStandard) {
+        super(diagramElement, sentence, projectName);
         this.goldStandard = goldStandard;
     }
 
@@ -48,7 +50,7 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
     public int compareTo(@NotNull DiaTexTraceLink o) {
         if (equals(o))
             return 0;
-        if (o instanceof DiaWordTraceLink other)
+        if (o instanceof DiaWordTraceLink)
             return -1;
         if (o instanceof DiaGSTraceLink other) {
             var gs = 0;

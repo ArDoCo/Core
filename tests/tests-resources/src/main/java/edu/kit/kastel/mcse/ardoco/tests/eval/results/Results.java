@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval.results;
 
+import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.MessageFormat;
@@ -18,10 +20,8 @@ public record Results(BigDecimal precision, BigDecimal recall, BigDecimal f1, Bi
                       SortedSet<? extends DiaTexTraceLink> falseNegatives, int TN, ExpectedResults expectedResults, SortedSet<? extends DiaTexTraceLink> all) {
 
     public static Results create(DiagramProject project, Text text, Set<? extends DiaTexTraceLink> traceLinks, ExpectedResults expected) {
-        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard()
-                .stream()
-                .peek(t -> t.setText(text))
-                .collect(Collectors.toCollection(TreeSet::new));
+        var goldStandardTraceLinks = project.getDiagramTextTraceLinksFromGoldstandard(text.getSentences().toList())
+                .stream().collect(Collectors.toCollection(TreeSet::new));
 
         var totalSentences = text.getSentences().size();
         var totalDiagramElements = project.getDiagramsFromGoldstandard().stream().flatMap(d -> d.getBoxes().stream()).toList().size();

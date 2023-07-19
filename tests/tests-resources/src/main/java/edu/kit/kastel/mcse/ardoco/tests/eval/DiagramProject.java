@@ -10,17 +10,19 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.prefs.Preferences;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -34,7 +36,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandard;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
@@ -121,7 +123,10 @@ public enum DiagramProject implements Serializable {
             new ExpectedResults(.752, .927, .831, .969, .819, .973) //
     );
 
-    private static final Logger logger = LoggerFactory.getLogger(DiagramProject.class);
+    private static class Helper {
+        //This is necessary because static fields are always initialized after enum construction
+        public static Logger logger = LoggerFactory.getLogger(DiagramProject.class);
+    }
 
     private static final Map<String, File> tempFiles = Maps.mutable.empty();
 
@@ -140,20 +145,37 @@ public enum DiagramProject implements Serializable {
 
     public final ArchitectureModelType architectureModelType;
 
+    private List<Sentence> sentences;
+    private boolean sourceModified = false;
+
     DiagramProject(String model, String text, String goldStandardTraceabilityLinkRecovery, String configurations, String goldStandardMissingTextForModelElement,
             String goldStandardDiagrams, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults,
             ExpectedResults expectedDiagramTraceLinkResults) {
+
         //We need to keep the paths as well, because the actual files are just temporary at this point due to jar packaging
         this.model = model;
-        this.architectureModelType = setupArchitectureModelType();
         this.text = text;
         this.configurations = configurations;
         this.goldStandardTraceabilityLinkRecovery = goldStandardTraceabilityLinkRecovery;
         this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
         this.goldStandardDiagrams = goldStandardDiagrams;
+        //Make sure to calculate the checksums for all resources
+        checksum(this.model);
+        checksum(this.text);
+        checksum(this.configurations);
+        checksum(this.goldStandardTraceabilityLinkRecovery);
+        checksum(this.goldStandardMissingTextForModelElement);
+        checksum(this.goldStandardDiagrams);
+        //Bump version to invalidate caches
+        if (this.sourceModified)
+            bumpVersion();
+        //
+
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
         this.expectedDiagramTraceLinkResults = expectedDiagramTraceLinkResults;
+
+        this.architectureModelType = setupArchitectureModelType();
     }
 
     /**
@@ -337,7 +359,7 @@ public enum DiagramProject implements Serializable {
         try {
             goldLinks = Files.readAllLines(path);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            Helper.logger.error(e.getMessage(), e);
         }
         goldLinks.remove(0);
         return Lists.immutable.ofAll(goldLinks);
@@ -359,7 +381,7 @@ public enum DiagramProject implements Serializable {
         try {
             goldLinks = Files.readAllLines(path);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            Helper.logger.error(e.getMessage(), e);
         }
         goldLinks.remove("missingModelElementID");
         return Lists.mutable.ofAll(goldLinks);
@@ -405,12 +427,12 @@ public enum DiagramProject implements Serializable {
         return expectedInconsistencyResults;
     }
 
-    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard() {
-        return getDiagramTextTraceLinksFromGoldstandard(text);
+    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard(@NotNull List<Sentence> sentences) {
+        return getDiagramTextTraceLinksFromGoldstandard(sentences, text);
     }
 
-    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard(@Nullable String textGoldstandard) {
-        MutableSet<DiaTexTraceLink> diagramLinks = Sets.mutable.empty();
+    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard(@NotNull List<Sentence> sentences, @Nullable String textGoldstandard) {
+        this.sentences = sentences;
         return Sets.immutable.fromStream(getDiagramsFromGoldstandard().stream().flatMap(d -> d.getTraceLinks(textGoldstandard).stream()));
     }
 
@@ -423,6 +445,42 @@ public enum DiagramProject implements Serializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Sentence> getSentences() {
+        return List.copyOf(sentences);
+    }
+
+    public boolean haveSourceFilesChanged() {
+        return this.sourceModified;
+    }
+
+    private void checksum(String path) {
+        try (var resource = DiagramProject.class.getClassLoader().getResourceAsStream(path)) {
+            if (resource == null)
+                throw new IllegalArgumentException("No such resource at path " + path);
+            String md5 = DigestUtils.md5Hex(resource);
+            if (!Objects.equals(Preferences.userNodeForPackage(DiagramProject.class).get(path, null), md5)) {
+                Preferences.userNodeForPackage(DiagramProject.class).put(path, md5);
+                this.sourceModified = true;
+                Helper.logger.info("Checksum for source file {} doesn't match", path);
+                return;
+            }
+            Helper.logger.info("Checksum for source file {} matches", path);
+        } catch (IOException e) {
+            Helper.logger.error("Couldn't calculate checksum for resource at " + path, e);
+        }
+    }
+
+    public long getSourceFilesVersion() {
+        var version = Preferences.userNodeForPackage(DiagramProject.class).getLong("version", -1L);
+        if (version == -1L)
+            bumpVersion();
+        return version;
+    }
+
+    private void bumpVersion() {
+        Preferences.userNodeForPackage(DiagramProject.class).putLong("version", System.currentTimeMillis());
     }
 }
 

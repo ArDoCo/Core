@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.function.Function;
+import java.util.prefs.Preferences;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -75,14 +76,27 @@ public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCa
     }
 
     public @NotNull DataRepository get(Function<DiagramProject, DataRepository> mappingFunction) {
+        checkVersion();
+
         var record = load();
         if (!record.preRun().containsKey(diagramProject)) {
             record.preRun().put(diagramProject, mappingFunction.apply(diagramProject));
             save(record);
         }
+
         return record.preRun().get(diagramProject);
     }
 
     public record Record(HashMap<DiagramProject, DataRepository> preRun) implements Serializable {
+    }
+
+    private void checkVersion() {
+        var versionPref = "version-" + getClass().getSimpleName() + "-" + stage.getSimpleName();
+        var versionDiagramProject = diagramProject.getSourceFilesVersion();
+        if (Preferences.userNodeForPackage(DiagramProject.class).getLong(versionPref, -1L) != versionDiagramProject) {
+            Preferences.userNodeForPackage(DiagramProject.class).putLong(versionPref, versionDiagramProject);
+            logger.warn("{}'s source files have changed, resetting {} file", diagramProject.name(), getIdentifier());
+            resetFile();
+        }
     }
 }

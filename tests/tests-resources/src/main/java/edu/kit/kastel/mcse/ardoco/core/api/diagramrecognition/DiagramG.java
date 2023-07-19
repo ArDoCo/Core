@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +24,6 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
     private String path;
     private List<Box> properBoxes = new ArrayList<>();
     private List<TextBox> properTextBoxes = new ArrayList<>();
-    private List<DiaGSTraceLink> traceLinks;
     private DiagramProject project;
 
     @JsonCreator
@@ -37,28 +35,20 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
 
         this.project = project;
         this.path = path;
-        this.traceLinks = addBoxes(boxes);
+        addBoxes(boxes);
     }
 
     public DiagramG(DiagramProject project, String path, BoxG[] boxes) {
         this.project = project;
         this.path = path;
-        this.traceLinks = addBoxes(boxes);
+        addBoxes(boxes);
     }
 
-    private List<DiaGSTraceLink> addBoxes(BoxG[] boxes) {
-        var traceLinks = Lists.mutable.<DiaGSTraceLink>empty();
+    private void addBoxes(BoxG[] boxes) {
         for (BoxG boxG : boxes) {
             addBox(boxG);
             addBoxes(boxG.getSubBoxes());
-            var boxTLs = boxG.getTraceLinks().toList();
-            traceLinks.addAll(boxTLs);
-            var subBoxTLs = Arrays.stream(boxG.getSubBoxes()).flatMap(b -> b.getTraceLinks().stream()).toList();
-            traceLinks.addAll(subBoxTLs);
         }
-
-        assert traceLinks.size() == traceLinks.distinct().size(); //Otherwise there are duplicates in the goldstandard
-        return traceLinks;
     }
 
     public String getPath() {
@@ -143,6 +133,14 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
     }
 
     public List<DiaGSTraceLink> getTraceLinks() {
+        var traceLinks = Lists.mutable.<DiaGSTraceLink>empty();
+        for (Box box : properBoxes) {
+            if (box instanceof BoxG boxG) {
+                var boxTLs = boxG.getTraceLinks().toList();
+                traceLinks.addAll(boxTLs);
+            }
+        }
+        assert traceLinks.size() == traceLinks.distinct().size(); //Otherwise there are duplicates in the goldstandard
         return traceLinks;
     }
 
@@ -155,7 +153,7 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
     public @NotNull List<DiaGSTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
         if (textGoldstandard == null)
             return getTraceLinks();
-        return traceLinks.stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())).distinct().toList();
+        return getTraceLinks().stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())).distinct().toList();
     }
 
     public @NotNull DiagramProject getProject() {

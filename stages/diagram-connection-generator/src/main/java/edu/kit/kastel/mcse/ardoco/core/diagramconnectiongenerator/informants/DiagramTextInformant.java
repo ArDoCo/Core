@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
@@ -23,6 +24,7 @@ public class DiagramTextInformant extends Informant {
      */
     @Configurable
     private double initialismThreshold = 0.5;
+    private String projectName;
 
     public DiagramTextInformant(DataRepository dataRepository) {
         super(DiagramTextInformant.class.getSimpleName(), dataRepository);
@@ -36,6 +38,7 @@ public class DiagramTextInformant extends Informant {
     @Override
     public void run() {
         var dataRepository = getDataRepository();
+        this.projectName = dataRepository.getData(ProjectPipelineData.ID, ProjectPipelineData.class).orElseThrow().getProjectName();
         var diagramState = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
@@ -62,7 +65,7 @@ public class DiagramTextInformant extends Informant {
                     var ris = recommendationState.getRecommendedInstances();
                     for (var recommendedInstance : ris) {
                         if (DiagramConnectionGeneratorUtil.isInitialismOf(recommendedInstance.getName(), tBox.getText(), initialismThreshold)) {
-                            diagramConnectionState.addToDiagramLinks(recommendedInstance, box, this,
+                            diagramConnectionState.addToDiagramLinks(recommendedInstance, box, projectName, this,
                                     WordSimUtils.getSimilarity(recommendedInstance.getName(), tBox.getText()),
                                     DiagramConnectionGeneratorUtil.calculateHighestSimilarity(box, recommendedInstance));
                         }
