@@ -32,27 +32,7 @@
             "type": "object",
             "properties": {
                 "boundingBox": {
-                    "type": "object",
-                    "properties": {
-                        "x": {
-                            "type": "integer"
-                        },
-                        "y": {
-                            "type": "integer"
-                        },
-                        "w": {
-                            "type": "integer"
-                        },
-                        "h": {
-                            "type": "integer"
-                        }
-                    },
-                    "required": [
-                        "x",
-                        "y",
-                        "w",
-                        "h"
-                    ]
+                    "$ref": "#/definitions/boundingBox"
                 },
                 "textBoxes": {
                     "type": "array",
@@ -63,27 +43,7 @@
                                 "type": "string"
                             },
                             "boundingBox": {
-                                "type": "object",
-                                "properties": {
-                                    "x": {
-                                        "type": "integer"
-                                    },
-                                    "y": {
-                                        "type": "integer"
-                                    },
-                                    "w": {
-                                        "type": "integer"
-                                    },
-                                    "h": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "required": [
-                                    "x",
-                                    "y",
-                                    "w",
-                                    "h"
-                                ]
+                                "$ref": "#/definitions/boundingBox"
                             }
                         },
                         "required": [
@@ -121,13 +81,63 @@
                 "sentences": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "$ref": "#/definitions/tracelink"
+                            }
+                        ]
                     }
                 }
             },
             "required": [
                 "name",
                 "sentences"
+            ]
+        },
+        "boundingBox": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                },
+                "w": {
+                    "type": "integer"
+                },
+                "h": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "x",
+                "y",
+                "w",
+                "h"
+            ]
+        },
+        "tracelink": {
+            "type": "object",
+            "properties": {
+                "sentence": {
+                    "type": "integer"
+                },
+                "traceType": {
+                    "type": "string",
+                    "enum": [
+                        "component",
+                        "noun",
+                        "uncertain"
+                    ]
+                }
+            },
+            "required": [
+                "sentence",
+                "traceType"
             ]
         }
     },
