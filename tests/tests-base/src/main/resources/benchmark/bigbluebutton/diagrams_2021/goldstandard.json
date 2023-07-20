@@ -25,20 +25,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                4,
-                                5,
-                                6,
-                                11,
-                                12,
-                                13,
-                                14,
-                                70,
-                                71
-                            ]
-                        },
-                        {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
                                 4,
@@ -49,7 +35,9 @@
                                 13,
                                 14,
                                 70,
-                                71
+                                71,
+                                74,
+                                77
                             ]
                         }
                     ]
@@ -74,22 +62,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                6,
-                                8,
-                                9,
-                                10,
-                                12,
-                                13,
-                                15,
-                                18,
-                                37,
-                                45,
-                                71
-                            ]
-                        },
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
@@ -129,14 +101,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                65,
-                                66,
-                                67
-                            ]
-                        },
-                        {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
                                 65,
@@ -166,17 +130,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                5,
-                                63,
-                                65,
-                                68,
-                                71,
-                                72
-                            ]
-                        },
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
@@ -211,15 +164,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                44,
-                                45,
-                                58,
-                                77
-                            ]
-                        },
-                        {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
                                 44,
@@ -251,13 +195,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                78,
-                                79
-                            ]
-                        },
-                        {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
                                 78,
@@ -286,16 +223,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                25,
-                                49,
-                                50,
-                                52,
-                                58
-                            ]
-                        },
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
@@ -329,13 +256,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                55,
-                                58
-                            ]
-                        },
-                        {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
                                 55,
@@ -364,15 +284,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                28,
-                                34,
-                                35,
-                                76
-                            ]
-                        },
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
@@ -405,10 +316,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": []
-                        },
-                        {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": []
                         }
@@ -434,13 +341,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                46,
-                                47
-                            ]
-                        },
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
@@ -470,19 +370,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                56,
-                                57,
-                                58,
-                                59,
-                                60,
-                                61,
-                                64,
-                                70
-                            ]
-                        },
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [
@@ -518,14 +405,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2021/bigbluebutton_1SentPerLine.txt",
-                            "sentences": [
-                                37,
-                                38,
-                                39
-                            ]
-                        },
                         {
                             "name": "text_2021/bigbluebutton.txt",
                             "sentences": [

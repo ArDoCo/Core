@@ -47,6 +47,7 @@
                                     "sentences": [
                                         3,
                                         4,
+                                        12,
                                         23,
                                         54,
                                         65,
@@ -54,7 +55,8 @@
                                         74,
                                         75,
                                         81,
-                                        174
+                                        174,
+                                        180
                                     ]
                                 }
                             ]
@@ -96,7 +98,16 @@
                                         77,
                                         161,
                                         167,
-                                        169
+                                        169,
+                                        173
+                                    ],
+                                    "typedTracelinks": [
+                                        {
+                                            "sentences": [
+                                                172
+                                            ],
+                                            "traceType": "OTHER_ENTITY"
+                                        }
                                     ]
                                 }
                             ]
@@ -126,6 +137,16 @@
                                     "sentences": [
                                         15,
                                         182
+                                    ],
+                                    "typedTracelinks": [
+                                        {
+                                            "sentences": [
+                                                183,
+                                                184,
+                                                185
+                                            ],
+                                            "traceType": "OTHER_ENTITY"
+                                        }
                                     ]
                                 }
                             ]
@@ -180,9 +201,21 @@
                                     "name": "teammates_2015.txt",
                                     "sentences": [
                                         17,
-                                        126,
                                         152,
                                         175
+                                    ],
+                                    "typedTracelinks": [
+                                        {
+                                            "sentences": [
+                                                126,
+                                                153,
+                                                154,
+                                                155,
+                                                156,
+                                                158
+                                            ],
+                                            "traceType": "OTHER_ENTITY"
+                                        }
                                     ]
                                 }
                             ]
@@ -221,6 +254,7 @@
                                     "sentences": [
                                         3,
                                         4,
+                                        12,
                                         23,
                                         54,
                                         65,
@@ -228,7 +262,8 @@
                                         74,
                                         75,
                                         81,
-                                        174
+                                        174,
+                                        180
                                     ]
                                 }
                             ]
@@ -265,6 +300,7 @@
                                 {
                                     "name": "teammates_2015.txt",
                                     "sentences": [
+                                        20,
                                         34,
                                         60,
                                         61,
@@ -275,6 +311,34 @@
                                         121,
                                         130,
                                         176
+                                    ],
+                                    "typedTracelinks": [
+                                        {
+                                            "sentences": [
+                                                7,
+                                                60,
+                                                61,
+                                                63,
+                                                112,
+                                                118,
+                                                130
+                                            ],
+                                            "traceType": "COMMON_NOUN"
+                                        },
+                                        {
+                                            "sentences": [
+                                                67,
+                                                68,
+                                                69,
+                                                70,
+                                                71,
+                                                72,
+                                                77,
+                                                172,
+                                                176
+                                            ],
+                                            "traceType": "OTHER_ENTITY"
+                                        }
                                     ]
                                 }
                             ]
@@ -319,6 +383,20 @@
                                         122,
                                         129,
                                         177
+                                    ],
+                                    "typedTracelinks": [
+                                        {
+                                            "sentences": [
+                                                114,
+                                                115,
+                                                116,
+                                                117,
+                                                123,
+                                                172,
+                                                177
+                                            ],
+                                            "traceType": "OTHER_ENTITY"
+                                        }
                                     ]
                                 }
                             ]
@@ -351,6 +429,14 @@
                                         127,
                                         134,
                                         139
+                                    ],
+                                    "typedTracelinks": [
+                                        {
+                                            "sentences": [
+                                                9
+                                            ],
+                                            "traceType": "OTHER_ENTITY"
+                                        }
                                     ]
                                 }
                             ]
@@ -502,7 +588,8 @@
                                     "name": "teammates_2015.txt",
                                     "sentences": [
                                         153,
-                                        156
+                                        156,
+                                        158
                                     ]
                                 }
                             ]
@@ -513,9 +600,21 @@
                             "name": "teammates_2015.txt",
                             "sentences": [
                                 17,
-                                126,
                                 152,
                                 175
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        126,
+                                        153,
+                                        154,
+                                        155,
+                                        156,
+                                        158
+                                    ],
+                                    "traceType": "OTHER_ENTITY"
+                                }
                             ]
                         }
                     ]
@@ -653,6 +752,7 @@
                                 {
                                     "name": "teammates_2015.txt",
                                     "sentences": [
+                                        168,
                                         171
                                     ]
                                 }
@@ -697,7 +797,16 @@
                                 77,
                                 161,
                                 167,
-                                169
+                                169,
+                                173
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        172
+                                    ],
+                                    "traceType": "OTHER_ENTITY"
+                                }
                             ]
                         }
                     ]
@@ -1187,6 +1296,16 @@
                             "sentences": [
                                 15,
                                 182
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        183,
+                                        184,
+                                        185
+                                    ],
+                                    "traceType": "OTHER_ENTITY"
+                                }
                             ]
                         }
                     ]

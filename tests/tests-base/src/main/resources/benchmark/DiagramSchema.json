@@ -81,14 +81,13 @@
                 "sentences": {
                     "type": "array",
                     "items": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "$ref": "#/definitions/tracelink"
-                            }
-                        ]
+                        "type": "integer"
+                    }
+                },
+                "typedTracelinks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/typedTracelinks"
                     }
                 }
             },
@@ -120,23 +119,26 @@
                 "h"
             ]
         },
-        "tracelink": {
+        "typedTracelinks": {
             "type": "object",
             "properties": {
-                "sentence": {
-                    "type": "integer"
+                "sentences": {
+                    "type": "array"
                 },
                 "traceType": {
                     "type": "string",
                     "enum": [
-                        "component",
-                        "noun",
-                        "uncertain"
+                        "ENTITY",
+                        "COMMON_NOUN",
+                        "SHARED_STEM",
+                        "ENTITY_COREFERENCE",
+                        "OTHER_ENTITY",
+                        "UNCERTAIN"
                     ]
                 }
             },
             "required": [
-                "sentence",
+                "sentences",
                 "traceType"
             ]
         }

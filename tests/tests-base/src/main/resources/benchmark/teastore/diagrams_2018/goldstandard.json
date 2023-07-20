@@ -25,12 +25,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2018/teastore_2018_III.txt",
-                            "sentences": [
-                                23
-                            ]
-                        },
-                        {
                             "name": "text_2018/teastore_2018_AB.txt",
                             "sentences": [
                                 1,
@@ -76,17 +70,12 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2018/teastore_2018_III.txt",
-                            "sentences": []
-                        },
-                        {
                             "name": "text_2018/teastore_2018_AB.txt",
                             "sentences": [
                                 3,
                                 7,
                                 26,
                                 27,
-                                32,
                                 34,
                                 37,
                                 41,
@@ -94,6 +83,14 @@
                                 44,
                                 45,
                                 46
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        32
+                                    ],
+                                    "traceType": "ENTITY_COREFERENCE"
+                                }
                             ]
                         },
                         {
@@ -101,10 +98,17 @@
                             "sentences": [
                                 2,
                                 5,
-                                6,
                                 7,
                                 8,
                                 10
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        6
+                                    ],
+                                    "traceType": "ENTITY_COREFERENCE"
+                                }
                             ]
                         }
                     ]
@@ -129,12 +133,6 @@
                     ],
                     "subBoxes": [],
                     "tracelinks": [
-                        {
-                            "name": "text_2018/teastore_2018_III.txt",
-                            "sentences": [
-                                8
-                            ]
-                        },
                         {
                             "name": "text_2018/teastore_2018_AB.txt",
                             "sentences": [
@@ -182,10 +180,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2018/teastore_2018_III.txt",
-                            "sentences": []
-                        },
-                        {
                             "name": "text_2018/teastore_2018_AB.txt",
                             "sentences": [
                                 3,
@@ -225,12 +219,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2018/teastore_2018_III.txt",
-                            "sentences": [
-                                16
-                            ]
-                        },
-                        {
                             "name": "text_2018/teastore_2018_AB.txt",
                             "sentences": [
                                 3,
@@ -255,10 +243,24 @@
                             "sentences": [
                                 4,
                                 22,
-                                23,
-                                24,
                                 25,
                                 26
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        23,
+                                        24
+                                    ],
+                                    "traceType": "ENTITY_COREFERENCE"
+                                },
+                                {
+                                    "sentences": [
+                                        22,
+                                        24
+                                    ],
+                                    "traceType": "SHARED_STEM"
+                                }
                             ]
                         }
                     ]
@@ -284,13 +286,6 @@
                     "subBoxes": [],
                     "tracelinks": [
                         {
-                            "name": "text_2018/teastore_2018_III.txt",
-                            "sentences": [
-                                10,
-                                14
-                            ]
-                        },
-                        {
                             "name": "text_2018/teastore_2018_AB.txt",
                             "sentences": [
                                 3,
@@ -304,14 +299,47 @@
                                 63,
                                 64,
                                 65
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        34,
+                                        36,
+                                        37,
+                                        42,
+                                        59,
+                                        60,
+                                        63,
+                                        66,
+                                        68
+                                    ],
+                                    "traceType": "SHARED_STEM"
+                                }
                             ]
                         },
                         {
                             "name": "text_2020/teastore.txt",
                             "sentences": [
                                 4,
-                                27,
-                                28
+                                27
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        28
+                                    ],
+                                    "traceType": "ENTITY_COREFERENCE"
+                                },
+                                {
+                                    "sentences": [
+                                        4,
+                                        27,
+                                        29,
+                                        32,
+                                        36
+                                    ],
+                                    "traceType": "SHARED_STEM"
+                                }
                             ]
                         }
                     ]

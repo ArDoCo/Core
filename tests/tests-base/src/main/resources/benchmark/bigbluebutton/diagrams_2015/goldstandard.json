@@ -205,6 +205,25 @@
                                     "sentences": [
                                         30,
                                         34
+                                    ],
+                                    "typedTracelinks": [
+                                        {
+                                            "sentences": [
+                                                18,
+                                                34,
+                                                37,
+                                                38,
+                                                52,
+                                                53
+                                            ],
+                                            "traceType": "COMMON_NOUN"
+                                        },
+                                        {
+                                            "sentences": [
+                                                52
+                                            ],
+                                            "traceType": "OTHER_ENTITY"
+                                        }
                                     ]
                                 }
                             ]

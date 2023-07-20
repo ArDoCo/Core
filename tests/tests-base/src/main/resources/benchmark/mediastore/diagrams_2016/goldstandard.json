@@ -167,8 +167,17 @@
                         {
                             "name": "mediastore/text_2016/mediastore.txt",
                             "sentences": [
-                                20,
-                                37
+                                20
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        15,
+                                        16,
+                                        37
+                                    ],
+                                    "traceType": "SHARED_STEM"
+                                }
                             ]
                         }
                     ]
@@ -198,12 +207,27 @@
                             "sentences": [
                                 12,
                                 23,
-                                24,
                                 25,
                                 31,
                                 32,
                                 33,
                                 34
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        12,
+                                        29,
+                                        30
+                                    ],
+                                    "traceType": "OTHER_ENTITY"
+                                },
+                                {
+                                    "sentences": [
+                                        24
+                                    ],
+                                    "traceType": "ENTITY_COREFERENCE"
+                                }
                             ]
                         }
                     ]
@@ -233,8 +257,15 @@
                             "sentences": [
                                 7,
                                 8,
-                                9,
                                 17
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        9
+                                    ],
+                                    "traceType": "ENTITY_COREFERENCE"
+                                }
                             ]
                         }
                     ]
@@ -264,8 +295,15 @@
                             "sentences": [
                                 26,
                                 27,
-                                28,
                                 34
+                            ],
+                            "typedTracelinks": [
+                                {
+                                    "sentences": [
+                                        28
+                                    ],
+                                    "traceType": "ENTITY_COREFERENCE"
+                                }
                             ]
                         }
                     ]
