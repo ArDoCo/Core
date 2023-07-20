@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +11,6 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
@@ -62,7 +61,7 @@ public interface DiagramConnectionState extends IConfigurable {
      */
     boolean removeFromDiagramLinks(@NotNull DiagramLink diagramLink);
 
-    default @NotNull ImmutableSet<DiaWordTraceLink> getTraceLinks() {
+    default @NotNull ImmutableSet<DiaWordTraceLink> getWordTraceLinks() {
         var traceLinks = Sets.mutable.<DiaWordTraceLink>empty();
         for (var diagramLink : getDiagramLinks()) {
             traceLinks.addAll(diagramLink.toTraceLinks().toList());
@@ -70,8 +69,13 @@ public interface DiagramConnectionState extends IConfigurable {
         return traceLinks.toImmutable();
     }
 
-    default @NotNull ImmutableSet<DiaTexTraceLink> getMostSpecificTraceLinks() {
-        var sameDiagram = getTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram()));
+    default @NotNull ImmutableSet<DiaWordTraceLink> getTraceLinks() {
+        var wordLinks = getWordTraceLinks();
+        return getByEqualEndpoints(getWordTraceLinks());
+    }
+
+    default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificWordTraceLinks() {
+        var sameDiagram = getWordTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram()));
         var values = sameDiagram.values();
         var allLinks = Sets.mutable.<DiaWordTraceLink>empty();
         for (var diagram : values) {
@@ -82,10 +86,24 @@ public interface DiagramConnectionState extends IConfigurable {
         return Sets.immutable.ofAll(allLinks);
     }
 
+    default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificTraceLinks() {
+        return getByEqualEndpoints(getMostSpecificWordTraceLinks());
+    }
+
     private List<DiaWordTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiaWordTraceLink> traceLinks) {
         var sorted = traceLinks.stream().sorted((t1, t2) -> Double.compare(t2.getConfidence(), t1.getConfidence())).toList();
         var max = sorted.stream().findFirst().map(DiaWordTraceLink::getConfidence).orElse(Double.MAX_VALUE);
-        sorted.forEach(tl -> tl.setRelated(new HashSet<>(sorted)));
+        sorted.forEach(tl -> tl.addRelated(sorted));
         return sorted.stream().filter(tl -> Double.compare(tl.getConfidence(), max) >= 0).toList();
+    }
+
+    private ImmutableSet<DiaWordTraceLink> getByEqualEndpoints(ImmutableSet<DiaWordTraceLink> links) {
+        var list = new ArrayList<DiaWordTraceLink>();
+        for (var link : links) {
+            if (list.stream().anyMatch(l -> l.equalEndpoints(link)))
+                continue;
+            list.add(link);
+        }
+        return Sets.immutable.ofAll(list);
     }
 }

@@ -76,6 +76,7 @@
                                 7,
                                 26,
                                 27,
+                                32,
                                 34,
                                 37,
                                 41,
@@ -87,7 +88,7 @@
                             "typedTracelinks": [
                                 {
                                     "sentences": [
-                                        32
+                                        33
                                     ],
                                     "traceType": "ENTITY_COREFERENCE"
                                 }

@@ -1,9 +1,17 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
+
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -14,6 +22,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 public class DiaWordTraceLink extends DiaTexTraceLink {
     private final Word word;
     private final double confidence;
+    private final Object origin;
+
+    private final Set<DiaWordTraceLink> relatedWordLinks = new TreeSet<>();
+    private final Set<DiaGSTraceLink> relatedGSLinks = new TreeSet<>();
 
     /**
      * Creates a tracelink between a diagram element and a sentence number of a word
@@ -22,12 +34,15 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
      * @param word           word
      * @param projectName    project name
      * @param confidence     confidence
+     * @param origin         claimant this link was derived from
      */
-    public DiaWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull String projectName, double confidence) {
+    public DiaWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull String projectName, double confidence,
+            @Nullable Claimant origin) {
         super(diagramElement, word.getSentence(), projectName);
 
         this.word = word;
         this.confidence = confidence;
+        this.origin = origin;
     }
 
     public @NotNull Word getWord() {
@@ -71,9 +86,25 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
         return supComp;
     }
 
+    public void addRelated(Collection<? extends DiaTexTraceLink> related) {
+        var list = new ArrayList<>(related);
+        for (var link : list) {
+            if (link == this)
+                continue;
+            if (link instanceof DiaWordTraceLink wLink) {
+                relatedWordLinks.add(wLink);
+            } else if (link instanceof DiaGSTraceLink gsLink) {
+                relatedGSLinks.add(gsLink);
+            }
+        }
+    }
+
     @Override
     public String toString() {
-        return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3,number,#.###}]", getDiagramElement(), getSentence().getText(), getWord().getPosition(),
-                getConfidence());
+        var prefix = "";
+        if (!relatedGSLinks.isEmpty()) {
+            prefix = relatedGSLinks.stream().map(g -> "[" + g.getTraceType().name() + "]").collect(Collectors.joining("-")) + "-";
+        }
+        return prefix + super.toString() + MessageFormat.format("-[{0}]-[{1,number,#.###}]", getWord().getPosition(), getConfidence());
     }
 }

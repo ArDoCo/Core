@@ -2,7 +2,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -16,8 +17,6 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
     protected final DiagramElement diagramElement;
     protected final Sentence sentence;
     protected final String projectName;
-
-    protected Set<DiaTexTraceLink> related = new LinkedHashSet<>();
 
     /**
      * Creates a tracelink between a diagram element and a sentence
@@ -46,12 +45,12 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
     }
 
     public boolean equalEndpoints(DiaTexTraceLink other) {
-        return this.getSentenceNo() == other.getSentenceNo() && getDiagramElement().equals(other.getDiagramElement());
+        return Objects.equals(getDiagramElement(), other.getDiagramElement()) && Objects.equals(getSentenceNo(), other.getSentenceNo());
     }
 
     @Override
     public String toString() {
-        return MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), getSentence().getText());
+        return MessageFormat.format("[{0}]-[{1}]-[{2}]", getDiagramElement(), getSentence().getSentenceNumberForOutput(), getSentence().getText());
     }
 
     public @NotNull Sentence getSentence() {
@@ -63,7 +62,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         if (this == obj)
             return true;
         else if (obj instanceof DiaTexTraceLink other) {
-            return Objects.equals(getDiagramElement(), other.getDiagramElement()) && Objects.equals(getSentenceNo(), other.getSentenceNo());
+            return equalEndpoints(other);
         }
         return false;
     }
@@ -81,15 +80,5 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         if (comp == 0)
             return getSentenceNo() - o.getSentenceNo();
         return comp;
-    }
-
-    public void setRelated(Set<DiaTexTraceLink> related) {
-        Set<DiaTexTraceLink> set = new LinkedHashSet<>(related);
-        set.remove(this);
-        this.related = set;
-    }
-
-    public Set<DiaTexTraceLink> getRelated() {
-        return Collections.unmodifiableSet(related);
     }
 }

@@ -41,7 +41,7 @@ class DiaTexTraceLinkTest {
 
     public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaGSTraceLink(BoxGTest.dummyBoxG, mockSentence, "SomeIdentifier",
             "SomeStandard.json");
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGTest.dummyBoxG, mockWord, "SomeIdentifier", 0.5);
+    public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGTest.dummyBoxG, mockWord, "SomeIdentifier", 0.5, null);
 
     public static List<DiaTexTraceLink> getDummyDiaTexTraceLinks() {
         return List.of(dummyDiaTexTraceLinkSentence, dummyDiaTexTraceLinkWord);

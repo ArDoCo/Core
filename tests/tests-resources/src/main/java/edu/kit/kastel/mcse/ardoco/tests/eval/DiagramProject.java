@@ -15,14 +15,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandard;
@@ -427,21 +427,26 @@ public enum DiagramProject implements Serializable {
         return expectedInconsistencyResults;
     }
 
-    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard(@NotNull List<Sentence> sentences) {
-        return getDiagramTextTraceLinksFromGoldstandard(sentences, text);
+    public Set<DiaGSTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences) {
+        return getDiagramTraceLinks(sentences, text);
     }
 
-    public ImmutableSet<DiaGSTraceLink> getDiagramTextTraceLinksFromGoldstandard(@NotNull List<Sentence> sentences, @Nullable String textGoldstandard) {
+    public Map<TraceType, List<DiaGSTraceLink>> getDiagramTraceLinksAsMap(@NotNull List<Sentence> sentences) {
+        var traceLinks = getDiagramTraceLinks(sentences);
+        return traceLinks.stream().collect(Collectors.groupingBy(DiaGSTraceLink::getTraceType));
+    }
+
+    private Set<DiaGSTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences, @Nullable String textGoldstandard) {
         this.sentences = sentences;
-        return Sets.immutable.fromStream(getDiagramsFromGoldstandard().stream().flatMap(d -> d.getTraceLinks(textGoldstandard).stream()));
+        return getDiagrams().stream().flatMap(d -> d.getTraceLinks(textGoldstandard).stream()).collect(Collectors.toSet());
     }
 
-    public ImmutableSet<DiagramG> getDiagramsFromGoldstandard() {
+    public Set<DiagramG> getDiagrams() {
         try {
             var objectMapper = new ObjectMapper();
             var file = getDiagramsGoldStandardFile();
             objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramProject.class, this));
-            return Sets.immutable.ofAll(Set.of(objectMapper.readValue(file, DiagramsG.class).diagrams));
+            return Set.of(objectMapper.readValue(file, DiagramsG.class).diagrams);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -449,10 +454,6 @@ public enum DiagramProject implements Serializable {
 
     public List<Sentence> getSentences() {
         return List.copyOf(sentences);
-    }
-
-    public boolean haveSourceFilesChanged() {
-        return this.sourceModified;
     }
 
     private void checksum(String path) {

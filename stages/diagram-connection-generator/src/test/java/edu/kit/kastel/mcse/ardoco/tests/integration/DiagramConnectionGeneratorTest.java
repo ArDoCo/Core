@@ -104,13 +104,28 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Test
+    void teammatesHistTest() {
+        runComparable(DiagramProject.TEAMMATES_HISTORICAL);
+    }
+
+    @Test
     void teastoreTest() {
         runComparable(DiagramProject.TEASTORE);
     }
 
     @Test
+    void teastoreHistTest() {
+        runComparable(DiagramProject.TEASTORE_HISTORICAL);
+    }
+
+    @Test
     void bbbTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON);
+    }
+
+    @Test
+    void bbbHistTest() {
+        runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL);
     }
 
     @Test

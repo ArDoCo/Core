@@ -227,6 +227,12 @@
                                         24
                                     ],
                                     "traceType": "ENTITY_COREFERENCE"
+                                },
+                                {
+                                    "sentences": [
+                                        27
+                                    ],
+                                    "traceType": "COMMON_NOUN"
                                 }
                             ]
                         }

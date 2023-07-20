@@ -20,7 +20,7 @@ public class BoxG extends Box implements Serializable {
     private BoundingBoxG boundingBox;
     private TextBoxG[] textBoxes;
     private BoxG[] subBoxes;
-    private TracelinkG[] tracelinks;
+    private TraceLinkG[] tracelinks;
 
     /**
      * Create a new box from the goldstandard.
@@ -32,7 +32,7 @@ public class BoxG extends Box implements Serializable {
      */
     @JsonCreator
     public BoxG(@JacksonInject DiagramG diagram, @JsonProperty("boundingBox") BoundingBoxG boundingBox, @JsonProperty("textBoxes") TextBoxG[] textBoxes,
-            @JsonProperty("subBoxes") BoxG[] subBoxes, @JsonProperty("tracelinks") TracelinkG[] tracelinks) {
+            @JsonProperty("subBoxes") BoxG[] subBoxes, @JsonProperty("tracelinks") TraceLinkG[] tracelinks) {
         super(diagram, getUUID(boundingBox), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), null);
         this.diagramG = diagram;
         this.boundingBox = boundingBox;

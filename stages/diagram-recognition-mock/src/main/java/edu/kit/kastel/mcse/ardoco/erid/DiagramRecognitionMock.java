@@ -33,7 +33,7 @@ public class DiagramRecognitionMock extends AbstractExecutionStage {
         }
         logger.info("Creating DiagramRecognitionMock State");
         var diagramRecognitionState = new DiagramRecognitionStateImpl();
-        var diagrams = inputDiagramsMock.get().getDiagramProject().getDiagramsFromGoldstandard();
+        var diagrams = inputDiagramsMock.get().getDiagramProject().getDiagrams();
         for (var diagram : diagrams) {
             logger.debug("Loaded Diagram {}", diagram.getPath());
             diagramRecognitionState.addDiagram(diagram);

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 public class BoxGTest {
     public static final BoxG dummyBoxG = new BoxG(DiagramGTest.dummyDiagramG, BoundingBoxGTest.dummyBoundingBoxG, new TextBoxG[] { TextBoxGTest.dummyTextBoxG },
-            new BoxG[] {}, new TracelinkG[] { TracelinkGTest.dummyTraceLinkG });
+            new BoxG[] {}, new TraceLinkG[] { TracelinkGTest.DUMMY_TRACE_LINK_G});
 
     @DisplayName("Evaluate Serialize BoxG")
     @Test

@@ -21,6 +21,12 @@
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>tests-base</artifactId>
       <scope>compile</scope>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>common</artifactId>
+      <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

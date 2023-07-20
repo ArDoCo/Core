@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedIn
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink> {
+public class DiagramLink extends EndpointTuple implements Claimant, Comparable<DiagramLink> {
     private final RecommendedInstance recommendedInstance;
     private final DiagramElement diagramElement;
     private final String projectName;
@@ -107,7 +107,7 @@ public class DiagramLink extends EndpointTuple implements Comparable<DiagramLink
         MutableSet<DiaWordTraceLink> traceLinks = Sets.mutable.empty();
         for (var nameMapping : getRecommendedInstance().getNameMappings()) {
             for (var word : nameMapping.getWords()) {
-                var traceLink = new DiaWordTraceLink(getDiagramElement(), word, projectName, getConfidence(word));
+                var traceLink = new DiaWordTraceLink(getDiagramElement(), word, projectName, getConfidence(word), this);
                 traceLinks.add(traceLink);
             }
         }
