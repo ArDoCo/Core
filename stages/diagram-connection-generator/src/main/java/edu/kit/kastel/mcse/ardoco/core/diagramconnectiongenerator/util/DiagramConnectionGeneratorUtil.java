@@ -17,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DBPediaHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
 
 /**
  * Provides utility methods that are shared by {@link edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant informants} of this stage.
@@ -55,7 +56,7 @@ public class DiagramConnectionGeneratorUtil {
     public static @NotNull Map<Word, Double> calculateHighestSimilarity(@NotNull Set<Word> words, @NotNull Set<String> targets) {
         return words.stream()
                 .collect(Collectors.toMap(w -> w, w -> targets.stream()
-                        .map(name -> WordSimUtils.getSimilarity(w.getPhrase().getText(), name))
+                        .map(name -> WordSimUtils.getSimilarity(w.getPhrase().getText(), name, SimilarityStrategy.MAXIMUM, true))
                         .max(Double::compareTo)
                         .orElse(Double.MIN_VALUE)));
     }

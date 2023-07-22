@@ -165,12 +165,18 @@ public class WordSimUtils {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
     }
 
+    public static double getSimilarity(String firstWord, String secondWord, SimilarityStrategy strategy, boolean ignoreCase) {
+        return strategy.getSimilarity(
+                new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord, null, null, false),
+                measures.toList());
+    }
+
     public static double getSimilarity(String firstWord, String secondWord) {
-        return similarityStrategy.getSimilarity(new ComparisonContext(firstWord, secondWord, null, null, false), measures.toList());
+        return getSimilarity(firstWord, secondWord, false);
     }
 
     public static double getSimilarity(String firstWord, String secondWord, boolean ignoreCase) {
-        return getSimilarity(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord);
+        return getSimilarity(firstWord, secondWord, similarityStrategy, ignoreCase);
     }
 
     public static SQLiteConfig getSqLiteConfig() {

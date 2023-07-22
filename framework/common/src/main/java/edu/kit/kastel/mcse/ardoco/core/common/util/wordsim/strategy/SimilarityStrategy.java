@@ -11,6 +11,8 @@ public interface SimilarityStrategy {
 
     SimilarityStrategy AVERAGE = new AverageStrategy();
 
+    SimilarityStrategy MAXIMUM = new MaximumStrategy();
+
     /**
      * Evaluates how similar the words from the given {@link ComparisonContext} are by combining the verdicts of the specified word similarity measures.
      *
