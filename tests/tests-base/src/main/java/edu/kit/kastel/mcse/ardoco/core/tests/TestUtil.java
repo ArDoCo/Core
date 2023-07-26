@@ -177,8 +177,10 @@ public class TestUtil {
         logger.info(infoString);
     }
 
-    public static void logExtendedResultsWithExpected(Logger logger, String name, EvaluationResults results, ExpectedResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getExtendedResultStringWithExpected(expectedResults));
+    public static void logExtendedResultsWithExpected(Logger logger, Object testClass, String name, EvaluationResults results,
+            ExpectedResults expectedResults) {
+        var infoString = String.format(Locale.ENGLISH, "%n%s (%s):%n%s", name, testClass.getClass().getSimpleName(), results
+                .getExtendedResultStringWithExpected(expectedResults));
         logger.info(infoString);
     }
 

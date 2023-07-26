@@ -56,7 +56,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         var evaluationResults = calculateEvaluationResults(result, goldStandard);
 
         ExpectedResults expectedResults = getExpectedResults(codeProject);
-        TestUtil.logExtendedResultsWithExpected(logger, codeProject.name(), evaluationResults, expectedResults);
+        TestUtil.logExtendedResultsWithExpected(logger, this, codeProject.name(), evaluationResults, expectedResults);
         compareResults(evaluationResults, expectedResults);
         return result;
     }
