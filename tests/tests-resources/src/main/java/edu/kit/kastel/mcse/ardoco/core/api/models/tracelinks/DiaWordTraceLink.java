@@ -1,10 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -15,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * Represents a tracelink between a {@link DiagramElement} and a {@link Word}.
@@ -97,6 +97,14 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
                 relatedGSLinks.add(gsLink);
             }
         }
+    }
+
+    public Set<DiaGSTraceLink> getRelatedGSLinks() {
+        return Collections.unmodifiableSet(relatedGSLinks);
+    }
+
+    public Set<DiaWordTraceLink> getRelatedWordLinks() {
+        return Collections.unmodifiableSet(relatedWordLinks);
     }
 
     @Override

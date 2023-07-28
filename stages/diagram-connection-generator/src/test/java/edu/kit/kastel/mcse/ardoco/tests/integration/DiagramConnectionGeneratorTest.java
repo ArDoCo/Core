@@ -3,10 +3,13 @@ package edu.kit.kastel.mcse.ardoco.tests.integration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -20,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
@@ -49,10 +53,27 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
         var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         var altResult = Results.create(project, text, mostSpecificTraceLinks, project.getExpectedDiagramTraceLinkResults());
-        logger.info("{} Diagram Links, {} Trace Links, {} Most Specific Trace Links", diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size());
-        logger.info(result.toString());
-        logger.info("Alt: " + altResult);
-        //assertTrue(altResult.asExpected());
+
+        var commonNoun = altResult.falsePositives().stream().filter(w -> {
+            var related = w.getRelatedGSLinks();
+            return !related.isEmpty() && related.stream().allMatch(g -> g.getTraceType().equals(TraceType.COMMON_NOUN));
+        }).toList();
+        var sharedStem = altResult.falsePositives().stream().filter(w -> {
+            var related = w.getRelatedGSLinks();
+            return !related.isEmpty() && related.stream().allMatch(g -> g.getTraceType().equals(TraceType.SHARED_STEM));
+        }).toList();
+        var otherEntity = altResult.falsePositives().stream().filter(w -> {
+            var related = w.getRelatedGSLinks();
+            return !related.isEmpty() && related.stream().allMatch(g -> g.getTraceType().equals(TraceType.OTHER_ENTITY));
+        }).toList();
+        var coreference = altResult.falseNegatives().stream().filter(w -> w.getTraceType().equals(TraceType.ENTITY_COREFERENCE)).toList();
+
+        logger.info(
+                "{} Diagram Links, {} Trace Links, {} Most Specific Trace Links, {} Common Noun FP, {} Shared Stem FP, {} Other Entity FP, {} Coreference FN",
+                diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size(), commonNoun.size(), sharedStem.size(), otherEntity.size(),
+                coreference.size());
+        logger.info(altResult.toString());
+
         return altResult;
     }
 
@@ -96,6 +117,40 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     @Order(2)
     void evaluateHistoricalDiagramRecognition(DiagramProject project) {
         assertTrue(runComparable(project).asExpected());
+    }
+
+    @Disabled
+    @Test
+    void evaluateAll() {
+        var projects = new ArrayList<>(DiagramProject.getNonHistoricalProjects());
+        projects.addAll(DiagramProject.getHistoricalProjects());
+        var results = new ArrayList<Results>();
+        for (var project : projects) {
+            results.add(runComparable(project));
+        }
+        var avg = new double[7];
+        var avgWeighted = new double[7];
+        var totalGoldStandardPositives = 0;
+        for (var result : results) {
+            totalGoldStandardPositives += result.GS_P();
+            System.out.println(result.project().name() + " & " + result.toTableRow() + "\\\\");
+        }
+        for (var result : results) {
+            var weight = result.GS_P() / (double) totalGoldStandardPositives;
+            var metrics = result.rawMetrics();
+            for (var i = 0; i < metrics.length; i++) {
+                avg[i] += metrics[i] / projects.size();
+                avgWeighted[i] += metrics[i] * weight;
+            }
+        }
+        System.out.println("Average & " + Arrays.stream(avg)
+                .map(d -> Math.round(d * 100.0) / 100.0)
+                .<String>mapToObj(Double::toString)
+                .collect(Collectors.joining(" & ")) + "\\\\");
+        System.out.println("w. Average & " + Arrays.stream(avgWeighted)
+                .map(d -> Math.round(d * 100.0) / 100.0)
+                .<String>mapToObj(Double::toString)
+                .collect(Collectors.joining(" & ")) + "\\\\");
     }
 
     @Test

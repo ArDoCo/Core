@@ -4,13 +4,14 @@
     "properties": {
         "diagrams": {
             "type": "array",
+            "minItems": 1,
             "items": {
-                "$ref": "#/definitions/diagram"
+                "$ref": "#/definitions/Diagram"
             }
         }
     },
     "definitions": {
-        "diagram": {
+        "Diagram": {
             "type": "object",
             "properties": {
                 "path": {
@@ -18,8 +19,9 @@
                 },
                 "boxes": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
-                        "$ref": "#/definitions/box"
+                        "$ref": "#/definitions/Box"
                     }
                 }
             },
@@ -28,40 +30,28 @@
                 "boxes"
             ]
         },
-        "box": {
+        "Box": {
             "type": "object",
             "properties": {
                 "boundingBox": {
-                    "$ref": "#/definitions/boundingBox"
+                    "$ref": "#/definitions/BoundingBox"
                 },
                 "textBoxes": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "text": {
-                                "type": "string"
-                            },
-                            "boundingBox": {
-                                "$ref": "#/definitions/boundingBox"
-                            }
-                        },
-                        "required": [
-                            "text",
-                            "boundingBox"
-                        ]
+                        "$ref": "#/definitions/TextBox"
                     }
                 },
                 "subBoxes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/box"
+                        "$ref": "#/definitions/Box"
                     }
                 },
                 "tracelinks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/text"
+                        "$ref": "#/definitions/TraceLinkSet"
                     }
                 }
             },
@@ -72,7 +62,22 @@
                 "tracelinks"
             ]
         },
-        "text": {
+        "TextBox": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "boundingBox": {
+                    "$ref": "#/definitions/BoundingBox"
+                }
+            },
+            "required": [
+                "text",
+                "boundingBox"
+            ]
+        },
+        "TraceLinkSet": {
             "type": "object",
             "properties": {
                 "name": {
@@ -87,7 +92,7 @@
                 "typedTracelinks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/typedTracelinks"
+                        "$ref": "#/definitions/TypedTraceLink"
                     }
                 }
             },
@@ -96,7 +101,7 @@
                 "sentences"
             ]
         },
-        "boundingBox": {
+        "BoundingBox": {
             "type": "object",
             "properties": {
                 "x": {
@@ -119,27 +124,30 @@
                 "h"
             ]
         },
-        "typedTracelinks": {
+        "TypedTraceLink": {
             "type": "object",
             "properties": {
                 "sentences": {
                     "type": "array"
                 },
                 "traceType": {
-                    "type": "string",
-                    "enum": [
-                        "ENTITY",
-                        "COMMON_NOUN",
-                        "SHARED_STEM",
-                        "ENTITY_COREFERENCE",
-                        "OTHER_ENTITY",
-                        "UNCERTAIN"
-                    ]
+                    "$ref": "#/definitions/TraceType"
                 }
             },
             "required": [
                 "sentences",
                 "traceType"
+            ]
+        },
+        "TraceType": {
+            "type": "string",
+            "enum": [
+                "ENTITY",
+                "ENTITY_COREFERENCE",
+                "OTHER_ENTITY",
+                "COMMON_NOUN",
+                "SHARED_STEM",
+                "UNCERTAIN"
             ]
         }
     },

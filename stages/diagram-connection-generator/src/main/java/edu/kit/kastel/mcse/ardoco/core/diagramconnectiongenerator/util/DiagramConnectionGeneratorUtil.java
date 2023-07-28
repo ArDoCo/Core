@@ -67,7 +67,7 @@ public class DiagramConnectionGeneratorUtil {
      *
      * @param text the text
      */
-    public static @NotNull Set<String> processText(@NotNull String text) {
+    private static @NotNull Set<String> processText(@NotNull String text) {
         var words = new LinkedHashSet<String>();
         var split = splitBracketsAndEnumerations(text);
         var deCameledSplit = split.stream().map(DiagramConnectionGeneratorUtil::getDeCameledText).toList();
@@ -84,7 +84,7 @@ public class DiagramConnectionGeneratorUtil {
      * @param text the text
      * @return a non-empty list of splits
      */
-    public static @NotNull List<String> splitBracketsAndEnumerations(@NotNull String text) {
+    private static @NotNull List<String> splitBracketsAndEnumerations(@NotNull String text) {
         return Arrays.stream(text.split("[,()]")).map(String::trim).toList();
     }
 
@@ -95,7 +95,7 @@ public class DiagramConnectionGeneratorUtil {
      * @param word the word that should be decameled
      * @return the decameled word
      */
-    public static @NotNull String getDeCameledText(@NotNull String word) {
+    private static @NotNull String getDeCameledText(@NotNull String word) {
         return String.join(" ", word.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")).replaceAll("\\s+", " ");
     }
 
@@ -141,15 +141,15 @@ public class DiagramConnectionGeneratorUtil {
      * {@return whether the initialism candidate is an initialism of the text}
      *
      * @param text                the text
-     * @param initialism          the percentage of characters in a word that need to be uppercase for a word to be considered an initialism candidate
-     * @param initialismThreshold the initialism threshold
+     * @param initialismCandidate the initialism candidate
+     * @param initialismThreshold the percentage of characters in a word that need to be uppercase for a word to be considered an initialism candidate
      */
-    public static boolean isInitialismOf(@NotNull String text, @NotNull String initialism, double initialismThreshold) {
-        if (!couldBeInitialism(initialism, initialismThreshold))
+    public static boolean isInitialismOf(@NotNull String text, @NotNull String initialismCandidate, double initialismThreshold) {
+        if (!couldBeInitialism(initialismCandidate, initialismThreshold))
             return false;
 
         var lc = text.toLowerCase();
-        var initialLc = initialism.toLowerCase();
+        var initialLc = initialismCandidate.toLowerCase();
 
         //Check if the entire Initialism is contained within the single word
         if (!lc.contains(" "))
@@ -175,19 +175,19 @@ public class DiagramConnectionGeneratorUtil {
     /**
      * {@return whether the text could be an initialism} Compares the share of uppercase letters to the initialism threshold.
      *
-     * @param text                the text
+     * @param initialismCandidate the initialism candidate
      * @param initialismThreshold the initialism threshold
      */
-    public static boolean couldBeInitialism(@NotNull String text, double initialismThreshold) {
-        if (text.isEmpty())
+    private static boolean couldBeInitialism(@NotNull String initialismCandidate, double initialismThreshold) {
+        if (initialismCandidate.isEmpty())
             return false;
         var upperCaseCharacters = 0;
-        var cArray = text.toCharArray();
+        var cArray = initialismCandidate.toCharArray();
         for (char c : cArray) {
             if (Character.isUpperCase(c))
                 upperCaseCharacters++;
         }
-        return upperCaseCharacters >= initialismThreshold * text.length();
+        return upperCaseCharacters >= initialismThreshold * initialismCandidate.length();
     }
 
     /**
@@ -197,7 +197,7 @@ public class DiagramConnectionGeneratorUtil {
      * @param text  the text
      * @param query the query
      */
-    public static boolean containsAllInOrder(@NotNull String text, @NotNull String query) {
+    private static boolean containsAllInOrder(@NotNull String text, @NotNull String query) {
         var previous = -1;
         var cArray = query.toCharArray();
         for (char c : cArray) {
