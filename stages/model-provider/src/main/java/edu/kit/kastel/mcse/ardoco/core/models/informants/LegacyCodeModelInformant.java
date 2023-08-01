@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.models.informants;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModule;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.InterfaceUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelExtractionStateImpl;
@@ -39,12 +41,13 @@ public class LegacyCodeModelInformant extends Informant {
         if (codeModel == null)
             return;
         List<ModelInstance> instances = new ArrayList<>();
-        fillRecursive(codeModel, instances);
+        fillPackages(codeModel.getAllPackages(), instances);
+        fillCompilationUnits(codeModel.getEndpoints(), instances);
         models.addModelExtractionState(codeModel.getId(), new ModelExtractionStateImpl(codeModel.getId(), Metamodel.CODE, Lists.immutable.withAll(instances)));
     }
 
-    private void fillRecursive(CodeModel codeModel, List<ModelInstance> instances) {
-        for (var modelElement : codeModel.getAllPackages()) {
+    private void fillPackages(Collection<? extends CodePackage> packages, List<ModelInstance> instances) {
+        for (var modelElement : packages) {
             String path = modelElement.getName();
             CodeModule parent = modelElement.getParent();
             while (parent != null) {
@@ -54,12 +57,11 @@ public class LegacyCodeModelInformant extends Informant {
             // Ensure that package is handled as directory
             path += "/";
             instances.add(new ModelInstanceImpl(modelElement.getName(), "Package", path));
-            fillRecursive(modelElement, instances);
         }
     }
 
-    private void fillRecursive(CodePackage packageElement, List<ModelInstance> instances) {
-        for (var unit : packageElement.getAllCompilationUnits()) {
+    private void fillCompilationUnits(Collection<? extends CodeCompilationUnit> units, List<ModelInstance> instances) {
+        for (var unit : units) {
             String type = findType(unit);
             instances.add(new ModelInstanceImpl(unit.getName(), type, unit.getPath()));
         }
@@ -81,6 +83,9 @@ public class LegacyCodeModelInformant extends Informant {
         if (unit.getPath().endsWith(".java")) {
             // Default to Class
             return "Class";
+        }
+        if (unit.getLanguage() == ProgrammingLanguage.SHELL) {
+            return "ShellScript";
         }
         throw new IllegalStateException("Unknown type of CodeCompilationUnit");
     }
