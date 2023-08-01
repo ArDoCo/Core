@@ -27,8 +27,8 @@ public enum CodeProject {
             "https://github.com/ArDoCo/MediaStore3.git", //
             "94c398fa02b3d6b8d71517522a7206d37ed3a9af", //
             "/benchmark/mediastore/model_2016/code/codeModel.acm",//
-            "/benchmark/mediastore/model_2016/goldstandard_sam-code.csv", //
-            "/benchmark/mediastore/text_2016/goldstandard_code.csv", //
+            "/benchmark/mediastore/goldstandards/goldstandard_sam_2016-code_2016.csv", //
+            "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-code_2016.csv", //
             new ExpectedResults(.975, .995, .985, .995, .985, .995), //
             new ExpectedResults(.995, .515, .675, .990, .715, .999) //
     ),
@@ -37,8 +37,8 @@ public enum CodeProject {
             "https://github.com/ArDoCo/TeaStore.git", //
             "bdc49020a55cfa97eaabbb25744fefbc2697defa", //
             "/benchmark/teastore/model_2022/code/codeModel.acm",//
-            "/benchmark/teastore/model_2022/goldstandard_sam_2020-code.csv", //
-            "/benchmark/teastore/text_2020/goldstandard_code_2022.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sam_2020-code_2022.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2020-code_2022.csv", //
             new ExpectedResults(.975, .975, .975, .997, .965, .999), //
             new ExpectedResults(.999, .708, .829, .976, .831, .999) //
     ),
@@ -47,8 +47,8 @@ public enum CodeProject {
             "https://github.com/ArDoCo/teammates.git",//
             "b24519a2af9e17b2bc9c025e87e4cf60009c425d",//
             "/benchmark/teammates/model_2023/code/codeModel.acm",//
-            "/benchmark/teammates/model_2023/goldstandard_sam_2021-code.csv",//
-            "/benchmark/teammates/text_2021/goldstandard_code_2023.csv", //
+            "/benchmark/teammates/goldstandards/goldstandard_sam_2021-code_2023.csv",//
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2021-code_2023.csv", //
             new ExpectedResults(.999, .999, .999, .999, .999, .999), //
             new ExpectedResults(.705, .909, .795, .975, .785, .975) //
     ),
@@ -57,8 +57,8 @@ public enum CodeProject {
             "https://github.com/ArDoCo/bigbluebutton.git",//
             "8fa2507d6c3865a9850004fd6fefd09738e68406",//
             "/benchmark/bigbluebutton/model_2023/code/codeModel.acm",//
-            "/benchmark/bigbluebutton/model_2023/goldstandard_sam_2021-code.csv", //
-            "/benchmark/bigbluebutton/text_2021/goldstandard_code_2023.csv", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sam_2021-code_2023.csv", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-code_2023.csv", //
             new ExpectedResults(.874, .953, .912, .989, .908, .985), //
             new ExpectedResults(.765, .905, .835, .985, .825, .985) //
     ),
@@ -67,8 +67,8 @@ public enum CodeProject {
             "https://github.com/ArDoCo/jabref.git",//
             "6269698cae437610ec79c38e6dd611eef7e88afe",//
             "/benchmark/jabref/model_2023/code/codeModel.acm",//
-            "/benchmark/jabref/model_2023/goldstandard_sam_2021-code.csv", //
-            "/benchmark/jabref/text_2021/goldstandard_code_2023.csv", //
+            "/benchmark/jabref/goldstandards/goldstandard_sam_2021-code_2023.csv", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2021-code_2023.csv", //
             new ExpectedResults(.999, .999, .999, .999, .999, .999), //
             new ExpectedResults(.885, .999, .935, .960, .915, .935) //
     );
