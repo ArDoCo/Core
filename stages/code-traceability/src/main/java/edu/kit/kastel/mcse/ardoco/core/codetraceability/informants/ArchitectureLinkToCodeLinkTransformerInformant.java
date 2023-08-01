@@ -37,13 +37,13 @@ public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
             return;
         }
 
-        CodeModel cm = findCodeModel(modelStatesData);
+        CodeModel codeModel = findCodeModel(modelStatesData);
 
-        for (var tl : connectionStates.getConnectionState(Metamodel.CODE).getTraceLinks()) {
-            var modelElement = tl.getModelElementUid();
-            var mentionedCodeModelElements = findMentionedCodeModelElementsById(modelElement, cm);
+        for (var traceLink : connectionStates.getConnectionState(Metamodel.CODE).getTraceLinks()) {
+            var modelElement = traceLink.getModelElementUid();
+            var mentionedCodeModelElements = findMentionedCodeModelElementsById(modelElement, codeModel);
             for (var mid : mentionedCodeModelElements) {
-                sadCodeTracelinks.add(new SadCodeTraceLink(new EndpointTuple(tl.getEndpointTuple().firstEndpoint(), mid)));
+                sadCodeTracelinks.add(new SadCodeTraceLink(new EndpointTuple(traceLink.getEndpointTuple().firstEndpoint(), mid)));
             }
         }
 
@@ -52,36 +52,36 @@ public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
         codeTraceabilityState.addSadCodeTraceLinks(sadCodeTracelinks);
     }
 
-    private List<CodeCompilationUnit> findMentionedCodeModelElementsById(String modelElementId, CodeModel cm) {
+    private List<CodeCompilationUnit> findMentionedCodeModelElementsById(String modelElementId, CodeModel codeModel) {
         boolean isPackage = modelElementId.endsWith("/");
         if (isPackage) {
-            return findAllClassesInPackage(modelElementId, cm);
+            return findAllClassesInPackage(modelElementId, codeModel);
         }
-        return findCompilationUnitById(modelElementId, cm);
+        return findCompilationUnitById(modelElementId, codeModel);
     }
 
-    private List<CodeCompilationUnit> findAllClassesInPackage(String modelElementId, CodeModel cm) {
-        List<CodeCompilationUnit> units = new ArrayList<>();
-        for (var pack : cm.getAllPackages()) {
-            for (var comp : pack.getAllCompilationUnits()) {
-                var path = comp.getPath();
+    private List<CodeCompilationUnit> findAllClassesInPackage(String modelElementId, CodeModel codeModel) {
+        List<CodeCompilationUnit> codeCompilationUnits = new ArrayList<>();
+        for (var codePackage : codeModel.getAllPackages()) {
+            for (var codeCompilationUnit : codePackage.getAllCompilationUnits()) {
+                var path = codeCompilationUnit.getPath();
                 if (path.contains(modelElementId)) {
-                    units.add(comp);
+                    codeCompilationUnits.add(codeCompilationUnit);
                 }
 
             }
         }
-        if (units.isEmpty()) {
+        if (codeCompilationUnits.isEmpty()) {
             throw new IllegalStateException("Could not find any code for " + modelElementId);
         }
-        return units;
+        return codeCompilationUnits;
     }
 
-    private List<CodeCompilationUnit> findCompilationUnitById(String modelElementId, CodeModel cm) {
-        for (var pack : cm.getAllPackages()) {
-            for (var comp : pack.getAllCompilationUnits()) {
-                if (comp.getPath().equals(modelElementId)) {
-                    return List.of(comp);
+    private List<CodeCompilationUnit> findCompilationUnitById(String modelElementId, CodeModel codeModel) {
+        for (var codePackage : codeModel.getAllPackages()) {
+            for (var codeCompilationUnit : codePackage.getAllCompilationUnits()) {
+                if (codeCompilationUnit.getPath().equals(modelElementId)) {
+                    return List.of(codeCompilationUnit);
                 }
             }
         }
