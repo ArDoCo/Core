@@ -34,7 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 
 public abstract class TraceabilityLinkRecoveryEvaluation {
-    private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
+    protected static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
     private static final String WARNING_NO_CODE_MODEL = "Could not get code model to enroll gold standard. Using not enrolled gold standard!";
     // The path separator is to show that a code entry is not a class but rather a directory that ends with, currently, a "/" (unix style)
     // If the path separator in the gold standards are changed, this needs to update
