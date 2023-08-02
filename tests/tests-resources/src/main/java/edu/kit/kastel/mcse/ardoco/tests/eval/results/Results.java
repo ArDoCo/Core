@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -150,5 +151,21 @@ public record Results(DiagramProject project, BigDecimal precision, BigDecimal r
         if (toBD(expectedResults().specificity()).compareTo(specificity()) > 0)
             return false;
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof Results other) {
+            return Objects.equals(this.TN(), other.TN()) && Objects.equals(this.truePositives(), other.truePositives()) && Objects.equals(this.falsePositives(),
+                    other.falsePositives()) && Objects.equals(this.falseNegatives(), other.falseNegatives());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.TN, this.truePositives(), this.falsePositives(), this.falseNegatives());
     }
 }
