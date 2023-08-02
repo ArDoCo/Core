@@ -38,7 +38,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
     public DiagramConnectionGeneratorTest() {
-        super(new DiagramConnectionGenerator(null));
+        super(new DiagramConnectionGenerator(Map.of(), null));
     }
 
     @Override

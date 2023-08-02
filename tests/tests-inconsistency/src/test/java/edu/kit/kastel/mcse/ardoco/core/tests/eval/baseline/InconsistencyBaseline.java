@@ -14,8 +14,7 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
     private PipelineAgent agent;
 
     public InconsistencyBaseline(DataRepository dataRepository) {
-        super("InconsistencyBaseline", dataRepository);
-        agent = new InconsistencyBaselineAgent(dataRepository);
+        super("InconsistencyBaseline", dataRepository, List.of(new InconsistencyBaselineAgent(dataRepository)));
     }
 
     @Override
@@ -25,11 +24,6 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
 
     @Override
     protected List<PipelineAgent> getEnabledAgents() {
-        return List.of(agent);
-    }
-
-    @Override
-    public List<PipelineAgent> getAgents() {
         return List.of(agent);
     }
 }

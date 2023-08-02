@@ -13,9 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLPProvider;
 
 public class TextPreprocessingAgent extends PipelineAgent {
-
-    private final List<Informant> informants;
-
     @Configurable
     private List<String> enabledInformants;
 
@@ -25,9 +22,8 @@ public class TextPreprocessingAgent extends PipelineAgent {
      * @param data the {@link DataRepository}
      */
     public TextPreprocessingAgent(DataRepository data) {
-        super(TextPreprocessingAgent.class.getSimpleName(), data);
-        informants = List.of(new CoreNLPProvider(data));
-        enabledInformants = informants.stream().map(AbstractPipelineStep::getId).toList();
+        super(TextPreprocessingAgent.class.getSimpleName(), data, List.of(new CoreNLPProvider(data)));
+        enabledInformants = getInformants().stream().map(AbstractPipelineStep::getId).toList();
     }
 
     /**
@@ -44,17 +40,7 @@ public class TextPreprocessingAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
-    }
-
-    @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledInformants, informants);
-    }
-
-    @Override
-    public List<Informant> getPipelineSteps() {
-        return List.copyOf(informants);
+        return findByClassName(enabledInformants, getInformants());
     }
 }

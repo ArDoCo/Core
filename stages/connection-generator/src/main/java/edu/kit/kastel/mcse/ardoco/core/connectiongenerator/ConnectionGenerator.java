@@ -4,9 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
@@ -23,9 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * important: All connections should run after the recommendations have been made.
  */
 public class ConnectionGenerator extends AbstractExecutionStage {
-
-    private final MutableList<PipelineAgent> agents;
-
     @Configurable
     private List<String> enabledAgents;
 
@@ -35,11 +29,10 @@ public class ConnectionGenerator extends AbstractExecutionStage {
      * @param dataRepository the {@link DataRepository}
      */
     public ConnectionGenerator(DataRepository dataRepository) {
-        super("ConnectionGenerator", dataRepository);
-
-        agents = Lists.mutable.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new ProjectNameFilterAgent(dataRepository),
-                new InstanceConnectionAgent(dataRepository));
-        enabledAgents = agents.collect(Agent::getId);
+        super("ConnectionGenerator", dataRepository,
+                List.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new ProjectNameFilterAgent(dataRepository),
+                        new InstanceConnectionAgent(dataRepository)));
+        enabledAgents = getAgents().stream().map(Agent::getId).toList();
     }
 
     /**
@@ -63,20 +56,6 @@ public class ConnectionGenerator extends AbstractExecutionStage {
 
     @Override
     protected List<PipelineAgent> getEnabledAgents() {
-        return findByClassName(enabledAgents, agents);
+        return findByClassName(enabledAgents, getAgents());
     }
-
-    @Override
-    public List<PipelineAgent> getAgents() {
-        return List.copyOf(agents);
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        for (var agent : agents) {
-            agent.applyConfiguration(additionalConfiguration);
-        }
-    }
-
 }

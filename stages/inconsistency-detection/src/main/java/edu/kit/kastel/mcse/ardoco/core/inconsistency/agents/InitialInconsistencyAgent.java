@@ -2,10 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
 import java.util.List;
-import java.util.Map;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -18,17 +14,13 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 public class InitialInconsistencyAgent extends PipelineAgent {
-    private final MutableList<Informant> filters;
-
     @Configurable
     private List<String> enabledFilters;
 
     public InitialInconsistencyAgent(DataRepository dataRepository) {
-        super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
-
-        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository),
-                new UnwantedWordsFilter(dataRepository));
-        enabledFilters = filters.collect(Informant::getId);
+        super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository,
+                List.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(dataRepository)));
+        enabledFilters = getInformants().stream().map(Informant::getId).toList();
     }
 
     @Override
@@ -49,16 +41,6 @@ public class InitialInconsistencyAgent extends PipelineAgent {
 
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledFilters, filters);
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        filters.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
-    }
-
-    @Override
-    public List<Informant> getPipelineSteps() {
-        return List.copyOf(filters);
+        return findByClassName(enabledFilters, getInformants());
     }
 }

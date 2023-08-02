@@ -9,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
 
-class DiagramRecognition : AbstractExecutionStage {
+class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStage(ID, dataRepository, listOf(DiagramRecognitionAgent(dataRepository))) {
 
     companion object {
         const val ID = "DiagramRecognition"
@@ -29,15 +29,8 @@ class DiagramRecognition : AbstractExecutionStage {
         }
     }
 
-    private val agents: List<PipelineAgent>
-
     @Configurable
-    private var enabledAgents: MutableList<String>
-
-    constructor(dataRepository: DataRepository) : super(ID, dataRepository) {
-        this.agents = listOf(DiagramRecognitionAgent(dataRepository))
-        enabledAgents = this.agents.map { it.id }.toMutableList()
-    }
+    private var enabledAgents: MutableList<String> = agents.map { it.id }.toMutableList()
 
     override fun initializeState() {
         val inputDiagrams = dataRepository.getData(InputDiagramData.ID, InputDiagramData::class.java)
@@ -56,14 +49,5 @@ class DiagramRecognition : AbstractExecutionStage {
 
     override fun getEnabledAgents(): MutableList<PipelineAgent> {
         return findByClassName(enabledAgents, agents)
-    }
-
-    override fun getAgents(): List<PipelineAgent> = agents
-
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>) {
-        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration)
-        for (agent in agents) {
-            agent.applyConfiguration(additionalConfiguration)
-        }
     }
 }

@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.pipeline.agent;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
@@ -14,8 +15,11 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
  * execute code at the beginning of the initialization before the main processing.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
-    protected PipelineAgent(String id, DataRepository dataRepository) {
+    private final List<? extends Informant> informants;
+
+    protected PipelineAgent(String id, DataRepository dataRepository, List<? extends Informant> informants) {
         super(id, dataRepository);
+        this.informants = informants;
     }
 
     @Override
@@ -51,5 +55,12 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     /**
      * {@return the pipeline steps (informants) including disabled}
      */
-    public abstract List<Informant> getPipelineSteps();
+    public List<Informant> getInformants() {
+        return List.copyOf(informants);
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        getInformants().forEach(e -> e.applyConfiguration(additionalConfiguration));
+    }
 }

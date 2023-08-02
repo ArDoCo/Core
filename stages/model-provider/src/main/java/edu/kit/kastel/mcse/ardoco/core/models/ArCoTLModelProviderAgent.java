@@ -23,9 +23,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * Agent that provides information from models.
  */
 public class ArCoTLModelProviderAgent extends PipelineAgent {
-
-    private final List<Informant> informants;
-
     /**
      * Instantiates a new model provider agent. The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
      *
@@ -33,11 +30,8 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
      * @param extractors the list of ModelConnectors that should be used
      */
     public ArCoTLModelProviderAgent(DataRepository data, List<Extractor> extractors) {
-        super(ArCoTLModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-        for (var extractor : extractors) {
-            informants.add(new ArCoTLModelProviderInformant(data, extractor));
-        }
+        super(ArCoTLModelProviderAgent.class.getSimpleName(), data,
+                extractors.stream().map(extractor -> new ArCoTLModelProviderInformant(data, extractor)).toList());
     }
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
@@ -55,16 +49,11 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        // empty
+        // empty //FIXME is this intentional? why not delegate to informants?
     }
 
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return new ArrayList<>(informants);
-    }
-
-    @Override
-    public List<Informant> getPipelineSteps() {
-        return List.copyOf(informants);
+        return new ArrayList<>(getInformants());
     }
 }

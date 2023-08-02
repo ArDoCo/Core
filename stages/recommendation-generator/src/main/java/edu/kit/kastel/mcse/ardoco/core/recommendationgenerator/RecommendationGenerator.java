@@ -4,9 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -20,9 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.agents.PhraseReco
  * The Class RecommendationGenerator defines the recommendation stage.
  */
 public class RecommendationGenerator extends AbstractExecutionStage {
-
-    private final MutableList<PipelineAgent> agents;
-
     @Configurable
     private List<String> enabledAgents;
 
@@ -30,15 +24,12 @@ public class RecommendationGenerator extends AbstractExecutionStage {
      * Creates a new model connection agent with the given extraction state and ntr state.
      */
     public RecommendationGenerator(DataRepository dataRepository) {
-        super("RecommendationGenerator", dataRepository);
-
-        this.agents = Lists.mutable.of(//
+        super("RecommendationGenerator", dataRepository, List.of(//
                 //new TermBuilder(dataRepository),//
                 new InitialRecommendationAgent(dataRepository),//
-                new PhraseRecommendationAgent(dataRepository)
+                new PhraseRecommendationAgent(dataRepository)));
 
-        );
-        this.enabledAgents = agents.collect(Agent::getId);
+        this.enabledAgents = getAgents().stream().map(Agent::getId).toList();
     }
 
     /**
@@ -62,19 +53,6 @@ public class RecommendationGenerator extends AbstractExecutionStage {
 
     @Override
     protected List<PipelineAgent> getEnabledAgents() {
-        return findByClassName(enabledAgents, agents);
-    }
-
-    @Override
-    public List<PipelineAgent> getAgents() {
-        return List.copyOf(agents);
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        for (var agent : agents) {
-            agent.applyConfiguration(additionalConfiguration);
-        }
+        return findByClassName(enabledAgents, getAgents());
     }
 }

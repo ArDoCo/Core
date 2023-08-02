@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import java.util.List;
-import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -18,9 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.SeparatedNamesI
  * The Class InitialTextAgent defines the agent that executes the extractors for the text stage.
  */
 public class InitialTextAgent extends PipelineAgent {
-
-    private final List<Informant> informants;
-
     @Configurable
     private List<String> enabledInformants;
 
@@ -30,23 +26,14 @@ public class InitialTextAgent extends PipelineAgent {
      * @param data the {@link DataRepository}
      */
     public InitialTextAgent(DataRepository data) {
-        super(InitialTextAgent.class.getSimpleName(), data);
-        informants = List.of(new NounInformant(data), new InDepArcsInformant(data), new OutDepArcsInformant(data), new SeparatedNamesInformant(data));
-        enabledInformants = informants.stream().map(AbstractPipelineStep::getId).toList();
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
+        super(InitialTextAgent.class.getSimpleName(), data,
+                List.of(new NounInformant(data), new InDepArcsInformant(data), new OutDepArcsInformant(data), new SeparatedNamesInformant(data)));
+        enabledInformants = getInformants().stream().map(AbstractPipelineStep::getId).toList();
     }
 
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledInformants, informants);
+        return findByClassName(enabledInformants, getInformants());
     }
 
-    @Override
-    public List<Informant> getPipelineSteps() {
-        return List.copyOf(informants);
-    }
 }

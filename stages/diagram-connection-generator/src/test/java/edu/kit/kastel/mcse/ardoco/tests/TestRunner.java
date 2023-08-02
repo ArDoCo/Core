@@ -41,7 +41,7 @@ public class TestRunner extends ArDoCoRunnerExt<TestRunner.Parameters> {
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
-        arDoCo.addPipelineStep(DiagramConnectionGenerator.get(getAdditionalConfiguration(p), dataRepository));
+        arDoCo.addPipelineStep(new DiagramConnectionGenerator(getAdditionalConfiguration(p), dataRepository));
     }
 
     /**

@@ -8,21 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 
-public class DiagramRecognitionMock extends AbstractExecutionStage {
+public class DiagramRecognitionMock extends ExecutionStage {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public DiagramRecognitionMock(DataRepository dataRepository) {
-        super("DiagramRecognitionMock", dataRepository);
-    }
-
-    public static DiagramRecognitionMock get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
-        var diagramRecognitionMock = new DiagramRecognitionMock(dataRepository);
-        diagramRecognitionMock.applyConfiguration(additionalConfigs);
-        return diagramRecognitionMock;
+    public DiagramRecognitionMock(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        super("DiagramRecognitionMock", dataRepository, List.of(), additionalConfigs);
     }
 
     @Override
@@ -43,11 +37,6 @@ public class DiagramRecognitionMock extends AbstractExecutionStage {
 
     @Override
     protected List<PipelineAgent> getEnabledAgents() {
-        return List.of();
-    }
-
-    @Override
-    public List<PipelineAgent> getAgents() {
         return List.of();
     }
 }

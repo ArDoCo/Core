@@ -50,7 +50,7 @@ public class PreTestRunner extends ArDoCoRunnerExt<PreTestRunner.Parameters> {
         if (p.useMockDiagrams) {
             var data = new InputDiagramDataMock(p.diagramProject);
             dataRepository.addData(InputDiagramDataMock.ID, data);
-            arDoCo.addPipelineStep(DiagramRecognitionMock.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+            arDoCo.addPipelineStep(new DiagramRecognitionMock(p.diagramProject.getAdditionalConfigurations(), dataRepository));
         } else {
             arDoCo.addPipelineStep(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
         }

@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
@@ -14,15 +15,18 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * to implement {@link #getEnabledAgents()} that returns the listof enabled {@link PipelineAgent pipeline agents}
  */
 public abstract class AbstractExecutionStage extends Pipeline {
+    private final List<? extends PipelineAgent> agents;
 
     /**
      * Constructor for ExecutionStages
      *
      * @param id             the id of the stage
      * @param dataRepository the {@link DataRepository} that should be used
+     * @param agents         the pipeline agents this stage supports
      */
-    protected AbstractExecutionStage(String id, DataRepository dataRepository) {
+    protected AbstractExecutionStage(String id, DataRepository dataRepository, List<? extends PipelineAgent> agents) {
         super(id, dataRepository);
+        this.agents = agents;
     }
 
     @Override
@@ -57,5 +61,15 @@ public abstract class AbstractExecutionStage extends Pipeline {
     /**
      * {@return the {@link PipelineAgent agents}}
      */
-    public abstract List<PipelineAgent> getAgents();
+    public List<PipelineAgent> getAgents() {
+        return List.copyOf(agents);
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
+        for (var agent : agents) {
+            agent.applyConfiguration(additionalConfiguration);
+        }
+    }
 }

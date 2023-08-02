@@ -44,7 +44,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
         this.agents = agentInstances.stream().map(PipelineAgent::getClass).collect(Collectors.toSet());
         this.informantsMap = agentInstances.stream()
                 .collect(Collectors.toMap(PipelineAgent::getClass,
-                        agent -> agent.getPipelineSteps().stream().map(Informant::getClass).collect(Collectors.toSet())));
+                        agent -> agent.getInformants().stream().map(Informant::getClass).collect(Collectors.toSet())));
     }
 
     private DataRepository setup(DiagramProject project) {

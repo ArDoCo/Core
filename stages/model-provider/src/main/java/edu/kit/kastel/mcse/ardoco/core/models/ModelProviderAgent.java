@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
@@ -21,28 +20,19 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * Agent that provides information from models.
  */
 public class ModelProviderAgent extends PipelineAgent {
-
-    private final List<Informant> informants;
-
     /**
-     * Instantiates a new model provider agent.
-     * The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
+     * Instantiates a new model provider agent. The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
      *
      * @param data            the DataRepository
      * @param modelConnectors the list of ModelConnectors that should be used
      */
     public ModelProviderAgent(DataRepository data, List<ModelConnector> modelConnectors) {
-        super(ModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-        for (var modelConnector : modelConnectors) {
-            informants.add(new ModelProviderInformant(data, modelConnector));
-        }
+        super(ModelProviderAgent.class.getSimpleName(), data,
+                modelConnectors.stream().map(modelConnector -> new ModelProviderInformant(data, modelConnector)).toList());
     }
 
     private ModelProviderAgent(DataRepository data, LegacyCodeModelInformant codeModelInformant) {
-        super(ModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-        informants.add(codeModelInformant);
+        super(ModelProviderAgent.class.getSimpleName(), data, List.of(codeModelInformant));
     }
 
     /**
@@ -57,8 +47,8 @@ public class ModelProviderAgent extends PipelineAgent {
     public static ModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, DataRepository dataRepository)
             throws IOException {
         ModelConnector connector = switch (architectureModelType) {
-        case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
-        case UML -> new UmlModelConnector(inputArchitectureModel);
+            case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
+            case UML -> new UmlModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
     }
@@ -68,17 +58,7 @@ public class ModelProviderAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
-    }
-
-    @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return new ArrayList<>(informants);
-    }
-
-    @Override
-    public List<Informant> getPipelineSteps() {
-        return List.copyOf(informants);
+        return new ArrayList<>(getInformants());
     }
 }

@@ -12,26 +12,18 @@ import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.Recognitio
 /**
  * This agent uses the [DiagramRecognitionState] to extract the diagrams and sketches from images.
  */
-class DiagramRecognitionAgent(dataRepository: DataRepository) : PipelineAgent(ID, dataRepository) {
+class DiagramRecognitionAgent(dataRepository: DataRepository) : PipelineAgent(
+    ID,
+    dataRepository,
+    listOf(ObjectDetectionInformant(dataRepository), OcrInformant(dataRepository), RecognitionCombinatorInformant(dataRepository))
+) {
     companion object {
         const val ID = "DiagramRecognitionAgent"
     }
-
-    private val informants = listOf(
-        ObjectDetectionInformant(dataRepository),
-        OcrInformant(dataRepository),
-        RecognitionCombinatorInformant(dataRepository)
-    )
 
     @Configurable
     private var enabledInformants: MutableList<String> =
         informants.map { e: Informant -> e.javaClass.simpleName }.toMutableList()
 
     override fun getEnabledPipelineSteps(): MutableList<Informant> = findByClassName(enabledInformants, informants)
-
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>?) {
-        informants.forEach { it.applyConfiguration(additionalConfiguration) }
-    }
-
-    override fun getPipelineSteps(): List<Informant> = informants
 }

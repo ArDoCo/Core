@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import java.util.List;
-import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -12,30 +11,16 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.MappingCombinerInformant;
 
 public class MappingCombiner extends PipelineAgent {
-
-    private final List<Informant> informants;
-
     @Configurable
     private List<String> enabledInformants;
 
     public MappingCombiner(DataRepository dataRepository) {
-        super(MappingCombiner.class.getSimpleName(), dataRepository);
-        informants = List.of(new MappingCombinerInformant(dataRepository));
-        enabledInformants = informants.stream().map(AbstractPipelineStep::getId).toList();
+        super(MappingCombiner.class.getSimpleName(), dataRepository, List.of(new MappingCombinerInformant(dataRepository)));
+        enabledInformants = getInformants().stream().map(AbstractPipelineStep::getId).toList();
     }
 
     @Override
     protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledInformants, informants);
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
-    }
-
-    @Override
-    public List<Informant> getPipelineSteps() {
-        return List.copyOf(informants);
+        return findByClassName(enabledInformants, getInformants());
     }
 }
