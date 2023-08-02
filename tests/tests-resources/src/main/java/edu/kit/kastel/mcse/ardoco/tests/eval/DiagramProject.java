@@ -39,6 +39,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandard;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 /**
@@ -46,80 +47,38 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
  */
 public enum DiagramProject implements Serializable {
     MEDIASTORE(//
-            "benchmark/mediastore/model_2016/pcm/ms.repository", //
-            "benchmark/mediastore/text_2016/mediastore.txt", //
-            "benchmark/mediastore/text_2016/goldstandard.csv", //
-            "configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/mediastore/text_2016/goldstandard_UME.csv", //
-            "benchmark/mediastore/diagrams_2016/goldstandard.json", //
-            new ExpectedResults(.999, .620, .765, .978, .778, .999), //
-            new ExpectedResults(.212, .792, .328, .702, .227, .690), //
+            Project.MEDIASTORE, //
+            "/benchmark/mediastore/diagrams_2016/goldstandard.json", //
             new ExpectedResults(.887, .94, .913, .978, .9, .983) //
     ), //
     TEASTORE( //
-            "benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "benchmark/teastore/text_2020/teastore.txt", //
-            "benchmark/teastore/text_2020/goldstandard.csv", //
-            "configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/teastore/text_2020/goldstandard_UME.csv", //
-            "benchmark/teastore/diagrams_2018/goldstandard.json", //
-            new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.962, .703, .784, .957, .808, .994), //
+            Project.TEASTORE, //
+            "/benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(1, .821, .901, .973, .892, 1) //
     ), //
     TEAMMATES( //
-            "benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "benchmark/teammates/text_2021/teammates.txt", //
-            "benchmark/teammates/text_2021/goldstandard.csv", //
-            "configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/teammates/text_2021/goldstandard_UME.csv", //
-            "benchmark/teammates/diagrams_2023/goldstandard.json", //
-            new ExpectedResults(.555, .882, .681, .965, .688, .975), //
-            new ExpectedResults(.175, .745, .279, .851, .287, .851), //
+            Project.TEAMMATES, //
+            "/benchmark/teammates/diagrams_2023/goldstandard.json", //
             new ExpectedResults(.468, .834, .599, .958, .606, .963) //
     ), //
     BIGBLUEBUTTON( //
-            "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
-            "benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
-            "benchmark/bigbluebutton/text_2021/goldstandard.csv", //
-            "configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
-            "benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
-            new ExpectedResults(.875, .826, .850, .985, .835, .985), //
-            new ExpectedResults(.887, .461, .429, .956, .534, .984), //
+            Project.BIGBLUEBUTTON, //
+            "/benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
             new ExpectedResults(.874, .835, .854, .976, .841, .989) //
     ), //
     TEASTORE_HISTORICAL( //
-            "benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "benchmark/teastore/text_2018/teastore_2018_AB.txt", //
-            "benchmark/teastore/text_2018/goldstandard_AB.csv", //
-            "configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
-            "benchmark/teastore/diagrams_2018/goldstandard.json", //
-            new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.163, .982, .278, .376, .146, .289), //
+            Project.TEASTORE_HISTORICAL, //
+            "/benchmark/teastore/diagrams_2018/goldstandard.json", //
             new ExpectedResults(1, .961, .980, .993, 0.976, 1) //
     ), //
     TEAMMATES_HISTORICAL( //
-            "benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "benchmark/teammates/text_2015/teammates_2015.txt", //
-            "benchmark/teammates/text_2015/goldstandard.csv", //
-            "configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/teammates/text_2015/goldstandard_UME.csv", //
-            "benchmark/teammates/diagrams_2015/goldstandard.json", //
-            new ExpectedResults(.524, .695, .597, .970, .589, .979), //
-            new ExpectedResults(.168, .629, .263, .863, .260, .870), //
+            Project.TEAMMATES_HISTORICAL, //
+            "/benchmark/teammates/diagrams_2015/goldstandard.json", //
             new ExpectedResults(.426, .744, .542, .959, .544, .967) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
-            "benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
-            "benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
-            "benchmark/bigbluebutton/text_2015/goldstandard.csv", //
-            "configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
-            "benchmark/bigbluebutton/diagrams_2015/goldstandard.json", //
-            new ExpectedResults(.807, .617, .699, .978, .695, .993), //
-            new ExpectedResults(.085, .175, .111, .813, .018, .869), //
+            Project.BIGBLUEBUTTON_HISTORICAL, //
+            "/benchmark/bigbluebutton/diagrams_2015/goldstandard.json", //
             new ExpectedResults(.752, .927, .831, .969, .819, .973) //
     );
 
@@ -148,17 +107,16 @@ public enum DiagramProject implements Serializable {
     private List<Sentence> sentences;
     private boolean sourceModified = false;
 
-    DiagramProject(String model, String text, String goldStandardTraceabilityLinkRecovery, String configurations, String goldStandardMissingTextForModelElement,
-            String goldStandardDiagrams, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults,
-            ExpectedResults expectedDiagramTraceLinkResults) {
-
+    DiagramProject(Project project, String goldStandardDiagrams, ExpectedResults expectedDiagramTraceLinkResults) {
         //We need to keep the paths as well, because the actual files are just temporary at this point due to jar packaging
-        this.model = model;
-        this.text = text;
-        this.configurations = configurations;
-        this.goldStandardTraceabilityLinkRecovery = goldStandardTraceabilityLinkRecovery;
-        this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
+        //TODO I'd rather access the paths directly then create an unnecessary temporary file and handle, not sure how to go about this yet
+        this.model = project.getModelResourceName();
+        this.text = project.getTextResourceName();
+        this.configurations = project.getAdditionalConfigurationsResourceName();
+        this.goldStandardTraceabilityLinkRecovery = project.getTlrGoldStandardResourceName();
+        this.goldStandardMissingTextForModelElement = project.getMissingTextForModelElementGoldStandardResourceName();
         this.goldStandardDiagrams = goldStandardDiagrams;
+
         //Make sure to calculate the checksums for all resources
         checksum(this.model);
         checksum(this.text);
@@ -171,8 +129,8 @@ public enum DiagramProject implements Serializable {
             bumpVersion();
         //
 
-        this.expectedTraceLinkResults = expectedTraceLinkResults;
-        this.expectedInconsistencyResults = expectedInconsistencyResults;
+        this.expectedTraceLinkResults = getExpectedTraceLinkResults();
+        this.expectedInconsistencyResults = getExpectedInconsistencyResults();
         this.expectedDiagramTraceLinkResults = expectedDiagramTraceLinkResults;
 
         this.architectureModelType = setupArchitectureModelType();
@@ -220,7 +178,7 @@ public enum DiagramProject implements Serializable {
     private static @NotNull File getTemporaryFileFromString(@NotNull String path) {
         //Create .tmp file with ArDoCo prefix
         try {
-            var is = DiagramProject.class.getClassLoader().getResourceAsStream(path);
+            var is = DiagramProject.class.getResourceAsStream(path);
             var temp = File.createTempFile("ArDoCo", null);
             temp.deleteOnExit();
             Files.copy(is, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -457,7 +415,7 @@ public enum DiagramProject implements Serializable {
     }
 
     private void checksum(String path) {
-        try (var resource = DiagramProject.class.getClassLoader().getResourceAsStream(path)) {
+        try (var resource = DiagramProject.class.getResourceAsStream(path)) {
             if (resource == null)
                 throw new IllegalArgumentException("No such resource at path " + path);
             String md5 = DigestUtils.md5Hex(resource);

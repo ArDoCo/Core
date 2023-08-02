@@ -33,7 +33,6 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class StageTest<T extends AbstractExecutionStage, V extends Record> {
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
-    private static final Map<DiagramProject, DataRepository> preRun = new HashMap<>();
     private final Class<? extends AbstractExecutionStage> stage;
     private final Set<Class<? extends PipelineAgent>> agents;
     private final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
@@ -77,7 +76,6 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     protected abstract DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository);
 
     private static final int repetitions = 2;
-    private static final DataRepository[] results = new DataRepository[repetitions];
 
     @DisplayName("Repetition Test Stage")
     @Test

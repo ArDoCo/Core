@@ -152,6 +152,13 @@ public enum Project {
     }
 
     /**
+     * {@return the resource name that represents the model for this project}
+     */
+    public String getModelResourceName() {
+        return model;
+    }
+
+    /**
      * Returns the File that represents the model for this project with the given model type.
      *
      * @param modelType the model type
@@ -159,8 +166,18 @@ public enum Project {
      */
     public File getModelFile(ArchitectureModelType modelType) {
         return switch (modelType) {
-        case PCM -> getModelFile();
-        case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+            case PCM -> getModelFile();
+            case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+        };
+    }
+
+    /**
+     * @param modelType the model type {@return the resource name that represents the model for this project with the given model type}
+     */
+    public String getModelResourceName(ArchitectureModelType modelType) {
+        return switch (modelType) {
+            case PCM -> model;
+            case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
         };
     }
 
@@ -171,6 +188,13 @@ public enum Project {
      */
     public File getTextFile() {
         return ProjectHelper.loadFileFromResources(textFile);
+    }
+
+    /**
+     * {@return the resource name that represents the text for this project}
+     */
+    public String getTextResourceName() {
+        return textFile;
     }
 
     /**
@@ -192,12 +216,26 @@ public enum Project {
     }
 
     /**
+     * {@return the resource name that represents the additional configurations for this project}
+     */
+    public String getAdditionalConfigurationsResourceName() {
+        return configurationsFile;
+    }
+
+    /**
      * Returns the {@link GoldStandard} for this project.
      *
      * @return the File that represents the gold standard for this project
      */
     public File getTlrGoldStandardFile() {
         return ProjectHelper.loadFileFromResources(goldStandardTraceabilityLinkRecovery);
+    }
+
+    /**
+     * {@return the resource name that represents the TLR {@link GoldStandard} for this project}
+     */
+    public String getTlrGoldStandardResourceName() {
+        return goldStandardTraceabilityLinkRecovery;
     }
 
     /**
@@ -239,8 +277,18 @@ public enum Project {
         return Lists.mutable.ofAll(goldLinks);
     }
 
-    private File getMissingTextForModelElementGoldStandardFile() {
+    /**
+     * {@return the {@link GoldStandard} for this project}
+     */
+    public File getMissingTextForModelElementGoldStandardFile() {
         return ProjectHelper.loadFileFromResources(goldStandardMissingTextForModelElement);
+    }
+
+    /**
+     * {@return the resource name that represents the MME {@link GoldStandard} for this project}
+     */
+    public String getMissingTextForModelElementGoldStandardResourceName() {
+        return goldStandardMissingTextForModelElement;
     }
 
     /**

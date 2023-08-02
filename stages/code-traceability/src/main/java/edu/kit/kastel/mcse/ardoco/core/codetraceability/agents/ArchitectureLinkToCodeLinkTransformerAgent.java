@@ -40,6 +40,11 @@ public class ArchitectureLinkToCodeLinkTransformerAgent extends PipelineAgent {
     }
 
     @Override
+    public List<Informant> getPipelineSteps() {
+        return List.copyOf(informants);
+    }
+
+    @Override
     protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
         informants.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
     }

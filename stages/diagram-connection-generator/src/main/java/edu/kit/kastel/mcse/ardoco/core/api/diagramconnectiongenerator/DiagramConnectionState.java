@@ -70,7 +70,6 @@ public interface DiagramConnectionState extends IConfigurable {
     }
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getTraceLinks() {
-        var wordLinks = getWordTraceLinks();
         return getByEqualEndpoints(getWordTraceLinks());
     }
 

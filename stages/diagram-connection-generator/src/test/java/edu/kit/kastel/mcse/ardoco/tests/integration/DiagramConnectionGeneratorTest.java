@@ -51,7 +51,6 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var diagramLinks = diagramConnectionState.getDiagramLinks().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
         var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
-        var result = Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults());
         var altResult = Results.create(project, text, mostSpecificTraceLinks, project.getExpectedDiagramTraceLinkResults());
 
         var commonNoun = altResult.falsePositives().stream().filter(w -> {
