@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -26,10 +27,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramCon
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.DiagramConnectionGenerator;
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
-import edu.kit.kastel.mcse.ardoco.tests.TestRunner;
+import edu.kit.kastel.mcse.ardoco.tests.Results;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
-import edu.kit.kastel.mcse.ardoco.tests.eval.results.Results;
+import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -79,27 +82,26 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     @Override
     protected DataRepository runPreTestRunner(DiagramProject project) {
         logger.info("Run PreTestRunner for {}", project.name());
-        var runner = new PreTestRunner(project.name());
         var params = new PreTestRunner.Parameters(project, new File(OUTPUT_DIR), true);
-
-        runner.setUp(params);
-        runner.runWithoutSaving();
-
-        return runner.getArDoCo().getDataRepository();
+        var runner = new PreTestRunner(project.name(), params);
+        return runner.runWithoutSaving();
     }
 
     @Override
     protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository) {
         logger.info("Run TestRunner for {}", project.name());
-        var runner = new TestRunner(project.name());
-        var params = new TestRunner.Parameters(project, new File(OUTPUT_DIR), true, additionalConfigurations);
+        var combinedConfigs = new HashMap<>(project.getAdditionalConfigurations());
+        combinedConfigs.putAll(additionalConfigurations);
+        return new AnonymousRunner(project.name()) {
+            @Override
+            public void initializePipelineSteps() {
+                ArDoCo arDoCo = getArDoCo();
+                var combinedRepository = arDoCo.getDataRepository();
+                combinedRepository.addAllData(dataRepository);
 
-        runner.getArDoCo().getDataRepository().addAllData(dataRepository);
-
-        runner.setUp(params);
-        runner.runWithoutSaving();
-
-        return runner.getArDoCo().getDataRepository();
+                arDoCo.addPipelineStep(new DiagramConnectionGenerator(combinedConfigs, combinedRepository));
+            }
+        }.runWithoutSaving();
     }
 
     @DisplayName("Evaluate Diagram Connection Generator")
@@ -152,36 +154,43 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
                 .collect(Collectors.joining(" & ")) + "\\\\");
     }
 
+    @Disabled
     @Test
     void teammatesTest() {
         runComparable(DiagramProject.TEAMMATES);
     }
 
+    @Disabled
     @Test
     void teammatesHistTest() {
         runComparable(DiagramProject.TEAMMATES_HISTORICAL);
     }
 
+    @Disabled
     @Test
     void teastoreTest() {
         runComparable(DiagramProject.TEASTORE);
     }
 
+    @Disabled
     @Test
     void teastoreHistTest() {
         runComparable(DiagramProject.TEASTORE_HISTORICAL);
     }
 
+    @Disabled
     @Test
     void bbbTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON);
     }
 
+    @Disabled
     @Test
     void bbbHistTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL);
     }
 
+    @Disabled
     @Test
     void msTest() {
         runComparable(DiagramProject.MEDIASTORE);

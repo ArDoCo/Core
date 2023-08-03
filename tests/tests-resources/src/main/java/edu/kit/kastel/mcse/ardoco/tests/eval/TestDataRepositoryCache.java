@@ -1,12 +1,6 @@
-package edu.kit.kastel.mcse.ardoco.tests.integration;
+package edu.kit.kastel.mcse.ardoco.tests.eval;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InvalidClassException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
@@ -17,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.FileBasedCache;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCache.Record> {
     private static final Logger logger = LoggerFactory.getLogger(TestDataRepositoryCache.class);
@@ -42,7 +36,7 @@ public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCa
             out.writeObject(content);
             logger.info("Saved {} file", getIdentifier());
         } catch (IOException e) {
-            logger.error(e.getCause().getMessage());
+            logger.error("Error reading file", e);
         }
     }
 
@@ -54,9 +48,8 @@ public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCa
             logger.info("Reading {} file", getIdentifier());
             record = (Record) in.readObject();
             return record;
-        } catch (InvalidClassException | ClassNotFoundException e) {
+        } catch (InvalidClassException | ClassNotFoundException | EOFException e) {
             if (allowReload) {
-                //TODO Fix on change
                 logger.warn("SerialVersionUID might have changed, resetting {} file", getIdentifier());
                 resetFile();
                 return load(false);
@@ -75,7 +68,9 @@ public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCa
         return new Record(new HashMap<>());
     }
 
-    public @NotNull DataRepository get(Function<DiagramProject, DataRepository> mappingFunction) {
+    @NotNull
+    @DeepCopy
+    public DataRepository get(Function<DiagramProject, DataRepository> mappingFunction) {
         checkVersion();
 
         var record = load();
@@ -84,7 +79,7 @@ public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCa
             save(record);
         }
 
-        return record.preRun().get(diagramProject);
+        return record.preRun().get(diagramProject).deepCopy();
     }
 
     public record Record(HashMap<DiagramProject, DataRepository> preRun) implements Serializable {

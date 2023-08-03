@@ -21,26 +21,26 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class DiagramG implements Diagram, Comparable<DiagramG> {
-    private String path;
+    private String resourceName;
     private List<Box> properBoxes = new ArrayList<>();
     private List<TextBox> properTextBoxes = new ArrayList<>();
     private DiagramProject project;
 
     @JsonCreator
-    public DiagramG(@JacksonInject DiagramProject project, @JsonProperty("path") String path, @JsonProperty("boxes") JsonNode boxesNode)
+    public DiagramG(@JacksonInject DiagramProject project, @JsonProperty("path") String resourceName, @JsonProperty("boxes") JsonNode boxesNode)
             throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramG.class, this));
         var boxes = objectMapper.treeToValue(boxesNode, BoxG[].class);
 
         this.project = project;
-        this.path = path;
+        this.resourceName = resourceName;
         addBoxes(boxes);
     }
 
     public DiagramG(DiagramProject project, String path, BoxG[] boxes) {
         this.project = project;
-        this.path = path;
+        this.resourceName = path;
         addBoxes(boxes);
     }
 
@@ -51,8 +51,9 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
         }
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    public String getResourceName() {
+        return resourceName;
     }
 
     @Override
@@ -60,25 +61,25 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
         if (this == obj) {
             return true;
         } else if (obj instanceof DiagramG other) {
-            return path.equals(other.path);
+            return resourceName.equals(other.resourceName);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(path);
+        return Objects.hashCode(resourceName);
     }
 
     @Override
     public int compareTo(@NotNull DiagramG o) {
         if (equals(o))
             return 0;
-        return path.compareTo(o.path);
+        return resourceName.compareTo(o.resourceName);
     }
 
     public String getShortPath() {
-        var split = getPath().split("/|\\\\");
+        var split = getResourceName().split("/|\\\\");
         return split[split.length - 1];
     }
 

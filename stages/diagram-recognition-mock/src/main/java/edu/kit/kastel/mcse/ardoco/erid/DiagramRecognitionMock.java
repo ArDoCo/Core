@@ -29,7 +29,7 @@ public class DiagramRecognitionMock extends ExecutionStage {
         var diagramRecognitionState = new DiagramRecognitionStateImpl();
         var diagrams = inputDiagramsMock.get().getDiagramProject().getDiagrams();
         for (var diagram : diagrams) {
-            logger.debug("Loaded Diagram {}", diagram.getPath());
+            logger.debug("Loaded Diagram {}", diagram.getResourceName());
             diagramRecognitionState.addDiagram(diagram);
         }
         getDataRepository().addData(DiagramRecognitionState.ID, diagramRecognitionState);

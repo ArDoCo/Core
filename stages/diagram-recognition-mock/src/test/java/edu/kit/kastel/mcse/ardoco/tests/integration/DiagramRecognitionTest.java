@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,8 +14,11 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
-import edu.kit.kastel.mcse.ardoco.tests.TestRunner;
+import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
+import edu.kit.kastel.mcse.ardoco.erid.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -62,13 +66,19 @@ public class DiagramRecognitionTest {
     }
 
     private void run(DiagramProject project) {
-        var runner = new TestRunner(project.name());
-        var params = new TestRunner.Parameters(project);
-        runner.setUp(params);
+        var dataRepository = new AnonymousRunner(project.name()) {
+            @Override
+            public void initializePipelineSteps() throws IOException {
+                ArDoCo arDoCo = getArDoCo();
+                var dataRepository = arDoCo.getDataRepository();
 
-        runner.runWithoutSaving();
-        var dataRepository = runner.getArDoCo().getDataRepository();
-        var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).get();
+                var data = new InputDiagramDataMock(project);
+                dataRepository.addData(InputDiagramDataMock.ID, data);
+
+                arDoCo.addPipelineStep(new DiagramRecognitionMock(project.getAdditionalConfigurations(), dataRepository));
+            }
+        }.runWithoutSaving();
+        var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
         var diagrams = diagramRecognition.getDiagrams();
         Assertions.assertTrue(diagrams.size() > 0);
     }

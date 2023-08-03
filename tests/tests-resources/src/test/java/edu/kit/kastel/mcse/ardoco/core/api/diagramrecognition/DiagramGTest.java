@@ -24,7 +24,7 @@ public class DiagramGTest {
         var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         var deserialized = (DiagramG) new ObjectInputStream(byteArrayInputStream).readObject();
 
-        assertEquals(serialize.getPath(), deserialized.getPath());
+        assertEquals(serialize.getResourceName(), deserialized.getResourceName());
         assertTrue(serialize.getBoxes().containsAll(deserialized.getBoxes()));
         assertTrue(deserialized.getBoxes().containsAll(serialize.getBoxes()));
         assertTrue(serialize.getTextBoxes().containsAll(deserialized.getTextBoxes()));

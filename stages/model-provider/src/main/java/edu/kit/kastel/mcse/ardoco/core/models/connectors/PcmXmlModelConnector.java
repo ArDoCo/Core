@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 
 public class PcmXmlModelConnector implements ModelConnector {
 
-    private final PcmRepository repository;
+    private transient final PcmRepository repository;
 
     public PcmXmlModelConnector(File file) throws IOException {
         this(new FileInputStream(file));

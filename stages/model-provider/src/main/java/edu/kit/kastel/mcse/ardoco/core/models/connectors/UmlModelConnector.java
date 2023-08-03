@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.UmlModelRoot;
 
 public class UmlModelConnector implements ModelConnector {
-    private final UmlModelRoot model;
+    private transient final UmlModelRoot model;
 
     public UmlModelConnector(File file) throws IOException {
         this(new FileInputStream(file));

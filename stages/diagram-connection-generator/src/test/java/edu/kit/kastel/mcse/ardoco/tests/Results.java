@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.tests.eval.results;
+package edu.kit.kastel.mcse.ardoco.tests;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
