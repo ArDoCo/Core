@@ -12,6 +12,7 @@
     <modules>
         <module>diagram-recognition-mock</module>
         <module>diagram-connection-generator</module>
+        <module>diagram-inconsistency-checker</module>
     </modules>
 
     <profiles>
