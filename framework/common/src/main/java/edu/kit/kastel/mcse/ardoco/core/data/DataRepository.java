@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class DataRepository implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(DataRepository.class);
 
-    private Map<String, PipelineStepData> data;
+    private final Map<String, PipelineStepData> data;
 
     public DataRepository() {
         this.data = new HashMap<>();
@@ -60,11 +60,10 @@ public class DataRepository implements Serializable {
     /**
      * Adds all data to the existing repository using the provided repository.
      *
-     * @param dataRepository data repository used to override the existing repository.
+     * @param dataRepository data repository
      */
     public void addAllData(DataRepository dataRepository) {
-        var copy = dataRepository.deepCopy();
-        this.data.putAll(copy.data);
+        this.data.putAll(dataRepository.data);
     }
 
     /**
@@ -72,12 +71,14 @@ public class DataRepository implements Serializable {
      *
      * @return deep copy of the data repository
      */
+    @DeepCopy
     public DataRepository deepCopy() {
         try {
             var byteArrayOutputStream = new ByteArrayOutputStream();
             new ObjectOutputStream(byteArrayOutputStream).writeObject(this);
             var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-            return (DataRepository) new ObjectInputStream(byteArrayInputStream).readObject();
+            var object = new ObjectInputStream(byteArrayInputStream).readObject();
+            return (DataRepository) object;
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
