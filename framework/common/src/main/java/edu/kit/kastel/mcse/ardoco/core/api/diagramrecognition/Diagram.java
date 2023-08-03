@@ -6,6 +6,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface Diagram extends Serializable {
+    default String getResourceName() {
+        return getLocation().getPath();
+    }
+
     File getLocation();
 
     void addBox(Box box);

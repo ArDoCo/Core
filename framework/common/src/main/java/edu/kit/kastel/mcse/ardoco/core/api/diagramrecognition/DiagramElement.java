@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -48,12 +46,7 @@ public abstract class DiagramElement extends Entity implements Comparable<Diagra
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DiagramElement other) {
-            try {
-                return Files.isSameFile(getDiagram().getLocation().toPath(), other.getDiagram().getLocation().toPath()) && getBoundingBox().equals(
-                        other.getBoundingBox());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            return Objects.equals(getDiagram().getResourceName(), other.getDiagram().getResourceName()) && getBoundingBox().equals(other.getBoundingBox());
         }
         return false;
     }
