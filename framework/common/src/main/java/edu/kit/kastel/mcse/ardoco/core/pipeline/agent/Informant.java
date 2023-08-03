@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
+import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
@@ -15,6 +16,12 @@ public abstract class Informant extends AbstractPipelineStep implements Claimant
     }
 
     protected Informant() {
+    }
+
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        //FIXME Informants conceptually are at the very bottom of the hierarchy, currently 30+ classes override this method doing nothing because of that.
+        //FIXME Since providing a base implementation in this class does not prevent subclasses from overriding the method in fringe cases, this would reduce unnecessary code duplication, without removing functionality
     }
 
     @Serial

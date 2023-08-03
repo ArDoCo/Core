@@ -13,5 +13,4 @@ public interface ProjectPipelineData extends PipelineStepData {
      * @return the project name
      */
     String getProjectName();
-
 }
