@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package io.github.ardoco.textproviderjson;
+package io.github.ardoco.textproviderjson.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
+import io.github.ardoco.textproviderjson.error.NotConvertableException;
 import io.github.ardoco.textproviderjson.textobject.PhraseImpl;
 import io.github.ardoco.textproviderjson.textobject.WordImpl;
 
@@ -30,9 +30,10 @@ class TreeParserTest {
     Phrase expectedPhrase = new PhraseImpl(Lists.immutable.empty(), PhraseType.ROOT, List.of(phrase));
 
     @Test
-    void parseConstituencyTreeTest() {
+    void parseConstituencyTreeTest() throws NotConvertableException {
         DtoToObjectConverter converter = new DtoToObjectConverter();
-        Phrase parsedPhrase = converter.parseConstituencyTree(tree, words);
+        Assertions.assertDoesNotThrow(() -> converter.parseConstituencyTree(tree, new ArrayList<>(words)));
+        Phrase parsedPhrase = converter.parseConstituencyTree(tree, new ArrayList<>(words));
         Assertions.assertEquals(expectedPhrase, parsedPhrase);
     }
 }

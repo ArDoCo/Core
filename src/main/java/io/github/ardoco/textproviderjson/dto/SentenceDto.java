@@ -9,11 +9,11 @@ import com.fasterxml.jackson.annotation.*;
 /**
  * Sentence in a text
  */
-public class SentenceDTO {
+public class SentenceDto {
     private String constituencyTree;
     private long sentenceNo;
     private String text;
-    private List<WordDTO> words;
+    private List<WordDto> words;
 
     /**
      * the constituency tree of the sentence in bracket notation
@@ -58,12 +58,12 @@ public class SentenceDTO {
      * the words that are contained in this sentence
      */
     @JsonProperty("words")
-    public List<WordDTO> getWords() {
+    public List<WordDto> getWords() {
         return words;
     }
 
     @JsonProperty("words")
-    public void setWords(List<WordDTO> value) {
+    public void setWords(List<WordDto> value) {
         this.words = value;
     }
 
@@ -71,9 +71,9 @@ public class SentenceDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof SentenceDTO))
+        if (!(o instanceof SentenceDto))
             return false;
-        SentenceDTO sentence = (SentenceDTO) o;
+        SentenceDto sentence = (SentenceDto) o;
         return sentenceNo == sentence.sentenceNo && Objects.equals(constituencyTree, sentence.constituencyTree) && Objects.equals(text,
                 sentence.text) && Objects.equals(words, sentence.words);
     }

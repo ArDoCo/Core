@@ -76,7 +76,7 @@
                 "outgoingDependencies": {
                   "description": "the outgoing dependencies",
                   "type": "array",
-                  "uniqueItems": true,
+                  "uniqueItems": false,
                   "items": {
                     "type": "object",
                     "required": [
@@ -97,7 +97,7 @@
                 "incomingDependencies": {
                   "description": "the incoming dependencies",
                   "type": "array",
-                  "uniqueItems": true,
+                  "uniqueItems": false,
                   "items": {
                     "type": "object",
                     "required": [
@@ -141,6 +141,7 @@
         "WDT",
         "EX",
         "FW",
+        "HYPH",
         "LS",
         "NN",
         "NNS",

@@ -9,19 +9,19 @@ import com.fasterxml.jackson.annotation.*;
 /**
  * A definition of a text
  */
-public class TextDTO {
-    private List<SentenceDTO> sentences;
+public class TextDto {
+    private List<SentenceDto> sentences;
 
     /**
      * the words that are contained in this sentence
      */
     @JsonProperty("sentences")
-    public List<SentenceDTO> getSentences() {
+    public List<SentenceDto> getSentences() {
         return sentences;
     }
 
     @JsonProperty("sentences")
-    public void setSentences(List<SentenceDTO> value) {
+    public void setSentences(List<SentenceDto> value) {
         this.sentences = value;
     }
 
@@ -29,9 +29,9 @@ public class TextDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof TextDTO))
+        if (!(o instanceof TextDto))
             return false;
-        TextDTO textDTO = (TextDTO) o;
+        TextDto textDTO = (TextDto) o;
         return Objects.equals(sentences, textDTO.sentences);
     }
 
