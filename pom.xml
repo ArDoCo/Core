@@ -36,8 +36,8 @@
   <scm>
     <connection>scm:git:git://github.com/ArDoCo/textprovider-json.git</connection>
     <developerConnection>scm:git:ssh://github.com:ArDoCo/textprovider-json.git</developerConnection>
-    <url>http://github.com/ArDoCo/textprovider-json/tree/main</url>
     <tag>HEAD</tag>
+    <url>http://github.com/ArDoCo/textprovider-json/tree/main</url>
   </scm>
   <issueManagement>
     <system>GitHub Issues</system>
@@ -53,11 +53,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.15.2</version>
@@ -68,11 +63,6 @@
       <version>2.15.2</version>
     </dependency>
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-json-schema</artifactId>
-      <version>4.4.4</version>
-    </dependency>
-    <dependency>
       <groupId>com.networknt</groupId>
       <artifactId>json-schema-validator</artifactId>
       <version>1.0.86</version>
@@ -81,6 +71,21 @@
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
       <version>${ardoco.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-json-schema</artifactId>
+      <version>4.4.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.*;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
 
-public class OutgoingDependencyDTO {
+public class IncomingDependencyDto {
     private DependencyTag dependencyType;
-    private long targetWordId;
+    private long sourceWordId;
 
     @JsonProperty("dependencyType")
     public DependencyTag getDependencyTag() {
@@ -21,28 +21,28 @@ public class OutgoingDependencyDTO {
         this.dependencyType = value;
     }
 
-    @JsonProperty("targetWordId")
-    public long getTargetWordId() {
-        return targetWordId;
+    @JsonProperty("sourceWordId")
+    public long getSourceWordId() {
+        return sourceWordId;
     }
 
-    @JsonProperty("targetWordId")
-    public void setTargetWordId(long value) {
-        this.targetWordId = value;
+    @JsonProperty("sourceWordId")
+    public void setSourceWordId(long value) {
+        this.sourceWordId = value;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof OutgoingDependencyDTO))
+        if (!(o instanceof IncomingDependencyDto))
             return false;
-        OutgoingDependencyDTO that = (OutgoingDependencyDTO) o;
-        return targetWordId == that.targetWordId && Objects.equals(dependencyType, that.dependencyType);
+        IncomingDependencyDto that = (IncomingDependencyDto) o;
+        return sourceWordId == that.sourceWordId && dependencyType == that.dependencyType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dependencyType, targetWordId);
+        return Objects.hash(dependencyType, sourceWordId);
     }
 }

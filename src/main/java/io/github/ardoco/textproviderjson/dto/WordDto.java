@@ -10,11 +10,11 @@ import com.fasterxml.jackson.annotation.*;
 /**
  * Definition of a word
  */
-public class WordDTO {
+public class WordDto {
     private long id;
-    private List<IncomingDependencyDTO> incomingDependencies = new ArrayList<>();
+    private List<IncomingDependencyDto> incomingDependencies = new ArrayList<>();
     private String lemma;
-    private List<OutgoingDependencyDTO> outgoingDependencies = new ArrayList<>();
+    private List<OutgoingDependencyDto> outgoingDependencies = new ArrayList<>();
     private long sentenceNo;
     private String text;
     private PosTag posTag;
@@ -36,12 +36,12 @@ public class WordDTO {
      * the incoming dependencies
      */
     @JsonProperty("incomingDependencies")
-    public List<IncomingDependencyDTO> getIncomingDependencies() {
+    public List<IncomingDependencyDto> getIncomingDependencies() {
         return incomingDependencies;
     }
 
     @JsonProperty("incomingDependencies")
-    public void setIncomingDependencies(List<IncomingDependencyDTO> value) {
+    public void setIncomingDependencies(List<IncomingDependencyDto> value) {
         this.incomingDependencies = value;
     }
 
@@ -62,12 +62,12 @@ public class WordDTO {
      * the outgoing dependencies
      */
     @JsonProperty("outgoingDependencies")
-    public List<OutgoingDependencyDTO> getOutgoingDependencies() {
+    public List<OutgoingDependencyDto> getOutgoingDependencies() {
         return outgoingDependencies;
     }
 
     @JsonProperty("outgoingDependencies")
-    public void setOutgoingDependencies(List<OutgoingDependencyDTO> value) {
+    public void setOutgoingDependencies(List<OutgoingDependencyDto> value) {
         this.outgoingDependencies = value;
     }
 
@@ -111,9 +111,9 @@ public class WordDTO {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof WordDTO))
+        if (!(o instanceof WordDto))
             return false;
-        WordDTO word = (WordDTO) o;
+        WordDto word = (WordDto) o;
         return id == word.id && sentenceNo == word.sentenceNo && Objects.equals(incomingDependencies, word.incomingDependencies) && Objects.equals(lemma,
                 word.lemma) && Objects.equals(outgoingDependencies, word.outgoingDependencies) && posTag == word.posTag && Objects.equals(text, word.text);
     }

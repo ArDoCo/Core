@@ -8,16 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.*;
 import io.github.ardoco.textproviderjson.dto.*;
+import io.github.ardoco.textproviderjson.error.NotConvertableException;
 import io.github.ardoco.textproviderjson.textobject.DependencyImpl;
 
 public class ObjectToDtoConverter {
 
-    private static Logger logger = LoggerFactory.getLogger(ObjectToDtoConverter.class);
     private static final String TREE_SEPARATOR = " ";
     private static final char TREE_OPEN_BRACKET = '(';
     private static final char TREE_CLOSE_BRACKET = ')';
@@ -28,42 +26,52 @@ public class ObjectToDtoConverter {
      * @param text the ArDoCo text
      * @return the text DTO
      */
-    public TextDTO convertTextToDTO(Text text) {
-        TextDTO textDTO = new TextDTO();
-        List<SentenceDTO> sentences = generateSentenceDTOs(text.getSentences());
+    public TextDto convertTextToDTO(Text text) throws NotConvertableException {
+        if (text == null) {
+            throw new NotConvertableException("Text is null");
+        }
+        TextDto textDTO = new TextDto();
+        List<SentenceDto> sentences = generateSentenceDTOs(text.getSentences());
         textDTO.setSentences(sentences);
         return textDTO;
     }
 
-    private List<SentenceDTO> generateSentenceDTOs(ImmutableList<Sentence> sentences) {
-        return new ArrayList<>(sentences.toList().stream().map(this::convertToSentenceDTO).toList());
+    private List<SentenceDto> generateSentenceDTOs(ImmutableList<Sentence> sentences) throws NotConvertableException {
+        List<SentenceDto> sentenceDtos = new ArrayList<>();
+        for (Sentence sentence : sentences) {
+            sentenceDtos.add(convertToSentenceDTO(sentence));
+        }
+        return sentenceDtos;
     }
 
-    private SentenceDTO convertToSentenceDTO(Sentence sentence) {
-        SentenceDTO sentenceDTO = new SentenceDTO();
+    private SentenceDto convertToSentenceDTO(Sentence sentence) throws NotConvertableException {
+        SentenceDto sentenceDTO = new SentenceDto();
         sentenceDTO.setSentenceNo(sentence.getSentenceNumber() + (long) 1);
         sentenceDTO.setText(sentence.getText());
-        List<WordDTO> words = generateWordDTOs(sentence.getWords());
+        List<WordDto> words = generateWordDTOs(sentence.getWords());
         sentenceDTO.setWords(words);
         String tree = convertToConstituencyTrees(sentence);
         sentenceDTO.setConstituencyTree(tree);
         return sentenceDTO;
     }
 
-    private List<WordDTO> generateWordDTOs(ImmutableList<Word> words) {
-        return new ArrayList<>(words.toList().stream().map(this::convertToWordDTO).toList());
+    private List<WordDto> generateWordDTOs(ImmutableList<Word> words) throws NotConvertableException {
+        List<WordDto> wordDtos = new ArrayList<>();
+        for (Word word : words) {
+            wordDtos.add(convertToWordDTO(word));
+        }
+        return wordDtos;
     }
 
-    private WordDTO convertToWordDTO(Word word) {
-        WordDTO wordDTO = new WordDTO();
+    private WordDto convertToWordDTO(Word word) throws NotConvertableException {
+        WordDto wordDTO = new WordDto();
         wordDTO.setId(word.getPosition() + (long) 1);
         wordDTO.setText(word.getText());
         wordDTO.setLemma(word.getLemma());
         try {
             wordDTO.setPosTag(PosTag.forValue(word.getPosTag().toString()));
         } catch (IOException e) {
-            logger.warn("IOException when converting to WordDto.", e);
-            return null;
+            throw new NotConvertableException(String.format("IOException when converting word with id %d to WordDto: PosTag not found.", wordDTO.getId()));
         }
         wordDTO.setSentenceNo(word.getSentenceNo() + (long) 1);
         List<DependencyImpl> inDep = new ArrayList<>();
@@ -74,8 +82,8 @@ public class ObjectToDtoConverter {
             ImmutableList<Word> outDepWords = word.getOutgoingDependencyWordsWithType(depType);
             outDep.addAll(outDepWords.toList().stream().map(currentWord -> new DependencyImpl(depType, currentWord.getPosition())).toList());
         }
-        List<IncomingDependencyDTO> inDepDTO = generateDepInDTOs(inDep);
-        List<OutgoingDependencyDTO> outDepDTO = generateDepOutDTOs(outDep);
+        List<IncomingDependencyDto> inDepDTO = generateDepInDTOs(inDep);
+        List<OutgoingDependencyDto> outDepDTO = generateDepOutDTOs(outDep);
         wordDTO.setIncomingDependencies(inDepDTO);
         wordDTO.setOutgoingDependencies(outDepDTO);
         return wordDTO;
@@ -127,23 +135,23 @@ public class ObjectToDtoConverter {
         return TREE_OPEN_BRACKET + word.getPosTag().toString() + TREE_SEPARATOR + word.getText() + TREE_CLOSE_BRACKET;
     }
 
-    private List<IncomingDependencyDTO> generateDepInDTOs(List<DependencyImpl> dependencies) {
+    private List<IncomingDependencyDto> generateDepInDTOs(List<DependencyImpl> dependencies) {
         return new ArrayList<>(dependencies.stream().map(this::convertToDepInDTO).toList());
     }
 
-    private List<OutgoingDependencyDTO> generateDepOutDTOs(List<DependencyImpl> dependencies) {
+    private List<OutgoingDependencyDto> generateDepOutDTOs(List<DependencyImpl> dependencies) {
         return new ArrayList<>(dependencies.stream().map(this::convertToDepOutDTO).toList());
     }
 
-    private IncomingDependencyDTO convertToDepInDTO(DependencyImpl dependency) {
-        IncomingDependencyDTO dependencyDTO = new IncomingDependencyDTO();
+    private IncomingDependencyDto convertToDepInDTO(DependencyImpl dependency) {
+        IncomingDependencyDto dependencyDTO = new IncomingDependencyDto();
         dependencyDTO.setDependencyTag(dependency.getDependencyTag());
         dependencyDTO.setSourceWordId(dependency.getWordId() + 1L);
         return dependencyDTO;
     }
 
-    private OutgoingDependencyDTO convertToDepOutDTO(DependencyImpl dependency) {
-        OutgoingDependencyDTO dependencyDTO = new OutgoingDependencyDTO();
+    private OutgoingDependencyDto convertToDepOutDTO(DependencyImpl dependency) {
+        OutgoingDependencyDto dependencyDTO = new OutgoingDependencyDto();
         dependencyDTO.setDependencyTag(dependency.getDependencyTag());
         dependencyDTO.setTargetWordId(dependency.getWordId() + 1L);
         return dependencyDTO;
