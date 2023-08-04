@@ -2,7 +2,7 @@ package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants;
 
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagraminconsistency.DiagramInconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;

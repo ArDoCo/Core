@@ -15,7 +15,8 @@
     Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
     This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF)
     and by KASTEL Security Research Labs
-    (46.23.01).</description>
+    (46.23.01).
+  </description>
   <url>https://github.com/ArDoCo/Core</url>
   <licenses>
     <license>
@@ -92,7 +93,7 @@
     <eclipse-collections.version>12.0.0.M2</eclipse-collections.version>
     <jackson.version>2.15.2</jackson.version>
     <javaparser.version>3.25.4</javaparser.version>
-    <error-prone.version>2.21.0</error-prone.version>
+    <error-prone.version>2.20.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
@@ -100,7 +101,8 @@
     <sonar.organization>ardoco</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir},
-      ${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+      ${project.basedir}/../../${aggregate.report.dir}
+    </sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
     <stanford.corenlp.version>4.5.4</stanford.corenlp.version>

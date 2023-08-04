@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.api.diagraminconsistency;
+package edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency;
 
 import java.util.Set;
 
