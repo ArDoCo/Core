@@ -125,7 +125,7 @@ public class MissingModelElementInconsistencyInformant extends Informant {
                 for (var word : recommendedInstance.getNameMappings().flatCollect(NounMapping::getWords).distinct()) {
                     var sentenceNo = word.getSentenceNo() + 1;
                     var wordText = word.getText();
-                    inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence));
+                    inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency(wordText, sentenceNo, confidence, candidate));
                 }
             }
         }

@@ -91,6 +91,7 @@ public enum DiagramProject implements Serializable {
 
     private final Map<ArchitectureModelType, File> allModelFiles = Maps.mutable.empty();
 
+    public final Project baseProject;
     public final String model;
     public final String text;
     public final String configurations;
@@ -116,6 +117,7 @@ public enum DiagramProject implements Serializable {
         this.goldStandardTraceabilityLinkRecovery = project.getTlrGoldStandardResourceName();
         this.goldStandardMissingTextForModelElement = project.getMissingTextForModelElementGoldStandardResourceName();
         this.goldStandardDiagrams = goldStandardDiagrams;
+        this.baseProject = project;
 
         //Make sure to calculate the checksums for all resources
         checksum(this.model);
@@ -134,6 +136,13 @@ public enum DiagramProject implements Serializable {
         this.expectedDiagramTraceLinkResults = expectedDiagramTraceLinkResults;
 
         this.architectureModelType = setupArchitectureModelType();
+    }
+
+    /**
+     * {@return the base project of this special type of project}
+     */
+    public Project getBaseProject() {
+        return baseProject;
     }
 
     /**

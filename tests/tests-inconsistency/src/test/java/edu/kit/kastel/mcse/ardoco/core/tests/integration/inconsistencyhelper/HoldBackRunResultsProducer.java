@@ -83,16 +83,13 @@ public class HoldBackRunResultsProducer {
         return new HoldElementsBackModelConnector(pcmModel);
     }
 
-    private static ArDoCo definePipelineBase(Project project, File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector,
+    private ArDoCo definePipelineBase(Project project, File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector,
             boolean useInconsistencyBaseline) throws FileNotFoundException {
         ArDoCo arDoCo = new ArDoCo(project.name().toLowerCase());
         var dataRepository = arDoCo.getDataRepository();
-        String text = CommonUtilities.readInputText(inputText);
-        DataRepositoryHelper.putInputText(dataRepository, text);
         var additionalConfigs = project.getAdditionalConfigurations();
 
-        arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
-
+        addPreSteps(inputText, project, arDoCo, dataRepository, additionalConfigs);
         addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
@@ -104,21 +101,18 @@ public class HoldBackRunResultsProducer {
         return arDoCo;
     }
 
-    private static ArDoCo defineArDoCoWithPreComputedData(ArDoCoResult precomputedResults, HoldElementsBackModelConnector holdElementsBackModelConnector,
+    private ArDoCo defineArDoCoWithPreComputedData(ArDoCoResult precomputedResults, HoldElementsBackModelConnector holdElementsBackModelConnector,
             boolean useInconsistencyBaseline) {
         var projectName = precomputedResults.getProjectName();
         ArDoCo arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
-
         var additionalConfigs = ConfigurationHelper.loadAdditionalConfigs(null);
         var optionalProject = Project.getFromName(projectName);
         if (optionalProject.isPresent()) {
             additionalConfigs = optionalProject.get().getAdditionalConfigurations();
         }
 
-        var preprocessingData = new PreprocessingData(precomputedResults.getText());
-        dataRepository.addData(PreprocessingData.ID, preprocessingData);
-
+        addPreSteps(precomputedResults, dataRepository);
         addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
@@ -129,11 +123,23 @@ public class HoldBackRunResultsProducer {
         return arDoCo;
     }
 
-    protected static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
+    protected void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
             Map<String, String> additionalConfigs) {
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
         arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
+    }
+
+    protected void addPreSteps(File inputText, Project project, ArDoCo arDoCo, DataRepository dataRepository, Map<String, String> additionalConfigs) {
+        String text = CommonUtilities.readInputText(inputText);
+        DataRepositoryHelper.putInputText(dataRepository, text);
+
+        arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
+    }
+
+    protected void addPreSteps(ArDoCoResult precomputedResults, DataRepository dataRepository) {
+        var preprocessingData = new PreprocessingData(precomputedResults.getText());
+        dataRepository.addData(PreprocessingData.ID, preprocessingData);
     }
 }

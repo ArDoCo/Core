@@ -1,5 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
+
+import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistency
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
 
 public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters> {
-    public record Parameters(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType,
+    public record Parameters(DiagramProject diagramProject, File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType,
                              Map<String, String> additionalConfigs, File outputDir) {
     }
 
@@ -36,7 +40,7 @@ public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters>
 
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
-
+        dataRepository.addData(InputDiagramDataMock.ID, new InputDiagramDataMock(p.diagramProject));
         pipelineSteps.add(new DiagramRecognitionMock(p.additionalConfigs, dataRepository));
 
         var text = CommonUtilities.readInputText(p.inputText);

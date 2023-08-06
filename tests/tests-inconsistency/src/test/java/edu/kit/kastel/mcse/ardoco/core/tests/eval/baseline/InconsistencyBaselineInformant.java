@@ -45,7 +45,7 @@ public class InconsistencyBaselineInformant extends Informant {
 
             InconsistencyState inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
             for (var sentence : sentencesWithoutTraceLinks) {
-                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence + 1, 0.69));
+                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence + 1, 0.69, null));
             }
         }
     }

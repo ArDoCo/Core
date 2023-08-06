@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
@@ -53,8 +54,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.Hol
  * are the spots of inconsistency then. We run this multiple times so each element was held back once.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class InconsistencyDetectionEvaluationIT {
-    private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
+public class InconsistencyDetectionEvaluationIT {
+    protected static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
 
     private static final String OUTPUT = "src/test/resources/testout";
     public static final String DIRECTORY_NAME = "ardoco_eval_id";
@@ -88,7 +89,7 @@ class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(1)
-    void missingModelElementInconsistencyIT(Project project) {
+    protected void missingModelElementInconsistencyIT(Project project) {
         runMissingModelElementInconsistencyEval(project);
     }
 
@@ -97,11 +98,11 @@ class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(2)
-    void missingModelElementInconsistencyHistoricIT(Project project) {
+    protected void missingModelElementInconsistencyHistoricIT(Project project) {
         runMissingModelElementInconsistencyEval(project);
     }
 
-    private void runMissingModelElementInconsistencyEval(Project project) {
+    protected void runMissingModelElementInconsistencyEval(Project project) {
         logger.info("Start evaluation of MME-inconsistency for {}", project.name());
         Map<ModelInstance, ArDoCoResult> runs = produceRuns(project);
 
@@ -129,7 +130,7 @@ class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(5)
-    void missingModelElementInconsistencyBaselineIT(Project project) {
+    protected void missingModelElementInconsistencyBaselineIT(Project project) {
         runMissingModelElementInconsistencyBaselineEval(project);
     }
 
@@ -138,11 +139,11 @@ class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(6)
-    void missingModelElementInconsistencyBaselineHistoricIT(Project project) {
+    protected void missingModelElementInconsistencyBaselineHistoricIT(Project project) {
         runMissingModelElementInconsistencyBaselineEval(project);
     }
 
-    private void runMissingModelElementInconsistencyBaselineEval(Project project) {
+    protected void runMissingModelElementInconsistencyBaselineEval(Project project) {
         logger.info("Start evaluation of MME-inconsistency baseline for {}", project.name());
         ranBaseline = true;
 
@@ -202,8 +203,8 @@ class InconsistencyDetectionEvaluationIT {
         writeOutResults(project, results);
     }
 
-    private static Map<ModelInstance, ArDoCoResult> produceRuns(Project project) {
-        HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
+    private Map<ModelInstance, ArDoCoResult> produceRuns(Project project) {
+        HoldBackRunResultsProducer holdBackRunResultsProducer = getHoldBackRunResultsProducer();
 
         Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
 
@@ -211,6 +212,10 @@ class InconsistencyDetectionEvaluationIT {
         saveOutput(project, baseArDoCoResult);
         arDoCoResults.put(project, baseArDoCoResult);
         return runs;
+    }
+
+    protected HoldBackRunResultsProducer getHoldBackRunResultsProducer() {
+        return new HoldBackRunResultsProducer();
     }
 
     @EnabledIfEnvironmentVariable(named = "overallResults", matches = ".*")
@@ -262,21 +267,21 @@ class InconsistencyDetectionEvaluationIT {
 
     private MutableList<EvaluationResults<String>> calculateEvaluationResults(Project project, Map<ModelInstance, ArDoCoResult> runs) {
 
-        MutableList<EvaluationResults<String>> results = Lists.mutable.empty();
+        Map<ModelInstance, EvaluationResults<String>> results = Maps.mutable.empty();
 
         for (var run : runs.entrySet()) {
             ModelInstance modelInstance = run.getKey();
             ArDoCoResult arDoCoResult = run.getValue();
             var runEvalResults = evaluateRun(project, modelInstance, arDoCoResult);
             if (runEvalResults != null) {
-                results.add(runEvalResults);
+                results.put(modelInstance, runEvalResults);
             } else {
                 // for the base case, instead of calculating results, save the found inconsistencies.
                 inconsistentSentencesPerProject.put(project, arDoCoResult.getInconsistentSentences());
             }
         }
 
-        return results;
+        return Lists.mutable.ofAll(results.values());
     }
 
     private EvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, ArDoCoResult arDoCoResult) {

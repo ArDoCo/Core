@@ -95,6 +95,7 @@
     <javaparser.version>3.25.4</javaparser.version>
     <error-prone.version>2.20.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
+    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
