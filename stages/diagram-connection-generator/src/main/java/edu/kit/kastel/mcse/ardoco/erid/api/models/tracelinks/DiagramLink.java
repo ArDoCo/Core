@@ -1,4 +1,7 @@
-package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
+package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 
 import java.text.MessageFormat;
 import java.util.Map;

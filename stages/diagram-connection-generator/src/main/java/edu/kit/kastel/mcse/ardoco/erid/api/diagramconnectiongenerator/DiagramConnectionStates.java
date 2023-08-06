@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator;
+package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;

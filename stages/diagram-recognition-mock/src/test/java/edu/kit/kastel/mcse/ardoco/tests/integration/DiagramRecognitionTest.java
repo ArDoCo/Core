@@ -14,11 +14,11 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramDataMock;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
-import edu.kit.kastel.mcse.ardoco.erid.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

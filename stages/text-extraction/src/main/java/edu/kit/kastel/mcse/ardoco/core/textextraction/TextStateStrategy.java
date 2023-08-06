@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.io.Serializable;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -14,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Interface for strategies for the text state.
  */
-public interface TextStateStrategy {
+public interface TextStateStrategy extends Serializable {
 
     NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms);
 

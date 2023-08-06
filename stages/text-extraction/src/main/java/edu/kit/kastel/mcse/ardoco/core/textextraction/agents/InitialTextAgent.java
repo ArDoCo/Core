@@ -28,7 +28,7 @@ public class InitialTextAgent extends PipelineAgent {
     public InitialTextAgent(DataRepository data) {
         super(InitialTextAgent.class.getSimpleName(), data,
                 List.of(new NounInformant(data), new InDepArcsInformant(data), new OutDepArcsInformant(data), new SeparatedNamesInformant(data)));
-        enabledInformants = getInformants().stream().map(AbstractPipelineStep::getId).toList();
+        enabledInformants = getInformantIds();
     }
 
     @Override

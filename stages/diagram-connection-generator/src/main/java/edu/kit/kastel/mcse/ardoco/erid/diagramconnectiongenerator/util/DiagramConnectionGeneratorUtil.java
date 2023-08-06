@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.util;
+package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.util;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;

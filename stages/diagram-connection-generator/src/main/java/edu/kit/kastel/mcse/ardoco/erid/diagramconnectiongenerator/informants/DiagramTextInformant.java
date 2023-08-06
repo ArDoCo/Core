@@ -1,11 +1,11 @@
-package edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.informants;
+package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
-import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
+import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 public class DiagramTextInformant extends Informant {

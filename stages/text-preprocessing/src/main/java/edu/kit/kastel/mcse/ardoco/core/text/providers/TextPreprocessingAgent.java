@@ -23,7 +23,7 @@ public class TextPreprocessingAgent extends PipelineAgent {
      */
     public TextPreprocessingAgent(DataRepository data) {
         super(TextPreprocessingAgent.class.getSimpleName(), data, List.of(new CoreNLPProvider(data)));
-        enabledInformants = getInformants().stream().map(AbstractPipelineStep::getId).toList();
+        enabledInformants = getInformantIds();
     }
 
     /**

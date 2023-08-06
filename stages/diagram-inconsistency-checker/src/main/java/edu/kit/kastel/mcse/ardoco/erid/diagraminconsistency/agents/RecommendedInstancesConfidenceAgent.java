@@ -6,15 +6,14 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants.MDEInconsistencyInformant;
+import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants.InfluenceByInconsistenciesInformant;
 
-public class MDEInconsistencyAgent extends PipelineAgent {
+public class RecommendedInstancesConfidenceAgent extends PipelineAgent {
     @Configurable
-    private List<String> enabledInformants;
+    private List<String> enabledInformants = getInformantIds();
 
-    public MDEInconsistencyAgent(DataRepository dataRepository) {
-        super(MDEInconsistencyAgent.class.getSimpleName(), dataRepository, List.of(new MDEInconsistencyInformant(dataRepository)));
-        enabledInformants = getInformants().stream().map(Informant::getId).toList();
+    public RecommendedInstancesConfidenceAgent(DataRepository dataRepository) {
+        super(RecommendedInstancesConfidenceAgent.class.getSimpleName(), dataRepository, List.of(new InfluenceByInconsistenciesInformant(dataRepository)));
     }
 
     @Override

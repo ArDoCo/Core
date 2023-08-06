@@ -18,7 +18,7 @@ public class InitialRecommendationAgent extends PipelineAgent {
 
     public InitialRecommendationAgent(DataRepository dataRepository) {
         super(InitialRecommendationAgent.class.getSimpleName(), dataRepository, List.of(new NameTypeInformant(dataRepository)));
-        enabledInformants = getInformants().stream().map(e -> e.getClass().getSimpleName()).toList();
+        enabledInformants = getInformantIds();
     }
 
     @Override

@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyState;
 
 public class DiagramInconsistencyStateImpl implements DiagramInconsistencyState {
     private final Set<RecommendedInstance> recommendedInstances = new HashSet<>();

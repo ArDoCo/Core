@@ -77,8 +77,7 @@ public class DataRepository implements Serializable {
             var byteArrayOutputStream = new ByteArrayOutputStream();
             new ObjectOutputStream(byteArrayOutputStream).writeObject(this);
             var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-            var object = new ObjectInputStream(byteArrayInputStream).readObject();
-            return (DataRepository) object;
+            return (DataRepository) new ObjectInputStream(byteArrayInputStream).readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

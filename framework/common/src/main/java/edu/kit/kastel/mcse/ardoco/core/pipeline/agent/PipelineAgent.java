@@ -53,10 +53,17 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     protected abstract List<Informant> getEnabledPipelineSteps();
 
     /**
-     * {@return the pipeline steps (informants) including disabled}
+     * {@return the informants including disabled}
      */
     public List<Informant> getInformants() {
         return List.copyOf(informants);
+    }
+
+    /**
+     * {@return the ids of all informants including disabled}
+     */
+    public List<String> getInformantIds() {
+        return informants.stream().map(Informant::getId).toList();
     }
 
     @Override

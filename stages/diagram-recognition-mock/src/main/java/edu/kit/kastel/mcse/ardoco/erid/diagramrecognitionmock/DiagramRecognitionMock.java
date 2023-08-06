@@ -1,11 +1,11 @@
-package edu.kit.kastel.mcse.ardoco.erid;
+package edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock;
 
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramDataMock;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;

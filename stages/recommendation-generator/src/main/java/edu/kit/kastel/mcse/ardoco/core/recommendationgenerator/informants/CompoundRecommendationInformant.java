@@ -31,10 +31,6 @@ public class CompoundRecommendationInformant extends Informant {
         super(CompoundRecommendationInformant.class.getSimpleName(), dataRepository);
     }
 
-    //Serialization
-    protected CompoundRecommendationInformant() {
-    }
-
     @Override
     public void run() {
         DataRepository dataRepository = getDataRepository();

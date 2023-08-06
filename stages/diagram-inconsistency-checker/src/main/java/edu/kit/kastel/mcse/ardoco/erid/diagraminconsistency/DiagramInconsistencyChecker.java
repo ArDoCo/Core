@@ -3,14 +3,14 @@ package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
-import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.MDEInconsistencyAgent;
-import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.MTDEInconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.RecommendedInstancesConfidenceAgent;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.RecommendedInstancesFilterAgent;
 
 public class DiagramInconsistencyChecker extends ExecutionStage {
@@ -19,8 +19,8 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
 
     public DiagramInconsistencyChecker(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         super(DiagramInconsistencyChecker.class.getSimpleName(), dataRepository,
-                List.of(new RecommendedInstancesFilterAgent(dataRepository), new MDEInconsistencyAgent(dataRepository),
-                        new MTDEInconsistencyAgent(dataRepository)), additionalConfigs);
+                List.of(new RecommendedInstancesFilterAgent(dataRepository), new InconsistencyAgent(dataRepository),
+                        new RecommendedInstancesConfidenceAgent(dataRepository)), additionalConfigs);
         enabledAgents = getAgents().stream().map(Agent::getId).toList();
     }
 

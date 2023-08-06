@@ -37,14 +37,13 @@ public class HoldBackRunResultsProducer {
     }
 
     /**
-     * Runs ArDoCo or the ArDoCo-backed baseline approach multiple times to produce results. The first run calls ArDoCo
-     * normally, in further runs one element is held back each time (so that each element was held back once). This way,
-     * we can simulate missing elements.
+     * Runs ArDoCo or the ArDoCo-backed baseline approach multiple times to produce results. The first run calls ArDoCo normally, in further runs one element is
+     * held back each time (so that each element was held back once). This way, we can simulate missing elements.
      *
      * @param project             the project that should be run
      * @param useBaselineApproach set to true if the baseline approach should be used instead of ArDoCo
-     * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced
-     *         when running ArDoCo without the ModelElement
+     * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without the
+     * ModelElement
      */
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(Project project, boolean useBaselineApproach) {
         Map<ModelInstance, ArDoCoResult> runs = new HashMap<ModelInstance, ArDoCoResult>();
@@ -130,7 +129,7 @@ public class HoldBackRunResultsProducer {
         return arDoCo;
     }
 
-    private static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
+    protected static void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
             Map<String, String> additionalConfigs) {
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
         arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));

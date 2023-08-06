@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator;
+package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -8,9 +8,9 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramLink;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;

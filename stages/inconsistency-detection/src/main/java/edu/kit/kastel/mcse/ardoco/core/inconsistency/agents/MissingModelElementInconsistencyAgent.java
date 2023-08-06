@@ -16,7 +16,7 @@ public class MissingModelElementInconsistencyAgent extends PipelineAgent {
     public MissingModelElementInconsistencyAgent(DataRepository dataRepository) {
         super(MissingModelElementInconsistencyAgent.class.getSimpleName(), dataRepository,
                 List.of(new MissingModelElementInconsistencyInformant(dataRepository)));
-        enabledInformants = getInformants().stream().map(e -> e.getClass().getSimpleName()).toList();
+        enabledInformants = getInformantIds();
     }
 
     @Override

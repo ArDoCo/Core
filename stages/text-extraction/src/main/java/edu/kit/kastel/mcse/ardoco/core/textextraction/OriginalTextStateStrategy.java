@@ -39,11 +39,6 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         super.setTextState(textState);
     }
 
-    //For serialization
-    private OriginalTextStateStrategy() {
-        super();
-    }
-
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
 
@@ -110,17 +105,5 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
     @Override
     public Function<TextStateImpl, TextStateStrategy> creator() {
         return OriginalTextStateStrategy::new;
-    }
-
-    @Serial
-    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
-        objectOutputStream.defaultWriteObject();
-        objectOutputStream.writeObject(getTextState());
-    }
-
-    @Serial
-    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
-        objectInputStream.defaultReadObject();
-        setTextState((TextStateImpl) objectInputStream.readObject());
     }
 }

@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator;
+package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramLink;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
@@ -29,6 +29,10 @@ public interface DiagramConnectionState extends IConfigurable {
 
     default @NotNull Optional<DiagramLink> getDiagramLink(@NotNull DiagramElement diagramElement) {
         return getDiagramLinks().stream().filter(d -> d.getDiagramElement().equals(diagramElement)).findFirst();
+    }
+
+    default @NotNull ImmutableSet<DiagramLink> getDiagramLinks(@NotNull RecommendedInstance recommendedInstance) {
+        return Sets.immutable.fromStream(getDiagramLinks().stream().filter(d -> d.getRecommendedInstance().equals(recommendedInstance)));
     }
 
     /**

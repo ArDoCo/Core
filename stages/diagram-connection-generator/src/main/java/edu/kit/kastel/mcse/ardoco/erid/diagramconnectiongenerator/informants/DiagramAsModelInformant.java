@@ -1,17 +1,18 @@
-package edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.informants;
+package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
+import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconnectiongenerator.DiagramConnectionStates;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -20,7 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
-import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 

@@ -6,25 +6,26 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramDataMock;
-import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.erid.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
+import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsistency;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MTDEInconsistency;
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
@@ -47,7 +48,6 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     @Override
     protected Results runComparable(DiagramProject project, Map<String, String> additionalConfigurations) {
         var dataRepository = run(project, additionalConfigurations);
-        var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
         //TODO Get Metamodel properly
         var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(project.getMetamodel());
@@ -109,5 +109,45 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                 arDoCo.addPipelineStep(new DiagramInconsistencyChecker(combinedConfigs, combinedRepository));
             }
         }.runWithoutSaving();
+    }
+
+    @Disabled
+    @Test
+    void teammatesTest() {
+        runComparable(DiagramProject.TEAMMATES);
+    }
+
+    @Disabled
+    @Test
+    void teammatesHistTest() {
+        runComparable(DiagramProject.TEAMMATES_HISTORICAL);
+    }
+
+    @Disabled
+    @Test
+    void teastoreTest() { runComparable(DiagramProject.TEASTORE); }
+
+    @Disabled
+    @Test
+    void teastoreHistTest() {
+        runComparable(DiagramProject.TEASTORE_HISTORICAL);
+    }
+
+    @Disabled
+    @Test
+    void bbbTest() {
+        runComparable(DiagramProject.BIGBLUEBUTTON);
+    }
+
+    @Disabled
+    @Test
+    void bbbHistTest() {
+        runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL);
+    }
+
+    @Disabled
+    @Test
+    void msTest() {
+        runComparable(DiagramProject.MEDIASTORE);
     }
 }

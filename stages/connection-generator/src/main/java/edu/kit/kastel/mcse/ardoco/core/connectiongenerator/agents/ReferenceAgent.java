@@ -23,7 +23,7 @@ public class ReferenceAgent extends PipelineAgent {
      */
     public ReferenceAgent(DataRepository dataRepository) {
         super(ReferenceAgent.class.getSimpleName(), dataRepository, List.of(new ReferenceInformant(dataRepository)));
-        enabledInformants = getInformants().stream().map(e -> e.getClass().getSimpleName()).toList();
+        enabledInformants = getInformantIds();
     }
 
     @Override

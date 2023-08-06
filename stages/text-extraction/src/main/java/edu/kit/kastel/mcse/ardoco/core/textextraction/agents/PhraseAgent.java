@@ -25,7 +25,7 @@ public class PhraseAgent extends PipelineAgent {
      */
     public PhraseAgent(DataRepository dataRepository) {
         super(PhraseAgent.class.getSimpleName(), dataRepository, List.of(new CompoundAgentInformant(dataRepository)));
-        enabledInformants = getInformants().stream().map(AbstractPipelineStep::getId).toList();
+        enabledInformants = getInformantIds();
     }
 
     @Override

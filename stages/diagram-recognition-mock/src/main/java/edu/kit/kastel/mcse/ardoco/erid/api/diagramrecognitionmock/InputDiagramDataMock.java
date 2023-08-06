@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.core.api;
+package edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock;
 
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;

@@ -16,7 +16,7 @@ public class InitialCodeTraceabilityAgent extends PipelineAgent {
 
     public InitialCodeTraceabilityAgent(DataRepository dataRepository) {
         super(InitialCodeTraceabilityAgent.class.getSimpleName(), dataRepository, List.of(new ArCoTLInformant(dataRepository)));
-        enabledInformants = getInformants().stream().map(Informant::getId).toList();
+        enabledInformants = getInformantIds();
     }
 
     @Override

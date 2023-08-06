@@ -20,7 +20,7 @@ public class UndocumentedModelElementInconsistencyAgent extends PipelineAgent {
     public UndocumentedModelElementInconsistencyAgent(DataRepository dataRepository) {
         super(UndocumentedModelElementInconsistencyAgent.class.getSimpleName(), dataRepository,
                 List.of(new UndocumentedModelElementInconsistencyInformant(dataRepository)));
-        enabledInformants = getInformants().stream().map(e -> e.getClass().getSimpleName()).toList();
+        enabledInformants = getInformantIds();
     }
 
     @Override
