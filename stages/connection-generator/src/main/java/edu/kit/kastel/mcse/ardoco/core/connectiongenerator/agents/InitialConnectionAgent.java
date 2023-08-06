@@ -25,7 +25,7 @@ public class InitialConnectionAgent extends PipelineAgent {
     public InitialConnectionAgent(DataRepository dataRepository) {
         super(InitialConnectionAgent.class.getSimpleName(), dataRepository,
                 List.of(new NameTypeConnectionInformant(dataRepository), new ExtractionDependentOccurrenceInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

@@ -16,7 +16,7 @@ public class InconsistencyAgent extends PipelineAgent {
     public InconsistencyAgent(DataRepository dataRepository) {
         super(InconsistencyAgent.class.getSimpleName(), dataRepository,
                 List.of(new InconsistencyByRecommendedInstancesInformant(dataRepository), new InconsistencyByDiagramElementsInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

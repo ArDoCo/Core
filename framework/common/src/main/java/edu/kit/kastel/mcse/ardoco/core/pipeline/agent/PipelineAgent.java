@@ -60,10 +60,10 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     }
 
     /**
-     * {@return the ids of all informants including disabled}
+     * {@return the class names of all informants including disabled}
      */
-    public List<String> getInformantIds() {
-        return informants.stream().map(Informant::getId).toList();
+    public List<String> getInformantClassNames() {
+        return informants.stream().map(Informant::getClass).map(Class::getSimpleName).toList();
     }
 
     @Override

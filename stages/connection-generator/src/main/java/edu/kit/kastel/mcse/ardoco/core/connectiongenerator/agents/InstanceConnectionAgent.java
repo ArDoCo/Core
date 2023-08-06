@@ -23,7 +23,7 @@ public class InstanceConnectionAgent extends PipelineAgent {
      */
     public InstanceConnectionAgent(DataRepository dataRepository) {
         super(InstanceConnectionAgent.class.getSimpleName(), dataRepository, List.of(new InstantConnectionInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

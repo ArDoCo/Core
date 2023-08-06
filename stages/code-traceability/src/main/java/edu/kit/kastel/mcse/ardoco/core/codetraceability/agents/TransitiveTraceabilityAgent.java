@@ -15,7 +15,7 @@ public class TransitiveTraceabilityAgent extends PipelineAgent {
 
     public TransitiveTraceabilityAgent(DataRepository dataRepository) {
         super(TransitiveTraceabilityAgent.class.getSimpleName(), dataRepository, List.of(new TraceLinkCombiner(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

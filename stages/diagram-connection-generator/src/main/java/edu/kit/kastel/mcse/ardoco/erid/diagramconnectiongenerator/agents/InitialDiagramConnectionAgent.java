@@ -17,7 +17,7 @@ public class InitialDiagramConnectionAgent extends PipelineAgent {
 
     public InitialDiagramConnectionAgent(DataRepository dataRepository) {
         super(id, dataRepository, List.of(new DiagramAsModelInformant(dataRepository), new DiagramTextInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

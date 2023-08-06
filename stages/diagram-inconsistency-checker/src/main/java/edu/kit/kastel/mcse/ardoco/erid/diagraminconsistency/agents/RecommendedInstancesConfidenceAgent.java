@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants.Influence
 
 public class RecommendedInstancesConfidenceAgent extends PipelineAgent {
     @Configurable
-    private List<String> enabledInformants = getInformantIds();
+    private List<String> enabledInformants = getInformantClassNames();
 
     public RecommendedInstancesConfidenceAgent(DataRepository dataRepository) {
         super(RecommendedInstancesConfidenceAgent.class.getSimpleName(), dataRepository, List.of(new InfluenceByInconsistenciesInformant(dataRepository)));

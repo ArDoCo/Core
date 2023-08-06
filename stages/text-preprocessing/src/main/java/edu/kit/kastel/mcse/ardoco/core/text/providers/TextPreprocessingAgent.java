@@ -7,7 +7,6 @@ import java.util.Map;
 import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.CoreNLPProvider;
@@ -23,7 +22,7 @@ public class TextPreprocessingAgent extends PipelineAgent {
      */
     public TextPreprocessingAgent(DataRepository data) {
         super(TextPreprocessingAgent.class.getSimpleName(), data, List.of(new CoreNLPProvider(data)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     /**

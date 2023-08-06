@@ -25,7 +25,7 @@ public class ProjectNameFilterAgent extends PipelineAgent {
      */
     public ProjectNameFilterAgent(DataRepository dataRepository) {
         super("ProjectNameFilterAgent", dataRepository, List.of(new ProjectNameInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

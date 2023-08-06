@@ -20,7 +20,7 @@ public class ArchitectureLinkToCodeLinkTransformerAgent extends PipelineAgent {
     public ArchitectureLinkToCodeLinkTransformerAgent(DataRepository dataRepository) {
         super(ArchitectureLinkToCodeLinkTransformerAgent.class.getSimpleName(), dataRepository,
                 List.of(new ArchitectureLinkToCodeLinkTransformerInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

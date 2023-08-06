@@ -15,7 +15,7 @@ public class MappingCombiner extends PipelineAgent {
 
     public MappingCombiner(DataRepository dataRepository) {
         super(MappingCombiner.class.getSimpleName(), dataRepository, List.of(new MappingCombinerInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

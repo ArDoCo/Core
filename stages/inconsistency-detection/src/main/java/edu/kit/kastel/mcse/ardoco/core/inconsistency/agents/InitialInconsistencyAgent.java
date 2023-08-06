@@ -20,7 +20,7 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     public InitialInconsistencyAgent(DataRepository dataRepository) {
         super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository,
                 List.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(dataRepository)));
-        enabledFilters = getInformantIds();
+        enabledFilters = getInformantClassNames();
     }
 
     @Override

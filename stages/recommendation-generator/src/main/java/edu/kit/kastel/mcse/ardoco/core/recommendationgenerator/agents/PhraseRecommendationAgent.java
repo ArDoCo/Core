@@ -15,7 +15,7 @@ public final class PhraseRecommendationAgent extends PipelineAgent {
 
     public PhraseRecommendationAgent(DataRepository dataRepository) {
         super(PhraseRecommendationAgent.class.getSimpleName(), dataRepository, List.of(new CompoundRecommendationInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override

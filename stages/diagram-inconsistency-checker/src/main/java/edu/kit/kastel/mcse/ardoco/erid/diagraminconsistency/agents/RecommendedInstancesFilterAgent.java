@@ -14,7 +14,7 @@ public class RecommendedInstancesFilterAgent extends PipelineAgent {
 
     public RecommendedInstancesFilterAgent(DataRepository dataRepository) {
         super(RecommendedInstancesFilterAgent.class.getSimpleName(), dataRepository, List.of(new InconsistencyCheckerFiltersInformant(dataRepository)));
-        enabledInformants = getInformantIds();
+        enabledInformants = getInformantClassNames();
     }
 
     @Override
