@@ -12,9 +12,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
@@ -75,28 +72,17 @@ public record Results(DiagramProject project, BigDecimal precision, BigDecimal r
         return create(project, expected, traceLinks, tpLinks, fpLinks, fnLinks, TN);
     }
 
-    public static Results difference(@NotNull Results a, @Nullable Results b) {
-        if (b == null)
-            return a;
-        var dAll = difference(a.all(), b.all());
-        var dTP = difference(a.truePositives(), b.truePositives());
-        var dFP = difference(a.falsePositives(), b.falsePositives());
-        var dFN = difference(a.falseNegatives(), b.falseNegatives());
-        var TN = difference(b.falsePositives(), a.falsePositives()).size();
-        return create(a.project, new ExpectedResults(0, 0, 0, 0, 0, 0), dAll, dTP, dFP, dFN, TN);
-    }
-
     private static BigDecimal toBD(double a) {
         if (Double.isNaN(a))
-            return null;
+            return BigDecimal.valueOf(-1337);
         return BigDecimal.valueOf(a).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private static <T extends DiaTexTraceLink> TreeSet<T> intersection(Set<T> a, Set<? extends DiaTexTraceLink> b) {
+    public static <T extends DiaTexTraceLink> TreeSet<T> intersection(Set<T> a, Set<? extends DiaTexTraceLink> b) {
         return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    private static <T extends DiaTexTraceLink> TreeSet<T> difference(Set<T> a, Set<? extends DiaTexTraceLink> b) {
+    public static <T extends DiaTexTraceLink> TreeSet<T> difference(Set<T> a, Set<? extends DiaTexTraceLink> b) {
         return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 

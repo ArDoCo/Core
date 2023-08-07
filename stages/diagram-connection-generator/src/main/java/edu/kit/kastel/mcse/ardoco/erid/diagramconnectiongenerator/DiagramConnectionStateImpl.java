@@ -8,13 +8,13 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 
 public class DiagramConnectionStateImpl extends AbstractState implements DiagramConnectionState {
     private final Set<DiagramLink> diagramLinks = new HashSet<>();
@@ -26,9 +26,9 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     }
 
     @Override
-    public boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String textIdentifier, @NotNull Claimant claimant, double confidence,
+    public boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String textIdentifier, @NotNull Claimant claimant,
             @NotNull Map<Word, Double> confidenceMap) {
-        var newDL = new DiagramLink(ri, de, textIdentifier, claimant, confidence, confidenceMap);
+        var newDL = new DiagramLink(ri, de, textIdentifier, claimant, confidenceMap);
         var added = diagramLinks.add(newDL);
 
         if (added)

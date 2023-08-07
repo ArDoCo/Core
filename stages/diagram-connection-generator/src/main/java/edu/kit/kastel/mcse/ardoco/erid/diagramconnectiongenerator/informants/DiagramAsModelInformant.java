@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
@@ -14,7 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.Recommendatio
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
@@ -31,11 +29,6 @@ public class DiagramAsModelInformant extends Informant {
 
     public DiagramAsModelInformant(DataRepository dataRepository) {
         super(DiagramAsModelInformant.class.getSimpleName(), dataRepository);
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        //Empty
     }
 
     @Override
@@ -69,7 +62,6 @@ public class DiagramAsModelInformant extends Informant {
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
                     basedOnIncreasingMinimalProportionalThreshold.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
-                            WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName()),
                             DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                 }
             }
@@ -91,7 +83,6 @@ public class DiagramAsModelInformant extends Informant {
                     //Add based on overall similarity
                     if (SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
                         basedOnOverallSimilarity.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
-                                WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName()),
                                 DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                     }
                     //Add based on surface words
@@ -99,7 +90,6 @@ public class DiagramAsModelInformant extends Informant {
                     if (similarSurfaceWords.size() >= minSimilarSurfaceWords) {
                         for (var similar : similarSurfaceWords) {
                             basedOnSurfaceWords.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
-                                    WordSimUtils.getSimilarity(similar, pair.second().getName()),
                                     DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                         }
                     }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -79,15 +78,17 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
 
         var cacheID = "Results-" + project.name();
         var prevResults = getCached(cacheID, Results.class);
-        if (!altResult.equalsByConfusionMatrix(prevResults)) {
-            System.out.println("Cache result at " + cacheID + "? y/n:");
-            var scanner = new Scanner(System.in);
-            if (scanner.nextLine().equals("y")) {
-                cache(cacheID, altResult);
-            }
-            var delta = Results.difference(altResult, prevResults);
-            logger.info("Delta: " + delta);
+
+        if (prevResults != null) {
+            var dAll = Results.difference(altResult.all(), prevResults.all());
+            var dTP = Results.difference(altResult.truePositives(), prevResults.truePositives());
+            var dFP = Results.difference(altResult.falsePositives(), prevResults.falsePositives());
+            var dFN = Results.difference(altResult.falseNegatives(), prevResults.falseNegatives());
+            var dTN = Results.difference(prevResults.falsePositives(), altResult.falsePositives());
         }
+
+        if (!altResult.equalsByConfusionMatrix(prevResults))
+            debugCache(cacheID, altResult);
 
         return altResult;
     }

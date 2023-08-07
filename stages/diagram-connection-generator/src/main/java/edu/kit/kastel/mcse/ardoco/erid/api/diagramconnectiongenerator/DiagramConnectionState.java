@@ -9,16 +9,24 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 
 public interface DiagramConnectionState extends IConfigurable {
+    Logger logger = LoggerFactory.getLogger(DiagramConnectionState.class);
+
+    @Configurable
+    double confidenceThreshold = 0.8;
+
     /**
      * Returns all diagram links.
      *
@@ -43,12 +51,11 @@ public interface DiagramConnectionState extends IConfigurable {
      * @param de            diagram element
      * @param projectName   name of the project
      * @param claimant      the claimant responsible for the link
-     * @param confidence    confidence in the link
      * @param confidenceMap confidence map containing the confidences
      * @return true, if the link wasn't already contained, false else
      */
     boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String projectName, @NotNull Claimant claimant,
-            double confidence, @NotNull Map<Word, Double> confidenceMap);
+            @NotNull Map<Word, Double> confidenceMap);
 
     /**
      * Trys to add the diagram link to the state. Returns true if a link with the same properties wasn't already contained by the state.
@@ -70,7 +77,9 @@ public interface DiagramConnectionState extends IConfigurable {
         for (var diagramLink : getDiagramLinks()) {
             traceLinks.addAll(diagramLink.toTraceLinks().toList());
         }
-        return traceLinks.toImmutable();
+        var aboveThreshold = traceLinks.stream().filter(diaWordTraceLink -> diaWordTraceLink.getConfidence() >= confidenceThreshold).toList();
+        logger.info("Removed {} Word Trace Links due to low confidence", traceLinks.size() - aboveThreshold.size());
+        return Sets.immutable.ofAll(aboveThreshold);
     }
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getTraceLinks() {

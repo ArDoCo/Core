@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class StageTest<T extends AbstractExecutionStage, V extends Record> {
+    private static final String ENV_DEBUG = "debug";
+    private static final String CACHING = "stageTestCaching";
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
     private final T stage;
     private final Set<Class<? extends PipelineAgent>> agents;
@@ -51,6 +54,34 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     protected DataRepository run(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
         var dataRepository = getDataRepository(project, cachePreRun);
         return runTestRunner(project, additionalConfigurations, dataRepository);
+    }
+
+    protected void debugAskCache(String id, Serializable obj) {
+        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, "false"))) {
+            System.out.println("Cache " + obj.getClass().getSimpleName() + " at " + id + "? y/n:");
+            if (new Scanner(System.in).nextLine().equals("y")) {
+                cache(id, obj);
+            }
+        } else {
+            logger.info("Set \"" + ENV_DEBUG + "=true\" to enable caching prompts");
+        }
+    }
+
+    protected void debugAskCache() {
+        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, "false"))) {
+            System.out.println("Enable caching? y/n:");
+            if (new Scanner(System.in).nextLine().equals("y")) {
+                System.setProperty(CACHING, "true");
+            }
+        } else {
+            logger.info("Set \"" + ENV_DEBUG + "=true\" to enable caching prompts");
+        }
+    }
+
+    protected void debugCache(@NotNull String id, @NotNull Serializable obj) {
+        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, "false"))) {
+            cache(id, obj);
+        }
     }
 
     protected void cache(@NotNull String id, @NotNull Serializable obj) {
@@ -99,6 +130,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     @BeforeAll
     void resetAllTestDataRepositoryCaches() {
         Arrays.stream(DiagramProject.values()).forEach(d -> TestDataRepositoryCache.getInstance(stage.getClass(), d).deleteFile());
+        debugAskCache();
     }
 
     @DisplayName("Repetition Test Stage")

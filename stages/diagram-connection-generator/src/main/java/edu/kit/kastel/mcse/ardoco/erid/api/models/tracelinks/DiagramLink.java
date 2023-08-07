@@ -1,11 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
-
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -13,16 +11,35 @@ import org.eclipse.collections.api.set.MutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class DiagramLink extends EndpointTuple implements Claimant, Comparable<DiagramLink> {
+    public static final Function<Map<Word, Double>, Double> MAXIMUM_CONFIDENCE = (Map<Word, Double> confidenceMap) -> confidenceMap.values()
+            .stream()
+            .reduce(0.0, Math::max);
+    public static final Function<Map<Word, Double>, Double> MINIMUM_CONFIDENCE = (Map<Word, Double> confidenceMap) -> confidenceMap.values()
+            .stream()
+            .reduce(0.0, Math::min);
+    public static final Function<Map<Word, Double>, Double> AVERAGE_CONFIDENCE = (Map<Word, Double> confidenceMap) -> {
+        return confidenceMap.values().stream().reduce(0.0, Double::sum) / confidenceMap.values().size();
+    };
+    public static final Function<Map<Word, Double>, Double> MEDIAN_CONFIDENCE = (Map<Word, Double> confidenceMap) -> {
+        var values = confidenceMap.values().stream().sorted().toList();
+        var length = values.size();
+        if (length % 2 == 0) {
+            return (values.get(length / 2) + values.get(length / 2 - 1)) / 2;
+        }
+        return values.get(length / 2);
+    };
+
     private final RecommendedInstance recommendedInstance;
     private final DiagramElement diagramElement;
     private final String projectName;
     private final Claimant claimant;
-    private final double confidence;
     private final Map<Word, Double> confidenceMap;
 
     /**
@@ -30,17 +47,16 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
      * @param diagramElement      the diagram element
      * @param projectName         the name of the project
      * @param claimant            the {@link Claimant} responsible for the creation of this link
-     * @param confidence          confidence in the link
+     * @param confidenceMap       the confidence
      */
     public DiagramLink(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
-            @NotNull Claimant claimant, double confidence, @NotNull Map<Word, Double> confidenceMap) {
+            @NotNull Claimant claimant, @NotNull Map<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
 
         this.recommendedInstance = recommendedInstance;
         this.diagramElement = diagramElement;
         this.projectName = projectName;
         this.claimant = claimant;
-        this.confidence = confidence;
         this.confidenceMap = confidenceMap;
     }
 
@@ -50,10 +66,6 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
 
     public DiagramElement getDiagramElement() {
         return diagramElement;
-    }
-
-    public double getConfidence() {
-        return confidence;
     }
 
     public double getConfidence(Word word) {
@@ -68,9 +80,14 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
         confidenceMap.put(word, confidence);
     }
 
+    public double getConfidence(Function<Map<Word, Double>, Double> accumulator) {
+        return accumulator.apply(getConfidenceMap());
+    }
+
     @Override
     public String toString() {
-        return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3}]", recommendedInstance.getName(), diagramElement, confidence, claimant.getClass().getSimpleName());
+        return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3}]", recommendedInstance.getName(), diagramElement,
+                confidenceMap.values().stream().max(Double::compareTo), claimant.getClass().getSimpleName());
     }
 
     @Override

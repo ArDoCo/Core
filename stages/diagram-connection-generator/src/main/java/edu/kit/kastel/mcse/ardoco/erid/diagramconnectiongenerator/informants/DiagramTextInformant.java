@@ -1,22 +1,19 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
-import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 
 public class DiagramTextInformant extends Informant {
     /**
@@ -28,11 +25,6 @@ public class DiagramTextInformant extends Informant {
 
     public DiagramTextInformant(DataRepository dataRepository) {
         super(DiagramTextInformant.class.getSimpleName(), dataRepository);
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
-        //Empty
     }
 
     @Override
@@ -66,7 +58,6 @@ public class DiagramTextInformant extends Informant {
                     for (var recommendedInstance : ris) {
                         if (DiagramUtil.isInitialismOf(recommendedInstance.getName(), tBox.getText(), initialismThreshold)) {
                             diagramConnectionState.addToDiagramLinks(recommendedInstance, box, projectName, this,
-                                    WordSimUtils.getSimilarity(recommendedInstance.getName(), tBox.getText()),
                                     DiagramUtil.calculateHighestSimilarity(box, recommendedInstance));
                         }
                     }
