@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
@@ -20,13 +21,27 @@ public interface TextState extends IConfigurable, PipelineStepData {
     String ID = "TextState";
 
     /**
+     * Sets the {@link TextStateStrategy} used by the text state.
+     *
+     * @param textStateStrategy the text strategy
+     */
+    void setTextStateStrategy(TextStateStrategy textStateStrategy);
+
+    /**
+     * {@return the text state strategy of the text state}
+     */
+    TextStateStrategy getTextStateStrategy();
+
+    /**
      * * Adds a name mapping to the state.
      *
      * @param word        word of the mapping
      * @param kind        the kind of the mapping
      * @param probability probability to be a name mapping
      */
-    NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability);
+    default NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability) {
+        return getTextStateStrategy().addOrExtendNounMapping(word, kind, claimant, probability, Lists.immutable.with(word.getText()));
+    }
 
     /**
      * * Adds a name mapping to the state.
@@ -36,13 +51,19 @@ public interface TextState extends IConfigurable, PipelineStepData {
      * @param probability  probability to be a name mapping
      * @param surfaceForms list of the appearances of the mapping
      */
-    NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms);
+    default NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
+        return getTextStateStrategy().addOrExtendNounMapping(word, kind, claimant, probability, surfaceForms);
+    }
 
-    NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference);
+    default NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference) {
+        return getTextStateStrategy().addNounMapping(words, kind, claimant, probability, referenceWords, surfaceForms, reference);
+    }
 
-    NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference);
+    default NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference) {
+        return getTextStateStrategy().addNounMapping(words, distribution, referenceWords, surfaceForms, reference);
+    }
 
     /**
      * Removes a noun mapping from the state.

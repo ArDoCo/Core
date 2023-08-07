@@ -1,6 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,13 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
@@ -48,13 +44,30 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     }
 
     protected DataRepository run(DiagramProject project, Map<String, String> additionalConfigurations) {
-        var dataRepository = getDataRepository(project);
+        var dataRepository = getDataRepository(project, true);
         return runTestRunner(project, additionalConfigurations, dataRepository);
+    }
+
+    protected DataRepository run(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+        var dataRepository = getDataRepository(project, cachePreRun);
+        return runTestRunner(project, additionalConfigurations, dataRepository);
+    }
+
+    protected void cache(@NotNull String id, @NotNull Serializable obj) {
+        new TestDataCache<Serializable>(stage.getClass(), obj.getClass(), id, "cache/").save(obj);
+    }
+
+    protected <W extends Serializable> W getCached(@NotNull String id, Class<W> cls) {
+        return new TestDataCache<W>(stage.getClass(), cls, id, "cache/").load();
     }
 
     @NotNull
     @DeepCopy
-    protected DataRepository getDataRepository(DiagramProject diagramProject) {
+    protected DataRepository getDataRepository(DiagramProject diagramProject, boolean cachePreRun) {
+        if (!cachePreRun) {
+            return this.setup(diagramProject);
+        }
+
         return dataRepositoryCaches.computeIfAbsent(diagramProject, dp -> TestDataRepositoryCache.getInstance(stage.getClass(), diagramProject))
                 .get(this::setup);
     }
@@ -63,10 +76,18 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
         return run(project, Map.of());
     }
 
-    protected abstract V runComparable(DiagramProject project, Map<String, String> additionalConfigurations);
+    protected abstract V runComparable(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun);
+
+    protected V runComparable(DiagramProject project, Map<String, String> additionalConfigurations) {
+        return runComparable(project, additionalConfigurations, true);
+    }
+
+    protected V runComparable(DiagramProject project, boolean cachePreRun) {
+        return runComparable(project, Map.of(), cachePreRun);
+    }
 
     protected V runComparable(DiagramProject project) {
-        return runComparable(project, Map.of());
+        return runComparable(project, Map.of(), true);
     }
 
     protected abstract DataRepository runPreTestRunner(DiagramProject project);
@@ -74,6 +95,11 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     protected abstract DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository);
 
     private static final int repetitions = 2;
+
+    @BeforeAll
+    void resetAllTestDataRepositoryCaches() {
+        Arrays.stream(DiagramProject.values()).forEach(d -> TestDataRepositoryCache.getInstance(stage.getClass(), d).deleteFile());
+    }
 
     @DisplayName("Repetition Test Stage")
     @Test

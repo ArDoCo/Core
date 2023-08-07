@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,7 @@ public class Box extends DiagramElement implements Serializable {
     private String classification;
     private List<TextBox> textBoxes = new ArrayList<>();
     private Integer dominatingColor = null;
+    private Set<String> references;
 
     // Jackson JSON
     private Box() {
@@ -123,6 +125,13 @@ public class Box extends DiagramElement implements Serializable {
      */
     public List<TextBox> getTexts() {
         return new ArrayList<>(textBoxes);
+    }
+
+    public Set<String> getReferences() {
+        if (references == null) {
+            references = DiagramUtil.getPossibleNames(this);
+        }
+        return references;
     }
 
     /**

@@ -36,8 +36,7 @@ public final class CommonTextToolsConfig {
      */
     public static final int LEVENSHTEIN_MAX_DISTANCE = CONFIG.getPropertyAsInt("levenshtein_MaxDistance");
     /**
-     * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts
-     * as a dynamic distance limit.
+     * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts as a dynamic distance limit.
      */
     public static final double LEVENSHTEIN_THRESHOLD = CONFIG.getPropertyAsDouble("levenshtein_Threshold");
 
@@ -97,6 +96,14 @@ public final class CommonTextToolsConfig {
      * The path to the sqlite database file used by the GloVe word similarity measure.
      */
     public static final String GLOVE_DB_FILE_PATH = CONFIG.getProperty("glove_DatabaseFilePath");
+    /**
+     * The threshold for a diagram element to be considered similar to a noun mapping.
+     */
+    public static final double DE_NM_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("de_NM_SimilarityThreshold");
+    /**
+     * The threshold for a diagram element to be considered similar to a word.
+     */
+    public static final double DE_Word_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("de_Word_SimilarityThreshold");
 
     private static ResourceAccessor loadParameters(String filePath) {
         return new ResourceAccessor(filePath, true);

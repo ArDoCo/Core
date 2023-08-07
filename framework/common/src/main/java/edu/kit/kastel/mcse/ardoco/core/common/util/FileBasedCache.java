@@ -41,10 +41,18 @@ public abstract class FileBasedCache<T> {
 
     public void resetFile() {
         try {
+            deleteFile();
+            getFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean deleteFile() {
+        try {
             if (file == null)
                 file = getFileHandle();
-            file.delete();
-            getFile();
+            return file.delete();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

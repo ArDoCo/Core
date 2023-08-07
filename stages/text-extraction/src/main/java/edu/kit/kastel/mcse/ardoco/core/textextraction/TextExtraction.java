@@ -46,6 +46,7 @@ public class TextExtraction extends AbstractExecutionStage {
     @Override
     protected void initializeState() {
         var dataRepository = getDataRepository();
+        //FIXME why cast to TextStateImpl rather than TextState
         var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
             var textState = new TextStateImpl();

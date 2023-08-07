@@ -40,6 +40,11 @@ public final class ElementWrapper<E> implements Serializable {
         return elementType.equals(that.elementType) && elementEquals.test(element, elementType.cast(that.element));
     }
 
+    @Override
+    public String toString() {
+        return element.toString();
+    }
+
     public E getElement() {
         return element;
     }

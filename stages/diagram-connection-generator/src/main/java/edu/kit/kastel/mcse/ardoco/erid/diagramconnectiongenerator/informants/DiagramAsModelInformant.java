@@ -1,16 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
-import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
@@ -23,6 +20,9 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 
 public class DiagramAsModelInformant extends Informant {
     @Configurable
@@ -70,7 +70,7 @@ public class DiagramAsModelInformant extends Informant {
                 for (var recommendedInstance : mostLikelyRi) {
                     basedOnIncreasingMinimalProportionalThreshold.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
                             WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName()),
-                            DiagramConnectionGeneratorUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
+                            DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                 }
             }
         }
@@ -92,7 +92,7 @@ public class DiagramAsModelInformant extends Informant {
                     if (SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
                         basedOnOverallSimilarity.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
                                 WordSimUtils.getSimilarity(recommendedInstance.getName(), pair.second().getName()),
-                                DiagramConnectionGeneratorUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
+                                DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                     }
                     //Add based on surface words
                     var similarSurfaceWords = SimilarityUtils.getSimilarSurfaceWords(recommendedInstance, pair.second());
@@ -100,7 +100,7 @@ public class DiagramAsModelInformant extends Informant {
                         for (var similar : similarSurfaceWords) {
                             basedOnSurfaceWords.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
                                     WordSimUtils.getSimilarity(similar, pair.second().getName()),
-                                    DiagramConnectionGeneratorUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
+                                    DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                         }
                     }
                 }
@@ -118,7 +118,7 @@ public class DiagramAsModelInformant extends Informant {
 
         var boxes = diagram.getBoxes();
         for (Box box : boxes) {
-            var names = DiagramConnectionGeneratorUtil.getPossibleNames(box);
+            var names = box.getReferences();
             names.forEach(name -> instances.add(new Pair<>(box, new ModelInstanceImpl(name, "", Integer.toString(name.hashCode())))));
         }
 

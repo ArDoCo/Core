@@ -1,8 +1,6 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -12,12 +10,9 @@ import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
@@ -26,21 +21,17 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
-import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * The Class TextState defines the basic implementation of a {@link TextState}.
  */
 public class TextStateImpl extends AbstractState implements TextState {
-
-    private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
-
     private static final Comparator<ElementWrapper<NounMapping>> ORDER_NOUNMAPPING = (Comparator<ElementWrapper<NounMapping>> & Serializable) (n1, n2) -> {
         if (n1.equals(n2))
             return 0;
@@ -62,7 +53,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     private static final double MAPPING_KIND_MAX_DIFF = 0.1;
     private MutableList<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
-    private transient TextStateStrategy strategy;
+    private TextStateStrategy strategy;
 
     /**
      * Creates a new name type relation state
@@ -78,46 +69,18 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability) {
-        return strategy.addOrExtendNounMapping(word, kind, claimant, probability, Lists.immutable.with(word.getText()));
+    public void setTextStateStrategy(TextStateStrategy textStateStrategy) {
+        this.strategy = textStateStrategy;
     }
 
     @Override
-    public NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
-        return strategy.addOrExtendNounMapping(word, kind, claimant, probability, surfaceForms);
-    }
-
-    @Override
-    public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
-        MutableMap<MappingKind, Confidence> distribution = Maps.mutable.empty();
-        distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
-        distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference);
-        nounMapping.addKindWithProbability(kind, claimant, probability);
-        addNounMappingAddPhraseMapping(nounMapping);
-        return nounMapping;
-    }
-
-    @Override
-    public NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
-
-        if (reference == null) {
-            reference = calculateNounMappingReference(referenceWords);
-        }
-
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference);
-        addNounMappingAddPhraseMapping(nounMapping);
-        return nounMapping;
+    public TextStateStrategy getTextStateStrategy() {
+        return this.strategy;
     }
 
     @Override
     public ImmutableList<NounMapping> getNounMappings() {
         return this.nounMappings.toImmutableList().collect(ElementWrapper::getElement);
-
     }
 
     @Override
@@ -296,6 +259,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
+        //FIXME I think this should also be delegated to a strategy, rather than creating the phrasemappingimpl directly
         addNounMappingToState(nounMapping);
         phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases().castToSet()));
     }
@@ -311,18 +275,6 @@ public class TextStateImpl extends AbstractState implements TextState {
             phrases.forEach(phraseMapping::removePhrase);
         }
         removeNounMappingFromState(nounMapping, replacement);
-    }
-
-    String calculateNounMappingReference(ImmutableList<Word> referenceWords) {
-        StringBuilder refBuilder = new StringBuilder();
-        referenceWords.toSortedListBy(Word::getPosition);
-        referenceWords.toSortedListBy(Word::getSentenceNo);
-
-        for (int i = 0; i < referenceWords.size() - 1; i++) {
-            refBuilder.append(referenceWords.get(i).getText()).append(" ");
-        }
-        refBuilder.append(referenceWords.get(referenceWords.size() - 1).getText());
-        return refBuilder.toString();
     }
 
     private void addNounMappingToState(NounMapping nounMapping) {

@@ -19,6 +19,7 @@ import org.eclipse.collections.api.set.MutableSet;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -26,8 +27,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
     private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = nm -> Objects.hash(nm.getReference(), nm.getPhrases());
-    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> (Objects.equals(nm1.getPhrases(), nm2
-            .getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference()));
+    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> (Objects.equals(nm1.getPhrases(),
+            nm2.getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference()));
 
     public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
@@ -61,19 +62,18 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     }
 
     @Override
-    public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
-            MappingKind mappingKind, Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
+            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
 
         MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
         mergedWords.addAllIterable(secondNounMapping.getWords());
 
         var distribution1 = firstNounMapping.getDistribution().toMap();
         var distribution2 = secondNounMapping.getDistribution().toMap();
-        var mergedRawMap = Arrays.stream(MappingKind.values())
-                .collect(Collectors.toMap( //
-                        kind -> kind, //
-                        kind -> putAllConfidencesTogether(distribution1.get(kind), distribution2.get(kind)) //
-                ));
+        var mergedRawMap = Arrays.stream(MappingKind.values()).collect(Collectors.toMap( //
+                kind -> kind, //
+                kind -> putAllConfidencesTogether(distribution1.get(kind), distribution2.get(kind)) //
+        ));
         MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
@@ -99,17 +99,24 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
             if (firstNounMapping.getReference().equalsIgnoreCase(secondNounMapping.getReference())) {
                 mergedReference = firstNounMapping.getReference();
             } else {
-                mergedReference = this.getTextState().calculateNounMappingReference(mergedReferenceWords);
+                mergedReference = calculateNounMappingReference(mergedReferenceWords);
             }
         }
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords
-                .toImmutableSortedSet(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
+        var mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping),
+                mergedWords.toImmutableSortedSet(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
+
+        return mergedNounMapping;
+    }
+
+    @Override
+    public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
+            MappingKind mappingKind, Claimant claimant, double probability) {
+        var mergedNounMapping = mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant, probability);
 
         this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
         this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
-
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 
         return mergedNounMapping;

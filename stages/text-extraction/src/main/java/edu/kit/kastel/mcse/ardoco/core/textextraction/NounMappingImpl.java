@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Objects;
@@ -32,7 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
-public final class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
+public class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
@@ -251,5 +252,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
 
     public void setIsDefinedAsCompound(boolean isDefinedAsCompound) {
         this.isDefinedAsCompound = isDefinedAsCompound;
+    }
+
+    private final Confidence putAllConfidencesTogether(Confidence confidence, Confidence confidence1) {
+        Confidence result = confidence.createCopy();
+        result.addAllConfidences(confidence1);
+        return result;
     }
 }

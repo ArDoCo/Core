@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
@@ -9,58 +9,22 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.FileBasedCache;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SerializableFileBasedCache;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 
-public class TestDataRepositoryCache extends FileBasedCache<TestDataRepositoryCache.Record> {
+public class TestDataRepositoryCache extends TestDataCache<TestDataRepositoryCache.Record> {
     private static final Logger logger = LoggerFactory.getLogger(TestDataRepositoryCache.class);
-    private final Class<? extends AbstractExecutionStage> stage;
     private final DiagramProject diagramProject;
-    private Record record;
 
     public static TestDataRepositoryCache getInstance(Class<? extends AbstractExecutionStage> stage, DiagramProject diagramProject) {
         return new TestDataRepositoryCache(stage, diagramProject);
     }
 
     private TestDataRepositoryCache(@NotNull Class<? extends AbstractExecutionStage> stage, DiagramProject diagramProject) {
-        super(diagramProject.name(), ".ser", "test/data-repositories/" + stage.getSimpleName() + "/");
-        this.stage = stage;
+        super(stage, TestDataRepositoryCache.Record.class, diagramProject.name(), "data-repositories/");
         this.diagramProject = diagramProject;
-    }
-
-    @Override
-    public void save(Record content) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(getFile()))) {
-            out.writeObject(content);
-            logger.info("Saved {} file", getIdentifier());
-        } catch (IOException e) {
-            logger.error("Error reading file", e);
-        }
-    }
-
-    @Override
-    public Record load(boolean allowReload) {
-        if (record != null)
-            return record;
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(getFile()))) {
-            logger.info("Reading {} file", getIdentifier());
-            record = (Record) in.readObject();
-            return record;
-        } catch (InvalidClassException | ClassNotFoundException | EOFException e) {
-            if (allowReload) {
-                logger.warn("SerialVersionUID might have changed, resetting {} file", getIdentifier());
-                resetFile();
-                return load(false);
-            } else {
-                logger.error("Error reading {} file, reload is disabled", getIdentifier());
-                throw new RuntimeException(e);
-            }
-        } catch (IOException e) {
-            logger.error("Error reading {} file", getIdentifier());
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

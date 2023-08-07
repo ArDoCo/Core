@@ -1,10 +1,6 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -18,11 +14,13 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
@@ -48,7 +46,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
             if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
 
-                return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
+                return mergeNounMappingsStateless(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
                         disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
             }
         }
@@ -64,8 +62,8 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
     }
 
     @Override
-    public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
-            MappingKind mappingKind, Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
+            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
 
         MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
@@ -90,13 +88,17 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
 
         String mergedReference = mergedReferenceWords.collect(Word::getText).makeString(" ");
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping),
-                mergedWords.toSortedSet().toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(),
-                mergedReference);
+        return new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords.toSortedSet().toImmutable(),
+                mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
+    }
+
+    @Override
+    public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
+            MappingKind mappingKind, Claimant claimant, double probability) {
+        var mergedNounMapping = mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant, probability);
 
         this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
         this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
-
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 
         return mergedNounMapping;

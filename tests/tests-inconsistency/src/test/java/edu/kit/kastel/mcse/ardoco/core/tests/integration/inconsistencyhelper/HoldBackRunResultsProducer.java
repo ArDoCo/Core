@@ -140,6 +140,6 @@ public class HoldBackRunResultsProducer {
 
     protected void addPreSteps(ArDoCoResult precomputedResults, DataRepository dataRepository) {
         var preprocessingData = new PreprocessingData(precomputedResults.getText());
-        dataRepository.addData(PreprocessingData.ID, preprocessingData);
+        DataRepositoryHelper.putPreprocessingData(dataRepository, preprocessingData);
     }
 }

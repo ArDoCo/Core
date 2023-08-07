@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.util;
+package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DBPediaHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
@@ -22,14 +22,14 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilaritySt
 /**
  * Provides utility methods that are shared by {@link edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant informants} of this stage.
  */
-public class DiagramConnectionGeneratorUtil {
+public class DiagramUtil {
     /**
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
      */
     private final static Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
 
-    private DiagramConnectionGeneratorUtil() {
+    private DiagramUtil() {
         throw new IllegalStateException("Cannot be instantiated");
     }
 
@@ -42,7 +42,7 @@ public class DiagramConnectionGeneratorUtil {
      * @see #calculateHighestSimilarity(Set, Set)
      */
     public static @NotNull Map<Word, Double> calculateHighestSimilarity(@NotNull Box box, @NotNull RecommendedInstance recommendedInstance) {
-        var deNames = getPossibleNames(box);
+        var deNames = box.getReferences();
         var words = recommendedInstance.getNameMappings().stream().flatMap(nm -> nm.getWords().stream()).collect(Collectors.toSet());
         return calculateHighestSimilarity(words, deNames);
     }
@@ -54,11 +54,41 @@ public class DiagramConnectionGeneratorUtil {
      * @param targets the target words
      */
     public static @NotNull Map<Word, Double> calculateHighestSimilarity(@NotNull Set<Word> words, @NotNull Set<String> targets) {
-        return words.stream()
-                .collect(Collectors.toMap(w -> w, w -> targets.stream()
-                        .map(name -> WordSimUtils.getSimilarity(w.getPhrase().getText(), name, SimilarityStrategy.MAXIMUM, true))
-                        .max(Double::compareTo)
-                        .orElse(Double.MIN_VALUE)));
+        return words.stream().collect(Collectors.toMap(w -> w, w -> calculateHighestSimilarity(w, targets)));
+    }
+
+    /**
+     * {@return the highest similarity of the word to any word from the target words}
+     *
+     * @param word    the word
+     * @param targets the target words
+     */
+    public static double calculateHighestSimilarity(@NotNull Word word, @NotNull Set<String> targets) {
+        return targets.stream()
+                .map(name -> WordSimUtils.getSimilarity(word.getText(), name, SimilarityStrategy.MAXIMUM, true))
+                .max(Double::compareTo)
+                .orElse(Double.MIN_VALUE);
+    }
+
+    /**
+     * {@return the similarity of the noun mapping to the box}
+     *
+     * @param nounMapping the noun mapping
+     * @param box         the box {@return the similarity of the noun mapping to the box}
+     */
+    public static double calculateSimilarity(@NotNull NounMapping nounMapping, @NotNull Box box) {
+        var targets = box.getReferences();
+        return nounMapping.getReferenceWords().stream().map(word -> calculateHighestSimilarity(word, targets)).max(Double::compareTo).orElse(0.0);
+    }
+
+    /**
+     * {@return the similarity of the word to the box}
+     *
+     * @param word the word
+     * @param box  the box
+     */
+    public static double calculateSimilarity(@NotNull Word word, @NotNull Box box) {
+        return calculateHighestSimilarity(word, box.getReferences());
     }
 
     /**
@@ -70,7 +100,7 @@ public class DiagramConnectionGeneratorUtil {
     private static @NotNull Set<String> processText(@NotNull String text) {
         var words = new LinkedHashSet<String>();
         var split = splitBracketsAndEnumerations(text);
-        var deCameledSplit = split.stream().map(DiagramConnectionGeneratorUtil::getDeCameledText).toList();
+        var deCameledSplit = split.stream().map(DiagramUtil::getDeCameledText).toList();
         words.addAll(split);
         words.addAll(deCameledSplit);
         words.remove("");

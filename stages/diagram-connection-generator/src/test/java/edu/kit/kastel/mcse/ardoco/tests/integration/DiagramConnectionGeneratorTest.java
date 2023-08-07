@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -23,12 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
+import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
+import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.Results;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
@@ -45,8 +46,8 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected Results runComparable(DiagramProject project, Map<String, String> additionalConfigurations) {
-        var dataRepository = run(project, additionalConfigurations);
+    protected Results runComparable(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+        var dataRepository = run(project, additionalConfigurations, cachePreRun);
         var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         //TODO Get Metamodel properly
@@ -75,6 +76,18 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
                 diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size(), commonNoun.size(), sharedStem.size(), otherEntity.size(),
                 coreference.size());
         logger.info(altResult.toString());
+
+        var cacheID = "Results-" + project.name();
+        var prevResults = getCached(cacheID, Results.class);
+        if (!altResult.equalsByConfusionMatrix(prevResults)) {
+            System.out.println("Cache result at " + cacheID + "? y/n:");
+            var scanner = new Scanner(System.in);
+            if (scanner.nextLine().equals("y")) {
+                cache(cacheID, altResult);
+            }
+            var delta = Results.difference(altResult, prevResults);
+            logger.info("Delta: " + delta);
+        }
 
         return altResult;
     }
@@ -157,42 +170,42 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     @Disabled
     @Test
     void teammatesTest() {
-        runComparable(DiagramProject.TEAMMATES);
+        runComparable(DiagramProject.TEAMMATES, false);
     }
 
     @Disabled
     @Test
     void teammatesHistTest() {
-        runComparable(DiagramProject.TEAMMATES_HISTORICAL);
+        runComparable(DiagramProject.TEAMMATES_HISTORICAL, false);
     }
 
     @Disabled
     @Test
     void teastoreTest() {
-        runComparable(DiagramProject.TEASTORE);
+        runComparable(DiagramProject.TEASTORE, false);
     }
 
     @Disabled
     @Test
     void teastoreHistTest() {
-        runComparable(DiagramProject.TEASTORE_HISTORICAL);
+        runComparable(DiagramProject.TEASTORE_HISTORICAL, false);
     }
 
     @Disabled
     @Test
     void bbbTest() {
-        runComparable(DiagramProject.BIGBLUEBUTTON);
+        runComparable(DiagramProject.BIGBLUEBUTTON, false);
     }
 
     @Disabled
     @Test
     void bbbHistTest() {
-        runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL);
+        runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL, false);
     }
 
     @Disabled
     @Test
     void msTest() {
-        runComparable(DiagramProject.MEDIASTORE);
+        runComparable(DiagramProject.MEDIASTORE, false);
     }
 }

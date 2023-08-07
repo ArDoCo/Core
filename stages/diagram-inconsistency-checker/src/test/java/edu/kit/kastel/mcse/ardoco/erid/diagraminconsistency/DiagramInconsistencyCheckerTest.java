@@ -46,8 +46,8 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     @Override
-    protected Results runComparable(DiagramProject project, Map<String, String> additionalConfigurations) {
-        var dataRepository = run(project, additionalConfigurations);
+    protected Results runComparable(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+        var dataRepository = run(project, additionalConfigurations, cachePreRun);
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
         //TODO Get Metamodel properly
         var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(project.getMetamodel());
@@ -125,7 +125,9 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
 
     @Disabled
     @Test
-    void teastoreTest() { runComparable(DiagramProject.TEASTORE); }
+    void teastoreTest() {
+        runComparable(DiagramProject.TEASTORE);
+    }
 
     @Disabled
     @Test

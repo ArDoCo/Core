@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
-import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.util.DiagramConnectionGeneratorUtil;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 public class DiagramTextInformant extends Informant {
@@ -64,10 +64,10 @@ public class DiagramTextInformant extends Informant {
                 for (var tBox : texts) {
                     var ris = recommendationState.getRecommendedInstances();
                     for (var recommendedInstance : ris) {
-                        if (DiagramConnectionGeneratorUtil.isInitialismOf(recommendedInstance.getName(), tBox.getText(), initialismThreshold)) {
+                        if (DiagramUtil.isInitialismOf(recommendedInstance.getName(), tBox.getText(), initialismThreshold)) {
                             diagramConnectionState.addToDiagramLinks(recommendedInstance, box, projectName, this,
                                     WordSimUtils.getSimilarity(recommendedInstance.getName(), tBox.getText()),
-                                    DiagramConnectionGeneratorUtil.calculateHighestSimilarity(box, recommendedInstance));
+                                    DiagramUtil.calculateHighestSimilarity(box, recommendedInstance));
                         }
                     }
                 }
