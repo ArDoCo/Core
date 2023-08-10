@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
@@ -43,13 +45,19 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             Map<String, String> additionalConfigs, DataRepository dataRepository) {
-        ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
-        case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
-        case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
-        };
+
+        ArchitectureExtractor architectureExtractor = null;
+        if (inputArchitectureModel != null && architectureModelType != null) {
+            architectureExtractor = switch (architectureModelType) {
+                case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+                case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+            };
+        }
         CodeItemRepository codeItemRepository = new CodeItemRepository();
         CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, inputCode.getAbsolutePath());
-        ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));
+        ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, Stream.of(architectureExtractor, codeExtractor)
+                .filter(Objects::nonNull)
+                .toList());
         agent.applyConfiguration(additionalConfigs);
         return agent;
     }

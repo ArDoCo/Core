@@ -13,6 +13,11 @@
   <dependencies>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
+      <artifactId>code-traceability</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>connection-generator</artifactId>
       <version>${revision}</version>
     </dependency>
