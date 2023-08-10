@@ -93,7 +93,7 @@
     <eclipse-collections.version>12.0.0.M2</eclipse-collections.version>
     <jackson.version>2.15.2</jackson.version>
     <javaparser.version>3.25.4</javaparser.version>
-    <error-prone.version>2.20.0</error-prone.version>
+    <error-prone.version>2.21.1</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
 
@@ -116,7 +116,6 @@
         <artifactId>jackson-annotations</artifactId>
         <version>${jackson.version}</version>
       </dependency>
-
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
@@ -254,6 +253,11 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_core</artifactId>
+      <version>${error-prone.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-reflect</artifactId>
