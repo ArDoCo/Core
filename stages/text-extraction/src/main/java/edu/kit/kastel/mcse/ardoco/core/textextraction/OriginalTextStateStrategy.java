@@ -14,7 +14,6 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -39,19 +38,18 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
 
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
-
         NounMapping disposableNounMapping = new NounMappingImpl(System.currentTimeMillis(), Sets.immutable.with(word), kind, claimant, probability,
                 Lists.immutable.with(word), surfaceForms);
 
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
             if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
 
-                return mergeNounMappingsStateless(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
+                return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
                         disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
             }
         }
-        super.getTextState().addNounMappingAddPhraseMapping(disposableNounMapping);
 
+        getTextState().addNounMappingAddPhraseMapping(disposableNounMapping);
         return disposableNounMapping;
     }
 
