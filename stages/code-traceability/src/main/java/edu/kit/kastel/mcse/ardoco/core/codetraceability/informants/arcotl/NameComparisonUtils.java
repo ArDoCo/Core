@@ -193,9 +193,9 @@ public class NameComparisonUtils {
 
     private static boolean areEqual(String name1, String name2, PreprocessingMethod methodToUse) {
         return switch (methodToUse) {
-        case NONE -> areEqual(name1, name2);
-        case STEMMING -> areEqualStemmed(name1, name2);
-        case LEMMATIZATION -> areEqualLemmatized(name1, name2);
+            case NONE -> areEqual(name1, name2);
+            case STEMMING -> areEqualStemmed(name1, name2);
+            case LEMMATIZATION -> areEqualLemmatized(name1, name2);
         };
     }
 

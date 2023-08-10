@@ -57,8 +57,8 @@ public class ModelProviderAgent extends PipelineAgent {
     public static ModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, DataRepository dataRepository)
             throws IOException {
         ModelConnector connector = switch (architectureModelType) {
-        case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
-        case UML -> new UmlModelConnector(inputArchitectureModel);
+            case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
+            case UML -> new UmlModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
     }

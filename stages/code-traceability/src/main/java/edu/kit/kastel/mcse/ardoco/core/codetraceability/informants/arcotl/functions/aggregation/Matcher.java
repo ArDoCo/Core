@@ -36,14 +36,14 @@ public abstract class Matcher extends Aggregation {
         NodeResult matchResult = new NodeResult(archModel, codeModel);
         List<? extends Entity> endpoints;
         switch (endpointTypeToMatch) {
-        case ARCHITECTURE:
-            endpoints = archModel.getEndpoints();
-            break;
-        case CODE:
-            endpoints = codeModel.getEndpoints();
-            break;
-        default:
-            throw new IllegalStateException("Unsupported endpoint type used: " + endpointTypeToMatch);
+            case ARCHITECTURE:
+                endpoints = archModel.getEndpoints();
+                break;
+            case CODE:
+                endpoints = codeModel.getEndpoints();
+                break;
+            default:
+                throw new IllegalStateException("Unsupported endpoint type used: " + endpointTypeToMatch);
         }
         for (Entity endpointToMatch : endpoints) {
             NodeResult partialMatchResult = matchEndpoint(endpointToMatch, childrenResults);

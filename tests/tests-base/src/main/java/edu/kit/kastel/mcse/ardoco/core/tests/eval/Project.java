@@ -159,8 +159,8 @@ public enum Project {
      */
     public File getModelFile(ArchitectureModelType modelType) {
         return switch (modelType) {
-        case PCM -> getModelFile();
-        case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+            case PCM -> getModelFile();
+            case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
         };
     }
 

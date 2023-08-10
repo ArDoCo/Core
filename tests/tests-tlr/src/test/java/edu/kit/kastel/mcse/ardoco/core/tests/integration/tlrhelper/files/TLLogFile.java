@@ -52,15 +52,15 @@ public class TLLogFile {
         sortedResults.sort(Comparator.comparing(x -> x.getOne().name()));
         for (Pair<Project, EvaluationResults<TestLink>> projectResult : sortedResults) {
             String alias = switch (projectResult.getOne()) {
-            case MEDIASTORE -> "MS";
-            case BIGBLUEBUTTON -> "BBB";
-            case BIGBLUEBUTTON_HISTORICAL -> "BBB-H";
-            case TEAMMATES -> "TM";
-            case TEAMMATES_HISTORICAL -> "TM-H";
-            case TEASTORE -> "TS";
-            case TEASTORE_HISTORICAL -> "TS-H";
-            case JABREF -> "JR";
-            case JABREF_HISTORICAL -> "JR-H";
+                case MEDIASTORE -> "MS";
+                case BIGBLUEBUTTON -> "BBB";
+                case BIGBLUEBUTTON_HISTORICAL -> "BBB-H";
+                case TEAMMATES -> "TM";
+                case TEAMMATES_HISTORICAL -> "TM-H";
+                case TEASTORE -> "TS";
+                case TEASTORE_HISTORICAL -> "TS-H";
+                case JABREF -> "JR";
+                case JABREF_HISTORICAL -> "JR-H";
             };
             EvaluationResults<TestLink> result = projectResult.getTwo();
             String precision = NUMBER_FORMAT.format(result.precision());
