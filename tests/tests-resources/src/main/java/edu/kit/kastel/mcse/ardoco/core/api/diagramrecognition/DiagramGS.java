@@ -16,38 +16,44 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
-public class DiagramG implements Diagram, Comparable<DiagramG> {
+public class DiagramGS implements Diagram, Comparable<DiagramGS> {
     private String resourceName;
     private List<Box> properBoxes = new ArrayList<>();
     private List<TextBox> properTextBoxes = new ArrayList<>();
     private DiagramProject project;
 
     @JsonCreator
-    public DiagramG(@JacksonInject DiagramProject project, @JsonProperty("path") String resourceName, @JsonProperty("boxes") JsonNode boxesNode)
+    public DiagramGS(@JacksonInject DiagramProject project, @JsonProperty("path") String resourceName, @JsonProperty("boxes") JsonNode boxesNode)
             throws JsonProcessingException {
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(BoundingBox.class, new BoundingBoxDeserializer());
+        module.addDeserializer(TextBox.class, new TextBoxDeserializer());
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramG.class, this));
-        var boxes = objectMapper.treeToValue(boxesNode, BoxG[].class);
+        objectMapper.registerModule(module);
+        objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramGS.class, this));
+        var boxes = objectMapper.treeToValue(boxesNode, BoxGS[].class);
 
         this.project = project;
         this.resourceName = resourceName;
         addBoxes(boxes);
     }
 
-    public DiagramG(DiagramProject project, String path, BoxG[] boxes) {
+    public DiagramGS(DiagramProject project, String path, BoxGS[] boxes) {
         this.project = project;
         this.resourceName = path;
         addBoxes(boxes);
     }
 
-    private void addBoxes(BoxG[] boxes) {
-        for (BoxG boxG : boxes) {
-            addBox(boxG);
-            addBoxes(boxG.getSubBoxes());
+    private void addBoxes(BoxGS[] boxes) {
+        for (BoxGS boxGS : boxes) {
+            addBox(boxGS);
+            addBoxes(boxGS.getSubBoxes());
         }
     }
 
@@ -60,7 +66,7 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (obj instanceof DiagramG other) {
+        } else if (obj instanceof DiagramGS other) {
             return resourceName.equals(other.resourceName);
         }
         return false;
@@ -72,7 +78,7 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
     }
 
     @Override
-    public int compareTo(@NotNull DiagramG o) {
+    public int compareTo(@NotNull DiagramGS o) {
         if (equals(o))
             return 0;
         return resourceName.compareTo(o.resourceName);
@@ -133,11 +139,11 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
         throw new NotImplementedException();
     }
 
-    public List<DiaGSTraceLink> getTraceLinks() {
+    public List<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
         var traceLinks = Lists.mutable.<DiaGSTraceLink>empty();
         for (Box box : properBoxes) {
-            if (box instanceof BoxG boxG) {
-                var boxTLs = boxG.getTraceLinks().toList();
+            if (box instanceof BoxGS boxGS) {
+                var boxTLs = boxGS.getTraceLinks(sentences).toList();
                 traceLinks.addAll(boxTLs);
             }
         }
@@ -151,13 +157,13 @@ public class DiagramG implements Diagram, Comparable<DiagramG> {
      * @param textGoldstandard Partial path to the goldstandard text file
      * @return List of tracelinks
      */
-    public @NotNull List<DiaGSTraceLink> getTraceLinks(@Nullable String textGoldstandard) {
+    public @NotNull List<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences, @Nullable String textGoldstandard) {
         if (textGoldstandard == null)
-            return getTraceLinks();
-        return getTraceLinks().stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())).distinct().toList();
+            return getTraceLinks(sentences);
+        return getTraceLinks(sentences).stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())).distinct().toList();
     }
 
-    public @NotNull DiagramProject getProject() {
+    public @NotNull DiagramProject getDiagramProject() {
         return project;
     }
 

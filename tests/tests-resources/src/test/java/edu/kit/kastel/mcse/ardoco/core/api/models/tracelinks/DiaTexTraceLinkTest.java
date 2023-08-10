@@ -18,7 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.BoxGTest;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.BoxGSTest;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -39,9 +39,9 @@ class DiaTexTraceLinkTest {
         Mockito.doReturn(1).when(mockSentence).getSentenceNumberForOutput();
     }
 
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaGSTraceLink(BoxGTest.dummyBoxG, mockSentence, "SomeIdentifier",
+    public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaGSTraceLink(BoxGSTest.DUMMY_BOX_GS, mockSentence, "SomeIdentifier",
             "SomeStandard.json");
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGTest.dummyBoxG, mockWord, "SomeIdentifier", 0.5, null);
+    public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGSTest.DUMMY_BOX_GS, mockWord, "SomeIdentifier", 0.5, null);
 
     public static List<DiaTexTraceLink> getDummyDiaTexTraceLinks() {
         return List.of(dummyDiaTexTraceLinkSentence, dummyDiaTexTraceLinkWord);

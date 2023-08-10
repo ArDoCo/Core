@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -13,8 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 
 public class DiagramRecognitionMock extends ExecutionStage {
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     public DiagramRecognitionMock(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         super("DiagramRecognitionMock", dataRepository, List.of(), additionalConfigs);
     }
@@ -27,7 +23,7 @@ public class DiagramRecognitionMock extends ExecutionStage {
         }
         logger.info("Creating DiagramRecognitionMock State");
         var diagramRecognitionState = new DiagramRecognitionStateImpl();
-        var diagrams = inputDiagramsMock.get().getDiagramProject().getDiagrams();
+        var diagrams = inputDiagramsMock.get().diagramProject().getDiagrams();
         for (var diagram : diagrams) {
             logger.debug("Loaded Diagram {}", diagram.getResourceName());
             diagramRecognitionState.addDiagram(diagram);

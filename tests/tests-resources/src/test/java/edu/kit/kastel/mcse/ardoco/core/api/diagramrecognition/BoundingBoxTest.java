@@ -22,11 +22,11 @@ class BoundingBoxTest {
 
     @Test
     void intersect() {
-        assertEquals(middle.intersect(middle).get().area(), middle.area(), epsilon);
-        assertEquals(middle.intersect(topLeft).get().area(), 25, epsilon);
-        assertEquals(middle.intersect(topRight).get().area(), 25, epsilon);
-        assertEquals(middle.intersect(bottomLeft).get().area(), 25, epsilon);
-        assertEquals(middle.intersect(bottomRight).get().area(), 25, epsilon);
+        assertEquals(middle.intersect(middle).orElseThrow().area(), middle.area(), epsilon);
+        assertEquals(middle.intersect(topLeft).orElseThrow().area(), 25, epsilon);
+        assertEquals(middle.intersect(topRight).orElseThrow().area(), 25, epsilon);
+        assertEquals(middle.intersect(bottomLeft).orElseThrow().area(), 25, epsilon);
+        assertEquals(middle.intersect(bottomRight).orElseThrow().area(), 25, epsilon);
     }
 
     @Test

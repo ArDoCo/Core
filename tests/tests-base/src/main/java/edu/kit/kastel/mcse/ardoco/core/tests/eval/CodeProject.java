@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -21,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
-public enum CodeProject {
+public enum CodeProject implements GoldStandardProject {
     MEDIASTORE(//
             Project.MEDIASTORE, //
             "https://github.com/ArDoCo/MediaStore3.git", //
@@ -83,6 +85,7 @@ public enum CodeProject {
     private final Project project;
     private final ExpectedResults expectedResultsForSamCode;
     private final ExpectedResults expectedResultsForSadSamCode;
+    private final Set<String> resourceNames;
 
     CodeProject(Project project, String codeRepository, String commitHash, String codeModelLocationInResources, String samCodeGoldStandardLocation,
             String sadCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
@@ -94,10 +97,21 @@ public enum CodeProject {
         this.sadCodeGoldStandardLocation = sadCodeGoldStandardLocation;
         this.expectedResultsForSamCode = expectedResultsForSamCode;
         this.expectedResultsForSadSamCode = expectedResultsForSadSamCode;
+        var set = new HashSet<>(project.getResourceNames());
+        set.add(codeModelLocationInResources);
+        set.add(samCodeGoldStandardLocation);
+        set.add(sadCodeGoldStandardLocation);
+        resourceNames = set;
     }
 
+    @Override
     public Project getProject() {
         return project;
+    }
+
+    @Override
+    public Set<String> getResourceNames() {
+        return resourceNames;
     }
 
     public String getCodeRepository() {

@@ -13,24 +13,24 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
-public class DiagramGTest {
-    public static final DiagramG dummyDiagramG = new DiagramG(DiagramProject.TEAMMATES, "SomePath.jpg", new BoxG[] {});
+public class DiagramGSTest {
+    public static final DiagramGS DUMMY_DIAGRAM_GS = new DiagramGS(DiagramProject.TEAMMATES, "SomePath.jpg", new BoxGS[] {});
 
     @Test
     void serialize() throws IOException, ClassNotFoundException {
-        var serialize = dummyDiagramG;
+        var serialize = DUMMY_DIAGRAM_GS;
         var byteArrayOutputStream = new ByteArrayOutputStream();
         new ObjectOutputStream(byteArrayOutputStream).writeObject(serialize);
         var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        var deserialized = (DiagramG) new ObjectInputStream(byteArrayInputStream).readObject();
+        var deserialized = (DiagramGS) new ObjectInputStream(byteArrayInputStream).readObject();
 
         assertEquals(serialize.getResourceName(), deserialized.getResourceName());
         assertTrue(serialize.getBoxes().containsAll(deserialized.getBoxes()));
         assertTrue(deserialized.getBoxes().containsAll(serialize.getBoxes()));
         assertTrue(serialize.getTextBoxes().containsAll(deserialized.getTextBoxes()));
         assertTrue(deserialized.getTextBoxes().containsAll(serialize.getTextBoxes()));
-        assertTrue(serialize.getTraceLinks().containsAll(deserialized.getTraceLinks()));
-        assertTrue(deserialized.getTraceLinks().containsAll(serialize.getTraceLinks()));
-        assertEquals(serialize.getProject(), deserialized.getProject());
+        assertTrue(serialize.getTraceLinks(null).containsAll(deserialized.getTraceLinks(null)));
+        assertTrue(deserialized.getTraceLinks(null).containsAll(serialize.getTraceLinks(null)));
+        assertEquals(serialize.getDiagramProject(), deserialized.getDiagramProject());
     }
 }

@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -23,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.
  */
-public enum Project {
+public enum Project implements GoldStandardProject {
     MEDIASTORE(//
             "/benchmark/mediastore/model_2016/pcm/ms.repository", //
             "/benchmark/mediastore/text_2016/mediastore.txt", //
@@ -47,7 +48,7 @@ public enum Project {
             "/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
             "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB.csv", //
             "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.163, .982, .278, .376, .146, .289) //
     ), //
@@ -115,6 +116,7 @@ public enum Project {
     private final String goldStandardMissingTextForModelElement;
     private final ExpectedResults expectedTraceLinkResults;
     private final ExpectedResults expectedInconsistencyResults;
+    private final Set<String> resourceNames;
 
     Project(String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
             String goldStandardMissingTextForModelElement, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
@@ -125,6 +127,7 @@ public enum Project {
         this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
+        resourceNames = Set.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile, goldStandardMissingTextForModelElement);
     }
 
     /**
@@ -307,5 +310,15 @@ public enum Project {
      */
     public ExpectedResults getExpectedInconsistencyResults() {
         return expectedInconsistencyResults;
+    }
+
+    @Override
+    public Project getProject() {
+        return this;
+    }
+
+    @Override
+    public Set<String> getResourceNames() {
+        return resourceNames;
     }
 }

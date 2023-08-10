@@ -15,11 +15,11 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class InconsistencyDetectionEvaluationERID extends InconsistencyDetectionEvaluationIT {
     private static List<Project> getNonHistoricalProjects() {
-        return DiagramProject.getNonHistoricalProjects().stream().map(DiagramProject::getBaseProject).toList();
+        return DiagramProject.getNonHistoricalProjects().stream().map(DiagramProject::getProject).toList();
     }
 
     private static List<Project> getHistoricalProjects() {
-        return DiagramProject.getHistoricalProjects().stream().map(DiagramProject::getBaseProject).toList();
+        return DiagramProject.getHistoricalProjects().stream().map(DiagramProject::getProject).toList();
     }
 
     @Override

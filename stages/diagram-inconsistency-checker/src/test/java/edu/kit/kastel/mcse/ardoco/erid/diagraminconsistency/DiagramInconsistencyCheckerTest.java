@@ -74,22 +74,22 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                 if (useMockDiagrams) {
                     var data = new InputDiagramDataMock(project);
                     dataRepository.addData(InputDiagramDataMock.ID, data);
-                    arDoCo.addPipelineStep(new DiagramRecognitionMock(project.getAdditionalConfigurations(), dataRepository));
+                    arDoCo.addPipelineStep(new DiagramRecognitionMock(project.getProject().getAdditionalConfigurations(), dataRepository));
                 } else {
-                    arDoCo.addPipelineStep(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
+                    arDoCo.addPipelineStep(DiagramRecognition.get(project.getProject().getAdditionalConfigurations(), dataRepository));
                 }
 
-                var text = CommonUtilities.readInputText(project.getTextFile());
+                var text = CommonUtilities.readInputText(project.getProject().getTextFile());
                 if (text.isBlank()) {
                     throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
                 }
                 DataRepositoryHelper.putInputText(dataRepository, text);
-                arDoCo.addPipelineStep(TextPreprocessingAgent.get(project.getAdditionalConfigurations(), dataRepository));
+                arDoCo.addPipelineStep(TextPreprocessingAgent.get(project.getProject().getAdditionalConfigurations(), dataRepository));
 
-                arDoCo.addPipelineStep(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
-                arDoCo.addPipelineStep(TextExtraction.get(project.getAdditionalConfigurations(), dataRepository));
-                arDoCo.addPipelineStep(RecommendationGenerator.get(project.getAdditionalConfigurations(), dataRepository));
-                arDoCo.addPipelineStep(new DiagramConnectionGenerator(project.getAdditionalConfigurations(), dataRepository));
+                arDoCo.addPipelineStep(ModelProviderAgent.get(project.getProject().getModelFile(), project.getArchitectureModelType(), dataRepository));
+                arDoCo.addPipelineStep(TextExtraction.get(project.getProject().getAdditionalConfigurations(), dataRepository));
+                arDoCo.addPipelineStep(RecommendationGenerator.get(project.getProject().getAdditionalConfigurations(), dataRepository));
+                arDoCo.addPipelineStep(new DiagramConnectionGenerator(project.getProject().getAdditionalConfigurations(), dataRepository));
             }
         }.runWithoutSaving();
     }
@@ -97,7 +97,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     @Override
     protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository) {
         logger.info("Run TestRunner for {}", project.name());
-        var combinedConfigs = new HashMap<>(project.getAdditionalConfigurations());
+        var combinedConfigs = new HashMap<>(project.getProject().getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);
         return new AnonymousRunner(project.name()) {
             @Override

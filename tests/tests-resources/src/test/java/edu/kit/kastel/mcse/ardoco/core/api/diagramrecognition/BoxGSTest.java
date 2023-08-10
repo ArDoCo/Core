@@ -11,18 +11,18 @@ import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class BoxGTest {
-    public static final BoxG dummyBoxG = new BoxG(DiagramGTest.dummyDiagramG, BoundingBoxGTest.dummyBoundingBoxG, new TextBoxG[] { TextBoxGTest.dummyTextBoxG },
-            new BoxG[] {}, new TraceLinkG[] { TracelinkGTest.DUMMY_TRACE_LINK_G});
+public class BoxGSTest {
+    public static final BoxGS DUMMY_BOX_GS = new BoxGS(DiagramGSTest.DUMMY_DIAGRAM_GS, DummyObjects.DUMMY_BOUNDING_BOX,
+            new TextBox[] { DummyObjects.DUMMY_TEXT_BOX }, new BoxGS[] {}, new TraceLinkGS[] { DummyObjects.DUMMY_TRACE_LINK_GS });
 
     @DisplayName("Evaluate Serialize BoxG")
     @Test
     void serialize() throws IOException, ClassNotFoundException {
         var byteArrayOutputStream = new ByteArrayOutputStream();
-        new ObjectOutputStream(byteArrayOutputStream).writeObject(dummyBoxG);
+        new ObjectOutputStream(byteArrayOutputStream).writeObject(DUMMY_BOX_GS);
         var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        var deserialized = (BoxG) new ObjectInputStream(byteArrayInputStream).readObject();
+        var deserialized = (BoxGS) new ObjectInputStream(byteArrayInputStream).readObject();
 
-        assertEquals(dummyBoxG, deserialized);
+        assertEquals(DUMMY_BOX_GS, deserialized);
     }
 }

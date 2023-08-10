@@ -1,10 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 
-public record BoundingBox(int minX, int minY, int maxX, int maxY) {
+public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Serializable {
     public Optional<BoundingBox> intersect(BoundingBox other) {
         if (minX() > other.maxX() || maxX() < other.minX() || minY() > other.maxY() || maxY() < other.minY())
             return Optional.empty();
@@ -65,5 +66,9 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) {
      */
     public int height() {
         return maxY - minY;
+    }
+
+    public int[] toCoordinates() {
+        return new int[] { minX, minY, maxX, maxY };
     }
 }

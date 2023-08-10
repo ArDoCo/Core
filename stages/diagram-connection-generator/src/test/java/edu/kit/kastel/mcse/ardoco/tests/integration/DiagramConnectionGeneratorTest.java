@@ -104,7 +104,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     @Override
     protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository) {
         logger.info("Run TestRunner for {}", project.name());
-        var combinedConfigs = new HashMap<>(project.getAdditionalConfigurations());
+        var combinedConfigs = new HashMap<>(project.getProject().getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);
         return new AnonymousRunner(project.name()) {
             @Override

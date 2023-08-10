@@ -26,6 +26,10 @@ public class TextBox implements Serializable {
         // Jackson JSON
     }
 
+    public TextBox(BoundingBox boundingBox, double confidence, String text, Integer dominatingColor) {
+        this(boundingBox.minX(), boundingBox.minY(), boundingBox.maxX(), boundingBox.maxY(), confidence, text, dominatingColor);
+    }
+
     public TextBox(int xCoordinate, int yCoordinate, int width, int height, double confidence, String text, Integer dominatingColor) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
