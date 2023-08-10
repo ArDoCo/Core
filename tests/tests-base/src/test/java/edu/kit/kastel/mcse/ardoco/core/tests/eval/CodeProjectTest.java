@@ -9,7 +9,7 @@ class CodeProjectTest {
     @EnumSource(CodeProject.class)
     @ParameterizedTest(name = "{0}")
     void testFiles(CodeProject project) {
-        Assertions.assertNotNull(project.getProject());
+        Assertions.assertNotNull(project);
         Assertions.assertNotNull(project.getCodeRepository());
         Assertions.assertNotNull(project.getCommitHash());
         Assertions.assertNotNull(project.getCodeLocation());

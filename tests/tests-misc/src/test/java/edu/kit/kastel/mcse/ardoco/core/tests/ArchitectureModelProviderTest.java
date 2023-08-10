@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.UmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
 class ArchitectureModelProviderTest {
@@ -19,7 +20,7 @@ class ArchitectureModelProviderTest {
     @DisplayName("Test Model Providers")
     @ParameterizedTest(name = "Testing for {0}")
     @EnumSource(value = Project.class)
-    void pcmUmlIT(Project project) {
+    void pcmUmlIT(GoldStandardProject project) {
         var pcmFile = project.getModelFile(ArchitectureModelType.PCM);
         var umlFile = project.getModelFile(ArchitectureModelType.UML);
 

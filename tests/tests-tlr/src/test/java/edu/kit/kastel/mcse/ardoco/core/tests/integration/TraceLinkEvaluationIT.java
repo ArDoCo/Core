@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
 
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -55,9 +58,9 @@ class TraceLinkEvaluationIT {
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
     protected static AtomicBoolean analyzeCodeDirectly = ANALYZE_CODE_DIRECTLY;
 
-    protected static final List<Pair<Project, EvaluationResults<TestLink>>> RESULTS = new ArrayList<>();
+    protected static final List<Pair<GoldStandardProject, EvaluationResults<TestLink>>> RESULTS = new ArrayList<>();
     protected static final MutableList<EvaluationResults<String>> PROJECT_RESULTS = Lists.mutable.empty();
-    protected static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
+    protected static final Map<GoldStandardProject, ArDoCoResult> DATA_MAP = new HashMap<>();
 
     @BeforeAll
     static void beforeAll() {
@@ -164,16 +167,16 @@ class TraceLinkEvaluationIT {
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(9)
-    void evaluateSadSamCodeTlrIT(CodeProject project) {
+    void evaluateSadSamCodeTlrIT(CodeProject codeProject) {
         analyzeCodeDirectly.set(false);
         if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
+            cleanUpCodeRepository(codeProject);
 
         var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
-        var results = evaluation.runTraceLinkEvaluation(project);
+        var results = evaluation.runTraceLinkEvaluation(codeProject);
         Assertions.assertNotNull(results);
 
-        TraceabilityLinkRecoveryEvaluation.resultMap.put(project.getProject(), results);
+        TraceabilityLinkRecoveryEvaluation.resultMap.put(codeProject, results);
     }
 
     @DisplayName("Evaluate SAM-Code TLR")

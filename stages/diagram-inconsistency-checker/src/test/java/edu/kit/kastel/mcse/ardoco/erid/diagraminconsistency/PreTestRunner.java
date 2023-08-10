@@ -39,22 +39,22 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
         if (p.useMockDiagrams) {
             var data = new InputDiagramDataMock(p.diagramProject);
             dataRepository.addData(InputDiagramDataMock.ID, data);
-            pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject.getProject().getAdditionalConfigurations(), dataRepository));
+            pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject.getAdditionalConfigurations(), dataRepository));
         } else {
-            pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getProject().getAdditionalConfigurations(), dataRepository));
+            pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
         }
 
-        var text = CommonUtilities.readInputText(p.diagramProject.getProject().getTextFile());
+        var text = CommonUtilities.readInputText(p.diagramProject.getTextFile());
         if (text.isBlank()) {
             throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
         }
         DataRepositoryHelper.putInputText(dataRepository, text);
-        pipelineSteps.add(TextPreprocessingAgent.get(p.diagramProject.getProject().getAdditionalConfigurations(), dataRepository));
+        pipelineSteps.add(TextPreprocessingAgent.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
 
-        pipelineSteps.add(ModelProviderAgent.get(p.diagramProject.getProject().getModelFile(), p.diagramProject.getArchitectureModelType(), dataRepository));
-        pipelineSteps.add(TextExtraction.get(p.diagramProject.getProject().getAdditionalConfigurations(), dataRepository));
-        pipelineSteps.add(RecommendationGenerator.get(p.diagramProject.getProject().getAdditionalConfigurations(), dataRepository));
-        pipelineSteps.add(new DiagramConnectionGenerator(p.diagramProject.getProject().getAdditionalConfigurations(), dataRepository));
+        pipelineSteps.add(ModelProviderAgent.get(p.diagramProject.getModelFile(), p.diagramProject.getArchitectureModelType(), dataRepository));
+        pipelineSteps.add(TextExtraction.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        pipelineSteps.add(RecommendationGenerator.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        pipelineSteps.add(new DiagramConnectionGenerator(p.diagramProject.getAdditionalConfigurations(), dataRepository));
 
         return pipelineSteps;
     }

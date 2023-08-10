@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
@@ -40,11 +40,10 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     // If the path separator in the gold standards are changed, this needs to update
     public static final String GOLD_STANDARD_PATH_SEPARATOR = "/";
 
-    protected static Map<Project, ArDoCoResult> resultMap = new EnumMap<>(Project.class);
+    protected static Map<GoldStandardProject, ArDoCoResult> resultMap = new HashMap<>();
 
     protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
-        var project = codeProject.getProject();
-        ArDoCoResult result = resultMap.get(project);
+        ArDoCoResult result = resultMap.get(codeProject);
         if (result == null || !resultHasRequiredData(result)) {
             ArDoCoRunner runner = getAndSetupRunner(codeProject);
             result = runner.run();
@@ -136,16 +135,16 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected void compareResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()), () -> Assertions.assertTrue(results
-                                .accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()),
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
     /**

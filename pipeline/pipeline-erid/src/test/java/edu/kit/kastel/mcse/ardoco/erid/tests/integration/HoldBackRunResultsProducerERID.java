@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.tests.integration;
 
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
+
 import java.io.File;
 import java.util.Map;
 
@@ -9,7 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
@@ -40,8 +41,8 @@ public class HoldBackRunResultsProducerERID extends HoldBackRunResultsProducer {
     }
 
     @Override
-    protected void addPreSteps(File inputText, Project project, ArDoCo arDoCo, DataRepository dataRepository, Map<String, String> additionalConfigs) {
-        super.addPreSteps(inputText, project, arDoCo, dataRepository, additionalConfigs);
-        dataRepository.addData(InputDiagramDataMock.ID, new InputDiagramDataMock(DiagramProject.getFromName(project.name()).orElseThrow()));
+    protected void addPreSteps(File inputText, GoldStandardProject goldStandardProject, ArDoCo arDoCo, DataRepository dataRepository, Map<String, String> additionalConfigs) {
+        super.addPreSteps(inputText, goldStandardProject, arDoCo, dataRepository, additionalConfigs);
+        dataRepository.addData(InputDiagramDataMock.ID, new InputDiagramDataMock(DiagramProject.getFromName(goldStandardProject.getProjectName()).orElseThrow()));
     }
 }

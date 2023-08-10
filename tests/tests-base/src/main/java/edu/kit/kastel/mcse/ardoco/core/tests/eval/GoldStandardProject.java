@@ -1,14 +1,22 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 /**
  * Interface for all Project extensions
@@ -17,7 +25,7 @@ public interface GoldStandardProject extends Serializable {
     /**
      * {@return the project the instance is based on}
      */
-    Project getProject();
+    String getProjectName();
 
     /**
      * {@return the name of all resources associated with instances relative to the class)
@@ -58,5 +66,180 @@ public interface GoldStandardProject extends Serializable {
             logger.error("Couldn't calculate checksum for resource at " + resourceName, e);
             return false;
         }
+    }
+
+    /**
+     * {@return the project alias}
+     */
+    default String getAlias() {
+        return getProjectOrThrow().getAlias();
+    }
+
+    /**
+     * Returns the File that represents the model for this project.
+     *
+     * @return the File that represents the model for this project
+     */
+    default File getModelFile() {
+        return getProjectOrThrow().getModelFile();
+    }
+
+    /**
+     * {@return the resource name that represents the model for this project}
+     */
+    default String getModelResourceName() {
+        return getProjectOrThrow().getModelResourceName();
+    }
+
+    /**
+     * Returns the File that represents the model for this project with the given model type.
+     *
+     * @param modelType the model type
+     * @return the File that represents the model for this project
+     */
+    default File getModelFile(ArchitectureModelType modelType) {
+        return getProjectOrThrow().getModelFile(modelType);
+    }
+
+    /**
+     * @param modelType the model type {@return the resource name that represents the model for this project with the given model type}
+     */
+    default String getModelResourceName(ArchitectureModelType modelType) {
+        return getProjectOrThrow().getModelResourceName(modelType);
+    }
+
+    /**
+     * Returns the File that represents the text for this project.
+     *
+     * @return the File that represents the text for this project
+     */
+    default File getTextFile() {
+        return getProjectOrThrow().getTextFile();
+    }
+
+    /**
+     * {@return the resource name that represents the text for this project}
+     */
+    default String getTextResourceName() {
+        return getProjectOrThrow().getTextResourceName();
+    }
+
+    /**
+     * Return the map of additional configuration options
+     *
+     * @return the map of additional configuration options
+     */
+    default Map<String, String> getAdditionalConfigurations() {
+        return getProjectOrThrow().getAdditionalConfigurations();
+    }
+
+    /**
+     * Returns a {@link File} that points to the text file containing additional configurations
+     *
+     * @return the file for additional configurations
+     */
+    default File getAdditionalConfigurationsFile() {
+        return getProjectOrThrow().getAdditionalConfigurationsFile();
+    }
+
+    /**
+     * {@return the resource name that represents the additional configurations for this project}
+     */
+    default String getAdditionalConfigurationsResourceName() {
+        return getProjectOrThrow().getAdditionalConfigurationsResourceName();
+    }
+
+    /**
+     * Returns the {@link GoldStandard} for this project.
+     *
+     * @return the File that represents the gold standard for this project
+     */
+    default File getTlrGoldStandardFile() {
+        return getProjectOrThrow().getTlrGoldStandardFile();
+    }
+
+    /**
+     * {@return the resource name that represents the TLR {@link GoldStandard} for this project}
+     */
+    default String getTlrGoldStandardResourceName() {
+        return getProjectOrThrow().getTlrGoldStandardResourceName();
+    }
+
+    /**
+     * Returns a string-list of entries as goldstandard for TLR for this project.
+     *
+     * @return a list with the entries of the goldstandard for TLR
+     */
+    default ImmutableList<String> getTlrGoldStandard() {
+        return getProjectOrThrow().getTlrGoldStandard();
+    }
+
+    /**
+     * Returns the {@link GoldStandard} for this project for the given model connector.
+     *
+     * @param pcmModel the model connector (pcm)
+     * @return the {@link GoldStandard} for this project
+     */
+    default GoldStandard getTlrGoldStandard(ModelConnector pcmModel) {
+        return getProjectOrThrow().getTlrGoldStandard(pcmModel);
+    }
+
+    default MutableList<String> getMissingTextForModelElementGoldStandard() {
+        return getProjectOrThrow().getMissingTextForModelElementGoldStandard();
+    }
+
+    /**
+     * {@return the {@link GoldStandard} for this project}
+     */
+    default File getMissingTextForModelElementGoldStandardFile() {
+        return getProjectOrThrow().getMissingTextForModelElementGoldStandardFile();
+    }
+
+    /**
+     * {@return the resource name that represents the MME {@link GoldStandard} for this project}
+     */
+    default String getMissingTextForModelElementGoldStandardResourceName() {
+        return getProjectOrThrow().getMissingTextForModelElementGoldStandardResourceName();
+    }
+
+    /**
+     * Returns the expected results for Traceability Link Recovery.
+     *
+     * @return the expectedTraceLinkResults
+     */
+    default ExpectedResults getExpectedTraceLinkResults() {
+        return getProjectOrThrow().getExpectedTraceLinkResults();
+    }
+
+    /**
+     * Returns the expected results for Inconsistency Detection.
+     *
+     * @return the expectedInconsistencyResults
+     */
+    default ExpectedResults getExpectedInconsistencyResults() {
+        return getProjectOrThrow().getExpectedInconsistencyResults();
+    }
+
+    /**
+     * Private so the project doesn't get passed around directly, defeating the purpose of making it extensible
+     *
+     * @return the project this instance belongs to
+     */
+    private Project getProjectOrThrow() {
+        return getFromName().orElseThrow();
+    }
+
+    /**
+     * Returns an {@link Optional} containing the project that has a name that equals the given name, ignoring case.
+     *
+     * @return the Optional containing the project with the given name or is empty if no such is found.
+     */
+    private Optional<Project> getFromName() {
+        for (Project project : Project.values()) {
+            if (project.name().equalsIgnoreCase(getProjectName())) {
+                return Optional.of(project);
+            }
+        }
+        return Optional.empty();
     }
 }

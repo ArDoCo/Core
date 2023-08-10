@@ -22,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -37,9 +36,8 @@ class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
     @Override
     protected ArDoCoRunner getAndSetupRunner(CodeProject codeProject) {
         String name = codeProject.name().toLowerCase();
-        Project textProject = codeProject.getProject();
-        File textInput = textProject.getTextFile();
-        File inputArchitectureModel = codeProject.getProject().getModelFile();
+        File textInput = codeProject.getTextFile();
+        File inputArchitectureModel = codeProject.getModelFile();
         File inputCode = getInputCode(codeProject);
         Map<String, String> additionalConfigsMap = new HashMap<>();
         File outputDir = new File(OUTPUT);

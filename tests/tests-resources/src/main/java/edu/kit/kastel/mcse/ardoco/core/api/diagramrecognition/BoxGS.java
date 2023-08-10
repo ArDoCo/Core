@@ -1,10 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
-
 import java.io.Serializable;
 import java.util.Arrays;
-
 import java.util.List;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -15,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
 /**
  * Connector for the {@link Box} JSON representation.
@@ -51,7 +49,7 @@ public class BoxGS extends Box implements Serializable {
 
     public ImmutableSet<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
         var list = Arrays.stream(tracelinks)
-                .filter(t -> getDiagram().getDiagramProject().getProject().getTextResourceName().contains(t.name()))
+                .filter(t -> getDiagram().getDiagramProject().getTextResourceName().contains(t.name()))
                 .flatMap(t -> t.toTraceLinks(this, sentences).stream())
                 .toList();
         var set = Sets.immutable.ofAll(list);

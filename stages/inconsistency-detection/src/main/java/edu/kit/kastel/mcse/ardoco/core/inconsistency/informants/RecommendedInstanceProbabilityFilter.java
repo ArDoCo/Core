@@ -107,7 +107,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
      */
     private boolean checkProbabilitiesForNounMappingTypes(RecommendedInstance recommendedInstance) {
         var highestTypeProbability = getHighestTypeProbability(recommendedInstance.getTypeMappings());
-        var highestNameProbability = getHighestNameProbability(recommendedInstance.getTypeMappings());
+        var highestNameProbability = getHighestNameProbability(recommendedInstance.getNameMappings());
 
         return (highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability) || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
 

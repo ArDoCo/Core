@@ -32,14 +32,14 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLRUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
 
 /**
- * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are defined in the enum {@link Project}.
+ * Integration test that evaluates the traceability link recovery capabilities of ArDoCo.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
@@ -53,18 +53,17 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     @Override
     protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
         var result = super.runTraceLinkEvaluation(codeProject);
-        DATA_MAP.put(codeProject.getProject(), result);
+        DATA_MAP.put(codeProject, result);
         return result;
     }
 
     @Override
     protected ArDoCoRunner getAndSetupRunner(CodeProject codeProject) {
-        var project = codeProject.getProject();
-        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
+        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(codeProject.getAdditionalConfigurationsFile());
 
-        String name = project.name().toLowerCase();
-        File inputModel = project.getModelFile();
-        File inputText = project.getTextFile();
+        String name = codeProject.name().toLowerCase();
+        File inputModel = codeProject.getModelFile();
+        File inputText = codeProject.getTextFile();
         File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(name);
@@ -74,14 +73,12 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
 
     @Override
     protected ExpectedResults getExpectedResults(CodeProject codeProject) {
-        var project = codeProject.getProject();
-        return project.getExpectedTraceLinkResults();
+        return codeProject.getExpectedTraceLinkResults();
     }
 
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        var project = codeProject.getProject();
-        return project.getTlrGoldStandard();
+        return codeProject.getTlrGoldStandard();
     }
 
     @Override
@@ -113,8 +110,8 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
         return results;
     }
 
-    protected ArDoCoResult getArDoCoResult(Project project) {
-        String name = project.name().toLowerCase();
+    protected ArDoCoResult getArDoCoResult(GoldStandardProject project) {
+        String name = project.getProjectName().toLowerCase();
         var inputModel = project.getModelFile();
         var inputText = project.getTextFile();
 
@@ -143,7 +140,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
      * @param project      the result's project
      * @param arDoCoResult the result
      */
-    protected static void checkResults(Project project, ArDoCoResult arDoCoResult) {
+    protected static void checkResults(GoldStandardProject project, ArDoCoResult arDoCoResult) {
 
         var modelIds = arDoCoResult.getModelIds();
         var modelId = modelIds.stream().findFirst().orElseThrow();
@@ -159,17 +156,17 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
 
     }
 
-    private static void logAndSaveProjectResult(Project project, ArDoCoResult arDoCoResult, EvaluationResults<String> results,
+    private static void logAndSaveProjectResult(GoldStandardProject project, ArDoCoResult arDoCoResult, EvaluationResults<String> results,
             ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
-            String projectName = project.name().toLowerCase();
+            String projectName = project.getProjectName().toLowerCase();
             TestUtil.logResultsWithExpected(logger, projectName, results, expectedResults);
 
             var data = arDoCoResult.dataRepository();
             printDetailedDebug(results, data);
             try {
-                RESULTS.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project)
-                        .toImmutable())));
+                RESULTS.add(Tuples.pair(project,
+                        TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project).toImmutable())));
                 DATA_MAP.put(project, arDoCoResult);
                 PROJECT_RESULTS.add(results);
             } catch (IOException e) {
@@ -181,21 +178,21 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
 
     private static void compareResultWithExpected(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(), "Precision " + results
-                        .precision() + " is below the expected minimum value " + expectedResults.precision()), //
-                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
-                        .recall() + " is below the expected minimum value " + expectedResults.recall()), //
-                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
+                () -> Assertions.assertTrue(results.precision() >= expectedResults.precision(),
+                        "Precision " + results.precision() + " is below the expected minimum value " + expectedResults.precision()), //
+                () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(),
+                        "Recall " + results.recall() + " is below the expected minimum value " + expectedResults.recall()), //
+                () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(),
+                        "F1 " + results.f1() + " is below the expected minimum value " + expectedResults.f1()));
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
-                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
-                        .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
+                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(),
+                        "Accuracy " + results.accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(),
+                        "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
-    static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {
-        String name = project.name().toLowerCase();
+    static void writeDetailedOutput(GoldStandardProject project, ArDoCoResult arDoCoResult) {
+        String name = project.getProjectName().toLowerCase();
         var path = Path.of(OUTPUT).resolve(name);
         try {
             Files.createDirectories(path);

@@ -33,7 +33,7 @@ class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
     protected ArDoCoForSamCodeTraceabilityLinkRecovery getAndSetupRunner(CodeProject codeProject) {
         String name = codeProject.name().toLowerCase();
         File inputCode = getInputCode(codeProject);
-        File inputArchitectureModel = codeProject.getProject().getModelFile();
+        File inputArchitectureModel = codeProject.getModelFile();
         Map<String, String> additionalConfigsMap = new HashMap<>();
         File outputDir = new File(OUTPUT);
 

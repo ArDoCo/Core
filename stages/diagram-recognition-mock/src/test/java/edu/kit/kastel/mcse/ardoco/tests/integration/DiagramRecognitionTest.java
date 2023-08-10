@@ -43,7 +43,7 @@ public class DiagramRecognitionTest {
                 var data = new InputDiagramDataMock(project);
                 dataRepository.addData(InputDiagramDataMock.ID, data);
 
-                arDoCo.addPipelineStep(new DiagramRecognitionMock(project.getProject().getAdditionalConfigurations(), dataRepository));
+                arDoCo.addPipelineStep(new DiagramRecognitionMock(project.getAdditionalConfigurations(), dataRepository));
             }
         }.runWithoutSaving();
         var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();

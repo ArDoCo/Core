@@ -88,11 +88,9 @@ public enum DiagramProject implements GoldStandardDiagrams, GoldStandardDiagramT
         resourceNames = set;
     }
 
-    /**
-     * {@return the base project of this special type of project}
-     */
-    public Project getProject() {
-        return baseProject;
+    @Override
+    public String getProjectName() {
+        return this.name();
     }
 
     @Override

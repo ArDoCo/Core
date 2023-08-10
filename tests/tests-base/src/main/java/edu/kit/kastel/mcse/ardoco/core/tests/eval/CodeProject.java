@@ -105,8 +105,8 @@ public enum CodeProject implements GoldStandardProject {
     }
 
     @Override
-    public Project getProject() {
-        return project;
+    public String getProjectName() {
+        return this.name();
     }
 
     @Override
