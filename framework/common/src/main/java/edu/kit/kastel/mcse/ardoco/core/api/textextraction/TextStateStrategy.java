@@ -27,18 +27,14 @@ public interface TextStateStrategy extends Serializable {
 
     NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms);
 
+    NounMapping createNounMappingStateless(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference);
+
     NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms, String reference);
 
-    default NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
-        MutableMap<MappingKind, Confidence> distribution = Maps.mutable.empty();
-        distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
-        distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-        var nounMapping = addNounMapping(words, distribution, referenceWords, surfaceForms, reference);
-        nounMapping.addKindWithProbability(kind, claimant, probability);
-        return nounMapping;
-    }
+    NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference);
 
     ElementWrapper<NounMapping> wrap(NounMapping nounMapping);
 

@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -27,14 +28,34 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
     }
 
     @Override
-    public NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
+    public NounMapping createNounMappingStateless(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         if (reference == null) {
             reference = calculateNounMappingReference(referenceWords);
         }
 
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference);
+        return new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms, reference);
+    }
+
+    @Override
+    public NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference) {
+        //Do not add noun mappings to the state, which do not have any claimants
+        assert distribution.values().stream().anyMatch(d -> d.getClaimants().size() > 0);
+
+        NounMapping nounMapping = createNounMappingStateless(words, distribution, referenceWords, surfaceForms, reference);
+        getTextState().addNounMappingAddPhraseMapping(nounMapping);
+        return nounMapping;
+    }
+
+    @Override
+    public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference) {
+        MutableMap<MappingKind, Confidence> distribution = Maps.mutable.empty();
+        distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
+        distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
+        var nounMapping = createNounMappingStateless(words, distribution, referenceWords, surfaceForms, reference);
+        nounMapping.addKindWithProbability(kind, claimant, probability);
         getTextState().addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
