@@ -47,7 +47,7 @@ public enum Project {
             "/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
             "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB.csv", //
             "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.163, .982, .278, .376, .146, .289) //
     ), //
