@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.UmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.models.informants.LegacyCodeModelInformant;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
@@ -38,6 +39,12 @@ public class ModelProviderAgent extends PipelineAgent {
         }
     }
 
+    private ModelProviderAgent(DataRepository data, LegacyCodeModelInformant codeModelInformant) {
+        super(ModelProviderAgent.class.getSimpleName(), data);
+        informants = new ArrayList<>();
+        informants.add(codeModelInformant);
+    }
+
     /**
      * Creates a {@link ModelProviderInformant} for PCM.
      *
@@ -54,6 +61,10 @@ public class ModelProviderAgent extends PipelineAgent {
         case UML -> new UmlModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
+    }
+
+    public static ModelProviderAgent getCodeProvider(DataRepository dataRepository) {
+        return new ModelProviderAgent(dataRepository, new LegacyCodeModelInformant(dataRepository));
     }
 
     @Override

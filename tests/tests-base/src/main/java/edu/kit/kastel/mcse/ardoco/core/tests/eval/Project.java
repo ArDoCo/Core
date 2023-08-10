@@ -25,83 +25,83 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
  */
 public enum Project {
     MEDIASTORE(//
-            "../src/test/resources/benchmark/mediastore/model_2016/pcm/ms.repository", //
-            "../src/test/resources/benchmark/mediastore/text_2016/mediastore.txt", //
-            "../src/test/resources/benchmark/mediastore/text_2016/goldstandard.csv", //
-            "../src/test/resources/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/mediastore/text_2016/goldstandard_UME.csv", //
+            "/benchmark/mediastore/model_2016/pcm/ms.repository", //
+            "/benchmark/mediastore/text_2016/mediastore.txt", //
+            "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-sam_2016.csv", //
+            "/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-sam_2016_UME.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
             new ExpectedResults(.212, .792, .328, .702, .227, .690) //
     ), //
     TEASTORE( //
-            "../src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "../src/test/resources/benchmark/teastore/text_2020/teastore.txt", //
-            "../src/test/resources/benchmark/teastore/text_2020/goldstandard.csv", //
-            "../src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teastore/text_2020/goldstandard_UME.csv", //
+            "/benchmark/teastore/model_2020/pcm/teastore.repository", //
+            "/benchmark/teastore/text_2020/teastore.txt", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2020-sam_2020.csv", //
+            "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2020-sam_2020_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994) //
     ), //
     TEASTORE_HISTORICAL( //
-            "../src/test/resources/benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "../src/test/resources/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
-            "../src/test/resources/benchmark/teastore/text_2018/goldstandard_AB.csv", //
-            "../src/test/resources/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
+            "/benchmark/teastore/model_2020/pcm/teastore.repository", //
+            "/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB.csv", //
+            "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.163, .982, .278, .376, .146, .289) //
     ), //
     TEAMMATES( //
-            "../src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "../src/test/resources/benchmark/teammates/text_2021/teammates.txt", //
-            "../src/test/resources/benchmark/teammates/text_2021/goldstandard.csv", //
-            "../src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teammates/text_2021/goldstandard_UME.csv", //
+            "/benchmark/teammates/model_2021/pcm/teammates.repository", //
+            "/benchmark/teammates/text_2021/teammates.txt", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
+            "/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
             new ExpectedResults(.175, .745, .279, .851, .287, .851) //
     ), //
     TEAMMATES_HISTORICAL( //
-            "../src/test/resources/benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "../src/test/resources/benchmark/teammates/text_2015/teammates_2015.txt", //
-            "../src/test/resources/benchmark/teammates/text_2015/goldstandard.csv", //
-            "../src/test/resources/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/teammates/text_2015/goldstandard_UME.csv", //
+            "/benchmark/teammates/model_2021/pcm/teammates.repository", //
+            "/benchmark/teammates/text_2015/teammates_2015.txt", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2015-sam_2021.csv", //
+            "/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
             new ExpectedResults(.524, .695, .597, .970, .589, .979), //
             new ExpectedResults(.168, .629, .263, .863, .260, .870) //
     ), //
     BIGBLUEBUTTON( //
-            "../src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard.csv", //
-            "../src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
+            "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
+            "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
-            "../src/test/resources/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
-            "../src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard.csv", //
-            "../src/test/resources/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
+            "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021.csv", //
+            "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
             new ExpectedResults(.807, .617, .699, .978, .695, .993), //
             new ExpectedResults(.085, .175, .111, .813, .018, .869) //
     ), //
     JABREF( //
-            "../src/test/resources/benchmark/jabref/model_2021/pcm/jabref.repository", //
-            "../src/test/resources/benchmark/jabref/text_2021/jabref.txt", //
-            "../src/test/resources/benchmark/jabref/text_2021/goldstandard.csv", //
-            "../src/test/resources/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/jabref/text_2021/goldstandard_UME.csv", //
+            "/benchmark/jabref/model_2021/pcm/jabref.repository", //
+            "/benchmark/jabref/text_2021/jabref.txt", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
+            "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.899, .999, .946, .973, .932, .966), //
             new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
     ), //
     JABREF_HISTORICAL( //
-            "../src/test/resources/benchmark/jabref/model_2021/pcm/jabref.repository", //
-            "../src/test/resources/benchmark/jabref/text_2016/jabref_2016.txt", //
-            "../src/test/resources/benchmark/jabref/text_2016/goldstandard.csv", //
-            "../src/test/resources/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "../src/test/resources/benchmark/jabref/text_2016/goldstandard_UME.csv", //
+            "/benchmark/jabref/model_2021/pcm/jabref.repository", //
+            "/benchmark/jabref/text_2016/jabref_2016.txt", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021.csv", //
+            "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021_UME.csv", //
             new ExpectedResults(.817, .999, .899, .966, .886, .960), //
             new ExpectedResults(.110, .110, .110, .366, -.249, .475) //
     );
@@ -148,7 +148,7 @@ public enum Project {
      * @return the File that represents the model for this project
      */
     public File getModelFile() {
-        return new File(model);
+        return ProjectHelper.loadFileFromResources(model);
     }
 
     /**
@@ -160,7 +160,7 @@ public enum Project {
     public File getModelFile(ArchitectureModelType modelType) {
         return switch (modelType) {
         case PCM -> getModelFile();
-        case UML -> new File(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+        case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
         };
     }
 
@@ -170,7 +170,7 @@ public enum Project {
      * @return the File that represents the text for this project
      */
     public File getTextFile() {
-        return new File(textFile);
+        return ProjectHelper.loadFileFromResources(textFile);
     }
 
     /**
@@ -188,7 +188,7 @@ public enum Project {
      * @return the file for additional configurations
      */
     public File getAdditionalConfigurationsFile() {
-        return new File(this.configurationsFile);
+        return ProjectHelper.loadFileFromResources(this.configurationsFile);
     }
 
     /**
@@ -197,7 +197,7 @@ public enum Project {
      * @return the File that represents the gold standard for this project
      */
     public File getTlrGoldStandardFile() {
-        return new File(goldStandardTraceabilityLinkRecovery);
+        return ProjectHelper.loadFileFromResources(goldStandardTraceabilityLinkRecovery);
     }
 
     /**
@@ -240,7 +240,7 @@ public enum Project {
     }
 
     private File getMissingTextForModelElementGoldStandardFile() {
-        return new File(goldStandardMissingTextForModelElement);
+        return ProjectHelper.loadFileFromResources(goldStandardMissingTextForModelElement);
     }
 
     /**

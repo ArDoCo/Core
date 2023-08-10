@@ -31,14 +31,14 @@ public class Datatype extends CodeItem {
         // Jackson
     }
 
-    public Datatype(String name) {
-        super(name);
+    public Datatype(CodeItemRepository codeItemRepository, String name) {
+        super(codeItemRepository, name);
         this.extendedDataTypesIds = new ArrayList<>();
         this.implementedDataTypesIds = new ArrayList<>();
     }
 
     public CodeCompilationUnit getCompilationUnit() {
-        CodeItem codeItem = CodeItemRepository.getInstance().getCodeItem(compilationUnitId);
+        CodeItem codeItem = codeItemRepository.getCodeItem(compilationUnitId);
         if (codeItem instanceof CodeCompilationUnit codeCompilationUnit) {
             return codeCompilationUnit;
         }
@@ -47,7 +47,7 @@ public class Datatype extends CodeItem {
 
     public Set<Datatype> getExtendedTypes() {
         return extendedDataTypesIds.stream().map(id -> {
-            CodeItem codeItem = CodeItemRepository.getInstance().getCodeItem(id);
+            CodeItem codeItem = codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
                 return datatype;
             } else {
@@ -58,7 +58,7 @@ public class Datatype extends CodeItem {
 
     public Set<Datatype> getImplementedTypes() {
         return implementedDataTypesIds.stream().map(id -> {
-            CodeItem codeItem = CodeItemRepository.getInstance().getCodeItem(id);
+            CodeItem codeItem = codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
                 return datatype;
             } else {

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 
 public abstract class TraceabilityLinkRecoveryEvaluation {
-    private static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
+    protected static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
     private static final String WARNING_NO_CODE_MODEL = "Could not get code model to enroll gold standard. Using not enrolled gold standard!";
     // The path separator is to show that a code entry is not a class but rather a directory that ends with, currently, a "/" (unix style)
     // If the path separator in the gold standards are changed, this needs to update
@@ -55,7 +56,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         var evaluationResults = calculateEvaluationResults(result, goldStandard);
 
         ExpectedResults expectedResults = getExpectedResults(codeProject);
-        TestUtil.logExtendedResultsWithExpected(logger, codeProject.name(), evaluationResults, expectedResults);
+        TestUtil.logExtendedResultsWithExpected(logger, this, codeProject.name(), evaluationResults, expectedResults);
         compareResults(evaluationResults, expectedResults);
         return result;
     }
@@ -64,11 +65,11 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected File getInputCode(CodeProject codeProject) {
         File inputCode;
-        if (TraceLinkEvaluationIT.analyzeCodeDirectly) {
+        if (TraceLinkEvaluationIT.analyzeCodeDirectly.get()) {
             prepareCode(codeProject);
             inputCode = new File(codeProject.getCodeLocation());
         } else {
-            inputCode = new File(codeProject.getCodeModelLocation());
+            inputCode = new File(codeProject.getCodeModelDirectory());
         }
         return inputCode;
     }
@@ -78,8 +79,8 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     private void prepareCode(CodeProject codeProject) {
         File codeLocation = new File(codeProject.getCodeLocation());
 
-        if (!codeLocation.exists()) {
-            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
+        if (!codeLocation.exists() || Objects.requireNonNull(codeLocation.listFiles()).length == 0) {
+            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation(), codeProject.getCommitHash());
         }
     }
 
