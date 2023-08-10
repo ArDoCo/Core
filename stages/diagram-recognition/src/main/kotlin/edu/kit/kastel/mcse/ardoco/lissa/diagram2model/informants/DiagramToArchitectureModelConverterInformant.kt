@@ -4,6 +4,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.models.ModelExtractionStateImpl
@@ -32,13 +34,16 @@ class DiagramToArchitectureModelConverterInformant(dataRepository: DataRepositor
 
         val architecture = ModelExtractionStateImpl("diagram-architecture", Metamodel.ARCHITECTURE, Lists.immutable.withAll(diagramElements))
         architectureState.addModelExtractionState(architecture.modelId, architecture)
+
+        val architectureModel = ArchitectureModel(diagramElements.map { ArchitectureComponent(it.name, it.id, emptySet(), emptySet(), emptySet()) })
+        architectureState.addModel("PCM", architectureModel)
     }
 
     private fun addDiagrams(diagramRecognitionState: DiagramRecognitionState, diagramElements: MutableList<ModelInstance>) {
         for (diagram in diagramRecognitionState.diagrams) {
             for (diagramElement in diagram.boxes) {
                 // For now a box will be a component
-                val name = diagramElement.texts.joinToString(" ").trim()
+                val name = diagramElement.texts.sortedBy { it.yCoordinate }.joinToString("") { it.text }.trim()
                 if (name.isBlank()) {
                     continue
                 }

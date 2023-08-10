@@ -43,6 +43,9 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
         }
     }
 
+    public static ArCoTLModelProviderAgent get(File inputCode, Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        return get(null, null, inputCode, additionalConfigs, dataRepository);
+    }
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             Map<String, String> additionalConfigs, DataRepository dataRepository) {
 
