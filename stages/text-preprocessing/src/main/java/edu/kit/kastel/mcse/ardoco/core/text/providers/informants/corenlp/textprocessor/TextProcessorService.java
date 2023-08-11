@@ -5,7 +5,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 import io.github.ardoco.textproviderjson.converter.JsonConverter;
 import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
-import io.github.ardoco.textproviderjson.dto.TextDTO;
+import io.github.ardoco.textproviderjson.dto.TextDto;
+import io.github.ardoco.textproviderjson.error.InvalidJsonException;
+import io.github.ardoco.textproviderjson.error.NotConvertableException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,8 +28,8 @@ public class TextProcessorService {
      * @param inputText the input text
      * @return          the annotated text
      */
-    public Text processText(String inputText) throws IOException {
-        TextDTO textDto;
+    public Text processText(String inputText) throws IOException, InvalidJsonException, NotConvertableException {
+        TextDto textDto;
         String jsonText = sendCorenlpRequest(inputText);
         textDto = JsonConverter.fromJsonString(jsonText);
         return new DtoToObjectConverter().convertText(textDto);

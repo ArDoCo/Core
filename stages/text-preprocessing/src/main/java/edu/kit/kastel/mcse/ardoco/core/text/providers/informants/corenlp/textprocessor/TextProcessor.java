@@ -5,6 +5,8 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.
 
 import java.io.IOException;
 
+import io.github.ardoco.textproviderjson.error.InvalidJsonException;
+import io.github.ardoco.textproviderjson.error.NotConvertableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,9 @@ public class TextProcessor {
                 } catch (IOException e) {
                     k++;
                     logger.warn("Could not process text with CoreNLP microservice. Trying again. ", e);
+                } catch (NotConvertableException | InvalidJsonException e) {
+                    logger.warn("Could not process text with CoreNLP microservice. Text not convertable. ", e);
+                    return processLocally(inputText);
                 }
             }
             logger.warn("Could not process text with CoreNLP microservice. Processing locally instead.");
@@ -52,7 +57,7 @@ public class TextProcessor {
         return new TextProcessorLocal().processText(inputText);
     }
 
-    private Text processService(String inputText) throws IOException {
+    private Text processService(String inputText) throws IOException, NotConvertableException, InvalidJsonException {
         return new TextProcessorService().processText(inputText);
     }
 
