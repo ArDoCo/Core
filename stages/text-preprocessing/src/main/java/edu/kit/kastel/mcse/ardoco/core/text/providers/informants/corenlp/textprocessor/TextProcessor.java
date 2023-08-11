@@ -1,9 +1,10 @@
-package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
+package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TextProcessor {
 
-    private final int maxFailedServiceRequests = 2;
+    private static final int MAX_FAILED_SERVICE_REQUESTS = 2;
     Logger logger = LoggerFactory.getLogger(TextProcessor.class);
 
     /**
@@ -21,17 +22,24 @@ public class TextProcessor {
      * @return          the annotated text
      */
     public Text processText(String inputText) {
+        boolean microserviceAvailable;
+        try {
+            microserviceAvailable = MicroserviceChecker.isMicroserviceAvailable();
+        } catch (IOException e) {
+            microserviceAvailable = false;
+            logger.warn("Could not check if CoreNLP microservice is available. ", e);
+        }
         if (ConfigManager.getInstance().getProperty("nlpProviderSource").equals("microservice")
-                && MicroserviceChecker.isMicroserviceAvailable()) {
+                && microserviceAvailable) {
             int k = 0;
-            while (k < maxFailedServiceRequests) {
+            while (k < MAX_FAILED_SERVICE_REQUESTS) {
                 try {
                     Text processedText = processService(inputText);
                     logger.info("Processed text with CoreNLP microservice.");
                     return processedText;
                 } catch (IOException e) {
                     k++;
-                    logger.warn("Could not process text with CoreNLP microservice. Trying again. Error: " + e.getMessage());
+                    logger.warn("Could not process text with CoreNLP microservice. Trying again. ", e);
                 }
             }
             logger.warn("Could not process text with CoreNLP microservice. Processing locally instead.");

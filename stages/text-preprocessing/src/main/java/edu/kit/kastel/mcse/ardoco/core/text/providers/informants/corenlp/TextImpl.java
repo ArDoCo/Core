@@ -16,7 +16,7 @@ public class TextImpl implements Text {
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
 
-    TextImpl(CoreDocument coreDocument) {
+    public TextImpl(CoreDocument coreDocument) {
         this.coreDocument = coreDocument;
     }
 

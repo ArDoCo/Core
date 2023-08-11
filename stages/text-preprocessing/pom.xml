@@ -60,7 +60,7 @@
     <dependency>
       <groupId>io.github.ardoco</groupId>
       <artifactId>text-provider-json</artifactId>
-      <version>0.1.0</version>
+      <version>0.4.0</version>
     </dependency>
   </dependencies>
 </project>
