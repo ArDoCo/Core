@@ -2,11 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,13 +40,20 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         return sentence.getSentenceNumberForOutput();
     }
 
-    public boolean equalEndpoints(DiaTexTraceLink other) {
+    public final boolean equalDEAndSentence(DiaTexTraceLink other) {
         return Objects.equals(getDiagramElement(), other.getDiagramElement()) && Objects.equals(getSentenceNo(), other.getSentenceNo());
     }
 
     @Override
     public String toString() {
-        return MessageFormat.format("[{0}]-[{1}]-[{2}]", getDiagramElement(), getSentence().getSentenceNumberForOutput(), getSentence().getText());
+        return toString(true);
+    }
+
+    public String toString(boolean withSentence) {
+        if (withSentence) {
+            return MessageFormat.format("[{0}]-[{1}]-[{2}]", getDiagramElement(), getSentence().getSentenceNumberForOutput(), getSentence().getText());
+        }
+        return MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), getSentence().getSentenceNumberForOutput());
     }
 
     public @NotNull Sentence getSentence() {
@@ -62,7 +65,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         if (this == obj)
             return true;
         else if (obj instanceof DiaTexTraceLink other) {
-            return equalEndpoints(other);
+            return equalDEAndSentence(other);
         }
         return false;
     }

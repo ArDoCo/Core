@@ -106,7 +106,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
         return wordPairs.stream().max(diagramElementSimilarity).map(Pair::second);
     }
 
-    protected transient Comparator<Pair<Double, Box>> diagramElementSimilarity = (p1, p2) -> {
+    protected static Comparator<Pair<Double, Box>> diagramElementSimilarity = (p1, p2) -> {
         var comp = Double.compare(p1.first(), p2.first());
         if (comp == 0) {
             //More "concise" diagram elements are preferable

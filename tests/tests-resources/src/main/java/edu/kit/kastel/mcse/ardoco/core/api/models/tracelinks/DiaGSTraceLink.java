@@ -17,7 +17,7 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
      * @param diagramElement diagram element
      * @param sentence       sentence
      * @param projectName    project name
-     * @param goldStandard   path to the gold standard file
+     * @param goldStandard   path to the textual gold standard file
      */
     public DiaGSTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName, @NotNull String goldStandard) {
         this(diagramElement, sentence, projectName, goldStandard, TraceType.ENTITY);
@@ -29,7 +29,7 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
      * @param diagramElement diagram element
      * @param sentence       sentence
      * @param projectName    project name
-     * @param goldStandard   path to the gold standard file
+     * @param goldStandard   path to the textual gold standard file
      * @param traceType      type of the trace
      */
     public DiaGSTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName, @NotNull String goldStandard,

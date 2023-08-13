@@ -62,7 +62,8 @@ public record Results(DiagramProject project, BigDecimal precision, BigDecimal r
         var traceLinks = new TreeSet<>(wordTraceLinks);
         var tpLinks = intersection(traceLinks, goldStandard);
         var fpLinks = difference(traceLinks, goldStandard);
-        fpLinks.forEach(fp -> fp.addRelated(allGoldStandardTraceLinks.values().stream().flatMap(Collection::stream).filter(fp::equalEndpoints).toList()));
+        fpLinks.forEach(fp -> fp.addRelated(
+                allGoldStandardTraceLinks.values().stream().flatMap(Collection::stream).filter(fp::equalDEAndSentence).toList()));
         var fnLinks = difference(goldStandard, traceLinks);
         var TP = tpLinks.size();
         var FP = fpLinks.size();
@@ -79,11 +80,15 @@ public record Results(DiagramProject project, BigDecimal precision, BigDecimal r
     }
 
     public static <T extends DiaTexTraceLink> TreeSet<T> intersection(Set<T> a, Set<? extends DiaTexTraceLink> b) {
-        return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
+        return a.stream()
+                .filter(fromA -> b.stream().anyMatch(fromB -> fromB.equalDEAndSentence(fromA)))
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     public static <T extends DiaTexTraceLink> TreeSet<T> difference(Set<T> a, Set<? extends DiaTexTraceLink> b) {
-        return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.equalEndpoints(fromA))).collect(Collectors.toCollection(TreeSet::new));
+        return a.stream()
+                .filter(fromA -> b.stream().noneMatch(fromB -> fromB.equalDEAndSentence(fromA)))
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     public static Results create(DiagramProject project, Text text, Set<DiaWordTraceLink> traceLinks) {

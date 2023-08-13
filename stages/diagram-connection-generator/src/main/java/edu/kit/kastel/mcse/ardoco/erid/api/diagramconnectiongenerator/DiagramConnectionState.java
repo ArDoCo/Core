@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -83,7 +83,7 @@ public interface DiagramConnectionState extends IConfigurable {
     }
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getTraceLinks() {
-        return getByEqualEndpoints(getWordTraceLinks());
+        return getByEqualDEAndSentence(getWordTraceLinks());
     }
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificWordTraceLinks() {
@@ -99,23 +99,18 @@ public interface DiagramConnectionState extends IConfigurable {
     }
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificTraceLinks() {
-        return getByEqualEndpoints(getMostSpecificWordTraceLinks());
+        return getByEqualDEAndSentence(getMostSpecificWordTraceLinks());
     }
 
     private List<DiaWordTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiaWordTraceLink> traceLinks) {
-        var sorted = traceLinks.stream().sorted((t1, t2) -> Double.compare(t2.getConfidence(), t1.getConfidence())).toList();
-        var max = sorted.stream().findFirst().map(DiaWordTraceLink::getConfidence).orElse(Double.MAX_VALUE);
-        sorted.forEach(tl -> tl.addRelated(sorted));
-        return sorted.stream().filter(tl -> Double.compare(tl.getConfidence(), max) >= 0).toList();
+        var max = traceLinks.stream().max(DiaWordTraceLink.CONFIDENCE_COMPARATOR).map(DiaWordTraceLink::getConfidence).orElse(Double.MAX_VALUE);
+        var allMaxima = traceLinks.stream().filter(tl -> Double.compare(tl.getConfidence(), max) >= 0).toList();
+        allMaxima.forEach(m -> m.addRelated(allMaxima));
+        return allMaxima;
     }
 
-    private ImmutableSet<DiaWordTraceLink> getByEqualEndpoints(ImmutableSet<DiaWordTraceLink> links) {
-        var list = new ArrayList<DiaWordTraceLink>();
-        for (var link : links) {
-            if (list.stream().anyMatch(l -> l.equalEndpoints(link)))
-                continue;
-            list.add(link);
-        }
-        return Sets.immutable.ofAll(list);
+    private ImmutableSet<DiaWordTraceLink> getByEqualDEAndSentence(ImmutableSet<DiaWordTraceLink> links) {
+        var sameDEAndSentence = links.groupBy(l -> new Pair<>(l.getDiagramElement(), l.getSentenceNo())).toMap();
+        return Sets.immutable.fromStream(sameDEAndSentence.values().stream().map(l -> l.max(DiaWordTraceLink.CONFIDENCE_COMPARATOR)));
     }
 }

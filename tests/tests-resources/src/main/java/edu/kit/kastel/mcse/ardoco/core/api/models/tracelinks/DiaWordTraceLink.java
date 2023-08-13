@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,6 +21,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * Represents a tracelink between a {@link DiagramElement} and a {@link Word}.
  */
 public class DiaWordTraceLink extends DiaTexTraceLink {
+    public final static Comparator<DiaWordTraceLink> CONFIDENCE_COMPARATOR = Comparator.comparingDouble(DiaWordTraceLink::getConfidence);
+
     private final Word word;
     private final double confidence;
     private final Object origin;
@@ -113,6 +116,7 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
         if (!relatedGSLinks.isEmpty()) {
             prefix = relatedGSLinks.stream().map(g -> "[" + g.getTraceType().name() + "]").collect(Collectors.joining("-")) + "-";
         }
-        return prefix + super.toString() + MessageFormat.format("-[{0}]-[{1,number,#.###}]", getWord().getPosition(), getConfidence());
+        return prefix + super.toString(false) + MessageFormat.format("-[{0}]-[{1}]-[{2,number,#.###}]", getWord().getText(), getWord().getPhrase().getText(),
+                getConfidence());
     }
 }

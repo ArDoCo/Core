@@ -1,13 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
@@ -52,6 +52,10 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
     public DiagramLink(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
             @NotNull Claimant claimant, @NotNull Map<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
+
+        //Assert that confidenceMap is complete
+        assert confidenceMap.keySet().containsAll(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList());
+        assert new HashSet<>(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList()).size() == confidenceMap.size();
 
         this.recommendedInstance = recommendedInstance;
         this.diagramElement = diagramElement;
@@ -124,14 +128,7 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
      * @return immutable set of diagram text tracelinks
      */
     public @NotNull ImmutableSet<DiaWordTraceLink> toTraceLinks() {
-        MutableSet<DiaWordTraceLink> traceLinks = Sets.mutable.empty();
-        for (var nameMapping : getRecommendedInstance().getNameMappings()) {
-            for (var word : nameMapping.getWords()) {
-                var traceLink = new DiaWordTraceLink(getDiagramElement(), word, projectName, getConfidence(word), this);
-                traceLinks.add(traceLink);
-            }
-        }
-        var result = Sets.immutable.ofAll(traceLinks);
-        return result;
+        return Sets.immutable.fromStream(
+                getConfidenceMap().entrySet().stream().map(e -> new DiaWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
     }
 }
