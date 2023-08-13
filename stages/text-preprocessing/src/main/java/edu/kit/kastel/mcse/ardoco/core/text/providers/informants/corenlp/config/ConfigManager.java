@@ -1,7 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -10,11 +10,11 @@ import java.util.Properties;
 public class ConfigManager {
     private static ConfigManager instance;
     private final Properties properties;
-    private final String filePath = "src/main/java/edu/kit/kastel/mcse/ardoco/core/text/providers/informants/corenlp/config/config.properties";
+    private static final String filePath = "config.properties";
 
     private ConfigManager() {
         properties = new Properties();
-        try (FileInputStream fileInputStream = new FileInputStream(filePath);) {
+        try (InputStream fileInputStream = ConfigManager.class.getClassLoader().getResourceAsStream(filePath);) {
             properties.load(fileInputStream);
         } catch (IOException e) {
             e.printStackTrace();
