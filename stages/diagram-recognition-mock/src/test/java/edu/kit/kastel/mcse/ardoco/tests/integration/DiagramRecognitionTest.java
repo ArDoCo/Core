@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
@@ -40,10 +39,7 @@ public class DiagramRecognitionTest {
                 ArDoCo arDoCo = getArDoCo();
                 var dataRepository = arDoCo.getDataRepository();
 
-                var data = new InputDiagramDataMock(project);
-                dataRepository.addData(InputDiagramDataMock.ID, data);
-
-                arDoCo.addPipelineStep(new DiagramRecognitionMock(project.getAdditionalConfigurations(), dataRepository));
+                arDoCo.addPipelineStep(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
             }
         }.runWithoutSaving();
         var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();

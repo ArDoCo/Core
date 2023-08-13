@@ -20,7 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.DiagramBackedTextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
@@ -41,8 +40,7 @@ public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters>
 
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
-        dataRepository.addData(InputDiagramDataMock.ID, new InputDiagramDataMock(p.diagramProject));
-        pipelineSteps.add(new DiagramRecognitionMock(p.additionalConfigs, dataRepository));
+        pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject, p.additionalConfigs, dataRepository));
 
         var text = CommonUtilities.readInputText(p.inputText);
         if (text.isBlank()) {

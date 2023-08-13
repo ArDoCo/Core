@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
-import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
@@ -89,7 +88,7 @@ public class HoldBackRunResultsProducer {
         var additionalConfigs = goldStandardProject.getAdditionalConfigurations();
 
         addPreSteps(inputText, goldStandardProject, arDoCo, dataRepository, additionalConfigs);
-        addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
+        addMiddleSteps(goldStandardProject, holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
             arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
@@ -100,15 +99,15 @@ public class HoldBackRunResultsProducer {
         return arDoCo;
     }
 
-    private ArDoCo defineArDoCoWithPreComputedData(ArDoCoResult precomputedResults, GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector,
-            boolean useInconsistencyBaseline) {
+    private ArDoCo defineArDoCoWithPreComputedData(ArDoCoResult precomputedResults, GoldStandardProject goldStandardProject,
+            HoldElementsBackModelConnector holdElementsBackModelConnector, boolean useInconsistencyBaseline) {
         var projectName = precomputedResults.getProjectName();
         ArDoCo arDoCo = new ArDoCo(projectName);
         var dataRepository = arDoCo.getDataRepository();
         var additionalConfigs = goldStandardProject.getAdditionalConfigurations();
 
         addPreSteps(precomputedResults, dataRepository);
-        addMiddleSteps(holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
+        addMiddleSteps(goldStandardProject, holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
             arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
@@ -118,15 +117,16 @@ public class HoldBackRunResultsProducer {
         return arDoCo;
     }
 
-    protected void addMiddleSteps(HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo, DataRepository dataRepository,
-            Map<String, String> additionalConfigs) {
+    protected void addMiddleSteps(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo,
+            DataRepository dataRepository, Map<String, String> additionalConfigs) {
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
         arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
     }
 
-    protected void addPreSteps(File inputText, GoldStandardProject goldStandardProject, ArDoCo arDoCo, DataRepository dataRepository, Map<String, String> additionalConfigs) {
+    protected void addPreSteps(File inputText, GoldStandardProject goldStandardProject, ArDoCo arDoCo, DataRepository dataRepository,
+            Map<String, String> additionalConfigs) {
         String text = CommonUtilities.readInputText(inputText);
         DataRepositoryHelper.putInputText(dataRepository, text);
 

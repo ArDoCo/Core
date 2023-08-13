@@ -21,7 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGen
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsistency;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MTDEInconsistency;
@@ -72,9 +71,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                 var dataRepository = arDoCo.getDataRepository();
 
                 if (useMockDiagrams) {
-                    var data = new InputDiagramDataMock(project);
-                    dataRepository.addData(InputDiagramDataMock.ID, data);
-                    arDoCo.addPipelineStep(new DiagramRecognitionMock(project.getAdditionalConfigurations(), dataRepository));
+                    arDoCo.addPipelineStep(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
                 } else {
                     arDoCo.addPipelineStep(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
                 }

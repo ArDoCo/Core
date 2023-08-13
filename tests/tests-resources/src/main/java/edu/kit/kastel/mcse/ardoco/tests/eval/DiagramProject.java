@@ -32,7 +32,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 /**
  * This enum captures the different case studies that are used for evaluation in the integration tests.
  */
-public enum DiagramProject implements GoldStandardDiagrams, GoldStandardDiagramTLR {
+public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     MEDIASTORE(//
             Project.MEDIASTORE, //
             "/benchmark/mediastore/diagrams_2016/goldstandard.json", //

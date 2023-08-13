@@ -3,27 +3,26 @@ package edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock;
 import java.util.List;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
+import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 
 public class DiagramRecognitionMock extends ExecutionStage {
-    public DiagramRecognitionMock(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    private final GoldStandardDiagramsWithTLR goldStandardProject;
+
+    public DiagramRecognitionMock(GoldStandardDiagramsWithTLR goldStandardProject, Map<String, String> additionalConfigs, DataRepository dataRepository) {
         super("DiagramRecognitionMock", dataRepository, List.of(), additionalConfigs);
+        this.goldStandardProject = goldStandardProject;
     }
 
     @Override
     protected void initializeState() {
-        var inputDiagramsMock = getDataRepository().getData(InputDiagramDataMock.ID, InputDiagramDataMock.class);
-        if (inputDiagramsMock.isEmpty()) {
-            return;
-        }
         logger.info("Creating DiagramRecognitionMock State");
         var diagramRecognitionState = new DiagramRecognitionStateImpl();
-        var diagrams = inputDiagramsMock.get().diagramProject().getDiagrams();
+        var diagrams = goldStandardProject.getDiagrams();
         for (var diagram : diagrams) {
             logger.debug("Loaded Diagram {}", diagram.getResourceName());
             diagramRecognitionState.addDiagram(diagram);

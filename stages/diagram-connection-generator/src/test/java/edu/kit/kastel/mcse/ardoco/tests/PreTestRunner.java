@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.DiagramBackedTextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
-import edu.kit.kastel.mcse.ardoco.erid.api.diagramrecognitionmock.InputDiagramDataMock;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
@@ -38,9 +37,7 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
         var dataRepository = arDoCo.getDataRepository();
 
         if (p.useMockDiagrams) {
-            var data = new InputDiagramDataMock(p.diagramProject);
-            dataRepository.addData(InputDiagramDataMock.ID, data);
-            pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+            pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject, p.diagramProject.getAdditionalConfigurations(), dataRepository));
         } else {
             pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
         }

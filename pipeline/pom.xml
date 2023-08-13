@@ -50,6 +50,7 @@
                 <module>pipeline-id</module>
                 <module>pipeline-lissa</module>
                 <module>pipeline-tlr</module>
+              <module>pipeline-erid</module>
             </modules>
         </profile>
         <profile>
