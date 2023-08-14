@@ -11,7 +11,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.InconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.RecommendedInstancesConfidenceAgent;
-import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.RecommendedInstancesFilterAgent;
 
 public class DiagramInconsistencyChecker extends ExecutionStage {
     @Configurable
@@ -19,8 +18,7 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
 
     public DiagramInconsistencyChecker(Map<String, String> additionalConfigs, DataRepository dataRepository) {
         super(DiagramInconsistencyChecker.class.getSimpleName(), dataRepository,
-                List.of(new RecommendedInstancesFilterAgent(dataRepository), new InconsistencyAgent(dataRepository),
-                        new RecommendedInstancesConfidenceAgent(dataRepository)), additionalConfigs);
+                List.of(new InconsistencyAgent(dataRepository), new RecommendedInstancesConfidenceAgent(dataRepository)), additionalConfigs);
         enabledAgents = getAgents().stream().map(Agent::getId).toList();
     }
 

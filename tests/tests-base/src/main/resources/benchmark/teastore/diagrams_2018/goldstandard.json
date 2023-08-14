@@ -244,14 +244,14 @@
                             "sentences": [
                                 4,
                                 22,
-                                25,
-                                26
+                                25
                             ],
                             "typedTracelinks": [
                                 {
                                     "sentences": [
                                         23,
-                                        24
+                                        24,
+                                        26
                                     ],
                                     "traceType": "ENTITY_COREFERENCE"
                                 },

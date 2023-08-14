@@ -20,9 +20,9 @@ class AbbreviationDisambiguationHelperTest {
 
     @Test
     void get() {
-        var abbreviation = AbbreviationDisambiguationHelper.getInstance().get("DB");
+        var abbreviation = AbbreviationDisambiguationHelper.getInstance().disambiguate("DB");
         assertNotNull(abbreviation);
-        assertEquals(abbreviation.size(), Math.min(AbbreviationDisambiguationHelper.limit, 3));
+        assertEquals(abbreviation.size(), Math.min(AbbreviationDisambiguationHelper.LIMIT, 3));
     }
 
     @Test
@@ -40,12 +40,21 @@ class AbbreviationDisambiguationHelperTest {
     }
 
     @Test
-    void crawl() {
-        var abbreviation = AbbreviationDisambiguationHelper.getInstance().crawl("DB");
-        assertNotNull(abbreviation);
-        assertEquals(abbreviation.abbreviation(), "DB");
-        assertEquals(abbreviation.meanings().size(), Math.min(AbbreviationDisambiguationHelper.limit, 3));
+    void crawlAbbreviationsCom() {
+        var meanings = AbbreviationDisambiguationHelper.getInstance().crawlAbbreviationsCom("DB");
+        assertNotNull(meanings);
+        assertEquals(AbbreviationDisambiguationHelper.LIMIT, meanings.size());
+    }
 
+    @Test
+    void crawlAcronymFinderCom() {
+        var meanings = AbbreviationDisambiguationHelper.getInstance().crawlAcronymFinderCom("GAE");
+        assertNotNull(meanings);
+        assertEquals(AbbreviationDisambiguationHelper.LIMIT, meanings.size());
+    }
+
+    @Test
+    void crawl() {
         //Let's hope no one ever comes up with a sensible meaning for this non-sense. Until then, it will remain as our way to test how we handle no search results.
         var nonSens = AbbreviationDisambiguationHelper.getInstance().crawl("8DAS8UDZGU23HG1U");
         assertNotNull(nonSens);

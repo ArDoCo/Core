@@ -53,7 +53,7 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
 
         var textState = new TextStateImpl();
         var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);
-        textState.setTextStateStrategy(textStrategy);
+        //textState.setTextStateStrategy(textStrategy);
         dataRepository.addData(TextState.ID, textState);
         pipelineSteps.add(TextExtraction.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
 

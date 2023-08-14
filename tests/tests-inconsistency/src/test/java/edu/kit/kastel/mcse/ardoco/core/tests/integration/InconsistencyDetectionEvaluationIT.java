@@ -172,7 +172,7 @@ public class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(10)
-    void missingTextInconsistencyIT(GoldStandardProject goldStandardProject) {
+    protected void missingTextInconsistencyIT(GoldStandardProject goldStandardProject) {
         runMissingTextInconsistencyEval(goldStandardProject);
     }
 
@@ -181,7 +181,7 @@ public class InconsistencyDetectionEvaluationIT {
     @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(11)
-    void missingTextInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
+    protected void missingTextInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
         runMissingTextInconsistencyEval(goldStandardProject);
     }
 

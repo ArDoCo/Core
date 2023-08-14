@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.AmbiguationConnectionInformant;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.InstantConnectionInformant;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -22,7 +23,8 @@ public class InstanceConnectionAgent extends PipelineAgent {
      * @param dataRepository the {@link DataRepository}
      */
     public InstanceConnectionAgent(DataRepository dataRepository) {
-        super(InstanceConnectionAgent.class.getSimpleName(), dataRepository, List.of(new InstantConnectionInformant(dataRepository)));
+        super(InstanceConnectionAgent.class.getSimpleName(), dataRepository,
+                List.of(new InstantConnectionInformant(dataRepository), new AmbiguationConnectionInformant(dataRepository)));
         enabledInformants = getInformantClassNames();
     }
 

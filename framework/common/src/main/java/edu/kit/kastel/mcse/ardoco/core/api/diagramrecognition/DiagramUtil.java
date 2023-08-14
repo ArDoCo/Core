@@ -10,10 +10,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
+import com.google.common.collect.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DBPediaHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
@@ -158,7 +160,19 @@ public class DiagramUtil {
                     .filter(s -> !DBPediaHelper.isWordProgrammingLanguage(s))
                     .filter(s -> !DBPediaHelper.isWordSoftware(s))
                     .toList();
-            var abbreviations = getPossibleAbbreviations(text).stream().map(AbbreviationDisambiguationHelper.getInstance()::get).toList();
+            var abbreviations = getPossibleAbbreviations(text);
+            var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a, AbbreviationDisambiguationHelper.getInstance()::disambiguate));
+            var crossProduct = Lists.cartesianProduct(
+                    meaningsMap.entrySet().stream().map(s -> s.getValue().stream().map(v -> new Pair<>(s.getKey(), v)).toList()).toList());
+            for (var meanings : crossProduct) {
+                if (meanings.isEmpty())
+                    continue;
+                var textWithReplacements = text;
+                for (Pair<String, String> replacement : meanings) {
+                    textWithReplacements = textWithReplacements.replace(replacement.first(), replacement.second());
+                }
+                names.add(textWithReplacements);
+            }
             var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
             names.addAll(splitAndDecameled);
             names.addAll(noBlank);

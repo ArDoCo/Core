@@ -16,9 +16,8 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
- * Filters {@link RecommendedInstance}s that have low probabilities of being an entity. This can either be because the
- * probability of being a {@link RecommendedInstance} is low or because the probability of having a mapping for a name
- * and/or type is low.
+ * Filters {@link RecommendedInstance}s that have low probabilities of being an entity. This can either be because the probability of being a
+ * {@link RecommendedInstance} is low or because the probability of having a mapping for a name and/or type is low.
  */
 public class RecommendedInstanceProbabilityFilter extends Filter {
     @Configurable
@@ -98,16 +97,16 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     }
 
     /**
-     * Check for probabilities of the {@link NounMapping}s that are contained by the {@link RecommendedInstance}. If
-     * they exceed a threshold, then the check is positive. The {@link RecommendedInstance} needs to either be certain
-     * for name or type or decently certain for name and type.
+     * Check for probabilities of the {@link NounMapping}s that are contained by the {@link RecommendedInstance}. If they exceed a threshold, then the check is
+     * positive. The {@link RecommendedInstance} needs to either be certain for name or type or decently certain for name and type.
      *
      * @param recommendedInstance the {@link RecommendedInstance} to check
      * @return true if the probabilities of the types exceed a threshold
      */
     private boolean checkProbabilitiesForNounMappingTypes(RecommendedInstance recommendedInstance) {
         var highestTypeProbability = getHighestTypeProbability(recommendedInstance.getTypeMappings());
-        var highestNameProbability = getHighestNameProbability(recommendedInstance.getNameMappings());
+        var highestNameProbability = highestTypeProbability; //FIXME this is a bug that needs to be fixed on the main project
+        //var highestNameProbability = getHighestNameProbability(recommendedInstance.getNameMappings());
 
         return (highestTypeProbability > thresholdNameAndTypeProbability && highestNameProbability > thresholdNameAndTypeProbability) || highestTypeProbability > thresholdNameOrTypeProbability || highestNameProbability > thresholdNameOrTypeProbability;
 

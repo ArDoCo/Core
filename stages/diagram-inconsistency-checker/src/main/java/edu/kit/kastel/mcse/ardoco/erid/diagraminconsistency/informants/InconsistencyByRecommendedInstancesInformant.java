@@ -19,13 +19,14 @@ public class InconsistencyByRecommendedInstancesInformant extends Informant {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
+        var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var modelIds = modelStates.extractionModelIds();
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel mm = modelState.getMetamodel();
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
             var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(mm);
-            var allRecommendedInstances = diagramInconsistencyState.getRecommendedInstances();
+            var allRecommendedInstances = recommendationStates.getRecommendationState(mm).getRecommendedInstances();
             var uncoveredRecommendedInstances = allRecommendedInstances.stream()
                     .filter(ri -> diagramConnectionState.getDiagramLinks(ri).isEmpty())
                     .distinct()

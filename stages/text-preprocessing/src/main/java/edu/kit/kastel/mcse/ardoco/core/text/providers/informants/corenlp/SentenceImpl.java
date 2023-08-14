@@ -28,12 +28,13 @@ class SentenceImpl implements Sentence {
     private final transient CoreSentence coreSentence;
     private int sentenceNumber;
 
-    private String text;
+    private final String text;
 
     public SentenceImpl(CoreSentence coreSentence, int sentenceNumber, TextImpl parent) {
         this.coreSentence = coreSentence;
         this.sentenceNumber = sentenceNumber;
         this.parent = parent;
+        this.text = coreSentence.text();
     }
 
     @Override
@@ -51,9 +52,6 @@ class SentenceImpl implements Sentence {
 
     @Override
     public String getText() {
-        if (text == null) {
-            text = coreSentence.text();
-        }
         return text;
     }
 

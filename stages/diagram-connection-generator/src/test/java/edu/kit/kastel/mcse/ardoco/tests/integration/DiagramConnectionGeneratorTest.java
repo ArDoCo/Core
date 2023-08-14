@@ -74,7 +74,6 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
                 "{} Diagram Links, {} Trace Links, {} Most Specific Trace Links, {} Common Noun FP, {} Shared Stem FP, {} Other Entity FP, {} Coreference FN",
                 diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size(), commonNoun.size(), sharedStem.size(), otherEntity.size(),
                 coreference.size());
-        logger.info(Results.create(project, text, traceLinks, project.getExpectedDiagramTraceLinkResults()).toString());
         logger.info(altResult.toString());
 
         var cacheID = "Results-" + project.name();

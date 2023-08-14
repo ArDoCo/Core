@@ -25,7 +25,7 @@ public interface DiagramConnectionState extends IConfigurable {
     Logger logger = LoggerFactory.getLogger(DiagramConnectionState.class);
 
     @Configurable
-    double confidenceThreshold = 0.8;
+    double confidenceThreshold = 0.4;
 
     /**
      * Returns all diagram links.
