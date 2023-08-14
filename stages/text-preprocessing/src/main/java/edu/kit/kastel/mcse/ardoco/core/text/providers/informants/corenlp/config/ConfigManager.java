@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config;
 
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor.TextProcessor;
@@ -47,8 +48,9 @@ public class ConfigManager {
 
     /**
      * gets the value of the given key in the config file
-     * @param key   the key
-     * @return      the value
+     * 
+     * @param key the key
+     * @return the value
      */
     public String getProperty(String key) {
         return properties.getProperty(key);
@@ -56,8 +58,9 @@ public class ConfigManager {
 
     /**
      * sets the value of the given key in the config file
-     * @param key       the key
-     * @param value     the new value
+     * 
+     * @param key   the key
+     * @param value the new value
      */
     public void setProperty(String key, String value) {
         properties.setProperty(key, value);

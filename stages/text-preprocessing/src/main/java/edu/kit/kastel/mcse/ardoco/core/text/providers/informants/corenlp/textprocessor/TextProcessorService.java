@@ -1,13 +1,5 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
-
-import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
-
-import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
-import io.github.ardoco.textproviderjson.converter.JsonConverter;
-import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
-import io.github.ardoco.textproviderjson.dto.TextDto;
-import io.github.ardoco.textproviderjson.error.InvalidJsonException;
-import io.github.ardoco.textproviderjson.error.NotConvertableException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +10,14 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
+import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
+import io.github.ardoco.textproviderjson.converter.JsonConverter;
+import io.github.ardoco.textproviderjson.dto.TextDto;
+import io.github.ardoco.textproviderjson.error.InvalidJsonException;
+import io.github.ardoco.textproviderjson.error.NotConvertableException;
+
 /**
  * This text processor processes texts by sending requests to a microservice, which provides text processing using CoreNLP.
  */
@@ -25,8 +25,9 @@ public class TextProcessorService {
 
     /**
      * processes and annotates a given text by sending requests to a microservice
+     * 
      * @param inputText the input text
-     * @return          the annotated text
+     * @return the annotated text
      */
     public Text processText(String inputText) throws IOException, InvalidJsonException, NotConvertableException {
         TextDto textDto;
@@ -37,9 +38,7 @@ public class TextProcessorService {
 
     private String sendCorenlpRequest(String inputText) throws IOException {
         inputText = URLEncoder.encode(inputText, StandardCharsets.UTF_8);
-        String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl")
-                + ConfigManager.getInstance().getProperty("corenlpService")
-                + inputText;
+        String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl") + ConfigManager.getInstance().getProperty("corenlpService") + inputText;
         return sendAuthenticatedGetRequest(requestUrl);
     }
 
@@ -68,9 +67,7 @@ public class TextProcessorService {
         if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new IOException("HTTP error code: " + con.getResponseCode());
         }
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream())
-        );
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {

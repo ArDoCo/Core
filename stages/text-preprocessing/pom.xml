@@ -38,6 +38,11 @@
       <classifier>models</classifier>
     </dependency>
     <dependency>
+      <groupId>io.github.ardoco</groupId>
+      <artifactId>text-provider-json</artifactId>
+      <version>0.8.0</version>
+    </dependency>
+    <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
       <version>${revision}</version>
@@ -56,11 +61,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco</groupId>
-      <artifactId>text-provider-json</artifactId>
-      <version>0.8.0</version>
     </dependency>
   </dependencies>
 </project>

@@ -1,11 +1,12 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
+
+import java.util.Properties;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.TextImpl;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-
-import java.util.Properties;
 
 /**
  * This text processor processes texts locally using CoreNLP.
