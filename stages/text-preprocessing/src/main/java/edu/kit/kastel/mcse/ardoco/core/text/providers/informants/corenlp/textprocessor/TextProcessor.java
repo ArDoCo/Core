@@ -1,14 +1,15 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
-
-import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
-import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 
 import java.io.IOException;
 
-import io.github.ardoco.textproviderjson.error.InvalidJsonException;
-import io.github.ardoco.textproviderjson.error.NotConvertableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
+import io.github.ardoco.textproviderjson.error.InvalidJsonException;
+import io.github.ardoco.textproviderjson.error.NotConvertableException;
 
 /**
  * This text processor processes texts using CoreNLP.
@@ -20,8 +21,9 @@ public class TextProcessor {
 
     /**
      * processes and annotates a given text
+     * 
      * @param inputText the input text
-     * @return          the annotated text
+     * @return the annotated text
      */
     public Text processText(String inputText) {
         boolean microserviceAvailable;
@@ -31,8 +33,7 @@ public class TextProcessor {
             microserviceAvailable = false;
             logger.warn("Could not check if CoreNLP microservice is available. ", e);
         }
-        if (ConfigManager.getInstance().getProperty("nlpProviderSource").equals("microservice")
-                && microserviceAvailable) {
+        if (ConfigManager.getInstance().getProperty("nlpProviderSource").equals("microservice") && microserviceAvailable) {
             int k = 0;
             while (k < MAX_FAILED_SERVICE_REQUESTS) {
                 try {
