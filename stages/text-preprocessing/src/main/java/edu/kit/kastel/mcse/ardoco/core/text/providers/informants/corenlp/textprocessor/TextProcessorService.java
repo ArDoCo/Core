@@ -43,15 +43,6 @@ public class TextProcessorService {
         return sendAuthenticatedGetRequest(requestUrl);
     }
 
-    private String sendGetRequest(String requestUrl) throws IOException {
-        URL url = new URL(requestUrl);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        String content = readGetResponse(con);
-        con.disconnect();
-        return content;
-    }
-
     public String sendAuthenticatedGetRequest(String requestUrl) throws IOException {
         String username = System.getenv("USERNAME");
         String password = System.getenv("PASSWORD");

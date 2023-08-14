@@ -1,5 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config;
 
+import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor.TextProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -8,16 +12,23 @@ import java.util.Properties;
  * This Singleton manages access to the config file.
  */
 public class ConfigManager {
+
+    Logger logger = LoggerFactory.getLogger(ConfigManager.class);
+
     private static ConfigManager instance;
     private final Properties properties;
-    private static final String filePath = "config.properties";
+    private static final String FILE_PATH = "config.properties";
 
     private ConfigManager() {
         properties = new Properties();
-        try (InputStream fileInputStream = ConfigManager.class.getClassLoader().getResourceAsStream(filePath);) {
+        try (InputStream fileInputStream = ConfigManager.class.getClassLoader().getResourceAsStream(FILE_PATH);) {
             properties.load(fileInputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("Could not load config file. ", e);
+            properties.setProperty("microserviceUrl", "http://localhost:8080");
+            properties.setProperty("nlpProviderSource", "local");
+            properties.setProperty("corenlpService", "/stanfordnlp?text=");
+            properties.setProperty("healthService", "/health");
         }
         if (System.getenv("MICROSERVICE_URL") != null) {
             properties.setProperty("microserviceUrl", System.getenv("MICROSERVICE_URL"));
