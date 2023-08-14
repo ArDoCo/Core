@@ -1,9 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.tests.integration;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,7 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.InconsistencyDetectionEvaluationIT;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
-import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class InconsistencyDetectionEvaluationERID extends InconsistencyDetectionEvaluationIT {
 
@@ -86,11 +83,5 @@ public class InconsistencyDetectionEvaluationERID extends InconsistencyDetection
     @Override
     protected void missingTextInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
         super.missingTextInconsistencyHistoricIT(goldStandardProject);
-    }
-
-    @Test
-    @Disabled
-    void bbbTest() {
-        super.missingModelElementInconsistencyIT(DiagramProject.BIGBLUEBUTTON);
     }
 }

@@ -10,19 +10,6 @@ public interface DiagramInconsistencyState extends PipelineStepData {
     public static final String ID = "DiagramInconsistencyState";
 
     /**
-     * {@return the filtered set of recommended instances used for diagram inconsistency detection}
-     */
-    public Set<RecommendedInstance> getRecommendedInstances();
-
-    /**
-     * Adds a recommended instance used for diagram inconsistency detection
-     *
-     * @param recommendedInstance recommended instance to add
-     * @return true, if the recommended instance was added to the state, false else
-     */
-    public boolean addRecommendedInstance(RecommendedInstance recommendedInstance);
-
-    /**
      * @param type inconsistency type {@return the set of inconsistencies discovered by this stage of the given type}
      */
     public <T extends Inconsistency> Set<T> getInconsistencies(Class<T> type);
