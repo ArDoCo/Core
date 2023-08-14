@@ -28,7 +28,7 @@ public class ConfigManager {
             properties.setProperty("microserviceUrl", "http://localhost:8080");
             properties.setProperty("nlpProviderSource", "local");
             properties.setProperty("corenlpService", "/stanfordnlp?text=");
-            properties.setProperty("healthService", "/health");
+            properties.setProperty("healthService", "/stanfordnlp/health");
         }
         if (System.getenv("MICROSERVICE_URL") != null) {
             properties.setProperty("microserviceUrl", System.getenv("MICROSERVICE_URL"));
