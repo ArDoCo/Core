@@ -1,13 +1,12 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config;
 
-import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor.TextProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Singleton manages access to the config file.
