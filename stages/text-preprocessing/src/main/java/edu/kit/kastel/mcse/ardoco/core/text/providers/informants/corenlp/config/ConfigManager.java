@@ -19,6 +19,12 @@ public class ConfigManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (System.getenv("MICROSERVICE_URL") != null) {
+            properties.setProperty("microserviceUrl", System.getenv("MICROSERVICE_URL"));
+        }
+        if (System.getenv("NLP_PROVIDER_SOURCE") != null) {
+            properties.setProperty("nlpProviderSource", System.getenv("NLP_PROVIDER_SOURCE"));
+        }
     }
 
     public static ConfigManager getInstance() {
