@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramRecognitionTest {
+public class DiagramRecognitionMockTest {
     @DisplayName("Evaluate Diagram Recognition")
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")

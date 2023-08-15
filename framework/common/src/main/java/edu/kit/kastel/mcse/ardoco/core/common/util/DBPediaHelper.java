@@ -33,28 +33,28 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
 
     private List<String> loadProgrammingLanguages() {
         ParameterizedSparqlString qs = new ParameterizedSparqlString("""
-                prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n
-                prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>\n
+                prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
-                \n
-                SELECT ?label \n
-                WHERE { \n
+                                
+                SELECT ?label 
+                WHERE { 
                         {
-                        ?pl dbo:abstract ?abstract .\n
-                        ?pl rdfs:label ?label .\n
-                        ?pl rdf:type yago:ProgrammingLanguage106898352 .\n
-                        FILTER (LANG(?abstract) = 'en') .\n
+                        ?pl dbo:abstract ?abstract .
+                        ?pl rdfs:label ?label .
+                        ?pl rdf:type yago:ProgrammingLanguage106898352 .
+                        FILTER (LANG(?abstract) = 'en') .
                         FILTER (LANG(?label)='en')
                         }
                         UNION
                         {
-                        ?pl dbo:abstract ?abstract .\n
-                        ?pl rdfs:label ?label .\n
-                        ?pl dbo:influenced ?influenced .\n
-                        ?pl dbo:influencedBy ?influencedBy .\n
-                        ?pl rdf:type dbo:ProgrammingLanguage .\n
-                        FILTER (LANG(?abstract) = 'en') .\n
+                        ?pl dbo:abstract ?abstract .
+                        ?pl rdfs:label ?label .
+                        ?pl dbo:influenced ?influenced .
+                        ?pl dbo:influencedBy ?influencedBy .
+                        ?pl rdf:type dbo:ProgrammingLanguage .
+                        FILTER (LANG(?abstract) = 'en') .
                         FILTER (LANG(?label)='en')
                         }
                 }
@@ -67,17 +67,17 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
 
     private List<String> loadMarkupLanguages() {
         ParameterizedSparqlString qs = new ParameterizedSparqlString("""
-                prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n
-                prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>\n
+                prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
-                \n
-                SELECT ?label \n
-                WHERE { \n
-                        ?pl dbo:abstract ?abstract .\n
-                        ?pl rdfs:label ?label .\n
-                        ?pl rdf:type yago:MarkupLanguage106787835 .\n
-                        FILTER (LANG(?abstract) = 'en') .\n
+                                
+                SELECT ?label 
+                WHERE { 
+                        ?pl dbo:abstract ?abstract .
+                        ?pl rdfs:label ?label .
+                        ?pl rdf:type yago:MarkupLanguage106787835 .
+                        FILTER (LANG(?abstract) = 'en') .
                         FILTER (LANG(?label)='en')
                 }
                 GROUP BY ?label""");
@@ -89,18 +89,18 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
 
     private List<String> loadSoftware() {
         ParameterizedSparqlString qs = new ParameterizedSparqlString("""
-                prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n
-                prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>\n
+                prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
-                \n
-                SELECT ?label \n
-                WHERE { \n
-                        ?p rdf:type dbo:Software .\n
-                        ?p dbo:programmingLanguage ?pl .\n
-                        ?pl dbo:abstract ?abstract .\n
-                        ?pl rdfs:label ?label .\n
-                        FILTER (LANG(?abstract) = 'en') .\n
+                                
+                SELECT ?label 
+                WHERE { 
+                        ?p rdf:type dbo:Software .
+                        ?p dbo:programmingLanguage ?pl .
+                        ?pl dbo:abstract ?abstract .
+                        ?pl rdfs:label ?label .
+                        FILTER (LANG(?abstract) = 'en') .
                         FILTER (LANG(?label)='en')
                 }
                 GROUP BY ?label""");

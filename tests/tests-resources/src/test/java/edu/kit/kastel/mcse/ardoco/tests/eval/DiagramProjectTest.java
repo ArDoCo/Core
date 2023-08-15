@@ -2,6 +2,9 @@ package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,7 +16,7 @@ class DiagramProjectTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
     @Order(1)
-    void getDiagramsFromGoldstandard(DiagramProject diagramProject) {
-        assertEquals(diagramProject.getDiagramsGoldStandardFile(), diagramProject.getDiagramsGoldStandardFile());
+    void getDiagramsFromGoldstandard(DiagramProject diagramProject) throws IOException {
+        assertEquals(-1L, Files.mismatch(diagramProject.getDiagramsGoldStandardFile().toPath(), diagramProject.getDiagramsGoldStandardFile().toPath()));
     }
 }

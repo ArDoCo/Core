@@ -74,7 +74,8 @@
   <properties>
     <revision>0.18.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
-
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.source.encoding>UTF-8</project.source.encoding>
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -107,6 +108,7 @@
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
     <stanford.corenlp.version>4.5.4</stanford.corenlp.version>
+    <doclint.options>all,-missing</doclint.options>
   </properties>
 
   <dependencyManagement>
@@ -485,6 +487,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.5.0</version>
+        <configuration>
+          <!-- Neither of these locale options works for me, but a solution should be figured out, because locale is important for javadoc generation -->
+          <additionalJOption>-locale en_US</additionalJOption>
+          <locale>en_US</locale>
+          <doclint>${doclint.options}</doclint>
+        </configuration>
         <executions>
           <execution>
             <id>attach-javadocs</id>

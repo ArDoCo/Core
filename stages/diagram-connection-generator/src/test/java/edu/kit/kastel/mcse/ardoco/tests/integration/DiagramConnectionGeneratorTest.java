@@ -4,8 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -70,11 +71,10 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         }).toList();
         var coreference = altResult.falseNegatives().stream().filter(w -> w.getTraceType().equals(TraceType.ENTITY_COREFERENCE)).toList();
 
-        logger.info(
+        logger.debug(
                 "{} Diagram Links, {} Trace Links, {} Most Specific Trace Links, {} Common Noun FP, {} Shared Stem FP, {} Other Entity FP, {} Coreference FN",
                 diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size(), commonNoun.size(), sharedStem.size(), otherEntity.size(),
                 coreference.size());
-        logger.info(altResult.toString());
 
         var cacheID = "Results-" + project.name();
         var prevResults = getCached(cacheID, Results.class);
@@ -143,28 +143,39 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         for (var project : projects) {
             results.add(runComparable(project));
         }
-        var avg = new double[7];
-        var avgWeighted = new double[7];
+        var avg = new LinkedHashMap<String, Double>();
+        var avgWeighted = new LinkedHashMap<String, Double>();
         var totalGoldStandardPositives = 0;
         for (var result : results) {
-            totalGoldStandardPositives += result.GS_P();
-            System.out.println(result.project().name() + " & " + result.toTableRow() + "\\\\");
+            totalGoldStandardPositives += result.goldStandardPositives();
         }
         for (var result : results) {
-            var weight = result.GS_P() / (double) totalGoldStandardPositives;
-            var metrics = result.rawMetrics();
-            for (var i = 0; i < metrics.length; i++) {
-                avg[i] += metrics[i] / projects.size();
-                avgWeighted[i] += metrics[i] * weight;
+            var weight = result.goldStandardPositives() / (double) totalGoldStandardPositives;
+            var metrics = result.mapOfMetrics();
+            for (var metric : metrics.entrySet()) {
+                var key = metric.getKey();
+                var value = metric.getValue();
+                var weightedByGoldStandardAndAmountOfProjects = value * weight;
+                var weightedByAmountOfProjects = value / projects.size();
+                var oldAvg = avg.getOrDefault(key, 0.0);
+                var oldWeighted = avgWeighted.getOrDefault(key, 0.0);
+                avg.put(key, oldAvg + weightedByAmountOfProjects);
+                avgWeighted.put(key, oldWeighted + weightedByGoldStandardAndAmountOfProjects);
             }
         }
-        System.out.println("Average & " + Arrays.stream(avg)
-                .map(d -> Math.round(d * 100.0) / 100.0)
-                .<String>mapToObj(Double::toString)
-                .collect(Collectors.joining(" & ")) + "\\\\");
-        System.out.println("w. Average & " + Arrays.stream(avgWeighted)
-                .map(d -> Math.round(d * 100.0) / 100.0)
-                .<String>mapToObj(Double::toString)
+        System.out.println("Project & " + String.join(" & ", avg.keySet()) + "\\\\");
+        results.stream()
+                .map(r -> r.project().getAlias() + " & " + r.mapOfMetrics()
+                        .values()
+                        .stream()
+                        .map(d -> String.format(Locale.US, "%.2f", d))
+                        .collect(Collectors.joining(" & ")) + "\\\\")
+                .forEach(System.out::println);
+        System.out.println(
+                "Average & " + avg.values().stream().map(d -> Double.toString(Math.round(d * 100.0) / 100.0)).collect(Collectors.joining(" & ")) + "\\\\");
+        System.out.println("w. Average & " + avgWeighted.values()
+                .stream()
+                .map(d -> Double.toString(Math.round(d * 100.0) / 100.0))
                 .collect(Collectors.joining(" & ")) + "\\\\");
     }
 

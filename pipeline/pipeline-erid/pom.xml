@@ -62,12 +62,6 @@
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>diagram-recognition-mock</artifactId>
-      <version>${revision}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
       <artifactId>diagram-connection-generator</artifactId>
       <version>${revision}</version>
       <scope>compile</scope>
@@ -75,12 +69,6 @@
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>diagram-inconsistency-checker</artifactId>
-      <version>${revision}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>diagram-recognition-mock</artifactId>
       <version>${revision}</version>
       <scope>compile</scope>
     </dependency>

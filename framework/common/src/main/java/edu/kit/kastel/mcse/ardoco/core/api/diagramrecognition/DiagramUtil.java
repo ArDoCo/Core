@@ -76,7 +76,7 @@ public class DiagramUtil {
      * {@return the similarity of the noun mapping to the box}
      *
      * @param nounMapping the noun mapping
-     * @param box         the box {@return the similarity of the noun mapping to the box}
+     * @param box         the box
      */
     public static double calculateSimilarity(@NotNull NounMapping nounMapping, @NotNull Box box) {
         var targets = box.getReferences();

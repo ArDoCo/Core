@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -76,8 +75,7 @@ public enum Project implements GoldStandardProject {
             new ExpectedResults(.168, .629, .263, .863, .260, .870) //
     ), //
     BIGBLUEBUTTON( //
-            "BBB",
-            "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "BBB", "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
             "/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
             "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
             "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
@@ -86,8 +84,7 @@ public enum Project implements GoldStandardProject {
             new ExpectedResults(.887, .461, .429, .956, .534, .984) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
-            "BBB-H",
-            "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "BBB-H", "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
             "/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
             "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021.csv", //
             "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
@@ -96,8 +93,7 @@ public enum Project implements GoldStandardProject {
             new ExpectedResults(.085, .175, .111, .813, .018, .869) //
     ), //
     JABREF( //
-            "JR",
-            "/benchmark/jabref/model_2021/pcm/jabref.repository", //
+            "JR", "/benchmark/jabref/model_2021/pcm/jabref.repository", //
             "/benchmark/jabref/text_2021/jabref.txt", //
             "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
             "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
@@ -106,8 +102,7 @@ public enum Project implements GoldStandardProject {
             new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
     ), //
     JABREF_HISTORICAL( //
-            "JR-H",
-            "/benchmark/jabref/model_2021/pcm/jabref.repository", //
+            "JR-H", "/benchmark/jabref/model_2021/pcm/jabref.repository", //
             "/benchmark/jabref/text_2016/jabref_2016.txt", //
             "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021.csv", //
             "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
@@ -139,6 +134,11 @@ public enum Project implements GoldStandardProject {
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
         resourceNames = Set.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile, goldStandardMissingTextForModelElement);
+    }
+
+    @Override
+    public String getAlias() {
+        return alias;
     }
 
     @Override

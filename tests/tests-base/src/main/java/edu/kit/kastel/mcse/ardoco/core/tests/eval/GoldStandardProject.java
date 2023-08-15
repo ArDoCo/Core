@@ -28,7 +28,7 @@ public interface GoldStandardProject extends Serializable {
     String getProjectName();
 
     /**
-     * {@return the name of all resources associated with instances relative to the class)
+     * {@return the name of all resources associated with instances relative to the class}
      */
     Set<String> getResourceNames();
 
@@ -102,7 +102,9 @@ public interface GoldStandardProject extends Serializable {
     }
 
     /**
-     * @param modelType the model type {@return the resource name that represents the model for this project with the given model type}
+     * {@return the resource name that represents the model for this project with the given model type}
+     *
+     * @param modelType the model type
      */
     default String getModelResourceName(ArchitectureModelType modelType) {
         return getProjectOrThrow().getModelResourceName(modelType);

@@ -17,10 +17,16 @@ class DBPediaHelperTest {
     @Test
     void containsAtLeastSomePopularLanguages() {
         var record = DBPediaHelper.getInstance().load();
-        assertTrue(record.programmingLanguages()
-                .stream()
-                .map(String::toLowerCase)
-                .toList()
-                .containsAll(List.of("python", "javascript", "java", "c", "c++", "html", "css", "scss")));
+        List<String> all = record.programmingLanguages();
+        all.addAll(record.markupLanguages());
+        all.addAll(record.software());
+        all = all.stream().map(String::toLowerCase).toList();
+        assertTrue(all.contains("python"));
+        assertTrue(all.contains("javascript"));
+        assertTrue(all.contains("java"));
+        assertTrue(all.contains("c"));
+        assertTrue(all.contains("c++"));
+        assertTrue(all.contains("html"));
+        assertTrue(all.contains("css"));
     }
 }

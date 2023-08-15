@@ -34,6 +34,7 @@ class DiaTexTraceLinkTest {
         Mockito.doReturn(0).when(mockWord).getPosition();
         Mockito.doReturn(0).when(mockWord).getSentenceNo();
         Mockito.doReturn(mockPhrase).when(mockWord).getPhrase();
+        Mockito.doReturn(mockSentence).when(mockWord).getSentence();
         Mockito.doReturn("The SomeText example is part of a sentence").when(mockSentence).getText();
         Mockito.doReturn(0).when(mockSentence).getSentenceNumber();
         Mockito.doReturn(1).when(mockSentence).getSentenceNumberForOutput();

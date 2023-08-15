@@ -1,14 +1,13 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +22,13 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
+/**
+ * This enum captures the different case studies that are used for evaluation in the integration tests.
+ */
 public enum CodeProject implements GoldStandardProject {
+    /**
+     * @see Project#MEDIASTORE
+     */
     MEDIASTORE(//
             Project.MEDIASTORE, //
             "https://github.com/ArDoCo/MediaStore3.git", //
@@ -35,6 +40,9 @@ public enum CodeProject implements GoldStandardProject {
             new ExpectedResults(.995, .515, .675, .990, .715, .999) //
     ),
 
+    /**
+     * @see Project#TEASTORE
+     */
     TEASTORE(Project.TEASTORE, //
             "https://github.com/ArDoCo/TeaStore.git", //
             "bdc49020a55cfa97eaabbb25744fefbc2697defa", //
@@ -45,6 +53,9 @@ public enum CodeProject implements GoldStandardProject {
             new ExpectedResults(.999, .708, .829, .976, .831, .999) //
     ),
 
+    /**
+     * @see Project#TEAMMATES
+     */
     TEAMMATES(Project.TEAMMATES, //
             "https://github.com/ArDoCo/teammates.git",//
             "b24519a2af9e17b2bc9c025e87e4cf60009c425d",//
@@ -55,6 +66,9 @@ public enum CodeProject implements GoldStandardProject {
             new ExpectedResults(.705, .909, .795, .975, .785, .975) //
     ),
 
+    /**
+     * @see Project#BIGBLUEBUTTON
+     */
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
             "https://github.com/ArDoCo/bigbluebutton.git",//
             "8fa2507d6c3865a9850004fd6fefd09738e68406",//
@@ -65,6 +79,9 @@ public enum CodeProject implements GoldStandardProject {
             new ExpectedResults(.765, .905, .835, .985, .825, .985) //
     ),
 
+    /**
+     * @see Project#JABREF
+     */
     JABREF(Project.JABREF, //
             "https://github.com/ArDoCo/jabref.git",//
             "6269698cae437610ec79c38e6dd611eef7e88afe",//
@@ -101,7 +118,7 @@ public enum CodeProject implements GoldStandardProject {
         set.add(codeModelLocationInResources);
         set.add(samCodeGoldStandardLocation);
         set.add(sadCodeGoldStandardLocation);
-        resourceNames = set;
+        resourceNames = Collections.unmodifiableSet(set);
     }
 
     @Override
@@ -114,18 +131,30 @@ public enum CodeProject implements GoldStandardProject {
         return resourceNames;
     }
 
+    /**
+     * {@return the link to the code repository of this project}
+     */
     public String getCodeRepository() {
         return codeRepository;
     }
 
+    /**
+     * {@return the commit hash the project is based on}
+     */
     public String getCommitHash() {
         return commitHash;
     }
 
+    /**
+     * {@return path of the code directory}
+     */
     public String getCodeLocation() {
         return getTemporaryCodeLocation().getAbsolutePath();
     }
 
+    /**
+     * {@return the directory of the code model}
+     */
     public String getCodeModelDirectory() {
         try {
             loadCodeModelFromResourcesIfNeeded();
@@ -136,8 +165,13 @@ public enum CodeProject implements GoldStandardProject {
         }
     }
 
+    /**
+     * Loads the code from resources or from the code directoy cache
+     *
+     * @throws IOException Can occur during file operations
+     */
     public void loadCodeModelFromResourcesIfNeeded() throws IOException {
-        if (ANALYZE_CODE_DIRECTLY.get())
+        if (ProjectHelper.ANALYZE_CODE_DIRECTLY.get())
             return;
 
         File temporaryCodeLocation = getTemporaryCodeLocation();
@@ -149,14 +183,25 @@ public enum CodeProject implements GoldStandardProject {
         }
     }
 
+    /**
+     * {@return the expected results using the software architecture model code}
+     */
     public ExpectedResults getExpectedResultsForSamCode() {
         return expectedResultsForSamCode;
     }
 
+    /**
+     * {@return the expected results using the software architecture model code}
+     */
     public ExpectedResults getExpectedResultsForSadSamCode() {
         return expectedResultsForSadSamCode;
     }
 
+    /**
+     * {@return all trace link strings from the gold standard}
+     *
+     * @see TraceLinkUtilities#createTraceLinkString(String, String)
+     */
     public ImmutableList<String> getSamCodeGoldStandard() {
         File samCodeGoldStandardFile = ProjectHelper.loadFileFromResources(samCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(samCodeGoldStandardFile);
@@ -173,6 +218,9 @@ public enum CodeProject implements GoldStandardProject {
         return goldStandard.toImmutable();
     }
 
+    /**
+     * {@return all lines from the gold standard in csv format}
+     */
     public ImmutableList<String> getSadCodeGoldStandard() {
         File sadCodeGoldStandardFile = ProjectHelper.loadFileFromResources(sadCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(sadCodeGoldStandardFile);
