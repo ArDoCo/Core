@@ -33,7 +33,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
-        for (var word : text.words()) {
+        for (var word : text.getWords()) {
             exec(textState, modelStates, word);
         }
     }

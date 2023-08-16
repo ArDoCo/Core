@@ -5,8 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DBPediaHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DbPediaHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
 
@@ -25,12 +23,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilaritySt
  * Provides utility methods that are shared by {@link edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant informants} of this stage.
  */
 public class DiagramUtil {
-    /**
-     * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
-     * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
-     */
-    private final static Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
-
     private DiagramUtil() {
         throw new IllegalStateException("Cannot be instantiated");
     }
@@ -132,19 +124,8 @@ public class DiagramUtil {
     }
 
     /**
-     * Uses the regex {@link #abbreviationsPattern} to find a set of possible abbreviations contained in the specified text.
-     *
-     * @param text the text
-     * @return a set of possible abbreviations
-     */
-    public static @NotNull Set<String> getPossibleAbbreviations(String text) {
-        var matcher = abbreviationsPattern.matcher(text);
-        return new LinkedHashSet<>(matcher.results().map(MatchResult::group).toList());
-    }
-
-    /**
      * Determines a set of possible names for a box by processing the associated
-     * {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox textboxes}. Tries to filter out technical terms using {@link DBPediaHelper}.
+     * {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox textboxes}. Tries to filter out technical terms using {@link DbPediaHelper}.
      *
      * @param box the box
      * @return a set of possible names
@@ -156,11 +137,11 @@ public class DiagramUtil {
         for (var textBox : texts) {
             var text = textBox.getText();
             var splitAndDecameled = processText(text).stream()
-                    .filter(s -> !DBPediaHelper.isWordMarkupLanguage(s))
-                    .filter(s -> !DBPediaHelper.isWordProgrammingLanguage(s))
-                    .filter(s -> !DBPediaHelper.isWordSoftware(s))
+                    .filter(s -> !DbPediaHelper.isWordMarkupLanguage(s))
+                    .filter(s -> !DbPediaHelper.isWordProgrammingLanguage(s))
+                    .filter(s -> !DbPediaHelper.isWordSoftware(s))
                     .toList();
-            var abbreviations = getPossibleAbbreviations(text);
+            var abbreviations = AbbreviationDisambiguationHelper.getPossibleAbbreviations(text);
             var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a, AbbreviationDisambiguationHelper.getInstance()::disambiguate));
             var crossProduct = Lists.cartesianProduct(
                     meaningsMap.entrySet().stream().map(s -> s.getValue().stream().map(v -> new Pair<>(s.getKey(), v)).toList()).toList());
@@ -179,77 +160,5 @@ public class DiagramUtil {
         }
 
         return names;
-    }
-
-    /**
-     * {@return whether the initialism candidate is an initialism of the text}
-     *
-     * @param text                the text
-     * @param initialismCandidate the initialism candidate
-     * @param initialismThreshold the percentage of characters in a word that need to be uppercase for a word to be considered an initialism candidate
-     */
-    public static boolean isInitialismOf(@NotNull String text, @NotNull String initialismCandidate, double initialismThreshold) {
-        if (!couldBeInitialism(initialismCandidate, initialismThreshold))
-            return false;
-
-        var lc = text.toLowerCase();
-        var initialLc = initialismCandidate.toLowerCase();
-
-        //Check if the entire Initialism is contained within the single word
-        if (!lc.contains(" "))
-            return lc.startsWith(initialLc.substring(0, 1)) && containsAllInOrder(lc, initialLc);
-
-        StringBuilder reg = new StringBuilder();
-        var initialLcArray = initialLc.toCharArray();
-        for (var c : initialLcArray) {
-            reg.append(c).append("|");
-        }
-
-        var onlyInitialismLettersAndBlank = "\\[^(" + reg + "\\s)\\]";
-        var split = lc.split("\\s+");
-        var reducedText = Arrays.stream(split).filter(s -> s.startsWith(onlyInitialismLettersAndBlank)).reduce("", (l, r) -> l + r);
-
-        //The text contains words that are irrelevant to the supposed Initialism
-        if (reducedText.length() != split.length)
-            return false;
-
-        return containsAllInOrder(reducedText, initialLc);
-    }
-
-    /**
-     * {@return whether the text could be an initialism} Compares the share of uppercase letters to the initialism threshold.
-     *
-     * @param initialismCandidate the initialism candidate
-     * @param initialismThreshold the initialism threshold
-     */
-    private static boolean couldBeInitialism(@NotNull String initialismCandidate, double initialismThreshold) {
-        if (initialismCandidate.isEmpty())
-            return false;
-        var upperCaseCharacters = 0;
-        var cArray = initialismCandidate.toCharArray();
-        for (char c : cArray) {
-            if (Character.isUpperCase(c))
-                upperCaseCharacters++;
-        }
-        return upperCaseCharacters >= initialismThreshold * initialismCandidate.length();
-    }
-
-    /**
-     * {@return whether the text contains all characters of the query in order.} The characters do not have to be adjacent and can be separated by any amount of
-     * characters.
-     *
-     * @param text  the text
-     * @param query the query
-     */
-    private static boolean containsAllInOrder(@NotNull String text, @NotNull String query) {
-        var previous = -1;
-        var cArray = query.toCharArray();
-        for (char c : cArray) {
-            var current = text.indexOf(String.valueOf(c));
-            if (current <= previous)
-                return false;
-            previous = current;
-        }
-        return true;
     }
 }

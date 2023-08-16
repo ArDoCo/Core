@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsistency;
 
 public class InfluenceByInconsistenciesInformant extends Informant {
@@ -41,16 +41,16 @@ public class InfluenceByInconsistenciesInformant extends Informant {
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
             var allRecommendedInstances = recommendationStates.getRecommendationState(mm).getRecommendedInstances();
             var coveredRecommendedInstances = allRecommendedInstances.stream()
-                    .filter(ri -> !diagramConnectionState.getDiagramLinks(ri).isEmpty())
+                    .filter(ri -> !diagramConnectionState.getLinksBetweenDeAndRi(ri).isEmpty())
                     .distinct()
                     .toList();
             var mdeInconsistencies = diagramInconsistencyState.getInconsistencies(MDEInconsistency.class);
-            var diagramLinks = allRecommendedInstances.stream().flatMap(ri -> diagramConnectionState.getDiagramLinks(ri).stream()).collect(Collectors.toSet());
+            var linksBetweenDeAndRi = allRecommendedInstances.stream().flatMap(ri -> diagramConnectionState.getLinksBetweenDeAndRi(ri).stream()).collect(Collectors.toSet());
             var coverage = coveredRecommendedInstances.size() / (double) allRecommendedInstances.size();
             logger.info("Recommended Instances coverage {}%, Covered RIs {}, All RIs {}", coverage * 100, coveredRecommendedInstances.size(),
                     allRecommendedInstances.size());
             punishInconsistency(coverage, mdeInconsistencies);
-            rewardConsistency(coverage, diagramLinks);
+            rewardConsistency(coverage, linksBetweenDeAndRi);
         }
     }
 
@@ -63,8 +63,8 @@ public class InfluenceByInconsistenciesInformant extends Informant {
         });
     }
 
-    public void rewardConsistency(double coverage, Set<DiagramLink> diagramLinkSet) {
-        diagramLinkSet.forEach(dl -> {
+    public void rewardConsistency(double coverage, Set<LinkBetweenDeAndRi> linkBetweenDeAndRiSet) {
+        linkBetweenDeAndRiSet.forEach(dl -> {
             var old = dl.getRecommendedInstance().getProbability();
             //Reward more if mdes are rare
             var probability = clamp(old + maximumReward * (1.0 - coverage), 0.0, 1.0);

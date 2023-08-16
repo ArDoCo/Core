@@ -3,6 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.map.ImmutableMap;
@@ -13,26 +15,26 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 
+import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
-public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMap<String, AbbreviationDisambiguationHelper.Abbreviation>> {
+public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMap<String, Disambiguation>> {
+    /**
+     * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
+     * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
+     */
+    private final static Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
     public static final int LIMIT = 2;
     public static final double SIMILARITY_THRESHOLD = 0.9;
     private static Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
     private static final String abbreviationsCom = "https://www.abbreviations.com/";
     private static final String acronymFinderCom = "https://www.acronymfinder.com/Information-Technology/";
     private static AbbreviationDisambiguationHelper instance;
-    private MutableMap<String, Abbreviation> abbreviations;
+    private MutableMap<String, Disambiguation> abbreviationsCache;
 
     public static synchronized @NotNull AbbreviationDisambiguationHelper getInstance() {
         if (instance == null) {
@@ -47,14 +49,12 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
 
     public Set<String> disambiguate(@NotNull String abbreviation) {
         //Specifically check. We do not want to mess up our files.
-        if (abbreviation == null || abbreviation.isEmpty() || abbreviation.isBlank())
+        Objects.requireNonNull(abbreviation);
+        if (abbreviation.isBlank())
             throw new IllegalArgumentException();
 
-        if (abbreviations == null)
-            abbreviations = Maps.mutable.ofMapIterable(load());
-
-        var abbr = abbreviations.computeIfAbsent(abbreviation, this::get);
-        return Set.copyOf(abbr.meanings());
+        var disambiguation = loadMutable(true).computeIfAbsent(abbreviation, this::crawl);
+        return Set.copyOf(disambiguation.getMeanings());
     }
 
     public Set<String> ambiguate(@NotNull String meaning) {
@@ -72,17 +72,29 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         return set;
     }
 
-    private List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
-        if (abbreviations == null)
-            abbreviations = Maps.mutable.ofMapIterable(load());
+    public void add(@NotNull Disambiguation disambiguation) {
+        //Specifically check. We do not want to mess up our files.
+        Objects.requireNonNull(disambiguation);
+        Objects.requireNonNull(disambiguation.getAbbreviation());
+        Objects.requireNonNull(disambiguation.getMeanings());
+        if (disambiguation.getAbbreviation().isBlank() || disambiguation.getMeanings().isEmpty() || disambiguation.getMeanings()
+                .stream()
+                .anyMatch(String::isBlank))
+            throw new IllegalArgumentException();
+        var disambiguations = loadMutable(true);
+        disambiguations.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
+        save(disambiguations);
+    }
 
-        var abbrevs = abbreviations.values();
+    private List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
+        var disambiguations = load();
         var allAbbrevs = new ArrayList<List<Pair<String, String>>>();
-        for (var abbr : abbrevs) {
-            var listOfPairs = abbr.meanings.stream()
+        for (var disambiguation : disambiguations) {
+            var listOfPairs = disambiguation.getMeanings()
+                    .stream()
                     .map(m -> new Pair<>(WordSimUtils.getSimilarity(m, meaning), m))
                     .filter(p -> p.first() >= SIMILARITY_THRESHOLD)
-                    .map(p -> new Pair<>(abbr.abbreviation, p.second()))
+                    .map(p -> new Pair<>(disambiguation.getAbbreviation(), p.second()))
                     .toList();
             if (listOfPairs.isEmpty())
                 continue;
@@ -91,23 +103,11 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         return Lists.cartesianProduct(allAbbrevs).stream().filter(l -> !l.isEmpty()).toList();
     }
 
-    private Abbreviation get(@NotNull String abbreviation) {
-        //Specifically check. We do not want to mess up our files.
-        if (abbreviation == null || abbreviation.isEmpty() || abbreviation.isBlank())
-            throw new IllegalArgumentException();
-
-        var abbr = crawl(abbreviation);
-        abbreviations.put(abbr.abbreviation(), abbr);
-        save(abbreviations);
-
-        return abbr;
-    }
-
-    public Abbreviation crawl(@NotNull String abbreviation) {
+    public Disambiguation crawl(@NotNull String abbreviation) {
         logger.info("Using crawler to disambiguate {}", abbreviation);
         var meanings = crawlAcronymFinderCom(abbreviation);
         meanings.addAll(crawlAbbreviationsCom(abbreviation));
-        return new Abbreviation(abbreviation, meanings);
+        return new Disambiguation(abbreviation, meanings);
     }
 
     public LinkedHashSet<String> crawlAbbreviationsCom(@NotNull String abbreviation) {
@@ -146,27 +146,36 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
      * @return the abbreviations
      */
     @Override
-    public @NotNull ImmutableMap<String, Abbreviation> load(boolean allowReload) {
-        if (abbreviations != null)
-            return Maps.immutable.ofMap(abbreviations);
+    public @NotNull ImmutableMap<String, Disambiguation> load(boolean allowReload) {
+        return Maps.immutable.ofMap(loadMutable(allowReload));
+    }
+
+    /**
+     * Gets the abbreviation file from the disk and parses its content.
+     *
+     * @return the abbreviations
+     */
+    protected @NotNull MutableMap<String, Disambiguation> loadMutable(boolean allowReload) {
+        if (abbreviationsCache != null)
+            return abbreviationsCache;
         try {
             logger.info("Reading abbreviations file");
-            var map = toMutableMap(new ObjectMapper().readValue(getFile(), Abbreviation[].class));
-            logger.info("Found {} cached abbreviation", map.keySet().size());
-            return Maps.immutable.ofMap(map);
+            abbreviationsCache = toMutableMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
+            logger.info("Found {} cached abbreviation", abbreviationsCache.keySet().size());
+            return abbreviationsCache;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public ImmutableMap<String, Abbreviation> getDefault() {
+    public ImmutableMap<String, Disambiguation> getDefault() {
         return Maps.immutable.empty();
     }
 
     @Override
-    public void save(ImmutableMap<String, AbbreviationDisambiguationHelper.Abbreviation> content) {
-        Collection<Abbreviation> values = content.valuesView().toList();
+    public void save(ImmutableMap<String, Disambiguation> content) {
+        Collection<Disambiguation> values = content.valuesView().toList();
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
             String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(values);
@@ -177,14 +186,14 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         }
     }
 
-    private void save(MutableMap<String, AbbreviationDisambiguationHelper.Abbreviation> content) {
+    private void save(MutableMap<String, Disambiguation> content) {
         save(Maps.immutable.ofMap(content));
     }
 
-    private @NotNull MutableMap<String, Abbreviation> toMutableMap(@NotNull Abbreviation[] abbreviations) {
-        var all = new HashMap<String, Abbreviation>();
+    private @NotNull MutableMap<String, Disambiguation> toMutableMap(@NotNull Disambiguation[] abbreviations) {
+        var all = new HashMap<String, Disambiguation>();
         for (var abbr : abbreviations) {
-            all.put(abbr.abbreviation(), abbr);
+            all.put(abbr.getAbbreviation(), abbr);
         }
         return Maps.mutable.ofMap(all);
     }
@@ -218,27 +227,105 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         return start + end;
     }
 
-    @JsonSerialize(using = AbbreviationSerializer.class)
-    public record Abbreviation(@NotNull String abbreviation, @NotNull LinkedHashSet<String> meanings) {
-        @JsonCreator
-        public Abbreviation(@JsonProperty("abbreviation") @NotNull String abbreviation, @JsonProperty("meanings") @NotNull String[] meanings) {
-            this(abbreviation, new LinkedHashSet<>(Arrays.stream(meanings).toList()));
-        }
+    /**
+     * Uses the regex {@link #abbreviationsPattern} to find a set of possible abbreviations contained in the specified text.
+     *
+     * @param text the text
+     * @return a set of possible abbreviations
+     */
+    public static @NotNull Set<String> getPossibleAbbreviations(String text) {
+        var matcher = abbreviationsPattern.matcher(text);
+        return new LinkedHashSet<>(matcher.results().map(MatchResult::group).toList());
     }
 
-    private static class AbbreviationSerializer extends JsonSerializer<Abbreviation> {
+    /**
+     * {@return whether the initialism candidate is an initialism of the text}
+     *
+     * @param text                the text
+     * @param initialismCandidate the initialism candidate
+     * @param initialismThreshold the percentage of characters in a word that need to be uppercase for a word to be considered an initialism candidate
+     */
+    public static boolean isInitialismOf(@NotNull String text, @NotNull String initialismCandidate, double initialismThreshold) {
+        if (!couldBeInitialism(initialismCandidate, initialismThreshold))
+            return false;
 
-        @Override
-        public void serialize(Abbreviation abbreviation, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("abbreviation", abbreviation.abbreviation());
-            jsonGenerator.writeArrayFieldStart("meanings");
-            var meanings = abbreviation.meanings();
-            for (var meaning : meanings) {
-                jsonGenerator.writeString(meaning);
-            }
-            jsonGenerator.writeEndArray();
-            jsonGenerator.writeEndObject();
+        //Check if the entire Initialism is contained within the single word
+        if (!text.contains(" "))
+            return shareInitial(text, initialismCandidate) && containsAllInOrder(text, initialismCandidate);
+
+        StringBuilder reg = new StringBuilder();
+        var initialLcArray = initialismCandidate.toCharArray();
+        for (var c : initialLcArray) {
+            reg.append(c).append("|");
         }
+
+        var onlyInitialismLettersAndBlank = "\\[^(" + reg + "\\s)\\]";
+        var split = text.split("\\s+");
+        var reducedText = Arrays.stream(split).filter(s -> s.startsWith(onlyInitialismLettersAndBlank)).reduce("", (l, r) -> l + r);
+
+        //The text contains words that are irrelevant to the supposed Initialism
+        if (reducedText.length() != split.length)
+            return false;
+
+        return containsAllInOrder(reducedText, initialismCandidate);
+    }
+
+    /**
+     * {@return whether the text could be an initialism} Compares the share of uppercase letters to the initialism threshold.
+     *
+     * @param initialismCandidate the initialism candidate
+     * @param initialismThreshold the initialism threshold
+     */
+    public static boolean couldBeInitialism(@NotNull String initialismCandidate, double initialismThreshold) {
+        if (initialismCandidate.isEmpty())
+            return false;
+        var upperCaseCharacters = 0;
+        var cArray = initialismCandidate.toCharArray();
+        for (char c : cArray) {
+            if (Character.isUpperCase(c))
+                upperCaseCharacters++;
+        }
+        return upperCaseCharacters >= initialismThreshold * initialismCandidate.length();
+    }
+
+    /**
+     * {@return whether the text contains all characters of the query in order} The characters do not have to be adjacent and can be separated by any amount of
+     * characters.
+     *
+     * @param text  the text
+     * @param query the query
+     */
+    public static boolean containsAllInOrder(@NotNull String text, @NotNull String query) {
+        return containsInOrder(text, query) == query.length();
+    }
+
+    /**
+     * {@return how many characters of the query are in order} The characters do not have to be adjacent and can be separated by any amount of characters. If a
+     * character is not in order, it is disregarded.
+     *
+     * @param text  the text
+     * @param query the query
+     */
+    public static int containsInOrder(@NotNull String text, @NotNull String query) {
+        var total = 0;
+        var remainingText = text;
+        var cArray = query.toCharArray();
+
+        for (char c : cArray) {
+            if (remainingText.isEmpty())
+                return total;
+            var current = remainingText.indexOf(String.valueOf(c));
+            if (current == -1)
+                continue;
+            remainingText = remainingText.substring(current + 1);
+            total++;
+        }
+        return total;
+    }
+
+    public static boolean shareInitial(String a, String b) {
+        if (a == null || b == null || a.isEmpty() || b.isEmpty())
+            return false;
+        return a.substring(0, 1).equals(b.substring(0, 1));
     }
 }

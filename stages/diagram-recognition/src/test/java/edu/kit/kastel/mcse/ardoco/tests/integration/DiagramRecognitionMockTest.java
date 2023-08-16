@@ -1,5 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -11,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
@@ -35,11 +39,15 @@ public class DiagramRecognitionMockTest {
     private void run(DiagramProject project) {
         var dataRepository = new AnonymousRunner(project.name()) {
             @Override
-            public void initializePipelineSteps() {
+            public List<AbstractPipelineStep> initializePipelineSteps() {
+                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
+
                 ArDoCo arDoCo = getArDoCo();
                 var dataRepository = arDoCo.getDataRepository();
 
-                arDoCo.addPipelineStep(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
+                pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
+
+                return pipelineSteps;
             }
         }.runWithoutSaving();
         var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();

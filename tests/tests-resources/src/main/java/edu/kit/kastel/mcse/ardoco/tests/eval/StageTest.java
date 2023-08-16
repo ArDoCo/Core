@@ -1,13 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,35 +17,38 @@ import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public abstract class StageTest<T extends AbstractExecutionStage, V extends Record> {
+public abstract class StageTest<T extends AbstractExecutionStage, U extends GoldStandardProject, V extends Record> {
     private static final String ENV_DEBUG = "debug";
     private static final String CACHING = "stageTestCaching";
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
     private final T stage;
+    private final List<U> allProjects;
     private final Set<Class<? extends PipelineAgent>> agents;
     private final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
-    private final Map<DiagramProject, TestDataRepositoryCache> dataRepositoryCaches = new HashMap<>();
+    private final Map<U, TestDataRepositoryCache> dataRepositoryCaches = new HashMap<>();
 
-    public StageTest(T stage) {
+    public StageTest(T stage, List<U> allProjects) {
         this.stage = stage;
         this.agents = ConfigurationUtility.getAgents(stage);
         this.informantsMap = ConfigurationUtility.getInformantsMap(stage);
+        this.allProjects = allProjects;
     }
 
-    private DataRepository setup(DiagramProject project) {
-        logger.info("Run PreTestRunner for {}", project.name());
+    private DataRepository setup(U project) {
+        logger.info("Run PreTestRunner for {}", project.getProjectName());
         return runPreTestRunner(project);
     }
 
-    protected DataRepository run(DiagramProject project, Map<String, String> additionalConfigurations) {
+    protected DataRepository run(U project, Map<String, String> additionalConfigurations) {
         var dataRepository = getDataRepository(project, true);
         return runTestRunner(project, additionalConfigurations, dataRepository);
     }
 
-    protected DataRepository run(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+    protected DataRepository run(U project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
         var dataRepository = getDataRepository(project, cachePreRun);
         return runTestRunner(project, additionalConfigurations, dataRepository);
     }
@@ -85,51 +82,50 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
     }
 
     protected void cache(@NotNull String id, @NotNull Serializable obj) {
-        new TestDataCache<Serializable>(stage.getClass(), obj.getClass(), id, "cache/").save(obj);
+        new TestDataCache<Serializable>(stage.getClass(), id, "cache/").save(new TestData<>(obj));
     }
 
     protected <W extends Serializable> W getCached(@NotNull String id, Class<W> cls) {
-        return new TestDataCache<W>(stage.getClass(), cls, id, "cache/").load();
+        return new TestDataCache<W>(stage.getClass(), id, "cache/").load().data();
     }
 
     @NotNull
     @DeepCopy
-    protected DataRepository getDataRepository(DiagramProject diagramProject, boolean cachePreRun) {
+    protected DataRepository getDataRepository(U project, boolean cachePreRun) {
         if (!cachePreRun) {
-            return this.setup(diagramProject);
+            return this.setup(project);
         }
 
-        return dataRepositoryCaches.computeIfAbsent(diagramProject, dp -> TestDataRepositoryCache.getInstance(stage.getClass(), diagramProject))
-                .get(this::setup);
+        return dataRepositoryCaches.computeIfAbsent(project, dp -> new TestDataRepositoryCache<U>(stage.getClass(), project)).get(this::setup);
     }
 
-    protected DataRepository run(DiagramProject project) {
+    protected DataRepository run(U project) {
         return run(project, Map.of());
     }
 
-    protected abstract V runComparable(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun);
+    protected abstract V runComparable(U project, Map<String, String> additionalConfigurations, boolean cachePreRun);
 
-    protected V runComparable(DiagramProject project, Map<String, String> additionalConfigurations) {
+    protected V runComparable(U project, Map<String, String> additionalConfigurations) {
         return runComparable(project, additionalConfigurations, true);
     }
 
-    protected V runComparable(DiagramProject project, boolean cachePreRun) {
+    protected V runComparable(U project, boolean cachePreRun) {
         return runComparable(project, Map.of(), cachePreRun);
     }
 
-    protected V runComparable(DiagramProject project) {
+    protected V runComparable(U project) {
         return runComparable(project, Map.of(), true);
     }
 
-    protected abstract DataRepository runPreTestRunner(DiagramProject project);
+    protected abstract DataRepository runPreTestRunner(U project);
 
-    protected abstract DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository);
+    protected abstract DataRepository runTestRunner(U project, Map<String, String> additionalConfigurations, DataRepository dataRepository);
 
     private static final int repetitions = 2;
 
     @BeforeAll
     void resetAllTestDataRepositoryCaches() {
-        Arrays.stream(DiagramProject.values()).forEach(d -> TestDataRepositoryCache.getInstance(stage.getClass(), d).deleteFile());
+        allProjects.forEach(d -> new TestDataRepositoryCache<U>(stage.getClass(), d).deleteFile());
         debugAskCache();
     }
 
@@ -140,7 +136,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
         var results = new ArrayList<V>(repetitions);
         for (var i = 0; i < repetitions; i++) {
             logger.info("Stage {} repetition {}/{}", stage.getClass().getSimpleName(), i + 1, repetitions);
-            results.add(runComparable(DiagramProject.TEAMMATES));
+            results.add(runComparable(allProjects.get(0)));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
     }
@@ -153,7 +149,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
         var results = new ArrayList<V>(repetitions);
         for (var i = 0; i < repetitions; i++) {
             logger.info("Agent {} repetition {}/{}", clazzAgent.getSimpleName(), i + 1, repetitions);
-            results.add(runComparable(DiagramProject.TEAMMATES, ConfigurationUtility.enableAgents(stage.getClass(), Set.of(clazzAgent))));
+            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableAgents(stage.getClass(), Set.of(clazzAgent))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
     }
@@ -166,7 +162,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, V extends Reco
         var results = new ArrayList<V>(repetitions);
         for (var i = 0; i < repetitions; i++) {
             logger.info("Informant {} repetition {}/{}", clazzInformant.getSimpleName(), i + 1, repetitions);
-            results.add(runComparable(DiagramProject.TEAMMATES, ConfigurationUtility.enableInformants(stage, Set.of(clazzInformant))));
+            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableInformants(stage, Set.of(clazzInformant))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
     }

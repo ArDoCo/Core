@@ -36,7 +36,7 @@ public class InDepArcsInformant extends Informant {
     @Override
     public void run() {
         var textState = DataRepositoryHelper.getTextState(getDataRepository());
-        for (var word : DataRepositoryHelper.getAnnotatedText(getDataRepository()).words()) {
+        for (var word : DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords()) {
             exec(textState, word);
         }
     }

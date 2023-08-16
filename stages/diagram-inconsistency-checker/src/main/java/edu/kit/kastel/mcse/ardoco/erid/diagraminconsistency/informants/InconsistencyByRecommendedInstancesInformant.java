@@ -28,7 +28,7 @@ public class InconsistencyByRecommendedInstancesInformant extends Informant {
             var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(mm);
             var allRecommendedInstances = recommendationStates.getRecommendationState(mm).getRecommendedInstances();
             var uncoveredRecommendedInstances = allRecommendedInstances.stream()
-                    .filter(ri -> diagramConnectionState.getDiagramLinks(ri).isEmpty())
+                    .filter(ri -> diagramConnectionState.getLinksBetweenDeAndRi(ri).isEmpty())
                     .distinct()
                     .toList();
 

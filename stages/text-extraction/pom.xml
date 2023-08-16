@@ -36,6 +36,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>tests-resources</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.pdfbox</groupId>
       <artifactId>pdfbox</artifactId>
       <version>3.0.0-RC1</version>
@@ -54,6 +60,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

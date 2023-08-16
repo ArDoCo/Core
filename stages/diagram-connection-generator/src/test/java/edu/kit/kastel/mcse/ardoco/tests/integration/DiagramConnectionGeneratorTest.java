@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
@@ -28,6 +29,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
@@ -52,7 +54,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
-        var diagramLinks = diagramConnectionState.getDiagramLinks().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
+        var linksBetweenDeAndRi = diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
         var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
         var altResult = Results.create(project, text, mostSpecificTraceLinks, project.getExpectedDiagramTraceLinkResults());
@@ -73,7 +75,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
 
         logger.debug(
                 "{} Diagram Links, {} Trace Links, {} Most Specific Trace Links, {} Common Noun FP, {} Shared Stem FP, {} Other Entity FP, {} Coreference FN",
-                diagramLinks.size(), traceLinks.size(), mostSpecificTraceLinks.size(), commonNoun.size(), sharedStem.size(), otherEntity.size(),
+                linksBetweenDeAndRi.size(), traceLinks.size(), mostSpecificTraceLinks.size(), commonNoun.size(), sharedStem.size(), otherEntity.size(),
                 coreference.size());
 
         var cacheID = "Results-" + project.name();
@@ -108,12 +110,16 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         combinedConfigs.putAll(additionalConfigurations);
         return new AnonymousRunner(project.name()) {
             @Override
-            public void initializePipelineSteps() {
+            public List<AbstractPipelineStep> initializePipelineSteps() {
+                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
+
                 ArDoCo arDoCo = getArDoCo();
                 var combinedRepository = arDoCo.getDataRepository();
                 combinedRepository.addAllData(dataRepository);
 
-                arDoCo.addPipelineStep(new DiagramConnectionGenerator(combinedConfigs, combinedRepository));
+                pipelineSteps.add(new DiagramConnectionGenerator(combinedConfigs, combinedRepository));
+
+                return pipelineSteps;
             }
         }.runWithoutSaving();
     }

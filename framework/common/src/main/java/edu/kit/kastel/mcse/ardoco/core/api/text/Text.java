@@ -16,7 +16,7 @@ public interface Text extends Serializable {
      * @return the length
      */
     default int getLength() {
-        return words().size();
+        return getWords().size();
     }
 
     /**
@@ -24,7 +24,14 @@ public interface Text extends Serializable {
      *
      * @return the words
      */
-    ImmutableList<Word> words();
+    ImmutableList<Word> getWords();
+
+    /**
+     * Gets all phrases of the text (ordered).
+     *
+     * @return the phrases
+     */
+    ImmutableList<Phrase> getPhrases();
 
     /**
      * Returns the sentences of the text, ordered by appearance.

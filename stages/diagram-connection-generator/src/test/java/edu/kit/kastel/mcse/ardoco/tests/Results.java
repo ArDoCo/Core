@@ -183,7 +183,7 @@ public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePo
         } else {
             logger.warn("Results are not as expected! " + toString());
         }
-        return true;
+        return asExpected;
     }
 
     public Map<String, Double> mapOfMetrics() {

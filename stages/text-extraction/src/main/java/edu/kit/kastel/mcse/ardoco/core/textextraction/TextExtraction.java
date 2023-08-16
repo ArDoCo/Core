@@ -10,6 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.AbbreviationAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
 
@@ -26,7 +27,8 @@ public class TextExtraction extends AbstractExecutionStage {
     public TextExtraction(DataRepository dataRepository) {
         super("TextExtraction", dataRepository, List.of(//
                 new InitialTextAgent(dataRepository),//
-                new PhraseAgent(dataRepository)));
+                new PhraseAgent(dataRepository),//
+                new AbbreviationAgent(dataRepository)));
         this.enabledAgents = getAgents().stream().map(Agent::getId).toList();
     }
 

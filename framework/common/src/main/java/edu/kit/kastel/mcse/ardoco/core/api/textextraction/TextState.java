@@ -1,12 +1,18 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
+import java.util.Optional;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
@@ -18,6 +24,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * The Interface ITextState.
  */
 public interface TextState extends IConfigurable, PipelineStepData {
+    Logger logger = LoggerFactory.getLogger(TextState.class);
+
     String ID = "TextState";
 
     /**
@@ -103,6 +111,10 @@ public interface TextState extends IConfigurable, PipelineStepData {
 
     ImmutableList<PhraseMapping> getPhraseMappings();
 
+    default ImmutableList<PhraseMapping> getPhraseMappings(Phrase phrase) {
+        return Lists.immutable.fromStream(getPhraseMappings().stream().filter(pm -> pm.getPhrases().contains(phrase)));
+    }
+
     ImmutableList<NounMapping> getNounMappingsOfKind(MappingKind mappingKind);
 
     ImmutableList<NounMapping> getNounMappingsThatBelongToTheSamePhraseMapping(NounMapping nounMapping);
@@ -129,4 +141,34 @@ public interface TextState extends IConfigurable, PipelineStepData {
     boolean isWordContainedByMappingKind(Word word, MappingKind kind);
 
     ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference);
+
+    default WordAbbreviation addWordAbbreviation(String abbreviation, Word word) {
+        logger.info("Added word abbreviation for {} with meaning {}", abbreviation, word.getText());
+        return getTextStateStrategy().addOrExtendWordAbbreviation(abbreviation, word);
+    }
+
+    default PhraseAbbreviation addPhraseAbbreviation(String abbreviation, Phrase phrase) {
+        logger.info("Added phrase abbreviation for {} with meaning {}", abbreviation, phrase.getText());
+        return getTextStateStrategy().addOrExtendPhraseAbbreviation(abbreviation, phrase);
+    }
+
+    ImmutableSet<WordAbbreviation> getWordAbbreviations();
+
+    default ImmutableSet<WordAbbreviation> getWordAbbreviations(Word word) {
+        return Sets.immutable.fromStream(getWordAbbreviations().stream().filter(w -> w.getWords().contains(word)));
+    }
+
+    default Optional<WordAbbreviation> getWordAbbreviation(String abbreviation) {
+        return getWordAbbreviations().stream().filter(w -> w.getAbbreviation().equals(abbreviation)).findFirst();
+    }
+
+    ImmutableSet<PhraseAbbreviation> getPhraseAbbreviations();
+
+    default ImmutableSet<PhraseAbbreviation> getPhraseAbbreviations(Phrase phrase) {
+        return Sets.immutable.fromStream(getPhraseAbbreviations().stream().filter(p -> p.getPhrases().contains(phrase)));
+    }
+
+    default Optional<PhraseAbbreviation> getPhraseAbbreviation(String abbreviation) {
+        return getPhraseAbbreviations().stream().filter(p -> p.getAbbreviation().equals(abbreviation)).findFirst();
+    }
 }

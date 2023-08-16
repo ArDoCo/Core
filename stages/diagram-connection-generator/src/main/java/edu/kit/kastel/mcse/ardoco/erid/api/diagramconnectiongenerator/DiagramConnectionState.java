@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,7 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 
 public interface DiagramConnectionState extends IConfigurable {
     Logger logger = LoggerFactory.getLogger(DiagramConnectionState.class);
@@ -33,14 +33,14 @@ public interface DiagramConnectionState extends IConfigurable {
      * @return immutable set of diagram links
      */
     @NotNull
-    ImmutableSet<DiagramLink> getDiagramLinks();
+    ImmutableSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi();
 
-    default @NotNull Optional<DiagramLink> getDiagramLink(@NotNull DiagramElement diagramElement) {
-        return getDiagramLinks().stream().filter(d -> d.getDiagramElement().equals(diagramElement)).findFirst();
+    default @NotNull Optional<LinkBetweenDeAndRi> getLinkBetweenDeAndRi(@NotNull DiagramElement diagramElement) {
+        return getLinksBetweenDeAndRi().stream().filter(d -> d.getDiagramElement().equals(diagramElement)).findFirst();
     }
 
-    default @NotNull ImmutableSet<DiagramLink> getDiagramLinks(@NotNull RecommendedInstance recommendedInstance) {
-        return Sets.immutable.fromStream(getDiagramLinks().stream().filter(d -> d.getRecommendedInstance().equals(recommendedInstance)));
+    default @NotNull ImmutableSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance) {
+        return Sets.immutable.fromStream(getLinksBetweenDeAndRi().stream().filter(d -> d.getRecommendedInstance().equals(recommendedInstance)));
     }
 
     /**
@@ -54,7 +54,7 @@ public interface DiagramConnectionState extends IConfigurable {
      * @param confidenceMap confidence map containing the confidences
      * @return true, if the link wasn't already contained, false else
      */
-    boolean addToDiagramLinks(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String projectName, @NotNull Claimant claimant,
+    boolean addToLinksBetweenDeAndRi(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String projectName, @NotNull Claimant claimant,
             @NotNull Map<Word, Double> confidenceMap);
 
     /**
@@ -62,20 +62,20 @@ public interface DiagramConnectionState extends IConfigurable {
      *
      * @return true, if the link wasn't already contained, false else
      */
-    boolean addToDiagramLinks(@NotNull DiagramLink diagramLink);
+    boolean addToLinksBetweenDeAndRi(@NotNull LinkBetweenDeAndRi linkBetweenDeAndRi);
 
     /**
      * Removes the specified diagram link from the state. Returns true of the link was contained.
      *
-     * @param diagramLink diagram link
+     * @param linkBetweenDeAndRi diagram link
      * @return true, if the link was contained, false else
      */
-    boolean removeFromDiagramLinks(@NotNull DiagramLink diagramLink);
+    boolean removeFromLinksBetweenDeAndRi(@NotNull LinkBetweenDeAndRi linkBetweenDeAndRi);
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getWordTraceLinks() {
         var traceLinks = Sets.mutable.<DiaWordTraceLink>empty();
-        for (var diagramLink : getDiagramLinks()) {
-            traceLinks.addAll(diagramLink.toTraceLinks().toList());
+        for (var linkBetweenDeAndRi : getLinksBetweenDeAndRi()) {
+            traceLinks.addAll(linkBetweenDeAndRi.toTraceLinks().toList());
         }
         var aboveThreshold = traceLinks.stream().filter(diaWordTraceLink -> diaWordTraceLink.getConfidence() >= confidenceThreshold).toList();
         logger.info("Removed {} Word Trace Links due to low confidence", traceLinks.size() - aboveThreshold.size());

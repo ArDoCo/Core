@@ -17,7 +17,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedIn
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-public class DiagramLink extends EndpointTuple implements Claimant, Comparable<DiagramLink> {
+public class LinkBetweenDeAndRi
+        extends EndpointTuple implements Claimant, Comparable<LinkBetweenDeAndRi> {
     public static final Function<Map<Word, Double>, Double> MAXIMUM_CONFIDENCE = (Map<Word, Double> confidenceMap) -> confidenceMap.values()
             .stream()
             .reduce(0.0, Math::max);
@@ -49,7 +50,7 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
      * @param claimant            the {@link Claimant} responsible for the creation of this link
      * @param confidenceMap       the confidence
      */
-    public DiagramLink(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
+    public LinkBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
             @NotNull Claimant claimant, @NotNull Map<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
 
@@ -95,7 +96,7 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
     }
 
     @Override
-    public int compareTo(@NotNull DiagramLink o) {
+    public int compareTo(@NotNull LinkBetweenDeAndRi o) {
         if (equals(o))
             return 0;
         var comp = getRecommendedInstance().getName().compareTo(o.getRecommendedInstance().getName());
@@ -110,7 +111,7 @@ public class DiagramLink extends EndpointTuple implements Claimant, Comparable<D
         if (this == obj) {
             return true;
         }
-        if (obj instanceof DiagramLink other) {
+        if (obj instanceof LinkBetweenDeAndRi other) {
             return diagramElement.equals(other.diagramElement) && recommendedInstance.equals(other.recommendedInstance) && claimant.equals(other.claimant);
         }
         return false;

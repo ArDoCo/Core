@@ -11,7 +11,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 public interface Word extends Comparable<Word>, Serializable {
 
     /**
-     * Gets the sentence number.
+     * Gets the sentence number starting at 0.
      *
      * @return the sentence number
      */

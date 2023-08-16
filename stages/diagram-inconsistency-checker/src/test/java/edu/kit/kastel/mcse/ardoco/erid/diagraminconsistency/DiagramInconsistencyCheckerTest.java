@@ -1,7 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -17,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
@@ -66,14 +69,16 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
         logger.info("Run PreTestRunner for {}", project.name());
         return new AnonymousRunner(project.name()) {
             @Override
-            public void initializePipelineSteps() throws IOException {
+            public List<AbstractPipelineStep> initializePipelineSteps() throws IOException {#
+                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
+
                 ArDoCo arDoCo = getArDoCo();
                 var dataRepository = arDoCo.getDataRepository();
 
                 if (useMockDiagrams) {
-                    arDoCo.addPipelineStep(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
+                    pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
                 } else {
-                    arDoCo.addPipelineStep(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
+                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
                 }
 
                 var text = CommonUtilities.readInputText(project.getTextFile());
@@ -81,12 +86,14 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                     throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
                 }
                 DataRepositoryHelper.putInputText(dataRepository, text);
-                arDoCo.addPipelineStep(TextPreprocessingAgent.get(project.getAdditionalConfigurations(), dataRepository));
+                pipelineSteps.add(TextPreprocessingAgent.get(project.getAdditionalConfigurations(), dataRepository));
 
-                arDoCo.addPipelineStep(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
-                arDoCo.addPipelineStep(TextExtraction.get(project.getAdditionalConfigurations(), dataRepository));
-                arDoCo.addPipelineStep(RecommendationGenerator.get(project.getAdditionalConfigurations(), dataRepository));
-                arDoCo.addPipelineStep(new DiagramConnectionGenerator(project.getAdditionalConfigurations(), dataRepository));
+                pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
+                pipelineSteps.add(TextExtraction.get(project.getAdditionalConfigurations(), dataRepository));
+                pipelineSteps.add(RecommendationGenerator.get(project.getAdditionalConfigurations(), dataRepository));
+                pipelineSteps.add(new DiagramConnectionGenerator(project.getAdditionalConfigurations(), dataRepository));
+
+                return pipelineSteps;
             }
         }.runWithoutSaving();
     }
@@ -98,12 +105,16 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
         combinedConfigs.putAll(additionalConfigurations);
         return new AnonymousRunner(project.name()) {
             @Override
-            public void initializePipelineSteps() {
+            public List<AbstractPipelineStep> initializePipelineSteps() {
+                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
+
                 ArDoCo arDoCo = getArDoCo();
                 var combinedRepository = arDoCo.getDataRepository();
                 combinedRepository.addAllData(dataRepository);
 
-                arDoCo.addPipelineStep(new DiagramInconsistencyChecker(combinedConfigs, combinedRepository));
+                pipelineSteps.add(new DiagramInconsistencyChecker(combinedConfigs, combinedRepository));
+
+                return pipelineSteps;
             }
         }.runWithoutSaving();
     }

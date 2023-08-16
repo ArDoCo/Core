@@ -45,4 +45,6 @@ public interface Sentence extends Serializable {
     }
 
     ImmutableList<Phrase> getPhrases();
+
+    void addPhrase(Phrase phrase);
 }

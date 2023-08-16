@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
+import java.util.Locale;
+
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
@@ -7,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -56,8 +59,9 @@ public class DiagramTextInformant extends Informant {
                 for (var tBox : texts) {
                     var ris = recommendationState.getRecommendedInstances();
                     for (var recommendedInstance : ris) {
-                        if (DiagramUtil.isInitialismOf(recommendedInstance.getName(), tBox.getText(), initialismThreshold)) {
-                            diagramConnectionState.addToDiagramLinks(recommendedInstance, box, projectName, this,
+                        if (AbbreviationDisambiguationHelper.isInitialismOf(recommendedInstance.getName().toLowerCase(Locale.US),
+                                tBox.getText().toLowerCase(Locale.US), initialismThreshold)) {
+                            diagramConnectionState.addToLinksBetweenDeAndRi(recommendedInstance, box, projectName, this,
                                     DiagramUtil.calculateHighestSimilarity(box, recommendedInstance));
                         }
                     }

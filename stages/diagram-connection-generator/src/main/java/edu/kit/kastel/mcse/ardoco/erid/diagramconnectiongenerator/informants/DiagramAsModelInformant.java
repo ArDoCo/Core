@@ -1,5 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.DiagramLink;
 
 public class DiagramAsModelInformant extends Informant {
     @Configurable
@@ -53,7 +54,7 @@ public class DiagramAsModelInformant extends Informant {
 
     private void findTextOfDiagramInstancesInSupposedMappings(DiagramRecognitionState diagramState, RecommendationState recommendationState,
             DiagramConnectionState diagramConnectionState) {
-        var basedOnIncreasingMinimalProportionalThreshold = new ArrayList<DiagramLink>();
+        var basedOnIncreasingMinimalProportionalThreshold = new ArrayList<LinkBetweenDeAndRi>();
         var recommendedInstances = recommendationState.getRecommendedInstances();
         var diagrams = diagramState.getDiagrams();
         for (Diagram diagram : diagrams) {
@@ -61,19 +62,19 @@ public class DiagramAsModelInformant extends Informant {
             for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
-                    basedOnIncreasingMinimalProportionalThreshold.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
+                    basedOnIncreasingMinimalProportionalThreshold.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
                             DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                 }
             }
         }
         logger.info("Found {} diagram links based on increasing minimal proportional threshold", basedOnIncreasingMinimalProportionalThreshold.size());
-        basedOnIncreasingMinimalProportionalThreshold.forEach(diagramConnectionState::addToDiagramLinks);
+        basedOnIncreasingMinimalProportionalThreshold.forEach(diagramConnectionState::addToLinksBetweenDeAndRi);
     }
 
     private void createLinksForEqualOrSimilarRecommendedInstances(DiagramRecognitionState diagramState, RecommendationState recommendationState,
             DiagramConnectionState diagramConnectionState) {
-        var basedOnOverallSimilarity = new ArrayList<DiagramLink>();
-        var basedOnSurfaceWords = new ArrayList<DiagramLink>();
+        var basedOnOverallSimilarity = new ArrayList<LinkBetweenDeAndRi>();
+        var basedOnSurfaceWords = new ArrayList<LinkBetweenDeAndRi>();
         var diagrams = diagramState.getDiagrams();
         for (Diagram diagram : diagrams) {
             var diagramModelInstances = diagramToModelInstances(diagram);
@@ -82,14 +83,14 @@ public class DiagramAsModelInformant extends Informant {
                 for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
                     //Add based on overall similarity
                     if (SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
-                        basedOnOverallSimilarity.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
+                        basedOnOverallSimilarity.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
                                 DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                     }
                     //Add based on surface words
                     var similarSurfaceWords = SimilarityUtils.getSimilarSurfaceWords(recommendedInstance, pair.second());
                     if (similarSurfaceWords.size() >= minSimilarSurfaceWords) {
                         for (var similar : similarSurfaceWords) {
-                            basedOnSurfaceWords.add(new DiagramLink(recommendedInstance, pair.first(), projectName, this,
+                            basedOnSurfaceWords.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
                                     DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
                         }
                     }
@@ -98,8 +99,8 @@ public class DiagramAsModelInformant extends Informant {
         }
         logger.info("Found {} diagram links based on overall similarity", basedOnOverallSimilarity.size());
         logger.info("Found {} diagram links based on surface words", basedOnSurfaceWords.size());
-        basedOnOverallSimilarity.forEach(diagramConnectionState::addToDiagramLinks);
-        basedOnSurfaceWords.forEach(diagramConnectionState::addToDiagramLinks);
+        basedOnOverallSimilarity.forEach(diagramConnectionState::addToLinksBetweenDeAndRi);
+        basedOnSurfaceWords.forEach(diagramConnectionState::addToLinksBetweenDeAndRi);
     }
 
     private List<Pair<Box, ModelInstance>> diagramToModelInstances(Diagram diagram) {

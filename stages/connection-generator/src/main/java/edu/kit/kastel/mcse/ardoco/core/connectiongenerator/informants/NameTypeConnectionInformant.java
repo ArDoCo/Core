@@ -43,7 +43,7 @@ public class NameTypeConnectionInformant extends Informant {
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        for (var word : text.words()) {
+        for (var word : text.getWords()) {
             exec(textState, modelStates, recommendationStates, word);
         }
     }

@@ -1,91 +1,66 @@
-/* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
+package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.impl.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.stanford.nlp.trees.Tree;
 
-public class PhraseImpl implements Phrase {
-    private final Tree tree;
-    private final ImmutableList<Word> words;
+public class ContextPhrase implements Phrase {
+    private final MutableList<Word> words;
+    private final Sentence sentence;
 
-    private final SentenceImpl parent;
-
-    private String text = null;
-
-    public PhraseImpl(Tree tree, ImmutableList<Word> words, SentenceImpl parent) {
-        this.tree = tree;
-        this.words = words;
-        this.parent = parent;
+    public ContextPhrase(ImmutableList<Word> words, Sentence sentence) {
+        this.words = Lists.mutable.ofAll(words);
+        this.sentence = sentence;
     }
 
     @Override
     public int getSentenceNo() {
-        return words.get(0).getSentenceNo();
+        return sentence.getSentenceNumber();
     }
 
     @Override
     public String getText() {
-        if (text == null) {
-            text = tree.spanString();
-        }
-        return text;
+        return words.stream().map(Word::getText).collect(Collectors.joining(" "));
     }
 
     @Override
     public PhraseType getPhraseType() {
-        String type = tree.label().toString();
-        return PhraseType.get(type);
+        return PhraseType.NP;
     }
 
     @Override
     public ImmutableList<Word> getContainedWords() {
-        return words;
+        return words.toImmutableList();
     }
 
     @Override
     public ImmutableList<Phrase> getSubPhrases() {
-        MutableList<Phrase> subPhrases = Lists.mutable.empty();
-        for (var subTree : tree) {
-            if (subTree.isPhrasal() && tree.dominates(subTree)) {
-                ImmutableList<Word> wordsForPhrase = Lists.immutable.withAll(parent.getWordsForPhrase(subTree));
-                PhraseImpl currPhrase = new PhraseImpl(subTree, wordsForPhrase, parent);
-                subPhrases.add(currPhrase);
-            }
-        }
-        return subPhrases.toImmutable();
+        return Lists.immutable.empty();
     }
 
     @Override
     public boolean isSuperPhraseOf(Phrase other) {
-        if (other instanceof PhraseImpl otherPhrase) {
-            return tree.dominates(otherPhrase.tree);
-        } else {
-            var currText = getText();
-            var otherText = other.getText();
-            return currText.contains(otherText) && currText.length() != otherText.length();
-        }
+        var currText = getText();
+        var otherText = other.getText();
+        return currText.contains(otherText) && currText.length() != otherText.length();
     }
 
     @Override
     public boolean isSubPhraseOf(Phrase other) {
-        if (other instanceof PhraseImpl otherPhrase) {
-            return otherPhrase.tree.dominates(this.tree);
-        } else {
-            var currText = getText();
-            var otherText = other.getText();
-            return otherText.contains(currText) && currText.length() != otherText.length();
-        }
+        var currText = getText();
+        var otherText = other.getText();
+        return otherText.contains(currText) && currText.length() != otherText.length();
     }
 
     @Override

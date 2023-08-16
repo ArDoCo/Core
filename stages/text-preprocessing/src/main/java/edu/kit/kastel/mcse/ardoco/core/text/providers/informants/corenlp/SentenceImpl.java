@@ -21,8 +21,8 @@ import edu.stanford.nlp.trees.Tree;
 class SentenceImpl implements Sentence {
     private static final Logger logger = LoggerFactory.getLogger(SentenceImpl.class);
 
-    private ImmutableList<Word> words = Lists.immutable.empty();
-    private ImmutableList<Phrase> phrases = Lists.immutable.empty();
+    private MutableList<Word> words = Lists.mutable.empty();
+    private MutableList<Phrase> phrases = Lists.mutable.empty();
 
     private TextImpl parent;
     private final transient CoreSentence coreSentence;
@@ -45,9 +45,9 @@ class SentenceImpl implements Sentence {
     @Override
     public ImmutableList<Word> getWords() {
         if (words.isEmpty()) {
-            this.words = parent.words().select(w -> w.getSentenceNo() == sentenceNumber).toImmutable();
+            this.words = Lists.mutable.ofAll(parent.getWords().select(w -> w.getSentenceNo() == sentenceNumber));
         }
-        return words;
+        return words.toImmutable();
     }
 
     @Override
@@ -67,10 +67,15 @@ class SentenceImpl implements Sentence {
                     newPhrases.add(currPhrase);
                 }
             }
-            phrases = newPhrases.toImmutable();
+            phrases = newPhrases;
         }
 
-        return phrases;
+        return phrases.toImmutable();
+    }
+
+    @Override
+    public void addPhrase(Phrase phrase) {
+        phrases.add(phrase);
     }
 
     protected List<Word> getWordsForPhrase(Tree phrase) {
@@ -79,7 +84,7 @@ class SentenceImpl implements Sentence {
         var index = findIndexOfFirstWordInPhrase(coreLabels.get(0), this);
         logger.debug("phrase starting position: {}", index);
         for (int wordIndexInSentence = 0; wordIndexInSentence < coreLabels.size(); wordIndexInSentence++) {
-            var phraseWord = parent.words().get(index++);
+            var phraseWord = parent.getWords().get(index++);
             phraseWords.add(phraseWord);
         }
         return phraseWords;

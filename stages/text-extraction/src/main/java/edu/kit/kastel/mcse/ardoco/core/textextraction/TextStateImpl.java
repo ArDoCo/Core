@@ -13,15 +13,18 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -53,6 +56,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     private static final double MAPPING_KIND_MAX_DIFF = 0.1;
     private MutableList<ElementWrapper<NounMapping>> nounMappings;
     private MutableSet<PhraseMapping> phraseMappings;
+    protected MutableSet<WordAbbreviation> wordAbbreviations;
+    protected MutableSet<PhraseAbbreviation> phraseAbbreviations;
     private TextStateStrategy strategy;
 
     /**
@@ -65,6 +70,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     public TextStateImpl(Function<TextStateImpl, TextStateStrategy> constructor) {
         nounMappings = Lists.mutable.empty();
         phraseMappings = Sets.mutable.empty();
+        wordAbbreviations = Sets.mutable.empty();
+        phraseAbbreviations = Sets.mutable.empty();
         strategy = constructor.apply(this);
     }
 
@@ -104,7 +111,6 @@ public class TextStateImpl extends AbstractState implements TextState {
         ImmutableList<PhraseMapping> phraseMappingsByNounMapping = getPhraseMappingsByNounMapping(nounMapping);
         assert (phraseMappingsByNounMapping.size() >= 1) : "Every noun mapping should be connected to a phrase mapping";
         return phraseMappingsByNounMapping.get(0);
-
     }
 
     @Override
@@ -195,6 +201,16 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference) {
         return getNounMappings().select(nm -> SimilarityUtils.areWordsSimilar(reference, nm.getReference())).toImmutable();
+    }
+
+    @Override
+    public ImmutableSet<WordAbbreviation> getWordAbbreviations() {
+        return wordAbbreviations.toImmutable();
+    }
+
+    @Override
+    public ImmutableSet<PhraseAbbreviation> getPhraseAbbreviations() {
+        return phraseAbbreviations.toImmutable();
     }
 
     @Override

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
-public abstract class FileBasedCache<T> {
+public abstract class FileBasedCache<T> implements AutoCloseable {
     private static Logger logger = LoggerFactory.getLogger(FileBasedCache.class);
     private File file;
     private final String identifier;
@@ -81,5 +81,10 @@ public abstract class FileBasedCache<T> {
         }
 
         return file;
+    }
+
+    @Override
+    public void close() {
+        save(load());
     }
 }

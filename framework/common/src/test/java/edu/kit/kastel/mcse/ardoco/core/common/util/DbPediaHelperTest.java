@@ -6,17 +6,17 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-class DBPediaHelperTest {
+class DbPediaHelperTest {
     @Test
     void load() {
-        var record = DBPediaHelper.getInstance().load();
+        var record = DbPediaHelper.getInstance().load();
         assertTrue(record.programmingLanguages().size() > 0);
         assertTrue(record.markupLanguages().size() > 0);
     }
 
     @Test
     void containsAtLeastSomePopularLanguages() {
-        var record = DBPediaHelper.getInstance().load();
+        var record = DbPediaHelper.getInstance().load();
         List<String> all = record.programmingLanguages();
         all.addAll(record.markupLanguages());
         all.addAll(record.software());

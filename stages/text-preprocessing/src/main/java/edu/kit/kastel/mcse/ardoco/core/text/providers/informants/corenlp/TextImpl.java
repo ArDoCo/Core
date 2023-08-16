@@ -5,6 +5,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -21,11 +22,16 @@ class TextImpl implements Text {
     }
 
     @Override
-    public ImmutableList<Word> words() {
+    public ImmutableList<Word> getWords() {
         if (words.isEmpty()) {
             iterateDocumentForWordsAndSentences();
         }
         return words;
+    }
+
+    @Override
+    public ImmutableList<Phrase> getPhrases() {
+        return Lists.immutable.fromStream(getSentences().stream().flatMap(s -> s.getPhrases().stream()));
     }
 
     @Override

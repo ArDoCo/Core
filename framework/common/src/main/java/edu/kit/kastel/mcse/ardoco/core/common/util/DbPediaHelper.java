@@ -15,19 +15,19 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
-    private static Logger logger = LoggerFactory.getLogger(DBPediaHelper.class);
-    private static DBPediaHelper instance;
-    private Record record;
+public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
+    private static Logger logger = LoggerFactory.getLogger(DbPediaHelper.class);
+    private static DbPediaHelper instance;
+    private DbPediaData dbPediaData;
 
-    public static synchronized @NotNull DBPediaHelper getInstance() {
+    public static synchronized @NotNull DbPediaHelper getInstance() {
         if (instance == null) {
-            instance = new DBPediaHelper();
+            instance = new DbPediaHelper();
         }
         return instance;
     }
 
-    private DBPediaHelper() {
+    private DbPediaHelper() {
         super("dbpedia", ".json", "");
     }
 
@@ -122,7 +122,7 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
     }
 
     @Override
-    public void save(Record r) {
+    public void save(DbPediaData r) {
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
             String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(r);
@@ -134,26 +134,26 @@ public class DBPediaHelper extends FileBasedCache<DBPediaHelper.Record> {
     }
 
     @Override
-    public Record getDefault() {
-        return new Record(loadProgrammingLanguages(), loadMarkupLanguages(), loadSoftware());
+    public DbPediaData getDefault() {
+        return new DbPediaData(loadProgrammingLanguages(), loadMarkupLanguages(), loadSoftware());
     }
 
     @Override
-    public Record load(boolean allowReload) {
-        if (record != null)
-            return record;
+    public DbPediaData load(boolean allowReload) {
+        if (dbPediaData != null)
+            return dbPediaData;
         try {
             logger.info("Reading {} file", getIdentifier());
-            record = new ObjectMapper().readValue(getFile(), new TypeReference<Record>() {
+            dbPediaData = new ObjectMapper().readValue(getFile(), new TypeReference<DbPediaData>() {
             });
-            return record;
+            return dbPediaData;
         } catch (IOException e) {
             logger.error("Error reading {} file", getIdentifier());
             throw new RuntimeException(e);
         }
     }
 
-    public record Record(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {
+    public record DbPediaData(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {
     }
 
     public static boolean isWordProgrammingLanguage(String word) {

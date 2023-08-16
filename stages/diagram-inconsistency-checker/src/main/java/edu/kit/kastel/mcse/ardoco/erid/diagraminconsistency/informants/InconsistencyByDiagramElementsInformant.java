@@ -28,7 +28,7 @@ public class InconsistencyByDiagramElementsInformant extends Informant {
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
             var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(mm);
             var allDiagramElements = diagramRecognitionState.getDiagrams().stream().flatMap(d -> d.getBoxes().stream()).distinct().toList();
-            var uncoveredDiagramElements = allDiagramElements.stream().filter(de -> diagramConnectionState.getDiagramLink(de).isEmpty()).distinct().toList();
+            var uncoveredDiagramElements = allDiagramElements.stream().filter(de -> diagramConnectionState.getLinkBetweenDeAndRi(de).isEmpty()).distinct().toList();
 
             uncoveredDiagramElements.forEach(de -> diagramInconsistencyState.addInconsistency(new MTDEInconsistency(de)));
         }
