@@ -1,9 +1,14 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
@@ -14,18 +19,26 @@ import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.jetbrains.annotations.NotNull;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMappingChangeListener;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 @UserReviewedDeterministic
 public final class PhraseMappingImpl implements PhraseMapping {
+
+    private static final AtomicLong idCounter = new AtomicLong(0);
+
+    private final long id = idCounter.getAndIncrement();
+
+    @Override
+    public int compareTo(@NotNull PhraseMapping o) {
+        if (o instanceof PhraseMappingImpl impl)
+            return Long.compare(id, impl.id);
+        return 0;
+    }
 
     /**
      * Phrases encapsulated in the mapping.
@@ -85,7 +98,7 @@ public final class PhraseMappingImpl implements PhraseMapping {
         if (o == null || getClass() != o.getClass())
             return false;
         PhraseMappingImpl that = (PhraseMappingImpl) o;
-        return Objects.equals(phrases, that.phrases);
+        return phrases.size() == that.phrases.size() && phrases.containsAll(that.phrases) && that.phrases.containsAll(phrases);
     }
 
     @Override
